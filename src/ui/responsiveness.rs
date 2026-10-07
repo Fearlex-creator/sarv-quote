@@ -30,6 +30,31 @@ fn page_rows(widget: &impl IsA<gtk::Widget>) -> Vec<adw::ActionRow> {
     descendants::<adw::ActionRow>(widget)
 }
 
+fn named<T: IsA<gtk::Widget> + glib::object::ObjectType + Clone + 'static>(
+    root: &impl IsA<gtk::Widget>,
+    name: &str,
+) -> Result<T> {
+    descendants::<T>(root)
+        .into_iter()
+        .find(|widget| widget.widget_name() == name)
+        .with_context(|| format!("native scale widget missing: {name}"))
+}
+
+fn active_dialog(ui: &Ui) -> Result<adw::Dialog> {
+    ui.active_dialog
+        .borrow()
+        .clone()
+        .context("native scale dialog missing")
+}
+
+fn picker_results(ui: &Ui) -> Result<gtk::ListBox> {
+    named(&active_dialog(ui)?, "product-picker-search-results")
+}
+
+fn picker_search(ui: &Ui) -> Result<gtk::SearchEntry> {
+    named(&active_dialog(ui)?, "product-picker-search")
+}
+
 fn persisted_generation(ui: &Ui) -> Result<i64> {
     let connection = rusqlite::Connection::open_with_flags(
         ui.store.borrow().directory.join("sarv.sqlite3"),
@@ -88,6 +113,13 @@ struct Probe {
     page_clicks: Vec<serde_json::Value>,
     keyboard: Option<std::process::Child>,
     finished: bool,
+    catalog: Option<Catalog>,
+    phase_started: Instant,
+    phase_heartbeats: std::collections::BTreeMap<u8, (usize, f64)>,
+    maximum_picker_rows: usize,
+    maximum_composer_rows: usize,
+    composer_list: Option<gtk::ListBox>,
+    composer_generation: i64,
 }
 
 impl Probe {
@@ -115,6 +147,13 @@ impl Probe {
             page_clicks: vec![],
             keyboard: None,
             finished: false,
+            catalog: None,
+            phase_started: now,
+            phase_heartbeats: std::collections::BTreeMap::new(),
+            maximum_picker_rows: 0,
+            maximum_composer_rows: 0,
+            composer_list: None,
+            composer_generation: 0,
         }
     }
     fn advance(&mut self, stage: u8, delay_ms: u64) {
@@ -139,6 +178,11 @@ impl Probe {
             "products": 50_000, "quote_lines": 1_000,
             "catalog_preview_pages_visited": self.page + 1,
             "maximum_native_preview_rows": self.max_rows,
+            "maximum_native_picker_rows": self.maximum_picker_rows,
+            "maximum_native_composer_rows": self.maximum_composer_rows,
+            "phase_heartbeats": self.phase_heartbeats.iter().map(|(stage, (ticks, max_gap))|
+                (stage.to_string(), serde_json::json!({"ticks":ticks,"maximum_gap_ms":max_gap})))
+                .collect::<serde_json::Map<String, serde_json::Value>>(),
             "durations_ms": self.durations,
             "heartbeat_interval_ms": 20,
             "heartbeat_count": self.heartbeat_count,
@@ -155,7 +199,7 @@ impl Probe {
             "final_window_allocation": [ui.window.width(), ui.window.height()],
             "checks": self.checks,
             "failure": error,
-            "limitations": ["Synthetic scale fixture, not production customer data", "SQLite state validation and persistence remain synchronous; measured setup/page-edit gaps are reported separately", "No Wayland, physical printer or target desktop packaging certification"]
+            "limitations": ["Synthetic scale fixture, not production customer data", "Changed draft saves, SQLite commit, snapshot copies and composer preparation can still block GTK; global and per-phase gaps are reported rather than hidden", "No Wayland, physical printer or target desktop packaging certification"]
         });
         let path = ui
             .store
@@ -182,30 +226,96 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
         0 => {
             let begin = Instant::now();
             let source = chrono::Utc::now().to_rfc3339();
-            let products = (1..=50_000)
-                .map(|i| Product {
-                    code: format!("SCALE-{i:05}"),
-                    name: format!("کالای ساختگی پاسخ‌گویی {i}"),
-                    measure: "عدد".into(),
-                    price_rial: 100_000 + i,
-                    source_unit: Unit::Rial,
-                    source_at: source.clone(),
-                    aliases: vec![],
-                })
-                .collect::<Vec<_>>();
-            let catalog = Catalog {
-                id: id(),
-                name: "۵۰ هزار کالای ساختگی؛ آزمون پاسخ‌گویی".into(),
-                imported_at: source,
-                fingerprint: imports::product_fingerprint(&products)?,
-                products,
+            let mut writer = csv::Writer::from_writer(Vec::new());
+            writer.write_record([
+                "code",
+                "name",
+                "measure",
+                "price",
+                "currency",
+                "source_at",
+                "aliases",
+            ])?;
+            for index in 1..=50_000 {
+                writer.write_record([
+                    format!("SCALE-{index:05}"),
+                    format!("کالای ساختگی پاسخ‌گویی {index}"),
+                    "عدد".into(),
+                    (100_000 + index).to_string(),
+                    "rial".into(),
+                    source.clone(),
+                    String::new(),
+                ])?;
+            }
+            let csv = String::from_utf8(writer.into_inner()?)?;
+            p.elapsed("synthetic_50000_csv_fixture_creation", begin);
+            p.phase_started = Instant::now();
+            p.advance(40, 0);
+            drop(p);
+            let parsed = probe.clone();
+            ensure!(
+                ui.run_background(
+                    "آزمون ساختگی؛ بررسی CSV پنجاه هزار کالا",
+                    move || {
+                        let started = Instant::now();
+                        imports::catalog_csv(&csv, "۵۰ هزار کالای ساختگی؛ آزمون پاسخ‌گویی")
+                            .map(|catalog| (catalog, started.elapsed().as_secs_f64() * 1000.))
+                    },
+                    move |ui, result| {
+                        let mut p = parsed.borrow_mut();
+                        match result {
+                            Ok((catalog, worker_ms)) => {
+                                p.catalog = Some(catalog);
+                                p.durations.insert(
+                                    "50000_csv_worker_parse_ms".into(),
+                                    serde_json::json!(worker_ms),
+                                );
+                                let start = p.phase_started;
+                                p.elapsed("50000_csv_parse_request_to_completion", start);
+                            }
+                            Err(error) => {
+                                p.finish(ui, Some(format!("CSV parse failed: {error:#}")))
+                            }
+                        }
+                    }
+                ),
+                "CSV parse worker rejected"
+            );
+        }
+        40 => {
+            let Some(catalog) = p.catalog.take() else {
+                return Ok(());
             };
-            ui.store
-                .borrow_mut()
-                .change(|state| imports::accept_catalog(state, catalog.clone()))?;
-            p.elapsed("synthetic_catalog_validated_store_commit", begin);
+            p.phase_started = Instant::now();
+            p.advance(41, 0);
+            drop(p);
+            let accepted = probe.clone();
+            ui.accept_catalog_async(catalog, move |ui, success| {
+                let mut p = accepted.borrow_mut();
+                let started = p.phase_started;
+                p.elapsed("50000_catalog_prepare_commit_and_native_refresh", started);
+                if success {
+                    p.checks.push("Actual50,000-row CSV parse and prepared catalogue acceptance complete via native background workflows".into());
+                    p.advance(42, 300);
+                } else {
+                    p.finish(ui, Some("Prepared catalogue acceptance failed".into()));
+                }
+            });
+        }
+        41 => {}
+        42 => {
+            let catalog = ui.store.borrow().state.catalog()?.clone();
+            ensure!(
+                catalog.products.len() == 50_000,
+                "validated CSV lost products"
+            );
+            ensure!(
+                persisted_generation(ui)? == 1,
+                "catalogue acceptance did not commit exactly once"
+            );
             let begin = Instant::now();
-            let preview = catalog_preview::preview(&catalog, DisplayDigits::Persian);
+            let preview =
+                catalog_preview::preview(&catalog, DisplayDigits::Persian, DateDisplay::Iso);
             let dialog = adw::Dialog::builder()
                 .title("آزمون ۵۰ هزار کالا؛ دادهٔ ساختگی")
                 .content_width(1000)
@@ -408,6 +518,236 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             );
             p.checks.push("Native editor reaches all ten pages with <=100 rows/page; first/last page quantity edits survive navigation and save; all1,000 canonical lines retained; exact100,802,501rial total".into());
             p.checks.push("All seventeen unchanged native next/previous clicks preserve persisted generation; edited first-page navigation commits exactly one generation".into());
+            p.advance(20, 500);
+        }
+        20 => {
+            p.phase_started = Instant::now();
+            ui.open_product_picker();
+            let started = p.phase_started;
+            p.elapsed("50000_cold_picker_open_invocation", started);
+            p.advance(21, 0);
+        }
+        21 => {
+            let list = picker_results(ui)?;
+            if list.row_at_index(29).is_none() {
+                return Ok(());
+            }
+            ensure!(
+                list.row_at_index(30).is_none(),
+                "indexed picker exceeded30 native rows"
+            );
+            p.maximum_picker_rows = 30;
+            let started = p.phase_started;
+            p.elapsed("50000_cold_picker_index_and_first_results_ready", started);
+            p.advance(22, 200);
+        }
+        22 => {
+            smoke::capture(&ui.window, &directory.join("native-scale-picker-cold.png"))?;
+            p.phase_started = Instant::now();
+            picker_search(ui)?.set_text("SCALE-50000");
+            p.advance(23, 250);
+        }
+        23 => {
+            let rows = page_rows(&picker_results(ui)?);
+            ensure!(
+                rows.len() == 1
+                    && rows[0]
+                        .subtitle()
+                        .is_some_and(|text| text.contains("SCALE-50000")),
+                "indexed picker cannot find50,000th product exactly"
+            );
+            let started = p.phase_started;
+            p.elapsed(
+                "50000_indexed_exact_code_search_including_debounce",
+                started,
+            );
+            smoke::capture(
+                &ui.window,
+                &directory.join("native-scale-picker-last-product.png"),
+            )?;
+            p.phase_started = Instant::now();
+            picker_search(ui)?.set_text("کالای ساختگی");
+            p.advance(24, 250);
+        }
+        24 => {
+            let list = picker_results(ui)?;
+            ensure!(
+                page_rows(&list).len() == 30 && list.row_at_index(30).is_none(),
+                "broad indexed picker created unbounded results"
+            );
+            ensure!(
+                descendants::<gtk::Label>(&active_dialog(ui)?)
+                    .iter()
+                    .any(|label| label.text().contains(&fa(50_000))),
+                "picker result count lost full50,000 products"
+            );
+            let started = p.phase_started;
+            p.elapsed("50000_indexed_broad_search_including_debounce", started);
+            active_dialog(ui)?.close();
+            p.advance(25, 200);
+        }
+        25 => {
+            let started = Instant::now();
+            ui.open_product_picker();
+            p.elapsed("50000_warm_cached_picker_open_and_native_results", started);
+            ensure!(
+                page_rows(&picker_results(ui)?).len() == 30,
+                "warm picker cache did not supply bounded results"
+            );
+            p.advance(26, 200);
+        }
+        26 => {
+            smoke::capture(&ui.window, &directory.join("native-scale-picker-warm.png"))?;
+            active_dialog(ui)?.close();
+            let started = Instant::now();
+            ui.store.borrow_mut().change(|state| {
+                state.draft.lines[0].query = "SYNTHETIC-UNMATCHED-REQUEST".into();
+                state.draft.lines[0].chosen_code = None;
+                Ok(())
+            })?;
+            ui.fill_form();
+            ui.refresh_review();
+            p.elapsed(
+                "unknown_line_fixture_changed_save_and_native_review",
+                started,
+            );
+            ensure!(
+                descendants::<gtk::DropDown>(&ui.review).is_empty(),
+                "unknown50,000-product line created an eager giant dropdown"
+            );
+            named::<gtk::Button>(&ui.review, "resolve-line-0")?.emit_clicked();
+            p.advance(27, 200);
+        }
+        27 => {
+            ensure!(
+                page_rows(&picker_results(ui)?).len() == 30,
+                "unknown-line selector exceeded bounded picker"
+            );
+            p.phase_started = Instant::now();
+            picker_search(ui)?.set_text("SCALE-00001");
+            p.advance(28, 250);
+        }
+        28 => {
+            let rows = page_rows(&picker_results(ui)?);
+            ensure!(
+                rows.len() == 1
+                    && rows[0]
+                        .subtitle()
+                        .is_some_and(|text| text.contains("SCALE-00001")),
+                "unknown selector precise search failed"
+            );
+            let started = p.phase_started;
+            p.elapsed(
+                "50000_unknown_line_indexed_search_including_debounce",
+                started,
+            );
+            smoke::capture(
+                &ui.window,
+                &directory.join("native-scale-unknown-selector.png"),
+            )?;
+            named::<gtk::Button>(&active_dialog(ui)?, "product-picker-search-choose")?
+                .emit_clicked();
+            {
+                let store = ui.store.borrow();
+                ensure!(
+                    store.state.draft.lines[0].query == "SYNTHETIC-UNMATCHED-REQUEST"
+                        && store.state.draft.lines[0].chosen_code.as_deref() == Some("SCALE-00001"),
+                    "explicit unknown resolution replaced customer request or failed to persist choice"
+                );
+                ensure!(
+                    store.state.preview()?.total_rial == 100_802_501,
+                    "unknown selection changed exact quote amount"
+                );
+            }
+            p.checks.push("Cold/warm50,000-product indexed picker keeps<=30 rows, finds exact last code, reports all broad matches; unknown-line native selector avoids giant dropdown and persists explicit choice while preserving request and exact price".into());
+            let started = Instant::now();
+            ui.store.borrow_mut().change(|state| {
+                state.draft.lines[0].query = "SCALE-00001".into();
+                state.draft.lines[0].chosen_code = None;
+                Ok(())
+            })?;
+            ui.fill_form();
+            ui.refresh_review();
+            p.elapsed("restore_known_line_fixture_changed_save", started);
+            p.advance(30, 300);
+        }
+        30 => {
+            let catalog = ui.store.borrow().state.catalog()?.clone();
+            p.composer_generation = persisted_generation(ui)?;
+            let started = Instant::now();
+            catalog_editor::open(ui, Some(&catalog));
+            p.elapsed("50000_native_composer_copy_and_initial100_rows", started);
+            let list = descendants::<gtk::ListBox>(&active_dialog(ui)?)
+                .into_iter()
+                .find(|list| list.row_at_index(99).is_some())
+                .context("native large composer list missing")?;
+            ensure!(
+                list.row_at_index(100).is_none(),
+                "composer eagerly rendered more than100 products"
+            );
+            p.maximum_composer_rows = 100;
+            p.composer_list = Some(list);
+            p.advance(31, 200);
+        }
+        31 => {
+            let list = p.composer_list.as_ref().context("composer list missing")?;
+            ensure!(
+                page_rows(list)[0].title().contains("SCALE-00001"),
+                "composer first page incorrect"
+            );
+            smoke::capture(
+                &ui.window,
+                &directory.join("native-scale-composer-first.png"),
+            )?;
+            button_named(&active_dialog(ui)?, "کالاهای بعدی")?.emit_clicked();
+            let rows = page_rows(p.composer_list.as_ref().unwrap());
+            ensure!(
+                rows.len() == 100 && rows[0].title().contains("SCALE-00101"),
+                "composer next page lost bounded products"
+            );
+            let search = descendants::<gtk::SearchEntry>(&active_dialog(ui)?)
+                .into_iter()
+                .find(|search| {
+                    search.placeholder_text().as_deref() == Some("جست‌وجوی کالاهای فهرست تازه")
+                })
+                .context("composer search missing")?;
+            p.phase_started = Instant::now();
+            search.set_text("SCALE-50000");
+            p.advance(32, 250);
+        }
+        32 => {
+            let rows = page_rows(p.composer_list.as_ref().context("composer list missing")?);
+            ensure!(
+                rows.len() == 1 && rows[0].title().contains("SCALE-50000"),
+                "composer cannot reach50,000th product through search"
+            );
+            ensure!(
+                descendants::<gtk::Label>(&active_dialog(ui)?)
+                    .iter()
+                    .any(|label| label.text().contains(&fa(50_000))),
+                "composer discarded off-page product count"
+            );
+            let started = p.phase_started;
+            p.elapsed(
+                "50000_composer_indexed_last_code_search_including_debounce",
+                started,
+            );
+            smoke::capture(
+                &ui.window,
+                &directory.join("native-scale-composer-last-product.png"),
+            )?;
+            active_dialog(ui)?.close();
+            p.composer_list.take();
+            ensure!(
+                persisted_generation(ui)? == p.composer_generation,
+                "read-only composer copy changed persisted source"
+            );
+            ensure!(
+                ui.store.borrow().state.catalogs.len() == 1
+                    && ui.store.borrow().state.catalog()?.products.len() == 50_000,
+                "composer mutated source catalog before confirmation"
+            );
+            p.checks.push("Native50,000-product composer copy keeps<=100 rows, next page and exact last-product search reachable, retains full product count and leaves persisted source/generation unchanged when closed".into());
             p.advance(5, 500);
         }
         5 => {
@@ -596,13 +936,17 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
         p.heartbeat_last = now;
         p.heartbeat_count += 1;
         p.heartbeat_max_ms = p.heartbeat_max_ms.max(gap);
+        let stage = p.stage;
+        let timing = p.phase_heartbeats.entry(stage).or_insert((0, 0.));
+        timing.0 += 1;
+        timing.1 = timing.1.max(gap);
+        let pdf_busy = p.export_started.is_some() && !p.export_done && ui.background_busy.get();
         if gap > 100. {
-            let stage = p.stage;
-            let busy = ui.background_busy.get();
             p.large_gaps
-                .push(serde_json::json!({"stage": stage, "gap_ms": gap, "pdf_busy": busy}));
+                .push(serde_json::json!({"stage": stage, "gap_ms": gap,
+                    "pdf_busy": pdf_busy, "worker_busy":ui.background_busy.get()}));
         }
-        if ui.background_busy.get() {
+        if pdf_busy {
             p.export_ticks += 1;
             p.export_max_gap_ms = p.export_max_gap_ms.max(gap);
         }

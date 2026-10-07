@@ -10,7 +10,10 @@ pub(super) fn label(s: &str) -> gtk::Label {
     let l = gtk::Label::new(Some(s));
     l.set_xalign(0.0);
     l.set_wrap(true);
-    l.set_selectable(true);
+    // Ordinary interface text must not add stops to keyboard navigation or
+    // become a selected paragraph when a native dialog initially takes focus.
+    // A caller can explicitly enable selection for copyable document content.
+    l.set_selectable(false);
     l
 }
 pub(super) fn heading(s: &str) -> gtk::Label {
@@ -31,6 +34,7 @@ pub(super) fn entry(placeholder: &str) -> gtk::Entry {
     let e = gtk::Entry::new();
     e.set_placeholder_text(Some(placeholder));
     e.set_hexpand(true);
+    e.add_css_class("sarv-entry");
     e
 }
 /// Native invalid styling and an accessible explanation accompany the same

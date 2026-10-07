@@ -184,17 +184,35 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
     ui.store.borrow().backup(&dir.join("backup.json"))?;
     let restored = Store::restore_preview(&dir.join("backup.json"))?;
     ensure!(restored.quotes.len() == 2, "backup validation failed");
+    ui.delete_line(0);
+    ensure!(
+        ui.deleted_lines.borrow().is_some() && ui.undo_button.is_sensitive(),
+        "deleted-line restore setup failed"
+    );
     ui.customer.set_text("تغییر موقت برای آزمون بازیابی");
     ui.restore(&dir.join("backup.json"));
+    wait_background(ui)?;
     let restore_dialog = ui
         .active_dialog
         .borrow()
         .clone()
         .context("restore confirmation missing")?;
     find_button(&restore_dialog, "بازیابی و ذخیرهٔ نسخهٔ ایمنی")?.emit_clicked();
+    wait_background(ui)?;
     ensure!(
         ui.store.borrow().state.draft.customer == "فروشگاه نمونهٔ پارس",
         "native restore did not replace draft"
+    );
+    ensure!(
+        ui.deleted_lines.borrow().is_none() && !ui.undo_button.is_sensitive(),
+        "restore retained the prior profile's undo buffer"
+    );
+    let restored_lines = ui.store.borrow().state.draft.lines.clone();
+    ui.undo_delete();
+    ensure!(
+        serde_json::to_value(&ui.store.borrow().state.draft.lines)?
+            == serde_json::to_value(&restored_lines)?,
+        "undo after restore mixed rows from the prior profile"
     );
     ensure!(
         std::fs::read_dir(&dir)?.filter_map(|e| e.ok()).any(|e| e
@@ -208,7 +226,7 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
         restarted.state.quotes.len() == 2 && restarted.state.draft.lines[0].quantity_milli == 3000,
         "persisted widget state mismatch"
     );
-    let report = serde_json::json!({"result":"passed","native_backend":std::env::var("GDK_BACKEND").unwrap_or_else(|_| "default".into()),"checks":["catalog preview and explicit confirm","Persian/Arabic input","ambiguous review dropdown","unmatched review dropdown","unresolved approval blocked","stale acknowledgement gate","toman/rial UI preserves discount","repeated approval clicks","invalid CSV approval blocked","native revision button","immutable prior quote","customer and quote search","PDF and CSV exports","backup validated","native restore confirmation","automatic safety backup","SQLite reopened","invalid table input preserved by New/Revision/Approve","pending edits labelled unsaved","delete-edit-add-undo preserves intervening changes","changed product requires visual review and stale re-ack","restore saves immediate widget edit before safety backup"],"first_total_rial":first.total_rial,"second_total_rial":q.total_rial,"quotes":2,"data_directory":dir});
+    let report = serde_json::json!({"result":"passed","native_backend":std::env::var("GDK_BACKEND").unwrap_or_else(|_| "default".into()),"checks":["catalog preview and explicit confirm","Persian/Arabic input","ambiguous review dropdown","unmatched review dropdown","unresolved approval blocked","stale acknowledgement gate","toman/rial UI preserves discount","repeated approval clicks","invalid CSV approval blocked","native revision button","immutable prior quote","customer and quote search","PDF and CSV exports","backup validated","native restore confirmation","automatic safety backup","SQLite reopened","invalid table input preserved by New/Revision/Approve","pending edits labelled unsaved","delete-edit-add-undo preserves intervening changes","changed product requires visual review and stale re-ack","restore saves immediate widget edit before safety backup","restore clears prior-profile undo buffer"],"first_total_rial":first.total_rial,"second_total_rial":q.total_rial,"quotes":2,"data_directory":dir});
     sarv_quote::store::write_new(
         &dir.join("native-verification.json"),
         &serde_json::to_vec_pretty(&report)?,
@@ -398,17 +416,24 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
         .clone()
         .context("customer dialog missing")?;
     let inputs = descendants::<gtk::Entry>(&dialog);
-    ensure!(inputs.len() == 2, "customer dialog fields mismatch");
-    inputs[0].set_text("مشتری نمایشی دوم");
-    inputs[1].set_text("۰۹۱۲۰۰۰۰۰۰۱");
+    ensure!(inputs.len() >= 5, "customer dialog contact fields missing");
+    let name_input = inputs
+        .iter()
+        .find(|entry| entry.placeholder_text().as_deref() == Some("نام شخص یا شرکت"))
+        .context("customer name field missing")?;
+    let phone_input = inputs
+        .iter()
+        .find(|entry| entry.placeholder_text().as_deref() == Some("تلفن (اختیاری)"))
+        .context("customer phone field missing")?;
+    name_input.set_text("مشتری نمایشی دوم");
+    phone_input.set_text("۰۹۱۲۰۰۰۰۰۰۱");
     find_button(&dialog, "ذخیرهٔ مشتری")?.emit_clicked();
     ensure!(
-        ui.store
-            .borrow()
-            .state
-            .customers
-            .iter()
-            .any(|c| c.name == "مشتری نمایشی دوم"),
+        ui.store.borrow().state.customers.iter().any(|c| {
+            c.name == "مشتری نمایشی دوم"
+                && digits(&c.phone) == "09120000001"
+                && c.contact_name.is_empty()
+        }),
         "native customer creation failed"
     );
     ui.store
@@ -434,6 +459,18 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
     Ok(())
 }
 
+fn wait_background(ui: &Ui) -> Result<()> {
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while ui.background_busy.get() {
+        anyhow::ensure!(
+            std::time::Instant::now() < deadline,
+            "background operation timed out"
+        );
+        glib::MainContext::default().iteration(true);
+    }
+    Ok(())
+}
+
 /// Exercise new native safety surfaces on the synthetic profile only.
 fn polish_flow(ui: &Rc<Ui>) -> Result<()> {
     let dir = directory(ui);
@@ -442,6 +479,7 @@ fn polish_flow(ui: &Rc<Ui>) -> Result<()> {
     let imported = dir.join("import-order.csv");
     sarv_quote::store::write_new(&imported, b"item,quantity\nP-101,5\n")?;
     ui.import_order(&imported);
+    wait_background(ui)?;
     let confirmation = ui
         .active_dialog
         .borrow()
@@ -460,12 +498,14 @@ fn polish_flow(ui: &Rc<Ui>) -> Result<()> {
     );
     ui.row_editors.borrow()[0].quantity.set_text("-1");
     ui.import_order(&imported);
+    wait_background(ui)?;
     let confirmation = ui
         .active_dialog
         .borrow()
         .clone()
         .context("import confirmation missing")?;
     confirmation.emit_by_name::<()>("response", &[&"replace"]);
+    wait_background(ui)?;
     confirmation.close();
     ensure!(
         ui.row_editors.borrow()[0].quantity.text() == "-1"
@@ -481,12 +521,14 @@ fn polish_flow(ui: &Rc<Ui>) -> Result<()> {
     ui.commit_table();
     let before = ui.store.borrow().state.draft.clone();
     ui.import_order(&imported);
+    wait_background(ui)?;
     let confirmation = ui
         .active_dialog
         .borrow()
         .clone()
         .context("import confirmation missing")?;
     confirmation.emit_by_name::<()>("response", &[&"replace"]);
+    wait_background(ui)?;
     confirmation.close();
     ensure!(
         ui.store.borrow().state.draft.lines.len() == 1
@@ -747,6 +789,7 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
                     .context("catalog preview missing")?;
                 capture(&u.window, &directory(&u).join("native-catalog-preview.png"))?;
                 find_button(&dialog, "منبع و قیمت‌ها را تأیید می‌کنم")?.emit_clicked();
+                wait_background(&u)?;
             }
             u.fill_form();
             u.customer.set_text("فروشگاه نمونهٔ پارس");
@@ -889,7 +932,11 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
             glib::timeout_add_local_once(std::time::Duration::from_secs(time), move || {
                 u.stack.set_visible_child_name(page);
                 if page == "catalog" || page == "quotes" {
-                    for row in descendants::<adw::ExpanderRow>(&u.window) {
+                    for row in descendants::<adw::ExpanderRow>(if page == "catalog" {
+                        &u.catalog_list
+                    } else {
+                        &u.quote_list
+                    }) {
                         row.set_expanded(true);
                     }
                 }

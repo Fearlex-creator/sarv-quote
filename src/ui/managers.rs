@@ -1,5 +1,5 @@
 use super::*;
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 const PAGE_SIZE: usize = 100;
 
@@ -7,6 +7,7 @@ fn boxed_list() -> gtk::ListBox {
     let list = gtk::ListBox::new();
     list.set_selection_mode(gtk::SelectionMode::None);
     list.add_css_class("boxed-list");
+    list.add_css_class("manager-list");
     list
 }
 fn action_row(title: &str, subtitle: &str) -> adw::ActionRow {
@@ -37,15 +38,89 @@ fn fields_match(values: &[&str], needle: &str) -> bool {
         .all(|word| values.iter().any(|value| value.contains(word)))
 }
 
-pub(super) fn product_matches(product: &Product, needle: &str) -> bool {
-    let mut values = vec![
-        product.code.as_str(),
-        product.name.as_str(),
-        product.measure.as_str(),
-        product.source_at.as_str(),
-    ];
-    values.extend(product.aliases.iter().map(String::as_str));
-    fields_match(&values, needle)
+pub(super) fn product_document(product: &Product) -> String {
+    format!(
+        "{}\n{}\n{}\n{}\n{}",
+        product.code,
+        product.name,
+        product.measure,
+        product.source_at,
+        product.aliases.join("\n")
+    )
+}
+
+struct CachedCatalogSearch {
+    catalog_id: String,
+    fingerprint: String,
+    ordered_codes: Vec<String>,
+    rows: usize,
+    index: SearchIndex,
+}
+thread_local! {
+    // Cache rows refer to source order, while the catalogue fingerprint is
+    // order-independent. Match both identity and ordered codes after a restore.
+    // Bound cached documents so search never constructs a widget per result.
+    static CATALOG_SEARCH: RefCell<Vec<CachedCatalogSearch>> = const { RefCell::new(Vec::new()) };
+}
+fn catalog_page(
+    catalog: &Catalog,
+    needle: &str,
+    start: usize,
+    limit: usize,
+) -> (Vec<usize>, usize) {
+    if needle.is_empty() {
+        return (
+            (start..start.saturating_add(limit).min(catalog.products.len())).collect(),
+            catalog.products.len(),
+        );
+    }
+    CATALOG_SEARCH.with(|cache| {
+        let mut cache = cache.borrow_mut();
+        let position = if let Some(position) = cache.iter().position(|cached| {
+            cached.catalog_id == catalog.id
+                && cached.fingerprint == catalog.fingerprint
+                && catalog
+                    .products
+                    .iter()
+                    .map(|product| product.code.as_str())
+                    .eq(cached.ordered_codes.iter().map(String::as_str))
+        }) {
+            position
+        } else {
+            while cache.iter().map(|cached| cached.rows).sum::<usize>() + catalog.products.len()
+                > 100_000
+                && !cache.is_empty()
+            {
+                cache.remove(0);
+            }
+            cache.push(CachedCatalogSearch {
+                catalog_id: catalog.id.clone(),
+                fingerprint: catalog.fingerprint.clone(),
+                ordered_codes: catalog
+                    .products
+                    .iter()
+                    .map(|product| product.code.clone())
+                    .collect(),
+                rows: catalog.products.len(),
+                index: SearchIndex::new(catalog.products.iter().map(product_document)),
+            });
+            cache.len() - 1
+        };
+        cache[position].index.search_page(needle, start, limit)
+    })
+}
+
+thread_local! {
+    static CUSTOMER_EXPANDED: RefCell<HashSet<String>> = RefCell::new(HashSet::new());
+}
+
+pub(super) fn display_date(
+    value: &str,
+    digits: DisplayDigits,
+    date_display: DateDisplay,
+) -> String {
+    let date = value.get(..10).unwrap_or(value);
+    digits.format(date_display.format(date))
 }
 
 fn wrapping_actions() -> gtk::FlowBox {
@@ -69,6 +144,14 @@ impl Ui {
             .display_digits
             .format(value)
     }
+    fn manager_date(&self, value: &str) -> String {
+        let store = self.store.borrow();
+        display_date(
+            value,
+            store.state.settings.display_digits,
+            store.state.settings.date_display,
+        )
+    }
     pub(super) fn refresh_managers(self: &Rc<Self>) {
         // Preserve the archive filter when searches or customer edits refresh.
         let selected = self
@@ -77,13 +160,26 @@ impl Ui {
             .and_then(|child| child.downcast::<gtk::DropDown>().ok())
             .map(|filter| filter.selected())
             .unwrap_or(0);
+        let show_archived = self
+            .customer_list
+            .first_child()
+            .and_then(|header| header.first_child())
+            .and_then(|add| add.next_sibling())
+            .and_then(|filter| filter.downcast::<gtk::CheckButton>().ok())
+            .is_some_and(|filter| filter.is_active());
+        self.search_customer
+            .set_placeholder_text(Some("نام، مخاطب، تلفن یا ایمیل"));
+        self.search_catalog
+            .set_placeholder_text(Some("نام فهرست، کد، شرح یا نام مستعار کالا"));
+        self.search_quote
+            .set_placeholder_text(Some("شماره، مشتری، مرجع یا کالای پیشنهاد"));
         clear(&self.catalog_list);
         clear(&self.customer_list);
         clear(&self.quote_list);
         self.catalog_list.set_spacing(12);
         self.customer_list.set_spacing(12);
         self.quote_list.set_spacing(12);
-        self.refresh_customer_manager();
+        self.refresh_customer_manager(show_archived);
         self.refresh_catalog_manager();
         let filter = gtk::DropDown::from_strings(&[
             "آخرین نسخه‌های تأییدشده",
@@ -93,6 +189,7 @@ impl Ui {
         filter.set_selected(selected.min(2));
         filter.set_tooltip_text(Some("نسخه‌های ذخیره‌شده؛ بدون وضعیت ارسال یا پرداخت"));
         self.quote_list.append(&filter);
+        self.append_current_draft();
         let archive = column();
         self.quote_list.append(&archive);
         self.render_quote_manager(&archive, filter.selected());
@@ -104,11 +201,94 @@ impl Ui {
         });
     }
 
-    fn refresh_customer_manager(self: &Rc<Self>) {
+    fn append_current_draft(self: &Rc<Self>) {
+        let store = self.store.borrow();
+        let draft = &store.state.draft;
+        let number = store
+            .state
+            .quotes
+            .iter()
+            .rev()
+            .find(|quote| quote.series == draft.series)
+            .map(|quote| quote.number.as_str())
+            .unwrap_or("");
+        let customer_input = self.customer.text();
+        let reference_input = self.reference.text();
+        let needle = normalize(&self.search_quote.text());
+        if !fields_match(
+            &[
+                "پیش‌نویس جاری",
+                &draft.customer,
+                &draft.phone,
+                &draft.reference,
+                number,
+                &customer_input,
+                &reference_input,
+            ],
+            &needle,
+        ) {
+            return;
+        }
+        let draft_row = action_row(
+            "پیش‌نویس جاری",
+            &format!(
+                "{} · {} قلم · نسخهٔ تأییدشده نیست{}",
+                if draft.customer.trim().is_empty() {
+                    "مشتری ثبت نشده"
+                } else {
+                    &draft.customer
+                },
+                self.manager_number(draft.lines.len()),
+                if draft.reference.is_empty() {
+                    String::new()
+                } else {
+                    format!(" · مرجع: {}", draft.reference)
+                }
+            ),
+        );
+        let edit = compact_button("ادامهٔ ویرایش");
+        edit.set_tooltip_text(Some(
+            "بازگشت به همان فرم؛ نوشته‌های در انتظار ذخیره و ورودی‌های نامعتبر حفظ می‌شوند",
+        ));
+        draft_row.add_suffix(&edit);
+        draft_row.set_activatable_widget(Some(&edit));
+        let list = boxed_list();
+        list.append(&draft_row);
+        self.quote_list.append(&list);
+        let weak = Rc::downgrade(self);
+        edit.connect_clicked(move |_| {
+            if let Some(ui) = weak.upgrade() {
+                ui.stack.set_visible_child_name("order");
+            }
+        });
+    }
+
+    fn refresh_customer_manager(self: &Rc<Self>, show_archived: bool) {
         let actions = row();
+        actions.add_css_class("manager-toolbar");
         let add = compact_button("مشتری تازه");
         actions.append(&add);
+        let archived = gtk::CheckButton::with_label("نمایش بایگانی");
+        archived.set_active(show_archived);
+        actions.append(&archived);
         self.customer_list.append(&actions);
+        let weak = Rc::downgrade(self);
+        archived.connect_toggled(move |filter| {
+            if let Some(ui) = weak.upgrade() {
+                let focused = filter.has_focus();
+                ui.refresh_managers();
+                if focused
+                    && let Some(filter) = ui
+                        .customer_list
+                        .first_child()
+                        .and_then(|header| header.first_child())
+                        .and_then(|add| add.next_sibling())
+                        .and_then(|filter| filter.downcast::<gtk::CheckButton>().ok())
+                {
+                    filter.grab_focus();
+                }
+            }
+        });
         let weak = Rc::downgrade(self);
         add.connect_clicked(move |_| {
             if let Some(ui) = weak.upgrade() {
@@ -122,7 +302,19 @@ impl Ui {
             .state
             .customers
             .iter()
-            .filter(|customer| fields_match(&[&customer.name, &customer.phone], &needle))
+            .filter(|customer| {
+                (show_archived || !customer.archived)
+                    && fields_match(
+                        &[
+                            &customer.name,
+                            &customer.phone,
+                            &customer.contact_name,
+                            &customer.email,
+                            &customer.address,
+                        ],
+                        &needle,
+                    )
+            })
             .map(|customer| customer.id.clone())
             .collect::<Vec<_>>();
         let count = label(&format!("{} مشتری", self.manager_number(matches.len())));
@@ -159,22 +351,42 @@ impl Ui {
             .take(PAGE_SIZE)
             .filter_map(|id| customers.get(id.as_str()).copied())
         {
-            let item = action_row(
-                &customer.name,
-                &format!(
-                    "تلفن: {}",
+            let item = adw::ExpanderRow::builder()
+                .title(&customer.name)
+                .subtitle(format!(
+                    "{}{}{}{}",
                     if customer.phone.is_empty() {
-                        "—".into()
+                        "بدون تلفن".into()
                     } else {
                         ltr(&self.manager_number(&customer.phone))
+                    },
+                    if customer.contact_name.is_empty() {
+                        String::new()
+                    } else {
+                        format!(" · {}", customer.contact_name)
+                    },
+                    if customer.email.is_empty() {
+                        String::new()
+                    } else {
+                        format!(" · {}", ltr(&customer.email))
+                    },
+                    if customer.archived {
+                        " · بایگانی"
+                    } else {
+                        ""
                     }
-                ),
-            );
+                ))
+                .title_lines(1)
+                .subtitle_lines(2)
+                .build();
+            item.set_use_markup(false);
             let use_customer = compact_button("استفاده");
-            let edit = compact_button("ویرایش");
+            accessible_name(
+                &use_customer,
+                &format!("استفاده از مشتری {} در پیشنهاد", customer.name),
+            );
+            use_customer.set_sensitive(!customer.archived);
             item.add_suffix(&use_customer);
-            item.add_suffix(&edit);
-            item.set_activatable_widget(Some(&use_customer));
             let customer_id = customer.id.clone();
             let weak = Rc::downgrade(self);
             use_customer.connect_clicked(move |_| {
@@ -185,10 +397,10 @@ impl Ui {
                         .and_then(|()| {
                             ui.store
                                 .borrow_mut()
-                                .change(|state| state.use_customer(&customer_id))
+                                .change(|state| state.select_customer(&customer_id))
                         });
                     let saved = result.is_ok();
-                    ui.message(result.map(|()| "مشتری در پیش‌نویس ذخیره شد"));
+                    ui.message(result.map(|()| "اطلاعات مشتری در پیش‌نویس ذخیره شد"));
                     if saved {
                         ui.fill_form();
                         ui.refresh_review();
@@ -196,12 +408,88 @@ impl Ui {
                     }
                 }
             });
+            if !customer.address.is_empty() {
+                item.add_row(&action_row("نشانی", &customer.address));
+            }
+            let actions = wrapping_actions();
+            actions.set_margin_start(12);
+            actions.set_margin_end(12);
+            actions.set_margin_top(6);
+            actions.set_margin_bottom(6);
+            let edit = compact_button("ویرایش");
+            accessible_name(&edit, &format!("ویرایش مشتری {}", customer.name));
+            actions.insert(&edit, -1);
             let customer_id = customer.id.clone();
             let weak = Rc::downgrade(self);
             edit.connect_clicked(move |_| {
                 if let Some(ui) = weak.upgrade() {
                     ui.customer_dialog(Some(&customer_id));
                 }
+            });
+            let history = compact_button("پیشنهادهای مشتری");
+            accessible_name(&history, &format!("پیشنهادهای مشتری {}", customer.name));
+            actions.insert(&history, -1);
+            let customer_snapshot = customer.clone();
+            let weak = Rc::downgrade(self);
+            history.connect_clicked(move |_| {
+                if let Some(ui) = weak.upgrade() {
+                    ui.customer_history(&customer_snapshot);
+                }
+            });
+            let archive = compact_button(if customer.archived {
+                "بازگردانی از بایگانی"
+            } else {
+                "بایگانی مشتری"
+            });
+            accessible_name(
+                &archive,
+                &format!(
+                    "{} {}",
+                    if customer.archived {
+                        "بازگردانی از بایگانی مشتری"
+                    } else {
+                        "بایگانی مشتری"
+                    },
+                    customer.name
+                ),
+            );
+            archive.set_tooltip_text(Some("سوابق تأییدشده و اطلاعات مشتری حذف نمی‌شوند"));
+            actions.insert(&archive, -1);
+            let customer_id = customer.id.clone();
+            let archived = customer.archived;
+            let weak = Rc::downgrade(self);
+            archive.connect_clicked(move |_| {
+                if let Some(ui) = weak.upgrade() {
+                    let result = ui
+                        .store
+                        .borrow_mut()
+                        .change(|state| state.set_customer_archived(&customer_id, !archived));
+                    let ok = result.is_ok();
+                    ui.message(result.map(|()| {
+                        if archived {
+                            "مشتری از بایگانی بازگردانده شد"
+                        } else {
+                            "مشتری بایگانی شد؛ سوابق محفوظ‌اند"
+                        }
+                    }));
+                    if ok {
+                        ui.refresh_managers();
+                    }
+                }
+            });
+            item.add_row(&actions);
+            let opened =
+                CUSTOMER_EXPANDED.with(|expanded| expanded.borrow().contains(&customer.id));
+            item.set_expanded(opened || !self.search_customer.text().trim().is_empty());
+            let customer_id = customer.id.clone();
+            item.connect_expanded_notify(move |item| {
+                CUSTOMER_EXPANDED.with(|expanded| {
+                    if item.is_expanded() {
+                        expanded.borrow_mut().insert(customer_id.clone());
+                    } else {
+                        expanded.borrow_mut().remove(&customer_id);
+                    }
+                });
             });
             list.append(&item);
         }
@@ -249,7 +537,7 @@ impl Ui {
                 "مشتری تازه"
             })
             .content_width(520)
-            .content_height(330)
+            .content_height(600)
             .build();
         let root = column();
         for edge in [gtk::Orientation::Horizontal, gtk::Orientation::Vertical] {
@@ -264,25 +552,40 @@ impl Ui {
         let name = entry("نام شخص یا شرکت");
         let phone = entry("تلفن (اختیاری)");
         phone.set_direction(gtk::TextDirection::Ltr);
+        let contact = entry("نام مخاطب (اختیاری)");
+        let email = entry("name@example.com");
+        email.set_direction(gtk::TextDirection::Ltr);
+        email.set_input_purpose(gtk::InputPurpose::Email);
+        let address = entry("نشانی (اختیاری)");
         if let Some(customer) = &existing {
             name.set_text(&customer.name);
             phone.set_text(&customer.phone);
+            contact.set_text(&customer.contact_name);
+            email.set_text(&customer.email);
+            address.set_text(&customer.address);
         }
         root.append(&field("نام مشتری", &name));
+        root.append(&field("نام مخاطب", &contact));
         root.append(&field("تلفن", &phone));
-        root.append(&label(
-            "ویرایش مشتری، نام و تلفن نسخه‌های تأییدشدهٔ پیشین را تغییر نمی‌دهد.",
-        ));
+        root.append(&field("ایمیل", &email));
+        root.append(&field("نشانی", &address));
+        let hint = label("ویرایش اطلاعات، نسخه‌های تأییدشده را تغییر نمی‌دهد.");
+        hint.add_css_class("caption");
+        root.append(&hint);
         let error = label("");
         error.add_css_class("error");
         root.append(&error);
         let actions = row();
+        actions.add_css_class("manager-toolbar");
         let save = compact_button("ذخیرهٔ مشتری");
         save.add_css_class("suggested-action");
         save.set_receives_default(true);
         dialog.set_default_widget(Some(&save));
         name.set_activates_default(true);
         phone.set_activates_default(true);
+        contact.set_activates_default(true);
+        email.set_activates_default(true);
+        address.set_activates_default(true);
         let cancel = compact_button("انصراف");
         actions.append(&save);
         actions.append(&cancel);
@@ -298,10 +601,23 @@ impl Ui {
             if let Some(ui) = weak.upgrade() {
                 let result = ui.store.borrow_mut().change(|state| {
                     if let Some(customer) = &existing {
-                        state.edit_customer(&customer.id, &name_input.text(), &phone.text())?;
+                        state.edit_customer_details(
+                            &customer.id,
+                            &name_input.text(),
+                            &phone.text(),
+                            &contact.text(),
+                            &email.text(),
+                            &address.text(),
+                        )?;
                         Ok(customer.id.clone())
                     } else {
-                        state.save_customer(&name_input.text(), &phone.text())
+                        state.save_customer_details(
+                            &name_input.text(),
+                            &phone.text(),
+                            &contact.text(),
+                            &email.text(),
+                            &address.text(),
+                        )
                     }
                 });
                 match result {
@@ -317,7 +633,7 @@ impl Ui {
                 }
             }
         });
-        dialog.set_child(Some(&dialog_toolbar(&root)));
+        dialog.set_child(Some(&dialog_toolbar(&scroll(&root))));
         let weak = Rc::downgrade(self);
         dialog.connect_closed(move |dialog| {
             dialog.set_child(None::<&gtk::Widget>);
@@ -333,7 +649,85 @@ impl Ui {
         name.grab_focus();
     }
 
+    fn customer_history(self: &Rc<Self>, customer: &Customer) {
+        let store = self.store.borrow();
+        let mut legacy = 0usize;
+        let ids = store
+            .state
+            .quotes
+            .iter()
+            .rev()
+            .filter(|quote| {
+                if quote.customer_id == customer.id {
+                    true
+                } else if quote.customer_id.is_empty()
+                    && normalize(&quote.customer) == normalize(&customer.name)
+                    && digits(&quote.phone) == digits(&customer.phone)
+                {
+                    legacy += 1;
+                    true
+                } else {
+                    false
+                }
+            })
+            .map(|quote| quote.id.clone())
+            .collect::<Vec<_>>();
+        drop(store);
+        let dialog = adw::Dialog::builder()
+            .title(format!("پیشنهادهای {}", customer.name))
+            .content_width(760)
+            .content_height(620)
+            .build();
+        let root = column();
+        root.set_margin_top(16);
+        root.set_margin_bottom(16);
+        root.set_margin_start(16);
+        root.set_margin_end(16);
+        let count = label(&format!("{} نسخهٔ تأییدشده", self.manager_number(ids.len())));
+        count.add_css_class("caption");
+        root.append(&count);
+        if legacy > 0 {
+            let caveat =
+                label("سوابق قدیمی بدون شناسهٔ مشتری، با نام و تلفن یکسان نمایش داده می‌شوند.");
+            caveat.add_css_class("caption");
+            root.append(&caveat);
+        }
+        if ids.is_empty() {
+            root.append(&empty_state(
+                "پیشنهادی ثبت نشده",
+                "نسخه‌های تأییدشدهٔ این مشتری اینجا نمایش داده می‌شوند.",
+            ));
+        } else {
+            let list = boxed_list();
+            self.append_quote_page(&list, Rc::new(ids), 0);
+            root.append(&list);
+        }
+        dialog.set_child(Some(&dialog_toolbar(&scroll(&root))));
+        self.present_dialog(&dialog);
+    }
+
     fn refresh_catalog_manager(self: &Rc<Self>) {
+        let actions = row();
+        actions.add_css_class("manager-toolbar");
+        let create = compact_button("فهرست تازه");
+        create.add_css_class("suggested-action");
+        actions.append(&create);
+        let template = compact_button("کپی قالب CSV");
+        actions.append(&template);
+        self.catalog_list.append(&actions);
+        let weak = Rc::downgrade(self);
+        create.connect_clicked(move |_| {
+            if let Some(ui) = weak.upgrade() {
+                catalog_editor::open(&ui, None);
+            }
+        });
+        let weak = Rc::downgrade(self);
+        template.connect_clicked(move |_| {
+            if let Some(ui) = weak.upgrade() {
+                ui.window.clipboard().set_text(catalog_editor::CSV_TEMPLATE);
+                ui.message(Ok("قالب CSV با یک ردیف نمونه در کلیپ‌بورد کپی شد"));
+            }
+        });
         let needle = normalize(&self.search_catalog.text());
         let store = self.store.borrow();
         let matches = store
@@ -344,10 +738,7 @@ impl Ui {
             .filter(|catalog| {
                 contains(&catalog.name, &needle)
                     || contains(&catalog.imported_at, &needle)
-                    || catalog
-                        .products
-                        .iter()
-                        .any(|product| product_matches(product, &needle))
+                    || catalog_page(catalog, &needle, 0, 1).1 > 0
             })
             .collect::<Vec<_>>();
         let count = label(&format!(
@@ -371,7 +762,7 @@ impl Ui {
                 .subtitle(format!(
                     "{} کالا · ورود {}{}",
                     self.manager_number(catalog.products.len()),
-                    ltr(&catalog.imported_at),
+                    ltr(&self.manager_date(&catalog.imported_at)),
                     if catalog.id == store.state.draft.catalog_id {
                         " · انتخاب‌شده"
                     } else {
@@ -409,6 +800,24 @@ impl Ui {
                     }
                 }
             });
+            let edit_actions = wrapping_actions();
+            edit_actions.set_margin_start(12);
+            edit_actions.set_margin_end(12);
+            edit_actions.set_margin_top(6);
+            edit_actions.set_margin_bottom(6);
+            let edit_catalog = compact_button("ساخت نسخهٔ تازه");
+            edit_catalog.set_tooltip_text(Some(
+                "افزودن یا ویرایش کالا در منبع تازه؛ قیمت‌های این منبع و سوابق تغییر نمی‌کند",
+            ));
+            edit_actions.insert(&edit_catalog, -1);
+            expander.add_row(&edit_actions);
+            let snapshot = catalog.clone();
+            let weak = Rc::downgrade(self);
+            edit_catalog.connect_clicked(move |_| {
+                if let Some(ui) = weak.upgrade() {
+                    catalog_editor::open(&ui, Some(&snapshot));
+                }
+            });
             let product_list = boxed_list();
             let catalog_id = catalog.id.clone();
             let needle =
@@ -417,17 +826,14 @@ impl Ui {
                 } else {
                     needle.clone()
                 };
-            let matching = catalog
-                .products
-                .iter()
-                .filter(|product| product_matches(product, &needle))
-                .count();
+            let matching = catalog_page(catalog, &needle, 0, 0).1;
             let summary = action_row(
                 &format!("{} کالای مطابق", self.manager_number(matching)),
-                "برای حفظ قیمت‌های منبع، ویرایش کالا با ورود یک فهرست تازه انجام می‌شود. نسخه‌های پیشین محفوظ می‌مانند.",
+                "منبع فقط خواندنی · ویرایش با «ساخت نسخهٔ تازه»",
             );
             expander.add_row(&summary);
             expander.add_row(&product_list);
+            expander.set_expanded(false);
             if !needle.is_empty() {
                 expander.set_expanded(true);
                 self.append_product_page(&product_list, &catalog_id, &needle, 0);
@@ -462,17 +868,14 @@ impl Ui {
         else {
             return;
         };
-        let products = catalog
-            .products
-            .iter()
-            .filter(|product| product_matches(product, needle))
-            .collect::<Vec<_>>();
-        for product in products.iter().skip(start).take(PAGE_SIZE) {
+        let (indices, total) = catalog_page(catalog, needle, start, PAGE_SIZE);
+        for index in indices {
+            let product = &catalog.products[index];
             let item = action_row(
                 &format!("{} · {}", product.name, ltr(&product.code)),
                 &format!(
                     "منبع: {} · واحد منبع: {}{}",
-                    ltr(&product.source_at),
+                    ltr(&self.manager_date(&product.source_at)),
                     product.source_unit.label(),
                     if stale(&product.source_at) {
                         " · قیمت قدیمی"
@@ -557,7 +960,6 @@ impl Ui {
             item.set_subtitle_lines(3);
             list.append(&item);
         }
-        let total = products.len();
         drop(store);
         if start + PAGE_SIZE < total {
             let more = action_row(
@@ -627,7 +1029,7 @@ impl Ui {
         drop(store);
         if ids.is_empty() {
             container.append(&empty_state(
-                "پیشنهاد پیدا نشد",
+                "نسخهٔ تأییدشده پیدا نشد",
                 "عبارت یا فیلتر را تغییر دهید. پیشنهادها پس از تأیید نسخه اینجا ذخیره می‌شوند.",
             ));
             return;
@@ -668,9 +1070,8 @@ impl Ui {
                     self.manager_number(quote.display_unit.display(quote.total_rial))
                 ))
                 .subtitle(format!(
-                    "{} · {}{}",
-                    ltr(&quote.id),
-                    ltr(&quote.approved_at),
+                    "تأیید {}{}",
+                    ltr(&self.manager_date(&quote.approved_at)),
                     if quote.reference.is_empty() {
                         String::new()
                     } else {
@@ -681,6 +1082,10 @@ impl Ui {
             expander.set_use_markup(false);
             expander.set_title_lines(2);
             expander.set_subtitle_lines(2);
+            expander.set_tooltip_text(Some(&format!(
+                "شناسهٔ ذخیره‌شده: {}\nزمان دقیق تأیید: {}",
+                quote.id, quote.approved_at
+            )));
             let current = latest.get(quote.series.as_str()) == Some(&quote.version);
             let state = status_label(
                 if current {
@@ -701,7 +1106,7 @@ impl Ui {
                     } else {
                         format!(
                             "تاریخ پیشنهاد {}",
-                            ltr(&self.manager_number(&quote.quote_date))
+                            ltr(&self.manager_date(&quote.quote_date))
                         )
                     },
                     if quote.valid_until.is_empty() {
@@ -709,7 +1114,7 @@ impl Ui {
                     } else {
                         format!(
                             " · اعتبار تا {}",
-                            ltr(&self.manager_number(&quote.valid_until))
+                            ltr(&self.manager_date(&quote.valid_until))
                         )
                     }
                 ),
@@ -804,6 +1209,7 @@ impl Ui {
                 });
             }
             expander.add_row(&actions);
+            expander.set_expanded(false);
             list.append(&expander);
         }
         drop(store);
@@ -834,22 +1240,62 @@ impl Ui {
     }
 
     fn preview_saved_quote(self: &Rc<Self>, quote: &Quote) {
-        if !self.background_available() {
-            return;
-        }
-        let snapshot = quote.clone();
-        let directory = self.store.borrow().directory.clone();
         let title = format!(
             "پیش‌نمایش چاپ · نسخهٔ تأییدشدهٔ {}",
             self.manager_number(quote.version)
         );
-        self.run_background(
-            "در حال آماده‌سازی پیش‌نمایش نسخهٔ تأییدشده؛ می‌توانید کار با برنامه را ادامه دهید",
-            move || super::background::PreviewPages::render(&snapshot, &directory),
-            move |ui, result| match result {
-                Ok(pages) => ui.show_rendered_preview(pages, &title),
-                Err(error) => ui.message(Err::<String, _>(error)),
-            },
+        self.show_quote_preview(quote.clone(), &title);
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn restored_catalogue_row_order_cannot_reuse_wrong_search_indices() {
+        let original = imports::catalog_csv(
+            "code,name,measure,price,currency,source_at,aliases\nCODE-A,کاغذ,بسته,1251,rial,2026-10-07T00:00:00Z,نام اول\nCODE-B,جوهر,عدد,900,rial,2026-10-07T00:00:00Z,نام دوم",
+            "منبع نمونه",
+        ).unwrap();
+        let directory = tempfile::tempdir().unwrap();
+        let mut store = Store::open(directory.path()).unwrap();
+        store
+            .change(|state| imports::accept_catalog(state, original.clone()))
+            .unwrap();
+        assert_eq!(
+            catalog_page(store.state.catalog().unwrap(), "CODE-A", 0, 100).0,
+            vec![0]
+        );
+        let mut candidate = store.state.clone();
+        candidate.catalogs[0].products.reverse();
+        assert_eq!(candidate.catalogs[0].id, original.id);
+        assert_eq!(
+            candidate.catalogs[0].fingerprint,
+            imports::product_fingerprint(&candidate.catalogs[0].products).unwrap()
+        );
+        store.restore(candidate).unwrap();
+        let before = serde_json::to_vec(&store.state).unwrap();
+        let restored = store.state.catalog().unwrap();
+        let (indices, total) = catalog_page(restored, "CODE-A", 0, 100);
+        assert_eq!(total, 1);
+        assert_eq!(indices, vec![1]);
+        assert_eq!(restored.products[indices[0]].code, "CODE-A");
+        assert_eq!(restored.products[indices[0]].price_rial, 1251);
+        assert_eq!(catalog_page(restored, "CODE-B", 0, 100).0, vec![0]);
+        assert_eq!(serde_json::to_vec(&store.state).unwrap(), before);
+    }
+
+    #[test]
+    fn manager_dates_obey_preferences_without_exposing_storage_timestamp() {
+        let source = "2026-10-07T03:18:53.969580+00:00";
+        assert_eq!(
+            display_date(source, DisplayDigits::Latin, DateDisplay::Iso),
+            "2026-10-07"
+        );
+        assert_eq!(
+            display_date(source, DisplayDigits::Persian, DateDisplay::DayMonthYear),
+            "۰۷/۱۰/۲۰۲۶"
         );
     }
 }

@@ -1,0 +1,46 @@
+{
+  "binary_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad",
+  "final_product_report": "artifacts/product-native/run-jy2z7w6i/product-verification.json",
+  "final_product_checks": 28,
+  "final_native_report": "artifacts/independent-native/run-hb6ai7ar/independent-verification.json",
+  "final_native_checks": 50,
+  "result": "workflows passed; platform diagnostics remain",
+  "gtk_criticals": [
+    "(sarv-quote:47906): Gtk-CRITICAL **: 14:24:04.953: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed",
+    "(sarv-quote:47906): Gtk-CRITICAL **: 14:24:05.075: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed",
+    "(sarv-quote:47906): Gtk-CRITICAL **: 14:24:05.196: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed",
+    "(sarv-quote:47906): Gtk-CRITICAL **: 14:24:47.627: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed",
+    "(sarv-quote:47906): Gtk-CRITICAL **: 14:24:47.752: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed",
+    "(sarv-quote:47906): Gtk-CRITICAL **: 14:24:47.876: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed"
+  ],
+  "gtk_warnings": [
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:12.118: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.7AIVW3”: Read-only file system",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:12.118: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:41.708: GtkText - did not receive a focus-out event.",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:57.374: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.WYDQW3”: Read-only file system",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:57.374: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:59.953: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.TJEXW3”: Read-only file system",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:23:59.953: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:24:50.513: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.6R1MW3”: Read-only file system",
+    "(sarv-quote:47906): Gtk-WARNING **: 14:24:50.513: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory"
+  ],
+  "attribution": "Not established. Both ancestor and direct AT-SPI focus-state polling reproduce nonfatal GTK get_focus criticals. The temporary gtk_window_get_focus interposer produced no stack trace, so it does not prove a caller or library origin.",
+  "bounded_followup": "artifacts/product-native/run-3xngo2kk/product-verification.json: 9 post-approval native checks passed using direct-control focus states; 4 GTK criticals remain.",
+  "qa_environment_change": "Future harness runs isolate XDG_DATA_HOME and private D-Bus activation/display/runtime. Original final warnings remain preserved.",
+  "visual_review": {
+    "verdict": "Restrained native surfaces and clear selected/focused state in light/dark. Persian customer snapshots, source/unit/date and exact prices remain legible in composer/pickers/PDF. Short editor requires native outer/horizontal scrolling; the 900x560 focus captures prove add/discount reachability, not simultaneous visibility of every field.",
+    "reviewed": [
+      "catalog-light.png",
+      "catalog-dark.png",
+      "customers-dark.png",
+      "quotes-dark.png",
+      "settings-dark.png",
+      "backup-dark.png",
+      "document-preview-dark.png",
+      "editor-900x560-total.png",
+      "import-diagnostics.png",
+      "catalog-composer.png"
+    ],
+    "limitations": "Physical print, Wayland/scaling and actual screen-reader workflows remain untested. GTK diagnostics require verification on intended desktop platform before claiming accessibility readiness."
+  }
+}

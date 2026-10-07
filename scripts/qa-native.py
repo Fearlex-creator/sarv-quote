@@ -34,6 +34,24 @@ def wait_for(predicate, seconds=15, label='condition'):
     raise RuntimeError(f'Timed out waiting for {label}')
 
 
+def private_accessibility_environment(display, profile):
+    """Align this QA client and D-Bus activation with its disposable display.
+
+    The regular desktop's runtime/bus must never be reconfigured. A private
+    dbus-run-session address is required before changing activation variables.
+    """
+    address = os.environ.get('DBUS_SESSION_BUS_ADDRESS', '')
+    if not address.startswith('unix:path=/tmp/dbus-'):
+        raise RuntimeError('Run QA inside its own dbus-run-session')
+    runtime = profile / 'runtime'
+    runtime.mkdir(mode=0o700)
+    data_home = profile / 'xdg-data'
+    data_home.mkdir(mode=0o700)
+    os.environ.update(DISPLAY=display, XDG_RUNTIME_DIR=str(runtime), XDG_DATA_HOME=str(data_home))
+    subprocess.run(['/usr/bin/dbus-update-activation-environment', 'DISPLAY', 'XDG_RUNTIME_DIR', 'XDG_DATA_HOME'], check=True)
+    return runtime
+
+
 class ClientMessage(C.Structure):
     _fields_ = [('type', C.c_int), ('serial', C.c_ulong), ('send_event', C.c_int),
                 ('display', C.c_void_p), ('window', C.c_ulong),
@@ -122,10 +140,30 @@ class X11:
     def type_ascii(self, text):
         special = {'/': ('slash', ()), '.': ('period', ()), '-': ('minus', ()),
                    '_': ('minus', ('Shift_L',)), ':': ('semicolon', ('Shift_L',)),
+                   '@': ('2', ('Shift_L',)), '|': ('backslash', ('Shift_L',)),
+                   ',': ('comma', ()), '+': ('equal', ('Shift_L',)),
                    ' ': ('space', ())}
         for char in text:
             key, mods = special.get(char, (char.lower(), ('Shift_L',) if char.isupper() else ()))
             self.key(key, *mods)
+
+    def type_text(self, text):
+        """Use GTK's real Unicode keyboard input (Ctrl+Shift+U, hex, Space).
+
+        Changing XKB mappings between individual characters races GTK's map
+        cache; the native input method is deterministic and preserves XKB.
+        """
+        for char in text:
+            if ord(char) < 128:
+                self.type_ascii(char)
+            else:
+                self.key('u', 'Control_L', 'Shift_L')
+                time.sleep(.025)
+                self.type_ascii(format(ord(char), 'x'))
+                # Space commits the Unicode composition without invoking an
+                # explicit Enter-to-choose controller in a search popup.
+                self.key('space')
+            time.sleep(.025)
 
     def pointer(self, x, y, button=1):
         self.t.XTestFakeMotionEvent(self.d, -1, x, y, 0)
@@ -226,9 +264,10 @@ def main():
                 display_file.seek(0)
                 return display_file.read().decode().strip()
             display = ':' + wait_for(read_display, label='private Xvfb display')
+        runtime = private_accessibility_environment(display, profile)
         env = os.environ.copy()
         env.update(DISPLAY=display, GDK_BACKEND='x11', GSK_RENDERER='cairo',
-                   XDG_RUNTIME_DIR=str(ENVROOT / 'runtime'), SARV_DATA_DIR=str(profile),
+                   XDG_RUNTIME_DIR=str(runtime), SARV_DATA_DIR=str(profile),
                    SARV_TEST_INSTANCE='qa-independent', SARV_UI_SMOKE='capture',
                    SARV_CAPTURE_PAGE='order', SARV_FOCUS_ROW='1',
                    SARV_CAPTURE_NAME='initial.png')
@@ -437,6 +476,10 @@ def main():
             activate('مشتری تازه')
             x11.type_ascii('Synthetic independent QA')
             x11.key('Tab')
+            # Contact details were added without changing the legacy phone
+            # assertion. Skip the optional contact field when it is present.
+            if any('نام مخاطب' in row['name'] for row in access.tree()):
+                x11.key('Tab')
             x11.type_ascii('09120000001')
             x11.key('Return')
             added = wait_for(lambda: next((c for c in snapshot(profile)['customers']

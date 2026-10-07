@@ -1,0 +1,33 @@
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:12.118: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.7AIVW3”: Read-only file system
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:12.118: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:41.708: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:57.374: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.WYDQW3”: Read-only file system
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:57.374: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:59.953: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.TJEXW3”: Read-only file system
+
+(sarv-quote:47906): Gtk-WARNING **: 14:23:59.953: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory
+
+(sarv-quote:47906): Gtk-CRITICAL **: 14:24:04.953: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed
+
+(sarv-quote:47906): Gtk-CRITICAL **: 14:24:05.075: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed
+
+(sarv-quote:47906): Gtk-CRITICAL **: 14:24:05.196: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed
+
+(sarv-quote:47906): Gtk-CRITICAL **: 14:24:47.627: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed
+
+(sarv-quote:47906): Gtk-CRITICAL **: 14:24:47.752: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed
+
+(sarv-quote:47906): Gtk-CRITICAL **: 14:24:47.876: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed
+
+(sarv-quote:47906): Gtk-WARNING **: 14:24:50.513: Attempting to store changes into '/home/agent/.local/share/recently-used.xbel', but failed: Failed to create file “/home/agent/.local/share/recently-used.xbel.6R1MW3”: Read-only file system
+
+(sarv-quote:47906): Gtk-WARNING **: 14:24:50.513: Attempting to set the permissions of '/home/agent/.local/share/recently-used.xbel', but failed: No such file or directory

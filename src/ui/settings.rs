@@ -19,6 +19,7 @@ fn combo(title: &str, choices: &[&str], selected: u32) -> adw::ComboRow {
 fn multiline(group: &adw::PreferencesGroup, title: &str, value: &str) -> gtk::TextView {
     let text = gtk::TextView::builder()
         .wrap_mode(gtk::WrapMode::WordChar)
+        .accepts_tab(false)
         .top_margin(8)
         .bottom_margin(8)
         .left_margin(12)
@@ -121,7 +122,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         &settings.default_terms,
     );
     let defaults = adw::PreferencesGroup::builder().title("پیش‌فرض پیشنهاد تازه")
-        .description("واحد، اعتبار، تخفیف و نرخ افزوده فقط روی پیش‌نویس‌های تازه اعمال می‌شوند. تاریخ‌ها میلادی YYYY-MM-DD هستند.").build();
+        .description("۱ تومان = ۱۰ ریال؛ تغییر واحد، مبلغ دقیق را حفظ می‌کند. پیش‌فرض‌ها فقط روی پیشنهاد تازه اعمال می‌شوند.").build();
     let currency = combo(
         "واحد مبلغ",
         &["تومان", "ریال"],
@@ -208,6 +209,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let number_preview = adw::ActionRow::builder()
         .title("شمارهٔ پیشنهاد تازه")
         .subtitle(format!("{}{}", settings.quote_prefix, settings.next_number))
+        .use_markup(false)
         .build();
     number_preview.set_activatable(false);
     numbering.add(&number_preview);
@@ -255,6 +257,36 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     appearance_group.add(&date_choice);
     page.add(&appearance_group);
     page.add(&document);
+    let local_data = adw::PreferencesGroup::builder()
+        .title("داده‌ها و پشتیبان")
+        .description("اطلاعات در همین رایانه ذخیره می‌شود؛ پیش از جابه‌جایی یک پشتیبان تهیه کنید.")
+        .build();
+    let location = adw::ActionRow::builder()
+        .title("محل ذخیرهٔ داده‌ها")
+        .subtitle(ui.store.borrow().directory.display().to_string())
+        .use_markup(false)
+        .subtitle_selectable(true)
+        .subtitle_lines(3)
+        .build();
+    local_data.add(&location);
+    let recovery = adw::ActionRow::builder()
+        .title("پشتیبان و بازیابی")
+        .subtitle("ساخت فایل پشتیبان یا بررسی فایل برای بازیابی")
+        .build();
+    let open_recovery = gtk::Button::with_label("باز کردن");
+    open_recovery.set_widget_name("settings-open-backup");
+    open_recovery.set_valign(gtk::Align::Center);
+    recovery.add_suffix(&open_recovery);
+    recovery.set_activatable_widget(Some(&open_recovery));
+    let weak = Rc::downgrade(ui);
+    open_recovery.connect_clicked(move |_| {
+        if let Some(ui) = weak.upgrade() {
+            ui.stack.set_visible_child_name("backup");
+            ui.split.set_show_content(true);
+        }
+    });
+    local_data.add(&recovery);
+    page.add(&local_data);
     // Keep the same saved payload until the explicit atomic save succeeds.
     // Weak page references avoid retaining a replaced PreferencesPage.
     let weak_page = page.downgrade();

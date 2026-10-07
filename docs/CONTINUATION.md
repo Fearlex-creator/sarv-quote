@@ -1,4 +1,5 @@
 # Native quotation continuation — 2026-10-07
+This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md).
 
 The Persian quotation workflow now keeps its actions fixed above a scrolling document, adapts metadata to narrow windows, and renders at most 100 editable rows per page. Settings expose Save/Revert and validation at the top. Customer creation, catalog search/add, validated imports, immutable quote revisions, export and recovery workflows pass the native acceptance checks below. Existing normal data was not used as a test fixture; all verification used separate synthetic profiles. No deployment or credential changes were made.
 

@@ -102,15 +102,13 @@ class Access:
     def focused(self, row):
         self.pump()
         node = row['node']
-        for _ in range(4):
-            if not node:
-                break
-            self.a.atspi_accessible_clear_cache(node)
-            states = self.a.atspi_accessible_get_state_set(node)
-            if states and self.a.atspi_state_set_contains(states, 12):
-                return True
-            node = self.a.atspi_accessible_get_parent(node, None)
-        return False
+        if not node:
+            return False
+        # Focus belongs to this control. An ancestor container's focused state
+        # does not establish that the requested control itself received focus.
+        self.a.atspi_accessible_clear_cache(node)
+        states = self.a.atspi_accessible_get_state_set(node)
+        return bool(states and self.a.atspi_state_set_contains(states, 12))
 
     def click(self, row):
         iface = self.a.atspi_accessible_get_action_iface(row['node'])

@@ -6,7 +6,7 @@ pub(super) struct RowEditor {
     pub index: usize,
     pub query: gtk::Entry,
     pub quantity: gtk::Entry,
-    review: Option<gtk::DropDown>,
+    review: Option<gtk::Widget>,
     remove: gtk::Button,
 }
 const PAGE_SIZE: usize = 100;
@@ -159,6 +159,8 @@ impl Ui {
         let st = self.store.borrow();
         let s = &st.state;
         let d = &s.draft;
+        self.approve_control.add_css_class("suggested-action");
+        self.preview_control.remove_css_class("suggested-action");
         accessible_name(
             &self.discount,
             &format!("تخفیف کل • {}", d.display_unit.label()),
@@ -185,8 +187,24 @@ impl Ui {
         }
         match s.preview() {
             Ok(q) => {
-                self.document_state
-                    .set_text(&format!("پیش‌نویس {}", q.number));
+                let approved = s
+                    .quotes
+                    .iter()
+                    .filter(|saved| saved.series == d.series)
+                    .max_by_key(|saved| saved.version)
+                    .filter(|saved| quote_same_content(saved, &q));
+                if let Some(saved) = approved {
+                    self.document_state.set_text(&format!(
+                        "تأییدشده {} • نسخهٔ {}",
+                        saved.number,
+                        s.settings.display_digits.format(saved.version)
+                    ));
+                    self.approve_control.remove_css_class("suggested-action");
+                    self.preview_control.add_css_class("suggested-action");
+                } else {
+                    self.document_state
+                        .set_text(&format!("پیش‌نویس {}", q.number));
+                }
                 self.tax.set_visible(q.tax_basis_points != 0);
                 self.tax.set_text(&format!(
                     "افزودهٔ تنظیم‌شده {} • {}",
@@ -235,6 +253,22 @@ impl Ui {
         self.refresh_totals();
         let st = self.store.borrow();
         let s = &st.state;
+        // Short quotes should read like a compact document rather than reserve
+        // a mostly empty fixed-height table. Natural GTK measurement can still
+        // grow for wrapped descriptions and the unresolved-review message.
+        if let Some(scroller) = self
+            .review
+            .ancestor(gtk::ScrolledWindow::static_type())
+            .and_downcast::<gtk::ScrolledWindow>()
+        {
+            let rows = s.draft.lines.len();
+            let minimum = if rows <= 4 {
+                52 + 40 * rows.max(1) as i32
+            } else {
+                240
+            };
+            scroller.set_min_content_height(minimum);
+        }
         let Ok(c) = s.catalog() else {
             self.review.append(&empty_state(
                 "فهرست قیمت لازم است",
@@ -303,6 +337,55 @@ impl Ui {
         }
         self.review.append(&page_bar);
         let matcher = c.index();
+        let unresolved = s
+            .draft
+            .lines
+            .iter()
+            .enumerate()
+            .filter(|(_, line)| {
+                !line
+                    .chosen_code
+                    .as_deref()
+                    .is_some_and(|code| matcher.product_by_code(code).is_some())
+                    && matcher.match_count(&line.query) != 1
+            })
+            .map(|(index, _)| index)
+            .collect::<Vec<_>>();
+        if let Some(first) = unresolved.first().copied() {
+            let queue = row();
+            let message = status_label(
+                &format!(
+                    "{} ردیف نیاز به انتخاب کالا دارد؛ تأیید نسخه تا رفع آن‌ها ممکن نیست",
+                    s.settings.display_digits.format(unresolved.len())
+                ),
+                StatusTone::Warning,
+            );
+            message.set_hexpand(true);
+            queue.append(&message);
+            let review = button("بررسی اولین ردیف");
+            review.set_widget_name("review-first-unresolved");
+            let weak = Rc::downgrade(self);
+            review.connect_clicked(move |_| {
+                if let Some(ui) = weak.upgrade() {
+                    if let Err(error) = ui.save_form() {
+                        ui.message(Err::<String, _>(error));
+                        return;
+                    }
+                    ui.table_page.set(first / PAGE_SIZE);
+                    ui.refresh_review();
+                    if let Some(row) = ui
+                        .row_editors
+                        .borrow()
+                        .iter()
+                        .find(|row| row.index == first)
+                    {
+                        row.restore_focus(RowFocus::Review);
+                    }
+                }
+            });
+            queue.append(&review);
+            self.review.append(&queue);
+        }
         let grid = gtk::Grid::new();
         grid.set_column_spacing(8);
         grid.set_row_spacing(1);
@@ -327,13 +410,14 @@ impl Ui {
         }
         for (index, line) in s.draft.lines.iter().enumerate().skip(start).take(PAGE_SIZE) {
             let r = (index - start) as i32 + 1;
-            let matches = matcher.matches(&line.query);
+            let match_count = matcher.match_count(&line.query);
+            let matches = matcher.matches_limited(&line.query, 30);
             let selected = line
                 .chosen_code
                 .as_ref()
                 .and_then(|code| matcher.product_by_code(code))
                 .or_else(|| {
-                    if matches.len() == 1 {
+                    if match_count == 1 {
                         Some(matches[0])
                     } else {
                         None
@@ -440,6 +524,29 @@ impl Ui {
                     p.source_at
                 )));
                 cell(&grid, &status, 7, r, widths[7]);
+            } else if match_count > 30 || (match_count == 0 && c.products.len() > 30) {
+                let select = button(if match_count == 0 {
+                    "یافت نشد؛ انتخاب…"
+                } else {
+                    "مبهم؛ جست‌وجو…"
+                });
+                select.set_widget_name(&format!("resolve-line-{index}"));
+                accessible_name(
+                    &select,
+                    &format!("جست‌وجو و انتخاب انسانی کالای ردیف {}", fa(index + 1)),
+                );
+                select.set_tooltip_text(Some(
+                    "درخواست مشتری حفظ می‌شود؛ از فهرست قیمت کالای درست را صریحاً انتخاب کنید",
+                ));
+                review_choice = Some(select.clone().upcast());
+                cell(&grid, &select, 7, r, widths[7]);
+                let original_query = line.query.clone();
+                let weak = Rc::downgrade(self);
+                select.connect_clicked(move |_| {
+                    if let Some(ui) = weak.upgrade() {
+                        ui.open_line_product_picker(index, original_query.clone());
+                    }
+                });
             } else {
                 let candidates = if matches.is_empty() {
                     c.products.iter().collect::<Vec<_>>()
@@ -489,7 +596,7 @@ impl Ui {
                     }
                 });
                 select.set_factory(Some(&factory));
-                review_choice = Some(select.clone());
+                review_choice = Some(select.clone().upcast());
                 cell(&grid, &select, 7, r, widths[7]);
                 let original_query = line.query.clone();
                 let weak = Rc::downgrade(self);
@@ -675,11 +782,15 @@ impl Ui {
             let query = self.new_item.text().to_string();
             text(&query)?;
             let qty = quantity(&self.new_quantity.text())?;
+            let chosen = self.new_product_choice.borrow().clone();
             self.store.borrow_mut().change(|s| {
+                let chosen_code = chosen
+                    .filter(|(catalog, code)| catalog == &s.draft.catalog_id && code == &query)
+                    .map(|(_, code)| code);
                 s.draft.lines.push(OrderLine {
                     query,
                     quantity_milli: qty,
-                    chosen_code: None,
+                    chosen_code,
                 });
                 s.draft.stale_ack = false;
                 Ok(())
@@ -688,6 +799,7 @@ impl Ui {
         let ok = result.is_ok();
         self.message(result.map(|()| "ردیف اضافه شد"));
         if ok {
+            self.new_product_choice.borrow_mut().take();
             self.new_item.set_text("");
             self.fill_form();
             self.table_page.set(
@@ -770,17 +882,26 @@ impl Ui {
         match result {
             Err(error) => self.message(Err::<String, _>(error)),
             Ok(quote) => {
-                let directory = self.store.borrow().directory.clone();
-                self.run_background(
-                    "در حال آماده‌سازی پیش‌نمایش چاپ؛ می‌توانید کار با برنامه را ادامه دهید",
-                    move || super::background::PreviewPages::render(&quote, &directory),
-                    |ui, result| match result {
-                        Ok(pages) => {
-                            ui.show_rendered_preview(pages, "پیش‌نمایش چاپ • پیش‌نویس تأیید نشده")
-                        }
-                        Err(error) => ui.message(Err::<String, _>(error)),
-                    },
-                );
+                let approved = self
+                    .store
+                    .borrow()
+                    .state
+                    .quotes
+                    .iter()
+                    .filter(|saved| saved.series == quote.series)
+                    .max_by_key(|saved| saved.version)
+                    .filter(|saved| quote_same_content(saved, &quote))
+                    .cloned();
+                if let Some(saved) = approved {
+                    let title = format!(
+                        "پیش‌نمایش و خروجی • تأییدشده {} • نسخهٔ {}",
+                        saved.number,
+                        fa(saved.version)
+                    );
+                    self.show_quote_preview(saved, &title);
+                } else {
+                    self.show_quote_preview(quote, "پیش‌نمایش و خروجی • پیش‌نویس تأیید نشده");
+                }
             }
         }
     }

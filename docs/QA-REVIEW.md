@@ -1,4 +1,5 @@
 # Independent QA review
+This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md).
 
 Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
 

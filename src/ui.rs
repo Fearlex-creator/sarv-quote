@@ -1,11 +1,14 @@
 mod background;
+mod catalog_editor;
 mod catalog_preview;
 mod components;
 mod editor;
 mod managers;
+mod pickers;
 mod responsiveness;
 mod settings;
 mod smoke;
+mod workspace;
 use adw::prelude::*;
 use anyhow::Result;
 use components::*;
@@ -39,6 +42,8 @@ struct Ui {
     subtotal: gtk::Label,
     tax: gtk::Label,
     document_state: gtk::Label,
+    approve_control: gtk::Button,
+    preview_control: gtk::Button,
     source_hint: gtk::Label,
     reference: gtk::Entry,
     quote_date: gtk::Entry,
@@ -46,6 +51,8 @@ struct Ui {
     notes: gtk::TextView,
     new_item: gtk::Entry,
     new_quantity: gtk::Entry,
+    new_product_choice: RefCell<Option<(String, String)>>,
+    customer_details: gtk::Label,
     undo_button: gtk::Button,
     row_editors: RefCell<Vec<editor::RowEditor>>,
     table_page: Cell<usize>,
@@ -63,6 +70,7 @@ struct Ui {
     pending: RefCell<Option<glib::SourceId>>,
     active_dialog: RefCell<Option<adw::Dialog>>,
     background_busy: Cell<bool>,
+    nav_counts: Vec<(&'static str, gtk::Label)>,
 }
 fn csv_order(lines: &[OrderLine]) -> String {
     let mut w = csv::Writer::from_writer(vec![]);
@@ -129,42 +137,19 @@ fn activate_named_button(widget: &impl IsA<gtk::Widget>, name: &str) -> bool {
     }
     false
 }
-fn document_preview(paths: Vec<PathBuf>) -> adw::ToolbarView {
-    let view = adw::ToolbarView::new();
-    let header = adw::HeaderBar::new();
-    let zoom = gtk::DropDown::from_strings(&["۷۵٪", "۱۰۰٪", "۱۲۵٪"]);
-    zoom.set_selected(1);
-    zoom.set_tooltip_text(Some("بزرگ‌نمایی پیش‌نمایش"));
-    header.pack_end(&zoom);
-    view.add_top_bar(&header);
-    let pages = column();
-    pages.set_margin_top(12);
-    pages.set_margin_bottom(12);
-    pages.set_spacing(16);
-    let mut pictures = vec![];
-    for path in paths {
-        let picture = gtk::Picture::for_filename(path);
-        picture.set_can_shrink(true);
-        picture.set_size_request(700, 990);
-        picture.set_valign(gtk::Align::Start);
-        picture.set_vexpand(false);
-        pages.append(&picture);
-        pictures.push(picture);
-    }
-    zoom.connect_selected_notify(move |w| {
-        let width = match w.selected() {
-            0 => 525,
-            2 => 875,
-            _ => 700,
-        };
-        for p in &pictures {
-            p.set_size_request(width, width * 842 / 595);
+fn quote_same_content(a: &Quote, b: &Quote) -> bool {
+    let (Ok(mut a), Ok(mut b)) = (serde_json::to_value(a), serde_json::to_value(b)) else {
+        return false;
+    };
+    for key in ["id", "version", "approved_at"] {
+        if let Some(value) = a.as_object_mut() {
+            value.remove(key);
         }
-    });
-    let scrolled = scroll(&pages);
-    scrolled.set_hscrollbar_policy(gtk::PolicyType::Automatic);
-    view.set_content(Some(&scrolled));
-    view
+        if let Some(value) = b.as_object_mut() {
+            value.remove(key);
+        }
+    }
+    a == b
 }
 impl Ui {
     fn message(&self, r: Result<impl ToString>) {
@@ -264,6 +249,12 @@ impl Ui {
             draft.lines = lines;
             draft.customer = name;
             draft.phone = phone;
+            if draft.customer != original.customer || draft.phone != original.phone {
+                draft.customer_id.clear();
+                draft.customer_contact.clear();
+                draft.customer_email.clear();
+                draft.customer_address.clear();
+            }
             draft.discount_rial = discount;
             draft.display_unit = unit;
             draft.stale_ack = ack && same_sources;
@@ -284,6 +275,18 @@ impl Ui {
                 Ok(())
             })?;
         }
+        {
+            let store = self.store.borrow();
+            let d = &store.state.draft;
+            let details = [&d.customer_contact, &d.customer_email, &d.customer_address]
+                .into_iter()
+                .filter(|s| !s.is_empty())
+                .map(String::as_str)
+                .collect::<Vec<_>>()
+                .join(" • ");
+            self.customer_details.set_text(&details);
+            self.customer_details.set_visible(!details.is_empty());
+        }
         self.loading.set(true);
         self.order
             .buffer()
@@ -300,6 +303,8 @@ impl Ui {
         }
         self.status.set_text("تغییرات ذخیره‌نشده…");
         self.document_state.set_text("در حال ویرایش");
+        self.approve_control.add_css_class("suggested-action");
+        self.preview_control.remove_css_class("suggested-action");
         if let Some(p) = self.pending.borrow_mut().take() {
             p.remove();
         }
@@ -344,6 +349,14 @@ impl Ui {
         );
         self.customer.set_text(&d.customer);
         self.phone.set_text(&d.phone);
+        let details = [&d.customer_contact, &d.customer_email, &d.customer_address]
+            .into_iter()
+            .filter(|s| !s.is_empty())
+            .map(String::as_str)
+            .collect::<Vec<_>>()
+            .join(" • ");
+        self.customer_details.set_text(&details);
+        self.customer_details.set_visible(!details.is_empty());
         self.order.buffer().set_text(&csv_order(&d.lines));
         self.unit
             .set_selected(if d.display_unit == Unit::Toman { 0 } else { 1 });
@@ -362,6 +375,17 @@ impl Ui {
     fn refresh_lists(self: &Rc<Self>) {
         self.refresh_managers();
         settings::apply(self);
+        let store = self.store.borrow();
+        for (name, count) in &self.nav_counts {
+            let value = match *name {
+                "catalog" => store.state.catalogs.iter().map(|c| c.products.len()).sum(),
+                "customers" => store.state.customers.iter().filter(|c| !c.archived).count(),
+                "quotes" => store.state.quotes.len(),
+                _ => 0,
+            };
+            count.set_text(&store.state.settings.display_digits.format(value));
+            count.set_visible(value > 0);
+        }
     }
     fn refresh_settings(self: &Rc<Self>) {
         if let Some(old) = self.stack.child_by_name("settings") {
@@ -439,12 +463,27 @@ impl Ui {
         self.customer.grab_focus();
     }
     fn import_catalog(self: &Rc<Self>, path: &Path) {
-        let result = read_import(path).and_then(|s| {
-            imports::catalog_csv(
-                &s,
-                path.file_stem().and_then(|s| s.to_str()).unwrap_or("فهرست"),
-            )
+        let path = path.to_path_buf();
+        self.run_background("در حال بررسی فایل و ردیف‌های فهرست…", move || {
+            let csv = read_import(&path)?;
+            Ok(imports::catalog_csv_report(&csv,
+                path.file_stem().and_then(|s| s.to_str()).unwrap_or("فهرست")))
+        }, |ui, result| {
+            match result {
+                Err(error) => ui.message(Err::<String, _>(error)),
+                Ok(report) => if let Some(catalog) = report.value {
+                    if ui.active_dialog.borrow().is_some() {
+                        ui.message(Ok("بررسی پایان یافت؛ پنجرهٔ جاری را ببندید و دوباره فایل را انتخاب کنید"));
+                    } else {
+                        ui.present_catalog_review(Ok(catalog));
+                    }
+                } else {
+                    ui.show_import_diagnostics("خطاهای فایل فهرست قیمت", &report.diagnostics, report.truncated);
+                }
+            }
         });
+    }
+    fn present_catalog_review(self: &Rc<Self>, result: Result<Catalog>) {
         match result {
             Err(e) => self.message(Err::<String, _>(e)),
             Ok(c) => {
@@ -466,6 +505,7 @@ impl Ui {
                 root.append(&catalog_preview::preview(
                     &c,
                     self.store.borrow().state.settings.display_digits,
+                    self.store.borrow().state.settings.date_display,
                 ));
                 let ok = button("منبع و قیمت‌ها را تأیید می‌کنم");
                 ok.add_css_class("suggested-action");
@@ -476,19 +516,12 @@ impl Ui {
                     if let Some(ui) = weak.upgrade() {
                         let mut c = c.clone();
                         c.name = name.text().to_string();
-                        let r = ui.save_form().and_then(|()| {
-                            ui.store
-                                .borrow_mut()
-                                .change(|s| imports::accept_catalog(s, c))
+                        let dialog = d.clone();
+                        ui.accept_catalog_async(c, move |_, success| {
+                            if success {
+                                dialog.close();
+                            }
                         });
-                        let success = r.is_ok();
-                        ui.message(r.map(|_| "فهرست تأیید و ذخیره شد"));
-                        if success {
-                            d.close();
-                            ui.fill_form();
-                            ui.refresh_review();
-                            ui.refresh_lists();
-                        }
                     }
                 });
                 dialog.set_child(Some(&dialog_toolbar(&root)));
@@ -496,18 +529,71 @@ impl Ui {
             }
         }
     }
-    fn import_order(self: &Rc<Self>, path: &Path) {
-        let candidate = read_import(path).and_then(|csv| {
-            let rows = imports::order_csv(&csv)?;
-            Ok((csv, rows.len()))
-        });
-        let (csv, count) = match candidate {
-            Ok(candidate) => candidate,
+    fn accept_catalog_async(
+        self: &Rc<Self>,
+        catalog: Catalog,
+        complete: impl FnOnce(&Rc<Ui>, bool) + 'static,
+    ) {
+        if !self.background_available() {
+            return;
+        }
+        let snapshot = self
+            .save_form()
+            .and_then(|()| self.store.borrow().snapshot());
+        let (generation, mut candidate) = match snapshot {
+            Ok(snapshot) => snapshot,
             Err(error) => {
                 self.message(Err::<String, _>(error));
+                complete(self, false);
                 return;
             }
         };
+        self.run_background(
+            "در حال اعتبارسنجی و آماده‌سازی فهرست…",
+            move || {
+                imports::accept_catalog(&mut candidate, catalog)?;
+                Store::prepare_candidate(generation, candidate)
+            },
+            move |ui, result| {
+                // Pending widget edits are flushed before committing: a changed
+                // generation rejects this candidate rather than replacing newer work.
+                let result = result.and_then(|prepared| {
+                    ui.save_form()?;
+                    ui.store.borrow_mut().commit_prepared(prepared)
+                });
+                let success = result.is_ok();
+                ui.message(result.map(|()| "فهرست تأیید و ذخیره شد"));
+                if success {
+                    ui.fill_form();
+                    ui.refresh_review();
+                    ui.refresh_lists();
+                }
+                complete(ui, success);
+            },
+        );
+    }
+    fn import_order(self: &Rc<Self>, path: &Path) {
+        let path = path.to_path_buf();
+        self.run_background("در حال بررسی ردیف‌های سفارش…", move || {
+            let csv = read_import(&path)?;
+            Ok(imports::order_csv_report(&csv))
+        }, |ui, result| {
+            match result {
+                Err(error) => ui.message(Err::<String, _>(error)),
+                Ok(report) => if let Some(lines) = report.value {
+                    if ui.active_dialog.borrow().is_some() {
+                        ui.message(Ok("بررسی پایان یافت؛ پنجرهٔ جاری را ببندید و دوباره فایل را انتخاب کنید"));
+                    } else {
+                        ui.confirm_order_import(lines);
+                    }
+                } else {
+                    ui.show_import_diagnostics("خطاهای فایل سفارش", &report.diagnostics, report.truncated);
+                }
+            }
+        });
+    }
+    fn confirm_order_import(self: &Rc<Self>, lines: Vec<OrderLine>) {
+        let count = lines.len();
         let dialog = adw::AlertDialog::new(
             Some("جایگزینی اقلام سفارش؟"),
             Some(&format!(
@@ -531,81 +617,187 @@ impl Ui {
                 return;
             }
             if let Some(ui) = weak.upgrade() {
-                let result = ui
-                    .save_form()
-                    .and_then(|()| ui.preserve_draft("order-import"))
-                    .and_then(|()| {
-                        let lines = imports::order_csv(&csv)?;
-                        ui.store.borrow_mut().change(|state| {
-                            state.draft.lines = lines;
-                            state.draft.stale_ack = false;
-                            Ok(())
-                        })
-                    });
-                let success = result.is_ok();
-                ui.message(result.map(|()| "اقلام جایگزین شد؛ قیمت‌ها و تطبیق کالا را بررسی کنید"));
-                if success {
-                    if let Some(pending) = ui.pending.borrow_mut().take() {
-                        pending.remove();
-                    }
-                    ui.deleted_lines.borrow_mut().take();
-                    ui.undo_button.set_sensitive(false);
-                    ui.table_page.set(0);
-                    ui.fill_form();
-                    ui.visual_pending.set(true);
-                    ui.refresh_review();
-                }
+                let lines = lines.clone();
+                ui.replace_state_async(
+                    "order-import",
+                    move |mut state| {
+                        state.draft.lines = lines;
+                        state.draft.stale_ack = false;
+                        Ok(state)
+                    },
+                    |ui, success| {
+                        if success {
+                            if let Some(pending) = ui.pending.borrow_mut().take() {
+                                pending.remove();
+                            }
+                            ui.deleted_lines.borrow_mut().take();
+                            ui.undo_button.set_sensitive(false);
+                            ui.table_page.set(0);
+                            ui.fill_form();
+                            ui.visual_pending.set(true);
+                            ui.refresh_review();
+                        }
+                    },
+                );
             }
         });
         self.present_dialog(dialog.upcast_ref());
     }
     fn restore(self: &Rc<Self>, path: &Path) {
-        match Store::restore_preview(path) {
-            Err(e) => self.message(Err::<String, _>(e)),
-            Ok(candidate) => {
-                let d = adw::Dialog::builder()
-                    .title("بررسی بازیابی")
-                    .content_width(550)
-                    .content_height(300)
-                    .build();
-                let b = card();
-                b.append(&heading("بازیابی دادهٔ تأییدشده"));
-                b.append(&label(&format!("{} فهرست • {} مشتری • {} پیشنهاد\nدادهٔ جاری با این پشتیبان جایگزین می‌شود. قبل از جایگزینی، نسخهٔ ایمنی خودکار ذخیره می‌شود.",fa(candidate.catalogs.len()),fa(candidate.customers.len()),fa(candidate.quotes.len()))));
-                let ok = button("بازیابی و ذخیرهٔ نسخهٔ ایمنی");
-                b.append(&ok);
-                let weak = Rc::downgrade(self);
-                let dialog = d.clone();
-                ok.connect_clicked(move |_| {
-                    if let Some(ui) = weak.upgrade() {
-                        if let Some(p) = ui.pending.borrow_mut().take() {
-                            p.remove();
-                        }
-                        let r = ui
-                            .save_form()
-                            .and_then(|()| ui.store.borrow_mut().restore(candidate.clone()));
-                        let success = r.is_ok();
-                        ui.message(
-                            r.map(|p| format!("بازیابی انجام شد؛ نسخهٔ ایمنی: {}", p.display())),
-                        );
+        let path = path.to_path_buf();
+        self.run_background(
+            "در حال بررسی پشتیبان…",
+            move || Store::restore_preview(&path),
+            |ui, result| {
+                if ui.active_dialog.borrow().is_some() {
+                    ui.message(Ok(
+                        "بررسی پایان یافت؛ پنجرهٔ جاری را ببندید و پشتیبان را دوباره انتخاب کنید",
+                    ));
+                    return;
+                }
+                match result {
+                    Err(error) => ui.message(Err::<String, _>(error)),
+                    Ok(candidate) => ui.confirm_restore(candidate),
+                }
+            },
+        );
+    }
+    fn confirm_restore(self: &Rc<Self>, candidate: State) {
+        let dialog = adw::Dialog::builder()
+            .title("بررسی بازیابی")
+            .content_width(550)
+            .content_height(320)
+            .build();
+        let content = card();
+        content.append(&heading("بازیابی دادهٔ تأییدشده"));
+        content.append(&label(&format!("{} فهرست • {} مشتری • {} پیشنهاد\nدادهٔ جاری جایگزین می‌شود؛ پیش از آن نسخهٔ ایمنی ساخته خواهد شد.",
+            fa(candidate.catalogs.len()), fa(candidate.customers.len()), fa(candidate.quotes.len()))));
+        let confirm = button("بازیابی و ذخیرهٔ نسخهٔ ایمنی");
+        confirm.add_css_class("destructive-action");
+        let cancel = button("انصراف");
+        let controls = row();
+        controls.append(&confirm);
+        controls.append(&cancel);
+        content.append(&controls);
+        let close = dialog.clone();
+        cancel.connect_clicked(move |_| {
+            close.close();
+        });
+        let weak = Rc::downgrade(self);
+        let close = dialog.clone();
+        confirm.connect_clicked(move |_| {
+            if let Some(ui) = weak.upgrade() {
+                let candidate = candidate.clone();
+                let close = close.clone();
+                ui.replace_state_async(
+                    "restore",
+                    move |_| Ok(candidate),
+                    move |ui, success| {
                         if success {
+                            close.close();
                             ui.deleted_lines.borrow_mut().take();
                             ui.undo_button.set_sensitive(false);
-                            dialog.close();
+                            ui.new_product_choice.borrow_mut().take();
                             ui.refresh_settings();
                             ui.table_page.set(0);
                             ui.fill_form();
                             ui.refresh_review();
                             ui.refresh_lists();
                         }
-                    }
+                    },
+                );
+            }
+        });
+        dialog.set_child(Some(&dialog_toolbar(&content)));
+        self.present_dialog(&dialog);
+    }
+    fn replace_state_async(
+        self: &Rc<Self>,
+        reason: &str,
+        candidate: impl FnOnce(State) -> Result<State> + Send + 'static,
+        complete: impl FnOnce(&Rc<Ui>, bool) + 'static,
+    ) {
+        if !self.background_available() {
+            return;
+        }
+        if settings::has_unsaved(self) {
+            self.message(Err::<String, _>(anyhow::anyhow!(
+                "پیش از جایگزینی، تنظیمات تغییرکرده را ذخیره یا بازگردانید"
+            )));
+            complete(self, false);
+            return;
+        }
+        let snapshot = self
+            .save_form()
+            .and_then(|()| self.store.borrow().snapshot());
+        let (generation, original) = match snapshot {
+            Ok(value) => value,
+            Err(error) => {
+                self.message(Err::<String, _>(error));
+                complete(self, false);
+                return;
+            }
+        };
+        let safety = self
+            .store
+            .borrow()
+            .directory
+            .join(format!("before-{reason}-{}.json", id()));
+        self.run_background(
+            "در حال آماده‌سازی داده و پشتیبان ایمنی…",
+            move || {
+                sarv_quote::store::backup_state(&original, &safety)?;
+                let prepared = Store::prepare_candidate(generation, candidate(original)?)?;
+                Ok((prepared, safety))
+            },
+            move |ui, result| {
+                let result = result.and_then(|(prepared, safety)| {
+                    anyhow::ensure!(
+                        !settings::has_unsaved(ui),
+                        "تنظیمات جدید دارید؛ جایگزینی انجام نشد"
+                    );
+                    ui.save_form()?;
+                    ui.store.borrow_mut().commit_prepared(prepared)?;
+                    Ok(safety)
                 });
-                d.set_child(Some(&dialog_toolbar(&b)));
-                self.present_dialog(&d);
+                let success = result.is_ok();
+                ui.message(
+                    result.map(|safety| {
+                        format!("جایگزینی ذخیره شد؛ نسخهٔ ایمنی: {}", safety.display())
+                    }),
+                );
+                complete(ui, success);
+            },
+        );
+    }
+    fn backup_to(self: &Rc<Self>, path: PathBuf) {
+        if !self.background_available() {
+            return;
+        }
+        let snapshot = self
+            .save_form()
+            .and_then(|()| self.store.borrow().snapshot());
+        match snapshot {
+            Err(error) => self.message(Err::<String, _>(error)),
+            Ok((_, state)) => {
+                self.run_background(
+                    "در حال ساخت پشتیبان…",
+                    move || {
+                        sarv_quote::store::backup_state(&state, &path)?;
+                        Ok(path)
+                    },
+                    |ui, result| {
+                        ui.message(
+                            result.map(|path| format!("پشتیبان ذخیره شد: {}", path.display())),
+                        )
+                    },
+                );
             }
         }
     }
 }
 pub fn run() -> Result<()> {
+    let _fonts = workspace::install_fonts()?;
     let data = std::env::var_os("SARV_DATA_DIR")
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("data"));
@@ -668,6 +860,7 @@ fn build(app: &gtk::Application, store: Store) {
         .default_height(940)
         .build();
     let window = adw_window.clone().upcast::<gtk::ApplicationWindow>();
+    window.add_css_class("sarv-app");
     let root = adw::ToolbarView::new();
     let header = adw::HeaderBar::new();
     header.set_title_widget(Some(&adw::WindowTitle::new("سرو", "پیشنهاد قیمت • آفلاین")));
@@ -676,9 +869,9 @@ fn build(app: &gtk::Application, store: Store) {
     header.pack_start(&navigation);
     root.add_top_bar(&header);
     let body = adw::NavigationSplitView::new();
-    body.set_min_sidebar_width(190.0);
-    body.set_max_sidebar_width(220.0);
-    body.set_sidebar_width_fraction(0.16);
+    body.set_min_sidebar_width(240.0);
+    body.set_max_sidebar_width(270.0);
+    body.set_sidebar_width_fraction(0.19);
     body.set_show_content(true);
     let split = body.clone();
     navigation.connect_clicked(move |_| split.set_show_content(!split.shows_content()));
@@ -693,7 +886,9 @@ fn build(app: &gtk::Application, store: Store) {
     let nav = column();
     nav.add_css_class("sidebar");
     nav.set_width_request(166);
-    nav.append(&label("میز کار"));
+    nav.append(&workspace::sidebar_header(
+        &store.state.settings.business_name,
+    ));
     let stack = gtk::Stack::new();
     stack.set_hexpand(true);
     stack.set_vexpand(true);
@@ -739,6 +934,16 @@ fn build(app: &gtk::Application, store: Store) {
     metadata.set_column_homogeneous(true);
     metadata.add_css_class("metadata");
     let customer = entry("نام مشتری یا شرکت");
+    let select_customer = gtk::Button::from_icon_name("system-search-symbolic");
+    accessible_name(&select_customer, "انتخاب مشتری از دفتر مشتری‌ها");
+    select_customer.set_tooltip_text(Some("جست‌وجو و انتخاب مشتری"));
+    let customer_control = row();
+    customer_control.append(&customer);
+    customer_control.append(&select_customer);
+    let customer_details = label("");
+    customer_details.add_css_class("caption");
+    customer_details.add_css_class("dimmed");
+    customer_details.set_visible(false);
     let phone = entry("۰۹۱۲…");
     phone.set_direction(gtk::TextDirection::Ltr);
     let catalog_choice = gtk::DropDown::from_strings(&[]);
@@ -751,14 +956,10 @@ fn build(app: &gtk::Application, store: Store) {
     valid_until.set_direction(gtk::TextDirection::Ltr);
     let customer_save = button("ذخیرهٔ مشتری");
     let metadata_fields: Vec<gtk::Widget> = vec![
-        field("مشتری", &customer).upcast(),
+        field("مشتری", &customer_control).upcast(),
         field("تلفن", &phone).upcast(),
         field("فهرست قیمت تأییدشده", &catalog_choice).upcast(),
         field("واحد مبلغ", &unit).upcast(),
-        field("مرجع مشتری", &reference).upcast(),
-        field("تاریخ پیشنهاد • میلادی", &quote_date).upcast(),
-        field("اعتبار تا • میلادی", &valid_until).upcast(),
-        customer_save.clone().upcast(),
     ];
     customer_save.set_valign(gtk::Align::End);
     for (i, widget) in metadata_fields.iter().enumerate() {
@@ -775,6 +976,34 @@ fn build(app: &gtk::Application, store: Store) {
         }
     });
     order_page.append(&metadata);
+    order_page.append(&customer_details);
+    let optional = gtk::Grid::new();
+    optional.set_column_spacing(12);
+    optional.set_row_spacing(8);
+    optional.set_column_homogeneous(true);
+    let optional_fields: Vec<gtk::Widget> = vec![
+        field("مرجع مشتری", &reference).upcast(),
+        field("تاریخ پیشنهاد • میلادی", &quote_date).upcast(),
+        field("اعتبار تا • میلادی", &valid_until).upcast(),
+        customer_save.clone().upcast(),
+    ];
+    for (i, widget) in optional_fields.iter().enumerate() {
+        optional.attach(widget, (i % 4) as i32, (i / 4) as i32, 1, 1);
+    }
+    let adaptive_optional = optional.clone();
+    body.connect_collapsed_notify(move |split| {
+        let columns = if split.is_collapsed() { 2 } else { 4 };
+        for widget in &optional_fields {
+            adaptive_optional.remove(widget);
+        }
+        for (i, widget) in optional_fields.iter().enumerate() {
+            adaptive_optional.attach(widget, (i % columns) as i32, (i / columns) as i32, 1, 1);
+        }
+    });
+    let details = gtk::Expander::new(Some("جزئیات پیشنهاد • تاریخ، اعتبار و مرجع"));
+    details.set_widget_name("quote-details");
+    details.set_child(Some(&optional));
+    order_page.append(&details);
     let source_hint = label("");
     source_hint.add_css_class("muted");
     order_page.append(&source_hint);
@@ -794,14 +1023,14 @@ fn build(app: &gtk::Application, store: Store) {
     let table_scroll = scroll(&review);
     table_scroll.set_hscrollbar_policy(gtk::PolicyType::Automatic);
     table_scroll.set_min_content_height(240);
-    table_scroll.set_max_content_height(380);
+    table_scroll.set_max_content_height(460);
     table_scroll.set_propagate_natural_height(true);
     table_scroll.set_vexpand(false);
     table_scroll.set_widget_name("quote-table-scroll");
     table_scroll.add_css_class("table");
     order_page.append(&table_scroll);
     let add_bar = row();
-    let new_item = entry("کد کالا یا نام مستعار تأییدشده…");
+    let new_item = entry("جست‌وجوی نام، کد یا نام مستعار کالا…");
     let new_quantity = entry("تعداد");
     accessible_name(&new_item, "کد کالا یا نام مستعار برای ردیف تازه");
     accessible_name(&new_quantity, "تعداد ردیف تازه");
@@ -811,7 +1040,11 @@ fn build(app: &gtk::Application, store: Store) {
     new_quantity.set_max_width_chars(10);
     new_quantity.set_direction(gtk::TextDirection::Ltr);
     let add_item = button("افزودن ردیف");
+    let browse_products = gtk::Button::from_icon_name("system-search-symbolic");
+    accessible_name(&browse_products, "انتخاب کالا از فهرست قیمت");
+    browse_products.set_tooltip_text(Some("جست‌وجوی کالا با قیمت • Ctrl+K"));
     add_bar.append(&new_item);
+    add_bar.append(&browse_products);
     add_bar.append(&new_quantity);
     add_bar.append(&add_item);
     order_page.append(&add_bar);
@@ -908,7 +1141,12 @@ fn build(app: &gtk::Application, store: Store) {
     ] {
         let p = column();
         p.add_css_class("page");
-        p.append(&heading(title));
+        p.append(&workspace::page_header(title, None));
+        search.set_placeholder_text(Some(match name {
+            "catalog" => "جست‌وجوی نام، کد، نام مستعار یا فهرست…",
+            "customers" => "جست‌وجوی نام، تلفن، مخاطب یا نشانی…",
+            _ => "جست‌وجوی شماره، مشتری، مرجع یا کالا…",
+        }));
         p.append(search);
         if name == "catalog" {
             p.append(&import_catalog);
@@ -926,18 +1164,52 @@ fn build(app: &gtk::Application, store: Store) {
     backup_page.append(&restore);
     backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…6 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nاین محصول پیشنهاد قیمت v1 است. موجودی، پرداخت، مالیات و سند حسابداری ثبت نمی‌کند.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
-    for (i, name, caption) in [
-        (1, "order", "پیشنهاد قیمت"),
-        (2, "catalog", "فهرست قیمت"),
-        (3, "customers", "مشتری‌ها"),
-        (4, "quotes", "بایگانی پیشنهادها"),
-        (5, "backup", "پشتیبان و بازیابی"),
-        (6, "settings", "تنظیمات"),
+    let mut nav_counts = vec![];
+    for (i, name, caption, icon, group) in [
+        (
+            1,
+            "order",
+            "پیشنهاد قیمت",
+            "document-edit-symbolic",
+            Some("میز کار"),
+        ),
+        (
+            4,
+            "quotes",
+            "بایگانی پیشنهادها",
+            "document-open-recent-symbolic",
+            None,
+        ),
+        (
+            3,
+            "customers",
+            "مشتری‌ها",
+            "system-users-symbolic",
+            Some("دفترها"),
+        ),
+        (2, "catalog", "کالاها و قیمت‌ها", "view-list-symbolic", None),
+        (
+            5,
+            "backup",
+            "پشتیبان و بازیابی",
+            "document-save-symbolic",
+            Some("برنامه"),
+        ),
+        (
+            6,
+            "settings",
+            "تنظیمات",
+            "preferences-system-symbolic",
+            None,
+        ),
     ] {
-        let b = gtk::ToggleButton::with_label(caption);
-        b.add_css_class("flat");
-        b.set_tooltip_text(Some(&format!("Alt+{i}")));
-        b.add_css_class("nav");
+        if let Some(group) = group {
+            nav.append(&workspace::navigation_group(group));
+        }
+        let item = workspace::navigation_row(caption, icon, &format!("Alt+{i}"));
+        item.set_count(None);
+        let b = item.button;
+        nav_counts.push((name, item.count));
         let st = stack.clone();
         let split = body.clone();
         b.connect_clicked(move |b| {
@@ -982,6 +1254,8 @@ fn build(app: &gtk::Application, store: Store) {
         subtotal,
         tax,
         document_state,
+        approve_control: approve.clone(),
+        preview_control: preview.clone(),
         source_hint,
         reference,
         quote_date,
@@ -989,6 +1263,8 @@ fn build(app: &gtk::Application, store: Store) {
         notes,
         new_item,
         new_quantity,
+        new_product_choice: RefCell::new(None),
+        customer_details,
         undo_button,
         row_editors: RefCell::new(vec![]),
         table_page: Cell::new(0),
@@ -1006,11 +1282,25 @@ fn build(app: &gtk::Application, store: Store) {
         pending: RefCell::new(None),
         active_dialog: RefCell::new(None),
         background_busy: Cell::new(false),
+        nav_counts,
     });
     ui.refresh_settings();
     ui.fill_form();
     ui.refresh_review();
     ui.refresh_lists();
+    ui.wire_product_picker();
+    let weak = Rc::downgrade(&ui);
+    select_customer.connect_clicked(move |_| {
+        if let Some(ui) = weak.upgrade() {
+            ui.open_customer_picker();
+        }
+    });
+    let weak = Rc::downgrade(&ui);
+    browse_products.connect_clicked(move |_| {
+        if let Some(ui) = weak.upgrade() {
+            ui.open_product_picker();
+        }
+    });
     for e in [
         &ui.customer,
         &ui.phone,
@@ -1113,16 +1403,14 @@ fn build(app: &gtk::Application, store: Store) {
     customer_save.connect_clicked(move |_| {
         let r = u.save_form().and_then(|()| {
             u.store.borrow_mut().change(|s| {
-                text(&s.draft.customer)?;
-                if !s.customers.iter().any(|c| {
-                    normalize(&c.name) == normalize(&s.draft.customer) && c.phone == s.draft.phone
-                }) {
-                    s.customers.push(Customer {
-                        id: id(),
-                        name: s.draft.customer.clone(),
-                        phone: s.draft.phone.clone(),
-                    });
-                }
+                let draft = s.draft.clone();
+                s.save_customer_details(
+                    &draft.customer,
+                    &draft.phone,
+                    &draft.customer_contact,
+                    &draft.customer_email,
+                    &draft.customer_address,
+                )?;
                 Ok(())
             })
         });
@@ -1153,14 +1441,7 @@ fn build(app: &gtk::Application, store: Store) {
                 "sarv-backup-{}.json",
                 chrono::Utc::now().format("%Y%m%d-%H%M%S")
             ),
-            move |p| {
-                u2.message(
-                    u2.store
-                        .borrow()
-                        .backup(&p)
-                        .map(|()| format!("پشتیبان ذخیره شد: {}", p.display())),
-                )
-            },
+            move |p| u2.backup_to(p),
         );
     });
     let u = ui.clone();
@@ -1217,6 +1498,28 @@ fn build(app: &gtk::Application, store: Store) {
                     u.message(r.map(|()| "ذخیره شد"));
                     if success {
                         u.refresh_review();
+                    }
+                }
+                gtk::gdk::Key::k | gtk::gdk::Key::K => {
+                    if u.stack.visible_child_name().as_deref() == Some("order") {
+                        u.open_product_picker();
+                    } else {
+                        return glib::Propagation::Proceed;
+                    }
+                }
+                gtk::gdk::Key::f | gtk::gdk::Key::F => {
+                    match u.stack.visible_child_name().as_deref() {
+                        Some("catalog") => {
+                            u.search_catalog.grab_focus();
+                        }
+                        Some("customers") => {
+                            u.search_customer.grab_focus();
+                        }
+                        Some("quotes") => {
+                            u.search_quote.grab_focus();
+                        }
+                        Some("order") => u.open_customer_picker(),
+                        _ => return glib::Propagation::Proceed,
                     }
                 }
                 gtk::gdk::Key::n | gtk::gdk::Key::N => u.new_draft(),

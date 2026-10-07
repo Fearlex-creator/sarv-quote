@@ -22,6 +22,10 @@ fn quote(count: usize) -> Quote {
         series: "36bcab63-536d-4563-874b-a090b9df8bcf".into(),
         version: 2,
         customer: "فروشگاه نمونهٔ پارس — دادهٔ ساختگی برای آزمون".into(),
+        customer_id: String::new(),
+        customer_contact: String::new(),
+        customer_email: String::new(),
+        customer_address: String::new(),
         phone: "09120000000".into(),
         approved_at: "2026-10-07T10:00:00Z".into(),
         catalog_id: "76cf9c87-528d-42c8-9174-c6d4801874bc".into(),
@@ -589,4 +593,101 @@ fn saved_date_display_changes_pdf_but_keeps_csv_canonical_iso() {
     }
     assert_eq!(q.quote_date, "2026-10-07");
     assert_eq!(q.lines[0].source_at, "2026-09-01T08:00:00Z");
+}
+
+#[test]
+fn customer_snapshot_exports_keep_exact_fields_and_paginate_long_addresses() {
+    let mut q = configured_quote();
+    q.customer_id = "2d037712-a88d-4303-9a6b-9e859a2b8aa0".into();
+    q.customer = format!(
+        "CUSTOMER-LONG-NAME {}",
+        "فروشگاه نمونه و شعبهٔ مرکزی ".repeat(8)
+    );
+    q.customer_contact = "شخص رابط CONTACT-SNAPSHOT".into();
+    q.customer_email = "snapshot@example.test".into();
+    q.customer_address = (0..100)
+        .map(|index| format!("نشانی مشتری CUSTOMER-ADDRESS-{index:03}\n"))
+        .collect();
+    let original_total = q.total_rial;
+    let dir = tempfile::tempdir().unwrap();
+    let pdf = dir.path().join("customer-snapshot.pdf");
+    export::pdf(&q, &pdf).unwrap();
+    if let Some(text) = pdf_text(&pdf, dir.path()) {
+        assert!(text.contains("CUSTOMER-LONG-NAME"));
+        assert!(text.contains("CONTACT-SNAPSHOT"));
+        assert!(text.contains("snapshot@example.test"));
+        for index in 0..100 {
+            assert!(
+                text.contains(&format!("CUSTOMER-ADDRESS-{index:03}")),
+                "missing customer address line {index}"
+            );
+        }
+    }
+    let bytes = export::csv_bytes(&q).unwrap();
+    let mut reader = csv::Reader::from_reader(&bytes[3..]);
+    let headers = reader.headers().unwrap().clone();
+    let first = reader.records().next().unwrap().unwrap();
+    for (column, expected) in [
+        ("customer", q.customer.as_str()),
+        ("customer_id", q.customer_id.as_str()),
+        ("customer_contact", q.customer_contact.as_str()),
+        ("customer_email", q.customer_email.as_str()),
+        ("customer_address", q.customer_address.as_str()),
+    ] {
+        let index = headers.iter().position(|value| value == column).unwrap();
+        assert_eq!(
+            &first[index], expected,
+            "CSV must retain customer snapshot {column}"
+        );
+    }
+    let total = headers
+        .iter()
+        .position(|value| value == "quote_total_rial")
+        .unwrap();
+    assert_eq!(&first[total], original_total.to_string());
+    assert!(pdf_page_count(&pdf).unwrap_or(3) >= 3);
+}
+
+#[test]
+fn customer_snapshot_csv_is_formula_safe_and_legacy_defaults_remain_absent() {
+    let original = configured_quote();
+    let value = serde_json::to_value(&original).unwrap();
+    for field in [
+        "customer_id",
+        "customer_contact",
+        "customer_email",
+        "customer_address",
+    ] {
+        assert!(
+            value.get(field).is_none(),
+            "empty optional snapshot {field} must preserve legacy serialization"
+        );
+    }
+    let decoded: Quote = serde_json::from_value(value).unwrap();
+    assert_eq!(
+        export::csv_bytes(&original).unwrap(),
+        export::csv_bytes(&decoded).unwrap()
+    );
+    assert_eq!(decoded.total_rial, original.total_rial);
+    let mut q = original;
+    q.customer_id = "=unsafe-id".into();
+    q.customer_contact = "\t=unsafe-contact".into();
+    q.customer_email = "+unsafe-email".into();
+    q.customer_address = "\n@unsafe-address".into();
+    let bytes = export::csv_bytes(&q).unwrap();
+    let mut reader = csv::Reader::from_reader(&bytes[3..]);
+    let headers = reader.headers().unwrap().clone();
+    let first = reader.records().next().unwrap().unwrap();
+    for column in [
+        "customer_id",
+        "customer_contact",
+        "customer_email",
+        "customer_address",
+    ] {
+        let index = headers.iter().position(|value| value == column).unwrap();
+        assert!(
+            first[index].starts_with('\''),
+            "unprotected customer snapshot {column}"
+        );
+    }
 }

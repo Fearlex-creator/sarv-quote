@@ -11,20 +11,22 @@ fn page_range(total: usize, start: usize) -> Range<usize> {
     start..start.saturating_add(PAGE_SIZE).min(total)
 }
 
+#[cfg(test)]
 fn matching_indices(catalog: &Catalog, needle: &str) -> Vec<usize> {
-    let needle = normalize(needle);
-    catalog
-        .products
-        .iter()
-        .enumerate()
-        .filter(|(_, product)| super::managers::product_matches(product, &needle))
-        .map(|(index, _)| index)
-        .collect()
+    SearchIndex::new(
+        catalog
+            .products
+            .iter()
+            .map(super::managers::product_document),
+    )
+    .search(needle, catalog.products.len())
 }
 
 struct Preview {
     catalog: Catalog,
     digits: DisplayDigits,
+    date_display: DateDisplay,
+    search_index: SearchIndex,
     matches: RefCell<Vec<usize>>,
     start: Cell<usize>,
     list: gtk::ListBox,
@@ -52,7 +54,11 @@ impl Preview {
             let product = &self.catalog.products[index];
             let source = format!(
                 "منبع: {} · واحد منبع: {}{}",
-                ltr(&self.digits.format(&product.source_at)),
+                ltr(&super::managers::display_date(
+                    &product.source_at,
+                    self.digits,
+                    self.date_display
+                )),
                 product.source_unit.label(),
                 if stale(&product.source_at) {
                     " · قیمت قدیمی"
@@ -103,7 +109,11 @@ impl Preview {
     }
 }
 
-pub(super) fn preview(catalog: &Catalog, digits: DisplayDigits) -> gtk::Box {
+pub(super) fn preview(
+    catalog: &Catalog,
+    digits: DisplayDigits,
+    date_display: DateDisplay,
+) -> gtk::Box {
     let root = column();
     root.set_vexpand(true);
     let stale_count = catalog
@@ -141,6 +151,7 @@ pub(super) fn preview(catalog: &Catalog, digits: DisplayDigits) -> gtk::Box {
     let list = gtk::ListBox::new();
     list.set_selection_mode(gtk::SelectionMode::None);
     list.add_css_class("boxed-list");
+    list.add_css_class("manager-list");
     let scroller = scroll(&list);
     scroller.set_min_content_height(160);
     root.append(&scroller);
@@ -158,7 +169,14 @@ pub(super) fn preview(catalog: &Catalog, digits: DisplayDigits) -> gtk::Box {
     let preview = Rc::new(Preview {
         catalog: catalog.clone(),
         digits,
-        matches: RefCell::new(matching_indices(catalog, "")),
+        date_display,
+        search_index: SearchIndex::new(
+            catalog
+                .products
+                .iter()
+                .map(super::managers::product_document),
+        ),
+        matches: RefCell::new((0..catalog.products.len()).collect()),
         start: Cell::new(0),
         list,
         count,
@@ -171,7 +189,9 @@ pub(super) fn preview(catalog: &Catalog, digits: DisplayDigits) -> gtk::Box {
     // state references so closing the import dialog releases all widgets.
     let state = preview.clone();
     search.connect_search_changed(move |search| {
-        *state.matches.borrow_mut() = matching_indices(&state.catalog, &search.text());
+        *state.matches.borrow_mut() = state
+            .search_index
+            .search(&search.text(), state.catalog.products.len());
         state.start.set(0);
         state.render();
     });
@@ -194,6 +214,69 @@ pub(super) fn preview(catalog: &Catalog, digits: DisplayDigits) -> gtk::Box {
         }
     });
     root
+}
+
+impl Ui {
+    pub(super) fn show_import_diagnostics(
+        self: &Rc<Self>,
+        title: &str,
+        diagnostics: &[imports::CsvDiagnostic],
+        truncated: bool,
+    ) {
+        let dialog = adw::Dialog::builder()
+            .title(title)
+            .content_width(680)
+            .content_height(520)
+            .build();
+        let root = column();
+        root.set_margin_top(16);
+        root.set_margin_bottom(16);
+        root.set_margin_start(16);
+        root.set_margin_end(16);
+        let digits = self.store.borrow().state.settings.display_digits;
+        let summary = label(&format!(
+            "{} خطا · چیزی وارد یا جایگزین نشده است",
+            digits.format(diagnostics.len())
+        ));
+        summary.add_css_class("heading");
+        root.append(&summary);
+        let list = gtk::ListBox::new();
+        list.set_selection_mode(gtk::SelectionMode::None);
+        list.add_css_class("boxed-list");
+        list.add_css_class("manager-list");
+        for diagnostic in diagnostics {
+            let row = adw::ActionRow::builder()
+                .title(format!(
+                    "ردیف {} · {}",
+                    digits.format(diagnostic.row),
+                    diagnostic.column
+                ))
+                .subtitle(&diagnostic.reason)
+                .title_lines(1)
+                .subtitle_lines(3)
+                .build();
+            row.set_use_markup(false);
+            row.set_tooltip_text(Some(&diagnostic.reason));
+            list.append(&row);
+        }
+        root.append(&scroll(&list));
+        if truncated {
+            let limit =
+                label("تعداد خطاها بیشتر است؛ پس از اصلاح موارد بالا فایل را دوباره بررسی کنید.");
+            limit.add_css_class("caption");
+            root.append(&limit);
+        }
+        let close = button("بستن و اصلاح فایل");
+        root.append(&close);
+        let weak = dialog.downgrade();
+        close.connect_clicked(move |_| {
+            if let Some(dialog) = weak.upgrade() {
+                dialog.close();
+            }
+        });
+        dialog.set_child(Some(&dialog_toolbar(&root)));
+        self.present_dialog(&dialog);
+    }
 }
 
 #[cfg(test)]

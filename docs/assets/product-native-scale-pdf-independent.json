@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "binary_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad",
+  "method": "Independent pdftotext -layout; normalize Persian/Arabic digits and bidi controls; validate every expected code and both printed subtotal/final totals",
+  "unique_product_codes": 1000,
+  "first_product": "SCALE-00001",
+  "last_product": "SCALE-01000",
+  "missing_codes": [],
+  "unexpected_codes": [],
+  "printed_total_toman": "10,080,250.1",
+  "subtotal_and_final_total_occurrences": 2,
+  "exact_total_rial": 100802501,
+  "pdf_pages": 92
+}

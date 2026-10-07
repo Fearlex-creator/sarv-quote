@@ -1,0 +1,170 @@
+{
+  "result": "passed",
+  "binary_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-wv8j9jt4",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-3xngo2kk",
+  "checks": [
+    {
+      "name": "Native revision preserves original offer and exact revised quantity",
+      "passed": true
+    },
+    {
+      "name": "Customer-linked native history exposes the approved quote number",
+      "passed": true
+    },
+    {
+      "name": "Native customer archive preserves approved offer snapshots",
+      "passed": true
+    },
+    {
+      "name": "Native customer unarchive restores identity without touching history",
+      "passed": true
+    },
+    {
+      "name": "Native customer contact edit preserves immutable quote contact/address",
+      "passed": true
+    },
+    {
+      "name": "Native appearance selection saves Dark",
+      "passed": true
+    },
+    {
+      "name": "Native appearance selection saves Light",
+      "passed": true
+    },
+    {
+      "name": "Fresh process preserves composed catalog, customer, exact draft and approved offer",
+      "passed": true
+    },
+    {
+      "name": "Release hash is unchanged throughout independent run",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "archive_expander_bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1090,
+    "height": 60
+  },
+  "window_origin": [
+    25,
+    55
+  ],
+  "captures": {
+    "archive-expanded-probe.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customer-linked-history.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-light.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customers-light.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "quotes-light.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "backup-light.png": {
+      "page": "backup",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "settings-light.png": {
+      "page": "settings",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "editor-dark.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-dark.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customers-dark.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "quotes-dark.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "backup-dark.png": {
+      "page": "backup",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "settings-dark.png": {
+      "page": "settings",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "document-preview-dark.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "editor-900x560-input.png": {
+      "page": "order",
+      "geometry": [
+        900,
+        560
+      ]
+    },
+    "editor-900x560-total.png": {
+      "page": "order",
+      "geometry": [
+        900,
+        560
+      ]
+    }
+  }
+}
