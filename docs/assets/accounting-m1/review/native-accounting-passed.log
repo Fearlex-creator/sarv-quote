@@ -1,0 +1,97 @@
+dbus-daemon[22509]: [session uid=1000 pid=22509 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=22516 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[22509]: [session uid=1000 pid=22509 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[22548]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=22516 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[22548]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :4 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "profile": "/workspace/sarv-quote/artifacts/accounting-native/run-dy8ivtxi",
+  "binary_sha256": "ae35fe5d21095af53c194e75081d8b2087f7e31d96a3b0d1565a7f1aa1228f65",
+  "backend": "private X11 Xvfb/Openbox GTK4; signal financial workflow and actual XTest navigation separately",
+  "checks": [
+    {
+      "name": "native financial form workflow passed",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "native workflow normal exit",
+      "passed": true
+    },
+    {
+      "name": "fresh-profile restore and both database restarts match",
+      "passed": true
+    },
+    {
+      "name": "independent counts after financial workflow",
+      "passed": true
+    },
+    {
+      "name": "trial-before-reversal-rial.pdf exists",
+      "passed": true
+    },
+    {
+      "name": "trial-final-toman.pdf exists",
+      "passed": true
+    },
+    {
+      "name": "real Alt7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches company action",
+      "passed": true,
+      "focused_names": [
+        "اسناد",
+        "بایگانی پیشنهادها",
+        "تاریخچه",
+        "تراز آزمایشی",
+        "تعریف دورهٔ مالی",
+        "تنظیمات",
+        "حسابداری",
+        "شرکت تازه",
+        "شرکت ساختگی سرو • آزمون دفتر",
+        "شرکت و دوره",
+        "قفل دوره با دلیل",
+        "مشتری‌ها",
+        "پشتیبان و بازیابی",
+        "پیشنهاد قیمت",
+        "کالاها و قیمت‌ها",
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "real Tab reaches journal tab",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches journal action",
+      "passed": true
+    },
+    {
+      "name": "real Enter opens journal dialog",
+      "passed": true
+    },
+    {
+      "name": "real Escape closes unsaved journal",
+      "passed": true
+    },
+    {
+      "name": "Escape preserves complete saved state",
+      "passed": true
+    },
+    {
+      "name": "accounting accepts 1280x900",
+      "passed": true
+    },
+    {
+      "name": "accounting accepts 650x760",
+      "passed": true
+    },
+    {
+      "name": "keyboard and narrow layouts preserve accounting state",
+      "passed": true
+    }
+  ]
+}

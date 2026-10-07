@@ -247,6 +247,11 @@ impl Ui {
                 .iter()
                 .find_map(|row| row.focused(&focus).map(|target| (row.index, target)))
         });
+        // Release the old focused GtkText before unparenting its entry. GTK's
+        // viewport would otherwise scroll an unallocated, detached widget.
+        if self.table_has_focus() {
+            gtk::prelude::GtkWindowExt::set_focus(&self.window, None::<&gtk::Widget>);
+        }
         self.visual_pending.set(false);
         clear(&self.review);
         self.row_editors.borrow_mut().clear();
@@ -320,17 +325,14 @@ impl Ui {
             let weak = Rc::downgrade(self);
             control.connect_clicked(move |_| {
                 if let Some(ui) = weak.upgrade() {
-                    match ui.save_form() {
-                        Ok(()) => {
-                            ui.table_page.set(target);
-                            ui.refresh_review();
-                            if let Some(row) = ui.row_editors.borrow().first() {
-                                row.query.grab_focus();
-                                ensure_focus_visible(&row.query);
-                            }
+                    ui.save_form_async_then(move |ui| {
+                        ui.table_page.set(target);
+                        ui.refresh_review();
+                        if let Some(row) = ui.row_editors.borrow().first() {
+                            row.query.grab_focus();
+                            ensure_focus_visible(&row.query);
                         }
-                        Err(error) => ui.message(Err::<String, _>(error)),
-                    }
+                    });
                 }
             });
             page_bar.append(&control);
@@ -499,6 +501,7 @@ impl Ui {
                 .unwrap_or_else(|| "—".into());
             let price_cell = numeric_cell(&price);
             let amount_cell = numeric_cell(&amount);
+            amount_cell.set_widget_name(&format!("quote-row-amount-{index}"));
             cell(&grid, &price_cell, 5, r, widths[5]);
             cell(&grid, &amount_cell, 6, r, widths[6]);
             let mut review_choice = None;

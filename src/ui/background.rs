@@ -148,6 +148,152 @@ impl Drop for PreviewPages {
 }
 
 impl Ui {
+    pub(super) fn save_form_async_then(
+        self: &Rc<Self>,
+        complete: impl FnOnce(&Rc<Self>) + 'static,
+    ) {
+        if self.pending_save_action.borrow().is_some() {
+            self.message(Ok("پس از ذخیره، جابه‌جایی انجام می‌شود…"));
+            return;
+        }
+        *self.pending_save_action.borrow_mut() = Some(Box::new(complete));
+        self.save_form_async();
+    }
+
+    fn run_saved_action(self: &Rc<Self>) -> bool {
+        let action = self.pending_save_action.borrow_mut().take();
+        if let Some(action) = action {
+            action(self);
+            true
+        } else {
+            false
+        }
+    }
+
+    /// One durable save at a time. Edits made during persistence remain in GTK
+    /// and are saved as a later revision; an old receipt never rewrites them.
+    pub(super) fn save_form_async(self: &Rc<Self>) {
+        if let Some(pending) = self.pending.borrow_mut().take() {
+            pending.remove();
+        }
+        if self.persistence_busy.get() {
+            // Other persistence workflows (including accounting) share this
+            // gate. Keep one bounded retry rather than losing a draft's timer.
+            let weak = Rc::downgrade(self);
+            *self.pending.borrow_mut() = Some(glib::timeout_add_local_once(
+                Duration::from_millis(100),
+                move || {
+                    if let Some(ui) = weak.upgrade() {
+                        ui.pending.borrow_mut().take();
+                        ui.save_form_async();
+                    }
+                },
+            ));
+            self.message(Ok(
+                "ذخیره در حال انجام است؛ تغییرات تازه پس از آن ذخیره می‌شوند…",
+            ));
+            return;
+        }
+        let (draft, unchanged) = match self.form_draft() {
+            Ok(value) => value,
+            Err(error) => {
+                self.pending_save_action.borrow_mut().take();
+                self.close_after_save.set(false);
+                self.message(Err::<String, _>(error));
+                return;
+            }
+        };
+        if unchanged {
+            let result = self.store.borrow().verify_current();
+            if result.is_ok() {
+                self.finish_form_save();
+                self.refresh_totals();
+                self.message(Ok("پیش‌نویس ذخیره شد • آفلاین"));
+                self.run_saved_action();
+                if self.close_after_save.replace(false) {
+                    self.window.close();
+                }
+            } else {
+                self.pending_save_action.borrow_mut().take();
+                self.close_after_save.set(false);
+                self.message(result.map(|()| ""));
+            }
+            return;
+        }
+        let directory = self.store.borrow().directory.clone();
+        let (generation, mut candidate) = match self.store.borrow_mut().begin_detached() {
+            Ok(value) => value,
+            Err(error) => {
+                self.pending_save_action.borrow_mut().take();
+                self.close_after_save.set(false);
+                self.message(Err::<String, _>(error));
+                return;
+            }
+        };
+        candidate.draft = draft;
+        let revision = self.edit_revision.get();
+        self.persistence_busy.set(true);
+        self.message(Ok("در حال ذخیرهٔ پیش‌نویس…"));
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let spawned = thread::Builder::new()
+            .name("sarv-persistence".into())
+            .spawn(move || {
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    let prepared = Store::prepare_candidate(generation, candidate)?;
+                    Store::commit_detached(directory, prepared)
+                }))
+                .unwrap_or_else(|_| Err(anyhow::anyhow!("ذخیره قطع شد؛ ورودی شما حفظ شده است")));
+                let _ = sender.send(result);
+            });
+        if let Err(error) = spawned {
+            self.persistence_busy.set(false);
+            self.pending_save_action.borrow_mut().take();
+            self.close_after_save.set(false);
+            let result = self.store.borrow_mut().finish_detached(Err(error.into()));
+            self.message(result.map(|()| ""));
+            return;
+        }
+        // Keep the owner alive until its transaction has a definite outcome.
+        // Close requests defer until this receipt and any newer edit are saved.
+        let ui = self.clone();
+        glib::timeout_add_local(Duration::from_millis(20), move || {
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Err(anyhow::anyhow!("ذخیره قطع شد؛ دوباره تلاش کنید"))
+                }
+            };
+            let result = ui.store.borrow_mut().finish_detached(result);
+            ui.persistence_busy.set(false);
+            match result {
+                Err(error) => {
+                    ui.pending_save_action.borrow_mut().take();
+                    ui.close_after_save.set(false);
+                    ui.message(Err::<String, _>(error));
+                }
+                Ok(()) if ui.edit_revision.get() != revision => {
+                    ui.message(Ok("نسخهٔ قبلی ذخیره شد؛ تغییرات تازه در حال ذخیره‌اند…"));
+                    // Validate the latest widgets again. Invalid newer input
+                    // remains visible and is never replaced by the old draft.
+                    ui.save_form_async();
+                }
+                Ok(()) => {
+                    ui.finish_form_save();
+                    ui.refresh_totals();
+                    if !ui.run_saved_action() && !ui.table_has_focus() {
+                        ui.refresh_review();
+                    }
+                    ui.message(Ok("پیش‌نویس ذخیره شد • آفلاین"));
+                    if ui.close_after_save.replace(false) {
+                        ui.window.close();
+                    }
+                }
+            }
+            glib::ControlFlow::Break
+        });
+    }
+
     pub(super) fn background_available(&self) -> bool {
         if self.background_busy.get() {
             self.message(Ok(

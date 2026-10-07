@@ -1,12 +1,14 @@
-# سرو — پیشنهاد قیمت v1
+# سرو — پیشنهاد قیمت و دفتر حسابداری محلی
 
-Free, offline distributor quotation preparation. Application and business logic are written in Rust; the interface uses native GTK4/libadwaita, with Persian shaping/RTL through GTK/Pango. No web frontend, hosted services, AI matching, credentials or subscriptions.
+Free, offline Persian quotation preparation and a bounded manual accounting ledger. Application and business logic are written in Rust; the interface uses native GTK4/libadwaita, with Persian shaping/RTL through GTK/Pango. No web frontend, hosted services, AI matching, credentials or subscriptions.
 
-Current product work, requirements, rendered screenshots and final validation are recorded in [docs/PRODUCT-DELIVERY.md](docs/PRODUCT-DELIVERY.md), [requirements checklist](docs/PRODUCT-ACCEPTANCE.md) and [reference/design decisions](docs/PRODUCT-DESIGN.md). Earlier continuation evidence remains in [docs/CONTINUATION.md](docs/CONTINUATION.md).
+The current local accounting checkpoint, demonstration, checklist, exact results and remaining gaps are in [requirements/milestone-M1.md](requirements/milestone-M1.md). The [126-ID baseline and current evidence map](requirements/evidence.md) and [full roadmap](requirements/roadmap.md) retain the broader product specification. The first accounting gate is still partial; no production or Iranian statutory acceptance is claimed.
+
+Historical quotation product work, requirements, rendered screenshots and validation are recorded in [docs/PRODUCT-DELIVERY.md](docs/PRODUCT-DELIVERY.md), [requirements checklist](docs/PRODUCT-ACCEPTANCE.md) and [reference/design decisions](docs/PRODUCT-DESIGN.md). Earlier continuation evidence remains in [docs/CONTINUATION.md](docs/CONTINUATION.md).
 
 The application has a native libadwaita shell, working customer/product/quote managers and persistent settings. Current native release evidence is in [docs/PRODUCT-DELIVERY.md](docs/PRODUCT-DELIVERY.md); physical printing and production-scale field use remain unverified.
 
-This is a quotation v1. Approval creates an immutable local offer, **not** an invoice, posted accounting entry, inventory reservation, payment or tax filing. A saved or exported offer has not been sent to or accepted by a customer. It makes no statutory compliance claim.
+Quotation approval creates an immutable local offer, **not** an invoice, posted accounting entry, inventory reservation, payment or tax filing. A saved or exported offer has not been sent to or accepted by a customer. It makes no statutory compliance claim.
 
 ## Run locally
 
@@ -21,7 +23,7 @@ Machine-specific desktop launchers are retained locally and excluded from this r
 
 Normal and synthetic-demo launchers are installed as `~/.local/share/applications/ir.sarv.quote.v1.desktop` and `ir.sarv.quote.demo.desktop`. The original workstation retains its local demo launcher and separate synthetic profile; these machine-specific files are excluded from publication. Existing launchers were not overwritten. These are local launch conveniences, not a packaged release for other machines.
 
-Current snapshot checks: format, warning-free Clippy, **105 passing ordinary Rust tests**, plus the graphical lifecycle and bundled-font PDF tests run separately and release build. The new indexed matcher, bounded import preview and background export changes pass their automated tests; native keyboard, small-window and restart checks pass in the product delivery report. Large synthetic responsiveness measurements and production limits are recorded there. See [software risk results](docs/SOFTWARE-RISKS.md).
+Current cloud checkpoint checks: format, warning-free Clippy, **127 passing ordinary Rust tests**, plus the graphical lifecycle and bundled-font PDF tests run separately and release build. The new indexed matcher, bounded import preview and background export changes pass their automated tests; native keyboard, small-window and restart checks pass in the product delivery report. Large synthetic responsiveness measurements and production limits are recorded there. See [software risk results](docs/SOFTWARE-RISKS.md).
 
 ## Build and verify
 
@@ -42,7 +44,11 @@ cargo test --locked
 
 After dependencies have been fetched, Cargo commands also work with `--offline`. The installed binary does not access the network. The lockfile pins dependency versions. The binary uses native system libraries; it is not a portable static executable.
 
-The application is MIT licensed ([LICENSE](LICENSE)); the Rust `libadwaita`/`libadwaita-sys` bindings also declare MIT. The native C libadwaita library is [LGPL-2.1-or-later](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.9/). It remains a dynamically linked system dependency; do not describe it as MIT or statically bundle it into an MIT-only executable. Other dependencies retain their own licenses. No paid library or service is required.
+The existing repository declares MIT ([future distribution decision remains pending](decisions.md)); no license choice was changed during this checkpoint. The application is MIT licensed ([LICENSE](LICENSE)); the Rust `libadwaita`/`libadwaita-sys` bindings also declare MIT. The native C libadwaita library is [LGPL-2.1-or-later](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.9/). It remains a dynamically linked system dependency; do not describe it as MIT or statically bundle it into an MIT-only executable. Other dependencies retain their own licenses. No paid library or service is required.
+
+## Manual accounting checkpoint
+
+Open **دفتر حسابداری** with Alt+7. Create a company and explicit Gregorian fiscal period, define a custom chart with deliberate classifications/normal sides, post its initial balanced opening, then manual journals, linked reversals and period locks/reopen reasons. Trial balance includes all posted history through the cutoff, supports exact rial/toman display and PDF/CSV export. No default chart, recognition, stock valuation, tax or closing policy is selected. Control-account postings requiring an absent subledger are blocked. These are separate books from quotation approval. See the [complete synthetic demonstration](requirements/milestone-M1.md).
 
 ## Workflow / روش کار
 
@@ -111,7 +117,7 @@ SARV_DATA_DIR="$PWD/artifacts/delivery-complete" ./target/release/sarv-quote
 
 SQLite WAL transactions with full synchronization persist the state; optimistic generation checks prevent one stale instance overwriting another. Failed changes never replace the in-memory/disk state. Do not copy just the SQLite database while the app is running: use the app's backup command so journal state is included logically. Backups use a versioned JSON format with a SHA-256 integrity checksum and full business/reference validation. The checksum detects corruption; it is not an authenticated signature or encryption.
 
-Current v1 stores an aggregate JSON document within SQLite. This keeps snapshot/recovery semantics simple for a small local pilot; incremental normalized storage and fully virtualized tables remain future work. A synthetic 50,000-product/1,000-line probe measures import preparation, bounded indexed pickers, catalog composition, paging and background PDF export. Imports, restore preparation and backups use workers with generation checks. Ordinary changed draft saves, state cloning and final SQLite commits still run on the main thread; the final report gives measured limits. Hardware print output, long-run production use, hardware power loss, alternative desktops and accessibility screen-reader use have not been verified. See the product delivery report for measured limits.
+Schema 2 stores an aggregate JSON document within SQLite. Schema 1 upgrades only after a verified recovery snapshot; see [migration and recovery](migrations.md). This keeps snapshot/recovery semantics simple for a small local pilot; incremental normalized storage and fully virtualized tables remain future work. A synthetic 50,000-product/1,000-line probe measures import preparation, bounded indexed pickers, catalog composition, paging and background PDF export. Imports, restore preparation and backups use workers with generation checks. Draft Save/Ctrl+S/autosave and accounting commands validate, serialize and commit on workers with generation guards. State cloning, widget rebuilds and some dependent commands still run on the main thread; the current performance report records remaining budget failures. Hardware print output, long-run production use, hardware power loss, alternative desktops and accessibility screen-reader use have not been verified. See the product delivery report for measured limits.
 
 ## Architecture
 

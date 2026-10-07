@@ -1,3 +1,4 @@
+mod accounting;
 mod background;
 mod catalog_editor;
 mod catalog_preview;
@@ -23,6 +24,8 @@ use std::{
     path::{Path, PathBuf},
     rc::Rc,
 };
+
+type SaveAction = Box<dyn FnOnce(&Rc<Ui>)>;
 
 struct Ui {
     store: RefCell<Store>,
@@ -70,6 +73,10 @@ struct Ui {
     pending: RefCell<Option<glib::SourceId>>,
     active_dialog: RefCell<Option<adw::Dialog>>,
     background_busy: Cell<bool>,
+    persistence_busy: Cell<bool>,
+    edit_revision: Cell<u64>,
+    close_after_save: Cell<bool>,
+    pending_save_action: RefCell<Option<SaveAction>>,
     nav_counts: Vec<(&'static str, gtk::Label)>,
 }
 fn csv_order(lines: &[OrderLine]) -> String {
@@ -164,7 +171,7 @@ impl Ui {
             }
         }
     }
-    fn save_form(&self) -> Result<()> {
+    fn form_draft(&self) -> Result<(Draft, bool)> {
         let text = self.order.buffer().text(
             &self.order.buffer().start_iter(),
             &self.order.buffer().end_iter(),
@@ -183,7 +190,9 @@ impl Ui {
                     line.chosen_code = None;
                 }
                 line.query = query;
-                line.quantity_milli = quantity(&row.quantity.text())?;
+                line.quantity_milli = quantity(&row.quantity.text()).inspect_err(|_| {
+                    row.quantity.grab_focus();
+                })?;
             }
             lines
         } else if text.trim() == "item,quantity" || text.trim().is_empty() {
@@ -265,9 +274,15 @@ impl Ui {
             let unchanged = serde_json::to_vec(&draft)? == serde_json::to_vec(original)?;
             (draft, unchanged)
         };
+        Ok((draft, unchanged))
+    }
+    fn save_form(&self) -> Result<()> {
+        anyhow::ensure!(
+            !self.persistence_busy.get(),
+            "ذخیره در حال انجام است؛ پس از پایان دوباره درخواست کنید"
+        );
+        let (draft, unchanged) = self.form_draft()?;
         if unchanged {
-            // Paging or saving an unchanged form must not clone and revalidate
-            // every historical catalog. A stale window still cannot claim Save.
             self.store.borrow().verify_current()?;
         } else {
             self.store.borrow_mut().change(|state| {
@@ -275,6 +290,10 @@ impl Ui {
                 Ok(())
             })?;
         }
+        self.finish_form_save();
+        Ok(())
+    }
+    fn finish_form_save(&self) {
         {
             let store = self.store.borrow();
             let d = &store.state.draft;
@@ -295,12 +314,13 @@ impl Ui {
             .set_active(self.store.borrow().state.draft.stale_ack);
         self.loading.set(false);
         self.table_dirty.set(false);
-        Ok(())
     }
     fn schedule(self: &Rc<Self>) {
         if self.loading.get() {
             return;
         }
+        self.edit_revision
+            .set(self.edit_revision.get().wrapping_add(1));
         self.status.set_text("تغییرات ذخیره‌نشده…");
         self.document_state.set_text("در حال ویرایش");
         self.approve_control.add_css_class("suggested-action");
@@ -314,16 +334,7 @@ impl Ui {
             move || {
                 if let Some(ui) = weak.upgrade() {
                     ui.pending.borrow_mut().take();
-                    let r = ui.save_form();
-                    if r.is_ok() {
-                        ui.refresh_totals();
-                        if !ui.table_has_focus() {
-                            ui.refresh_review();
-                        }
-                        ui.message(Ok("پیش‌نویس ذخیره شد • آفلاین"));
-                    } else {
-                        ui.message(r.map(|()| ""));
-                    }
+                    ui.save_form_async();
                 }
             },
         ));
@@ -666,12 +677,14 @@ impl Ui {
         let dialog = adw::Dialog::builder()
             .title("بررسی بازیابی")
             .content_width(550)
-            .content_height(320)
+            .content_height(430)
             .build();
         let content = card();
         content.append(&heading("بازیابی دادهٔ تأییدشده"));
         content.append(&label(&format!("{} فهرست • {} مشتری • {} پیشنهاد\nدادهٔ جاری جایگزین می‌شود؛ پیش از آن نسخهٔ ایمنی ساخته خواهد شد.",
             fa(candidate.catalogs.len()), fa(candidate.customers.len()), fa(candidate.quotes.len()))));
+        content.append(&label(&format!("دفترهای پشتیبان: {} شرکت • {} دوره • {} حساب • {} سند ثبت‌شده\nدفتر جاری: {} سند ثبت‌شده\nاین عمل همهٔ دفترها و تاریخچهٔ جاری را با پشتیبان جایگزین می‌کند. نسخهٔ ایمنیِ تأییدشده پیش از جایگزینی نگه داشته می‌شود.",
+            fa(candidate.accounting.companies.len()), fa(candidate.accounting.periods.len()), fa(candidate.accounting.accounts.len()), fa(candidate.accounting.journals.len()), fa(self.store.borrow().state.accounting.journals.len()))));
         let confirm = button("بازیابی و ذخیرهٔ نسخهٔ ایمنی");
         confirm.add_css_class("destructive-action");
         let cancel = button("انصراف");
@@ -703,6 +716,13 @@ impl Ui {
                             ui.fill_form();
                             ui.refresh_review();
                             ui.refresh_lists();
+                            // Restoration can replace every company/period ID.
+                            // Rebuild the workspace from the restored snapshot.
+                            if let Some(page) = ui.stack.child_by_name("accounting") {
+                                ui.stack.remove(&page);
+                            }
+                            ui.stack
+                                .add_named(&accounting::build(ui), Some("accounting"));
                         }
                     },
                 );
@@ -747,7 +767,9 @@ impl Ui {
             "در حال آماده‌سازی داده و پشتیبان ایمنی…",
             move || {
                 sarv_quote::store::backup_state(&original, &safety)?;
-                let prepared = Store::prepare_candidate(generation, candidate(original)?)?;
+                let replacement = candidate(original.clone())?;
+                let prepared =
+                    Store::prepare_replacement(generation, &original, replacement, &safety)?;
                 Ok((prepared, safety))
             },
             move |ui, result| {
@@ -1162,7 +1184,7 @@ fn build(app: &gtk::Application, store: Store) {
     let restore = button("انتخاب پشتیبان و بررسی بازیابی");
     backup_page.append(&backup);
     backup_page.append(&restore);
-    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…6 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nاین محصول پیشنهاد قیمت v1 است. موجودی، پرداخت، مالیات و سند حسابداری ثبت نمی‌کند.",store.directory.display())));
+    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…7 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. موجودی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
     let mut nav_counts = vec![];
     for (i, name, caption, icon, group) in [
@@ -1188,6 +1210,13 @@ fn build(app: &gtk::Application, store: Store) {
             Some("دفترها"),
         ),
         (2, "catalog", "کالاها و قیمت‌ها", "view-list-symbolic", None),
+        (
+            7,
+            "accounting",
+            "حسابداری",
+            "accessories-calculator-symbolic",
+            None,
+        ),
         (
             5,
             "backup",
@@ -1282,9 +1311,15 @@ fn build(app: &gtk::Application, store: Store) {
         pending: RefCell::new(None),
         active_dialog: RefCell::new(None),
         background_busy: Cell::new(false),
+        persistence_busy: Cell::new(false),
+        edit_revision: Cell::new(0),
+        close_after_save: Cell::new(false),
+        pending_save_action: RefCell::new(None),
         nav_counts,
     });
     ui.refresh_settings();
+    ui.stack
+        .add_named(&accounting::build(&ui), Some("accounting"));
     ui.fill_form();
     ui.refresh_review();
     ui.refresh_lists();
@@ -1388,12 +1423,7 @@ fn build(app: &gtk::Application, store: Store) {
     }
     let u = ui.clone();
     save.connect_clicked(move |_| {
-        let r = u.save_form();
-        let success = r.is_ok();
-        u.message(r.map(|()| "پیش‌نویس ذخیره شد"));
-        if success {
-            u.refresh_review();
-        }
+        u.save_form_async_then(|ui| ui.refresh_review());
     });
     let u = ui.clone();
     approve.connect_clicked(move |_| u.approve());
@@ -1493,12 +1523,7 @@ fn build(app: &gtk::Application, store: Store) {
                         }
                         return glib::Propagation::Stop;
                     }
-                    let r = u.save_form();
-                    let success = r.is_ok();
-                    u.message(r.map(|()| "ذخیره شد"));
-                    if success {
-                        u.refresh_review();
-                    }
+                    u.save_form_async_then(|ui| ui.refresh_review());
                 }
                 gtk::gdk::Key::k | gtk::gdk::Key::K => {
                     if u.stack.visible_child_name().as_deref() == Some("order") {
@@ -1535,6 +1560,7 @@ fn build(app: &gtk::Application, store: Store) {
                 gtk::gdk::Key::_4 => "quotes",
                 gtk::gdk::Key::_5 => "backup",
                 gtk::gdk::Key::_6 => "settings",
+                gtk::gdk::Key::_7 => "accounting",
                 _ => return glib::Propagation::Proceed,
             };
             u.stack.set_visible_child_name(page);
@@ -1548,6 +1574,23 @@ fn build(app: &gtk::Application, store: Store) {
     window.connect_close_request(move |_| {
         if let Some(p) = u.pending.borrow_mut().take() {
             p.remove();
+        }
+        if u.persistence_busy.get() {
+            u.close_after_save.set(true);
+            u.message(Ok("پس از ذخیرهٔ امن، برنامه بسته می‌شود…"));
+            return glib::Propagation::Stop;
+        }
+        match u.form_draft() {
+            Ok((_, false)) => {
+                u.close_after_save.set(true);
+                u.save_form_async();
+                return glib::Propagation::Stop;
+            }
+            Err(error) => {
+                u.message(Err::<String, _>(error));
+                return glib::Propagation::Stop;
+            }
+            _ => {}
         }
         if let Err(e) = u.save_form() {
             u.message(Err::<String, _>(e));
@@ -1594,6 +1637,7 @@ fn build(app: &gtk::Application, store: Store) {
     adw_window.set_content(Some(&root));
     window.present();
     ui.customer.grab_focus();
+    accounting::schedule(&ui);
     smoke::schedule(&ui, &approve);
     responsiveness::schedule(&ui);
 }

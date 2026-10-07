@@ -1,0 +1,495 @@
+{
+  "catalog_preview_pages_visited": 500,
+  "checks": [
+    "Actual50,000-row CSV parse and prepared catalogue acceptance complete via native background workflows",
+    "Actual GTK import preview first and next page contain 100 expected products",
+    "All 500 native pages reached by next button; final row is SCALE-50000; next disabled",
+    "Native editor reaches all ten pages with <=100 rows/page; first/last page quantity edits survive navigation and save; all1,000 canonical lines retained; exact100,802,501rial total",
+    "All seventeen unchanged native next/previous clicks preserve persisted generation; edited first-page navigation commits exactly one generation",
+    "Cold/warm50,000-product indexed picker keeps<=30 rows, finds exact last code, reports all broad matches; unknown-line native selector avoids giant dropdown and persists explicit choice while preserving request and exact price",
+    "Native50,000-product composer copy keeps<=100 rows, next page and exact last-product search reachable, retains full product count and leaves persisted source/generation unchanged when closed",
+    "Genuine X11 XTest Tab moves first row query focus to quantity while PDF worker is busy",
+    "Native settings navigation completes while PDF worker is busy",
+    "PDF export completed within 120-second total probe timeout; GTK heartbeat stayed below 250 ms while busy"
+  ],
+  "durations_ms": {
+    "1000_line_background_pdf_completion": 1709.2341150000002,
+    "1000_line_store_commit_and_first_100_editor_widget_creation": 265.70410300000003,
+    "50000_catalog_prepare_commit_and_native_refresh": 416.732874,
+    "50000_cold_picker_index_and_first_results_ready": 136.928911,
+    "50000_cold_picker_open_invocation": 10.738339,
+    "50000_composer_indexed_last_code_search_including_debounce": 262.875472,
+    "50000_csv_parse_request_to_completion": 150.58560500000002,
+    "50000_csv_worker_parse_ms": 134.323236,
+    "50000_indexed_broad_search_including_debounce": 285.365071,
+    "50000_indexed_exact_code_search_including_debounce": 273.914867,
+    "50000_native_composer_copy_and_initial100_rows": 148.107768,
+    "50000_unknown_line_indexed_search_including_debounce": 255.177861,
+    "50000_warm_cached_picker_open_and_native_results": 9.200307,
+    "catalog_pagination_all_500_pages_including_initial_setup": 26146.097273,
+    "catalog_preview_widget_creation": 176.65550399999998,
+    "restore_known_line_fixture_changed_save": 321.023496,
+    "synthetic_50000_csv_fixture_creation": 19.477992999999998,
+    "unknown_line_fixture_changed_save_and_native_review": 310.73903
+  },
+  "editor_page_clicks": [
+    {
+      "direction": "next",
+      "draft_changed": true,
+      "duration_ms": 316.66418400000003,
+      "from_page": 1,
+      "generation_after": 3,
+      "generation_before": 2
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 207.919796,
+      "from_page": 2,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 178.706644,
+      "from_page": 3,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 176.803974,
+      "from_page": 4,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 166.318354,
+      "from_page": 5,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 183.33333399999998,
+      "from_page": 6,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 181.428739,
+      "from_page": 7,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 193.721413,
+      "from_page": 8,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 203.243686,
+      "from_page": 9,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 195.484284,
+      "from_page": 10,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 174.170654,
+      "from_page": 9,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 183.42004500000002,
+      "from_page": 8,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 166.16653200000002,
+      "from_page": 7,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 191.640532,
+      "from_page": 6,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 162.040595,
+      "from_page": 5,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 168.273843,
+      "from_page": 4,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 165.022355,
+      "from_page": 3,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 163.938559,
+      "from_page": 2,
+      "generation_after": 4,
+      "generation_before": 4
+    }
+  ],
+  "failure": null,
+  "final_window_allocation": [
+    990,
+    770
+  ],
+  "heartbeat_count": 897,
+  "heartbeat_gaps_over_100_ms": [
+    {
+      "gap_ms": 205.440495,
+      "pdf_busy": false,
+      "stage": 1,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 184.712752,
+      "pdf_busy": false,
+      "stage": 2,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 117.962105,
+      "pdf_busy": false,
+      "stage": 3,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 382.69568100000004,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 325.239871,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 208.428844,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 213.011327,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 177.470529,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 166.661042,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 183.677173,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 182.29776,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 194.118493,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 203.64121600000001,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 285.100822,
+      "pdf_busy": false,
+      "stage": 11,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 206.75716,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 174.516826,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 183.901271,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 166.504952,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 191.98309,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 162.35898500000002,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 168.63515800000002,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 165.33657,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 164.247305,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 409.772065,
+      "pdf_busy": false,
+      "stage": 27,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 810.166413,
+      "pdf_busy": false,
+      "stage": 30,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 168.86076,
+      "pdf_busy": false,
+      "stage": 31,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 159.922704,
+      "pdf_busy": false,
+      "stage": 32,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 111.316252,
+      "pdf_busy": false,
+      "stage": 5,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 111.411897,
+      "pdf_busy": true,
+      "stage": 9,
+      "worker_busy": true
+    }
+  ],
+  "heartbeat_interval_ms": 20,
+  "heartbeat_ticks_while_pdf_busy": 72,
+  "limitations": [
+    "Synthetic scale fixture, not production customer data",
+    "Changed draft saves, SQLite commit, snapshot copies and composer preparation can still block GTK; global and per-phase gaps are reported rather than hidden",
+    "No Wayland, physical printer or target desktop packaging certification"
+  ],
+  "maximum_heartbeat_gap_ms_including_setup_and_editor_paging": 810.166413,
+  "maximum_heartbeat_gap_ms_while_pdf_busy": 111.411897,
+  "maximum_native_composer_rows": 100,
+  "maximum_native_picker_rows": 30,
+  "maximum_native_preview_rows": 100,
+  "maximum_unchanged_editor_page_click_ms": 207.919796,
+  "pdf_busy_responsiveness_threshold_ms": 250,
+  "phase_heartbeats": {
+    "0": {
+      "maximum_gap_ms": 43.948926,
+      "ticks": 1
+    },
+    "1": {
+      "maximum_gap_ms": 205.440495,
+      "ticks": 22
+    },
+    "10": {
+      "maximum_gap_ms": 382.69568100000004,
+      "ticks": 57
+    },
+    "11": {
+      "maximum_gap_ms": 285.100822,
+      "ticks": 13
+    },
+    "12": {
+      "maximum_gap_ms": 206.75716,
+      "ticks": 11
+    },
+    "2": {
+      "maximum_gap_ms": 184.712752,
+      "ticks": 7
+    },
+    "20": {
+      "maximum_gap_ms": 49.666456999999994,
+      "ticks": 24
+    },
+    "21": {
+      "maximum_gap_ms": 43.536985,
+      "ticks": 5
+    },
+    "22": {
+      "maximum_gap_ms": 33.371532,
+      "ticks": 8
+    },
+    "23": {
+      "maximum_gap_ms": 91.838441,
+      "ticks": 14
+    },
+    "24": {
+      "maximum_gap_ms": 88.73985400000001,
+      "ticks": 14
+    },
+    "25": {
+      "maximum_gap_ms": 37.095101,
+      "ticks": 9
+    },
+    "26": {
+      "maximum_gap_ms": 40.300123,
+      "ticks": 8
+    },
+    "27": {
+      "maximum_gap_ms": 409.772065,
+      "ticks": 8
+    },
+    "28": {
+      "maximum_gap_ms": 35.245627,
+      "ticks": 9
+    },
+    "3": {
+      "maximum_gap_ms": 117.962105,
+      "ticks": 502
+    },
+    "30": {
+      "maximum_gap_ms": 810.166413,
+      "ticks": 15
+    },
+    "31": {
+      "maximum_gap_ms": 168.86076,
+      "ticks": 7
+    },
+    "32": {
+      "maximum_gap_ms": 159.922704,
+      "ticks": 12
+    },
+    "4": {
+      "maximum_gap_ms": 36.938427000000004,
+      "ticks": 14
+    },
+    "40": {
+      "maximum_gap_ms": 20.563419,
+      "ticks": 9
+    },
+    "41": {
+      "maximum_gap_ms": 20.444729,
+      "ticks": 17
+    },
+    "42": {
+      "maximum_gap_ms": 90.643666,
+      "ticks": 15
+    },
+    "5": {
+      "maximum_gap_ms": 111.316252,
+      "ticks": 23
+    },
+    "6": {
+      "maximum_gap_ms": 20.100986000000002,
+      "ticks": 2
+    },
+    "7": {
+      "maximum_gap_ms": 24.532577,
+      "ticks": 8
+    },
+    "8": {
+      "maximum_gap_ms": 38.526962,
+      "ticks": 9
+    },
+    "9": {
+      "maximum_gap_ms": 111.411897,
+      "ticks": 54
+    }
+  },
+  "products": 50000,
+  "quote_lines": 1000,
+  "result": "passed",
+  "synthetic_only": true
+}

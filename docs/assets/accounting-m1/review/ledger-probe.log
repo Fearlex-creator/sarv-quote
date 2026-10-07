@@ -1,0 +1,5 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+   Compiling sarv-independent-review-probe v0.0.0 (/workspace/sarv-review-probe)
+    Finished `dev` profile [unoptimized] target(s) in 2.30s
+     Running `sarv-quote/target/debug/sarv-independent-review-probe /workspace/sarv-evidence/independent-ledger-final`
+PASS independent expected 1251 -> 1600 -> 1251 IRR; archived reversal c2c2ae82-43ab-44dd-8a71-873c1c55df57; different-key retry journal count 1; conflicted/unbalanced/locked/direct-history/direct-unlock/second-opening rejected; restart+fresh restore exact; signed range toman roundtrip and Persian digits exact.

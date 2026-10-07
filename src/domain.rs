@@ -790,16 +790,22 @@ pub struct State {
     pub draft: Draft,
     #[serde(default, skip_serializing_if = "Settings::is_default")]
     pub settings: Settings,
+    #[serde(
+        default,
+        skip_serializing_if = "crate::accounting::AccountingState::is_empty"
+    )]
+    pub accounting: crate::accounting::AccountingState,
 }
 impl Default for State {
     fn default() -> Self {
         Self {
-            schema: 1,
+            schema: 2,
             catalogs: vec![],
             customers: vec![],
             quotes: vec![],
             draft: Draft::default(),
             settings: Settings::default(),
+            accounting: crate::accounting::AccountingState::default(),
         }
     }
 }
@@ -1269,7 +1275,12 @@ impl State {
     }
     pub fn validate(&self) -> Result<()> {
         self.settings.validate()?;
-        ensure!(self.schema == 1, "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(matches!(self.schema, 1 | 2), "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(
+            self.schema == 2 || self.accounting.is_empty(),
+            "دفتر حسابداری نیازمند نسخهٔ دادهٔ ۲ است"
+        );
+        self.accounting.validate()?;
         ensure!(
             self.catalogs.len() <= 1000
                 && self.customers.len() <= 100_000

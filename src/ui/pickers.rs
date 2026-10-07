@@ -124,12 +124,12 @@ fn result_row(title: &str, subtitle: &str) -> adw::ActionRow {
 fn product_details(product: &Product, unit: Unit, settings: &Settings) -> String {
     format!(
         "{} • {} • {}\nمنبع {} • واحد منبع {}",
-        product.code,
+        ltr(&product.code),
         product.measure,
         settings
             .display_digits
             .format(unit.display(product.price_rial)),
-        settings.date_display.format(&product.source_at),
+        ltr(&settings.date_display.format(&product.source_at)),
         product.source_unit.label()
     )
 }
@@ -149,6 +149,9 @@ fn picker_shell(
     root.set_margin_start(12);
     root.set_margin_end(12);
     let search = gtk::SearchEntry::new();
+    // Search is indexed and results are bounded to 30 rows. Keep a short
+    // debounce for Persian typing without spending the lookup budget waiting.
+    search.set_search_delay(80);
     search.set_widget_name(name);
     search.set_placeholder_text(Some(placeholder));
     accessible_name(&search, placeholder);

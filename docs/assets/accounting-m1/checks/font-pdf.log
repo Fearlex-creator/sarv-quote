@@ -1,0 +1,8 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+    Finished `test` profile [unoptimized] target(s) in 0.95s
+     Running unittests src/main.rs (target/debug/deps/sarv_quote-d06047d5ef32788b)
+
+running 1 test
+test ui::background::tests::four_row_business_quote_with_native_fonts_fits_one_a4_page ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 8 filtered out; finished in 0.10s

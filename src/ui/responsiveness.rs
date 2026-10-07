@@ -120,6 +120,12 @@ struct Probe {
     maximum_composer_rows: usize,
     composer_list: Option<gtk::ListBox>,
     composer_generation: i64,
+    save_lock: Option<rusqlite::Connection>,
+    save_generation: i64,
+    save_started: Option<Instant>,
+    save_ticks: usize,
+    save_max_gap_ms: f64,
+    pending_editor_page: Option<(usize, i64, Instant)>,
 }
 
 impl Probe {
@@ -154,6 +160,12 @@ impl Probe {
             maximum_composer_rows: 0,
             composer_list: None,
             composer_generation: 0,
+            save_lock: None,
+            save_generation: 0,
+            save_started: None,
+            save_ticks: 0,
+            save_max_gap_ms: 0.,
+            pending_editor_page: None,
         }
     }
     fn advance(&mut self, stage: u8, delay_ms: u64) {
@@ -190,6 +202,8 @@ impl Probe {
             "heartbeat_ticks_while_pdf_busy": self.export_ticks,
             "maximum_heartbeat_gap_ms_while_pdf_busy": self.export_max_gap_ms,
             "pdf_busy_responsiveness_threshold_ms": 250,
+            "heartbeat_ticks_while_save_busy": self.save_ticks,
+            "maximum_heartbeat_gap_ms_while_save_busy": self.save_max_gap_ms,
             "heartbeat_gaps_over_100_ms": self.large_gaps,
             "editor_page_clicks": self.page_clicks,
             "maximum_unchanged_editor_page_click_ms": self.page_clicks.iter()
@@ -199,7 +213,7 @@ impl Probe {
             "final_window_allocation": [ui.window.width(), ui.window.height()],
             "checks": self.checks,
             "failure": error,
-            "limitations": ["Synthetic scale fixture, not production customer data", "Changed draft saves, SQLite commit, snapshot copies and composer preparation can still block GTK; global and per-phase gaps are reported rather than hidden", "No Wayland, physical printer or target desktop packaging certification"]
+            "limitations": ["Synthetic scale fixture, not production customer data", "Explicit and automatic draft persistence validation, serialization and SQLite commit run on one bounded worker; GTK still clones the snapshot and some dependent document commands, catalog acceptance, replacements and row rebuilds remain synchronous. Global and per-phase gaps are reported rather than hidden; the 50ms overall budget is not accepted", "Injected lock is a responsiveness fixture, not hardware power-loss proof", "No Wayland, physical printer or target desktop packaging certification"]
         });
         let path = ui
             .store
@@ -415,9 +429,170 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 "1000_line_store_commit_and_first_100_editor_widget_creation",
                 begin,
             );
-            p.advance(10, 1000);
+            p.advance(60, 1000);
+        }
+        60 => {
+            smoke::capture(&ui.window, &directory.join("native-save-before.png"))?;
+            let connection = rusqlite::Connection::open(directory.join("sarv.sqlite3"))?;
+            connection.execute_batch("BEGIN IMMEDIATE;")?;
+            p.save_lock = Some(connection);
+            p.save_generation = persisted_generation(ui)?;
+            ui.customer.set_text("نسخهٔ نخست ذخیرهٔ ساختگی");
+            p.save_started = Some(Instant::now());
+            p.heartbeat_last = Instant::now();
+            let dispatched = Instant::now();
+            ui.save_form_async();
+            p.elapsed(
+                "50000_catalog_1000_line_save_dispatch_main_thread",
+                dispatched,
+            );
+            ensure!(
+                ui.persistence_busy.get(),
+                "native save did not dispatch worker"
+            );
+            ui.save_form_async();
+            p.advance(61, 150);
+        }
+        61 => {
+            ensure!(
+                ui.persistence_busy.get(),
+                "SQLite lock did not hold save worker"
+            );
+            ensure!(
+                ui.store.borrow_mut().change(|_| Ok(())).is_err(),
+                "mutation allowed before persistence receipt"
+            );
+            ui.customer.set_text("نسخهٔ تازه در زمان ذخیرهٔ ساختگی");
+            ui.row_editors.borrow()[0].quantity.set_text("نامعتبر");
+            ui.stack.set_visible_child_name("settings");
+            ensure!(
+                ui.stack.visible_child_name().as_deref() == Some("settings"),
+                "navigation blocked while save waits for SQLite"
+            );
+            ui.stack.set_visible_child_name("order");
+            p.save_lock
+                .take()
+                .context("save lock missing")?
+                .execute_batch("ROLLBACK;")?;
+            p.advance(62, 100);
+        }
+        62 => {
+            if ui.persistence_busy.get() {
+                return Ok(());
+            }
+            ensure!(
+                ui.row_editors.borrow()[0].quantity.text() == "نامعتبر",
+                "older save receipt replaced invalid newer input"
+            );
+            ensure!(
+                ui.customer.text() == "نسخهٔ تازه در زمان ذخیرهٔ ساختگی",
+                "older save receipt replaced newer customer input"
+            );
+            ensure!(
+                persisted_generation(ui)? == p.save_generation + 1,
+                "double save duplicated commits or invalid input persisted"
+            );
+            let focus = gtk::prelude::GtkWindowExt::focus(&ui.window)
+                .context("invalid field not focused")?;
+            ensure!(
+                focus.is_ancestor(&ui.row_editors.borrow()[0].quantity),
+                "invalid quantity not focused after asynchronous receipt"
+            );
+            ui.row_editors.borrow()[0].quantity.set_text("1");
+            ui.save_form_async();
+            p.advance(63, 100);
+        }
+        63 => {
+            if ui.persistence_busy.get() {
+                return Ok(());
+            }
+            ensure!(
+                persisted_generation(ui)? == p.save_generation + 2,
+                "latest valid edits not saved exactly once"
+            );
+            let reopened = Store::open(&directory)?;
+            ensure!(
+                reopened.state.draft.customer == "نسخهٔ تازه در زمان ذخیرهٔ ساختگی"
+                    && reopened.state.draft.lines.len() == 1000
+                    && reopened.state.draft.lines[0].quantity_milli == 1000,
+                "worker save restart integrity failed"
+            );
+            ensure!(p.save_ticks >= 3, "save worker heartbeat not observed");
+            let started = p.save_started.take().context("save timer missing")?;
+            p.elapsed(
+                "locked_worker_save_newer_invalid_edit_and_recovery",
+                started,
+            );
+            p.checks.push("Native Save dispatches bounded worker; double save commits once; SQLite lock leaves GTK navigation live; old receipt preserves newer invalid input and focuses quantity; recovery saves latest edits; reopened profile retains all1,000 lines".into());
+            // The save completion can rebuild rows in this same main-loop
+            // iteration. Wait for GTK allocation before taking native pixels.
+            p.advance(64, 200);
+        }
+        64 => {
+            let rows = ui.row_editors.borrow();
+            rows[0].quantity.grab_focus();
+            rows[0].quantity.select_region(0, 1);
+            drop(rows);
+            let generation = persisted_generation(ui)?;
+            button_named(&ui.window, "ذخیرهٔ پیش‌نویس")?.emit_clicked();
+            ensure!(
+                persisted_generation(ui)? == generation,
+                "explicit unchanged Save created an extra commit"
+            );
+            p.advance(65, 200);
+        }
+        65 => {
+            let amount = named::<gtk::Label>(&ui.review, "quote-row-amount-0")?;
+            let store = ui.store.borrow();
+            let expected = store.state.settings.display_digits.format(
+                store
+                    .state
+                    .draft
+                    .display_unit
+                    .display(100_001)
+                    .trim_end_matches(store.state.draft.display_unit.label())
+                    .trim(),
+            );
+            ensure!(
+                amount.text() == expected,
+                "explicit Save left the edited row amount stale"
+            );
+            ensure!(
+                !ui.visual_pending.get(),
+                "explicit Save did not finish native review"
+            );
+            let quantity = ui.row_editors.borrow()[0].quantity.clone();
+            let focus = gtk::prelude::GtkWindowExt::focus(&ui.window)
+                .context("explicit Save lost native focus")?;
+            ensure!(
+                focus.is_ancestor(&quantity) && quantity.selection_bounds() == Some((0, 1)),
+                "explicit Save lost quantity focus or selection"
+            );
+            drop(store);
+            p.checks.push("Actual explicit Save refreshes exact100,001rial first-row amount, clears review pending, preserves native quantity focus and selection, and does not duplicate an unchanged commit".into());
+            smoke::capture(&ui.window, &directory.join("native-save-after.png"))?;
+            p.advance(10, 300);
         }
         10 => {
+            if let Some((page, before, started)) = p.pending_editor_page {
+                if ui.persistence_busy.get() {
+                    return Ok(());
+                }
+                ensure!(
+                    ui.table_page.get() == page + 1,
+                    "deferred page navigation failed"
+                );
+                let after = persisted_generation(ui)?;
+                ensure!(
+                    after == before + i64::from(page == 0),
+                    "page save commit mismatch"
+                );
+                p.page_clicks.push(serde_json::json!({"direction":"next", "from_page":page + 1,
+                    "draft_changed":page == 0, "generation_before":before,
+                    "generation_after":after, "duration_ms":started.elapsed().as_secs_f64()*1000.}));
+                p.pending_editor_page = None;
+                return Ok(());
+            }
             ensure!(
                 ui.store.borrow().state.draft.lines.len() == 1000,
                 "canonical 1,000 lines lost"
@@ -434,20 +609,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 let before = persisted_generation(ui)?;
                 let started = Instant::now();
                 button_named(&ui.review, "بعدی")?.emit_clicked();
-                let elapsed = started.elapsed().as_secs_f64() * 1000.;
-                let after = persisted_generation(ui)?;
-                ensure!(
-                    after == before + i64::from(page == 0),
-                    "editor next page changed generation without edits or failed to persist first-page edit"
-                );
-                p.page_clicks
-                    .push(serde_json::json!({"direction":"next", "from_page":page + 1,
-                    "draft_changed":page == 0, "generation_before":before,
-                    "generation_after":after, "duration_ms":elapsed}));
-                ensure!(
-                    ui.row_editors.borrow().len() <= 100,
-                    "editor page exceeded 100 rows"
-                );
+                p.pending_editor_page = Some((page, before, started));
                 return Ok(());
             }
             ensure!(
@@ -940,6 +1102,10 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
         let timing = p.phase_heartbeats.entry(stage).or_insert((0, 0.));
         timing.0 += 1;
         timing.1 = timing.1.max(gap);
+        if ui.persistence_busy.get() {
+            p.save_ticks += 1;
+            p.save_max_gap_ms = p.save_max_gap_ms.max(gap);
+        }
         let pdf_busy = p.export_started.is_some() && !p.export_done && ui.background_busy.get();
         if gap > 100. {
             p.large_gaps

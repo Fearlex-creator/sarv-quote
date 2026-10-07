@@ -1,0 +1,4 @@
+   Compiling sarv-independent-review-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-review)
+    Finished `dev` profile [unoptimized] target(s) in 0.36s
+     Running `target/debug/sarv-independent-report-probe /workspace/sarv-evidence/independent-report-final`
+PASS long-code report generated; exact1251 IRR/125.1 toman; unsupported row/header rejected without destination publication; CSV fallback complete. Actual PDF render/text inspection pending.
