@@ -1,0 +1,30 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-quote-final-checkpoint",
+  "sha256": "65bedf489894bd6435b57a9919fadf0a31e2e1d9809f97089212dbf43bfc4378",
+  "native_report": "/workspace/sarv-evidence/native-M2-before-fresh/synthetic-profile/native-responsiveness-verification.json",
+  "functional_result": "passed",
+  "strict_budgets": {
+    "maximum_heartbeat_gap_ms": {
+      "actual": 880.528933,
+      "budget": 50,
+      "passes": false
+    },
+    "unchanged_editor_page_ms": {
+      "actual": 280.146133,
+      "budget": 150,
+      "passes": false
+    },
+    "pdf_busy_heartbeat_ms": {
+      "actual": 124.527388,
+      "budget": 50,
+      "passes": false
+    }
+  },
+  "measurement": "n=1 complete native workflow; timer gaps include observer and scheduling; no p95 claim",
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "limits": [
+    "private X11/Cairo executor; Wayland and physical desktop untested",
+    "20 ms heartbeat is a responsiveness proxy, not a continuous CPU trace",
+    "probe screenshots and setup are included in global gaps"
+  ]
+}

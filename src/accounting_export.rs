@@ -1,7 +1,7 @@
 //! Snapshot exports for the bounded manual ledger. All amounts are exact IRR.
 use crate::{
     accounting::{MoneyUnit, TrialBalance},
-    domain::{ltr, text},
+    domain::{DateDisplay, ltr, text},
     export::safe_cell,
     store::write_new,
 };
@@ -42,7 +42,25 @@ pub fn trial_csv(
     unit: MoneyUnit,
     path: &Path,
 ) -> Result<()> {
+    trial_csv_with_dates(company, balance, unit, DateDisplay::Iso, path)
+}
+
+pub fn trial_csv_with_dates(
+    company: &str,
+    balance: &TrialBalance,
+    unit: MoneyUnit,
+    dates: DateDisplay,
+    path: &Path,
+) -> Result<()> {
     validate(company, balance)?;
+    let displayed_cutoff = if dates == DateDisplay::Jalali {
+        crate::calendar::format_date(
+            crate::calendar::parse_date(&balance.as_of, crate::calendar::Calendar::Gregorian)?,
+            crate::calendar::Calendar::Jalali,
+        )?
+    } else {
+        dates.format(&balance.as_of)
+    };
     let mut writer = csv::Writer::from_writer(Vec::new());
     writer.write_record([
         "company_id",
@@ -59,6 +77,8 @@ pub fn trial_csv(
         "credit_irr",
         "display_debit",
         "display_credit",
+        "display_calendar",
+        "display_as_of",
     ])?;
     for row in &balance.rows {
         writer.write_record([
@@ -80,6 +100,11 @@ pub fn trial_csv(
             row.credit.rials().to_string(),
             row.debit.display(unit),
             row.credit.display(unit),
+            match dates {
+                DateDisplay::Jalali => "jalali".into(),
+                _ => "gregorian".into(),
+            },
+            safe_cell(&displayed_cutoff),
         ])?;
     }
     let mut bytes = vec![0xef, 0xbb, 0xbf];
@@ -123,10 +148,28 @@ pub fn trial_pdf(
     unit: MoneyUnit,
     path: &Path,
 ) -> Result<()> {
+    trial_pdf_with_dates(company, balance, unit, DateDisplay::Iso, path)
+}
+
+pub fn trial_pdf_with_dates(
+    company: &str,
+    balance: &TrialBalance,
+    unit: MoneyUnit,
+    dates: DateDisplay,
+    path: &Path,
+) -> Result<()> {
     validate(company, balance)?;
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
     let map = pangocairo::FontMap::new();
+    let cutoff = if dates == DateDisplay::Jalali {
+        let date =
+            crate::calendar::parse_date(&balance.as_of, crate::calendar::Calendar::Gregorian)?;
+        let shown = crate::calendar::format_date(date, crate::calendar::Calendar::Jalali)?;
+        format!("شمسی {} • میلادی {}", ltr(&shown), ltr(&balance.as_of))
+    } else {
+        format!("میلادی {}", ltr(&dates.format(&balance.as_of)))
+    };
     let heading = |page: usize| -> Result<f64> {
         cr.set_source_rgb(0.08, 0.12, 0.16);
         let h = draw(
@@ -142,8 +185,8 @@ pub fn trial_pdf(
             &cr,
             &map,
             &format!(
-                "تا تاریخ میلادی {} • واحد: {} • پایه IRR\nهمهٔ اسناد ثبت‌شده و برگشت‌ها از ابتدای دفتر • صفحه {page}",
-                ltr(&balance.as_of),
+                "تا تاریخ {} • واحد: {} • پایه IRR\nهمهٔ اسناد ثبت‌شده و برگشت‌ها از ابتدای دفتر • صفحه {page}",
+                cutoff,
                 unit_name(unit)
             ),
             (36.0, y, 523.0),

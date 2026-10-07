@@ -1,0 +1,420 @@
+{
+  "format": "sarv-accounting-backup-v3",
+  "checksum": "fcb148c9b3edfb1c94ba407c6cea5dfb08ef2fed2ea934dbfd5166842409cd30",
+  "state": {
+    "schema": 3,
+    "catalogs": [],
+    "customers": [],
+    "quotes": [],
+    "draft": {
+      "series": "9a06a2c4-4788-425e-8f9b-4027e58e27b7",
+      "catalog_id": "",
+      "customer": "",
+      "phone": "",
+      "lines": [],
+      "discount_rial": 0,
+      "display_unit": "Toman",
+      "stale_ack": false,
+      "quote_date": "2026-10-07"
+    },
+    "settings": {
+      "business_name": "",
+      "business_phone": "",
+      "business_address": "",
+      "header": "",
+      "footer": "",
+      "default_terms": "",
+      "default_currency": "Toman",
+      "quote_prefix": "Q-",
+      "next_number": 1,
+      "default_validity_days": 7,
+      "default_discount_rial": 0,
+      "tax_basis_points": 0,
+      "appearance": "System",
+      "density": "Comfortable",
+      "display_digits": "Persian",
+      "date_display": "Jalali"
+    },
+    "accounting": {
+      "companies": [
+        {
+          "id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "name": "شرکت ساختگی سرو • آزمون دفتر"
+        }
+      ],
+      "periods": [
+        {
+          "id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "name": "سال مالی ساختگی ۱۴۰۵",
+          "start_date": "2026-03-21",
+          "end_date": "2027-03-20",
+          "locked": false
+        }
+      ],
+      "accounts": [
+        {
+          "id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "parent_id": null,
+          "code": "1001",
+          "name": "دارایی ساختگی",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "parent_id": null,
+          "code": "3001",
+          "name": "سرمایهٔ ساختگی",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        }
+      ],
+      "journals": [
+        {
+          "id": "08191186-65e5-4e2a-9819-b29c89a72faa",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "period_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "date": "2026-03-21",
+          "source_id": "SYN-OPEN",
+          "source_revision": 1,
+          "event": "manual-entry",
+          "actor": "local-single-user",
+          "reason": "ثبت ساختگی؛ هیچ دادهٔ واقعی نیست",
+          "kind": "Opening",
+          "lines": [
+            {
+              "account": {
+                "id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+                "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی ساختگی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1251,
+              "credit": 0,
+              "description": ""
+            },
+            {
+              "account": {
+                "id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+                "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایهٔ ساختگی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1251,
+              "description": ""
+            }
+          ],
+          "recorded_at": "2026-10-07T17:27:22.956698594+00:00"
+        },
+        {
+          "id": "306de0d0-aed6-48af-b909-0ca944d625f5",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "period_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "date": "2026-04-21",
+          "source_id": "SYN-ADJUST",
+          "source_revision": 1,
+          "event": "manual-entry",
+          "actor": "local-single-user",
+          "reason": "ثبت ساختگی؛ هیچ دادهٔ واقعی نیست",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+                "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی ساختگی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": ""
+            },
+            {
+              "account": {
+                "id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+                "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایهٔ ساختگی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": ""
+            }
+          ],
+          "recorded_at": "2026-10-07T17:27:23.350862588+00:00"
+        },
+        {
+          "id": "c4bdc9e5-f3c0-48b9-8c35-d39d7fab0115",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "period_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "date": "2026-04-22",
+          "source_id": "306de0d0-aed6-48af-b909-0ca944d625f5",
+          "source_revision": 1,
+          "event": "reversal",
+          "actor": "local-single-user",
+          "reason": "اصلاح آزمایشی • حفظ اصل سند",
+          "kind": {
+            "Reversal": {
+              "journal_id": "306de0d0-aed6-48af-b909-0ca944d625f5"
+            }
+          },
+          "lines": [
+            {
+              "account": {
+                "id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+                "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی ساختگی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": ""
+            },
+            {
+              "account": {
+                "id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+                "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایهٔ ساختگی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": ""
+            }
+          ],
+          "recorded_at": "2026-10-07T17:27:24.219565364+00:00"
+        }
+      ],
+      "requests": [
+        {
+          "command": {
+            "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+            "period_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+            "date": "2026-03-21",
+            "source_id": "SYN-OPEN",
+            "source_revision": 1,
+            "event": "manual-entry",
+            "request_key": "3de8ae33-e5ca-4ffb-9d84-f0f36830ff2f",
+            "actor": "local-single-user",
+            "reason": "ثبت ساختگی؛ هیچ دادهٔ واقعی نیست",
+            "kind": "Opening",
+            "lines": [
+              {
+                "account_id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+                "debit": 1251,
+                "credit": 0,
+                "description": ""
+              },
+              {
+                "account_id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+                "debit": 0,
+                "credit": 1251,
+                "description": ""
+              }
+            ]
+          },
+          "journal_id": "08191186-65e5-4e2a-9819-b29c89a72faa"
+        },
+        {
+          "command": {
+            "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+            "period_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+            "date": "2026-04-21",
+            "source_id": "SYN-ADJUST",
+            "source_revision": 1,
+            "event": "manual-entry",
+            "request_key": "0852713e-7505-49e9-9ac8-0965572c9e1f",
+            "actor": "local-single-user",
+            "reason": "ثبت ساختگی؛ هیچ دادهٔ واقعی نیست",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+                "debit": 349,
+                "credit": 0,
+                "description": ""
+              },
+              {
+                "account_id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+                "debit": 0,
+                "credit": 349,
+                "description": ""
+              }
+            ]
+          },
+          "journal_id": "306de0d0-aed6-48af-b909-0ca944d625f5"
+        },
+        {
+          "command": {
+            "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+            "period_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+            "date": "2026-04-22",
+            "source_id": "306de0d0-aed6-48af-b909-0ca944d625f5",
+            "source_revision": 1,
+            "event": "reversal",
+            "request_key": "ef3380c5-3207-4562-b2a8-81eb299ef096",
+            "actor": "local-single-user",
+            "reason": "اصلاح آزمایشی • حفظ اصل سند",
+            "kind": {
+              "Reversal": {
+                "journal_id": "306de0d0-aed6-48af-b909-0ca944d625f5"
+              }
+            },
+            "lines": [
+              {
+                "account_id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+                "debit": 0,
+                "credit": 349,
+                "description": ""
+              },
+              {
+                "account_id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+                "debit": 349,
+                "credit": 0,
+                "description": ""
+              }
+            ]
+          },
+          "journal_id": "c4bdc9e5-f3c0-48b9-8c35-d39d7fab0115"
+        }
+      ],
+      "audit": [
+        {
+          "id": "b615cc21-9a53-4e34-82ac-f65c8492f114",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "operation": "CompanyCreated",
+          "actor": "local-single-user",
+          "reason": "ایجاد کسب‌وکار",
+          "recorded_at": "2026-10-07T17:27:21.412397020+00:00"
+        },
+        {
+          "id": "1c3081e8-a96f-4f0c-ae89-45a78d56041e",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "operation": "PeriodCreated",
+          "actor": "local-single-user",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T17:27:21.746347807+00:00"
+        },
+        {
+          "id": "8cc83116-3ff2-4f08-aad4-6208c4e56d8f",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "ff509948-9a29-4170-a09c-ea8c47eccac4",
+          "operation": "AccountCreated",
+          "actor": "local-single-user",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T17:27:22.159910839+00:00"
+        },
+        {
+          "id": "9dfd0a32-9351-4b1a-9e88-3044ad07124d",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "4c5aef74-f4fa-4f35-add1-3b0cd4f06764",
+          "operation": "AccountCreated",
+          "actor": "local-single-user",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T17:27:22.549760072+00:00"
+        },
+        {
+          "id": "83f78b49-aab6-4d29-b9c4-3112c7a30f1b",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "08191186-65e5-4e2a-9819-b29c89a72faa",
+          "operation": "JournalPosted",
+          "actor": "local-single-user",
+          "reason": "ثبت ساختگی؛ هیچ دادهٔ واقعی نیست",
+          "recorded_at": "2026-10-07T17:27:22.956698594+00:00"
+        },
+        {
+          "id": "9d4fdbde-0733-43a6-91a9-cea58502d3d6",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "306de0d0-aed6-48af-b909-0ca944d625f5",
+          "operation": "JournalPosted",
+          "actor": "local-single-user",
+          "reason": "ثبت ساختگی؛ هیچ دادهٔ واقعی نیست",
+          "recorded_at": "2026-10-07T17:27:23.350862588+00:00"
+        },
+        {
+          "id": "71166556-e07e-44a5-bc97-c5f4f53fa189",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "c4bdc9e5-f3c0-48b9-8c35-d39d7fab0115",
+          "operation": "JournalPosted",
+          "actor": "local-single-user",
+          "reason": "اصلاح آزمایشی • حفظ اصل سند",
+          "recorded_at": "2026-10-07T17:27:24.219565364+00:00"
+        },
+        {
+          "id": "948b0e1e-0e23-4bef-b383-c63edfa62244",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "operation": "PeriodLocked",
+          "actor": "local-single-user",
+          "reason": "قفل آزمایشی دوره",
+          "recorded_at": "2026-10-07T17:27:24.545553099+00:00"
+        },
+        {
+          "id": "3f6d9aa9-0b87-4298-9e90-4524e741d20f",
+          "company_id": "66b278e2-9dcb-487d-8762-cbe96dd28de7",
+          "entity_id": "101a4bfd-4797-4626-8b4c-60dbbaf6c673",
+          "operation": "PeriodReopened",
+          "actor": "local-single-user",
+          "reason": "بازگشایی آزمایشی با دلیل",
+          "recorded_at": "2026-10-07T17:27:24.947626616+00:00"
+        }
+      ]
+    }
+  }
+}

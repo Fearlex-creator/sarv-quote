@@ -1,6 +1,7 @@
 //! Native command-driven accounting workspace. No GTK callback mutates ledger rows.
 use super::*;
 use sarv_quote::accounting::*;
+use sarv_quote::calendar::{Calendar, format_date, parse_date};
 use std::rc::Weak;
 use std::{
     panic::{AssertUnwindSafe, catch_unwind},
@@ -31,7 +32,8 @@ struct Page {
     report_busy: Cell<bool>,
     report_revision: Cell<u64>,
     unit: gtk::DropDown,
-    as_of: gtk::Entry,
+    as_of: DateField,
+    date_preference: Cell<DateDisplay>,
     journal_page: Cell<usize>,
     journal_account_filter: RefCell<Option<String>>,
     refreshing: Cell<bool>,
@@ -86,20 +88,198 @@ fn amount_unit(d: &gtk::DropDown) -> MoneyUnit {
         MoneyUnit::Toman
     }
 }
-fn date_value(e: &gtk::Entry) -> Result<String> {
-    let value = digits(e.text().trim());
-    let result = chrono::NaiveDate::parse_from_str(&value, "%Y-%m-%d")
+/// A financial date always names its input calendar. Switching calendars converts
+/// the date; it cannot reinterpret a typed year or alter a stored journal.
+#[derive(Clone)]
+pub(super) struct DateField {
+    pub(super) widget: gtk::Box,
+    pub(super) entry: gtk::Entry,
+    pub(super) calendar: gtk::DropDown,
+    display_digits: DisplayDigits,
+}
+impl DateField {
+    pub(super) fn set_canonical(&self, canonical: &str) -> Result<()> {
+        let value = if canonical.is_empty() {
+            String::new()
+        } else {
+            format_date(
+                parse_date(canonical, Calendar::Gregorian)?,
+                calendar_of(&self.calendar),
+            )?
+        };
+        self.entry.set_text(&self.display_digits.format(value));
+        Ok(())
+    }
+}
+fn calendar_of(choice: &gtk::DropDown) -> Calendar {
+    if choice.selected() == 1 {
+        Calendar::Jalali
+    } else {
+        Calendar::Gregorian
+    }
+}
+pub(super) fn date_field(ui: &Ui, caption: &str, name: &str, canonical: &str) -> DateField {
+    let settings = &ui.store.borrow().state.settings;
+    date_field_with_preferences(
+        settings.date_display,
+        settings.display_digits,
+        caption,
+        name,
+        canonical,
+    )
+}
+pub(super) fn date_field_with_preferences(
+    dates: DateDisplay,
+    display_digits: DisplayDigits,
+    caption: &str,
+    name: &str,
+    canonical: &str,
+) -> DateField {
+    let calendar = gtk::DropDown::from_strings(&["میلادی • YYYY-MM-DD", "هجری شمسی • YYYY/MM/DD"]);
+    calendar.set_widget_name(&format!("{name}-calendar"));
+    accessible_name(&calendar, &format!("تقویم {caption}"));
+    let selected = if dates == DateDisplay::Jalali {
+        Calendar::Jalali
+    } else {
+        Calendar::Gregorian
+    };
+    calendar.set_selected(u32::from(selected == Calendar::Jalali));
+    let value = parse_date(canonical, Calendar::Gregorian)
+        .and_then(|d| format_date(d, selected))
+        .unwrap_or_default();
+    let text = named_entry(caption, name, &display_digits.format(value), true);
+    text.set_placeholder_text(Some(if selected == Calendar::Jalali {
+        "1405/01/01"
+    } else {
+        "2026-03-21"
+    }));
+    // Keep the selector, entry and equivalence stacked so narrow dialogs do not
+    // obscure which calendar a field uses. Both controls remain in tab order.
+    let widget = column();
+    widget.append(&heading(caption));
+    widget.append(&calendar);
+    widget.append(&text);
+    let feedback = label("");
+    feedback.set_widget_name(&format!("{name}-equivalence"));
+    feedback.add_css_class("caption");
+    feedback.set_selectable(true);
+    widget.append(&feedback);
+    let current = Rc::new(Cell::new(selected));
+    let switching = Rc::new(Cell::new(false));
+    let entry = text.clone();
+    let hint = feedback.clone();
+    let prior = current.clone();
+    let blocked = switching.clone();
+    let title = caption.to_string();
+    calendar.connect_selected_notify(move |choice| {
+        if blocked.get() {
+            return;
+        }
+        let next = calendar_of(choice);
+        let previous = prior.get();
+        if previous == next {
+            return;
+        }
+        let result = if entry.text().trim().is_empty() {
+            Ok(String::new())
+        } else {
+            parse_date(&entry.text(), previous).and_then(|date| format_date(date, next))
+        };
+        match result {
+            Ok(value) => {
+                prior.set(next);
+                entry.set_placeholder_text(Some(if next == Calendar::Jalali {
+                    "1405/01/01"
+                } else {
+                    "2026-03-21"
+                }));
+                entry.set_text(&display_digits.format(value));
+                entry_validity(&entry, None, &title);
+            }
+            Err(error) => {
+                blocked.set(true);
+                choice.set_selected(u32::from(previous == Calendar::Jalali));
+                blocked.set(false);
+                let message = format!("{}؛ برای تغییر تقویم ابتدا تاریخ را اصلاح کنید", error);
+                hint.set_text(&message);
+                entry_validity(&entry, Some(&message), &title);
+                entry.grab_focus();
+            }
+        }
+    });
+    let choice = calendar.downgrade();
+    let hint = feedback.clone();
+    let title = caption.to_string();
+    let update = Rc::new(move |entry: &gtk::Entry| {
+        let Some(choice) = choice.upgrade() else {
+            return;
+        };
+        if entry.text().trim().is_empty() {
+            hint.set_text("سال، ماه و روز را در تقویم انتخاب‌شده وارد کنید؛ ارقام فارسی، عربی و لاتین پذیرفته می‌شوند.");
+            entry_validity(entry, None, &title);
+            return;
+        }
+        match parse_date(&entry.text(), calendar_of(&choice)) {
+            Ok(date) => {
+                let gregorian = date.format("%Y-%m-%d").to_string();
+                let jalali = format_date(date, Calendar::Jalali)
+                    .unwrap_or_else(|_| "خارج از دامنهٔ پشتیبانی".into());
+                hint.set_text(&format!(
+                    "شمسی: {} • میلادی: {}",
+                    isolate(&jalali),
+                    isolate(&gregorian)
+                ));
+                entry_validity(entry, None, &title);
+            }
+            Err(error) => {
+                hint.set_text(&error.to_string());
+                entry_validity(entry, Some(&error.to_string()), &title);
+            }
+        }
+    });
+    update(&text);
+    text.connect_changed(move |entry| update(entry));
+    DateField {
+        widget,
+        entry: text,
+        calendar,
+        display_digits,
+    }
+}
+fn clear_date_error_on_edit(field: &DateField, error: &gtk::Label) {
+    let error = error.downgrade();
+    field.entry.connect_changed(move |_| {
+        if let Some(error) = error.upgrade() {
+            error.set_visible(false);
+        }
+    });
+}
+pub(super) fn date_value(field: &DateField) -> Result<String> {
+    let result = parse_date(&field.entry.text(), calendar_of(&field.calendar))
         .map(|date| date.format("%Y-%m-%d").to_string())
-        .map_err(|_| anyhow::anyhow!("تاریخ میلادی معتبر به قالب YYYY-MM-DD وارد کنید"));
+        .map_err(anyhow::Error::from);
     entry_validity(
-        e,
+        &field.entry,
         result.as_ref().err().map(|e| e.to_string()).as_deref(),
-        "تاریخ مالی میلادی • YYYY-MM-DD",
+        "تاریخ مالی در تقویم انتخاب‌شده",
     );
     if result.is_err() {
-        e.grab_focus();
+        field.entry.grab_focus();
     }
     result
+}
+fn financial_date(ui: &Ui, canonical: &str) -> String {
+    let settings = &ui.store.borrow().state.settings;
+    let value = managers::display_date(canonical, settings.display_digits, settings.date_display);
+    format!(
+        "{} {}",
+        isolate(&value),
+        if settings.date_display == DateDisplay::Jalali {
+            "شمسی"
+        } else {
+            "میلادی"
+        }
+    )
 }
 fn money_value(e: &gtk::Entry, unit: MoneyUnit) -> Result<Money> {
     let input = e.text();
@@ -208,14 +388,53 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let tabs = gtk::Stack::new();
     tabs.set_vexpand(true);
     tabs.set_transition_type(gtk::StackTransitionType::Crossfade);
-    let switcher = gtk::StackSwitcher::new();
-    switcher.set_stack(Some(&tabs));
-    let switch_scroll = gtk::ScrolledWindow::builder()
-        .child(&switcher)
-        .hscrollbar_policy(gtk::PolicyType::Automatic)
-        .vscrollbar_policy(gtk::PolicyType::Never)
+    // GTK StackSwitcher keeps a single wide row. A native wrapping tab list
+    // keeps every destination visible at narrow widths and enlarged text.
+    let switcher = gtk::FlowBox::builder()
+        .accessible_role(gtk::AccessibleRole::TabList)
+        .selection_mode(gtk::SelectionMode::None)
+        .min_children_per_line(1)
+        .max_children_per_line(5)
+        .column_spacing(6)
+        .row_spacing(6)
         .build();
-    root.append(&switch_scroll);
+    switcher.set_widget_name("accounting-tabs");
+    accessible_name(&switcher, "بخش‌های دفتر حسابداری");
+    for (name, title) in [
+        ("setup", "شرکت و دوره"),
+        ("chart", "کدینگ"),
+        ("journals", "اسناد"),
+        ("trial", "تراز آزمایشی"),
+        ("audit", "تاریخچه"),
+    ] {
+        let tab = gtk::ToggleButton::builder()
+            .label(title)
+            .accessible_role(gtk::AccessibleRole::Tab)
+            .build();
+        tab.set_widget_name(&format!("accounting-tab-{name}"));
+        accessible_name(&tab, title);
+        let weak_stack = tabs.downgrade();
+        tab.connect_clicked(move |tab| {
+            if let Some(stack) = weak_stack.upgrade() {
+                tab.set_active(true);
+                stack.set_visible_child_name(name);
+            }
+        });
+        tab.connect_toggled(|tab| {
+            tab.update_state(&[gtk::accessible::State::Selected(Some(tab.is_active()))]);
+        });
+        let weak_tab = tab.downgrade();
+        tabs.connect_visible_child_name_notify(move |stack| {
+            if let Some(tab) = weak_tab.upgrade() {
+                tab.set_active(stack.visible_child_name().as_deref() == Some(name));
+            }
+        });
+        switcher.insert(&tab, -1);
+        if let Some(child) = tab.parent() {
+            child.set_focusable(false);
+        }
+    }
+    root.append(&switcher);
     let setup = column();
     let chart = column();
     let journals = column();
@@ -239,21 +458,22 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let audit_shell = column();
     audit_shell.append(&audit_search);
     audit_shell.append(&scroll(&audit));
-    let as_of = named_entry(
-        "تا تاریخ مالی میلادی",
+    let as_of = date_field(
+        ui,
+        "تا تاریخ مالی",
         "accounting-as-of",
         &chrono::Local::now().format("%Y-%m-%d").to_string(),
-        true,
     );
     let unit = gtk::DropDown::from_strings(&["ریال", "تومان"]);
     unit.set_widget_name("accounting-report-unit");
     accessible_name(&unit, "واحد نمایش گزارش");
     let report = column();
     let filter = actions();
-    filter.insert(&field("تا تاریخ مالی میلادی", &as_of), -1);
+    filter.insert(&as_of.widget, -1);
     filter.insert(&field("واحد نمایش", &unit), -1);
     let run = button("نمایش تراز آزمایشی");
     run.set_widget_name("accounting-run-trial");
+    run.set_valign(gtk::Align::Center);
     filter.insert(&run, -1);
     report.append(&filter);
     report.append(&scroll(&trial));
@@ -291,6 +511,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         search,
         unit,
         as_of,
+        date_preference: Cell::new(ui.store.borrow().state.settings.date_display),
         journal_page: Cell::new(0),
         journal_account_filter: RefCell::new(None),
         refreshing: Cell::new(false),
@@ -440,14 +661,25 @@ impl Page {
         let Some(ui) = self.ui.upgrade() else {
             return;
         };
+        let preference = ui.store.borrow().state.settings.date_display;
+        if self.date_preference.replace(preference) != preference {
+            self.as_of
+                .calendar
+                .set_selected(u32::from(preference == DateDisplay::Jalali));
+        }
         let previous = self.company_id();
         let companies = ui.store.borrow().state.accounting.companies.clone();
         self.refreshing.set(true);
         *self.company_ids.borrow_mut() = companies.iter().map(|c| c.id.clone()).collect();
-        let names = companies
-            .iter()
-            .map(|c| c.name.as_str())
-            .collect::<Vec<_>>();
+        let names = if companies.is_empty() {
+            vec!["شرکتی ساخته نشده است"]
+        } else {
+            companies
+                .iter()
+                .map(|c| c.name.as_str())
+                .collect::<Vec<_>>()
+        };
+        self.company.set_sensitive(!companies.is_empty());
         self.company.set_model(Some(&gtk::StringList::new(&names)));
         self.company.set_selected(
             previous
@@ -498,9 +730,9 @@ impl Page {
             let c = card();
             c.append(&heading(&period.name));
             c.append(&label(&format!(
-                "میلادی: {} تا {} • {}",
-                isolate(&period.start_date),
-                isolate(&period.end_date),
+                "{} تا {} • {}",
+                financial_date(&ui, &period.start_date),
+                financial_date(&ui, &period.end_date),
                 if period.locked {
                     "قفل‌شده"
                 } else {
@@ -746,11 +978,13 @@ impl Page {
         let (dialog, form, error, save) =
             form_dialog(&ui, "تعریف دورهٔ مالی", "accounting-period-dialog");
         let name = named_entry("عنوان دوره", "accounting-period-name", "", false);
-        let start = named_entry("شروع میلادی YYYY-MM-DD", "accounting-period-start", "", true);
-        let end = named_entry("پایان میلادی YYYY-MM-DD", "accounting-period-end", "", true);
+        let start = date_field(&ui, "شروع دورهٔ مالی", "accounting-period-start", "");
+        let end = date_field(&ui, "پایان دورهٔ مالی", "accounting-period-end", "");
+        clear_date_error_on_edit(&start, &error);
+        clear_date_error_on_edit(&end, &error);
         form.append(&field("عنوان دوره", &name));
-        form.append(&field("شروع میلادی • YYYY-MM-DD", &start));
-        form.append(&field("پایان میلادی • YYYY-MM-DD", &end));
+        form.append(&start.widget);
+        form.append(&end.widget);
         form.append(&label("مرزهای سال مالی را از سیاست شرکت خود وارد کنید. دورهٔ هم‌پوشان پذیرفته نمی‌شود؛ قفل دوره با بستن حساب‌ها متفاوت است."));
         let weak = Rc::downgrade(self);
         save.connect_clicked(move |save| {
@@ -967,9 +1201,10 @@ impl Page {
                     })
                     && (needle.is_empty()
                         || normalize(&format!(
-                            "{} {} {} {} {} {}",
+                            "{} {} {} {} {} {} {}",
                             j.id,
                             j.date,
+                            financial_date(&ui, &j.date),
                             j.source_id,
                             j.event,
                             j.reason,
@@ -1039,7 +1274,7 @@ impl Page {
             c.append(&heading(&format!(
                 "{} • {} • {}",
                 kind,
-                isolate(&journal.date),
+                financial_date(&ui, &journal.date),
                 if reversed {
                     "ثبت‌شده؛ دارای سند معکوس"
                 } else {
@@ -1091,9 +1326,9 @@ impl Page {
             d.close();
         });
         form.append(&label(&format!(
-            "شناسه: {}\nتاریخ مالی میلادی: {}\nثبت در UTC: {}\n{} • {}",
+            "شناسه: {}\nتاریخ مالی: {}\nثبت در UTC: {}\n{} • {}",
             isolate(&journal.id),
-            isolate(&journal.date),
+            financial_date(&ui, &journal.date),
             isolate(&journal.recorded_at),
             journal.actor,
             journal.reason
@@ -1289,9 +1524,9 @@ impl Page {
                     .map(|c| c.name.clone())
                     .unwrap_or_default();
                 self.trial.append(&heading(&format!(
-                    "{} • تا {} میلادی • {}",
+                    "{} • تا {} • {}",
                     name,
-                    isolate(&balance.as_of),
+                    financial_date(&ui, &balance.as_of),
                     unit_name
                 )));
                 self.trial.append(&label("دفتر کل دستی • فقط اسناد ثبت‌شده تا تاریخ مالی انتخاب‌شده؛ شامل سند معکوس • ماندهٔ بدهکار/بستانکار هر حساب. سیاست شناسایی و زیرسیستم‌ها پیکربندی نشده‌اند."));
@@ -1347,16 +1582,17 @@ impl Page {
                                 let balance = balance.clone();
                                 let company = company.clone();
                                 let output = path.clone();
+                                let dates = ui.store.borrow().state.settings.date_display;
                                 ui.run_background(
                                     "در حال ساخت خروجی تراز…",
                                     move || {
                                         if extension == "pdf" {
-                                            sarv_quote::accounting_export::trial_pdf(
-                                                &company, &balance, unit, &output,
+                                            sarv_quote::accounting_export::trial_pdf_with_dates(
+                                                &company, &balance, unit, dates, &output,
                                             )
                                         } else {
-                                            sarv_quote::accounting_export::trial_csv(
-                                                &company, &balance, unit, &output,
+                                            sarv_quote::accounting_export::trial_csv_with_dates(
+                                                &company, &balance, unit, dates, &output,
                                             )
                                         }
                                     },
@@ -1423,6 +1659,26 @@ impl Page {
         let (Some(ui), Some(company)) = (self.ui.upgrade(), self.company_id()) else {
             return;
         };
+        let source_locked = {
+            let store = ui.store.borrow();
+            let accounting = &store.state.accounting;
+            accounting
+                .journals
+                .iter()
+                .find(|journal| journal.id == journal_id)
+                .is_some_and(|journal| {
+                    accounting
+                        .periods
+                        .iter()
+                        .any(|period| period.id == journal.period_id && period.locked)
+                })
+        };
+        if source_locked {
+            ui.message(Err::<String, _>(anyhow::anyhow!(
+                "دورهٔ سند اصلی قفل است؛ برای سند معکوس ابتدا دوره را با دلیل بازگشایی کنید"
+            )));
+            return;
+        }
         let periods = ui
             .store
             .borrow()
@@ -1444,17 +1700,18 @@ impl Page {
                     format!(
                         "{} • {} تا {}",
                         p.name,
-                        isolate(&p.start_date),
-                        isolate(&p.end_date)
+                        financial_date(&ui, &p.start_date),
+                        financial_date(&ui, &p.end_date)
                     )
                 })
                 .collect::<Vec<_>>(),
         );
         picker.set_widget_name("accounting-reversal-period");
-        let date = named_entry("تاریخ مالی میلادی", "accounting-reversal-date", "", true);
+        let date = date_field(&ui, "تاریخ مالی", "accounting-reversal-date", "");
+        clear_date_error_on_edit(&date, &error);
         let reason = named_entry("دلیل معکوس", "accounting-reversal-reason", "", false);
         form.append(&field("دورهٔ مقصد", &picker));
-        form.append(&field("تاریخ مالی میلادی • YYYY-MM-DD", &date));
+        form.append(&date.widget);
         form.append(&field("دلیل ضروری", &reason));
         let request_key = id();
         let ids = periods.iter().map(|p| p.id.clone()).collect::<Vec<_>>();
@@ -1524,8 +1781,8 @@ impl Page {
                     format!(
                         "{} • {} تا {}",
                         p.name,
-                        isolate(&p.start_date),
-                        isolate(&p.end_date)
+                        financial_date(&ui, &p.start_date),
+                        financial_date(&ui, &p.end_date)
                     )
                 })
                 .collect::<Vec<_>>(),
@@ -1533,7 +1790,8 @@ impl Page {
         period.set_widget_name("accounting-journal-period");
         let kind = gtk::DropDown::from_strings(&["سند دستی", "افتتاحیهٔ دفتر کل"]);
         kind.set_widget_name("accounting-journal-kind");
-        let date = named_entry("تاریخ مالی میلادی", "accounting-journal-date", "", true);
+        let date = date_field(&ui, "تاریخ مالی", "accounting-journal-date", "");
+        clear_date_error_on_edit(&date, &error);
         let unit = gtk::DropDown::from_strings(&["ریال", "تومان"]);
         unit.set_widget_name("accounting-journal-unit");
         let source = named_entry(
@@ -1553,7 +1811,7 @@ impl Page {
         for (c, w) in [
             ("دورهٔ مالی", period.clone().upcast::<gtk::Widget>()),
             ("نوع سند", kind.clone().upcast()),
-            ("تاریخ مالی میلادی • YYYY-MM-DD", date.clone().upcast()),
+            ("", date.widget.clone().upcast()),
             ("واحد مبلغ‌های ورودی", unit.clone().upcast()),
             (
                 "شناسهٔ منبع • برای جلوگیری از ثبت دوباره",
@@ -1563,7 +1821,11 @@ impl Page {
             ("رویداد اقتصادی", event.clone().upcast()),
             ("شرح و دلیل ثبت", reason.clone().upcast()),
         ] {
-            form.append(&field(c, &w));
+            if c.is_empty() {
+                form.append(&w);
+            } else {
+                form.append(&field(c, &w));
+            }
         }
         form.append(&label("یک تومان = ده ریال؛ تا یک رقم اعشار تومان دقیق است. تغییر واحد ورودی، عددهای تایپ‌شده را تبدیل نمی‌کند. در هر ردیف فقط یک طرف، با مبلغ مثبت، وارد کنید."));
         let line_box = column();
@@ -1779,9 +2041,11 @@ fn audit_operation(operation: &AuditOperation) -> &'static str {
 // Opt-in native signal workflow on a fresh disposable synthetic profile only.
 // This proves widgets are connected; external keyboard/AT-SPI checks are separate.
 pub(super) fn schedule(ui: &Rc<Ui>) {
-    if std::env::var("SARV_ACCOUNTING_SMOKE").as_deref() != Ok("full") {
+    let mode = std::env::var("SARV_ACCOUNTING_SMOKE").unwrap_or_default();
+    if mode != "full" && mode != "jalali" {
         return;
     }
+    let jalali = mode == "jalali";
     let directory = ui.store.borrow().directory.clone();
     let safe = directory.canonicalize().is_ok_and(|p| {
         p.starts_with("/tmp")
@@ -1813,6 +2077,16 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
         let step: Result<bool> = (|| {
             match stage {
                 0 => {
+                    if jalali {
+                        ui.stack.set_visible_child_name("settings");
+                        qa_widget::<adw::ComboRow>(&ui.window, "settings-date-display")?
+                            .set_selected(2);
+                        qa_widget::<gtk::Button>(&ui.window, "save-settings")?.emit_clicked();
+                        anyhow::ensure!(
+                            ui.store.borrow().state.settings.date_display == DateDisplay::Jalali,
+                            "Jalali preference did not save via settings"
+                        );
+                    }
                     ui.stack.set_visible_child_name("accounting");
                     ui.split.set_show_content(true);
                 }
@@ -1832,13 +2106,50 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                     qa_widget::<gtk::Button>(&ui.window, "accounting-new-period")?.emit_clicked();
                     let d = qa_dialog(&ui)?;
                     for (name, value) in [
-                        ("accounting-period-name", "دورهٔ ساختگی ۲۰۲۶"),
-                        ("accounting-period-start", "2026-01-01"),
-                        ("accounting-period-end", "2026-12-31"),
+                        (
+                            "accounting-period-name",
+                            if jalali {
+                                "سال مالی ساختگی ۱۴۰۵"
+                            } else {
+                                "دورهٔ ساختگی ۲۰۲۶"
+                            },
+                        ),
+                        (
+                            "accounting-period-start",
+                            if jalali {
+                                "۱۴۰۵/۰۱/۰۱"
+                            } else {
+                                "2026-01-01"
+                            },
+                        ),
+                        (
+                            "accounting-period-end",
+                            if jalali {
+                                "۱۴۰۵/۱۲/۳۰"
+                            } else {
+                                "2026-12-31"
+                            },
+                        ),
                     ] {
                         qa_widget::<gtk::Entry>(&d, name)?.set_text(value);
                     }
-                    qa_widget::<gtk::Button>(&d, "accounting-period-dialog-save")?.emit_clicked();
+                    let save = qa_widget::<gtk::Button>(&d, "accounting-period-dialog-save")?;
+                    if jalali {
+                        save.emit_clicked();
+                        anyhow::ensure!(
+                            ui.store.borrow().state.accounting.periods.is_empty()
+                                && !ui.persistence_busy.get(),
+                            "invalid Esfand30 saved fiscal year"
+                        );
+                        anyhow::ensure!(
+                            qa_widget::<gtk::Entry>(&d, "accounting-period-end")?.text()
+                                == "۱۴۰۵/۱۲/۳۰",
+                            "invalid fiscal boundary input lost"
+                        );
+                        qa_widget::<gtk::Entry>(&d, "accounting-period-end")?
+                            .set_text("١٤٠٥/١٢/٢٩");
+                    }
+                    save.emit_clicked();
                 }
                 3 | 4 => {
                     let expected = stage - 3;
@@ -1864,7 +2175,18 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         ui.store.borrow().state.accounting.accounts.len() == 2,
                         "chart UI did not commit"
                     );
-                    qa_open_journal(&ui, true, "1251", "1250", "SYN-OPEN", "2026-01-01")?;
+                    qa_open_journal(
+                        &ui,
+                        true,
+                        "1251",
+                        "1250",
+                        "SYN-OPEN",
+                        if jalali {
+                            "۱۴۰۵/۰۱/۰۱"
+                        } else {
+                            "2026-01-01"
+                        },
+                    )?;
                     let d = qa_dialog(&ui)?;
                     let save = qa_widget::<gtk::Button>(&d, "accounting-journal-dialog-save")?;
                     save.emit_clicked();
@@ -1888,7 +2210,18 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         ui.store.borrow().state.accounting.journals.len() == 1,
                         "opening duplicate or missing"
                     );
-                    qa_open_journal(&ui, false, "349", "349", "SYN-ADJUST", "2026-02-01")?;
+                    qa_open_journal(
+                        &ui,
+                        false,
+                        "349",
+                        "349",
+                        "SYN-ADJUST",
+                        if jalali {
+                            "۱۴۰۵/۰۲/۰۱"
+                        } else {
+                            "2026-02-01"
+                        },
+                    )?;
                     qa_widget::<gtk::Button>(&qa_dialog(&ui)?, "accounting-journal-dialog-save")?
                         .emit_clicked();
                 }
@@ -1897,11 +2230,22 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         ui.store.borrow().state.accounting.journals.len() == 2,
                         "manual UI did not commit"
                     );
-                    qa_widget::<gtk::Entry>(&ui.window, "accounting-as-of")?.set_text("2026-12-31");
+                    if jalali {
+                        qa_widget::<gtk::DropDown>(&ui.window, "accounting-as-of-calendar")?
+                            .set_selected(1);
+                    }
+                    qa_widget::<gtk::Entry>(&ui.window, "accounting-as-of")?.set_text(if jalali {
+                        "۱۴۰۵/۱۲/۲۹"
+                    } else {
+                        "2026-12-31"
+                    });
                     qa_widget::<gtk::Button>(&ui.window, "accounting-run-trial")?.emit_clicked();
                     qa_accounting_tabs(&ui)?.set_visible_child_name("trial");
                     let state = ui.store.borrow().state.accounting.clone();
-                    let balance = state.trial_balance(&state.companies[0].id, "2026-12-31")?;
+                    let balance = state.trial_balance(
+                        &state.companies[0].id,
+                        if jalali { "2027-03-20" } else { "2026-12-31" },
+                    )?;
                     anyhow::ensure!(
                         balance.total_debit.rials() == 1600 && balance.total_credit.rials() == 1600,
                         "independent expected pre-reversal 1600 IRR mismatch"
@@ -1911,16 +2255,26 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                     ui.run_background(
                         "ساخت نمونهٔ تراز آزمون…",
                         move || {
-                            sarv_quote::accounting_export::trial_pdf(
+                            sarv_quote::accounting_export::trial_pdf_with_dates(
                                 &name,
                                 &balance,
                                 MoneyUnit::Rial,
+                                if jalali {
+                                    DateDisplay::Jalali
+                                } else {
+                                    DateDisplay::Iso
+                                },
                                 &destination.join("trial-before-reversal-rial.pdf"),
                             )?;
-                            sarv_quote::accounting_export::trial_csv(
+                            sarv_quote::accounting_export::trial_csv_with_dates(
                                 &name,
                                 &balance,
                                 MoneyUnit::Rial,
+                                if jalali {
+                                    DateDisplay::Jalali
+                                } else {
+                                    DateDisplay::Iso
+                                },
                                 &destination.join("trial-before-reversal-rial.csv"),
                             )
                         },
@@ -1940,7 +2294,11 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                     )?
                     .emit_clicked();
                     let d = qa_dialog(&ui)?;
-                    qa_widget::<gtk::Entry>(&d, "accounting-reversal-date")?.set_text("2026-02-02");
+                    qa_widget::<gtk::Entry>(&d, "accounting-reversal-date")?.set_text(if jalali {
+                        "۱۴۰۵/۰۲/۰۲"
+                    } else {
+                        "2026-02-02"
+                    });
                     qa_widget::<gtk::Entry>(&d, "accounting-reversal-reason")?
                         .set_text("اصلاح آزمایشی • حفظ اصل سند");
                     qa_widget::<gtk::Button>(&d, "accounting-reversal-dialog-save")?.emit_clicked();
@@ -1964,6 +2322,20 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         "lock UI did not commit"
                     );
                     qa_accounting_tabs(&ui)?.set_visible_child_name("journals");
+                    if jalali {
+                        let source = ui.store.borrow().state.accounting.journals[0].id.clone();
+                        qa_widget::<gtk::Button>(
+                            &ui.window,
+                            &format!("accounting-reverse-{source}"),
+                        )?
+                        .emit_clicked();
+                        anyhow::ensure!(
+                            ui.active_dialog.borrow().is_none()
+                                && ui.status.text().contains("قفل")
+                                && ui.store.borrow().state.accounting.journals.len() == 3,
+                            "locked source reversal was not blocked"
+                        );
+                    }
                     qa_widget::<gtk::Button>(&ui.window, "accounting-new-journal")?.emit_clicked();
                     anyhow::ensure!(
                         ui.active_dialog.borrow().is_none() && ui.status.text().contains("باز"),
@@ -1984,9 +2356,36 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         !state.accounting.periods[0].locked,
                         "reopen UI did not commit"
                     );
-                    let balance = state
-                        .accounting
-                        .trial_balance(&state.accounting.companies[0].id, "2026-12-31")?;
+                    if jalali {
+                        let accounting = &state.accounting;
+                        anyhow::ensure!(
+                            accounting.periods[0].start_date == "2026-03-21"
+                                && accounting.periods[0].end_date == "2027-03-20",
+                            "Jalali fiscal1405 canonical bounds mismatch"
+                        );
+                        anyhow::ensure!(
+                            accounting
+                                .journals
+                                .iter()
+                                .map(|j| j.date.as_str())
+                                .collect::<Vec<_>>()
+                                == vec!["2026-03-21", "2026-04-21", "2026-04-22"],
+                            "Jalali journal canonical financial dates mismatch"
+                        );
+                        let before =
+                            accounting.trial_balance(&accounting.companies[0].id, "2026-04-20")?;
+                        let manual =
+                            accounting.trial_balance(&accounting.companies[0].id, "2026-04-21")?;
+                        anyhow::ensure!(
+                            before.total_debit.rials() == 1251
+                                && manual.total_debit.rials() == 1600,
+                            "Jalali cutoff excludes/includes exact manual effect incorrectly"
+                        );
+                    }
+                    let balance = state.accounting.trial_balance(
+                        &state.accounting.companies[0].id,
+                        if jalali { "2027-03-20" } else { "2026-12-31" },
+                    )?;
                     anyhow::ensure!(
                         balance.total_debit.rials() == 1251 && balance.total_credit.rials() == 1251,
                         "independent final expected 1251 IRR mismatch"
@@ -1997,8 +2396,8 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                     let destination = directory.clone();
                     let name = state.accounting.companies[0].name.clone();
                     ui.run_background("پشتیبان و بازیابی آزمون…",move||{
-                        sarv_quote::accounting_export::trial_pdf(&name,&balance,MoneyUnit::Toman,&destination.join("trial-final-toman.pdf"))?;
-                        sarv_quote::accounting_export::trial_csv(&name,&balance,MoneyUnit::Toman,&destination.join("trial-final-toman.csv"))?;
+                        sarv_quote::accounting_export::trial_pdf_with_dates(&name,&balance,MoneyUnit::Toman,state.settings.date_display,&destination.join("trial-final-toman.pdf"))?;
+                        sarv_quote::accounting_export::trial_csv_with_dates(&name,&balance,MoneyUnit::Toman,state.settings.date_display,&destination.join("trial-final-toman.csv"))?;
                         let backup=destination.join("accounting-backup.json");sarv_quote::store::backup_state(&state,&backup)?;
                         let restored=Store::restore_preview(&backup)?;anyhow::ensure!(restored.accounting==state.accounting,"backup ledger mismatch");
                         let target=destination.join("restored-profile");let mut restored_store=Store::open(&target)?;restored_store.restore(restored)?;drop(restored_store);
@@ -2019,7 +2418,7 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                             .exists(),
                         "recovery worker failed"
                     );
-                    let report = serde_json::json!({"result":"passed","mode":"GTK real widgets and signals; keyboard not implied","checks":["company/period/user-defined chart via native forms","unbalanced input rejected and preserved","balanced opening 1251 IRR; duplicate click once","manual 349 IRR; expected cumulative 1600","linked reversal preserving original; expected 1251","lock blocks native posting and reopen reason audited","trial exact toman 125.1; PDF/CSV snapshots","original restart and fresh-profile backup restore retain accounting aggregate"],"screenshots":["accounting-before.png","accounting-trial-before-reversal.png","accounting-after.png","accounting-narrow.png"]});
+                    let report = serde_json::json!({"result":"passed","calendar":if jalali {"jalali"} else {"gregorian"},"mode":"GTK real widgets and signals; keyboard not implied","checks":["company/period/user-defined chart via native forms","unbalanced input rejected and preserved","balanced opening 1251 IRR; duplicate click once","manual 349 IRR; expected cumulative 1600","linked reversal preserving original; expected 1251","lock blocks native posting and reopen reason audited","trial exact toman 125.1; PDF/CSV snapshots","original restart and fresh-profile backup restore retain accounting aggregate"],"screenshots":["accounting-before.png","accounting-trial-before-reversal.png","accounting-after.png","accounting-narrow.png"]});
                     sarv_quote::store::write_new(
                         &directory.join("accounting-native-verification.json"),
                         &serde_json::to_vec_pretty(&report)?,

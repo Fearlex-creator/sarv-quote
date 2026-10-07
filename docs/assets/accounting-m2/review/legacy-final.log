@@ -1,0 +1,4 @@
+   Compiling sarv-independent-m2-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m2/probe)
+    Finished `dev` profile [unoptimized] target(s) in 0.33s
+     Running `target/debug/sarv-independent-m2-legacy artifacts/independent-m2/legacy-final docs/assets/accounting-m1/migration/upgraded-v2.json`
+PASS actual retained M1 schema2 fixture:3 quotes and all revisions/date snapshots/CSV exact after Jalali preference+restart; original dates [("2026-10-07", ""), ("2026-10-07", ""), ("2026-10-07", "2026-10-21")]

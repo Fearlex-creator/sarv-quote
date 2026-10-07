@@ -273,9 +273,9 @@ fn backup_envelope_and_legacy_optional_fields_are_validated() {
     let path = dir.path().join("legacy.json");
     fs::write(&path, serde_json::to_vec(&good).unwrap()).unwrap();
     let upgraded = Store::restore_preview(&path).unwrap();
-    assert_eq!(upgraded.schema, 2);
+    assert_eq!(upgraded.schema, 3);
     let mut expected = legacy.clone();
-    expected.schema = 2;
+    expected.schema = 3;
     assert_eq!(bytes(&upgraded), bytes(&expected));
     for kind in ["unknown", "checksum", "schema", "extra"] {
         let mut bad = good.clone();

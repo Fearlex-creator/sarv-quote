@@ -1,15 +1,149 @@
 //! Native editable quotation table; approved prices remain read-only.
 use super::*;
 
+/// Exact immutable presentation data. Canonical state stays in Store; this
+/// cache contains only disposable indices and the domain's validated preview.
+pub(super) struct PreparedReview {
+    generation: i64,
+    valid_until: Option<chrono::DateTime<chrono::Utc>>,
+    rows: Vec<ResolvedRow>,
+    unresolved: Vec<usize>,
+    preview: std::result::Result<Quote, String>,
+}
+struct ResolvedRow {
+    count: usize,
+    candidates: Vec<usize>,
+    selected: Option<usize>,
+}
+impl PreparedReview {
+    fn prepare(generation: i64, state: &State) -> Self {
+        let mut rows = Vec::with_capacity(state.draft.lines.len());
+        let mut unresolved = Vec::new();
+        let now = chrono::Utc::now();
+        let mut valid_until = None;
+        if let Ok(catalog) = state.catalog() {
+            let matcher = catalog.index();
+            let positions: std::collections::HashMap<&str, usize> = catalog
+                .products
+                .iter()
+                .enumerate()
+                .map(|(i, p)| (p.code.as_str(), i))
+                .collect();
+            for (index, line) in state.draft.lines.iter().enumerate() {
+                let count = matcher.match_count(&line.query);
+                let candidates = matcher
+                    .matches_limited(&line.query, 30)
+                    .iter()
+                    .map(|p| positions[p.code.as_str()])
+                    .collect::<Vec<_>>();
+                let selected = line
+                    .chosen_code
+                    .as_deref()
+                    .and_then(|code| matcher.product_by_code(code))
+                    .map(|p| positions[p.code.as_str()])
+                    .or_else(|| (count == 1).then(|| candidates[0]));
+                if !line
+                    .chosen_code
+                    .as_deref()
+                    .is_some_and(|code| matcher.product_by_code(code).is_some())
+                    && count != 1
+                {
+                    unresolved.push(index);
+                }
+                if let Some(product) = selected.and_then(|index| catalog.products.get(index))
+                    && let Ok(source) = chrono::DateTime::parse_from_rfc3339(&product.source_at)
+                {
+                    // Cache validity ends precisely when future-source validation
+                    // or seven-day stale-price policy can change without a write.
+                    for boundary in [
+                        source.with_timezone(&chrono::Utc),
+                        source.with_timezone(&chrono::Utc) + chrono::Duration::days(7),
+                    ] {
+                        if boundary > now && valid_until.is_none_or(|prior| boundary < prior) {
+                            valid_until = Some(boundary);
+                        }
+                    }
+                }
+                rows.push(ResolvedRow {
+                    count,
+                    candidates,
+                    selected,
+                });
+            }
+        }
+        Self {
+            generation,
+            valid_until,
+            rows,
+            unresolved,
+            preview: state.preview().map_err(|error| format!("{error:#}")),
+        }
+    }
+    fn current(&self, generation: i64) -> bool {
+        self.generation == generation
+            && self
+                .valid_until
+                .is_none_or(|until| chrono::Utc::now() < until)
+    }
+}
+
 pub(super) struct RowEditor {
     /// Position in the complete persisted draft, independent of visible page.
     pub index: usize,
+    live_index: Rc<Cell<usize>>,
+    cells: Option<ResolvedCells>,
     pub query: gtk::Entry,
     pub quantity: gtk::Entry,
     review: Option<gtk::Widget>,
     remove: gtk::Button,
 }
+struct ResolvedCells {
+    number: gtk::Label,
+    description: gtk::Label,
+    measure: gtk::Label,
+    price: gtk::Label,
+    amount: gtk::Label,
+    status: gtk::Label,
+}
+
+fn review_named<T: IsA<gtk::Widget> + glib::object::ObjectType + Clone + 'static>(
+    root: &impl IsA<gtk::Widget>,
+    name: &str,
+) -> Option<T> {
+    if root.widget_name() == name {
+        return root.as_ref().clone().downcast::<T>().ok();
+    }
+    let mut child = root.first_child();
+    while let Some(widget) = child {
+        if let Some(found) = review_named(&widget, name) {
+            return Some(found);
+        }
+        child = widget.next_sibling();
+    }
+    None
+}
+
+fn page_caption(state: &State, start: usize, page: usize, count: usize) -> String {
+    let total = state.draft.lines.len();
+    if total == 0 {
+        "بدون ردیف".into()
+    } else {
+        format!(
+            "ردیف‌های {} تا {} از {} • صفحهٔ {} از {}",
+            state.settings.display_digits.format(start + 1),
+            state
+                .settings
+                .display_digits
+                .format((start + PAGE_SIZE).min(total)),
+            state.settings.display_digits.format(total),
+            state.settings.display_digits.format(page + 1),
+            state.settings.display_digits.format(count)
+        )
+    }
+}
+
 const PAGE_SIZE: usize = 100;
+const COLUMN_WIDTHS: [i32; 9] = [28, 130, 155, 58, 38, 93, 105, 135, 25];
 const QUERY_HINT: &str =
     "کد دقیق یا نام مستعار تأییدشده • Enter برای بررسی • Ctrl+↑/↓ جابه‌جایی ردیف";
 const QUANTITY_HINT: &str =
@@ -185,14 +319,30 @@ impl Ui {
             self.source_hint
                 .set_text("برای شروع، فهرست قیمت را در بخش «فهرست قیمت» وارد و تأیید کنید.");
         }
-        match s.preview() {
+        let cache = self.review_cache.borrow();
+        let preview = cache
+            .as_ref()
+            .filter(|cache| cache.current(st.local_generation()))
+            .map(|cache| cache.preview.as_ref());
+        let fallback = if preview.is_none() && s.catalog().is_ok_and(|c| c.products.len() <= 1000) {
+            Some(s.preview().map_err(|error| error.to_string()))
+        } else {
+            None
+        };
+        let Some(preview) = preview.or_else(|| fallback.as_ref().map(Result::as_ref)) else {
+            self.tax.set_visible(false);
+            self.subtotal.set_text("جمع اقلام — در حال بررسی");
+            self.total.set_text("جمع نهایی — در حال بررسی");
+            return;
+        };
+        match preview {
             Ok(q) => {
                 let approved = s
                     .quotes
                     .iter()
                     .filter(|saved| saved.series == d.series)
                     .max_by_key(|saved| saved.version)
-                    .filter(|saved| quote_same_content(saved, &q));
+                    .filter(|saved| quote_same_content(saved, q));
                 if let Some(saved) = approved {
                     self.document_state.set_text(&format!(
                         "تأییدشده {} • نسخهٔ {}",
@@ -239,6 +389,99 @@ impl Ui {
         }
     }
     pub(super) fn refresh_review(self: &Rc<Self>) {
+        let generation = self.store.borrow().local_generation();
+        // A worker or detached GTK page owns this one bounded request. A
+        // newer generation is prepared after its obsolete result returns.
+        if self.review_requested.get().is_some() {
+            return;
+        }
+        let cached = self
+            .review_cache
+            .borrow()
+            .as_ref()
+            .filter(|cache| cache.current(generation))
+            .cloned();
+        if let Some(cache) = cached {
+            self.render_review(&cache);
+            return;
+        }
+        // Avoid a catalogue index and full quote calculation in GTK callbacks.
+        // The snapshot clone is bounded by the supported catalogue fixture;
+        // validation and two index builds happen solely on this worker.
+        let snapshot_started = std::time::Instant::now();
+        let state = self.store.borrow().state.clone();
+        performance_trace("review_snapshot_clone", snapshot_started);
+        if state.catalog().is_ok_and(|c| c.products.len() > 1000) {
+            self.review_requested.set(Some(generation));
+            let serial = self.review_request_serial.get().wrapping_add(1);
+            self.review_request_serial.set(serial);
+            let revision = self.edit_revision.get();
+            let (sender, receiver) = std::sync::mpsc::sync_channel(1);
+            let spawned = std::thread::Builder::new()
+                .name("sarv-review".into())
+                .spawn(move || {
+                    let prepared = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                        PreparedReview::prepare(generation, &state)
+                    }))
+                    .map_err(|_| "بررسی اقلام قطع شد؛ دوباره تلاش کنید".to_string());
+                    let _ = sender.send(prepared);
+                });
+            if let Err(error) = spawned {
+                self.review_requested.set(None);
+                self.message(Err::<String, _>(error.into()));
+                return;
+            }
+            self.refresh_totals();
+            let weak = Rc::downgrade(self);
+            glib::timeout_add_local(std::time::Duration::from_millis(10), move || {
+                let Some(ui) = weak.upgrade() else {
+                    return glib::ControlFlow::Break;
+                };
+                if ui.review_request_serial.get() != serial {
+                    return glib::ControlFlow::Break;
+                }
+                let prepared = match receiver.try_recv() {
+                    Ok(prepared) => prepared,
+                    Err(std::sync::mpsc::TryRecvError::Empty) => {
+                        return glib::ControlFlow::Continue;
+                    }
+                    Err(std::sync::mpsc::TryRecvError::Disconnected) => {
+                        Err("بررسی اقلام قطع شد؛ دوباره تلاش کنید".into())
+                    }
+                };
+                ui.review_requested.set(None);
+                match prepared {
+                    Ok(prepared) if ui.store.borrow().local_generation() == generation => {
+                        let prepared = Rc::new(prepared);
+                        *ui.review_cache.borrow_mut() = Some(prepared.clone());
+                        // Input arriving after dispatch owns the form. A late
+                        // presentation receipt must never rebuild those rows.
+                        if ui.edit_revision.get() == revision {
+                            ui.render_review(&prepared);
+                        }
+                    }
+                    Ok(_) => ui.refresh_review(),
+                    Err(error) => ui.message(Err::<String, _>(anyhow::anyhow!(error))),
+                }
+                glib::ControlFlow::Break
+            });
+        } else {
+            let prepared = Rc::new(PreparedReview::prepare(generation, &state));
+            *self.review_cache.borrow_mut() = Some(prepared.clone());
+            self.render_review(&prepared);
+        }
+    }
+    fn render_review(self: &Rc<Self>, prepared: &PreparedReview) {
+        let (rows, has_catalog) = {
+            let store = self.store.borrow();
+            (store.state.draft.lines.len(), store.state.catalog().is_ok())
+        };
+        let start = self
+            .table_page
+            .get()
+            .min(rows.max(1).div_ceil(PAGE_SIZE) - 1)
+            * PAGE_SIZE;
+        let render_started = std::time::Instant::now();
         // Rebuilding after Enter, Save or source review must not send keyboard
         // users back to the window toolbar or lose their caret selection.
         let focused = gtk::prelude::GtkWindowExt::focus(&self.window).and_then(|focus| {
@@ -247,6 +490,31 @@ impl Ui {
                 .iter()
                 .find_map(|row| row.focused(&focus).map(|target| (row.index, target)))
         });
+        if self.reuse_resolved_review(prepared) {
+            self.visual_pending.set(false);
+            self.refresh_totals();
+            if let Some((index, target)) = focused {
+                let rows = self.row_editors.borrow();
+                if let Some(row) = rows
+                    .iter()
+                    .find(|row| row.index == index)
+                    .or_else(|| rows.first())
+                {
+                    row.restore_focus(target);
+                }
+            }
+            performance_trace("review_100_row_widget_reuse", render_started);
+            if rows > 20 {
+                self.review_frames_ready(prepared.generation, &self.review);
+            }
+            return;
+        }
+        if has_catalog && rows.saturating_sub(start).min(PAGE_SIZE) > 20 {
+            if let Some(cache) = self.review_cache.borrow().as_ref().cloned() {
+                self.build_review_in_batches(cache);
+            }
+            return;
+        }
         // Release the old focused GtkText before unparenting its entry. GTK's
         // viewport would otherwise scroll an unallocated, detached widget.
         if self.table_has_focus() {
@@ -274,13 +542,49 @@ impl Ui {
             };
             scroller.set_min_content_height(minimum);
         }
-        let Ok(c) = s.catalog() else {
+        let Ok(_c) = s.catalog() else {
             self.review.append(&empty_state(
                 "فهرست قیمت لازم است",
                 "فایل CSV را پیش‌نمایش و منبع آن را تأیید کنید؛ سپس سفارش مشتری را وارد کنید.",
             ));
             return;
         };
+        let (content, grid, start, end) = self.review_structure(s, prepared);
+        let mut editors = Vec::with_capacity(end - start);
+        self.append_review_rows(&grid, s, prepared, start, start..end, &mut editors);
+        self.row_editors.borrow_mut().extend(editors);
+        content.append(&grid);
+        self.review.append(&content);
+        performance_trace("review_100_row_widget_construction", render_started);
+        let settings_started = std::time::Instant::now();
+        settings::apply(self);
+        performance_trace("review_settings_apply", settings_started);
+        if let Some((index, target)) = focused {
+            let rows = self.row_editors.borrow();
+            if let Some(row) = rows
+                .iter()
+                .find(|row| row.index == index)
+                .or_else(|| rows.first())
+            {
+                row.restore_focus(target);
+            } else {
+                self.new_item.grab_focus();
+                ensure_focus_visible(&self.new_item);
+            }
+        }
+        if s.draft.lines.is_empty() {
+            self.review.append(&empty_state(
+                "اقلام سفارش را اضافه کنید",
+                "کد کالا و تعداد را پایین جدول بنویسید یا فایل سفارش CSV وارد کنید.",
+            ));
+        }
+    }
+    fn review_structure(
+        self: &Rc<Self>,
+        s: &State,
+        prepared: &PreparedReview,
+    ) -> (gtk::Box, gtk::Grid, usize, usize) {
+        let content = column();
         let total_rows = s.draft.lines.len();
         let page_count = total_rows.max(1).div_ceil(PAGE_SIZE);
         let page = self.table_page.get().min(page_count - 1);
@@ -289,27 +593,16 @@ impl Ui {
         // Bound widget creation independently of the complete quote length.
         // Every total and export still uses the full canonical draft.
         let page_bar = row();
+        page_bar.set_widget_name("quote-page-bar");
         page_bar.add_css_class("toolbar");
         page_bar.set_visible(page_count > 1);
-        let count = label(&if total_rows == 0 {
-            "بدون ردیف".to_string()
-        } else {
-            format!(
-                "ردیف‌های {} تا {} از {} • صفحهٔ {} از {}",
-                s.settings.display_digits.format(start + 1),
-                s.settings
-                    .display_digits
-                    .format((start + PAGE_SIZE).min(total_rows)),
-                s.settings.display_digits.format(total_rows),
-                s.settings.display_digits.format(page + 1),
-                s.settings.display_digits.format(page_count),
-            )
-        });
+        let count = label(&page_caption(s, start, page, page_count));
+        count.set_widget_name("quote-page-count");
         count.add_css_class("dimmed");
         count.add_css_class("caption");
         count.set_hexpand(true);
         page_bar.append(&count);
-        for (caption, target, enabled, name) in [
+        for (caption, _target, enabled, name) in [
             (
                 "قبلی",
                 page.saturating_sub(1),
@@ -325,6 +618,11 @@ impl Ui {
             let weak = Rc::downgrade(self);
             control.connect_clicked(move |_| {
                 if let Some(ui) = weak.upgrade() {
+                    let target = if name == "quote-page-next" {
+                        ui.table_page.get().saturating_add(1)
+                    } else {
+                        ui.table_page.get().saturating_sub(1)
+                    };
                     ui.save_form_async_then(move |ui| {
                         ui.table_page.set(target);
                         ui.refresh_review();
@@ -337,22 +635,8 @@ impl Ui {
             });
             page_bar.append(&control);
         }
-        self.review.append(&page_bar);
-        let matcher = c.index();
-        let unresolved = s
-            .draft
-            .lines
-            .iter()
-            .enumerate()
-            .filter(|(_, line)| {
-                !line
-                    .chosen_code
-                    .as_deref()
-                    .is_some_and(|code| matcher.product_by_code(code).is_some())
-                    && matcher.match_count(&line.query) != 1
-            })
-            .map(|(index, _)| index)
-            .collect::<Vec<_>>();
+        content.append(&page_bar);
+        let unresolved = &prepared.unresolved;
         if let Some(first) = unresolved.first().copied() {
             let queue = row();
             let message = status_label(
@@ -386,9 +670,10 @@ impl Ui {
                 }
             });
             queue.append(&review);
-            self.review.append(&queue);
+            content.append(&queue);
         }
         let grid = gtk::Grid::new();
+        grid.set_widget_name("quote-grid");
         grid.set_column_spacing(8);
         grid.set_row_spacing(1);
         grid.set_hexpand(true);
@@ -403,35 +688,48 @@ impl Ui {
             "بررسی".into(),
             "".into(),
         ];
-        let widths = [28, 130, 155, 58, 38, 93, 105, 135, 25];
+        let widths = COLUMN_WIDTHS;
         for (i, h) in headers.iter().enumerate() {
             let l = table_cell(h, i == 2);
+            l.set_widget_name(&format!("quote-header-{i}"));
             l.add_css_class("table-header");
             l.set_wrap(false);
             cell(&grid, &l, i as i32, 0, widths[i]);
         }
-        for (index, line) in s.draft.lines.iter().enumerate().skip(start).take(PAGE_SIZE) {
+        let end = (start + PAGE_SIZE).min(total_rows);
+        (content, grid, start, end)
+    }
+    fn append_review_rows(
+        self: &Rc<Self>,
+        grid: &gtk::Grid,
+        s: &State,
+        prepared: &PreparedReview,
+        start: usize,
+        chunk: std::ops::Range<usize>,
+        editors: &mut Vec<RowEditor>,
+    ) {
+        let c = s.catalog().expect("review was prepared for a catalogue");
+        let widths = COLUMN_WIDTHS;
+        for (index, line) in s
+            .draft
+            .lines
+            .iter()
+            .enumerate()
+            .skip(chunk.start)
+            .take(chunk.end - chunk.start)
+        {
             let r = (index - start) as i32 + 1;
-            let match_count = matcher.match_count(&line.query);
-            let matches = matcher.matches_limited(&line.query, 30);
-            let selected = line
-                .chosen_code
-                .as_ref()
-                .and_then(|code| matcher.product_by_code(code))
-                .or_else(|| {
-                    if match_count == 1 {
-                        Some(matches[0])
-                    } else {
-                        None
-                    }
-                });
-            cell(
-                &grid,
-                &numeric_cell(&s.settings.display_digits.format(index + 1)),
-                0,
-                r,
-                widths[0],
-            );
+            let resolved = &prepared.rows[index];
+            let match_count = resolved.count;
+            let matches = resolved
+                .candidates
+                .iter()
+                .map(|index| &c.products[*index])
+                .collect::<Vec<_>>();
+            let selected = resolved.selected.map(|index| &c.products[index]);
+            let live_index = Rc::new(Cell::new(index));
+            let number_cell = numeric_cell(&s.settings.display_digits.format(index + 1));
+            cell(grid, &number_cell, 0, r, widths[0]);
             let query = entry("کد کالا");
             accessible_name(&query, &format!("کد یا نام مستعار ردیف {}", fa(index + 1)));
             query.set_text(&line.query);
@@ -439,7 +737,7 @@ impl Ui {
             query.set_max_width_chars(16);
             query.add_css_class("cell-editor");
             entry_validity(&query, None, QUERY_HINT);
-            cell(&grid, &query, 1, r, widths[1]);
+            cell(grid, &query, 1, r, widths[1]);
             let description = table_cell(
                 selected
                     .map(|p| p.name.as_str())
@@ -460,7 +758,7 @@ impl Ui {
                     p.source_unit.label()
                 )));
             }
-            cell(&grid, &description, 2, r, widths[2]);
+            cell(grid, &description, 2, r, widths[2]);
             let qty = entry("تعداد");
             accessible_name(&qty, &format!("تعداد ردیف {}", fa(index + 1)));
             qty.set_text(
@@ -476,14 +774,10 @@ impl Ui {
             gtk::prelude::EntryExt::set_alignment(&qty, 1.0);
             entry_validity(&qty, None, QUANTITY_HINT);
             qty.add_css_class("cell-editor");
-            cell(&grid, &qty, 3, r, widths[3]);
-            cell(
-                &grid,
-                &table_cell(selected.map(|p| p.measure.as_str()).unwrap_or("—"), false),
-                4,
-                r,
-                widths[4],
-            );
+            cell(grid, &qty, 3, r, widths[3]);
+            let measure_cell =
+                table_cell(selected.map(|p| p.measure.as_str()).unwrap_or("—"), false);
+            cell(grid, &measure_cell, 4, r, widths[4]);
             let price = selected
                 .map(|p| {
                     s.settings
@@ -502,9 +796,10 @@ impl Ui {
             let price_cell = numeric_cell(&price);
             let amount_cell = numeric_cell(&amount);
             amount_cell.set_widget_name(&format!("quote-row-amount-{index}"));
-            cell(&grid, &price_cell, 5, r, widths[5]);
-            cell(&grid, &amount_cell, 6, r, widths[6]);
+            cell(grid, &price_cell, 5, r, widths[5]);
+            cell(grid, &amount_cell, 6, r, widths[6]);
             let mut review_choice = None;
+            let mut status_cell = None;
             if let Some(p) = selected {
                 let status = status_label(
                     if stale(&p.source_at) {
@@ -526,7 +821,8 @@ impl Ui {
                     s.draft.display_unit.display(p.price_rial),
                     p.source_at
                 )));
-                cell(&grid, &status, 7, r, widths[7]);
+                cell(grid, &status, 7, r, widths[7]);
+                status_cell = Some(status);
             } else if match_count > 30 || (match_count == 0 && c.products.len() > 30) {
                 let select = button(if match_count == 0 {
                     "یافت نشد؛ انتخاب…"
@@ -542,7 +838,7 @@ impl Ui {
                     "درخواست مشتری حفظ می‌شود؛ از فهرست قیمت کالای درست را صریحاً انتخاب کنید",
                 ));
                 review_choice = Some(select.clone().upcast());
-                cell(&grid, &select, 7, r, widths[7]);
+                cell(grid, &select, 7, r, widths[7]);
                 let original_query = line.query.clone();
                 let weak = Rc::downgrade(self);
                 select.connect_clicked(move |_| {
@@ -600,7 +896,7 @@ impl Ui {
                 });
                 select.set_factory(Some(&factory));
                 review_choice = Some(select.clone().upcast());
-                cell(&grid, &select, 7, r, widths[7]);
+                cell(grid, &select, 7, r, widths[7]);
                 let original_query = line.query.clone();
                 let weak = Rc::downgrade(self);
                 select.connect_selected_notify(move |w| {
@@ -638,20 +934,26 @@ impl Ui {
                 });
             }
             let remove = button("×");
+            remove.set_widget_name(&format!("quote-row-remove-{index}"));
             accessible_name(&remove, &format!("حذف ردیف {}", fa(index + 1)));
             remove.set_tooltip_text(Some("حذف ردیف • با امکان برگرداندن"));
             remove.add_css_class("row-remove");
-            cell(&grid, &remove, 8, r, widths[8]);
+            cell(grid, &remove, 8, r, widths[8]);
             let weak = Rc::downgrade(self);
+            let remove_index = live_index.clone();
             remove.connect_clicked(move |_| {
                 if let Some(ui) = weak.upgrade() {
-                    ui.delete_line(index);
+                    ui.delete_line(remove_index.get());
                 }
             });
             let weak = Rc::downgrade(self);
-            let description = description.clone();
+            let changing_description = description.clone();
+            let changing_price = price_cell.clone();
             let amount_pending = amount_cell.clone();
             query.connect_changed(move |entry| {
+                if weak.upgrade().is_some_and(|ui| ui.loading.get()) {
+                    return;
+                }
                 let error = text(&entry.text()).err().map(|error| error.to_string());
                 entry_validity(entry, error.as_deref(), QUERY_HINT);
                 if let Some(ui) = weak.upgrade()
@@ -659,15 +961,23 @@ impl Ui {
                 {
                     ui.visual_pending.set(true);
                     ui.stale.set_active(false);
-                    description.set_text("نیاز به بررسی کد جدید");
-                    price_cell.set_text("—");
+                    changing_description.set_text("نیاز به بررسی کد جدید");
+                    changing_price.set_text("—");
                     amount_pending.set_text("—");
                 }
             });
+            let changing_amount = amount_cell.clone();
+            let quantity_loading = Rc::downgrade(self);
             qty.connect_changed(move |entry| {
+                if quantity_loading
+                    .upgrade()
+                    .is_some_and(|ui| ui.loading.get())
+                {
+                    return;
+                }
                 let error = quantity(&entry.text()).err().map(|error| error.to_string());
                 entry_validity(entry, error.as_deref(), QUANTITY_HINT);
-                amount_cell.set_text("—");
+                changing_amount.set_text("—");
             });
             for (is_quantity, e) in [(false, &query), (true, &qty)] {
                 let weak = Rc::downgrade(self);
@@ -692,7 +1002,9 @@ impl Ui {
                 let keys = gtk::EventControllerKey::new();
                 keys.set_propagation_phase(gtk::PropagationPhase::Capture);
                 let weak = Rc::downgrade(self);
+                let key_index = live_index.clone();
                 keys.connect_key_pressed(move |_, key, _, modifiers| {
+                    let index = key_index.get();
                     if !modifiers.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
                         return glib::Propagation::Proceed;
                     }
@@ -741,35 +1053,357 @@ impl Ui {
                 });
                 e.add_controller(keys);
             }
-            self.row_editors.borrow_mut().push(RowEditor {
+            editors.push(RowEditor {
                 index,
+                live_index,
+                cells: status_cell.map(|status| ResolvedCells {
+                    number: number_cell,
+                    description,
+                    measure: measure_cell,
+                    price: price_cell,
+                    amount: amount_cell,
+                    status,
+                }),
                 query,
                 quantity: qty,
                 review: review_choice,
                 remove,
             });
         }
-        self.review.append(&grid);
-        settings::apply(self);
-        if let Some((index, target)) = focused {
-            let rows = self.row_editors.borrow();
-            if let Some(row) = rows
-                .iter()
-                .find(|row| row.index == index)
-                .or_else(|| rows.last())
-            {
-                row.restore_focus(target);
-            } else {
-                self.new_item.grab_focus();
-                ensure_focus_visible(&self.new_item);
+    }
+    fn build_review_in_batches(self: &Rc<Self>, prepared: Rc<PreparedReview>) {
+        let generation = prepared.generation;
+        let build_serial = self.review_request_serial.get().wrapping_add(1);
+        self.review_request_serial.set(build_serial);
+        let revision = self.edit_revision.get();
+        let snapshot_started = std::time::Instant::now();
+        let state = self.store.borrow().state.clone();
+        performance_trace("review_batched_snapshot_clone", snapshot_started);
+        let (content, grid, start, end) = self.review_structure(&state, &prepared);
+        content.append(&grid);
+        let mut editors = Vec::with_capacity(end - start);
+        let mut next = start;
+        let requested_page = self.table_page.get();
+        self.review_requested.set(Some(generation));
+        // The existing entries remain editable until the complete new page
+        // can be installed atomically. Only their obsolete pager is disabled.
+        for name in ["quote-page-previous", "quote-page-next"] {
+            if let Some(control) = review_named::<gtk::Button>(&self.review, name) {
+                control.set_sensitive(false);
             }
         }
-        if s.draft.lines.is_empty() {
-            self.review.append(&empty_state(
-                "اقلام سفارش را اضافه کنید",
-                "کد کالا و تعداد را پایین جدول بنویسید یا فایل سفارش CSV وارد کنید.",
-            ));
+        self.message(Ok("در حال آماده‌سازی ردیف‌ها…"));
+        let weak = Rc::downgrade(self);
+        glib::idle_add_local(move || {
+            let Some(ui) = weak.upgrade() else {
+                return glib::ControlFlow::Break;
+            };
+            if ui.store.borrow().local_generation() != generation
+                || ui.edit_revision.get() != revision
+                || ui.table_page.get() != requested_page
+            {
+                ui.review_requested.set(None);
+                if let Some(first) = ui.row_editors.borrow().first() {
+                    ui.table_page.set(first.index / PAGE_SIZE);
+                }
+                let count = ui
+                    .store
+                    .borrow()
+                    .state
+                    .draft
+                    .lines
+                    .len()
+                    .max(1)
+                    .div_ceil(PAGE_SIZE);
+                for (name, enabled) in [
+                    ("quote-page-previous", ui.table_page.get() > 0),
+                    ("quote-page-next", ui.table_page.get() + 1 < count),
+                ] {
+                    if let Some(control) = review_named::<gtk::Button>(&ui.review, name) {
+                        control.set_sensitive(enabled);
+                    }
+                }
+                retire_review(vec![content.clone().upcast()], std::mem::take(&mut editors));
+                if ui.edit_revision.get() == revision {
+                    ui.refresh_review();
+                }
+                return glib::ControlFlow::Break;
+            }
+            let batch_started = std::time::Instant::now();
+            let limit = (next + 20).min(end);
+            ui.append_review_rows(&grid, &state, &prepared, start, next..limit, &mut editors);
+            next = limit;
+            performance_trace("review_construct_20_rows", batch_started);
+            if next < end {
+                return glib::ControlFlow::Continue;
+            }
+            let install_started = std::time::Instant::now();
+            let focused = gtk::prelude::GtkWindowExt::focus(&ui.window).and_then(|focus| {
+                ui.row_editors
+                    .borrow()
+                    .iter()
+                    .find_map(|row| row.focused(&focus).map(|target| (row.index, target)))
+            });
+            if ui.table_has_focus() {
+                gtk::prelude::GtkWindowExt::set_focus(&ui.window, None::<&gtk::Widget>);
+            }
+            let mut old = Vec::new();
+            while let Some(child) = ui.review.first_child() {
+                old.push(child.clone());
+                ui.review.remove(&child);
+            }
+            let old_rows = ui.row_editors.replace(std::mem::take(&mut editors));
+            ui.review.append(&content);
+            if let Some(scroller) = ui
+                .review
+                .ancestor(gtk::ScrolledWindow::static_type())
+                .and_downcast::<gtk::ScrolledWindow>()
+            {
+                scroller.set_min_content_height(240);
+            }
+            ui.visual_pending.set(false);
+            ui.refresh_totals();
+            settings::apply(&ui);
+            if let Some((index, target)) = focused {
+                let rows = ui.row_editors.borrow();
+                if let Some(row) = rows
+                    .iter()
+                    .find(|row| row.index == index)
+                    .or_else(|| rows.first())
+                {
+                    row.restore_focus(target);
+                }
+            }
+            let frames = Cell::new(0usize);
+            let weak_ready = Rc::downgrade(&ui);
+            content.add_tick_callback(move |_, _| {
+                frames.set(frames.get() + 1);
+                if frames.get() < 2 {
+                    return glib::ControlFlow::Continue;
+                }
+                if let Some(ui) = weak_ready.upgrade()
+                    && ui.review_request_serial.get() == build_serial
+                {
+                    ui.review_requested.set(None);
+                }
+                glib::ControlFlow::Break
+            });
+            let weak_hidden = Rc::downgrade(&ui);
+            glib::timeout_add_local(std::time::Duration::from_millis(20), move || {
+                let Some(ui) = weak_hidden.upgrade() else {
+                    return glib::ControlFlow::Break;
+                };
+                if ui.review_request_serial.get() != build_serial
+                    || ui.review_requested.get().is_none()
+                {
+                    return glib::ControlFlow::Break;
+                }
+                // A hidden editor has no frame clock. Navigation elsewhere
+                // must not leave a completed presentation request stuck.
+                if !ui.window.is_visible()
+                    || ui.stack.visible_child_name().as_deref() != Some("order")
+                {
+                    ui.review_requested.set(None);
+                    return glib::ControlFlow::Break;
+                }
+                glib::ControlFlow::Continue
+            });
+            retire_review(old, old_rows);
+            performance_trace("review_atomic_install", install_started);
+            glib::ControlFlow::Break
+        });
+    }
+    fn review_frames_ready(self: &Rc<Self>, generation: i64, widget: &impl IsA<gtk::Widget>) {
+        let serial = self.review_request_serial.get().wrapping_add(1);
+        self.review_request_serial.set(serial);
+        self.review_requested.set(Some(generation));
+        let frames = Cell::new(0usize);
+        let weak = Rc::downgrade(self);
+        widget.add_tick_callback(move |_, _| {
+            frames.set(frames.get() + 1);
+            if frames.get() < 2 {
+                return glib::ControlFlow::Continue;
+            }
+            if let Some(ui) = weak.upgrade()
+                && ui.review_request_serial.get() == serial
+            {
+                ui.review_requested.set(None);
+            }
+            glib::ControlFlow::Break
+        });
+        let weak = Rc::downgrade(self);
+        glib::timeout_add_local(std::time::Duration::from_millis(20), move || {
+            let Some(ui) = weak.upgrade() else {
+                return glib::ControlFlow::Break;
+            };
+            if ui.review_request_serial.get() != serial || ui.review_requested.get().is_none() {
+                return glib::ControlFlow::Break;
+            }
+            if !ui.window.is_visible() || ui.stack.visible_child_name().as_deref() != Some("order")
+            {
+                ui.review_requested.set(None);
+                return glib::ControlFlow::Break;
+            }
+            glib::ControlFlow::Continue
+        });
+    }
+    fn reuse_resolved_review(self: &Rc<Self>, prepared: &PreparedReview) -> bool {
+        let store = self.store.borrow();
+        let state = &store.state;
+        let Ok(catalog) = state.catalog() else {
+            return false;
+        };
+        let count = state.draft.lines.len().max(1).div_ceil(PAGE_SIZE);
+        let page = self.table_page.get().min(count - 1);
+        let start = page * PAGE_SIZE;
+        let end = (start + PAGE_SIZE).min(state.draft.lines.len());
+        let mut rows = self.row_editors.borrow_mut();
+        if rows.is_empty()
+            || rows.len() != end - start
+            || !prepared.unresolved.is_empty()
+            || rows.iter().any(|row| row.cells.is_none())
+            || prepared.rows[start..end]
+                .iter()
+                .any(|row| row.selected.is_none())
+        {
+            return false;
         }
+        self.table_page.set(page);
+        if self.table_has_focus() {
+            gtk::prelude::GtkWindowExt::set_focus(&self.window, None::<&gtk::Widget>);
+        }
+        // GTK edits on a mapped hundred-row grid trigger repeated viewport
+        // and accessibility work. Hold the same page detached for this one
+        // synchronous update; no intermediate frame or user event can occur.
+        let held = self.review.first_child();
+        if let Some(content) = &held {
+            self.review.remove(content);
+        }
+        let loop_started = std::time::Instant::now();
+        let loading = self.loading.replace(true);
+        for (row, index) in rows.iter_mut().zip(start..end) {
+            let line = &state.draft.lines[index];
+            let product = &catalog.products[prepared.rows[index].selected.unwrap()];
+            let cells = row.cells.as_ref().unwrap();
+            row.index = index;
+            row.live_index.set(index);
+            row.remove
+                .set_widget_name(&format!("quote-row-remove-{index}"));
+            if row.query.text() != line.query {
+                row.query.set_text(&line.query);
+            }
+            let quantity = state
+                .settings
+                .display_digits
+                .format(qty_display(line.quantity_milli));
+            if row.quantity.text() != quantity {
+                row.quantity.set_text(&quantity);
+            }
+            if row.query.has_css_class("error") {
+                entry_validity(&row.query, None, QUERY_HINT);
+            }
+            if row.quantity.has_css_class("error") {
+                entry_validity(&row.quantity, None, QUANTITY_HINT);
+            }
+            accessible_name(
+                &row.query,
+                &format!("کد یا نام مستعار ردیف {}", fa(index + 1)),
+            );
+            accessible_name(&row.quantity, &format!("تعداد ردیف {}", fa(index + 1)));
+            accessible_name(&row.remove, &format!("حذف ردیف {}", fa(index + 1)));
+            cells
+                .number
+                .set_text(&state.settings.display_digits.format(index + 1));
+            cells.description.set_text(&product.name);
+            cells.description.set_tooltip_text(Some(&format!(
+                "{} • {}\nمنبع: {} • واحد منبع: {}",
+                product.code,
+                product.name,
+                product.source_at,
+                product.source_unit.label()
+            )));
+            cells.measure.set_text(&product.measure);
+            cells.price.set_text(
+                &state
+                    .settings
+                    .display_digits
+                    .format(dnumber(state.draft.display_unit, product.price_rial)),
+            );
+            let amount = line_total(product.price_rial, line.quantity_milli)
+                .ok()
+                .map(|amount| {
+                    state
+                        .settings
+                        .display_digits
+                        .format(dnumber(state.draft.display_unit, amount))
+                })
+                .unwrap_or_else(|| "—".into());
+            cells.amount.set_text(&amount);
+            cells
+                .amount
+                .set_widget_name(&format!("quote-row-amount-{index}"));
+            let stale = stale(&product.source_at);
+            cells.status.set_text(if stale {
+                "قیمت قدیمی"
+            } else if line.chosen_code.is_some() {
+                "انتخاب انسانی"
+            } else {
+                "تطبیق دقیق"
+            });
+            cells
+                .status
+                .remove_css_class(if stale { "success" } else { "warning" });
+            cells
+                .status
+                .add_css_class(if stale { "warning" } else { "success" });
+            cells.status.set_tooltip_text(Some(&format!(
+                "قیمت {} • منبع {}",
+                state.draft.display_unit.display(product.price_rial),
+                product.source_at
+            )));
+        }
+        self.loading.set(loading);
+        performance_trace("review_reuse_setters", loop_started);
+        let chrome_started = std::time::Instant::now();
+        drop(rows);
+        if let Some(content) = &held {
+            self.review.append(content);
+        }
+        if let Some(bar) = review_named::<gtk::Box>(&self.review, "quote-page-bar") {
+            bar.set_visible(count > 1);
+        }
+        if let Some(label) = review_named::<gtk::Label>(&self.review, "quote-page-count") {
+            label.set_text(&page_caption(state, start, page, count));
+        }
+        for (name, sensitive) in [
+            ("quote-page-previous", page > 0),
+            ("quote-page-next", page + 1 < count),
+        ] {
+            if let Some(control) = review_named::<gtk::Button>(&self.review, name) {
+                control.set_sensitive(sensitive);
+            }
+        }
+        for (column, text) in [
+            (
+                5,
+                format!("قیمت واحد\n{}", state.draft.display_unit.label()),
+            ),
+            (
+                6,
+                format!("مبلغ ردیف\n{}", state.draft.display_unit.label()),
+            ),
+        ] {
+            if let Some(label) =
+                review_named::<gtk::Label>(&self.review, &format!("quote-header-{column}"))
+            {
+                label.set_text(&text);
+            }
+        }
+        performance_trace("review_reuse_chrome", chrome_started);
+        let settings_started = std::time::Instant::now();
+        settings::apply(self);
+        performance_trace("review_reuse_settings", settings_started);
+        true
     }
     pub(super) fn commit_table(self: &Rc<Self>) {
         let r = self.save_form();
@@ -879,34 +1513,41 @@ impl Ui {
         if !self.background_available() {
             return;
         }
-        let result = self
-            .save_form()
-            .and_then(|()| self.store.borrow().state.preview());
-        match result {
-            Err(error) => self.message(Err::<String, _>(error)),
-            Ok(quote) => {
-                let approved = self
-                    .store
-                    .borrow()
-                    .state
-                    .quotes
-                    .iter()
-                    .filter(|saved| saved.series == quote.series)
-                    .max_by_key(|saved| saved.version)
-                    .filter(|saved| quote_same_content(saved, &quote))
-                    .cloned();
-                if let Some(saved) = approved {
-                    let title = format!(
-                        "پیش‌نمایش و خروجی • تأییدشده {} • نسخهٔ {}",
-                        saved.number,
-                        fa(saved.version)
-                    );
-                    self.show_quote_preview(saved, &title);
-                } else {
-                    self.show_quote_preview(quote, "پیش‌نمایش و خروجی • پیش‌نویس تأیید نشده");
-                }
-            }
-        }
+        self.save_form_async_then(|ui| {
+            let state = ui.store.borrow().state.clone();
+            let parent = ui.store.borrow().directory.clone();
+            ui.run_background(
+                "آماده‌سازی پیش‌نمایش…",
+                move || {
+                    let quote = state.preview()?;
+                    let approved = state
+                        .quotes
+                        .iter()
+                        .filter(|saved| saved.series == quote.series)
+                        .max_by_key(|saved| saved.version)
+                        .filter(|saved| quote_same_content(saved, &quote))
+                        .cloned();
+                    let (snapshot, title) = if let Some(saved) = approved {
+                        let title = format!(
+                            "پیش‌نمایش و خروجی • تأییدشده {} • نسخهٔ {}",
+                            saved.number,
+                            fa(saved.version)
+                        );
+                        (saved, title)
+                    } else {
+                        (quote, "پیش‌نمایش و خروجی • پیش‌نویس تأیید نشده".into())
+                    };
+                    let pages = background::PreviewPages::render(&snapshot, &parent)?;
+                    Ok((pages, snapshot, title))
+                },
+                |ui, result| match result {
+                    Ok((pages, quote, title)) => {
+                        ui.show_rendered_quote_preview(pages, quote, &title)
+                    }
+                    Err(error) => ui.message(Err::<String, _>(error)),
+                },
+            );
+        });
     }
 }
 fn dnumber(unit: Unit, n: i64) -> String {
@@ -914,4 +1555,103 @@ fn dnumber(unit: Unit, n: i64) -> String {
         .trim_end_matches(unit.label())
         .trim()
         .to_string()
+}
+
+fn retire_review(roots: Vec<gtk::Widget>, mut rows: Vec<RowEditor>) {
+    let grids = roots
+        .iter()
+        .filter_map(|root| review_named::<gtk::Grid>(root, "quote-grid"))
+        .collect::<Vec<_>>();
+    let mut children = grids
+        .iter()
+        .flat_map(|grid| {
+            let mut children = Vec::new();
+            let mut child = grid.first_child();
+            while let Some(widget) = child {
+                child = widget.next_sibling();
+                children.push((grid.clone(), widget));
+            }
+            children
+        })
+        .collect::<std::collections::VecDeque<_>>();
+    glib::idle_add_local(move || {
+        let began = std::time::Instant::now();
+        for _ in 0..180 {
+            if let Some((grid, child)) = children.pop_front() {
+                grid.remove(&child);
+            } else {
+                break;
+            }
+        }
+        let count = rows.len().min(20);
+        rows.drain(..count);
+        performance_trace("review_retire_20_rows", began);
+        if children.is_empty() && rows.is_empty() {
+            // Root/header references outlive the last detached row's disposal.
+            let _ = &roots;
+            glib::ControlFlow::Break
+        } else {
+            glib::ControlFlow::Continue
+        }
+    });
+}
+
+fn performance_trace(operation: &str, started: std::time::Instant) {
+    if std::env::var("SARV_PERFORMANCE_TRACE").as_deref() == Ok("1") {
+        eprintln!(
+            "SARV_MAIN_THREAD {operation} {:.3}ms",
+            started.elapsed().as_secs_f64() * 1000.0
+        );
+    }
+}
+
+#[cfg(test)]
+mod presentation_tests {
+    use super::*;
+
+    fn fixture() -> State {
+        let mut state = State::default();
+        let source = (chrono::Utc::now() - chrono::Duration::hours(1)).to_rfc3339();
+        let csv = format!(
+            "code,name,measure,price,currency,source_at,aliases\nONE,اول,عدد,12345,rial,{source},مشترک\nTWO,دوم,عدد,23456,rial,{source},مشترک\n"
+        );
+        imports::accept_catalog(&mut state, imports::catalog_csv(&csv, "ساختگی").unwrap()).unwrap();
+        state.draft.customer = "مشتری ساختگی".into();
+        state.draft.lines = vec![
+            OrderLine {
+                query: "مشترک".into(),
+                quantity_milli: 1000,
+                chosen_code: Some("TWO".into()),
+            },
+            OrderLine {
+                query: "ONE".into(),
+                quantity_milli: 2000,
+                chosen_code: None,
+            },
+        ];
+        state
+    }
+
+    #[test]
+    fn prepared_review_preserves_explicit_choice_and_exact_total() {
+        let prepared = PreparedReview::prepare(17, &fixture());
+        assert_eq!(prepared.rows[0].count, 2);
+        assert_eq!(prepared.rows[0].selected, Some(1));
+        assert!(prepared.unresolved.is_empty());
+        let quote = prepared.preview.unwrap();
+        assert_eq!(quote.lines[0].code, "TWO");
+        assert_eq!(quote.total_rial, 48_146);
+    }
+
+    #[test]
+    fn ambiguous_invalid_choice_and_older_generation_are_never_approved() {
+        let mut state = fixture();
+        state.draft.lines[0].chosen_code = Some("MISSING".into());
+        let prepared = PreparedReview::prepare(17, &state);
+        assert_eq!(prepared.unresolved, vec![0]);
+        assert!(prepared.preview.is_err());
+        assert!(!prepared.current(18));
+        state.draft.lines[0].chosen_code = None;
+        assert!(PreparedReview::prepare(18, &state).preview.is_err());
+    }
 }

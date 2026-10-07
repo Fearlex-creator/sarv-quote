@@ -1,0 +1,13 @@
+{
+  "exact_ledger_sha256": "4f571dbf1a22f02da302cce1312831ddb842446aff87736792446acee8378614",
+  "exact_quotes_sha256": "0c5c11fa3810adc9ccd37c05c33b829c27622a6f70ee98d52d6ec3335080d8eb",
+  "fresh_restore_full_state_equal": true,
+  "generation_after": 18,
+  "generation_before": 17,
+  "interrupted_schema_upgrade": "untested",
+  "journals": 3,
+  "quotes": 3,
+  "result": "passed",
+  "schema_after": 3,
+  "schema_before": 2
+}

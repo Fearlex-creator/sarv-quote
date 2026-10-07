@@ -1,5 +1,15 @@
 # Synthetic fixture index
 
+## Current M2 and next core policy authority
+
+The table below preserves the original baseline/proposal history. The user has since delegated practical core policies to the guide and deferred actual legal/tax integrations. Visible, versioned engineering defaults in [core-policy-proposal.md](core-policy-proposal.md) may be implemented without another policy-selection question. Professional production acceptance remains pending. Its richer 1,251-IRR opening fixture is still **proposed**, requiring all individual cash/bank/AR/AP/stock/cheque/GRNI controls to reconcile before full OPEN-01 is evidenced.
+
+M2 extends the existing synthetic manual-ledger fixture with Jalali fiscal start/end `1405/01/01`–`1405/12/29` = `2026-03-21`–`2027-03-20`. Opening is 1,251 IRR; the second-day 349-IRR adjustment gives 1,600 IRR, and the third-day linked reversal restores 1,251 IRR = 125.1 toman. Existing quotation snapshots, UTC recorded-at values and canonical financial dates remain unchanged. Calendar tests cover every supported day, 1200–1499, against independent ICU conversion; leap `1403/12/30` is valid and `1404/12/30` rejects. The final commands, native reports, independent review, compatibility/fresh-restore results and performance limits are indexed in [milestone-M2.md](milestone-M2.md).
+
+Schema 2 generation 17 → schema 3 generation 18 uses actual synthetic M1 quotation/ledger fixtures: exactly three approved quotes and three journals survive, with a verified pre-upgrade version-2 recovery, idempotent repeat-open and exact fresh restore. Interruption during that particular schema upgrade remains untested. The full performance reference dataset, company timezone/midnight policy, screen readers, physical printing and professional user review remain untested.
+
+## Historical baseline and full-roadmap fixtures
+
 Baseline commit `4aa82c2`; all values artificial. No live accounting/customer data. Proposed financial entries below are requirements-derived examples, not approved Iranian accounting policies/tax rates. Accountant signoff is **pending** for every new accounting golden output. User approved canonical integer IRR/exact rial-toman/fractional-rial rejection during this cycle. Current bounded implementation uses user-defined custom accounts/manual entries; no default chart, tax, valuation or recognition policy is approved. Each implemented fixture must record independent expected values, command/test, actual outcome, source commit, renderer/report and independent reviewer.
 
 | Fixture | State / requirement link | Inputs and independent expected result | Rerun/evidence |

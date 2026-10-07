@@ -1,0 +1,8 @@
+{
+  "binary_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d",
+  "native_log_lines": 170,
+  "adwaita_width_overflow_warnings": 0,
+  "checks": 15,
+  "previous_warning": "requested1396px/available1390px reproduced on86e prior logs; source exact sidebar min250\u2192240 one-line correction",
+  "scope": "startup plus complete native 50,000-product/1,000-line workflow"
+}

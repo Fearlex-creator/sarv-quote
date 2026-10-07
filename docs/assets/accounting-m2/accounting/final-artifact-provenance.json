@@ -1,0 +1,154 @@
+{
+  "result": "passed",
+  "fixture_kind": "fresh disposable synthetic profile",
+  "executable": "/workspace/sarv-evidence/bin/sarv-M2-layout-final",
+  "executable_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d",
+  "qa_source": "/workspace/sarv-quote/scripts/accounting-qa.py",
+  "qa_source_sha256": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+  "runner": "/tmp/sarv-final-native-runner.py",
+  "command": "source /workspace/sarv-environment/activate.sh\ndbus-run-session -- /usr/bin/python3 /tmp/sarv-final-native-runner.py accounting-qa.py",
+  "runner_behavior": "unchanged QA source executed with its single binary path overridden to the immutable final executable; strict SHA assertion",
+  "report": "accounting-independent-native.json",
+  "passed_checks": 16,
+  "canonical_calendar": "Gregorian YYYY-MM-DD",
+  "presentation": "Iso",
+  "periods": [
+    {
+      "id": "b4c2ed21-fd65-43c5-b7cc-0e4c81423e3e",
+      "start_date": "2026-01-01",
+      "end_date": "2026-12-31",
+      "locked": false
+    }
+  ],
+  "journals": [
+    {
+      "id": "7e13e986-6fe2-40f6-a9d8-11e80d3131c7",
+      "date": "2026-01-01",
+      "recorded_at": "2026-10-07T17:27:22.920129662+00:00",
+      "kind": "Opening",
+      "source_id": "SYN-OPEN",
+      "source_revision": 1,
+      "event": "manual-entry"
+    },
+    {
+      "id": "41cf5b2a-a014-4c10-bcd2-ec9449b6a02a",
+      "date": "2026-02-01",
+      "recorded_at": "2026-10-07T17:27:23.313327504+00:00",
+      "kind": "Manual",
+      "source_id": "SYN-ADJUST",
+      "source_revision": 1,
+      "event": "manual-entry"
+    },
+    {
+      "id": "205e45b2-0c0d-4df8-b488-6116a05b0470",
+      "date": "2026-02-02",
+      "recorded_at": "2026-10-07T17:27:24.196280828+00:00",
+      "kind": {
+        "Reversal": {
+          "journal_id": "41cf5b2a-a014-4c10-bcd2-ec9449b6a02a"
+        }
+      },
+      "source_id": "41cf5b2a-a014-4c10-bcd2-ec9449b6a02a",
+      "source_revision": 1,
+      "event": "reversal"
+    }
+  ],
+  "quote_dates": {
+    "quote_date": "2026-10-07",
+    "valid_until": ""
+  },
+  "visual_review": "GTK650/1280 screenshots and rendered trial PDFs inspected; all five accounting tab labels visible after wrapping fix",
+  "native_coordinate_limit": "AT-SPI custom tab roles reported local size with x/y zero; screen placement is evidenced by screenshots and real keyboard activation, not zero coordinates",
+  "untested": [
+    "screen-reader operation",
+    "Wayland",
+    "physical printing",
+    "company timezone policy beyond existing UTC"
+  ],
+  "artifacts": {
+    "accounting-after.png": {
+      "bytes": 128322,
+      "sha256": "a1604d40028914af7f8bbad3c76ddbca4a1db47e8a0a1dff16dae68da6f6b5cc"
+    },
+    "accounting-backup.json": {
+      "bytes": 14711,
+      "sha256": "1902845fb7aa2f5cedae7e95143512077a135391e66a58b95daafb8112de7644"
+    },
+    "accounting-before.png": {
+      "bytes": 82414,
+      "sha256": "eb63c0c1aab6636bb7af75cc9ac1ed2557ae4d8add570d15690a37f8ea9671e5"
+    },
+    "accounting-independent-native.json": {
+      "bytes": 2178,
+      "sha256": "9fc1c181113a63efccbdd3de1ac20936b6448b29c172208d5a0342288aee1ba3"
+    },
+    "accounting-narrow.png": {
+      "bytes": 86823,
+      "sha256": "d7ca403dadee1766dcb98ba2fd62f9d7cda77ea7ac4a5acad9c2e697d6de7ecf"
+    },
+    "accounting-native-verification.json": {
+      "bytes": 747,
+      "sha256": "1802fa04e4c1d222e144aed9dc7ea0b5717213c2cc018b822e4cf76f2e880405"
+    },
+    "accounting-recovery-verification.json": {
+      "bytes": 230,
+      "sha256": "d492402763ec7901954edafd3798bb9999cb05451bf3563c86885558ebda5db6"
+    },
+    "accounting-trial-before-reversal.png": {
+      "bytes": 127035,
+      "sha256": "2dd7048110339f53ef5e86f52c132f9165a387fdf77b511265486db33d44efa2"
+    },
+    "final-native-runner.py": {
+      "bytes": 778,
+      "sha256": "a2b424cbf5497a1f3a4bf9c2ff23ab3e57288e7bce3c9403f8d309d2b772dc7b"
+    },
+    "keyboard-accounting-1280x900.png": {
+      "bytes": 136561,
+      "sha256": "ab98c4b32223f0ae4d0b92f3e45291d29b7c68019a44bd2a08c6bda879ecbc46"
+    },
+    "keyboard-accounting-650x760.png": {
+      "bytes": 85734,
+      "sha256": "22c15f93bf814b29bb717e3a4981755f7aaefa2a7cd96896c3b59c56fab5ac97"
+    },
+    "keyboard-dialog-tree.json": {
+      "bytes": 20668,
+      "sha256": "9fce2a836e7df1783d810fd97f4e716e469c8ec1d89c7560a5d10e48d417df07"
+    },
+    "keyboard-initial.png": {
+      "bytes": 90986,
+      "sha256": "bedecdac4b6545191fc13b1d781f36a4c9dd28fa89ca69f3176cb5ad7de1b187"
+    },
+    "keyboard-journal-dialog.png": {
+      "bytes": 138664,
+      "sha256": "04f6a4832bd9bd08daacaf3e4f8c8cc87a427fa2ce535708ad894a05e93eccb9"
+    },
+    "tested-accounting-qa.py": {
+      "bytes": 8082,
+      "sha256": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae"
+    },
+    "trial-before-reversal-rial.csv": {
+      "bytes": 751,
+      "sha256": "c3c0af9309f52949465c19a85e2a9844dec3b643ddf912b32b442089e5857c56"
+    },
+    "trial-before-reversal-rial.pdf": {
+      "bytes": 10979,
+      "sha256": "e693dc284539a90f00bba013c463719480b8cdb833f786c2abbcda74ad1267e0"
+    },
+    "trial-before-reversal-rial.png": {
+      "bytes": 36033,
+      "sha256": "b0d4f8375a453d662e565f6d46d554687c779be5af782000877a91d14098bf25"
+    },
+    "trial-final-toman.csv": {
+      "bytes": 755,
+      "sha256": "5f44879d7ff0804d9b9e3f5afdb5c8050d9b6acdc6bb7dfc596bbfbfdddf7431"
+    },
+    "trial-final-toman.pdf": {
+      "bytes": 11050,
+      "sha256": "c83cf2cc087dc224091e19d252253bf347f5bc3b9d74a8037dc354704295f18e"
+    },
+    "trial-final-toman.png": {
+      "bytes": 36506,
+      "sha256": "7b1eb931bfc5b7862052ab4a67670865a30f655e9db912db9245b56693fcb62f"
+    }
+  }
+}

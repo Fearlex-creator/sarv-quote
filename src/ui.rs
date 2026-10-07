@@ -41,6 +41,9 @@ struct Ui {
     stale: gtk::CheckButton,
     catalog_choice: gtk::DropDown,
     review: gtk::Box,
+    review_cache: RefCell<Option<Rc<editor::PreparedReview>>>,
+    review_requested: Cell<Option<i64>>,
+    review_request_serial: Cell<u64>,
     total: gtk::Label,
     subtotal: gtk::Label,
     tax: gtk::Label,
@@ -49,8 +52,8 @@ struct Ui {
     preview_control: gtk::Button,
     source_hint: gtk::Label,
     reference: gtk::Entry,
-    quote_date: gtk::Entry,
-    valid_until: gtk::Entry,
+    quote_date: accounting::DateField,
+    valid_until: accounting::DateField,
     notes: gtk::TextView,
     new_item: gtk::Entry,
     new_quantity: gtk::Entry,
@@ -158,7 +161,66 @@ fn quote_same_content(a: &Quote, b: &Quote) -> bool {
     }
     a == b
 }
+
+/// Native list rows provide one keyboard stop per destination. Selected state
+/// follows the visible workspace, independently of pointer or keyboard focus.
+fn sidebar_destination(
+    name: &str,
+    caption: &str,
+    icon_name: &str,
+    shortcut: &str,
+    description: Option<&str>,
+) -> (gtk::ListBoxRow, gtk::Label) {
+    let item = gtk::ListBoxRow::new();
+    item.set_widget_name(&format!("navigation-{name}"));
+    item.add_css_class("sarv-navigation-row");
+    item.set_tooltip_text(Some(&format!("{caption} · {shortcut}")));
+    accessible_name(&item, caption);
+    item.update_property(&[gtk::accessible::Property::KeyShortcuts(shortcut)]);
+    let content = row();
+    content.set_spacing(12);
+    let icon = gtk::Image::from_icon_name(icon_name);
+    icon.set_pixel_size(18);
+    icon.add_css_class("navigation-icon");
+    content.append(&icon);
+    let text = column();
+    text.set_spacing(2);
+    text.set_hexpand(true);
+    let title = label(caption);
+    title.add_css_class("navigation-label");
+    title.set_wrap(false);
+    title.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    text.append(&title);
+    if let Some(description) = description {
+        let description = label(description);
+        description.add_css_class("navigation-description");
+        description.set_wrap(false);
+        description.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        text.append(&description);
+    }
+    content.append(&text);
+    let count = label("");
+    count.add_css_class("navigation-count");
+    count.add_css_class("numeric");
+    count.set_wrap(false);
+    count.set_visible(false);
+    content.append(&count);
+    item.set_child(Some(&content));
+    (item, count)
+}
+
 impl Ui {
+    fn set_quote_date(&self, field: &accounting::DateField, canonical: &str) {
+        if field.set_canonical(canonical).is_err() {
+            // A legacy date outside the Jalali range stays visible and editable
+            // in its explicitly labelled Gregorian mode. Never drop saved data.
+            field.entry.set_text("");
+            field.calendar.set_selected(0);
+            if let Err(error) = field.set_canonical(canonical) {
+                self.message(Err::<String, _>(error));
+            }
+        }
+    }
     fn message(&self, r: Result<impl ToString>) {
         match r {
             Ok(s) => {
@@ -216,8 +278,16 @@ impl Ui {
         let ack = self.stale.is_active();
         let index = self.catalog_choice.selected() as usize;
         let reference = self.reference.text().to_string();
-        let quote_date = self.quote_date.text().to_string();
-        let valid_until = self.valid_until.text().to_string();
+        let quote_date = if self.quote_date.entry.text().trim().is_empty() {
+            String::new()
+        } else {
+            accounting::date_value(&self.quote_date)?
+        };
+        let valid_until = if self.valid_until.entry.text().trim().is_empty() {
+            String::new()
+        } else {
+            accounting::date_value(&self.valid_until)?
+        };
         let notes = self
             .notes
             .buffer()
@@ -344,19 +414,27 @@ impl Ui {
         let store = self.store.borrow();
         let s = &store.state;
         let d = &s.draft;
-        let names = s
+        let mut names = s
             .catalogs
             .iter()
             .map(|c| c.name.as_str())
             .collect::<Vec<_>>();
+        if names.is_empty() {
+            names.push("فهرست قیمتی ساخته نشده است");
+        }
         self.catalog_choice
             .set_model(Some(&gtk::StringList::new(&names)));
+        self.catalog_choice.set_sensitive(!s.catalogs.is_empty());
         self.catalog_choice.set_selected(
             s.catalogs
                 .iter()
                 .position(|c| c.id == d.catalog_id)
                 .map(|i| i as u32)
-                .unwrap_or(gtk::INVALID_LIST_POSITION),
+                .unwrap_or(if s.catalogs.is_empty() {
+                    0
+                } else {
+                    gtk::INVALID_LIST_POSITION
+                }),
         );
         self.customer.set_text(&d.customer);
         self.phone.set_text(&d.phone);
@@ -376,8 +454,8 @@ impl Ui {
             .set_text(&d.display_unit.number(d.discount_rial));
         self.stale.set_active(d.stale_ack);
         self.reference.set_text(&d.reference);
-        self.quote_date.set_text(&d.quote_date);
-        self.valid_until.set_text(&d.valid_until);
+        self.set_quote_date(&self.quote_date, &d.quote_date);
+        self.set_quote_date(&self.valid_until, &d.valid_until);
         self.notes.buffer().set_text(&d.notes);
         self.table_dirty.set(false);
         drop(store);
@@ -467,6 +545,15 @@ impl Ui {
         self.deleted_lines.borrow_mut().take();
         self.undo_button.set_sensitive(false);
         self.table_page.set(0);
+        // A new document takes the current presentation default. Changing the
+        // entry calendar does not alter any issued document's saved snapshot.
+        self.loading.set(true);
+        let calendar =
+            u32::from(self.store.borrow().state.draft.date_display == DateDisplay::Jalali);
+        for date in [&self.quote_date, &self.valid_until] {
+            date.entry.set_text("");
+            date.calendar.set_selected(calendar);
+        }
         self.fill_form();
         self.refresh_review();
         self.stack.set_visible_child_name("order");
@@ -885,18 +972,19 @@ fn build(app: &gtk::Application, store: Store) {
     window.add_css_class("sarv-app");
     let root = adw::ToolbarView::new();
     let header = adw::HeaderBar::new();
-    header.set_title_widget(Some(&adw::WindowTitle::new("سرو", "پیشنهاد قیمت • آفلاین")));
-    let navigation = gtk::Button::with_label("فهرست");
-    navigation.set_tooltip_text(Some("میز کار"));
+    let window_title = adw::WindowTitle::new("پیشنهاد قیمت", "سرو · فضای کار محلی");
+    header.set_title_widget(Some(&window_title));
+    let navigation = gtk::Button::from_icon_name("sidebar-show-symbolic");
+    navigation.set_widget_name("show-workspace-navigation");
+    navigation.set_tooltip_text(Some("فهرست صفحه‌ها"));
+    accessible_name(&navigation, "فهرست صفحه‌ها");
     header.pack_start(&navigation);
     root.add_top_bar(&header);
     let body = adw::NavigationSplitView::new();
     body.set_min_sidebar_width(240.0);
-    body.set_max_sidebar_width(270.0);
-    body.set_sidebar_width_fraction(0.19);
+    body.set_max_sidebar_width(280.0);
+    body.set_sidebar_width_fraction(0.20);
     body.set_show_content(true);
-    let split = body.clone();
-    navigation.connect_clicked(move |_| split.set_show_content(!split.shows_content()));
     navigation.set_visible(body.is_collapsed());
     let nav_toggle = navigation.clone();
     body.connect_collapsed_notify(move |split| nav_toggle.set_visible(split.is_collapsed()));
@@ -906,8 +994,8 @@ fn build(app: &gtk::Application, store: Store) {
     breakpoint.add_setter(&body, "collapsed", Some(&true.to_value()));
     adw_window.add_breakpoint(breakpoint);
     let nav = column();
+    nav.set_spacing(0);
     nav.add_css_class("sidebar");
-    nav.set_width_request(166);
     nav.append(&workspace::sidebar_header(
         &store.state.settings.business_name,
     ));
@@ -915,8 +1003,9 @@ fn build(app: &gtk::Application, store: Store) {
     stack.set_hexpand(true);
     stack.set_vexpand(true);
     stack.set_transition_type(gtk::StackTransitionType::Crossfade);
-    body.set_sidebar(Some(&adw::NavigationPage::new(&nav, "میز کار")));
-    body.set_content(Some(&adw::NavigationPage::new(&stack, "پیشنهاد قیمت")));
+    body.set_sidebar(Some(&adw::NavigationPage::new(&nav, "صفحه‌ها")));
+    let content_page = adw::NavigationPage::new(&stack, "پیشنهاد قیمت");
+    body.set_content(Some(&content_page));
     root.set_content(Some(&body));
     let status = label("آماده • قیمت‌ها تنها از فهرست تأییدشده می‌آیند");
     status.add_css_class("status");
@@ -972,10 +1061,20 @@ fn build(app: &gtk::Application, store: Store) {
     catalog_choice.set_enable_search(true);
     let unit = gtk::DropDown::from_strings(&["تومان", "ریال"]);
     let reference = entry("شمارهٔ سفارش مشتری (اختیاری)");
-    let quote_date = entry("YYYY-MM-DD");
-    quote_date.set_direction(gtk::TextDirection::Ltr);
-    let valid_until = entry("YYYY-MM-DD • اختیاری");
-    valid_until.set_direction(gtk::TextDirection::Ltr);
+    let quote_date = accounting::date_field_with_preferences(
+        store.state.settings.date_display,
+        store.state.settings.display_digits,
+        "تاریخ پیشنهاد",
+        "quote-date",
+        &store.state.draft.quote_date,
+    );
+    let valid_until = accounting::date_field_with_preferences(
+        store.state.settings.date_display,
+        store.state.settings.display_digits,
+        "اعتبار تا • اختیاری",
+        "quote-valid-until",
+        &store.state.draft.valid_until,
+    );
     let customer_save = button("ذخیرهٔ مشتری");
     let metadata_fields: Vec<gtk::Widget> = vec![
         field("مشتری", &customer_control).upcast(),
@@ -1005,8 +1104,8 @@ fn build(app: &gtk::Application, store: Store) {
     optional.set_column_homogeneous(true);
     let optional_fields: Vec<gtk::Widget> = vec![
         field("مرجع مشتری", &reference).upcast(),
-        field("تاریخ پیشنهاد • میلادی", &quote_date).upcast(),
-        field("اعتبار تا • میلادی", &valid_until).upcast(),
+        quote_date.widget.clone().upcast(),
+        valid_until.widget.clone().upcast(),
         customer_save.clone().upcast(),
     ];
     for (i, widget) in optional_fields.iter().enumerate() {
@@ -1186,14 +1285,41 @@ fn build(app: &gtk::Application, store: Store) {
     backup_page.append(&restore);
     backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…7 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. موجودی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
+    let destinations = gtk::ListBox::new();
+    destinations.set_widget_name("workspace-destinations");
+    destinations.add_css_class("navigation-sidebar");
+    destinations.set_selection_mode(gtk::SelectionMode::Single);
+    accessible_name(&destinations, "صفحه‌های فضای کار");
+    destinations.set_header_func(|item, _| {
+        let group = match item.widget_name().as_str() {
+            "navigation-order" => Some("پیشنهادها"),
+            "navigation-customers" => Some("کالا و مشتری"),
+            "navigation-accounting" => Some("حسابداری"),
+            _ => None,
+        };
+        if let Some(group) = group {
+            let caption = label(group);
+            caption.add_css_class("navigation-group");
+            item.set_header(Some(&caption));
+        } else {
+            item.set_header(None::<&gtk::Widget>);
+        }
+    });
+    let utilities = gtk::ListBox::new();
+    utilities.add_css_class("navigation-sidebar");
+    utilities.set_selection_mode(gtk::SelectionMode::Single);
+    accessible_name(&utilities, "تنظیمات و نگهداری داده");
     let mut nav_counts = vec![];
-    for (i, name, caption, icon, group) in [
+    let mut nav_rows = vec![];
+    for (i, name, caption, icon, _group, description, utility) in [
         (
             1,
             "order",
             "پیشنهاد قیمت",
             "document-edit-symbolic",
-            Some("میز کار"),
+            Some("پیشنهادها"),
+            None,
+            false,
         ),
         (
             4,
@@ -1201,28 +1327,44 @@ fn build(app: &gtk::Application, store: Store) {
             "بایگانی پیشنهادها",
             "document-open-recent-symbolic",
             None,
+            None,
+            false,
         ),
         (
             3,
             "customers",
             "مشتری‌ها",
             "system-users-symbolic",
-            Some("دفترها"),
+            Some("کالا و مشتری"),
+            None,
+            false,
         ),
-        (2, "catalog", "کالاها و قیمت‌ها", "view-list-symbolic", None),
+        (
+            2,
+            "catalog",
+            "کالاها و قیمت‌ها",
+            "view-list-symbolic",
+            None,
+            None,
+            false,
+        ),
         (
             7,
             "accounting",
-            "حسابداری",
+            "دفتر حسابداری",
             "accessories-calculator-symbolic",
-            None,
+            Some("حسابداری"),
+            Some("شرکت، اسناد و تراز آزمایشی"),
+            false,
         ),
         (
             5,
             "backup",
             "پشتیبان و بازیابی",
             "document-save-symbolic",
-            Some("برنامه"),
+            None,
+            None,
+            true,
         ),
         (
             6,
@@ -1230,41 +1372,89 @@ fn build(app: &gtk::Application, store: Store) {
             "تنظیمات",
             "preferences-system-symbolic",
             None,
+            None,
+            true,
         ),
     ] {
-        if let Some(group) = group {
-            nav.append(&workspace::navigation_group(group));
-        }
-        let item = workspace::navigation_row(caption, icon, &format!("Alt+{i}"));
-        item.set_count(None);
-        let b = item.button;
-        nav_counts.push((name, item.count));
+        let list = if utility { &utilities } else { &destinations };
+        let (item, count) =
+            sidebar_destination(name, caption, icon, &format!("Alt+{i}"), description);
+        nav_counts.push((name, count));
+        list.append(&item);
+        nav_rows.push((name, caption, item, list.clone()));
+    }
+    for list in [&destinations, &utilities] {
         let st = stack.clone();
         let split = body.clone();
-        b.connect_clicked(move |b| {
-            b.set_active(true);
-            st.set_visible_child_name(name);
-            split.set_show_content(true);
-        });
-        let nav_button = b.clone();
-        stack.connect_visible_child_name_notify(move |st| {
-            if st.visible_child_name().as_deref() == Some(name) {
-                nav_button.set_active(true);
-            } else {
-                nav_button.set_active(false);
+        list.connect_row_activated(move |_, item| {
+            if let Some(name) = item.widget_name().strip_prefix("navigation-") {
+                st.set_visible_child_name(name);
+                split.set_show_content(true);
+                if split.is_collapsed() {
+                    st.child_focus(gtk::DirectionType::TabForward);
+                }
             }
         });
-        if name == "order" {
-            b.set_active(true);
-        }
-        nav.append(&b);
     }
-    let space = column();
-    space.set_vexpand(true);
-    nav.append(&space);
-    let local = label("ذخیرهٔ محلی");
-    local.add_css_class("muted");
-    nav.append(&local);
+    let rows = nav_rows.clone();
+    let primary = destinations.clone();
+    let secondary = utilities.clone();
+    let title = window_title.clone();
+    stack.connect_visible_child_name_notify(move |st| {
+        let Some(name) = st.visible_child_name() else {
+            return;
+        };
+        primary.unselect_all();
+        secondary.unselect_all();
+        for (page, caption, item, list) in &rows {
+            let current = *page == name.as_str();
+            item.update_property(&[gtk::accessible::Property::Description(if current {
+                "صفحهٔ کنونی"
+            } else {
+                "باز کردن صفحه با Enter"
+            })]);
+            if current {
+                item.add_css_class("current-page");
+                list.select_row(Some(item));
+                title.set_title(caption);
+                content_page.set_title(caption);
+            } else {
+                item.remove_css_class("current-page");
+            }
+        }
+    });
+    nav_rows[0].2.add_css_class("current-page");
+    destinations.select_row(Some(&nav_rows[0].2));
+    nav.append(&scroll(&destinations));
+    let footer = column();
+    footer.set_spacing(8);
+    footer.add_css_class("navigation-footer");
+    footer.append(&utilities);
+    let local = row();
+    local.set_spacing(6);
+    local.add_css_class("navigation-local");
+    let local_icon = gtk::Image::from_icon_name("computer-symbolic");
+    local_icon.set_pixel_size(14);
+    local.append(&local_icon);
+    local.append(&label("داده‌ها روی این رایانه"));
+    footer.append(&local);
+    nav.append(&footer);
+    let split = body.clone();
+    let rows = nav_rows.clone();
+    let st = stack.clone();
+    navigation.connect_clicked(move |_| {
+        split.set_show_content(!split.shows_content());
+        if !split.shows_content() {
+            if let Some((_, _, item, _)) = rows
+                .iter()
+                .find(|(name, _, _, _)| Some(*name) == st.visible_child_name().as_deref())
+            {
+                item.grab_focus();
+            }
+        } else {
+            st.child_focus(gtk::DirectionType::TabForward);
+        }
+    });
     let ui = Rc::new(Ui {
         store: RefCell::new(store),
         window: window.clone(),
@@ -1279,6 +1469,9 @@ fn build(app: &gtk::Application, store: Store) {
         stale,
         catalog_choice,
         review,
+        review_cache: RefCell::new(None),
+        review_requested: Cell::new(None),
+        review_request_serial: Cell::new(0),
         total,
         subtotal,
         tax,
@@ -1341,8 +1534,8 @@ fn build(app: &gtk::Application, store: Store) {
         &ui.phone,
         &ui.discount,
         &ui.reference,
-        &ui.quote_date,
-        &ui.valid_until,
+        &ui.quote_date.entry,
+        &ui.valid_until.entry,
     ] {
         let weak = Rc::downgrade(&ui);
         e.connect_changed(move |_| {
@@ -1499,11 +1692,17 @@ fn build(app: &gtk::Application, store: Store) {
     });
     let keys = gtk::EventControllerKey::new();
     let u = ui.clone();
+    let navigation_toggle = navigation.clone();
     keys.connect_key_pressed(move |_, key, _, mods| {
         // Modal editors own their shortcuts; window commands must not replace
         // the underlying draft or navigate away while a dialog is open.
         if u.active_dialog.borrow().is_some() {
             return glib::Propagation::Proceed;
+        }
+        if key == gtk::gdk::Key::Escape && u.split.is_collapsed() && !u.split.shows_content() {
+            u.split.set_show_content(true);
+            navigation_toggle.grab_focus();
+            return glib::Propagation::Stop;
         }
         if mods.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
             match key {

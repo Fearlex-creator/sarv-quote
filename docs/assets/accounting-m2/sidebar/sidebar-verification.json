@@ -1,0 +1,100 @@
+{
+  "result": "passed",
+  "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-_5ezfszn",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M2-layout-final",
+  "binary_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d",
+  "backend": "private X11/Xvfb/Openbox; real XTest keys; AT-SPI observation",
+  "synthetic_only": true,
+  "checks": [
+    {
+      "name": "Alt+1 opens order",
+      "passed": true
+    },
+    {
+      "name": "Alt+2 opens catalog",
+      "passed": true
+    },
+    {
+      "name": "Alt+3 opens customers",
+      "passed": true
+    },
+    {
+      "name": "Alt+4 opens quotes",
+      "passed": true
+    },
+    {
+      "name": "Alt+5 opens backup",
+      "passed": true
+    },
+    {
+      "name": "Alt+6 opens settings",
+      "passed": true
+    },
+    {
+      "name": "Alt+7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "Navigation preserves entire saved payload",
+      "passed": true
+    },
+    {
+      "name": "Native hierarchy exposes all three work groups",
+      "passed": true
+    },
+    {
+      "name": "Narrow history tab is fully inside native window",
+      "passed": true,
+      "native_focus_bounds": [
+        21.0,
+        186.0,
+        105.0,
+        34.0
+      ],
+      "native_viewport": [
+        640,
+        750
+      ]
+    },
+    {
+      "name": "Narrow keyboard activates history tab",
+      "passed": true
+    },
+    {
+      "name": "History navigation preserves saved payload",
+      "passed": true
+    },
+    {
+      "name": "Opening narrow sidebar focuses current page",
+      "passed": true
+    },
+    {
+      "name": "Escape closes menu and restores toggle focus",
+      "passed": true
+    },
+    {
+      "name": "Narrow arrow/Enter route opens catalog",
+      "passed": true
+    },
+    {
+      "name": "Narrow keyboard route preserves saved payload",
+      "passed": true
+    },
+    {
+      "name": "Native appearance selection saves dark",
+      "passed": true
+    },
+    {
+      "name": "Restart preserves full payload and appearance",
+      "passed": true
+    },
+    {
+      "name": "Test binary remained immutable throughout run",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Wayland and screen reader speech untested",
+    "High contrast and enlarged text untested"
+  ]
+}

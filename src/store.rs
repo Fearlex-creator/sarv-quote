@@ -1,4 +1,7 @@
-use crate::{domain::State, imports::hash};
+use crate::{
+    domain::{CURRENT_SCHEMA, State},
+    imports::hash,
+};
 use anyhow::{Context, Result, ensure};
 use rusqlite::{Connection, params};
 use serde::{Deserialize, Serialize};
@@ -24,10 +27,10 @@ struct BackupView<'a> {
 }
 fn backup_view<'a>(state: &'a State, payload: &[u8]) -> BackupView<'a> {
     BackupView {
-        format: if state.schema == 1 {
-            "sarv-quote-backup-v1"
-        } else {
-            "sarv-accounting-backup-v2"
+        format: match state.schema {
+            1 => "sarv-quote-backup-v1",
+            2 => "sarv-accounting-backup-v2",
+            _ => "sarv-accounting-backup-v3",
         },
         checksum: hash(payload),
         state,
@@ -167,17 +170,20 @@ impl Store {
         let mut state: State =
             serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
         state.validate()?;
-        let generation = if state.schema == 1 {
+        let generation = if state.schema < CURRENT_SCHEMA {
             // Preserve the exact old logical snapshot before touching its row.
             // A failed or interrupted backup leaves the legacy database usable.
-            let recovery = directory.join(format!("before-schema2-{}.json", crate::domain::id()));
+            let recovery = directory.join(format!(
+                "before-schema{CURRENT_SCHEMA}-{}.json",
+                crate::domain::id()
+            ));
             backup_state(&state, &recovery)?;
             let verified = Self::restore_preview_legacy(&recovery)?;
             ensure!(
                 serde_json::to_vec(&verified)? == serde_json::to_vec(&state)?,
                 "نسخهٔ بازیابی تطبیق ندارد"
             );
-            state.schema = 2;
+            state.schema = CURRENT_SCHEMA;
             state.validate()?;
             let next = generation
                 .checked_add(1)
@@ -208,7 +214,7 @@ impl Store {
         let mut candidate = self.state.clone();
         let result = f(&mut candidate)?;
         ensure!(
-            candidate.schema == 2,
+            candidate.schema == CURRENT_SCHEMA,
             "کاهش نسخهٔ داده مجاز نیست؛ از مسیر بازیابی استفاده کنید"
         );
         candidate.validate()?;
@@ -260,7 +266,10 @@ impl Store {
     }
     pub fn prepare_candidate(expected_generation: i64, candidate: State) -> Result<PreparedChange> {
         ensure!(expected_generation >= 0, "نسخهٔ ذخیره‌سازی نامعتبر است");
-        ensure!(candidate.schema == 2, "نسخهٔ نامعتبر برای ذخیره‌سازی");
+        ensure!(
+            candidate.schema == CURRENT_SCHEMA,
+            "نسخهٔ نامعتبر برای ذخیره‌سازی"
+        );
         candidate.validate()?;
         let payload = serde_json::to_string(&candidate)?;
         serde_json::to_writer_pretty(BackupSize(0), &backup_view(&candidate, payload.as_bytes()))
@@ -371,7 +380,7 @@ impl Store {
     }
     pub fn restore_preview(path: &Path) -> Result<State> {
         let mut state = Self::restore_preview_legacy(path)?;
-        state.schema = 2;
+        state.schema = CURRENT_SCHEMA;
         state.validate()?;
         Ok(state)
     }
@@ -389,7 +398,8 @@ impl Store {
         let b: Backup = serde_json::from_slice(&bytes).context("قالب پشتیبان نامعتبر")?;
         ensure!(
             (b.format == "sarv-quote-backup-v1" && b.state.schema == 1)
-                || (b.format == "sarv-accounting-backup-v2" && b.state.schema == 2),
+                || (b.format == "sarv-accounting-backup-v2" && b.state.schema == 2)
+                || (b.format == "sarv-accounting-backup-v3" && b.state.schema == CURRENT_SCHEMA),
             "قالب پشتیبان ناشناخته"
         );
         ensure!(
@@ -402,7 +412,7 @@ impl Store {
     pub fn restore(&mut self, mut candidate: State) -> Result<PathBuf> {
         self.ensure_idle()?;
         candidate.validate()?;
-        candidate.schema = 2;
+        candidate.schema = CURRENT_SCHEMA;
         let safety = self
             .directory
             .join(format!("before-restore-{}.json", crate::domain::id()));

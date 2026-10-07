@@ -248,12 +248,24 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     );
     let date_choice = combo(
         "نمایش تاریخ",
-        &["میلادی YYYY-MM-DD", "میلادی DD/MM/YYYY"],
-        u32::from(settings.date_display == DateDisplay::DayMonthYear),
+        &[
+            "میلادی YYYY-MM-DD",
+            "میلادی DD/MM/YYYY",
+            "هجری شمسی YYYY/MM/DD",
+        ],
+        match settings.date_display {
+            DateDisplay::Iso => 0,
+            DateDisplay::DayMonthYear => 1,
+            DateDisplay::Jalali => 2,
+        },
     );
     appearance_group.add(&appearance);
     appearance_group.add(&density);
     appearance_group.add(&digit_choice);
+    date_choice.set_widget_name("settings-date-display");
+    date_choice.set_subtitle(
+        "تقویم نمایش و پیش‌فرض ورود تاریخ مالی؛ تاریخ واقعی سند و مرز دوره تغییر نمی‌کند.",
+    );
     appearance_group.add(&date_choice);
     page.add(&appearance_group);
     page.add(&document);
@@ -456,10 +468,10 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                 } else {
                     Density::Compact
                 },
-                date_display: if date_choice.selected() == 0 {
-                    DateDisplay::Iso
-                } else {
-                    DateDisplay::DayMonthYear
+                date_display: match date_choice.selected() {
+                    1 => DateDisplay::DayMonthYear,
+                    2 => DateDisplay::Jalali,
+                    _ => DateDisplay::Iso,
                 },
                 display_digits: if digit_choice.selected() == 0 {
                     DisplayDigits::Persian

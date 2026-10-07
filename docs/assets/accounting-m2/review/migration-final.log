@@ -1,0 +1,4 @@
+   Compiling sarv-independent-m2-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m2/probe)
+    Finished `dev` profile [unoptimized] target(s) in 0.64s
+     Running `target/debug/sarv-independent-m2-migration artifacts/independent-m2/migration-final artifacts/m2-migration/verified-before-schema3-v2.json`
+PASS independent Store.open schema2→3: generation17→18, exact3quote/3journal/date/ID/history preservation, one verified v2 recovery retaining original state, idempotent repeat-open18, fresh restore exact

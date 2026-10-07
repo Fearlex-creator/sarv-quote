@@ -1,0 +1,96 @@
+    Finished `test` profile [unoptimized] target(s) in 0.05s
+     Running tests/accounting_exports.rs (target/debug/deps/accounting_exports-6113bcbf3a1343d9)
+
+running 1 test
+test exact_report_units_pagination_and_no_overwrite_are_visible_in_exports ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests/accounting_kernel.rs (target/debug/deps/accounting_kernel-bb68a4f052ff333d)
+
+running 12 tests
+test archived_accounts_allow_only_exact_original_reversal_snapshots ... ok
+test backdated_post_checks_every_affected_cutoff_not_only_current_balance ... ok
+test cumulative_books_reject_reimported_opening_in_later_year ... ok
+test exact_money_units_digits_range_and_serialization ... ok
+test company_dates_hierarchy_and_control_restrictions ... ok
+test failed_post_is_atomic_for_invalid_lines_unbalance_and_overflow ... ok
+test locks_reopen_and_reversal_cross_period_preserve_history ... ok
+test post_rejects_cumulative_account_and_report_overflow_atomically ... ok
+test independent_opening_adjustment_and_reversal_fixture ... ok
+test restored_state_and_generic_store_transition_reject_history_tampering ... ok
+test retry_identity_and_business_identity_survive_restore_and_lock ... ok
+test many_exact_synthetic_postings_have_independent_expected_totals ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/accounting_migration.rs (target/debug/deps/accounting_migration-48114e80131a5aad)
+
+running 3 tests
+test unsupported_or_corrupt_upgrade_never_rewrites_legacy_row ... ok
+test schema_one_upgrade_preserves_quotation_bytes_and_verifies_recovery_before_upgrade ... ok
+test schema_two_upgrade_verifies_m1_recovery_and_preserves_full_ledger_and_quote_history ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/calendar.rs (target/debug/deps/calendar-ca7a13cd465dd978)
+
+running 9 tests
+test explicit_input_calendar_never_guesses_the_year ... ok
+test jalali_leap_and_every_month_validate_without_rollover ... ok
+test malformed_inputs_and_gregorian_leap_centuries_reject_cleanly ... ok
+test known_nowruz_and_independent_esfand_fixtures ... ok
+test persian_arabic_and_mixed_digits_produce_identical_canonical_dates ... ok
+test presentation_mode_serializes_explicitly_and_errors_explain_limits ... ok
+test range_endpoints_and_outside_dates_are_explicit ... ok
+test fiscal_boundaries_are_inclusive_and_preserve_chronology ... ok
+test all_supported_days_roundtrip_and_calendar_switch_keeps_canonical_date ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.58s
+
+     Running tests/calendar_workflow.rs (target/debug/deps/calendar_workflow-e85b1cebe1e8cabe)
+
+running 2 tests
+test jalali_preference_survives_recovery_and_preserves_approved_document_dates_and_output ... ok
+test jalali_trial_exports_name_both_dates_and_preserve_exact_money ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/detached_save.rs (target/debug/deps/detached_save-e25412426aebf833)
+
+running 4 tests
+test detached_failures_release_reservation_without_losing_state ... ok
+test detached_save_never_recreates_a_missing_database_or_adopts_another_profile ... ok
+test detached_save_reserves_owner_and_durably_survives_unacknowledged_restart ... ok
+test concurrent_detached_saves_have_one_winner_and_keep_stale_owner_input ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/process_recovery.rs (target/debug/deps/process_recovery-b918b559a65e5661)
+
+running 9 tests
+test kill_inside_store_candidate_does_not_leak_to_committed_state ... ok
+test killed_public_restore_after_commit_retains_restored_state_and_original_safety ... ok
+test killed_public_restore_after_safety_before_commit_retains_original_and_valid_backup ... ok
+test recovery_worker_entry ... ok
+test interrupted_detached_journal_before_commit_or_before_receipt_has_exact_complete_books ... ok
+test sigkill_after_public_store_commit_keeps_complete_state ... ok
+test sigkill_spilled_uncommitted_wal_recovers_previous_state ... ok
+test interrupted_staging_protocol_is_absent_before_link_and_complete_after_link ... ok
+test interrupted_public_export_is_absent_or_complete_and_never_overwrites ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.61s
+
+     Running tests/settings.rs (target/debug/deps/settings-d57ebb8d1a86c508)
+
+running 8 tests
+test invalid_settings_and_digit_preferences_have_meaningful_behavior ... ok
+test defaults_are_real_new_draft_snapshots ... ok
+test configured_tax_is_exact_and_quote_tampering_is_rejected ... ok
+test repeated_number_and_counter_exhaustion_fail_safely ... ok
+test numbers_survive_revision_and_failed_approval_never_consumes_number ... ok
+test legacy_settings_and_snapshot_defaults_are_omitted ... ok
+test tax_total_overflow_and_equivalent_document_numbers_are_rejected ... ok
+test every_setting_persists_and_backup_restore_keeps_quote_snapshots ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s

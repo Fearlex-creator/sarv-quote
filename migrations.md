@@ -1,3 +1,13 @@
+# Current schema 3 Jalali/native checkpoint
+
+Schema 3 explicitly versions the serialized Jalali presentation preference introduced in M2. Schema 1 and M1 schema 2 profiles upgrade on open only after a uniquely named `before-schema3-<uuid>.json` recovery is atomically published, synced, checksum/domain-validated, and matched byte-for-byte to the old logical state. Schema1 recovery retains v1 format; schema2 recovery retains `sarv-accounting-backup-v2`. The conditional row UPDATE changes schema and generation together; repeated open is idempotent. No quote, posting, date or historical snapshot is reinterpreted. New backups use `sarv-accounting-backup-v3`; readers accept and verify v1/v2 originals before upgrading the in-memory restore candidate to3. Ordinary writes require current schema3. A schema1/2 payload claiming Jalali is invalid.
+
+M2→M1 downgrade is unsupported: M1 rejects schema3/v3 backups and cannot represent a saved Jalali preference or document snapshot. Merely switching current settings to ISO cannot remove historical Jalali snapshots safely. Keep the full M2 profile and v3 backups; restore the verified pre-M2 v2 recovery into a **different fresh profile** using compatible M1 when needed. Its state predates new M2 entries/preferences. Never run an old writer against upgraded data or change issued snapshots to satisfy it. This is a recovery path, not an automatic reverse migration.
+
+Current migration test retains3 approved quotes and3 manual journals through2→3, exact quote/accounting hashes, generation17→18, repeat-open18 and fresh-profile full-state equality. Interrupted schema upgrades and physical power loss remain untested. [M2 delivery](requirements/milestone-M2.md) records final proof and limits.
+
+The sections below preserve the historical M1 schema1→2 implementation and evidence.
+
 # Storage and recovery checkpoint
 
 Baseline: `4aa82c2988fb2ea48a2fa2ae9824c06187f3d76a`. One SQLite `state` row,

@@ -98,10 +98,10 @@ pub fn csv_bytes(q: &Quote) -> Result<Vec<u8>> {
             } else {
                 "persian".into()
             },
-            if q.date_display == DateDisplay::DayMonthYear {
-                "day_month_year".into()
-            } else {
-                "iso".into()
+            match q.date_display {
+                DateDisplay::Iso => "iso".into(),
+                DateDisplay::DayMonthYear => "day_month_year".into(),
+                DateDisplay::Jalali => "jalali".into(),
             },
             safe_cell(&q.customer_id),
             safe_cell(&q.customer_contact),

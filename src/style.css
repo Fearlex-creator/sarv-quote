@@ -52,32 +52,55 @@
 .sarv-app .validation { padding: 8px 12px; }
 .sarv-app .muted, .sarv-app .badge, .sarv-app .row-description { opacity: var(--dim-opacity); }
 
-/* Flat navigation uses one hierarchy and familiar theme symbolic icons. GTK
- * still owns native toggle, keyboard focus and accessibility behaviour. */
-.sarv-app .sidebar { padding: 12px 8px; }
-.sarv-app .workspace-brand { padding: 4px 12px 12px; }
+/* Native navigation separates everyday work from persistent app utilities.
+ * GTK owns selection, hover, focus and high-contrast outlines. */
+.sarv-app .sidebar { padding: 0; }
+.sarv-app .workspace-brand { padding: 24px 22px 18px; }
+.sarv-app .workspace-brand .title-3 { font-size: 24px; font-weight: 700; }
+.sarv-app list.navigation-sidebar { background: transparent; padding: 0 12px; }
+.sarv-app row.navigation-section { background: transparent; padding: 0; }
 .sarv-app .navigation-group {
-  padding: 12px 12px 4px;
-  font-size: 12px;
-  color: alpha(var(--window-fg-color), 0.64);
-  font-weight: 500;
+  padding: 18px 12px 8px;
+  font-size: 11px;
+  color: var(--window-fg-color);
+  opacity: var(--dim-opacity);
+  font-weight: 600;
 }
-.sarv-app button.sarv-navigation-row {
-  padding: 8px 12px;
-  margin: 0 4px;
-  border-radius: 6px;
+.sarv-app row.sarv-navigation-row {
+  padding: 12px;
+  margin: 2px 0;
+  border-radius: 9px;
+  min-height: 22px;
 }
-.sarv-app button.sarv-navigation-row:checked {
-  background-color: alpha(var(--accent-bg-color), 0.12);
+.sarv-app row.sarv-navigation-row:selected {
+  background-color: transparent;
+  color: var(--window-fg-color);
 }
-.sarv-app .navigation-icon { color: var(--accent-color); }
+.sarv-app row.sarv-navigation-row.current-page {
+  background-color: alpha(var(--accent-bg-color), 0.14);
+  color: var(--window-fg-color);
+}
+.sarv-app row.sarv-navigation-row.current-page .navigation-icon { color: var(--accent-color); }
+.sarv-app .navigation-icon { opacity: 0.8; }
 .sarv-app .navigation-label { font-weight: 500; }
-.sarv-app button.sarv-navigation-row:checked .navigation-label { font-weight: 600; }
-.sarv-app .navigation-shortcut { color: alpha(var(--window-fg-color), 0.50); font-size: 11px; }
+.sarv-app row.sarv-navigation-row.current-page .navigation-label { font-weight: 600; }
+.sarv-app .navigation-description { font-size: 11px; opacity: var(--dim-opacity); }
 .sarv-app .navigation-count {
-  padding: 0 6px;
+  min-width: 18px;
+  padding: 2px 6px;
   border-radius: 6px;
+  font-size: 11px;
+  opacity: var(--dim-opacity);
   background-color: alpha(var(--window-fg-color), 0.06);
+}
+.sarv-app .navigation-footer {
+  padding: 12px 0 16px;
+  border-top: 1px solid var(--border-color);
+}
+.sarv-app .navigation-local {
+  padding: 8px 24px 0;
+  font-size: 11px;
+  opacity: var(--dim-opacity);
 }
 
 /* Managers keep ordinary boxed native rows with compact supporting text. */

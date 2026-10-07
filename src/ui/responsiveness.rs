@@ -55,6 +55,19 @@ fn picker_search(ui: &Ui) -> Result<gtk::SearchEntry> {
     named(&active_dialog(ui)?, "product-picker-search")
 }
 
+fn capture(window: &impl IsA<gtk::Window>, path: &Path) -> Result<()> {
+    let started = Instant::now();
+    let result = smoke::capture(window, path);
+    if std::env::var("SARV_PERFORMANCE_TRACE").as_deref() == Ok("1") {
+        eprintln!(
+            "SARV_MAIN_THREAD probe_screenshot_{} {:.3}ms",
+            path.file_name().unwrap_or_default().to_string_lossy(),
+            started.elapsed().as_secs_f64() * 1000.0
+        );
+    }
+    result
+}
+
 fn persisted_generation(ui: &Ui) -> Result<i64> {
     let connection = rusqlite::Connection::open_with_flags(
         ui.store.borrow().directory.join("sarv.sqlite3"),
@@ -70,6 +83,9 @@ fn persisted_generation(ui: &Ui) -> Result<i64> {
 // Inject a genuine X11 Tab event without blocking GTK on a subprocess wait.
 // Wayland and systems without XTest are reported as untested, never passed.
 fn inject_tab() -> Result<std::process::Child> {
+    inject_key("Tab", false)
+}
+fn inject_key(key: &str, control: bool) -> Result<std::process::Child> {
     ensure!(
         std::env::var("GDK_BACKEND").as_deref() == Ok("x11"),
         "X11 key injection unavailable"
@@ -86,8 +102,15 @@ k=x.XKeysymToKeycode(d,x.XStringToKeysym(b'Tab')); assert k
 t.XTestFakeKeyEvent(d,k,1,0); t.XTestFakeKeyEvent(d,k,0,0)
 x.XFlush(d); x.XCloseDisplay(d)
 "#;
+    let script = script.replace("b'Tab'", &format!("b{key:?}"));
+    let script = if control {
+        script.replace("t.XTestFakeKeyEvent(d,k,1,0);", "c=x.XKeysymToKeycode(d,x.XStringToKeysym(b'Control_L')); assert c\nt.XTestFakeKeyEvent(d,c,1,0); t.XTestFakeKeyEvent(d,k,1,0);")
+            .replace("x.XFlush(d); x.XCloseDisplay(d)", "t.XTestFakeKeyEvent(d,c,0,0); x.XFlush(d); x.XCloseDisplay(d)")
+    } else {
+        script
+    };
     Ok(std::process::Command::new("/usr/bin/python3")
-        .args(["-c", script])
+        .args(["-c", &script])
         .spawn()?)
 }
 
@@ -125,7 +148,7 @@ struct Probe {
     save_started: Option<Instant>,
     save_ticks: usize,
     save_max_gap_ms: f64,
-    pending_editor_page: Option<(usize, i64, Instant)>,
+    pending_editor_page: Option<(usize, i64, Instant, bool)>,
 }
 
 impl Probe {
@@ -202,6 +225,7 @@ impl Probe {
             "heartbeat_ticks_while_pdf_busy": self.export_ticks,
             "maximum_heartbeat_gap_ms_while_pdf_busy": self.export_max_gap_ms,
             "pdf_busy_responsiveness_threshold_ms": 250,
+            "lookup_readiness_observation": "30ms polling for exact native contents; no deliberate250ms wait",
             "heartbeat_ticks_while_save_busy": self.save_ticks,
             "maximum_heartbeat_gap_ms_while_save_busy": self.save_max_gap_ms,
             "heartbeat_gaps_over_100_ms": self.large_gaps,
@@ -234,6 +258,11 @@ impl Probe {
 }
 
 fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
+    // A worker result is usable only after GTK has installed its exact page.
+    // Keep the full action-to-ready duration, including worker/polling time.
+    if ui.review_requested.get().is_some() {
+        return Ok(());
+    }
     let mut p = probe.borrow_mut();
     let directory = ui.store.borrow().directory.clone();
     match p.stage {
@@ -350,7 +379,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 "first native page incorrect"
             );
             p.max_rows = rows.len();
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-catalog-first.png"),
             )?;
@@ -365,7 +394,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 rows.len() == 100 && rows[0].title().contains("SCALE-00101"),
                 "next native page incorrect"
             );
-            smoke::capture(&ui.window, &directory.join("native-scale-catalog-next.png"))?;
+            capture(&ui.window, &directory.join("native-scale-catalog-next.png"))?;
             p.checks.push(
                 "Actual GTK import preview first and next page contain 100 expected products"
                     .into(),
@@ -401,7 +430,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 !button_named(preview, "صفحهٔ بعد")?.is_sensitive(),
                 "last-page next remains enabled"
             );
-            smoke::capture(&ui.window, &directory.join("native-scale-catalog-last.png"))?;
+            capture(&ui.window, &directory.join("native-scale-catalog-last.png"))?;
             p.checks.push("All 500 native pages reached by next button; final row is SCALE-50000; next disabled".into());
             let began = p.began;
             p.elapsed(
@@ -425,14 +454,11 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             ui.fill_form();
             ui.refresh_review();
             ui.stack.set_visible_child_name("order");
-            p.elapsed(
-                "1000_line_store_commit_and_first_100_editor_widget_creation",
-                begin,
-            );
+            p.elapsed("1000_line_store_commit_and_review_dispatch", begin);
             p.advance(60, 1000);
         }
         60 => {
-            smoke::capture(&ui.window, &directory.join("native-save-before.png"))?;
+            capture(&ui.window, &directory.join("native-save-before.png"))?;
             let connection = rusqlite::Connection::open(directory.join("sarv.sqlite3"))?;
             connection.execute_batch("BEGIN IMMEDIATE;")?;
             p.save_lock = Some(connection);
@@ -570,11 +596,11 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             );
             drop(store);
             p.checks.push("Actual explicit Save refreshes exact100,001rial first-row amount, clears review pending, preserves native quantity focus and selection, and does not duplicate an unchanged commit".into());
-            smoke::capture(&ui.window, &directory.join("native-save-after.png"))?;
+            capture(&ui.window, &directory.join("native-save-after.png"))?;
             p.advance(10, 300);
         }
         10 => {
-            if let Some((page, before, started)) = p.pending_editor_page {
+            if let Some((page, before, started, _)) = p.pending_editor_page {
                 if ui.persistence_busy.get() {
                     return Ok(());
                 }
@@ -609,7 +635,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 let before = persisted_generation(ui)?;
                 let started = Instant::now();
                 button_named(&ui.review, "بعدی")?.emit_clicked();
-                p.pending_editor_page = Some((page, before, started));
+                p.pending_editor_page = Some((page, before, started, true));
                 return Ok(());
             }
             ensure!(
@@ -634,19 +660,92 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(11, 300);
         }
         11 => {
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-editor-last-page.png"),
             )?;
+            ui.row_editors
+                .borrow()
+                .last()
+                .context("last reused row missing")?
+                .query
+                .grab_focus();
+            p.keyboard = Some(inject_key("Up", true)?);
+            p.advance(111, 100);
+        }
+        111 => {
+            let status = p
+                .keyboard
+                .as_mut()
+                .context("Ctrl+Up subprocess missing")?
+                .try_wait()?;
+            if status.is_none() {
+                return Ok(());
+            }
+            ensure!(
+                status.is_some_and(|status| status.success()),
+                "Ctrl+Up injection failed"
+            );
+            ensure!(
+                ui.table_page.get() == 9,
+                "reused row key callback used obsolete page index"
+            );
+            let rows = ui.row_editors.borrow();
+            let query = &rows[98].query;
+            let focus =
+                gtk::prelude::GtkWindowExt::focus(&ui.window).context("Ctrl+Up lost focus")?;
+            ensure!(
+                focus.is_ancestor(query),
+                "reused row Ctrl+Up did not focus global row999"
+            );
+            ensure!(
+                query.selection_bounds() == Some((0, 11)),
+                "reused row Ctrl+Up did not retain selected code"
+            );
+            p.checks.push("Genuine XTest Ctrl+Up on reused final-page row1000 focuses global row999, selects its exact code and keeps page10".into());
+            drop(rows);
+            named::<gtk::Button>(&ui.review, "quote-row-remove-999")?.emit_clicked();
+            p.advance(112, 0);
+        }
+        112 => {
+            ensure!(
+                ui.store.borrow().state.draft.lines.len() == 999,
+                "reused remove callback did not remove global row1000"
+            );
+            ensure!(
+                ui.store
+                    .borrow()
+                    .state
+                    .draft
+                    .lines
+                    .last()
+                    .is_some_and(|line| line.query == "SCALE-00999"),
+                "reused remove callback removed an obsolete page row"
+            );
+            ui.undo_button.emit_clicked();
+            p.advance(113, 0);
+        }
+        113 => {
+            let store = ui.store.borrow();
+            ensure!(
+                store.state.draft.lines.len() == 1000
+                    && store.state.draft.lines[999].query == "SCALE-01000"
+                    && store.state.draft.lines[999].quantity_milli == 3000,
+                "reused final-page delete/undo changed exact line order or quantity"
+            );
+            ensure!(
+                store.state.preview()?.total_rial == 100_802_501,
+                "delete/undo changed economic total"
+            );
+            p.checks.push("Native reused final-page remove and Undo preserve global row1000 identity/order, quantity3 and exact100,802,501rial total".into());
             p.advance(12, 20);
         }
         12 => {
-            if ui.table_page.get() > 0 {
-                let page = ui.table_page.get();
-                let before = persisted_generation(ui)?;
-                let started = Instant::now();
-                button_named(&ui.review, "قبلی")?.emit_clicked();
-                let elapsed = started.elapsed().as_secs_f64() * 1000.;
+            if let Some((page, before, started, _)) = p.pending_editor_page {
+                ensure!(
+                    ui.table_page.get() + 1 == page,
+                    "previous page navigation failed"
+                );
                 let after = persisted_generation(ui)?;
                 ensure!(
                     after == before,
@@ -655,12 +754,21 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 p.page_clicks.push(
                     serde_json::json!({"direction":"previous", "from_page":page + 1,
                     "draft_changed":false, "generation_before":before,
-                    "generation_after":after, "duration_ms":elapsed}),
+                    "generation_after":after, "duration_ms":started.elapsed().as_secs_f64()*1000.}),
                 );
+                p.pending_editor_page = None;
                 ensure!(
                     ui.row_editors.borrow().len() <= 100,
                     "editor page exceeded 100 rows"
                 );
+                return Ok(());
+            }
+            if ui.table_page.get() > 0 {
+                let page = ui.table_page.get();
+                let before = persisted_generation(ui)?;
+                let started = Instant::now();
+                button_named(&ui.review, "قبلی")?.emit_clicked();
+                p.pending_editor_page = Some((page, before, started, false));
                 return Ok(());
             }
             let store = ui.store.borrow();
@@ -704,37 +812,40 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(22, 200);
         }
         22 => {
-            smoke::capture(&ui.window, &directory.join("native-scale-picker-cold.png"))?;
+            capture(&ui.window, &directory.join("native-scale-picker-cold.png"))?;
             p.phase_started = Instant::now();
             picker_search(ui)?.set_text("SCALE-50000");
-            p.advance(23, 250);
+            p.advance(23, 0);
         }
         23 => {
             let rows = page_rows(&picker_results(ui)?);
-            ensure!(
-                rows.len() == 1
-                    && rows[0]
-                        .subtitle()
-                        .is_some_and(|text| text.contains("SCALE-50000")),
-                "indexed picker cannot find50,000th product exactly"
-            );
+            if !(rows.len() == 1
+                && rows[0]
+                    .subtitle()
+                    .is_some_and(|text| text.contains("SCALE-50000")))
+            {
+                return Ok(());
+            }
             let started = p.phase_started;
             p.elapsed(
                 "50000_indexed_exact_code_search_including_debounce",
                 started,
             );
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-picker-last-product.png"),
             )?;
             p.phase_started = Instant::now();
             picker_search(ui)?.set_text("کالای ساختگی");
-            p.advance(24, 250);
+            p.advance(24, 0);
         }
         24 => {
             let list = picker_results(ui)?;
+            if page_rows(&list).len() != 30 {
+                return Ok(());
+            }
             ensure!(
-                page_rows(&list).len() == 30 && list.row_at_index(30).is_none(),
+                list.row_at_index(30).is_none(),
                 "broad indexed picker created unbounded results"
             );
             ensure!(
@@ -759,7 +870,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(26, 200);
         }
         26 => {
-            smoke::capture(&ui.window, &directory.join("native-scale-picker-warm.png"))?;
+            capture(&ui.window, &directory.join("native-scale-picker-warm.png"))?;
             active_dialog(ui)?.close();
             let started = Instant::now();
             ui.store.borrow_mut().change(|state| {
@@ -769,8 +880,53 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             })?;
             ui.fill_form();
             ui.refresh_review();
+            p.phase_started = started;
             p.elapsed(
-                "unknown_line_fixture_changed_save_and_native_review",
+                "unknown_line_fixture_changed_save_and_review_dispatch",
+                started,
+            );
+            ui.row_editors.borrow()[0]
+                .quantity
+                .set_text("worker-newer-invalid");
+            p.advance(126, 0);
+        }
+        126 => {
+            ensure!(
+                ui.row_editors.borrow()[0].quantity.text() == "worker-newer-invalid",
+                "review worker receipt overwrote newer invalid quantity"
+            );
+            ui.row_editors.borrow()[0].quantity.set_text("2");
+            ui.table_dirty.set(false);
+            ui.refresh_review();
+            ensure!(
+                ui.review_requested.get().is_some(),
+                "bounded row construction was not dispatched"
+            );
+            ui.row_editors.borrow()[0]
+                .quantity
+                .set_text("chunk-newer-invalid");
+            p.advance(127, 0);
+        }
+        127 => {
+            ensure!(
+                ui.row_editors.borrow()[0].quantity.text() == "chunk-newer-invalid",
+                "bounded row installation overwrote newer invalid quantity"
+            );
+            ensure!(
+                ui.store.borrow().state.draft.lines[0].query == "SYNTHETIC-UNMATCHED-REQUEST"
+                    && ui.store.borrow().state.draft.lines[0].quantity_milli == 2000,
+                "cancelled review changed canonical query or quantity"
+            );
+            ui.row_editors.borrow()[0].quantity.set_text("2");
+            ui.table_dirty.set(false);
+            ui.refresh_review();
+            p.advance(128, 0);
+        }
+        128 => {
+            p.checks.push("Review worker and detached20-row construction both preserve newer invalid typed quantity; aborted presentation leaves canonical query/quantity unchanged".into());
+            let started = p.phase_started;
+            p.elapsed(
+                "unknown_line_request_to_ready_including_probe_poll",
                 started,
             );
             ensure!(
@@ -787,23 +943,23 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             );
             p.phase_started = Instant::now();
             picker_search(ui)?.set_text("SCALE-00001");
-            p.advance(28, 250);
+            p.advance(28, 0);
         }
         28 => {
             let rows = page_rows(&picker_results(ui)?);
-            ensure!(
-                rows.len() == 1
-                    && rows[0]
-                        .subtitle()
-                        .is_some_and(|text| text.contains("SCALE-00001")),
-                "unknown selector precise search failed"
-            );
+            if !(rows.len() == 1
+                && rows[0]
+                    .subtitle()
+                    .is_some_and(|text| text.contains("SCALE-00001")))
+            {
+                return Ok(());
+            }
             let started = p.phase_started;
             p.elapsed(
                 "50000_unknown_line_indexed_search_including_debounce",
                 started,
             );
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-unknown-selector.png"),
             )?;
@@ -830,7 +986,10 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             })?;
             ui.fill_form();
             ui.refresh_review();
-            p.elapsed("restore_known_line_fixture_changed_save", started);
+            p.elapsed(
+                "restore_known_line_fixture_changed_save_and_review_dispatch",
+                started,
+            );
             p.advance(30, 300);
         }
         30 => {
@@ -857,7 +1016,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 page_rows(list)[0].title().contains("SCALE-00001"),
                 "composer first page incorrect"
             );
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-composer-first.png"),
             )?;
@@ -875,14 +1034,13 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 .context("composer search missing")?;
             p.phase_started = Instant::now();
             search.set_text("SCALE-50000");
-            p.advance(32, 250);
+            p.advance(32, 0);
         }
         32 => {
             let rows = page_rows(p.composer_list.as_ref().context("composer list missing")?);
-            ensure!(
-                rows.len() == 1 && rows[0].title().contains("SCALE-50000"),
-                "composer cannot reach50,000th product through search"
-            );
+            if !(rows.len() == 1 && rows[0].title().contains("SCALE-50000")) {
+                return Ok(());
+            }
             ensure!(
                 descendants::<gtk::Label>(&active_dialog(ui)?)
                     .iter()
@@ -894,7 +1052,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 "50000_composer_indexed_last_code_search_including_debounce",
                 started,
             );
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-composer-last-product.png"),
             )?;
@@ -917,7 +1075,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 ui.row_editors.borrow().len() == 100,
                 "100 bounded native editor rows missing"
             );
-            smoke::capture(&ui.window, &directory.join("native-scale-editor-1000.png"))?;
+            capture(&ui.window, &directory.join("native-scale-editor-1000.png"))?;
             let quote = ui.store.borrow().state.preview()?;
             ensure!(
                 quote.lines.len() == 1000 && quote.total_rial == 100_802_501,
@@ -985,7 +1143,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(8, 200);
         }
         8 => {
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-settings-while-pdf.png"),
             )?;
@@ -997,7 +1155,7 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             if !p.export_done {
                 return Ok(());
             }
-            smoke::capture(
+            capture(
                 &ui.window,
                 &directory.join("native-scale-editor-narrow.png"),
             )?;
@@ -1137,6 +1295,12 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
             return glib::ControlFlow::Continue;
         }
         if let Err(error) = step(&ui, &probe) {
+            // A readiness poll can see fresh widgets before GTK has drawn
+            // their first native frame. Retry this observer-only condition;
+            // the global bounded deadline still applies.
+            if error.to_string() == "native snapshot empty" {
+                return glib::ControlFlow::Continue;
+            }
             probe.borrow_mut().finish(&ui, Some(format!("{error:#}")));
             return glib::ControlFlow::Break;
         }

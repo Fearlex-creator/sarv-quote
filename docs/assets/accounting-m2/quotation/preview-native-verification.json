@@ -1,0 +1,8 @@
+{
+  "checks": [
+    "saved approved quotation opens native dialog",
+    "native preview zoom125 and75 changes picture geometry",
+    "100-percent preview restored"
+  ],
+  "result": "passed"
+}

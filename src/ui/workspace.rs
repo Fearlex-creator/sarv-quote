@@ -74,68 +74,6 @@ pub(super) fn install_fonts() -> Result<FontGuard> {
     Ok(fonts)
 }
 
-pub(super) struct NavigationRow {
-    pub(super) button: gtk::ToggleButton,
-    pub(super) count: gtk::Label,
-}
-impl NavigationRow {
-    pub(super) fn set_count(&self, value: Option<usize>) {
-        self.count.set_visible(value.is_some());
-        if let Some(value) = value {
-            self.count.set_text(&sarv_quote::domain::fa(value));
-        }
-    }
-}
-
-/// GTK owns selected, focus, pointer and disabled states. Familiar symbolic
-/// icons identify sections; text remains the complete accessible name.
-pub(super) fn navigation_row(caption: &str, icon_name: &str, shortcut: &str) -> NavigationRow {
-    let button = gtk::ToggleButton::new();
-    button.add_css_class("flat");
-    button.add_css_class("nav");
-    button.add_css_class("sarv-navigation-row");
-    button.set_tooltip_text(Some(&format!("{caption} · {shortcut}")));
-    accessible_name(&button, caption);
-    button.update_property(&[gtk::accessible::Property::KeyShortcuts(shortcut)]);
-    let content = row();
-    content.set_spacing(8);
-    let icon = gtk::Image::from_icon_name(icon_name);
-    icon.set_pixel_size(18);
-    icon.add_css_class("navigation-icon");
-    content.append(&icon);
-    let title = label(caption);
-    title.add_css_class("navigation-label");
-    title.set_selectable(false);
-    title.set_wrap(false);
-    title.set_ellipsize(gtk::pango::EllipsizeMode::End);
-    title.set_hexpand(true);
-    content.append(&title);
-    let count = label("");
-    count.add_css_class("navigation-count");
-    count.add_css_class("caption");
-    count.set_selectable(false);
-    count.set_wrap(false);
-    count.set_visible(false);
-    content.append(&count);
-    let hint = label(shortcut);
-    hint.add_css_class("navigation-shortcut");
-    hint.add_css_class("caption");
-    hint.set_direction(gtk::TextDirection::Ltr);
-    hint.set_selectable(false);
-    hint.set_wrap(false);
-    content.append(&hint);
-    button.set_child(Some(&content));
-    NavigationRow { button, count }
-}
-
-pub(super) fn navigation_group(title: &str) -> gtk::Label {
-    let caption = label(title);
-    caption.set_selectable(false);
-    caption.add_css_class("navigation-group");
-    caption.add_css_class("caption-heading");
-    caption
-}
-
 pub(super) fn sidebar_header(business: &str) -> gtk::Box {
     let header = column();
     header.set_spacing(4);

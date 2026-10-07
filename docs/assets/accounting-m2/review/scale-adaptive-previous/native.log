@@ -1,0 +1,282 @@
+SARV_MAIN_THREAD review_snapshot_clone 0.006ms
+SARV_MAIN_THREAD review_snapshot_clone 6.475ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:12.456: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_100_row_widget_construction 2.423ms
+SARV_MAIN_THREAD review_settings_apply 0.373ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:12.517: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD probe_screenshot_native-scale-catalog-first.png 161.941ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-catalog-next.png 152.489ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-catalog-last.png 94.170ms
+SARV_MAIN_THREAD review_snapshot_clone 5.795ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:37.801: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_batched_snapshot_clone 4.371ms
+SARV_MAIN_THREAD review_construct_20_rows 14.526ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:37.868: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_construct_20_rows 19.079ms
+SARV_MAIN_THREAD review_construct_20_rows 13.656ms
+SARV_MAIN_THREAD review_construct_20_rows 8.894ms
+SARV_MAIN_THREAD review_construct_20_rows 10.469ms
+SARV_MAIN_THREAD review_atomic_install 17.988ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:37.963: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 0.139ms
+SARV_MAIN_THREAD probe_screenshot_native-save-before.png 62.472ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:38.859: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.031: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.060: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.076: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.107: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.131: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.153: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.177: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.201: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.219: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.293: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_snapshot_clone 3.880ms
+SARV_MAIN_THREAD review_reuse_setters 1.203ms
+SARV_MAIN_THREAD review_reuse_chrome 15.054ms
+SARV_MAIN_THREAD review_reuse_settings 0.706ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 24.871ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:39.695: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD probe_screenshot_native-save-after.png 61.233ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:40.192: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_snapshot_clone 3.732ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:40.333: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 31.554ms
+SARV_MAIN_THREAD review_reuse_chrome 17.816ms
+SARV_MAIN_THREAD review_reuse_settings 0.888ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 62.121ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:40.483: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 26.579ms
+SARV_MAIN_THREAD review_reuse_chrome 19.003ms
+SARV_MAIN_THREAD review_reuse_settings 0.917ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 53.834ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:40.651: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 23.400ms
+SARV_MAIN_THREAD review_reuse_chrome 16.444ms
+SARV_MAIN_THREAD review_reuse_settings 0.866ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 47.900ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:40.809: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 18.339ms
+SARV_MAIN_THREAD review_reuse_chrome 23.803ms
+SARV_MAIN_THREAD review_reuse_settings 0.891ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 53.474ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:40.976: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 32.500ms
+SARV_MAIN_THREAD review_reuse_chrome 28.568ms
+SARV_MAIN_THREAD review_reuse_settings 1.343ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 73.821ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:41.161: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 20.306ms
+SARV_MAIN_THREAD review_reuse_chrome 18.653ms
+SARV_MAIN_THREAD review_reuse_settings 0.911ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 46.362ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:41.329: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 13.577ms
+SARV_MAIN_THREAD review_reuse_chrome 19.217ms
+SARV_MAIN_THREAD review_reuse_settings 0.949ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 41.550ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:41.479: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 14.340ms
+SARV_MAIN_THREAD review_reuse_chrome 30.925ms
+SARV_MAIN_THREAD review_reuse_settings 1.328ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 55.725ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:41.648: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 34.989ms
+SARV_MAIN_THREAD review_reuse_chrome 30.888ms
+SARV_MAIN_THREAD review_reuse_settings 1.184ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 77.205ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:41.869: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_snapshot_clone 6.539ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:42.168: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 3.684ms
+SARV_MAIN_THREAD review_reuse_chrome 23.594ms
+SARV_MAIN_THREAD review_reuse_settings 0.735ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 35.813ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:42.289: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD probe_screenshot_native-scale-editor-last-page.png 62.019ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:42.553: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_snapshot_clone 3.698ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:42.819: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_batched_snapshot_clone 14.650ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:42.896: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_construct_20_rows 20.488ms
+SARV_MAIN_THREAD review_construct_20_rows 19.747ms
+SARV_MAIN_THREAD review_construct_20_rows 20.423ms
+SARV_MAIN_THREAD review_construct_20_rows 19.078ms
+SARV_MAIN_THREAD review_construct_20_rows 18.902ms
+SARV_MAIN_THREAD review_atomic_install 27.875ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:43.056: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 3.693ms
+SARV_MAIN_THREAD review_retire_20_rows 4.422ms
+SARV_MAIN_THREAD review_retire_20_rows 2.960ms
+SARV_MAIN_THREAD review_retire_20_rows 2.793ms
+SARV_MAIN_THREAD review_retire_20_rows 3.461ms
+SARV_MAIN_THREAD review_snapshot_clone 4.362ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:43.326: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 0.296ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 24.891ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:43.423: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_construct_20_rows 13.778ms
+SARV_MAIN_THREAD review_construct_20_rows 13.684ms
+SARV_MAIN_THREAD review_construct_20_rows 13.830ms
+SARV_MAIN_THREAD review_construct_20_rows 13.375ms
+SARV_MAIN_THREAD review_construct_20_rows 13.039ms
+SARV_MAIN_THREAD review_atomic_install 28.160ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:43.549: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 5.391ms
+SARV_MAIN_THREAD review_retire_20_rows 4.893ms
+SARV_MAIN_THREAD review_retire_20_rows 3.371ms
+SARV_MAIN_THREAD review_retire_20_rows 3.398ms
+SARV_MAIN_THREAD review_retire_20_rows 3.961ms
+SARV_MAIN_THREAD review_reuse_setters 27.399ms
+SARV_MAIN_THREAD review_reuse_chrome 22.770ms
+SARV_MAIN_THREAD review_reuse_settings 0.970ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 60.588ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:43.768: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 25.343ms
+SARV_MAIN_THREAD review_reuse_chrome 19.191ms
+SARV_MAIN_THREAD review_reuse_settings 0.777ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 51.706ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:43.931: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 31.064ms
+SARV_MAIN_THREAD review_reuse_chrome 19.601ms
+SARV_MAIN_THREAD review_reuse_settings 0.754ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 57.818ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:44.094: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 22.658ms
+SARV_MAIN_THREAD review_reuse_chrome 17.943ms
+SARV_MAIN_THREAD review_reuse_settings 0.838ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 47.737ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:44.252: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 22.507ms
+SARV_MAIN_THREAD review_reuse_chrome 18.644ms
+SARV_MAIN_THREAD review_reuse_settings 0.755ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 49.076ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:44.409: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 32.772ms
+SARV_MAIN_THREAD review_reuse_chrome 26.957ms
+SARV_MAIN_THREAD review_reuse_settings 0.973ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 69.746ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:44.585: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 38.606ms
+SARV_MAIN_THREAD review_reuse_chrome 21.194ms
+SARV_MAIN_THREAD review_reuse_settings 0.833ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 67.607ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:44.761: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 42.437ms
+SARV_MAIN_THREAD review_reuse_chrome 21.028ms
+SARV_MAIN_THREAD review_reuse_settings 0.928ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 72.372ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:44.940: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_reuse_setters 27.829ms
+SARV_MAIN_THREAD review_reuse_chrome 22.994ms
+SARV_MAIN_THREAD review_reuse_settings 0.910ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 59.937ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:45.110: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD probe_screenshot_native-scale-picker-cold.png 124.475ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-picker-last-product.png 96.468ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-picker-warm.png 121.806ms
+SARV_MAIN_THREAD review_snapshot_clone 6.090ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:47.275: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_batched_snapshot_clone 5.058ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:47.369: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 0.067ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 4.139ms
+SARV_MAIN_THREAD review_construct_20_rows 13.702ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:47.410: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_construct_20_rows 14.906ms
+SARV_MAIN_THREAD review_construct_20_rows 14.194ms
+SARV_MAIN_THREAD review_construct_20_rows 16.531ms
+SARV_MAIN_THREAD review_construct_20_rows 15.392ms
+SARV_MAIN_THREAD review_atomic_install 29.457ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:47.549: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 3.451ms
+SARV_MAIN_THREAD review_retire_20_rows 5.362ms
+SARV_MAIN_THREAD review_retire_20_rows 3.484ms
+SARV_MAIN_THREAD review_retire_20_rows 3.165ms
+SARV_MAIN_THREAD review_retire_20_rows 2.988ms
+SARV_MAIN_THREAD review_retire_20_rows 0.155ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:47.903: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD probe_screenshot_native-scale-unknown-selector.png 0.782ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-unknown-selector.png 83.733ms
+SARV_MAIN_THREAD review_snapshot_clone 6.139ms
+SARV_MAIN_THREAD review_snapshot_clone 7.254ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:48.565: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_batched_snapshot_clone 8.292ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:48.652: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_construct_20_rows 20.328ms
+SARV_MAIN_THREAD review_construct_20_rows 21.977ms
+SARV_MAIN_THREAD review_construct_20_rows 21.689ms
+SARV_MAIN_THREAD review_construct_20_rows 21.289ms
+SARV_MAIN_THREAD review_construct_20_rows 25.160ms
+SARV_MAIN_THREAD review_atomic_install 28.921ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:48.836: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD review_retire_20_rows 3.684ms
+SARV_MAIN_THREAD review_retire_20_rows 3.334ms
+SARV_MAIN_THREAD review_retire_20_rows 3.038ms
+SARV_MAIN_THREAD review_retire_20_rows 4.252ms
+SARV_MAIN_THREAD review_retire_20_rows 4.264ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-composer-first.png 140.862ms
+SARV_MAIN_THREAD review_retire_20_rows 0.462ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-composer-last-product.png 108.560ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-editor-1000.png 64.818ms
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:50.454: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+
+(sarv-M2-adaptive-final:58879): Adwaita-WARNING **: 17:15:50.670: AdwToolbarView 0x558be425ffa0 exceeds AdwApplicationWindow width: requested 1396 px, 1390 px available
+SARV_MAIN_THREAD probe_screenshot_native-scale-settings-while-pdf.png 89.947ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-editor-narrow.png 46.329ms

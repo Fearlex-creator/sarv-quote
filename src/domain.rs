@@ -4,6 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
+pub const CURRENT_SCHEMA: u32 = 3;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
 pub const MAX_QUOTE_LINES: usize = 10_000;
 const MAX_REFERENCE_CHARS: usize = 160;
@@ -172,12 +173,13 @@ pub enum DateDisplay {
     #[default]
     Iso,
     DayMonthYear,
+    Jalali,
 }
 impl DateDisplay {
     pub fn is_default(&self) -> bool {
         *self == Self::Iso
     }
-    /// Gregorian display only. Storage and editable document dates remain ISO.
+    /// Presentation only; stored document and posting dates remain Gregorian ISO.
     pub fn format(self, value: &str) -> String {
         if self == Self::Iso {
             return value.into();
@@ -191,7 +193,17 @@ impl DateDisplay {
         if value.len() > 10 && DateTime::parse_from_rfc3339(value).is_err() {
             return value.into();
         }
-        format!("{}{}", date.format("%d/%m/%Y"), &value[10..])
+        let shown = match self {
+            Self::Jalali => {
+                match crate::calendar::format_date(date, crate::calendar::Calendar::Jalali) {
+                    Ok(shown) => shown,
+                    Err(_) => return format!("{value} • میلادی؛ خارج از دامنهٔ شمسی"),
+                }
+            }
+            Self::DayMonthYear => date.format("%d/%m/%Y").to_string(),
+            Self::Iso => unreachable!(),
+        };
+        format!("{shown}{}", &value[10..])
     }
 }
 fn zero_u32(n: &u32) -> bool {
@@ -799,7 +811,7 @@ pub struct State {
 impl Default for State {
     fn default() -> Self {
         Self {
-            schema: 2,
+            schema: CURRENT_SCHEMA,
             catalogs: vec![],
             customers: vec![],
             quotes: vec![],
@@ -1275,10 +1287,20 @@ impl State {
     }
     pub fn validate(&self) -> Result<()> {
         self.settings.validate()?;
-        ensure!(matches!(self.schema, 1 | 2), "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(matches!(self.schema, 1..=3), "نسخهٔ داده پشتیبانی نمی‌شود");
         ensure!(
-            self.schema == 2 || self.accounting.is_empty(),
+            self.schema >= 2 || self.accounting.is_empty(),
             "دفتر حسابداری نیازمند نسخهٔ دادهٔ ۲ است"
+        );
+        ensure!(
+            self.schema == CURRENT_SCHEMA
+                || (self.settings.date_display != DateDisplay::Jalali
+                    && self.draft.date_display != DateDisplay::Jalali
+                    && self
+                        .quotes
+                        .iter()
+                        .all(|q| q.date_display != DateDisplay::Jalali)),
+            "تاریخ شمسی نیازمند نسخهٔ دادهٔ ۳ است"
         );
         self.accounting.validate()?;
         ensure!(

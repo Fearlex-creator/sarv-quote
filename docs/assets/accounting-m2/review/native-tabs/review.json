@@ -1,0 +1,563 @@
+{
+  "binary_sha256": "86e32433eb75073add6dcd3ec487b5cab6259400bdbd844cb83f67a8f3860024",
+  "checks": [
+    {
+      "name": "Light 1280 full tab bounds شرکت و دوره",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 209,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Light 1280 keyboard focus شرکت و دوره",
+      "passed": true
+    },
+    {
+      "name": "Light 1280 repeated activation keeps one selected شرکت و دوره",
+      "passed": true,
+      "selected": [
+        "شرکت و دوره"
+      ]
+    },
+    {
+      "name": "Light 1280 full tab bounds کدینگ",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 172,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Light 1280 keyboard focus کدینگ",
+      "passed": true
+    },
+    {
+      "name": "Light 1280 repeated activation keeps one selected کدینگ",
+      "passed": true,
+      "selected": [
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "Light 1280 full tab bounds اسناد",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Light 1280 keyboard focus اسناد",
+      "passed": true
+    },
+    {
+      "name": "Light 1280 repeated activation keeps one selected اسناد",
+      "passed": true,
+      "selected": [
+        "اسناد"
+      ]
+    },
+    {
+      "name": "Light 1280 full tab bounds تراز آزمایشی",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Light 1280 keyboard focus تراز آزمایشی",
+      "passed": true
+    },
+    {
+      "name": "Light 1280 repeated activation keeps one selected تراز آزمایشی",
+      "passed": true,
+      "selected": [
+        "تراز آزمایشی"
+      ]
+    },
+    {
+      "name": "Light 1280 full tab bounds تاریخچه",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 180,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Light 1280 keyboard focus تاریخچه",
+      "passed": true
+    },
+    {
+      "name": "Light 1280 repeated activation keeps one selected تاریخچه",
+      "passed": true,
+      "selected": [
+        "تاریخچه"
+      ]
+    },
+    {
+      "name": "Light 1280 tab navigation preserves complete books",
+      "passed": true
+    },
+    {
+      "name": "Light 650 full tab bounds شرکت و دوره",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 133,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Light 650 keyboard focus شرکت و دوره",
+      "passed": true
+    },
+    {
+      "name": "Light 650 repeated activation keeps one selected شرکت و دوره",
+      "passed": true,
+      "selected": [
+        "شرکت و دوره"
+      ]
+    },
+    {
+      "name": "Light 650 full tab bounds کدینگ",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 97,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Light 650 keyboard focus کدینگ",
+      "passed": true
+    },
+    {
+      "name": "Light 650 repeated activation keeps one selected کدینگ",
+      "passed": true,
+      "selected": [
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "Light 650 full tab bounds اسناد",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 90,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Light 650 keyboard focus اسناد",
+      "passed": true
+    },
+    {
+      "name": "Light 650 repeated activation keeps one selected اسناد",
+      "passed": true,
+      "selected": [
+        "اسناد"
+      ]
+    },
+    {
+      "name": "Light 650 full tab bounds تراز آزمایشی",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 125,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Light 650 keyboard focus تراز آزمایشی",
+      "passed": true
+    },
+    {
+      "name": "Light 650 repeated activation keeps one selected تراز آزمایشی",
+      "passed": true,
+      "selected": [
+        "تراز آزمایشی"
+      ]
+    },
+    {
+      "name": "Light 650 full tab bounds تاریخچه",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 105,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Light 650 keyboard focus تاریخچه",
+      "passed": true
+    },
+    {
+      "name": "Light 650 repeated activation keeps one selected تاریخچه",
+      "passed": true,
+      "selected": [
+        "تاریخچه"
+      ]
+    },
+    {
+      "name": "Light 650 tab navigation preserves complete books",
+      "passed": true
+    },
+    {
+      "name": "Dark 1280 full tab bounds شرکت و دوره",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 209,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Dark 1280 keyboard focus شرکت و دوره",
+      "passed": true
+    },
+    {
+      "name": "Dark 1280 repeated activation keeps one selected شرکت و دوره",
+      "passed": true,
+      "selected": [
+        "شرکت و دوره"
+      ]
+    },
+    {
+      "name": "Dark 1280 full tab bounds کدینگ",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 172,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Dark 1280 keyboard focus کدینگ",
+      "passed": true
+    },
+    {
+      "name": "Dark 1280 repeated activation keeps one selected کدینگ",
+      "passed": true,
+      "selected": [
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "Dark 1280 full tab bounds اسناد",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 165,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Dark 1280 keyboard focus اسناد",
+      "passed": true
+    },
+    {
+      "name": "Dark 1280 repeated activation keeps one selected اسناد",
+      "passed": true,
+      "selected": [
+        "اسناد"
+      ]
+    },
+    {
+      "name": "Dark 1280 full tab bounds تراز آزمایشی",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 200,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Dark 1280 keyboard focus تراز آزمایشی",
+      "passed": true
+    },
+    {
+      "name": "Dark 1280 repeated activation keeps one selected تراز آزمایشی",
+      "passed": true,
+      "selected": [
+        "تراز آزمایشی"
+      ]
+    },
+    {
+      "name": "Dark 1280 full tab bounds تاریخچه",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 180,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 1280,
+        "height": 900
+      }
+    },
+    {
+      "name": "Dark 1280 keyboard focus تاریخچه",
+      "passed": true
+    },
+    {
+      "name": "Dark 1280 repeated activation keeps one selected تاریخچه",
+      "passed": true,
+      "selected": [
+        "تاریخچه"
+      ]
+    },
+    {
+      "name": "Dark 1280 tab navigation preserves complete books",
+      "passed": true
+    },
+    {
+      "name": "Dark 650 full tab bounds شرکت و دوره",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 133,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Dark 650 keyboard focus شرکت و دوره",
+      "passed": true
+    },
+    {
+      "name": "Dark 650 repeated activation keeps one selected شرکت و دوره",
+      "passed": true,
+      "selected": [
+        "شرکت و دوره"
+      ]
+    },
+    {
+      "name": "Dark 650 full tab bounds کدینگ",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 97,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Dark 650 keyboard focus کدینگ",
+      "passed": true
+    },
+    {
+      "name": "Dark 650 repeated activation keeps one selected کدینگ",
+      "passed": true,
+      "selected": [
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "Dark 650 full tab bounds اسناد",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 90,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Dark 650 keyboard focus اسناد",
+      "passed": true
+    },
+    {
+      "name": "Dark 650 repeated activation keeps one selected اسناد",
+      "passed": true,
+      "selected": [
+        "اسناد"
+      ]
+    },
+    {
+      "name": "Dark 650 full tab bounds تراز آزمایشی",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 125,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Dark 650 keyboard focus تراز آزمایشی",
+      "passed": true
+    },
+    {
+      "name": "Dark 650 repeated activation keeps one selected تراز آزمایشی",
+      "passed": true,
+      "selected": [
+        "تراز آزمایشی"
+      ]
+    },
+    {
+      "name": "Dark 650 full tab bounds تاریخچه",
+      "passed": true,
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "width": 105,
+        "height": 34
+      },
+      "frame": {
+        "x": 0,
+        "y": 0,
+        "width": 650,
+        "height": 760
+      }
+    },
+    {
+      "name": "Dark 650 keyboard focus تاریخچه",
+      "passed": true
+    },
+    {
+      "name": "Dark 650 repeated activation keeps one selected تاریخچه",
+      "passed": true,
+      "selected": [
+        "تاریخچه"
+      ]
+    },
+    {
+      "name": "Dark 650 tab navigation preserves complete books",
+      "passed": true
+    }
+  ],
+  "profile": "/workspace/sarv-quote/artifacts/independent-m2/native-1ssof_fq",
+  "result": "passed"
+}
