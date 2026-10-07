@@ -1,0 +1,13 @@
+/target/
+/data/
+/artifacts/
+*.sqlite*
+*.tmp
+.env
+.env.*
+.aws/
+.codex/
+.agents/
+/SarvQuote.desktop
+/SarvQuoteDemo.desktop
+/scripts/run-demo.sh

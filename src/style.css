@@ -1,0 +1,32 @@
+/* Libadwaita owns theme, typography, control states, focus and contrast.
+ * These rules only arrange quotation content and its dense native table. */
+.page { padding: 18px; }
+.component-card { padding: 16px; }
+.section { padding: 8px 0; }
+.metadata { padding: 6px 0 8px; }
+.document-toolbar { padding-bottom: 8px; }
+.table {
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+}
+.table-header {
+  background-color: var(--window-bg-color);
+  color: var(--window-fg-color);
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+}
+.table-row { border-bottom: 1px solid var(--border-color); min-height: 36px; }
+.table-cell { padding: 5px 6px; }
+.cell-editor { min-height: 20px; padding: 4px 7px; }
+.quote-summary { padding: 8px 0; }
+.totals-row { padding: 6px 0; }
+.total {
+  padding: 10px 0;
+  border-top: 1px solid var(--border-color);
+  font-weight: 700;
+}
+.status { padding: 6px 18px; }
+.status-label { padding: 3px 6px; }
+.validation { padding: 10px 12px; }
+/* Compatibility for older labels; new components use .dimmed + .caption. */
+.muted, .badge, .row-description { opacity: var(--dim-opacity); }
