@@ -30,7 +30,8 @@ fn backup_view<'a>(state: &'a State, payload: &[u8]) -> BackupView<'a> {
         format: match state.schema {
             1 => "sarv-quote-backup-v1",
             2 => "sarv-accounting-backup-v2",
-            _ => "sarv-accounting-backup-v3",
+            3 => "sarv-accounting-backup-v3",
+            _ => "sarv-accounting-backup-v4",
         },
         checksum: hash(payload),
         state,
@@ -399,7 +400,8 @@ impl Store {
         ensure!(
             (b.format == "sarv-quote-backup-v1" && b.state.schema == 1)
                 || (b.format == "sarv-accounting-backup-v2" && b.state.schema == 2)
-                || (b.format == "sarv-accounting-backup-v3" && b.state.schema == CURRENT_SCHEMA),
+                || (b.format == "sarv-accounting-backup-v3" && b.state.schema == 3)
+                || (b.format == "sarv-accounting-backup-v4" && b.state.schema == CURRENT_SCHEMA),
             "قالب پشتیبان ناشناخته"
         );
         ensure!(

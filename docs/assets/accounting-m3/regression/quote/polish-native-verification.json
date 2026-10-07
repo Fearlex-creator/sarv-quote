@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "order import native confirmation",
+    "cancel import preserves rows",
+    "invalid edit blocks replacement",
+    "confirmed import retains customer and resets stale acknowledgment",
+    "exact prior rows retained in recovery backup",
+    "import preserves immutable quote history",
+    "settings edits visibly pending",
+    "settings close cancel retains edits and window",
+    "settings revert preserves saved data",
+    "invalid settings rejected with native field feedback",
+    "product manager appends exact-source unit without changing history"
+  ],
+  "result": "passed"
+}

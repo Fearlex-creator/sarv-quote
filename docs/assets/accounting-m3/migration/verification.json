@@ -1,0 +1,15 @@
+{
+  "core_installed_into_old_company": false,
+  "date_display": "Jalali",
+  "fresh_restore_and_restart_equal": true,
+  "full_state_equal_except_schema": true,
+  "generation_after": 38,
+  "generation_before": 37,
+  "journals": 3,
+  "ledger_sha256": "4f571dbf1a22f02da302cce1312831ddb842446aff87736792446acee8378614",
+  "quote_sha256": "0c5c11fa3810adc9ccd37c05c33b829c27622a6f70ee98d52d6ec3335080d8eb",
+  "quotes": 3,
+  "result": "passed",
+  "schema_after": 4,
+  "schema_before": 3
+}

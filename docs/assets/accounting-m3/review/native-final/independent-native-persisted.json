@@ -1,0 +1,28 @@
+{
+  "result": "passed",
+  "checks": [
+    {
+      "variant": "zero",
+      "debit_irr": 0,
+      "credit_irr": 0,
+      "balances": 13,
+      "source_rows": 14,
+      "original_raw_cells_exact": true,
+      "source_sha256": "a46afd2484c4ec87346efe0a8209b71f49c1cfcc2d5ff462e78725b673de5b01",
+      "financial_journals": 0,
+      "effect": "ZeroBalanceInitialization"
+    },
+    {
+      "variant": "nonzero",
+      "debit_irr": 1251,
+      "credit_irr": 1251,
+      "balances": 13,
+      "source_rows": 33,
+      "original_raw_cells_exact": true,
+      "source_sha256": "941b0c8ea7f5749b787604620a367c1a48e008106a744a0c4ecc4f453b7b3953",
+      "financial_journals": 1,
+      "effect": "Journal"
+    }
+  ],
+  "oracle": "Python standard-library integer/raw-source reconstruction from actual native chooser persisted SQLite; no Sarv helpers"
+}

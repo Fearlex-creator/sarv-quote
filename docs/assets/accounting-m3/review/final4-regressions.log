@@ -1,0 +1,39 @@
+    Finished `test` profile [unoptimized] target(s) in 0.07s
+     Running tests/accounting_kernel.rs (target/debug/deps/accounting_kernel-bb68a4f052ff333d)
+
+running 12 tests
+test company_dates_hierarchy_and_control_restrictions ... ok
+test backdated_post_checks_every_affected_cutoff_not_only_current_balance ... ok
+test archived_accounts_allow_only_exact_original_reversal_snapshots ... ok
+test exact_money_units_digits_range_and_serialization ... ok
+test cumulative_books_reject_reimported_opening_in_later_year ... ok
+test failed_post_is_atomic_for_invalid_lines_unbalance_and_overflow ... ok
+test locks_reopen_and_reversal_cross_period_preserve_history ... ok
+test post_rejects_cumulative_account_and_report_overflow_atomically ... ok
+test restored_state_and_generic_store_transition_reject_history_tampering ... ok
+test independent_opening_adjustment_and_reversal_fixture ... ok
+test retry_identity_and_business_identity_survive_restore_and_lock ... ok
+test many_exact_synthetic_postings_have_independent_expected_totals ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/core_migration.rs (target/debug/deps/core_migration-006bfac9e339286c)
+
+running 4 tests
+test core_migration_child ... ok
+test mismatched_backup_versions_and_future_schema_never_replace_state ... ok
+test schema_three_upgrade_preserves_jalali_and_exact_history_with_v3_recovery_and_v4_restore ... ok
+test interrupted_upgrade_waiting_for_startup_write_retains_exact_legacy_row ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/core_store.rs (target/debug/deps/core_store-15840e2c770491d4)
+
+running 4 tests
+test concurrent_prepared_opening_has_one_durable_effect_then_different_key_retry_reuses_it ... ok
+test complete_core_backup_fresh_restore_and_restart_keep_all_financial_and_source_snapshots ... ok
+test zero_value_initialization_and_its_retry_restore_without_an_empty_financial_journal ... ok
+test immutable_details_policy_and_recomputed_backup_checksum_cannot_bypass_restore_validation ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.08s
+

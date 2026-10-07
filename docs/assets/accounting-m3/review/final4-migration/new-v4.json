@@ -1,0 +1,573 @@
+{
+  "format": "sarv-accounting-backup-v4",
+  "checksum": "79e95667e2d1d1ee1dc0fd850133a5661ee034b7f18447afaec957355d2c93d4",
+  "state": {
+    "schema": 4,
+    "catalogs": [
+      {
+        "id": "4a66a42d-a1bd-48b1-83b1-1aa9abb5c981",
+        "name": "بازبین",
+        "imported_at": "2026-10-07T16:58:56.620577841+00:00",
+        "fingerprint": "71cf2606c478e10ba377b4dc26343942ee2ff1309322d18ca9b16556e3bdae78",
+        "products": [
+          {
+            "code": "M2-CODE",
+            "name": "نمونه آمیخته",
+            "measure": "عدد",
+            "price_rial": 1251,
+            "source_unit": "Rial",
+            "source_at": "2024-01-01T00:00:00Z",
+            "aliases": []
+          }
+        ]
+      }
+    ],
+    "customers": [
+      {
+        "id": "55b5ba16-6ef2-4b25-bce0-90f716e0c3fc",
+        "name": "مشتری بازبین",
+        "phone": ""
+      },
+      {
+        "id": "6f2c35e9-dfbf-4783-9691-f13de2d1cfa5",
+        "name": "مشتری شمسی",
+        "phone": ""
+      }
+    ],
+    "quotes": [
+      {
+        "id": "801b9c9f-209d-4daf-8eb7-38dfa8ff21de",
+        "series": "d595a74f-afd1-4d7c-81fd-b8c3200f0a29",
+        "version": 1,
+        "customer": "مشتری بازبین",
+        "phone": "",
+        "approved_at": "2026-10-07T16:58:56.621039487+00:00",
+        "catalog_id": "4a66a42d-a1bd-48b1-83b1-1aa9abb5c981",
+        "catalog_name": "بازبین",
+        "lines": [
+          {
+            "query": "M2-CODE",
+            "code": "M2-CODE",
+            "name": "نمونه آمیخته",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 1251,
+            "total_rial": 1251,
+            "source_at": "2024-01-01T00:00:00Z",
+            "source_unit": "Rial"
+          }
+        ],
+        "discount_rial": 0,
+        "total_rial": 1251,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2025-03-20",
+        "valid_until": "2025-03-21",
+        "number": "Q-1",
+        "customer_id": "55b5ba16-6ef2-4b25-bce0-90f716e0c3fc"
+      },
+      {
+        "id": "1d5cd565-cfdd-4e9d-83cc-d766781c8839",
+        "series": "d595a74f-afd1-4d7c-81fd-b8c3200f0a29",
+        "version": 2,
+        "customer": "مشتری بازبین",
+        "phone": "",
+        "approved_at": "2026-10-07T16:58:56.629291625+00:00",
+        "catalog_id": "4a66a42d-a1bd-48b1-83b1-1aa9abb5c981",
+        "catalog_name": "بازبین",
+        "lines": [
+          {
+            "query": "M2-CODE",
+            "code": "M2-CODE",
+            "name": "نمونه آمیخته",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 1251,
+            "total_rial": 1251,
+            "source_at": "2024-01-01T00:00:00Z",
+            "source_unit": "Rial"
+          }
+        ],
+        "discount_rial": 0,
+        "total_rial": 1251,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2025-03-20",
+        "valid_until": "2025-03-21",
+        "notes": "اصلاح بدون تغییر تقویم",
+        "number": "Q-1",
+        "customer_id": "55b5ba16-6ef2-4b25-bce0-90f716e0c3fc"
+      },
+      {
+        "id": "5715f2a2-83fd-43dc-a887-82af6e82c4c3",
+        "series": "a0df0c50-f444-4767-95ee-107208773105",
+        "version": 1,
+        "customer": "مشتری شمسی",
+        "phone": "",
+        "approved_at": "2026-10-07T16:58:56.629478527+00:00",
+        "catalog_id": "4a66a42d-a1bd-48b1-83b1-1aa9abb5c981",
+        "catalog_name": "بازبین",
+        "lines": [
+          {
+            "query": "M2-CODE",
+            "code": "M2-CODE",
+            "name": "نمونه آمیخته",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 1251,
+            "total_rial": 1251,
+            "source_at": "2024-01-01T00:00:00Z",
+            "source_unit": "Rial"
+          }
+        ],
+        "discount_rial": 0,
+        "total_rial": 1251,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2025-03-20",
+        "valid_until": "2025-03-21",
+        "date_display": "Jalali",
+        "number": "Q-2",
+        "customer_id": "6f2c35e9-dfbf-4783-9691-f13de2d1cfa5"
+      }
+    ],
+    "draft": {
+      "series": "a0df0c50-f444-4767-95ee-107208773105",
+      "catalog_id": "4a66a42d-a1bd-48b1-83b1-1aa9abb5c981",
+      "customer": "مشتری شمسی",
+      "phone": "",
+      "lines": [
+        {
+          "query": "M2-CODE",
+          "quantity_milli": 1000,
+          "chosen_code": null
+        }
+      ],
+      "discount_rial": 0,
+      "display_unit": "Toman",
+      "stale_ack": true,
+      "quote_date": "2025-03-20",
+      "valid_until": "2025-03-21",
+      "date_display": "Jalali"
+    },
+    "settings": {
+      "business_name": "",
+      "business_phone": "",
+      "business_address": "",
+      "header": "",
+      "footer": "",
+      "default_terms": "",
+      "default_currency": "Toman",
+      "quote_prefix": "Q-",
+      "next_number": 3,
+      "default_validity_days": 7,
+      "default_discount_rial": 0,
+      "tax_basis_points": 0,
+      "appearance": "System",
+      "density": "Comfortable",
+      "display_digits": "Persian",
+      "date_display": "Jalali"
+    },
+    "accounting": {
+      "companies": [
+        {
+          "id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "name": "شرکت بازبین M2 TEST-1403"
+        }
+      ],
+      "periods": [
+        {
+          "id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "name": "سال ۱۴۰۳",
+          "start_date": "2024-03-20",
+          "end_date": "2025-03-20",
+          "locked": false
+        },
+        {
+          "id": "89ae09cd-ab79-4338-bf34-2ee89bdaeda2",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "name": "1499",
+          "start_date": "2120-03-21",
+          "end_date": "2121-03-20",
+          "locked": false
+        }
+      ],
+      "accounts": [
+        {
+          "id": "b47635e7-df37-417e-87e1-16b0884815fc",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "parent_id": null,
+          "code": "M2-1001",
+          "name": "دارایی آزمایشی",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "parent_id": null,
+          "code": "M2-3001",
+          "name": "سرمایه آزمایشی",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        }
+      ],
+      "journals": [
+        {
+          "id": "172ac6cf-151f-49aa-8787-2beb96fc4bfb",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "period_id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+          "date": "2025-03-19",
+          "source_id": "before-year-end",
+          "source_revision": 1,
+          "event": "manual",
+          "actor": "independent-m2",
+          "reason": "synthetic calendar fixture, no accounting policy claim",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+                "parent_id": null,
+                "code": "M2-1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1251,
+              "credit": 0,
+              "description": "fixture"
+            },
+            {
+              "account": {
+                "id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+                "parent_id": null,
+                "code": "M2-3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1251,
+              "description": "fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T16:58:56.613028381+00:00"
+        },
+        {
+          "id": "adb2903f-1e6a-46cb-862b-e1102da1d264",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "period_id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+          "date": "2025-03-20",
+          "source_id": "leap-end",
+          "source_revision": 1,
+          "event": "manual",
+          "actor": "independent-m2",
+          "reason": "synthetic calendar fixture, no accounting policy claim",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+                "parent_id": null,
+                "code": "M2-1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": "fixture"
+            },
+            {
+              "account": {
+                "id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+                "parent_id": null,
+                "code": "M2-3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": "fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T16:58:56.614295702+00:00"
+        },
+        {
+          "id": "7376305a-985a-4ba7-b61f-b232bd433791",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "period_id": "89ae09cd-ab79-4338-bf34-2ee89bdaeda2",
+          "date": "2121-03-20",
+          "source_id": "1499-end",
+          "source_revision": 1,
+          "event": "manual",
+          "actor": "independent-m2",
+          "reason": "synthetic calendar fixture, no accounting policy claim",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+                "parent_id": null,
+                "code": "M2-1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1,
+              "credit": 0,
+              "description": "fixture"
+            },
+            {
+              "account": {
+                "id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+                "parent_id": null,
+                "code": "M2-3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1,
+              "description": "fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T16:58:56.617981657+00:00"
+        }
+      ],
+      "requests": [
+        {
+          "command": {
+            "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+            "period_id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+            "date": "2025-03-19",
+            "source_id": "before-year-end",
+            "source_revision": 1,
+            "event": "manual",
+            "request_key": "before-year-end",
+            "actor": "independent-m2",
+            "reason": "synthetic calendar fixture, no accounting policy claim",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "debit": 1251,
+                "credit": 0,
+                "description": "fixture"
+              },
+              {
+                "account_id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "debit": 0,
+                "credit": 1251,
+                "description": "fixture"
+              }
+            ]
+          },
+          "journal_id": "172ac6cf-151f-49aa-8787-2beb96fc4bfb"
+        },
+        {
+          "command": {
+            "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+            "period_id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+            "date": "2025-03-20",
+            "source_id": "leap-end",
+            "source_revision": 1,
+            "event": "manual",
+            "request_key": "leap-end",
+            "actor": "independent-m2",
+            "reason": "synthetic calendar fixture, no accounting policy claim",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "debit": 349,
+                "credit": 0,
+                "description": "fixture"
+              },
+              {
+                "account_id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "debit": 0,
+                "credit": 349,
+                "description": "fixture"
+              }
+            ]
+          },
+          "journal_id": "adb2903f-1e6a-46cb-862b-e1102da1d264"
+        },
+        {
+          "command": {
+            "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+            "period_id": "89ae09cd-ab79-4338-bf34-2ee89bdaeda2",
+            "date": "2121-03-20",
+            "source_id": "1499-end",
+            "source_revision": 1,
+            "event": "manual",
+            "request_key": "1499-end",
+            "actor": "independent-m2",
+            "reason": "synthetic calendar fixture, no accounting policy claim",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "debit": 1,
+                "credit": 0,
+                "description": "fixture"
+              },
+              {
+                "account_id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "debit": 0,
+                "credit": 1,
+                "description": "fixture"
+              }
+            ]
+          },
+          "journal_id": "7376305a-985a-4ba7-b61f-b232bd433791"
+        },
+        {
+          "command": {
+            "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+            "period_id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+            "date": "2025-03-19",
+            "source_id": "before-year-end",
+            "source_revision": 1,
+            "event": "manual",
+            "request_key": "after-pref-toggle",
+            "actor": "independent-m2",
+            "reason": "synthetic calendar fixture, no accounting policy claim",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "b47635e7-df37-417e-87e1-16b0884815fc",
+                "debit": 1251,
+                "credit": 0,
+                "description": "fixture"
+              },
+              {
+                "account_id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+                "debit": 0,
+                "credit": 1251,
+                "description": "fixture"
+              }
+            ]
+          },
+          "journal_id": "172ac6cf-151f-49aa-8787-2beb96fc4bfb"
+        }
+      ],
+      "audit": [
+        {
+          "id": "f3acd530-1f97-40bd-bd2c-9b644e55cbff",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "operation": "CompanyCreated",
+          "actor": "independent-m2",
+          "reason": "ایجاد کسب‌وکار",
+          "recorded_at": "2026-10-07T16:58:56.612042105+00:00"
+        },
+        {
+          "id": "c3071519-10f8-4cf0-894a-48cc51c17b40",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "33b41d57-c859-40fc-a6ec-a3b0ce574c0e",
+          "operation": "PeriodCreated",
+          "actor": "independent-m2",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T16:58:56.612063938+00:00"
+        },
+        {
+          "id": "3418c51e-41d2-4ffb-8d65-f08bdb6138bb",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "b47635e7-df37-417e-87e1-16b0884815fc",
+          "operation": "AccountCreated",
+          "actor": "independent-m2",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T16:58:56.612070788+00:00"
+        },
+        {
+          "id": "8b603b1d-fa6d-4a32-952a-6321da65a198",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "b47aae7e-9df0-4419-808f-16f9e2a1b3be",
+          "operation": "AccountCreated",
+          "actor": "independent-m2",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T16:58:56.612082496+00:00"
+        },
+        {
+          "id": "4f245941-8c44-4e36-91e3-684bcf340667",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "172ac6cf-151f-49aa-8787-2beb96fc4bfb",
+          "operation": "JournalPosted",
+          "actor": "independent-m2",
+          "reason": "synthetic calendar fixture, no accounting policy claim",
+          "recorded_at": "2026-10-07T16:58:56.613028381+00:00"
+        },
+        {
+          "id": "a2619671-f509-4041-a0a0-319b5944f7e5",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "adb2903f-1e6a-46cb-862b-e1102da1d264",
+          "operation": "JournalPosted",
+          "actor": "independent-m2",
+          "reason": "synthetic calendar fixture, no accounting policy claim",
+          "recorded_at": "2026-10-07T16:58:56.614295702+00:00"
+        },
+        {
+          "id": "a847f9af-7381-42e7-b755-a0708fe0c07c",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "89ae09cd-ab79-4338-bf34-2ee89bdaeda2",
+          "operation": "PeriodCreated",
+          "actor": "independent-m2",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T16:58:56.616286302+00:00"
+        },
+        {
+          "id": "76f60f63-4502-4fda-bb27-ef3e0aad98ab",
+          "company_id": "de1db4b4-4bd2-4dbe-987b-6a1bd410f38c",
+          "entity_id": "7376305a-985a-4ba7-b61f-b232bd433791",
+          "operation": "JournalPosted",
+          "actor": "independent-m2",
+          "reason": "synthetic calendar fixture, no accounting policy claim",
+          "recorded_at": "2026-10-07T16:58:56.617981657+00:00"
+        }
+      ]
+    }
+  }
+}

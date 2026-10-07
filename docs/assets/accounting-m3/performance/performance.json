@@ -1,0 +1,797 @@
+{
+  "result": "measured",
+  "synthetic_only": true,
+  "development_pilot": false,
+  "binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "binary_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1",
+  "utc": "2026-10-07T19:36:43Z",
+  "source_head": "90b7297c2d3e333702db82206c175ddb9281f29c",
+  "source_status": "M README.md\n M decisions.md\n M migrations.md\n M requirements/evidence.md\n M requirements/fixtures.md\n M requirements/roadmap.md\n M src/accounting.rs\n M src/domain.rs\n M src/lib.rs\n M src/store.rs\n M src/ui.rs\n M src/ui/accounting.rs\n M tests/accounting_migration.rs\n M tests/calendar_workflow.rs\n M tests/qa_invariants.rs\n M tests/storage_hardening.rs\n M tests/workflow.rs\n?? docs/assets/accounting-m3/\n?? docs/opening-csv.md\n?? requirements/independent-review-M3.md\n?? requirements/milestone-M3.md\n?? requirements/performance-M3.md\n?? scripts/core-qa.py\n?? scripts/native-performance-M3.py\n?? src/core.rs\n?? src/core_export.rs\n?? src/core_import.rs\n?? src/ui/core.rs\n?? tests/core_exports.rs\n?? tests/core_import.rs\n?? tests/core_migration.rs\n?? tests/core_opening.rs\n?? tests/core_store.rs",
+  "source_code_sha256": "97ef53a3f4931e6c472de2d3cd09c36aab901bb76cf607a96622036e90a8bae9",
+  "datasets": {
+    "core-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-workflow",
+      "source_shape": {
+        "schema": 4,
+        "generation": 2,
+        "payload_sha256": "06c42ff8653dbd0dad303c7a7a3b3b4cc20d8d76e5cc396012cf9d0d712d5e90",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "083bd5f1f8b7e346f1ea9a19d43f9ed6e4b36e52bb1cbf60ae97d1e2e27d0504",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "eda9647c-0015-4bf9-ac81-d0406aeaa037",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 1005.942508998487,
+          "steady_rss_kib": 88504,
+          "kernel_peak_rss_kib": 96876,
+          "rss_observer_samples": 146,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1035.7747149992065,
+          "steady_rss_kib": 89680,
+          "kernel_peak_rss_kib": 96340,
+          "rss_observer_samples": 149,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 905.2050659993256,
+          "steady_rss_kib": 89608,
+          "kernel_peak_rss_kib": 95784,
+          "rss_observer_samples": 137,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 1013.8906289994338,
+          "steady_rss_kib": 89668,
+          "kernel_peak_rss_kib": 96048,
+          "rss_observer_samples": 145,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 1061.970384000233,
+          "steady_rss_kib": 90520,
+          "kernel_peak_rss_kib": 96868,
+          "rss_observer_samples": 151,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 942.9546480005229,
+          "steady_rss_kib": 89740,
+          "kernel_peak_rss_kib": 95888,
+          "rss_observer_samples": 140,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 1179.0348689992243,
+          "steady_rss_kib": 87788,
+          "kernel_peak_rss_kib": 96020,
+          "rss_observer_samples": 161,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 1084.825328000079,
+          "steady_rss_kib": 89460,
+          "kernel_peak_rss_kib": 96012,
+          "rss_observer_samples": 154,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 1038.9676369995868,
+          "steady_rss_kib": 89612,
+          "kernel_peak_rss_kib": 96016,
+          "rss_observer_samples": 149,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 908.2780749995436,
+          "steady_rss_kib": 90540,
+          "kernel_peak_rss_kib": 96812,
+          "rss_observer_samples": 137,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 943.5550870002771,
+          "steady_rss_kib": 88588,
+          "kernel_peak_rss_kib": 96784,
+          "rss_observer_samples": 140,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/core-small-posted/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 4,
+        "generation": 2,
+        "payload_sha256": "06c42ff8653dbd0dad303c7a7a3b3b4cc20d8d76e5cc396012cf9d0d712d5e90",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "083bd5f1f8b7e346f1ea9a19d43f9ed6e4b36e52bb1cbf60ae97d1e2e27d0504",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "eda9647c-0015-4bf9-ac81-d0406aeaa037",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 1013.8906289994338,
+        "p95": 1179.0348689992243,
+        "p99": 1179.0348689992243,
+        "worst": 1179.0348689992243,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 89612,
+        "p95": 90540,
+        "p99": 90540,
+        "worst": 90540,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 96020,
+        "p95": 96868,
+        "p99": 96868,
+        "worst": 96868,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1179.0348689992243,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 92712960,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 4,
+        "generation": 2,
+        "payload_sha256": "06c42ff8653dbd0dad303c7a7a3b3b4cc20d8d76e5cc396012cf9d0d712d5e90",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "083bd5f1f8b7e346f1ea9a19d43f9ed6e4b36e52bb1cbf60ae97d1e2e27d0504",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "eda9647c-0015-4bf9-ac81-d0406aeaa037",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "quote-scale": {
+      "source": "/workspace/sarv-evidence/native-before-current",
+      "source_shape": {
+        "schema": 1,
+        "generation": 7,
+        "payload_sha256": "3b75e786f3daef592d1521032470a08797d818f796e19eb28a40e79e07caf2f0",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "core": {}
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 1516.209762001381,
+          "steady_rss_kib": 169640,
+          "kernel_peak_rss_kib": 169640,
+          "rss_observer_samples": 195,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1185.9017510014382,
+          "steady_rss_kib": 169012,
+          "kernel_peak_rss_kib": 170672,
+          "rss_observer_samples": 163,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 1042.4615600004472,
+          "steady_rss_kib": 171532,
+          "kernel_peak_rss_kib": 171532,
+          "rss_observer_samples": 150,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 1056.571758001155,
+          "steady_rss_kib": 171476,
+          "kernel_peak_rss_kib": 171476,
+          "rss_observer_samples": 152,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 1034.806181998647,
+          "steady_rss_kib": 171580,
+          "kernel_peak_rss_kib": 171580,
+          "rss_observer_samples": 149,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 1019.09989899832,
+          "steady_rss_kib": 171472,
+          "kernel_peak_rss_kib": 171472,
+          "rss_observer_samples": 148,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 933.9765229997283,
+          "steady_rss_kib": 171448,
+          "kernel_peak_rss_kib": 171448,
+          "rss_observer_samples": 139,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 992.8724839992356,
+          "steady_rss_kib": 171544,
+          "kernel_peak_rss_kib": 171544,
+          "rss_observer_samples": 145,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 987.938933998521,
+          "steady_rss_kib": 171620,
+          "kernel_peak_rss_kib": 171620,
+          "rss_observer_samples": 144,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 1015.544644998954,
+          "steady_rss_kib": 171528,
+          "kernel_peak_rss_kib": 171528,
+          "rss_observer_samples": 147,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 1084.0330219998577,
+          "steady_rss_kib": 171476,
+          "kernel_peak_rss_kib": 171476,
+          "rss_observer_samples": 154,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m3/final-repeated/quote-scale/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 4,
+        "generation": 8,
+        "payload_sha256": "2b0eb841ac7440543fe5e857b3bb58c24fc9a9e63acb4132d78cb6b952ebe89a",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "core": {}
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 1019.09989899832,
+        "p95": 1185.9017510014382,
+        "p99": 1185.9017510014382,
+        "worst": 1185.9017510014382,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 171476,
+        "p95": 171620,
+        "p99": 171620,
+        "worst": 171620,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 171476,
+        "p95": 171620,
+        "p99": 171620,
+        "worst": 171620,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1185.9017510014382,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 175738880,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 4,
+        "generation": 8,
+        "payload_sha256": "2b0eb841ac7440543fe5e857b3bb58c24fc9a9e63acb4132d78cb6b952ebe89a",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "core": {}
+      }
+    }
+  },
+  "hardware": {
+    "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "filesystem": "Filesystem     Type    1K-blocks    Used Available Use% Mounted on\noverlay        overlay  32978704 4677448  26607152  15% /workspace",
+    "meminfo": "MemTotal:       18440136 kB\nMemFree:        11079480 kB\nMemAvailable:   15688920 kB\nBuffers:           20240 kB\nCached:          4975080 kB\nSwapCached:            0 kB\nActive:          2099436 kB\nInactive:        4509092 kB\nActive(anon):     147200 kB\nInactive(anon):  1744116 kB\nActive(file):    1952236 kB\nInactive(file):  2764976 kB\nUnevictable:       29920 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:            256492 kB\nWriteback:             0 kB\nAnonPages:       1643404 kB\nMapped:           234304 kB\nShmem:            248136 kB\nKReclaimable:     244240 kB\nSlab:             321436 kB\nSReclaimable:     244240 kB\nSUnreclaim:        77196 kB\nKernelStack:        7060 kB\nPageTables:        21308 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     9220068 kB\nCommitted_AS:    5319200 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:        9372 kB\nVmallocChunk:          0 kB\nPercpu:             1368 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:    100352 kB\nFilePmdMapped:         0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:      188416 kB\nDirectMap2M:    13250560 kB\nDirectMap1G:    26214400 kB\n",
+    "cgroup_memory_max": "17179869184",
+    "cgroup_cpu_max": "400000 100000",
+    "screen": "1450x1050x24 private Xvfb/Openbox, X11, Cairo, scale 1",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "gtk_libadwaita": "4.22.5\n1.9.4"
+  },
+  "boundaries": {
+    "startup": "Popen to owned mapped window, usable visible editor Save, real XTest Tab focus roundtrip and completed PNG capture; includes AT-SPI polling and screenshot observer overhead.",
+    "first_start": "One new process on a fresh SQLite backup, initialization/migration may be included; OS cache uncontrolled.",
+    "repeated_startup": "n new processes on the same initialized backup; OS pages warm/uncontrolled, accessibility session initialized. Process-cold, not physical/cache-cold.",
+    "core_search": "Pre-discovery of search/list excluded. Real XTest Ctrl+A and ASCII keys to exact current ID label, then native Tab to focused, visible, sensitive Edit action. Includes debounce, rendering,5ms AT-SPI polling and result-focus navigation; no pure UI latency claim. Correct-visible-action boundary is recorded separately.",
+    "preview": "Real XTest Space on already-discovered focused preview button to enabled post button, after source reason mutation invalidates old verification. Includes accessibility polling; n=1.",
+    "post": "Real XTest Space on already-discovered focused post button to committed SQLite payload containing one opening and one journal; includes durable database observer polling; n=1.",
+    "rss": "Application-only /proc/PID/status KiB; startup sampled every10ms and steady after500ms idle. After-workflow separate point after posting. Helpers excluded."
+  },
+  "limits": [
+    "No OS cache flush, physical SSD evidence, dedicated reference hardware, Windows or Wayland claim.",
+    "Virtual shared executor scheduling and font/library cache state are uncontrolled; hashing and backup warm file pages.",
+    "Native forms fixture is distinct from the35-row CSV fixture. No CSV import claim when import_source is absent.",
+    "n10/n20 nearest-rank p99 equals worst; n1 preview/post and workflow memory are not tail estimates.",
+    "No five-year/100000-document/million-journal-line/10000-party or10000-row staged-import benchmark."
+  ],
+  "core_workflow": {
+    "stage_manifest": {
+      "company_id": "f1225ac7-ccbe-4501-8916-528bbfde7c44",
+      "controls": 12,
+      "counts": {
+        "advances": 0,
+        "ap": 2,
+        "ar": 2,
+        "banks": 1,
+        "cash": 1,
+        "cheques": 2,
+        "grni": 1,
+        "items": 1,
+        "ledger_balances": 21,
+        "packs": 1,
+        "parties": 4,
+        "stock": 2,
+        "units": 2,
+        "warehouses": 2
+      },
+      "import_source": null,
+      "items": 1,
+      "opening_journals": 0,
+      "parties": 4,
+      "preview_ms_includes_poll": 259,
+      "preview_total_irr": 1251,
+      "result": "ready",
+      "source": "native editable forms",
+      "stock_rows": 2,
+      "units": 2,
+      "warehouses": 2
+    },
+    "search_samples": [
+      {
+        "index": 0,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.10904400005529169,
+        "correct_visible_action_ms": 209.40274900021905,
+        "focused_usable_action_ms": 247.82118900111527
+      },
+      {
+        "index": 1,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.09567400047671981,
+        "correct_visible_action_ms": 172.5813270004437,
+        "focused_usable_action_ms": 200.70350599962694
+      },
+      {
+        "index": 2,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.10263500007567927,
+        "correct_visible_action_ms": 174.31673300052353,
+        "focused_usable_action_ms": 201.7326580007648
+      },
+      {
+        "index": 3,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.0730499996279832,
+        "correct_visible_action_ms": 192.68590100000438,
+        "focused_usable_action_ms": 231.29625999899872
+      },
+      {
+        "index": 4,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.12394599980325438,
+        "correct_visible_action_ms": 185.62501699852874,
+        "focused_usable_action_ms": 218.4367049994762
+      },
+      {
+        "index": 5,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.2948040000774199,
+        "correct_visible_action_ms": 198.10363599935954,
+        "focused_usable_action_ms": 221.41282099983073
+      },
+      {
+        "index": 6,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.07113699939509388,
+        "correct_visible_action_ms": 177.64061200068682,
+        "focused_usable_action_ms": 204.50515499942412
+      },
+      {
+        "index": 7,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.0807109991001198,
+        "correct_visible_action_ms": 179.44283899851143,
+        "focused_usable_action_ms": 203.42474700009916
+      },
+      {
+        "index": 8,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.08503899880452082,
+        "correct_visible_action_ms": 184.83722000019043,
+        "focused_usable_action_ms": 219.93593600018357
+      },
+      {
+        "index": 9,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.07504300083382986,
+        "correct_visible_action_ms": 187.27249600124196,
+        "focused_usable_action_ms": 214.007438000408
+      },
+      {
+        "index": 10,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.07112700041034259,
+        "correct_visible_action_ms": 186.40872800096986,
+        "focused_usable_action_ms": 215.0958490001358
+      },
+      {
+        "index": 11,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.09690600018075202,
+        "correct_visible_action_ms": 187.0239460004086,
+        "focused_usable_action_ms": 218.73141899959592
+      },
+      {
+        "index": 12,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.24367699916183483,
+        "correct_visible_action_ms": 202.97598099932657,
+        "focused_usable_action_ms": 244.17576800078677
+      },
+      {
+        "index": 13,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.15159800022956915,
+        "correct_visible_action_ms": 186.49419199937256,
+        "focused_usable_action_ms": 211.91514400015876
+      },
+      {
+        "index": 14,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.11979100054304581,
+        "correct_visible_action_ms": 188.5958050006593,
+        "focused_usable_action_ms": 216.13871100089455
+      },
+      {
+        "index": 15,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.10164299965254031,
+        "correct_visible_action_ms": 183.63290500019502,
+        "focused_usable_action_ms": 218.73305200097093
+      },
+      {
+        "index": 16,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.1680229997873539,
+        "correct_visible_action_ms": 183.37251199955062,
+        "focused_usable_action_ms": 221.11292899899126
+      },
+      {
+        "index": 17,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.24417799977527466,
+        "correct_visible_action_ms": 185.9303479996015,
+        "focused_usable_action_ms": 215.7498599990504
+      },
+      {
+        "index": 18,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.22639099915977567,
+        "correct_visible_action_ms": 187.32072799866728,
+        "focused_usable_action_ms": 214.4937269986258
+      },
+      {
+        "index": 19,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.0898750004125759,
+        "correct_visible_action_ms": 194.15585600108898,
+        "focused_usable_action_ms": 219.46762900006433
+      }
+    ],
+    "search_ms": {
+      "n": 20,
+      "p50": 216.13871100089455,
+      "p95": 244.17576800078677,
+      "p99": 247.82118900111527,
+      "worst": 247.82118900111527,
+      "method": "nearest rank"
+    },
+    "correct_visible_action_ms": {
+      "n": 20,
+      "p50": 186.40872800096986,
+      "p95": 202.97598099932657,
+      "p99": 209.40274900021905,
+      "worst": 209.40274900021905,
+      "method": "nearest rank"
+    },
+    "search_memory_kib": {
+      "VmRSS": 129596,
+      "VmHWM": 129596
+    },
+    "preview_observed_ms": 67.27482499991311,
+    "post_durable_observed_ms": 6.350261999614304,
+    "native_phase_records_before_observer": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.983809,
+        "gaps_ms": [
+          16.077414,
+          16.124495,
+          16.092767000000002,
+          2.689133
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.124495,
+        "phase": "preview",
+        "result": "differences",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 51.019192,
+        "gaps_ms": [
+          16.085325,
+          16.119958999999998,
+          16.106677,
+          2.707231
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.119958999999998,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      }
+    ],
+    "native_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 52.232552,
+        "gaps_ms": [
+          16.118085,
+          16.076032,
+          16.084063999999998,
+          3.954371
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.118085,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 55.434247,
+        "gaps_ms": [
+          17.856675999999997,
+          37.577321,
+          0.00025
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 37.577321,
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "strict_phase_heartbeat_budgets": {
+      "preview": {
+        "budget_ms": 50,
+        "actual_ms": 16.118085,
+        "passes": true,
+        "measurable": true,
+        "result": "verified"
+      },
+      "post": {
+        "budget_ms": 50,
+        "actual_ms": 37.577321,
+        "passes": true,
+        "measurable": true,
+        "result": "worker_finished"
+      }
+    },
+    "application_memory_kib_after_workflow": {
+      "VmRSS": 130900,
+      "VmHWM": 130900
+    },
+    "posted_shape": {
+      "schema": 4,
+      "generation": 2,
+      "payload_sha256": "06c42ff8653dbd0dad303c7a7a3b3b4cc20d8d76e5cc396012cf9d0d712d5e90",
+      "customers": 0,
+      "quotes": 0,
+      "products": 0,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 1,
+        "requests": 1,
+        "audit": 30
+      },
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "083bd5f1f8b7e346f1ea9a19d43f9ed6e4b36e52bb1cbf60ae97d1e2e27d0504",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "eda9647c-0015-4bf9-ac81-d0406aeaa037",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    }
+  },
+  "source_code_sha256_after": "97ef53a3f4931e6c472de2d3cd09c36aab901bb76cf607a96622036e90a8bae9",
+  "binary_sha256_after": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1"
+}

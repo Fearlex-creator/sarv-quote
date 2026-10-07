@@ -1,0 +1,8 @@
+{
+  "backup_restore": "full aggregate equal",
+  "controls": 12,
+  "fresh_restart": "equal",
+  "original_restart": "equal",
+  "result": "passed",
+  "total_irr": 1251
+}

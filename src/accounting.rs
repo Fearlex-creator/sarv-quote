@@ -218,6 +218,8 @@ pub enum AuditOperation {
     JournalPosted,
     PeriodLocked,
     PeriodReopened,
+    CoreConfigured,
+    CoreOpeningInitialized,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -245,6 +247,8 @@ pub struct AccountingState {
     pub journals: Vec<Journal>,
     pub requests: Vec<PostRequestRecord>,
     pub audit: Vec<AuditEvent>,
+    #[serde(default, skip_serializing_if = "crate::core::CoreFoundation::is_empty")]
+    pub core: crate::core::CoreFoundation,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TrialBalanceRow {
@@ -298,6 +302,7 @@ impl AccountingState {
             && self.journals.is_empty()
             && self.requests.is_empty()
             && self.audit.is_empty()
+            && self.core.is_empty()
     }
     /// Validate a restored snapshot by replaying its complete command/audit history.
     /// This is integrity validation, not authentication against a file owner.
@@ -311,6 +316,14 @@ impl AccountingState {
             .chain(self.accounts.iter().map(|a| &a.id))
             .chain(self.journals.iter().map(|j| &j.id))
             .chain(self.audit.iter().map(|a| &a.id))
+            .chain(self.core.setups.iter().map(|s| &s.id))
+            .chain(
+                self.core
+                    .openings
+                    .iter()
+                    .filter(|o| o.effect == crate::core::OpeningEffect::ZeroBalanceInitialization)
+                    .map(|o| &o.journal_id),
+            )
         {
             text(entity_id)?;
             ensure!(ids.insert(entity_id), "شناسهٔ حسابداری تکراری است");
@@ -323,6 +336,56 @@ impl AccountingState {
                 .map_err(|_| anyhow::anyhow!("زمان تاریخچه نامعتبر است"))?;
             let before_audit = replay.audit.len();
             match event.operation {
+                AuditOperation::CoreConfigured => {
+                    let setup = self
+                        .core
+                        .setups
+                        .iter()
+                        .find(|s| s.id == event.entity_id)
+                        .ok_or_else(|| anyhow::anyhow!("تنظیمات تاریخچه پیدا نشد"))?;
+                    ensure!(
+                        setup.command.company_id == event.company_id
+                            && setup.command.actor == event.actor
+                            && setup.command.reason == event.reason,
+                        "تنظیمات و تاریخچهٔ آن سازگار نیستند"
+                    );
+                    replay.replay_core_setup(setup)?;
+                }
+                AuditOperation::CoreOpeningInitialized => {
+                    let opening = self
+                        .core
+                        .openings
+                        .iter()
+                        .find(|o| {
+                            o.journal_id == event.entity_id
+                                && o.effect == crate::core::OpeningEffect::ZeroBalanceInitialization
+                        })
+                        .ok_or_else(|| anyhow::anyhow!("رویداد شروع دفتر بدون مانده پیدا نشد"))?;
+                    ensure!(
+                        opening.command.company_id == event.company_id
+                            && opening.command.actor == event.actor
+                            && opening.command.reason == event.reason,
+                        "شروع دفتر و تاریخچهٔ آن سازگار نیستند"
+                    );
+                    let before = replay.journals.len();
+                    replay.replay_core_opening(opening.command.clone())?;
+                    ensure!(
+                        replay.journals.len() == before,
+                        "شروع دفتر بدون مانده نباید سند مالی ایجاد کند"
+                    );
+                    let created = replay.core.openings.last_mut().unwrap();
+                    ensure!(
+                        created.effect == crate::core::OpeningEffect::ZeroBalanceInitialization,
+                        "شروع دفتر بدون مانده اثر مالی دارد"
+                    );
+                    created.journal_id = event.entity_id.clone();
+                    replay
+                        .core
+                        .zero_requests
+                        .last_mut()
+                        .unwrap()
+                        .initialization_id = event.entity_id.clone();
+                }
                 AuditOperation::CompanyCreated => {
                     let company = self.company(&event.entity_id)?;
                     ensure!(
@@ -432,7 +495,12 @@ impl AccountingState {
                         .iter()
                         .find(|r| r.journal_id == j.id)
                         .ok_or_else(|| anyhow::anyhow!("درخواست سند ثبت‌شده پیدا نشد"))?;
-                    let generated = replay.post(request.command.clone())?;
+                    let opening = self.core.openings.iter().find(|o| o.journal_id == j.id);
+                    let generated = if let Some(opening) = opening {
+                        replay.replay_core_opening(opening.command.clone())?
+                    } else {
+                        replay.post(request.command.clone())?
+                    };
                     let posted = replay
                         .journals
                         .iter_mut()
@@ -447,6 +515,9 @@ impl AccountingState {
                     );
                     *posted = j.clone();
                     replay.requests.last_mut().unwrap().journal_id = j.id.clone();
+                    if opening.is_some() {
+                        replay.core.openings.last_mut().unwrap().journal_id = j.id.clone();
+                    }
                 }
             }
             ensure!(
@@ -465,6 +536,12 @@ impl AccountingState {
                 "درخواست به سند دیگری اشاره می‌کند"
             );
         }
+        for request in &self.core.zero_requests {
+            ensure!(
+                replay.replay_zero_request(request)? == request.initialization_id,
+                "درخواست شروع دفتر به رویداد دیگری اشاره می‌کند"
+            );
+        }
         ensure!(
             replay.journals.len() == journal_count && replay.audit.len() == audit_count,
             "درخواست بدون تاریخچهٔ ثبت وجود دارد"
@@ -477,6 +554,11 @@ impl AccountingState {
         );
         replay.requests = self.requests.clone();
         ensure!(
+            replay.core.zero_requests.len() == self.core.zero_requests.len(),
+            "کلید درخواست شروع دفتر تکراری است"
+        );
+        replay.core.zero_requests = self.core.zero_requests.clone();
+        ensure!(
             replay == *self,
             "دادهٔ حسابداری با تاریخچهٔ کامل آن سازگار نیست"
         );
@@ -486,6 +568,7 @@ impl AccountingState {
     /// circumvent locks by editing a historical period/account definition.
     pub fn validate_transition(&self, next: &Self) -> Result<()> {
         next.validate()?;
+        self.core.validate_transition(&next.core)?;
         ensure!(
             next.journals.starts_with(&self.journals),
             "سند ثبت‌شده قابل تغییر یا حذف نیست؛ برگشت مرتبط ثبت کنید"
@@ -540,7 +623,7 @@ impl AccountingState {
             .find(|p| p.id == id)
             .ok_or_else(|| anyhow::anyhow!("سال مالی پیدا نشد"))
     }
-    fn activity(
+    pub(crate) fn activity(
         &mut self,
         company: &str,
         entity: &str,
@@ -661,6 +744,14 @@ impl AccountingState {
         text(actor)?;
         text(reason)?;
         ensure!(
+            !self.core.setups.iter().any(|s| s
+                .command
+                .mappings
+                .iter()
+                .any(|m| m.account_id == account_id)),
+            "حساب نگاشت‌شدهٔ تنظیمات فعال قابل بایگانی نیست؛ تغییر نگاشت پشتیبانی نمی‌شود"
+        );
+        ensure!(
             !self
                 .accounts
                 .iter()
@@ -719,8 +810,27 @@ impl AccountingState {
         Ok(())
     }
     pub fn post(&mut self, command: PostCommand) -> Result<String> {
+        self.post_internal(command, false)
+    }
+    pub(crate) fn post_core_opening(&mut self, command: PostCommand) -> Result<String> {
+        ensure!(
+            command.event == crate::core::CORE_OPENING_EVENT
+                && command.kind == JournalKind::Opening,
+            "مجوز کنترل فقط برای افتتاحیهٔ تطبیق‌شده است"
+        );
+        self.post_internal(command, true)
+    }
+    fn post_internal(&mut self, command: PostCommand, control_allowed: bool) -> Result<String> {
         // Validate retry identity before locks: successful historical retries do not mutate books.
         text(&command.request_key)?;
+        ensure!(
+            !self
+                .core
+                .zero_requests
+                .iter()
+                .any(|r| r.request_key == command.request_key),
+            "کلید درخواست برای شروع دفتر بدون مانده استفاده شده است"
+        );
         if let Some(prior) = self
             .requests
             .iter()
@@ -748,6 +858,24 @@ impl AccountingState {
             });
             return Ok(journal_id);
         }
+        ensure!(
+            control_allowed || command.event != crate::core::CORE_OPENING_EVENT,
+            "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است"
+        );
+        ensure!(
+            control_allowed
+                || !self
+                    .core
+                    .setups
+                    .iter()
+                    .any(|s| s.command.company_id == command.company_id)
+                || self
+                    .core
+                    .openings
+                    .iter()
+                    .any(|o| o.command.company_id == command.company_id),
+            "ابتدا افتتاحیهٔ تطبیق‌شدهٔ این شرکت را ثبت کنید؛ ثبت دستی پیش از آن مجاز نیست"
+        );
         self.company(&command.company_id)?;
         let period = self.period(&command.period_id)?;
         ensure!(
@@ -770,6 +898,15 @@ impl AccountingState {
             "سند باید بین ۲ تا ۱۰۰۰۰ ردیف معنادار داشته باشد"
         );
         if command.kind == JournalKind::Opening {
+            ensure!(
+                control_allowed
+                    || !self
+                        .core
+                        .setups
+                        .iter()
+                        .any(|s| s.command.company_id == command.company_id),
+                "افتتاحیهٔ شرکت هسته فقط از گردش کار تطبیق‌شده مجاز است"
+            );
             ensure!(
                 command.date == period.start_date,
                 "افتتاحیه باید در اولین روز سال مالی ثبت شود"
@@ -828,7 +965,7 @@ impl AccountingState {
                 }
             };
             ensure!(
-                !account.control,
+                control_allowed || !account.control,
                 "حساب کنترلی به زیرسیستم معتبر نیاز دارد؛ ثبت مستقیم در این مرحله پشتیبانی نمی‌شود"
             );
             debit = debit.checked_add(line.debit)?;
@@ -928,6 +1065,10 @@ impl AccountingState {
                 .iter()
                 .find(|j| &j.id == journal_id)
                 .ok_or_else(|| anyhow::anyhow!("سند اصلی برگشت پیدا نشد"))?;
+            ensure!(
+                original.event != crate::core::CORE_OPENING_EVENT,
+                "برگشت افتتاحیهٔ کنترلی به اصلاح هماهنگ جزئیات نیاز دارد؛ در این مرحله پشتیبانی نمی‌شود"
+            );
             ensure!(
                 original.company_id == command.company_id,
                 "برگشت بین دو کسب‌وکار مجاز نیست"

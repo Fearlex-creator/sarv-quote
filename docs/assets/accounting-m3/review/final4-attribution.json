@@ -1,0 +1,6 @@
+{
+  "production_source_sha256": "0afa43f953def0394b3eb31f996918df13fd96ee8d6ac7bb4025d393956df9df",
+  "algorithm": "sorted src/**/*.rs + src/style.css + Cargo.toml + Cargo.lock, each relative path NUL file bytes NUL",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "binary_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1"
+}

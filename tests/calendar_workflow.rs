@@ -158,5 +158,5 @@ fn jalali_trial_exports_name_both_dates_and_preserve_exact_money() {
     );
     assert!(!bad.exists());
     let untouched = State::default();
-    assert_eq!(untouched.schema, 3);
+    assert_eq!(untouched.schema, sarv_quote::domain::CURRENT_SCHEMA);
 }

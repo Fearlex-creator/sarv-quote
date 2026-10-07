@@ -301,7 +301,7 @@ fn money_value(e: &gtk::Entry, unit: MoneyUnit) -> Result<Money> {
     }
     result
 }
-fn form_dialog(
+pub(super) fn form_dialog(
     ui: &Rc<Ui>,
     title: &str,
     name: &str,
@@ -374,7 +374,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     root.set_widget_name("accounting-page");
     root.append(&workspace::page_header(
         "دفتر حسابداری",
-        Some("ثبت دستیِ دقیق و قابل‌ردیابی • ریال پایه • تک‌کاربر محلی"),
+        Some("دفتر کل و کنترل مانده‌ها • ریال پایه • تک‌کاربر محلی"),
     ));
     let top = actions();
     let companies = choice("شرکت فعال", &[]);
@@ -702,12 +702,27 @@ impl Page {
         let Some(ui) = self.ui.upgrade() else {
             return;
         };
+        let weak = Rc::downgrade(self);
+        let run: super::core::RunCommand = Rc::new(move |dialog, error, save, message, command| {
+            if let Some(page) = weak.upgrade() {
+                page.mutate(&dialog, &error, &save, message, command);
+            }
+        });
+        self.setup
+            .append(&super::core::build(&ui, self.company_id(), run));
         let Some(company_id) = self.company_id() else {
             self.setup.append(&empty_state("دفتر شرکت هنوز ساخته نشده", "شرکت تازه بسازید، مرزهای سال مالی و کدینگ خود را مشخص کنید، سپس سند متوازن ثبت کنید. پیشنهادهای قیمت به دفتر کل ارسال نمی‌شوند."));
             return;
         };
         let state = ui.store.borrow().state.accounting.clone();
-        self.setup.append(&validation("این دفتر ثبت دستی دارد. کنترل دریافتنی، پرداختنی، موجودی و چک و ارسال مالیاتی هنوز متصل نیستند؛ ثبت مستقیم در حساب کنترل مسدود است. انتخاب کدینگ و رویه‌ها به بررسی حسابدار نیاز دارد.", StatusTone::Neutral));
+        if !state
+            .core
+            .setups
+            .iter()
+            .any(|s| s.command.company_id == company_id)
+        {
+            self.setup.append(&validation("این شرکت دفتر دستی دارد. راه‌اندازی زیر‌دفترهای تازه از راهنمای شرکت جدید انجام می‌شود؛ ثبت مستقیم در حساب کنترل مسدود است.", StatusTone::Neutral));
+        }
         let new_period = button("تعریف دورهٔ مالی");
         new_period.set_widget_name("accounting-new-period");
         self.setup.append(&new_period);
@@ -2035,6 +2050,8 @@ fn audit_operation(operation: &AuditOperation) -> &'static str {
         AuditOperation::JournalPosted => "ثبت سند",
         AuditOperation::PeriodLocked => "قفل دوره",
         AuditOperation::PeriodReopened => "بازگشایی دوره",
+        AuditOperation::CoreConfigured => "تنظیم رویه و نگاشت حساب‌ها",
+        AuditOperation::CoreOpeningInitialized => "شروع دفتر بدون مانده و بدون سند مالی",
     }
 }
 

@@ -1,1 +1,7 @@
 docs/assets/accounting-m2/jalali/tested-jalali-qa.py whitespace=-blank-at-eol
+
+# Preserve exact generated M3 evidence bytes and CSV source provenance.
+docs/assets/accounting-m3/**/*.csv whitespace=cr-at-eol
+docs/assets/accounting-m3/opening.csv whitespace=cr-at-eol
+docs/assets/accounting-m3/**/*.log whitespace=-blank-at-eof,cr-at-eol
+docs/assets/accounting-m3/performance/latency-samples.svg whitespace=-blank-at-eol

@@ -3,6 +3,7 @@ mod background;
 mod catalog_editor;
 mod catalog_preview;
 mod components;
+mod core;
 mod editor;
 mod managers;
 mod pickers;
@@ -1837,6 +1838,7 @@ fn build(app: &gtk::Application, store: Store) {
     window.present();
     ui.customer.grab_focus();
     accounting::schedule(&ui);
+    core::start_core_smoke(&ui);
     smoke::schedule(&ui, &approve);
     responsiveness::schedule(&ui);
 }
