@@ -1,0 +1,789 @@
+{
+  "result": "passed",
+  "profile": "/workspace/sarv-quote/artifacts/independent-native/run-golheng8",
+  "source": "/workspace/sarv-quote/artifacts/cloud-onboarding/native-a6s8ga3w",
+  "binary_sha256": "7ae06aab0d74bf819e79adb547c068a8d6695da88229058dede2ec5cd99915d2",
+  "backend": "X11 Xvfb + Openbox + real XTest key events",
+  "checks": [
+    {
+      "name": "Tab enters first row quantity",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-quantity",
+        "focus_bounds": [
+          488.0,
+          451.0,
+          49.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Tab",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Shift+Tab returns to first row query",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-query",
+        "focus_bounds": [
+          849.0,
+          451.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Shift_L",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Enter saves/reviews and retains query focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-query",
+        "focus_bounds": [
+          849.0,
+          451.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Return",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Ctrl+Down advances same-column row focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row1-query",
+        "focus_bounds": [
+          849.0,
+          491.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Control_L",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Ctrl+Up returns same-column row focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-query",
+        "focus_bounds": [
+          849.0,
+          451.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Control_L",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Ctrl+S saves existing draft and retains query focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-query",
+        "focus_bounds": [
+          849.0,
+          451.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Control_L",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.055
+    },
+    {
+      "name": "Save preserved exact payload",
+      "passed": true
+    },
+    {
+      "name": "Ctrl+Enter reaches approved workflow",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-query",
+        "focus_bounds": [
+          849.0,
+          451.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Return",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Repeat approval preserved existing quote count",
+      "passed": true
+    },
+    {
+      "name": "Alt+2 opens catalog",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "search-catalog",
+        "focus_bounds": [
+          0.0,
+          53.0,
+          0.0,
+          0.0
+        ],
+        "focus_clip_bounds": null,
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Alt_L",
+        "page": "catalog",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.452
+    },
+    {
+      "name": "Alt+3 opens customers",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "search-customer",
+        "focus_bounds": [
+          0.0,
+          53.0,
+          0.0,
+          0.0
+        ],
+        "focus_clip_bounds": null,
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Alt_L",
+        "page": "customers",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Alt+4 opens quotes",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "search-quote",
+        "focus_bounds": [
+          0.0,
+          53.0,
+          0.0,
+          0.0
+        ],
+        "focus_clip_bounds": null,
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Alt_L",
+        "page": "quotes",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Alt+5 opens backup",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          0.0,
+          53.0,
+          0.0,
+          0.0
+        ],
+        "focus_clip_bounds": null,
+        "focus_label": null,
+        "focus_name": "GtkLabel",
+        "focus_type": "GtkLabel",
+        "key": "Alt_L",
+        "page": "backup",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Alt+6 opens settings",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          297.0,
+          77.0,
+          576.0,
+          72.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          53.0,
+          1170.0,
+          836.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_type": "AdwActionRow",
+        "key": "Alt_L",
+        "page": "settings",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Ctrl+S on Settings",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          297.0,
+          77.0,
+          576.0,
+          72.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          53.0,
+          1170.0,
+          836.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_type": "AdwActionRow",
+        "key": "Control_L",
+        "page": "settings",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Settings save preserved exact persisted settings",
+      "passed": true
+    },
+    {
+      "name": "Alt+1 opens quotation",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row0-query",
+        "focus_bounds": [
+          849.0,
+          451.0,
+          243.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          380.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Alt_L",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.452
+    },
+    {
+      "name": "Window accepts actual 900x940 allocation",
+      "passed": true,
+      "geometry": [
+        900,
+        940
+      ]
+    },
+    {
+      "name": "Keyboard navigation remains responsive at 900x940",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          158.0,
+          77.0,
+          574.0,
+          72.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          53.0,
+          890.0,
+          836.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_type": "AdwActionRow",
+        "key": "Alt_L",
+        "page": "settings",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          930
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Window accepts actual 900x560 allocation",
+      "passed": true,
+      "geometry": [
+        900,
+        560
+      ]
+    },
+    {
+      "name": "Keyboard navigation remains responsive at 900x560",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          158.0,
+          77.0,
+          574.0,
+          72.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          53.0,
+          890.0,
+          456.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_type": "AdwActionRow",
+        "key": "Alt_L",
+        "page": "settings",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "latency_seconds": 0.451
+    },
+    {
+      "name": "Real Tab reaches discount at 900x560",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "discount",
+        "focus_bounds": [
+          27.0,
+          610.0,
+          206.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          117.0,
+          890.0,
+          392.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Tab",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      }
+    },
+    {
+      "name": "Real Tab reaches new-item at 900x560",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "new-item",
+        "focus_bounds": [
+          240.0,
+          479.0,
+          623.0,
+          39.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          117.0,
+          890.0,
+          392.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Tab",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      }
+    },
+    {
+      "name": "Real Tab reaches new-quantity at 900x560",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "new-quantity",
+        "focus_bounds": [
+          144.0,
+          499.0,
+          70.0,
+          39.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          117.0,
+          890.0,
+          392.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Tab",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      }
+    },
+    {
+      "name": "Window accepts actual 700x560 allocation",
+      "passed": true,
+      "geometry": [
+        700,
+        560
+      ]
+    },
+    {
+      "name": "Keyboard navigation remains responsive at 700x560",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          71.0,
+          77.0,
+          548.0,
+          72.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          53.0,
+          690.0,
+          456.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_type": "AdwActionRow",
+        "key": "Alt_L",
+        "page": "settings",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          690,
+          550
+        ]
+      },
+      "latency_seconds": 0.452
+    },
+    {
+      "name": "All key/resize actions preserved exact persisted state",
+      "passed": true
+    },
+    {
+      "name": "Fresh process retained payload, settings, quotes and draft exactly",
+      "passed": true,
+      "payload_sha256": "73b2d44504ad8ba7c3c5681db6c8515f658f755dc65f7b8f2d95caae3691164b",
+      "quotes": 3,
+      "generation": 32
+    },
+    {
+      "name": "Owned synthetic process exposes native AT-SPI controls",
+      "passed": true,
+      "nodes": 206
+    },
+    {
+      "name": "Typed invalid numbering does not mutate settings or data",
+      "passed": true
+    },
+    {
+      "name": "Invalid numbering remains visible for correction",
+      "passed": true
+    },
+    {
+      "name": "Native Revert restores saved numbering",
+      "passed": true
+    },
+    {
+      "name": "Typed staged business edit remains off disk",
+      "passed": true
+    },
+    {
+      "name": "Dirty settings keyboard close keeps process alive",
+      "passed": true
+    },
+    {
+      "name": "Keyboard Cancel retains staged business text",
+      "passed": true
+    },
+    {
+      "name": "Native Revert restores exact saved state after cancel",
+      "passed": true
+    },
+    {
+      "name": "Typed business Ctrl+S saves exact new value and retains approved history",
+      "passed": true
+    },
+    {
+      "name": "Real typed business save persists through fresh native process",
+      "passed": true
+    },
+    {
+      "name": "Exact typed product search + native Add appends one source item",
+      "passed": true
+    },
+    {
+      "name": "Product Add clears stale-price acknowledgement",
+      "passed": true
+    },
+    {
+      "name": "Product Add preserves approved history and settings",
+      "passed": true
+    },
+    {
+      "name": "Product Add preserves exact imported source prices",
+      "passed": true
+    },
+    {
+      "name": "Native customer dialog Enter saves exact name and phone",
+      "passed": true
+    },
+    {
+      "name": "Customer creation preserves immutable approved history",
+      "passed": true
+    },
+    {
+      "name": "Real Ctrl+Down crosses row 100/101 page boundary and saves first-page edit",
+      "passed": true
+    },
+    {
+      "name": "Invalid cell blocks real Ctrl+Up page crossing and preserves all canonical rows",
+      "passed": true
+    },
+    {
+      "name": "Corrected second-page edit saves to global row 101 without changing hidden rows",
+      "passed": true
+    },
+    {
+      "name": "Paged Ctrl+S retains global focus and all 1,000 exact canonical rows",
+      "passed": true
+    },
+    {
+      "name": "Paged editing preserves immutable approved history and source prices",
+      "passed": true
+    },
+    {
+      "name": "Rendered row 100 focus stays completely inside table clip and actual window after page/save",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "focus": "row99-quantity",
+        "focus_bounds": [
+          488.0,
+          517.0,
+          49.0,
+          29.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          310.0,
+          1134.0,
+          242.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_type": "GtkText",
+        "key": "Shift_L",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      }
+    }
+  ]
+}

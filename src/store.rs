@@ -127,6 +127,11 @@ impl Store {
                 })?;
         self.check_generation(generation)
     }
+    /// Check an unchanged UI draft against the committed generation without
+    /// cloning or serializing the state. A stale window still must be reopened.
+    pub fn verify_current(&self) -> Result<()> {
+        self.ensure_current()
+    }
     pub fn restore_preview(path: &Path) -> Result<State> {
         let mut file = open_regular(path)?;
         ensure!(

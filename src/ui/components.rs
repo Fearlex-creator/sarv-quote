@@ -33,6 +33,23 @@ pub(super) fn entry(placeholder: &str) -> gtk::Entry {
     e.set_hexpand(true);
     e
 }
+/// Native invalid styling and an accessible explanation accompany the same
+/// domain validation used by persistence. The tooltip also exposes the limit.
+pub(super) fn entry_validity(entry: &gtk::Entry, error: Option<&str>, hint: &str) {
+    let explanation = error.unwrap_or(hint);
+    if error.is_some() {
+        entry.add_css_class("error");
+    } else {
+        entry.remove_css_class("error");
+    }
+    entry.set_tooltip_text(Some(explanation));
+    entry.update_state(&[gtk::accessible::State::Invalid(if error.is_some() {
+        gtk::AccessibleInvalidState::True
+    } else {
+        gtk::AccessibleInvalidState::False
+    })]);
+    entry.update_property(&[gtk::accessible::Property::Description(explanation)]);
+}
 pub(super) fn scroll(w: &impl IsA<gtk::Widget>) -> gtk::ScrolledWindow {
     gtk::ScrolledWindow::builder()
         .child(w)
@@ -163,6 +180,9 @@ pub(super) fn table_cell(text: &str, expand: bool) -> gtk::Label {
 pub(super) fn numeric_cell(text: &str) -> gtk::Label {
     let cell = table_cell(text, false);
     cell.add_css_class("numeric");
+    // Keep every monetary value readable on one line; the containing native
+    // table scrolls when a long amount needs more room.
+    cell.set_wrap(false);
     cell.set_direction(gtk::TextDirection::Ltr);
     cell.set_xalign(1.0);
     let attrs = gtk::pango::AttrList::new();

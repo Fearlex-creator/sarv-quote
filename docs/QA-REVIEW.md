@@ -1,5 +1,7 @@
 # Independent QA review
 
+Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
+
 The native screenshots and 39-check GUI acceptance below describe the preceding local v1 build. The current snapshot includes subsequent software-risk fixes; see [SOFTWARE-RISKS.md](SOFTWARE-RISKS.md) for current checks and remaining native verification.
 Scope: quotation preparation v1, native Rust/GTK4/libadwaita. Synthetic records only. This review makes no accounting, tax, accessibility-compliance or production-scale claim. Earlier screenshots and findings below are retained as historical evidence; the final acceptance section describes the delivered interface.
 

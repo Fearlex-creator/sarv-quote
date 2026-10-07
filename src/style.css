@@ -5,6 +5,7 @@
 .section { padding: 8px 0; }
 .metadata { padding: 6px 0 8px; }
 .document-toolbar { padding-bottom: 8px; }
+.document-actions { padding: 14px 18px 10px; border-bottom: 1px solid var(--border-color); }
 .table {
   border: 1px solid var(--border-color);
   border-radius: 6px;

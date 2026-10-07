@@ -27,16 +27,37 @@ fn compact_button(caption: &str) -> gtk::Button {
 fn contains(value: &str, needle: &str) -> bool {
     normalize(value).contains(needle)
 }
-fn product_matches(product: &Product, needle: &str) -> bool {
-    [
-        &product.code,
-        &product.name,
-        &product.measure,
-        &product.source_at,
-    ]
-    .iter()
-    .any(|value| contains(value, needle))
-        || product.aliases.iter().any(|alias| contains(alias, needle))
+fn fields_match(values: &[&str], needle: &str) -> bool {
+    let values = values
+        .iter()
+        .map(|value| normalize(value))
+        .collect::<Vec<_>>();
+    needle
+        .split_whitespace()
+        .all(|word| values.iter().any(|value| value.contains(word)))
+}
+
+pub(super) fn product_matches(product: &Product, needle: &str) -> bool {
+    let mut values = vec![
+        product.code.as_str(),
+        product.name.as_str(),
+        product.measure.as_str(),
+        product.source_at.as_str(),
+    ];
+    values.extend(product.aliases.iter().map(String::as_str));
+    fields_match(&values, needle)
+}
+
+fn wrapping_actions() -> gtk::FlowBox {
+    let actions = gtk::FlowBox::new();
+    actions.set_selection_mode(gtk::SelectionMode::None);
+    actions.set_homogeneous(false);
+    actions.set_min_children_per_line(1);
+    actions.set_max_children_per_line(5);
+    actions.set_column_spacing(8);
+    actions.set_row_spacing(8);
+    actions.set_halign(gtk::Align::Start);
+    actions
 }
 
 impl Ui {
@@ -101,9 +122,7 @@ impl Ui {
             .state
             .customers
             .iter()
-            .filter(|customer| {
-                contains(&customer.name, &needle) || contains(&customer.phone, &needle)
-            })
+            .filter(|customer| fields_match(&[&customer.name, &customer.phone], &needle))
             .map(|customer| customer.id.clone())
             .collect::<Vec<_>>();
         let count = label(&format!("{} مشتری", self.manager_number(matches.len())));
@@ -260,6 +279,10 @@ impl Ui {
         let actions = row();
         let save = compact_button("ذخیرهٔ مشتری");
         save.add_css_class("suggested-action");
+        save.set_receives_default(true);
+        dialog.set_default_widget(Some(&save));
+        name.set_activates_default(true);
+        phone.set_activates_default(true);
         let cancel = compact_button("انصراف");
         actions.append(&save);
         actions.append(&cancel);
@@ -357,6 +380,8 @@ impl Ui {
                 ))
                 .build();
             expander.set_use_markup(false);
+            expander.set_title_lines(2);
+            expander.set_subtitle_lines(2);
             let select = compact_button("انتخاب فهرست");
             select.set_sensitive(catalog.id != store.state.draft.catalog_id);
             expander.add_suffix(&select);
@@ -385,7 +410,6 @@ impl Ui {
                 }
             });
             let product_list = boxed_list();
-            expander.add_row(&product_list);
             let catalog_id = catalog.id.clone();
             let needle =
                 if contains(&catalog.name, &needle) || contains(&catalog.imported_at, &needle) {
@@ -393,7 +417,22 @@ impl Ui {
                 } else {
                     needle.clone()
                 };
-            let loaded = Cell::new(false);
+            let matching = catalog
+                .products
+                .iter()
+                .filter(|product| product_matches(product, &needle))
+                .count();
+            let summary = action_row(
+                &format!("{} کالای مطابق", self.manager_number(matching)),
+                "برای حفظ قیمت‌های منبع، ویرایش کالا با ورود یک فهرست تازه انجام می‌شود. نسخه‌های پیشین محفوظ می‌مانند.",
+            );
+            expander.add_row(&summary);
+            expander.add_row(&product_list);
+            if !needle.is_empty() {
+                expander.set_expanded(true);
+                self.append_product_page(&product_list, &catalog_id, &needle, 0);
+            }
+            let loaded = Cell::new(!needle.is_empty());
             let weak = Rc::downgrade(self);
             expander.connect_expanded_notify(move |expander| {
                 if expander.is_expanded()
@@ -454,6 +493,49 @@ impl Ui {
                 product.measure
             ));
             item.add_suffix(&price);
+            let add = compact_button("افزودن");
+            accessible_name(&add, &format!("افزودن {} به پیشنهاد", product.code));
+            add.set_sensitive(catalog.id == store.state.draft.catalog_id);
+            add.set_tooltip_text(Some(if catalog.id == store.state.draft.catalog_id {
+                "افزودن یک واحد از این کالا به پیشنهاد، با همین قیمت منبع"
+            } else {
+                "ابتدا فهرست را انتخاب کنید؛ انتخاب فهرست نیازمند بررسی دوبارهٔ قیمت اقلام است"
+            }));
+            item.add_suffix(&add);
+            item.set_activatable_widget(Some(&add));
+            let catalog_id = catalog.id.clone();
+            let code = product.code.clone();
+            let weak = Rc::downgrade(self);
+            add.connect_clicked(move |_| {
+                if let Some(ui) = weak.upgrade() {
+                    let result = ui
+                        .save_form()
+                        .and_then(|()| ui.preserve_draft("revision"))
+                        .and_then(|()| {
+                            ui.store.borrow_mut().change(|state| {
+                                anyhow::ensure!(
+                                    state.draft.catalog_id == catalog_id,
+                                    "فهرست انتخاب‌شده تغییر کرده؛ کالا را دوباره بررسی کنید"
+                                );
+                                state.draft.lines.push(OrderLine {
+                                    query: code.clone(),
+                                    quantity_milli: 1000,
+                                    chosen_code: Some(code.clone()),
+                                });
+                                state.draft.stale_ack = false;
+                                Ok(())
+                            })
+                        });
+                    let ok = result.is_ok();
+                    ui.message(result.map(|()| "کالا با قیمت منبع به پیشنهاد افزوده و ذخیره شد"));
+                    if ok {
+                        ui.fill_form();
+                        ui.visual_pending.set(true);
+                        ui.refresh_review();
+                        ui.stack.set_visible_child_name("order");
+                    }
+                }
+            });
             let aliases = product.aliases.join("، ");
             item.set_tooltip_text(Some(&format!(
                 "{}\nنام‌های مستعار تأییدشده: {}\n{}",
@@ -597,6 +679,8 @@ impl Ui {
                 ))
                 .build();
             expander.set_use_markup(false);
+            expander.set_title_lines(2);
+            expander.set_subtitle_lines(2);
             let current = latest.get(quote.series.as_str()) == Some(&quote.version);
             let state = status_label(
                 if current {
@@ -631,7 +715,7 @@ impl Ui {
                 ),
             );
             expander.add_row(&details);
-            let actions = row();
+            let actions = wrapping_actions();
             actions.set_margin_top(8);
             actions.set_margin_bottom(8);
             actions.set_margin_start(12);
@@ -645,7 +729,14 @@ impl Ui {
                 ("کپی در پیشنهاد تازه", "duplicate"),
             ] {
                 let action = compact_button(caption);
-                actions.append(&action);
+                action.set_tooltip_text(Some(match kind {
+                    "preview" => "بررسی سند همین نسخهٔ تأییدشده",
+                    "pdf" => "خروجی PDF از همین نسخه و قیمت‌های بایگانی‌شده",
+                    "csv" => "خروجی CSV از همین نسخه و قیمت‌های بایگانی‌شده",
+                    "revise" => "ویرایش در همان شمارهٔ پیشنهاد؛ نسخهٔ پیشین حفظ می‌شود",
+                    _ => "پیشنهاد تازه با شمارهٔ تازه؛ قیمت‌های این نسخه حفظ می‌شود",
+                }));
+                actions.insert(&action, -1);
                 let quote = quote.clone();
                 let weak = Rc::downgrade(self);
                 action.connect_clicked(move |_| {

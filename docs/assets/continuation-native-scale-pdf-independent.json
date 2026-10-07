@@ -1,0 +1,12 @@
+{
+  "result": "passed",
+  "independent_pdf_text_extractor": "pdftotext -layout",
+  "unique_catalog_codes_in_pdf": 1000,
+  "all_1000_codes_retained": true,
+  "first_line_present": true,
+  "last_line_present": true,
+  "pdf_pages": 126,
+  "exact_total_toman_as_rendered": "10,080,250.1",
+  "exact_total_toman_matches": 2,
+  "exact_total_rial_equivalent": 100802501
+}

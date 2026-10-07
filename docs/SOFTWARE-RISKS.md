@@ -1,5 +1,7 @@
 # Software risk follow-up
 
+Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
+
 Publication snapshot checks: Rust formatting, Clippy with warnings denied, **84 ordinary tests passed**, release build. The ordinary run skips one graphical test; it passed separately on the preceding v1 build. No CI workflow has been configured.
 
 | Risk | Outcome and evidence |

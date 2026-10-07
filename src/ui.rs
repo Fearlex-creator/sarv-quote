@@ -3,6 +3,7 @@ mod catalog_preview;
 mod components;
 mod editor;
 mod managers;
+mod responsiveness;
 mod settings;
 mod smoke;
 use adw::prelude::*;
@@ -47,6 +48,7 @@ struct Ui {
     new_quantity: gtk::Entry,
     undo_button: gtk::Button,
     row_editors: RefCell<Vec<editor::RowEditor>>,
+    table_page: Cell<usize>,
     table_dirty: Cell<bool>,
     visual_pending: Cell<bool>,
     deleted_lines: RefCell<Option<(usize, OrderLine)>>,
@@ -184,17 +186,21 @@ impl Ui {
             true,
         );
         let lines = if self.table_dirty.get() {
-            self.row_editors
-                .borrow()
-                .iter()
-                .map(|r| {
-                    Ok(OrderLine {
-                        query: r.query.text().to_string(),
-                        quantity_milli: quantity(&r.quantity.text())?,
-                        chosen_code: None,
-                    })
-                })
-                .collect::<Result<Vec<_>>>()?
+            // Only the visible page owns widgets. Preserve all canonical rows,
+            // applying validated edits by their stable global order index.
+            let mut lines = self.store.borrow().state.draft.lines.clone();
+            for row in self.row_editors.borrow().iter() {
+                let line = lines
+                    .get_mut(row.index)
+                    .ok_or_else(|| anyhow::anyhow!("ردیف تغییر کرده؛ دوباره بررسی کنید"))?;
+                let query = row.query.text().to_string();
+                if line.query != query {
+                    line.chosen_code = None;
+                }
+                line.query = query;
+                line.quantity_milli = quantity(&row.quantity.text())?;
+            }
+            lines
         } else if text.trim() == "item,quantity" || text.trim().is_empty() {
             vec![]
         } else {
@@ -227,42 +233,57 @@ impl Ui {
                 true,
             )
             .to_string();
-        self.store.borrow_mut().change(|s| {
-            let catalog = s
+        let (draft, unchanged) = {
+            let store = self.store.borrow();
+            let original = &store.state.draft;
+            let mut draft = original.clone();
+            let catalog = store
+                .state
                 .catalogs
                 .get(index)
                 .map(|c| c.id.clone())
                 .unwrap_or_default();
-            let same_catalog = catalog == s.draft.catalog_id;
+            let same_catalog = catalog == original.catalog_id;
             let same_sources = same_catalog
-                && lines.len() == s.draft.lines.len()
+                && lines.len() == original.lines.len()
                 && lines
                     .iter()
-                    .zip(&s.draft.lines)
+                    .zip(&original.lines)
                     .all(|(a, b)| a.query == b.query);
             let mut lines = lines;
             if same_catalog {
-                for (i, l) in lines.iter_mut().enumerate() {
-                    if let Some(old) = s.draft.lines.get(i)
-                        && old.query == l.query
+                for (i, line) in lines.iter_mut().enumerate() {
+                    if let Some(old) = original.lines.get(i)
+                        && old.query == line.query
                     {
-                        l.chosen_code = old.chosen_code.clone();
+                        line.chosen_code = old.chosen_code.clone();
                     }
                 }
             }
-            s.draft.catalog_id = catalog;
-            s.draft.lines = lines;
-            s.draft.customer = name;
-            s.draft.phone = phone;
-            s.draft.discount_rial = discount;
-            s.draft.display_unit = unit;
-            s.draft.stale_ack = ack && same_sources;
-            s.draft.reference = reference;
-            s.draft.quote_date = quote_date;
-            s.draft.valid_until = valid_until;
-            s.draft.notes = notes;
-            Ok(())
-        })?;
+            draft.catalog_id = catalog;
+            draft.lines = lines;
+            draft.customer = name;
+            draft.phone = phone;
+            draft.discount_rial = discount;
+            draft.display_unit = unit;
+            draft.stale_ack = ack && same_sources;
+            draft.reference = reference;
+            draft.quote_date = quote_date;
+            draft.valid_until = valid_until;
+            draft.notes = notes;
+            let unchanged = serde_json::to_vec(&draft)? == serde_json::to_vec(original)?;
+            (draft, unchanged)
+        };
+        if unchanged {
+            // Paging or saving an unchanged form must not clone and revalidate
+            // every historical catalog. A stale window still cannot claim Save.
+            self.store.borrow().verify_current()?;
+        } else {
+            self.store.borrow_mut().change(|state| {
+                state.draft = draft;
+                Ok(())
+            })?;
+        }
         self.loading.set(true);
         self.order
             .buffer()
@@ -410,6 +431,7 @@ impl Ui {
         }
         self.deleted_lines.borrow_mut().take();
         self.undo_button.set_sensitive(false);
+        self.table_page.set(0);
         self.fill_form();
         self.refresh_review();
         self.stack.set_visible_child_name("order");
@@ -441,7 +463,10 @@ impl Ui {
                 let name = entry("نام فهرست");
                 name.set_text(&c.name);
                 root.append(&field("نام فهرست", &name));
-                root.append(&catalog_preview::preview(&c));
+                root.append(&catalog_preview::preview(
+                    &c,
+                    self.store.borrow().state.settings.display_digits,
+                ));
                 let ok = button("منبع و قیمت‌ها را تأیید می‌کنم");
                 ok.add_css_class("suggested-action");
                 root.append(&ok);
@@ -470,6 +495,69 @@ impl Ui {
                 self.present_dialog(&dialog);
             }
         }
+    }
+    fn import_order(self: &Rc<Self>, path: &Path) {
+        let candidate = read_import(path).and_then(|csv| {
+            let rows = imports::order_csv(&csv)?;
+            Ok((csv, rows.len()))
+        });
+        let (csv, count) = match candidate {
+            Ok(candidate) => candidate,
+            Err(error) => {
+                self.message(Err::<String, _>(error));
+                return;
+            }
+        };
+        let dialog = adw::AlertDialog::new(
+            Some("جایگزینی اقلام سفارش؟"),
+            Some(&format!(
+                "{} ردیف معتبر از فایل وارد می‌شود و اقلام فعلی را جایگزین می‌کند. پیش از جایگزینی، پیش‌نویس جاری ذخیره و پشتیبان ایمنی ساخته می‌شود. اطلاعات مشتری و سند حفظ می‌شود.",
+                self.store
+                    .borrow()
+                    .state
+                    .settings
+                    .display_digits
+                    .format(count.to_string())
+            )),
+        );
+        dialog.add_response("cancel", "انصراف");
+        dialog.add_response("replace", "پشتیبان و جایگزینی");
+        dialog.set_response_appearance("replace", adw::ResponseAppearance::Suggested);
+        dialog.set_default_response(Some("cancel"));
+        dialog.set_close_response("cancel");
+        let weak = Rc::downgrade(self);
+        dialog.connect_response(None, move |_, response| {
+            if response != "replace" {
+                return;
+            }
+            if let Some(ui) = weak.upgrade() {
+                let result = ui
+                    .save_form()
+                    .and_then(|()| ui.preserve_draft("order-import"))
+                    .and_then(|()| {
+                        let lines = imports::order_csv(&csv)?;
+                        ui.store.borrow_mut().change(|state| {
+                            state.draft.lines = lines;
+                            state.draft.stale_ack = false;
+                            Ok(())
+                        })
+                    });
+                let success = result.is_ok();
+                ui.message(result.map(|()| "اقلام جایگزین شد؛ قیمت‌ها و تطبیق کالا را بررسی کنید"));
+                if success {
+                    if let Some(pending) = ui.pending.borrow_mut().take() {
+                        pending.remove();
+                    }
+                    ui.deleted_lines.borrow_mut().take();
+                    ui.undo_button.set_sensitive(false);
+                    ui.table_page.set(0);
+                    ui.fill_form();
+                    ui.visual_pending.set(true);
+                    ui.refresh_review();
+                }
+            }
+        });
+        self.present_dialog(dialog.upcast_ref());
     }
     fn restore(self: &Rc<Self>, path: &Path) {
         match Store::restore_preview(path) {
@@ -504,6 +592,7 @@ impl Ui {
                             ui.undo_button.set_sensitive(false);
                             dialog.close();
                             ui.refresh_settings();
+                            ui.table_page.set(0);
                             ui.fill_form();
                             ui.refresh_review();
                             ui.refresh_lists();
@@ -521,6 +610,19 @@ pub fn run() -> Result<()> {
         .map(PathBuf::from)
         .unwrap_or_else(|| PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("data"));
     let mut opened = Store::open(&data)?;
+    if std::env::var("SARV_UI_SMOKE").as_deref() == Ok("full") {
+        anyhow::ensure!(
+            opened.state.quotes.is_empty()
+                && opened.state.catalogs.is_empty()
+                && opened.state.customers.is_empty()
+                && opened.state.draft.lines.is_empty()
+                && opened.state.draft.customer.is_empty()
+                && opened.state.draft.phone.is_empty()
+                && opened.state.draft.reference.is_empty()
+                && opened.state.draft.notes.is_empty(),
+            "full native smoke requires a fresh, separate synthetic profile"
+        );
+    }
     if let Some(path) = std::env::var_os("SARV_SEED_BACKUP") {
         anyhow::ensure!(
             opened.state.quotes.is_empty()
@@ -602,6 +704,8 @@ fn build(app: &gtk::Application, store: Store) {
     let status = label("آماده • قیمت‌ها تنها از فهرست تأییدشده می‌آیند");
     status.add_css_class("status");
     root.add_bottom_bar(&status);
+    let order_shell = column();
+    order_shell.set_spacing(0);
     let order_page = column();
     order_page.add_css_class("page");
     order_page.set_spacing(8);
@@ -620,10 +724,15 @@ fn build(app: &gtk::Application, store: Store) {
     let approve = button("تأیید نسخه");
     approve.add_css_class("suggested-action");
     approve.set_tooltip_text(Some("Ctrl+Enter • ثبت نسخهٔ محفوظ پیشنهاد"));
+    let document_buttons = adw::WrapBox::new();
+    document_buttons.set_child_spacing(8);
+    document_buttons.set_line_spacing(6);
     for b in [&new, &save, &preview, &approve] {
-        actions.append(b);
+        document_buttons.append(b);
     }
-    order_page.append(&actions);
+    actions.append(&document_buttons);
+    actions.add_css_class("document-actions");
+    order_shell.append(&actions);
     let metadata = gtk::Grid::new();
     metadata.set_column_spacing(18);
     metadata.set_row_spacing(10);
@@ -641,15 +750,30 @@ fn build(app: &gtk::Application, store: Store) {
     let valid_until = entry("YYYY-MM-DD • اختیاری");
     valid_until.set_direction(gtk::TextDirection::Ltr);
     let customer_save = button("ذخیرهٔ مشتری");
-    metadata.attach(&field("مشتری", &customer), 0, 0, 1, 1);
-    metadata.attach(&field("تلفن", &phone), 1, 0, 1, 1);
-    metadata.attach(&field("فهرست قیمت تأییدشده", &catalog_choice), 2, 0, 1, 1);
-    metadata.attach(&field("واحد مبلغ", &unit), 3, 0, 1, 1);
-    metadata.attach(&field("مرجع مشتری", &reference), 0, 1, 1, 1);
-    metadata.attach(&field("تاریخ پیشنهاد • میلادی", &quote_date), 1, 1, 1, 1);
-    metadata.attach(&field("اعتبار تا • میلادی", &valid_until), 2, 1, 1, 1);
+    let metadata_fields: Vec<gtk::Widget> = vec![
+        field("مشتری", &customer).upcast(),
+        field("تلفن", &phone).upcast(),
+        field("فهرست قیمت تأییدشده", &catalog_choice).upcast(),
+        field("واحد مبلغ", &unit).upcast(),
+        field("مرجع مشتری", &reference).upcast(),
+        field("تاریخ پیشنهاد • میلادی", &quote_date).upcast(),
+        field("اعتبار تا • میلادی", &valid_until).upcast(),
+        customer_save.clone().upcast(),
+    ];
     customer_save.set_valign(gtk::Align::End);
-    metadata.attach(&customer_save, 3, 1, 1, 1);
+    for (i, widget) in metadata_fields.iter().enumerate() {
+        metadata.attach(widget, (i % 4) as i32, (i / 4) as i32, 1, 1);
+    }
+    let adaptive_metadata = metadata.clone();
+    body.connect_collapsed_notify(move |split| {
+        let columns = if split.is_collapsed() { 2 } else { 4 };
+        for widget in &metadata_fields {
+            adaptive_metadata.remove(widget);
+        }
+        for (i, widget) in metadata_fields.iter().enumerate() {
+            adaptive_metadata.attach(widget, (i % columns) as i32, (i / columns) as i32, 1, 1);
+        }
+    });
     order_page.append(&metadata);
     let source_hint = label("");
     source_hint.add_css_class("muted");
@@ -669,7 +793,11 @@ fn build(app: &gtk::Application, store: Store) {
     review.set_spacing(0);
     let table_scroll = scroll(&review);
     table_scroll.set_hscrollbar_policy(gtk::PolicyType::Automatic);
-    table_scroll.set_min_content_height(180);
+    table_scroll.set_min_content_height(240);
+    table_scroll.set_max_content_height(380);
+    table_scroll.set_propagate_natural_height(true);
+    table_scroll.set_vexpand(false);
+    table_scroll.set_widget_name("quote-table-scroll");
     table_scroll.add_css_class("table");
     order_page.append(&table_scroll);
     let add_bar = row();
@@ -687,6 +815,11 @@ fn build(app: &gtk::Application, store: Store) {
     add_bar.append(&new_quantity);
     add_bar.append(&add_item);
     order_page.append(&add_bar);
+    let table_help = label("Tab جابه‌جایی ستون‌ها • Enter بررسی و ذخیره • Ctrl+↑/↓ جابه‌جایی ردیف");
+    table_help.add_css_class("caption");
+    table_help.add_css_class("dimmed");
+    table_help.set_selectable(false);
+    order_page.append(&table_help);
     let stale = gtk::CheckButton::with_label("منبع قیمت‌های قدیمی را بررسی و تأیید کرده‌ام");
     order_page.append(&stale);
     let summary = row();
@@ -697,6 +830,7 @@ fn build(app: &gtk::Application, store: Store) {
     let notes = gtk::TextView::new();
     accessible_name(&notes, "یادداشت برای مشتری");
     notes.set_wrap_mode(gtk::WrapMode::WordChar);
+    notes.set_accepts_tab(false);
     let note_scroll = scroll(&notes);
     note_scroll.set_height_request(55);
     note_scroll.set_vexpand(false);
@@ -707,6 +841,7 @@ fn build(app: &gtk::Application, store: Store) {
     accessible_name(&order, "متن CSV سفارش • item,quantity");
     order.set_direction(gtk::TextDirection::Ltr);
     order.set_monospace(true);
+    order.set_accepts_tab(false);
     let order_scroll = scroll(&order);
     order_scroll.set_height_request(95);
     order_scroll.set_vexpand(false);
@@ -737,7 +872,10 @@ fn build(app: &gtk::Application, store: Store) {
     totals.append(&total);
     summary.append(&totals);
     order_page.append(&summary);
-    stack.add_named(&order_page, Some("order"));
+    let document_scroll = scroll(&order_page);
+    document_scroll.set_widget_name("quote-document-scroll");
+    order_shell.append(&document_scroll);
+    stack.add_named(&order_shell, Some("order"));
     let catalog_list = column();
     let customer_list = column();
     let quote_list = column();
@@ -786,7 +924,7 @@ fn build(app: &gtk::Application, store: Store) {
     let restore = button("انتخاب پشتیبان و بررسی بازیابی");
     backup_page.append(&backup);
     backup_page.append(&restore);
-    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…5 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nاین محصول پیشنهاد قیمت v1 است. موجودی، پرداخت، مالیات و سند حسابداری ثبت نمی‌کند.",store.directory.display())));
+    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…6 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nاین محصول پیشنهاد قیمت v1 است. موجودی، پرداخت، مالیات و سند حسابداری ثبت نمی‌کند.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
     for (i, name, caption) in [
         (1, "order", "پیشنهاد قیمت"),
@@ -853,6 +991,7 @@ fn build(app: &gtk::Application, store: Store) {
         new_quantity,
         undo_button,
         row_editors: RefCell::new(vec![]),
+        table_page: Cell::new(0),
         table_dirty: Cell::new(false),
         visual_pending: Cell::new(false),
         deleted_lines: RefCell::new(None),
@@ -998,20 +1137,7 @@ fn build(app: &gtk::Application, store: Store) {
     let u = ui.clone();
     import_order.connect_clicked(move |_| {
         let u2 = u.clone();
-        choose_file(&u.window, false, "", move |p| {
-            let r = read_import(&p).and_then(|s| {
-                imports::order_csv(&s)?;
-                u2.deleted_lines.borrow_mut().take();
-                u2.undo_button.set_sensitive(false);
-                u2.order.buffer().set_text(&s);
-                u2.save_form()
-            });
-            let success = r.is_ok();
-            u2.message(r.map(|()| "سفارش جایگزین و ذخیره شد"));
-            if success {
-                u2.refresh_review();
-            }
-        });
+        choose_file(&u.window, false, "", move |p| u2.import_order(&p));
     });
     let u = ui.clone();
     backup.connect_clicked(move |_| {
@@ -1063,6 +1189,11 @@ fn build(app: &gtk::Application, store: Store) {
     let keys = gtk::EventControllerKey::new();
     let u = ui.clone();
     keys.connect_key_pressed(move |_, key, _, mods| {
+        // Modal editors own their shortcuts; window commands must not replace
+        // the underlying draft or navigate away while a dialog is open.
+        if u.active_dialog.borrow().is_some() {
+            return glib::Propagation::Proceed;
+        }
         if mods.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
             match key {
                 gtk::gdk::Key::Return => {
@@ -1119,10 +1250,47 @@ fn build(app: &gtk::Application, store: Store) {
             u.message(Err::<String, _>(e));
             return glib::Propagation::Stop;
         }
+        if settings::has_unsaved(&u) {
+            let dialog = adw::AlertDialog::new(
+                Some("تنظیمات ذخیره‌نشده"),
+                Some("پیش از بستن برنامه، تغییرات تنظیمات را ذخیره کنید یا به آخرین تنظیمات ذخیره‌شده بازگردید."),
+            );
+            dialog.add_response("cancel", "ادامهٔ ویرایش");
+            dialog.add_response("discard", "بازگرداندن و بستن");
+            dialog.add_response("save", "ذخیره و بستن");
+            dialog.set_response_appearance("save", adw::ResponseAppearance::Suggested);
+            dialog.set_default_response(Some("cancel"));
+            dialog.set_close_response("cancel");
+            let weak = Rc::downgrade(&u);
+            dialog.connect_response(None, move |_, response| {
+                if let Some(ui) = weak.upgrade() {
+                    match response {
+                        "discard" => {
+                            settings::discard_staged(&ui);
+                            ui.window.close();
+                        }
+                        "save" => {
+                            ui.stack.set_visible_child_name("settings");
+                            ui.split.set_show_content(true);
+                            if let Some(page) = ui.stack.child_by_name("settings") {
+                                activate_named_button(&page, "save-settings");
+                            }
+                            if !settings::has_unsaved(&ui) {
+                                ui.window.close();
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            });
+            u.present_dialog(dialog.upcast_ref());
+            return glib::Propagation::Stop;
+        }
         glib::Propagation::Proceed
     });
     adw_window.set_content(Some(&root));
     window.present();
     ui.customer.grab_focus();
     smoke::schedule(&ui, &approve);
+    responsiveness::schedule(&ui);
 }

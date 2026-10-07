@@ -259,6 +259,52 @@ fn ink_count(path: &Path, x: usize, y: usize, width: usize, height: usize) -> us
     count
 }
 
+fn monetary_row_bounds(path: &Path, count: usize) -> Vec<(usize, usize)> {
+    let mut file = std::fs::File::open(path).unwrap();
+    let mut image = cairo::ImageSurface::create_from_png(&mut file).unwrap();
+    let stride = image.stride() as usize;
+    let height = image.height() as usize;
+    assert_eq!(image.width(), 1190, "the document raster must be 144 dpi");
+    let data = image.data().unwrap();
+    let pixel = |x: usize, y: usize| {
+        let start = y * stride + x * 4;
+        let pixel = u32::from_ne_bytes(data[start..start + 4].try_into().unwrap());
+        ((pixel >> 16) & 255, (pixel >> 8) & 255, pixel & 255)
+    };
+    // Read the actual table's shaded header and full-width row rules. Pango
+    // measures wrapped descriptions, so row heights legitimately change with
+    // font metrics; probing old absolute y coordinates can inspect empty space.
+    let header = (0..height)
+        .find(|&y| {
+            let (r, g, b) = pixel(74, y);
+            (242..=249).contains(&r) && g > r && b > g
+        })
+        .expect("the table must have a visible shaded header");
+    let mut rules = Vec::new();
+    let mut previous_was_rule = false;
+    for y in header..height {
+        let rule_pixels = (74..1116)
+            .filter(|&x| {
+                let (r, g, b) = pixel(x, y);
+                r > 180 && b < 242 && g > r && b > g
+            })
+            .count();
+        let is_rule = rule_pixels > 1000;
+        if is_rule && !previous_was_rule {
+            rules.push(y);
+        }
+        previous_was_rule = is_rule;
+        if rules.len() == count + 1 {
+            break;
+        }
+    }
+    assert_eq!(rules.len(), count + 1, "every table row must have a rule");
+    rules
+        .windows(2)
+        .map(|pair| (pair[0] + 3, pair[1] - pair[0] - 6))
+        .collect()
+}
+
 #[test]
 fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
     let mut q = quote(4);
@@ -281,19 +327,27 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
     q.version = 0;
     q.approved_at.clear();
     let draft = export::png_pages(&q, directory.path()).unwrap();
-    // Fixed table geometry is a visual contract. These areas contain only the
-    // approved numeric values; missing/merged glyphs leave a cell empty.
-    for y in [540, 756, 890, 1025] {
+    let approved_bounds = monetary_row_bounds(&approved[0], q.lines.len());
+    let draft_bounds = monetary_row_bounds(&draft[0], q.lines.len());
+    let independent_bounds = independent
+        .as_ref()
+        .map(|_| monetary_row_bounds(&independent_png, q.lines.len()));
+    // Monetary column positions are fixed. Each measured row region contains
+    // only that row's numeric value, excluding headings, totals and rules.
+    for (index, &(y, height)) in approved_bounds.iter().enumerate() {
         for x in [72, 266] {
-            let count = ink_count(&approved[0], x, y, 194, 65);
+            let count = ink_count(&approved[0], x, y, 194, height);
             assert!(count > 120, "missing monetary glyphs in cell {x}/{y}");
+            let (draft_y, draft_height) = draft_bounds[index];
             assert_eq!(
                 count,
-                ink_count(&draft[0], x, y, 194, 65),
+                ink_count(&draft[0], x, draft_y, 194, draft_height),
                 "draft monetary glyph positions differ"
             );
-            if independent.is_some() {
-                let independent_count = ink_count(&independent_png, x, y, 194, 65);
+            if let Some(bounds) = &independent_bounds {
+                let (independent_y, independent_height) = bounds[index];
+                let independent_count =
+                    ink_count(&independent_png, x, independent_y, 194, independent_height);
                 assert!(
                     count.abs_diff(independent_count) < count / 5,
                     "native monetary cell disagrees with independently rasterized PDF"

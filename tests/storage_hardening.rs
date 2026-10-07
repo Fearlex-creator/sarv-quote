@@ -163,6 +163,45 @@ fn repeated_noop_does_not_invalidate_another_window_but_stale_noop_fails() {
 }
 
 #[test]
+fn lightweight_generation_checks_do_not_write_and_reject_stale_windows() {
+    let dir = tempfile::tempdir().unwrap();
+    let first = Store::open(dir.path()).unwrap();
+    let mut second = Store::open(dir.path()).unwrap();
+    let database = rusqlite::Connection::open(dir.path().join("sarv.sqlite3")).unwrap();
+    let snapshot = || {
+        database
+            .query_row(
+                "SELECT generation,payload FROM state WHERE id=1",
+                [],
+                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, String>(1)?)),
+            )
+            .unwrap()
+    };
+    let before = snapshot();
+    for _ in 0..10 {
+        first.verify_current().unwrap();
+        second.verify_current().unwrap();
+    }
+    assert_eq!(snapshot(), before);
+    second
+        .change(|state| {
+            state.draft.customer = "مشتری تازه".into();
+            Ok(())
+        })
+        .unwrap();
+    let committed = snapshot();
+    assert_eq!(committed.0, before.0 + 1);
+    assert!(first.verify_current().is_err());
+    second.verify_current().unwrap();
+    assert_eq!(snapshot(), committed);
+    assert!(first.state.draft.customer.is_empty());
+    assert_eq!(
+        Store::open(dir.path()).unwrap().state.draft.customer,
+        "مشتری تازه"
+    );
+}
+
+#[test]
 fn simultaneous_windows_have_one_winner_and_no_lost_update() {
     let dir = tempfile::tempdir().unwrap();
     let initial = Store::open(dir.path()).unwrap();

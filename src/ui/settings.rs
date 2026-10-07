@@ -1,6 +1,6 @@
 use super::Ui;
 use adw::prelude::*;
-use anyhow::Result;
+use anyhow::{Context, Result};
 use sarv_quote::domain::*;
 use std::rc::Rc;
 
@@ -25,6 +25,8 @@ fn multiline(group: &adw::PreferencesGroup, title: &str, value: &str) -> gtk::Te
         .right_margin(12)
         .height_request(80)
         .build();
+    text.set_direction(gtk::TextDirection::Rtl);
+    text.set_accepts_tab(false);
     text.buffer().set_text(value);
     let frame = gtk::ScrolledWindow::builder()
         .child(&text)
@@ -45,6 +47,19 @@ fn multiline(group: &adw::PreferencesGroup, title: &str, value: &str) -> gtk::Te
     group.add(&container);
     text
 }
+fn validate_field(candidate: &Settings, widget: &impl IsA<gtk::Widget>) -> Result<()> {
+    match candidate.validate() {
+        Ok(()) => {
+            widget.remove_css_class("error");
+            Ok(())
+        }
+        Err(error) => {
+            widget.add_css_class("error");
+            widget.grab_focus();
+            Err(error)
+        }
+    }
+}
 fn contents(text: &gtk::TextView) -> String {
     text.buffer()
         .text(&text.buffer().start_iter(), &text.buffer().end_iter(), true)
@@ -54,6 +69,33 @@ fn contents(text: &gtk::TextView) -> String {
 pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let settings = ui.store.borrow().state.settings.clone();
     let page = adw::PreferencesPage::builder().title("تنظیمات").build();
+    page.set_widget_name("settings-page");
+    let save_group = adw::PreferencesGroup::new();
+    let save_row = adw::ActionRow::builder()
+        .title("تنظیمات برنامه")
+        .subtitle("Ctrl+S برای ذخیره • تغییرات به اسناد قبلی منتقل نمی‌شوند.")
+        .build();
+    let save = gtk::Button::with_label("ذخیرهٔ تنظیمات");
+    save.set_widget_name("save-settings");
+    save.add_css_class("suggested-action");
+    save.set_valign(gtk::Align::Center);
+    let discard = gtk::Button::with_label("بازگرداندن");
+    discard.set_widget_name("discard-settings");
+    discard.set_tooltip_text(Some("بازگرداندن همهٔ فیلدها به آخرین تنظیمات ذخیره‌شده"));
+    discard.set_sensitive(false);
+    discard.set_valign(gtk::Align::Center);
+    save_row.add_suffix(&discard);
+    save_row.add_suffix(&save);
+    let feedback = gtk::Label::new(Some("تنظیمات ذخیره‌شده"));
+    feedback.set_widget_name("settings-feedback");
+    feedback.set_xalign(0.0);
+    feedback.set_wrap(true);
+    feedback.set_margin_top(8);
+    feedback.set_margin_bottom(4);
+    feedback.add_css_class("caption");
+    save_group.add(&save_row);
+    save_group.add(&feedback);
+    page.add(&save_group);
     let business = adw::PreferencesGroup::builder()
         .title("اطلاعات کسب‌وکار")
         .description(
@@ -78,7 +120,6 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         "شرایط پیش‌فرض پیشنهاد تازه",
         &settings.default_terms,
     );
-    page.add(&document);
     let defaults = adw::PreferencesGroup::builder().title("پیش‌فرض پیشنهاد تازه")
         .description("واحد، اعتبار، تخفیف و نرخ افزوده فقط روی پیش‌نویس‌های تازه اعمال می‌شوند. تاریخ‌ها میلادی YYYY-MM-DD هستند.").build();
     let currency = combo(
@@ -107,6 +148,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let converting = std::rc::Rc::new(std::cell::Cell::new(false));
     let weak_unit_ui = Rc::downgrade(ui);
     let discount_unit = discount.clone();
+    let unit_feedback = feedback.clone();
     currency.connect_selected_notify(move |choice| {
         if converting.get() {
             return;
@@ -132,6 +174,8 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                 converting.set(true);
                 choice.set_selected(u32::from(previous == Unit::Rial));
                 converting.set(false);
+                unit_feedback.add_css_class("error");
+                unit_feedback.set_text(&format!("{error:#}"));
                 if let Some(ui) = weak_unit_ui.upgrade() {
                     ui.message(Err::<&str, _>(error));
                 }
@@ -146,8 +190,6 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     tax.set_value(f64::from(settings.tax_basis_points));
     for row in [
         &currency.clone().upcast::<gtk::Widget>(),
-        &prefix.clone().upcast(),
-        &next.clone().upcast(),
         &days.clone().upcast(),
         &discount.clone().upcast(),
         &tax.clone().upcast(),
@@ -155,6 +197,33 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         defaults.add(row);
     }
     page.add(&defaults);
+    let numbering = adw::PreferencesGroup::builder()
+        .title("شماره‌گذاری")
+        .description(
+            "شماره فقط با تأیید پیشنهاد تازه مصرف می‌شود؛ اصلاح نسخه، شمارهٔ سند را نگه می‌دارد.",
+        )
+        .build();
+    numbering.add(&prefix);
+    numbering.add(&next);
+    let number_preview = adw::ActionRow::builder()
+        .title("شمارهٔ پیشنهاد تازه")
+        .subtitle(format!("{}{}", settings.quote_prefix, settings.next_number))
+        .build();
+    number_preview.set_activatable(false);
+    numbering.add(&number_preview);
+    for row in [&prefix, &next] {
+        let preview = number_preview.downgrade();
+        let prefix = prefix.downgrade();
+        let next = next.downgrade();
+        row.connect_changed(move |_| {
+            if let (Some(preview), Some(prefix), Some(next)) =
+                (preview.upgrade(), prefix.upgrade(), next.upgrade())
+            {
+                preview.set_subtitle(&format!("{}{}", prefix.text(), next.text()));
+            }
+        });
+    }
+    page.add(&numbering);
     let appearance_group = adw::PreferencesGroup::builder().title("نمایش").build();
     let appearance = combo(
         "ظاهر",
@@ -185,26 +254,106 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     appearance_group.add(&digit_choice);
     appearance_group.add(&date_choice);
     page.add(&appearance_group);
-    let save_group = adw::PreferencesGroup::new();
-    let save_row = adw::ActionRow::builder()
-        .title("ذخیرهٔ تنظیمات")
-        .subtitle("تغییرات تا فشردن ذخیره اعمال نمی‌شوند.")
-        .build();
-    let save = gtk::Button::with_label("ذخیرهٔ تنظیمات");
-    save.set_widget_name("save-settings");
-    save.add_css_class("suggested-action");
-    save.set_valign(gtk::Align::Center);
-    save_row.add_suffix(&save);
-    save_group.add(&save_row);
-    page.add(&save_group);
+    page.add(&document);
+    // Keep the same saved payload until the explicit atomic save succeeds.
+    // Weak page references avoid retaining a replaced PreferencesPage.
+    let weak_page = page.downgrade();
+    let dirty_feedback = feedback.clone();
+    let dirty_discard = discard.clone();
+    let mark_dirty: Rc<dyn Fn()> = Rc::new(move || {
+        if let Some(page) = weak_page.upgrade() {
+            page.add_css_class("settings-dirty");
+        }
+        dirty_discard.set_sensitive(true);
+        // Keep a validation error visible while the user corrects the fields.
+        if !dirty_feedback.has_css_class("error") {
+            dirty_feedback.set_text("تغییرات ذخیره نشده‌اند • Ctrl+S برای ذخیره");
+        }
+    });
+    for row in [&name, &phone, &prefix, &next, &discount] {
+        let dirty = mark_dirty.clone();
+        row.connect_changed(move |row| {
+            row.remove_css_class("error");
+            dirty();
+        });
+    }
+    for text in [&address, &header, &footer, &terms] {
+        let dirty = mark_dirty.clone();
+        let text = text.downgrade();
+        if let Some(text_view) = text.upgrade() {
+            text_view.buffer().connect_changed(move |_| {
+                if let Some(text) = text.upgrade() {
+                    text.remove_css_class("error");
+                }
+                dirty();
+            });
+        }
+    }
+    for row in [
+        &currency,
+        &appearance,
+        &density,
+        &digit_choice,
+        &date_choice,
+    ] {
+        let dirty = mark_dirty.clone();
+        row.connect_selected_notify(move |_| dirty());
+    }
+    for row in [&days, &tax] {
+        let dirty = mark_dirty.clone();
+        row.connect_value_notify(move |_| dirty());
+    }
+    let weak_discard = Rc::downgrade(ui);
+    discard.connect_clicked(move |_| {
+        if let Some(ui) = weak_discard.upgrade() {
+            discard_staged(&ui);
+            ui.message(Ok("فیلدهای تنظیمات به آخرین مقادیر ذخیره‌شده بازگشتند."));
+        }
+    });
     let saved_next = std::cell::Cell::new(settings.next_number);
     let weak = Rc::downgrade(ui);
+    let weak_page = page.downgrade();
     save.connect_clicked(move |button| {
         let Some(ui) = weak.upgrade() else {
             return;
         };
         button.set_sensitive(false);
         let result = (|| -> Result<&str> {
+            // Validate fields using the domain rules before constructing the full
+            // payload, so the first invalid field keeps its contents and focus.
+            for (value, field) in [
+                (name.text().trim().to_owned(), &name),
+                (phone.text().trim().to_owned(), &phone),
+                (prefix.text().to_string(), &prefix),
+            ] {
+                let mut candidate = Settings::default();
+                if field == &name {
+                    candidate.business_name = value;
+                } else if field == &phone {
+                    candidate.business_phone = value;
+                } else {
+                    candidate.quote_prefix = value;
+                }
+                validate_field(&candidate, field).with_context(|| field.title().to_string())?;
+            }
+            for (index, text) in [&address, &header, &footer, &terms].into_iter().enumerate() {
+                let mut candidate = Settings::default();
+                let value = contents(text);
+                match index {
+                    0 => candidate.business_address = value,
+                    1 => candidate.header = value,
+                    2 => candidate.footer = value,
+                    _ => candidate.default_terms = value,
+                }
+                validate_field(&candidate, text).context(
+                    [
+                        "نشانی کسب‌وکار",
+                        "متن سربرگ",
+                        "متن پایانی",
+                        "شرایط پیش‌فرض پیشنهاد تازه",
+                    ][index],
+                )?;
+            }
             let unit = if currency.selected() == 0 {
                 Unit::Toman
             } else {
@@ -214,16 +363,39 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                 days.value().fract() == 0.0 && tax.value().fract() == 0.0,
                 "روز اعتبار و واحد نرخ باید عدد صحیح باشند"
             );
-            let requested_next: u64 = digits(next.text().trim()).parse().inspect_err(|_| {
-                next.add_css_class("error");
-                next.grab_focus();
-            })?;
+            let requested_next: u64 = digits(next.text().trim())
+                .parse()
+                .context("شمارهٔ بعدی باید یک عدد صحیح مثبت باشد")
+                .inspect_err(|_| {
+                    next.add_css_class("error");
+                    next.grab_focus();
+                })?;
             next.remove_css_class("error");
             let next_number = if requested_next == saved_next.get() {
                 ui.store.borrow().state.settings.next_number
             } else {
                 requested_next
             };
+            let candidate = Settings {
+                next_number,
+                ..Settings::default()
+            };
+            validate_field(&candidate, &next)?;
+            let number = format!("{}{next_number}", prefix.text());
+            if ui
+                .store
+                .borrow()
+                .state
+                .quotes
+                .iter()
+                .any(|quote| normalize(&quote.number) == normalize(&number))
+            {
+                next.add_css_class("error");
+                next.grab_focus();
+                anyhow::bail!(
+                    "شمارهٔ {number} قبلاً استفاده شده است؛ شمارهٔ بعدی یا پیشوند را تغییر دهید"
+                );
+            }
             let settings = Settings {
                 business_name: name.text().trim().into(),
                 business_phone: phone.text().trim().into(),
@@ -272,12 +444,40 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
             saved_next.set(next_number);
             next.set_text(&next_number.to_string());
             apply(&ui);
+            if let Some(page) = weak_page.upgrade() {
+                page.remove_css_class("settings-dirty");
+            }
+            discard.set_sensitive(false);
             Ok("تنظیمات ذخیره شد؛ پیش‌فرض‌ها روی پیشنهاد تازه اعمال می‌شوند.")
         })();
+        match &result {
+            Ok(message) => {
+                feedback.remove_css_class("error");
+                feedback.set_text(message);
+            }
+            Err(error) => {
+                feedback.add_css_class("error");
+                feedback.set_text(&format!("ذخیره انجام نشد: {error:#}"));
+            }
+        }
         ui.message(result);
         button.set_sensitive(true);
     });
     page.upcast()
+}
+
+pub(super) fn has_unsaved(ui: &Ui) -> bool {
+    ui.stack
+        .child_by_name("settings")
+        .is_some_and(|page| page.has_css_class("settings-dirty"))
+}
+
+pub(super) fn discard_staged(ui: &Rc<Ui>) {
+    let visible = ui.stack.visible_child_name();
+    ui.refresh_settings();
+    if let Some(visible) = visible {
+        ui.stack.set_visible_child_name(&visible);
+    }
 }
 
 /// Apply real Adwaita appearance, table density and label digit preferences.

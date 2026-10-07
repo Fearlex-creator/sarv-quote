@@ -1,5 +1,7 @@
 # Native quotation design
 
+Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
+
 The native screenshots and 39-check GUI acceptance below describe the preceding local v1 build. The current snapshot includes subsequent software-risk fixes; see [SOFTWARE-RISKS.md](SOFTWARE-RISKS.md) for current checks and remaining native verification.
 The intended working surface is a Persian quotation document: customer, dates and reference, product rows, notes, totals and one approval action. The product table carries the work. Navigation and decoration should help users finish an accurate offer without distracting from source prices or unresolved requests.
 

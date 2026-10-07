@@ -11,3 +11,7 @@
 /SarvQuote.desktop
 /SarvQuoteDemo.desktop
 /scripts/run-demo.sh
+
+# Native QA Python helpers
+__pycache__/
+*.pyc
