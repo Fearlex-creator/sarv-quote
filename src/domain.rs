@@ -453,6 +453,27 @@ pub struct CatalogIndex<'a> {
     raw_codes: HashMap<&'a str, usize>,
 }
 impl<'a> CatalogIndex<'a> {
+    pub fn match_count(&self, query: &str) -> usize {
+        let key = normalize(query);
+        self.codes
+            .get(&key)
+            .or_else(|| self.aliases.get(&key))
+            .map_or(0, Vec::len)
+    }
+    pub fn matches_limited(&self, query: &str, limit: usize) -> Vec<&'a Product> {
+        let key = normalize(query);
+        self.codes
+            .get(&key)
+            .or_else(|| self.aliases.get(&key))
+            .map(|indices| {
+                indices
+                    .iter()
+                    .take(limit)
+                    .map(|index| &self.catalog.products[*index])
+                    .collect()
+            })
+            .unwrap_or_default()
+    }
     pub fn matches(&self, query: &str) -> Vec<&'a Product> {
         let key = normalize(query);
         self.codes
@@ -501,6 +522,17 @@ impl Catalog {
             raw_codes,
         }
     }
+    pub fn search_index(&self) -> SearchIndex {
+        SearchIndex::new(self.products.iter().map(|p| {
+            format!(
+                "{} {} {} {}",
+                p.code,
+                p.name,
+                p.measure,
+                p.aliases.join(" ")
+            )
+        }))
+    }
     pub fn matches(&self, query: &str) -> Vec<&Product> {
         let key = normalize(query);
         let exact = self
@@ -518,11 +550,88 @@ impl Catalog {
         }
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+/// Owned normalized browsing cache. This never changes exact quote matching.
+#[derive(Clone, Debug)]
+pub struct SearchIndex {
+    documents: Vec<String>,
+}
+impl SearchIndex {
+    pub fn new(documents: impl IntoIterator<Item = String>) -> Self {
+        Self {
+            documents: documents.into_iter().map(|s| normalize(&s)).collect(),
+        }
+    }
+    pub fn search(&self, query: &str, limit: usize) -> Vec<usize> {
+        self.search_page(query, 0, limit).0
+    }
+    pub fn search_page(&self, query: &str, offset: usize, limit: usize) -> (Vec<usize>, usize) {
+        let query = normalize(query);
+        let tokens: Vec<_> = query.split_whitespace().collect();
+        let mut results = Vec::new();
+        let mut total = 0;
+        for (index, document) in self.documents.iter().enumerate() {
+            if !document.is_empty() && tokens.iter().all(|token| document.contains(token)) {
+                if total >= offset && results.len() < limit {
+                    results.push(index);
+                }
+                total += 1;
+            }
+        }
+        (results, total)
+    }
+}
+#[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct Customer {
     pub id: String,
     pub name: String,
     pub phone: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub contact_name: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub email: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub address: String,
+    #[serde(default, skip_serializing_if = "is_false")]
+    pub archived: bool,
+}
+fn is_false(value: &bool) -> bool {
+    !value
+}
+/// Optional customer details are snapshots, not inferred accounting identity.
+pub fn customer_details(contact: &str, email: &str, address: &str) -> Result<()> {
+    ensure!(
+        contact.chars().count() <= 160 && !contact.chars().any(forbidden_control),
+        "نام مخاطب حداکثر ۱۶۰ نویسه و بدون نویسهٔ کنترلی است"
+    );
+    ensure!(
+        email.len() <= 254
+            && !email
+                .chars()
+                .any(|c| c.is_whitespace() || forbidden_control(c)),
+        "ایمیل نامعتبر است"
+    );
+    if !email.is_empty() {
+        let parts: Vec<_> = email.split('@').collect();
+        ensure!(
+            parts.len() == 2
+                && !parts[0].is_empty()
+                && !parts[0].starts_with('.')
+                && !parts[0].ends_with('.')
+                && !parts[0].contains("..")
+                && parts[1].contains('.')
+                && parts[1].split('.').all(|label| !label.is_empty()
+                    && !label.starts_with('-')
+                    && !label.ends_with('-')
+                    && label.chars().all(|c| c.is_alphanumeric() || c == '-')),
+            "ایمیل باید نشانی کامل با @ و دامنه باشد"
+        );
+    }
+    ensure!(
+        address.chars().count() <= 2000
+            && !address.chars().any(|c| c != '\n' && forbidden_control(c)),
+        "نشانی حداکثر ۲۰۰۰ نویسه است؛ فقط شکست خط مجاز است"
+    );
+    Ok(())
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct OrderLine {
@@ -566,6 +675,14 @@ pub struct Draft {
     pub display_digits: DisplayDigits,
     #[serde(default, skip_serializing_if = "DateDisplay::is_default")]
     pub date_display: DateDisplay,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_contact: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_email: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_address: String,
 }
 impl Default for Draft {
     fn default() -> Self {
@@ -574,6 +691,10 @@ impl Default for Draft {
             catalog_id: String::new(),
             customer: String::new(),
             phone: String::new(),
+            customer_id: String::new(),
+            customer_contact: String::new(),
+            customer_email: String::new(),
+            customer_address: String::new(),
             lines: vec![],
             discount_rial: 0,
             display_unit: Unit::Toman,
@@ -651,6 +772,14 @@ pub struct Quote {
     pub number: String,
     #[serde(default, skip_serializing_if = "zero_i64")]
     pub tax_rial: i64,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_id: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_contact: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_email: String,
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub customer_address: String,
 }
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct State {
@@ -693,6 +822,18 @@ pub fn timestamp(s: &str) -> Result<()> {
     Ok(())
 }
 impl State {
+    pub fn customer_search_index(&self) -> SearchIndex {
+        SearchIndex::new(self.customers.iter().map(|c| {
+            if c.archived {
+                String::new()
+            } else {
+                format!(
+                    "{} {} {} {} {}",
+                    c.name, c.phone, c.contact_name, c.email, c.address
+                )
+            }
+        }))
+    }
     pub fn new_draft(&mut self) -> Result<()> {
         self.settings.validate()?;
         let date = Utc::now().date_naive();
@@ -721,12 +862,29 @@ impl State {
         Ok(())
     }
     pub fn save_customer(&mut self, name: &str, customer_phone: &str) -> Result<String> {
+        self.save_customer_details(name, customer_phone, "", "", "")
+    }
+    pub fn save_customer_details(
+        &mut self,
+        name: &str,
+        customer_phone: &str,
+        contact: &str,
+        email: &str,
+        address: &str,
+    ) -> Result<String> {
         text(name)?;
         phone(customer_phone)?;
+        customer_details(contact, email, address)?;
         if let Some(customer) = self.customers.iter().find(|c| {
             normalize(&c.name) == normalize(name)
                 && digits(c.phone.trim()) == digits(customer_phone.trim())
         }) {
+            ensure!(
+                (contact.trim().is_empty() || contact.trim() == customer.contact_name)
+                    && (email.trim().is_empty() || email.trim() == customer.email)
+                    && (address.trim().is_empty() || address.trim() == customer.address),
+                "این مشتری ثبت شده است؛ جزئیات را از ویرایش مشتری تغییر دهید"
+            );
             return Ok(customer.id.clone());
         }
         ensure!(
@@ -738,6 +896,10 @@ impl State {
             id: customer_id.clone(),
             name: name.trim().into(),
             phone: digits(customer_phone.trim()),
+            contact_name: contact.trim().into(),
+            email: email.trim().into(),
+            address: address.trim().into(),
+            archived: false,
         });
         Ok(customer_id)
     }
@@ -747,31 +909,80 @@ impl State {
         name: &str,
         customer_phone: &str,
     ) -> Result<()> {
+        let c = self
+            .customers
+            .iter()
+            .find(|c| c.id == customer_id)
+            .ok_or_else(|| anyhow::anyhow!("مشتری یافت نشد"))?;
+        let (contact, email, address) =
+            (c.contact_name.clone(), c.email.clone(), c.address.clone());
+        self.edit_customer_details(
+            customer_id,
+            name,
+            customer_phone,
+            &contact,
+            &email,
+            &address,
+        )
+    }
+    pub fn edit_customer_details(
+        &mut self,
+        customer_id: &str,
+        name: &str,
+        customer_phone: &str,
+        contact: &str,
+        email: &str,
+        address: &str,
+    ) -> Result<()> {
         text(name)?;
         phone(customer_phone)?;
+        customer_details(contact, email, address)?;
         ensure!(
             !self.customers.iter().any(|c| c.id != customer_id
                 && normalize(&c.name) == normalize(name)
                 && digits(c.phone.trim()) == digits(customer_phone.trim())),
             "این مشتری قبلاً ثبت شده است"
         );
-        let customer = self
+        let c = self
             .customers
             .iter_mut()
             .find(|c| c.id == customer_id)
             .ok_or_else(|| anyhow::anyhow!("مشتری یافت نشد"))?;
-        customer.name = name.trim().into();
-        customer.phone = digits(customer_phone.trim());
+        c.name = name.trim().into();
+        c.phone = digits(customer_phone.trim());
+        c.contact_name = contact.trim().into();
+        c.email = email.trim().into();
+        c.address = address.trim().into();
+        Ok(())
+    }
+    pub fn set_customer_archived(&mut self, customer_id: &str, archived: bool) -> Result<()> {
+        let c = self
+            .customers
+            .iter_mut()
+            .find(|c| c.id == customer_id)
+            .ok_or_else(|| anyhow::anyhow!("مشتری یافت نشد"))?;
+        c.archived = archived;
         Ok(())
     }
     pub fn use_customer(&mut self, customer_id: &str) -> Result<()> {
-        let customer = self
+        self.select_customer(customer_id)
+    }
+    pub fn select_customer(&mut self, customer_id: &str) -> Result<()> {
+        let c = self
             .customers
             .iter()
             .find(|c| c.id == customer_id)
             .ok_or_else(|| anyhow::anyhow!("مشتری یافت نشد"))?;
-        self.draft.customer = customer.name.clone();
-        self.draft.phone = customer.phone.clone();
+        ensure!(
+            !c.archived,
+            "مشتری بایگانی شده است؛ ابتدا از بایگانی خارج کنید"
+        );
+        self.draft.customer = c.name.clone();
+        self.draft.phone = c.phone.clone();
+        self.draft.customer_id = c.id.clone();
+        self.draft.customer_contact = c.contact_name.clone();
+        self.draft.customer_email = c.email.clone();
+        self.draft.customer_address = c.address.clone();
         Ok(())
     }
     pub fn select_catalog(&mut self, catalog_id: &str) -> Result<()> {
@@ -810,6 +1021,11 @@ impl State {
         self.settings.validate()?;
         Uuid::parse_str(&self.draft.series)?;
         text(&self.draft.customer)?;
+        customer_details(
+            &self.draft.customer_contact,
+            &self.draft.customer_email,
+            &self.draft.customer_address,
+        )?;
         phone(&self.draft.phone)?;
         metadata(
             &self.draft.reference,
@@ -880,12 +1096,34 @@ impl State {
             .checked_add(tax)
             .filter(|n| *n <= MAX_MONEY)
             .ok_or_else(|| anyhow::anyhow!("سرریز جمع نهایی با مالیات"))?;
+        let customer_id = if !self.draft.customer_id.is_empty() {
+            self.draft.customer_id.clone()
+        } else if let Some(previous) = self.quotes.iter().rev().find(|q| {
+            q.series == self.draft.series
+                && normalize(&q.customer) == normalize(&self.draft.customer)
+                && digits(q.phone.trim()) == digits(self.draft.phone.trim())
+        }) {
+            previous.customer_id.clone()
+        } else {
+            self.customers
+                .iter()
+                .find(|c| {
+                    normalize(&c.name) == normalize(&self.draft.customer)
+                        && digits(c.phone.trim()) == digits(self.draft.phone.trim())
+                })
+                .map(|c| c.id.clone())
+                .unwrap_or_default()
+        };
         Ok(Quote {
             id: String::new(),
             series: self.draft.series.clone(),
             version: 0,
             customer: self.draft.customer.clone(),
             phone: self.draft.phone.clone(),
+            customer_id,
+            customer_contact: self.draft.customer_contact.clone(),
+            customer_email: self.draft.customer_email.clone(),
+            customer_address: self.draft.customer_address.clone(),
             approved_at: String::new(),
             catalog_id: cat.id.clone(),
             catalog_name: cat.name.clone(),
@@ -958,14 +1196,30 @@ impl State {
         q.approved_at = now();
         let result = q.id.clone();
         if !self.customers.iter().any(|c| {
-            normalize(&c.name) == normalize(&q.customer)
-                && digits(c.phone.trim()) == digits(q.phone.trim())
+            (!q.customer_id.is_empty() && c.id == q.customer_id)
+                || (normalize(&c.name) == normalize(&q.customer)
+                    && digits(c.phone.trim()) == digits(q.phone.trim()))
         }) {
             self.customers.push(Customer {
                 id: id(),
                 name: q.customer.clone(),
                 phone: q.phone.clone(),
+                contact_name: q.customer_contact.clone(),
+                email: q.customer_email.clone(),
+                address: q.customer_address.clone(),
+                archived: false,
             });
+        }
+        if q.customer_id.is_empty() && q.version == 1 {
+            q.customer_id = self
+                .customers
+                .iter()
+                .find(|c| {
+                    normalize(&c.name) == normalize(&q.customer)
+                        && digits(c.phone.trim()) == digits(q.phone.trim())
+                })
+                .map(|c| c.id.clone())
+                .unwrap_or_default();
         }
         self.quotes.push(q);
         Ok(result)
@@ -981,6 +1235,10 @@ impl State {
             catalog_id: q.catalog_id.clone(),
             customer: q.customer.clone(),
             phone: q.phone.clone(),
+            customer_id: q.customer_id.clone(),
+            customer_contact: q.customer_contact.clone(),
+            customer_email: q.customer_email.clone(),
+            customer_address: q.customer_address.clone(),
             lines: q
                 .lines
                 .iter()
@@ -1061,6 +1319,7 @@ impl State {
             Uuid::parse_str(&c.id)?;
             text(&c.name)?;
             phone(&c.phone)?;
+            customer_details(&c.contact_name, &c.email, &c.address)?;
             ensure!(ids.insert(&c.id), "شناسهٔ تکراری");
         }
         let mut versions = HashSet::new();
@@ -1073,6 +1332,14 @@ impl State {
             Uuid::parse_str(&q.series)?;
             timestamp(&q.approved_at)?;
             metadata(&q.reference, &q.quote_date, &q.valid_until, &q.notes)?;
+            customer_details(&q.customer_contact, &q.customer_email, &q.customer_address)?;
+            if !q.customer_id.is_empty() {
+                Uuid::parse_str(&q.customer_id)?;
+                ensure!(
+                    self.customers.iter().any(|c| c.id == q.customer_id),
+                    "مشتری مرتبط پیشنهاد موجود نیست"
+                );
+            }
             issuer_metadata(
                 &q.issuer_name,
                 &q.issuer_phone,
@@ -1128,6 +1395,10 @@ impl State {
                 catalog_id: q.catalog_id.clone(),
                 customer: q.customer.clone(),
                 phone: q.phone.clone(),
+                customer_id: q.customer_id.clone(),
+                customer_contact: q.customer_contact.clone(),
+                customer_email: q.customer_email.clone(),
+                customer_address: q.customer_address.clone(),
                 lines: q
                     .lines
                     .iter()
@@ -1176,6 +1447,20 @@ impl State {
             );
         }
         Uuid::parse_str(&self.draft.series)?;
+        customer_details(
+            &self.draft.customer_contact,
+            &self.draft.customer_email,
+            &self.draft.customer_address,
+        )?;
+        if !self.draft.customer_id.is_empty() {
+            Uuid::parse_str(&self.draft.customer_id)?;
+            ensure!(
+                self.customers
+                    .iter()
+                    .any(|c| c.id == self.draft.customer_id),
+                "مشتری مرتبط پیش‌نویس موجود نیست"
+            );
+        }
         issuer_metadata(
             &self.draft.issuer_name,
             &self.draft.issuer_phone,

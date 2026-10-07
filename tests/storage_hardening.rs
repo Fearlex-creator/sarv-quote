@@ -163,6 +163,45 @@ fn repeated_noop_does_not_invalidate_another_window_but_stale_noop_fails() {
 }
 
 #[test]
+fn lightweight_generation_checks_do_not_write_and_reject_stale_windows() {
+    let dir = tempfile::tempdir().unwrap();
+    let first = Store::open(dir.path()).unwrap();
+    let mut second = Store::open(dir.path()).unwrap();
+    let database = rusqlite::Connection::open(dir.path().join("sarv.sqlite3")).unwrap();
+    let snapshot = || {
+        database
+            .query_row(
+                "SELECT generation,payload FROM state WHERE id=1",
+                [],
+                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, String>(1)?)),
+            )
+            .unwrap()
+    };
+    let before = snapshot();
+    for _ in 0..10 {
+        first.verify_current().unwrap();
+        second.verify_current().unwrap();
+    }
+    assert_eq!(snapshot(), before);
+    second
+        .change(|state| {
+            state.draft.customer = "مشتری تازه".into();
+            Ok(())
+        })
+        .unwrap();
+    let committed = snapshot();
+    assert_eq!(committed.0, before.0 + 1);
+    assert!(first.verify_current().is_err());
+    second.verify_current().unwrap();
+    assert_eq!(snapshot(), committed);
+    assert!(first.state.draft.customer.is_empty());
+    assert_eq!(
+        Store::open(dir.path()).unwrap().state.draft.customer,
+        "مشتری تازه"
+    );
+}
+
+#[test]
 fn simultaneous_windows_have_one_winner_and_no_lost_update() {
     let dir = tempfile::tempdir().unwrap();
     let initial = Store::open(dir.path()).unwrap();
@@ -279,6 +318,7 @@ fn state_that_cannot_fit_a_restorable_backup_is_not_committed() {
                 id: id(),
                 name: "x".repeat(1000),
                 phone: String::new(),
+                ..Customer::default()
             })
             .collect();
         Ok(())
@@ -337,4 +377,59 @@ fn export_does_not_follow_or_replace_destination_symlink() {
             .is_symlink()
     );
     assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 2);
+}
+
+#[test]
+fn prepared_worker_changes_are_validated_and_commit_only_to_the_original_generation() {
+    fn assert_send<T: Send>() {}
+    assert_send::<sarv_quote::store::PreparedChange>();
+    let directory = tempfile::tempdir().unwrap();
+    let mut first = Store::open(directory.path()).unwrap();
+    let mut second = Store::open(directory.path()).unwrap();
+    let (generation, mut candidate) = first.snapshot().unwrap();
+    candidate.draft.customer = "آماده‌شده در پردازش پس‌زمینه".into();
+    let prepared = std::thread::spawn(move || Store::prepare_candidate(generation, candidate))
+        .join()
+        .unwrap()
+        .unwrap();
+    first.commit_prepared(prepared).unwrap();
+    assert_eq!(
+        Store::open(directory.path()).unwrap().state.draft.customer,
+        first.state.draft.customer
+    );
+    assert!(second.snapshot().is_err());
+    let invalid = State {
+        schema: 99,
+        ..State::default()
+    };
+    assert!(Store::prepare_candidate(0, invalid).is_err());
+    assert!(Store::prepare_candidate(-1, State::default()).is_err());
+    let obsolete = Store::prepare_candidate(0, State::default()).unwrap();
+    let before = bytes(&first.state);
+    assert!(first.commit_prepared(obsolete).is_err());
+    assert_eq!(bytes(&first.state), before);
+    // A second window still holding the original generation must fail the SQL
+    // condition even when its in-memory generation matches the prepared value.
+    let stale = Store::prepare_candidate(0, State::default()).unwrap();
+    assert!(second.commit_prepared(stale).is_err());
+    assert_eq!(bytes(&Store::open(directory.path()).unwrap().state), before);
+}
+
+#[test]
+fn prepared_candidate_becomes_stale_after_a_regular_change_without_losing_either_snapshot() {
+    let directory = tempfile::tempdir().unwrap();
+    let mut store = Store::open(directory.path()).unwrap();
+    let (generation, mut candidate) = store.snapshot().unwrap();
+    candidate.draft.customer = "نام قدیمی آماده‌شده".into();
+    let pending = Store::prepare_candidate(generation, candidate).unwrap();
+    store
+        .change(|s| {
+            s.draft.customer = "نام تازه ثبت‌شده".into();
+            Ok(())
+        })
+        .unwrap();
+    let before = bytes(&store.state);
+    assert!(store.commit_prepared(pending).is_err());
+    assert_eq!(bytes(&store.state), before);
+    assert_eq!(bytes(&Store::open(directory.path()).unwrap().state), before);
 }

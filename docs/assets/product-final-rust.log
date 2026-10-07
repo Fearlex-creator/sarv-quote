@@ -1,0 +1,199 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+    Finished `test` profile [unoptimized] target(s) in 1.41s
+     Running unittests src/lib.rs (target/debug/deps/sarv_quote-6ffe6f92abf9115c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/sarv_quote-d06047d5ef32788b)
+
+running 9 tests
+test ui::background::tests::four_row_business_quote_with_native_fonts_fits_one_a4_page ... ignored, registers application fonts; run alone before any concurrent font rendering
+test ui::catalog_preview::tests::catalogue_preview_handles_last_page_and_out_of_range_offsets ... ok
+test ui::background::tests::failed_worker_render_removes_only_its_owned_directory ... ok
+test ui::catalog_editor::tests::native_catalog_snapshot_roundtrips_exact_source_units_and_prices ... ok
+test ui::managers::tests::manager_dates_obey_preferences_without_exposing_storage_timestamp ... ok
+test ui::catalog_preview::tests::filtered_catalogue_review_matches_persian_aliases_without_mutating_prices ... ok
+test ui::catalog_preview::tests::catalogue_preview_reaches_every_product_without_more_than_100_rows ... ok
+test ui::managers::tests::restored_catalogue_row_order_cannot_reuse_wrong_search_indices ... ok
+test ui::background::tests::worker_preview_owns_and_releases_temporary_files ... ok
+
+test result: ok. 8 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.14s
+
+     Running tests/customer_details.rs (target/debug/deps/customer_details-5981cdad56ec9bc8)
+
+running 7 tests
+test optional_customer_details_keep_legacy_serialized_bytes ... ok
+test conflicting_customer_creation_is_rejected_without_silently_discarding_details ... ok
+test browsing_cache_normalizes_scripts_and_tokens_but_never_changes_exact_matching ... ok
+test revising_after_master_customer_edits_keeps_identity_without_recreating_old_customer ... ok
+test selection_archival_and_editing_preserve_historical_customer_snapshots ... ok
+test typed_customer_auto_linking_is_idempotent_and_legacy_history_is_not_rewritten ... ok
+test invalid_customer_details_are_atomic_and_all_fields_survive_restart_and_backup ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/domain_hardening.rs (target/debug/deps/domain_hardening-86479ecdd8368aa1)
+
+running 8 tests
+test dates_require_real_iso_dates_and_ordered_expiry ... ok
+test metadata_snapshots_and_metadata_only_revisions_are_idempotent ... ok
+test malformed_inputs_cannot_bypass_review_using_a_chosen_code ... ok
+test exact_money_boundaries_and_sum_overflow_never_mutate_approval ... ok
+test optional_metadata_preserves_legacy_serialization_bytes ... ok
+test revision_chains_reject_missing_versions_and_reversed_approval_time ... ok
+test stale_ack_is_required_at_approval_but_archives_do_not_age_invalid ... ok
+test preview_and_archive_line_count_limits_are_consistent ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/export_hardening.rs (target/debug/deps/export_hardening-aa76a5f430d9a338)
+
+running 15 tests
+test csv_neutralizes_all_untrusted_text_and_keeps_exact_rial_numbers ... ok
+test business_snapshot_csv_fields_are_formula_safe ... ok
+test customer_snapshot_csv_is_formula_safe_and_legacy_defaults_remain_absent ... ok
+test export_refuses_existing_symlink ... ok
+test exports_never_overwrite_and_failed_render_leaves_no_file ... ok
+test customer_snapshot_exports_keep_exact_fields_and_paginate_long_addresses ... ok
+test configured_business_number_tax_and_digits_are_in_real_pdf_and_csv ... ok
+test legacy_quote_deserializes_without_settings_and_keeps_zero_tax ... ok
+test largest_supported_amount_and_rial_unit_render_without_float_rounding ... ok
+test saved_date_display_changes_pdf_but_keeps_csv_canonical_iso ... ok
+test tax_errors_and_maximum_total_fail_before_any_export_file_is_created ... ok
+test unreasonably_tall_row_is_an_explicit_error_not_clipped_output ... ok
+test long_valid_business_blocks_are_paginated_without_losing_content ... ok
+test final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster ... ok
+test multipage_pdf_matches_native_preview_and_long_notes_continue ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.88s
+
+     Running tests/import_diagnostics.rs (target/debug/deps/import_diagnostics-38fc19bca0a2dd7e)
+
+running 3 tests
+test catalog_errors_identify_all_bad_columns_and_never_return_partial_catalog ... ok
+test order_diagnostics_are_bounded_and_repeated_valid_rows_remain_separate ... ok
+test malformed_structure_and_headers_have_explicit_diagnostics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/index_matching.rs (target/debug/deps/index_matching-8a2ad1b94c379d3c)
+
+running 3 tests
+test index_matches_legacy_semantics_across_scripts_and_exact_priority ... ok
+test normalization_code_collisions_preserve_multiple_candidates_in_order ... ok
+test indexed_preview_still_requires_human_choice_and_exact_selected_code ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/manager_workflow.rs (target/debug/deps/manager_workflow-4a4114f4ce624542)
+
+running 7 tests
+test customer_save_is_idempotent_across_script_and_whitespace ... ok
+test customer_edit_and_use_leave_approved_snapshot_unchanged ... ok
+test catalog_selection_resets_only_when_source_changes ... ok
+test duplicate_clears_expired_validity_and_updates_date ... ok
+test revision_keeps_number_duplicate_gets_new_series_and_number ... ok
+test rejected_manager_actions_are_atomic ... ok
+test managed_data_restarts_backs_up_and_exports_the_archived_quote ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests/process_recovery.rs (target/debug/deps/process_recovery-b918b559a65e5661)
+
+running 8 tests
+test kill_inside_store_candidate_does_not_leak_to_committed_state ... ok
+test killed_public_restore_after_commit_retains_restored_state_and_original_safety ... ok
+test recovery_worker_entry ... ok
+test sigkill_after_public_store_commit_keeps_complete_state ... ok
+test killed_public_restore_after_safety_before_commit_retains_original_and_valid_backup ... ok
+test sigkill_spilled_uncommitted_wal_recovers_previous_state ... ok
+test interrupted_staging_protocol_is_absent_before_link_and_complete_after_link ... ok
+test interrupted_public_export_is_absent_or_complete_and_never_overwrites ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.91s
+
+     Running tests/product_qa.rs (target/debug/deps/product_qa-10502eb62dc6703f)
+
+running 2 tests
+test conflicting_duplicate_customer_and_diagnostic_import_never_partially_commit ... ok
+test complete_customer_catalog_revision_export_and_restore_preserve_exact_snapshots ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/qa_invariants.rs (target/debug/deps/qa_invariants-067141eab0214531)
+
+running 11 tests
+test exact_code_wins_over_alias_and_ambiguity_never_approves ... ok
+test correctly_checksummed_bad_revision_chain_is_rejected_on_restore ... ok
+test abort_after_approval_does_not_leak_customer_quote_or_draft ... ok
+test exported_user_fields_are_formula_safe_and_target_is_never_overwritten ... ok
+test native_widget_lifecycle_does_not_synthesize_new_or_empty_edit_actions ... ignored, requires graphical GTK/libadwaita initialization; creates no windows
+test historical_fresh_price_approval_remains_restorable_when_price_ages ... ok
+test conflict_during_approval_does_not_publish_unsaved_quote ... ok
+test revising_old_version_appends_without_rewriting_any_snapshot ... ok
+test restore_invalid_candidate_leaves_memory_disk_and_directory_unchanged ... ok
+test restore_safety_backup_contains_exact_pre_restore_state ... ok
+test exact_rial_toman_roundtrip_including_sub_toman_amounts ... ok
+
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/settings.rs (target/debug/deps/settings-d57ebb8d1a86c508)
+
+running 8 tests
+test invalid_settings_and_digit_preferences_have_meaningful_behavior ... ok
+test configured_tax_is_exact_and_quote_tampering_is_rejected ... ok
+test defaults_are_real_new_draft_snapshots ... ok
+test legacy_settings_and_snapshot_defaults_are_omitted ... ok
+test repeated_number_and_counter_exhaustion_fail_safely ... ok
+test numbers_survive_revision_and_failed_approval_never_consumes_number ... ok
+test tax_total_overflow_and_equivalent_document_numbers_are_rejected ... ok
+test every_setting_persists_and_backup_restore_keeps_quote_snapshots ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/storage_hardening.rs (target/debug/deps/storage_hardening-e96fc63df6bb7b88)
+
+running 16 tests
+test backup_envelope_and_legacy_optional_fields_are_validated ... ok
+test equivalent_csv_is_duplicate_without_changing_legacy_fingerprint ... ok
+test export_does_not_follow_or_replace_destination_symlink ... ok
+test concurrent_export_never_overwrites_and_leaves_no_staging_files ... ok
+test failed_changes_leave_memory_and_disk_unchanged ... ok
+test changed_price_or_source_is_a_new_catalog ... ok
+test oversized_and_non_file_inputs_are_rejected ... ok
+test lightweight_generation_checks_do_not_write_and_reject_stale_windows ... ok
+test invalid_catalog_approval_is_atomic_and_success_clears_resolutions ... ok
+test prepared_candidate_becomes_stale_after_a_regular_change_without_losing_either_snapshot ... ok
+test prepared_worker_changes_are_validated_and_commit_only_to_the_original_generation ... ok
+test repeated_noop_does_not_invalidate_another_window_but_stale_noop_fails ... ok
+test restore_is_validated_and_retains_the_committed_safety_snapshot ... ok
+test csv_limits_utf8_bom_controls_and_row_errors ... ok
+test simultaneous_windows_have_one_winner_and_no_lost_update ... ok
+test state_that_cannot_fit_a_restorable_backup_is_not_committed ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.76s
+
+     Running tests/workflow.rs (target/debug/deps/workflow-7b6441a68b90f6ee)
+
+running 10 tests
+test digits_and_persian_normalization ... ok
+test csv_injection ... ok
+test approval_idempotency_and_revisions ... ok
+test csv_validation_and_duplicates ... ok
+test money_and_rounding ... ok
+test only_exact_codes_or_approved_aliases ... ok
+test old_catalog_snapshot_and_new_catalog_revision ... ok
+test malicious_backup_valid_hash_rejected ... ok
+test persistence_restart_backup_restore_and_conflicts ... ok
+test export_real_pdf_and_no_overwrite ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+   Doc-tests sarv_quote
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

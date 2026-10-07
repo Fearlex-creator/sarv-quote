@@ -184,17 +184,35 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
     ui.store.borrow().backup(&dir.join("backup.json"))?;
     let restored = Store::restore_preview(&dir.join("backup.json"))?;
     ensure!(restored.quotes.len() == 2, "backup validation failed");
+    ui.delete_line(0);
+    ensure!(
+        ui.deleted_lines.borrow().is_some() && ui.undo_button.is_sensitive(),
+        "deleted-line restore setup failed"
+    );
     ui.customer.set_text("تغییر موقت برای آزمون بازیابی");
     ui.restore(&dir.join("backup.json"));
+    wait_background(ui)?;
     let restore_dialog = ui
         .active_dialog
         .borrow()
         .clone()
         .context("restore confirmation missing")?;
     find_button(&restore_dialog, "بازیابی و ذخیرهٔ نسخهٔ ایمنی")?.emit_clicked();
+    wait_background(ui)?;
     ensure!(
         ui.store.borrow().state.draft.customer == "فروشگاه نمونهٔ پارس",
         "native restore did not replace draft"
+    );
+    ensure!(
+        ui.deleted_lines.borrow().is_none() && !ui.undo_button.is_sensitive(),
+        "restore retained the prior profile's undo buffer"
+    );
+    let restored_lines = ui.store.borrow().state.draft.lines.clone();
+    ui.undo_delete();
+    ensure!(
+        serde_json::to_value(&ui.store.borrow().state.draft.lines)?
+            == serde_json::to_value(&restored_lines)?,
+        "undo after restore mixed rows from the prior profile"
     );
     ensure!(
         std::fs::read_dir(&dir)?.filter_map(|e| e.ok()).any(|e| e
@@ -208,7 +226,7 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
         restarted.state.quotes.len() == 2 && restarted.state.draft.lines[0].quantity_milli == 3000,
         "persisted widget state mismatch"
     );
-    let report = serde_json::json!({"result":"passed","native_backend":"GTK4 Wayland","checks":["catalog preview and explicit confirm","Persian/Arabic input","ambiguous review dropdown","unmatched review dropdown","unresolved approval blocked","stale acknowledgement gate","toman/rial UI preserves discount","repeated approval clicks","invalid CSV approval blocked","native revision button","immutable prior quote","customer and quote search","PDF and CSV exports","backup validated","native restore confirmation","automatic safety backup","SQLite reopened","invalid table input preserved by New/Revision/Approve","pending edits labelled unsaved","delete-edit-add-undo preserves intervening changes","changed product requires visual review and stale re-ack","restore saves immediate widget edit before safety backup"],"first_total_rial":first.total_rial,"second_total_rial":q.total_rial,"quotes":2,"data_directory":dir});
+    let report = serde_json::json!({"result":"passed","native_backend":std::env::var("GDK_BACKEND").unwrap_or_else(|_| "default".into()),"checks":["catalog preview and explicit confirm","Persian/Arabic input","ambiguous review dropdown","unmatched review dropdown","unresolved approval blocked","stale acknowledgement gate","toman/rial UI preserves discount","repeated approval clicks","invalid CSV approval blocked","native revision button","immutable prior quote","customer and quote search","PDF and CSV exports","backup validated","native restore confirmation","automatic safety backup","SQLite reopened","invalid table input preserved by New/Revision/Approve","pending edits labelled unsaved","delete-edit-add-undo preserves intervening changes","changed product requires visual review and stale re-ack","restore saves immediate widget edit before safety backup","restore clears prior-profile undo buffer"],"first_total_rial":first.total_rial,"second_total_rial":q.total_rial,"quotes":2,"data_directory":dir});
     sarv_quote::store::write_new(
         &dir.join("native-verification.json"),
         &serde_json::to_vec_pretty(&report)?,
@@ -398,17 +416,24 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
         .clone()
         .context("customer dialog missing")?;
     let inputs = descendants::<gtk::Entry>(&dialog);
-    ensure!(inputs.len() == 2, "customer dialog fields mismatch");
-    inputs[0].set_text("مشتری نمایشی دوم");
-    inputs[1].set_text("۰۹۱۲۰۰۰۰۰۰۱");
+    ensure!(inputs.len() >= 5, "customer dialog contact fields missing");
+    let name_input = inputs
+        .iter()
+        .find(|entry| entry.placeholder_text().as_deref() == Some("نام شخص یا شرکت"))
+        .context("customer name field missing")?;
+    let phone_input = inputs
+        .iter()
+        .find(|entry| entry.placeholder_text().as_deref() == Some("تلفن (اختیاری)"))
+        .context("customer phone field missing")?;
+    name_input.set_text("مشتری نمایشی دوم");
+    phone_input.set_text("۰۹۱۲۰۰۰۰۰۰۱");
     find_button(&dialog, "ذخیرهٔ مشتری")?.emit_clicked();
     ensure!(
-        ui.store
-            .borrow()
-            .state
-            .customers
-            .iter()
-            .any(|c| c.name == "مشتری نمایشی دوم"),
+        ui.store.borrow().state.customers.iter().any(|c| {
+            c.name == "مشتری نمایشی دوم"
+                && digits(&c.phone) == "09120000001"
+                && c.contact_name.is_empty()
+        }),
         "native customer creation failed"
     );
     ui.store
@@ -430,6 +455,197 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
     sarv_quote::store::write_new(
         &dir.join("before-restart-state.json"),
         &serde_json::to_vec_pretty(&reopened.state)?,
+    )?;
+    Ok(())
+}
+
+fn wait_background(ui: &Ui) -> Result<()> {
+    let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
+    while ui.background_busy.get() {
+        anyhow::ensure!(
+            std::time::Instant::now() < deadline,
+            "background operation timed out"
+        );
+        glib::MainContext::default().iteration(true);
+    }
+    Ok(())
+}
+
+/// Exercise new native safety surfaces on the synthetic profile only.
+fn polish_flow(ui: &Rc<Ui>) -> Result<()> {
+    let dir = directory(ui);
+    let original = ui.store.borrow().state.draft.clone();
+    let quote_count = ui.store.borrow().state.quotes.len();
+    let imported = dir.join("import-order.csv");
+    sarv_quote::store::write_new(&imported, b"item,quantity\nP-101,5\n")?;
+    ui.import_order(&imported);
+    wait_background(ui)?;
+    let confirmation = ui
+        .active_dialog
+        .borrow()
+        .clone()
+        .context("order import confirmation missing")?;
+    let alert = confirmation
+        .clone()
+        .downcast::<adw::AlertDialog>()
+        .map_err(|_| anyhow::anyhow!("import confirmation is not native alert"))?;
+    alert.emit_by_name::<()>("response", &[&"cancel"]);
+    confirmation.close();
+    ensure!(
+        serde_json::to_value(&ui.store.borrow().state.draft.lines)?
+            == serde_json::to_value(&original.lines)?,
+        "cancel changed order"
+    );
+    ui.row_editors.borrow()[0].quantity.set_text("-1");
+    ui.import_order(&imported);
+    wait_background(ui)?;
+    let confirmation = ui
+        .active_dialog
+        .borrow()
+        .clone()
+        .context("import confirmation missing")?;
+    confirmation.emit_by_name::<()>("response", &[&"replace"]);
+    wait_background(ui)?;
+    confirmation.close();
+    ensure!(
+        ui.row_editors.borrow()[0].quantity.text() == "-1"
+            && serde_json::to_value(&ui.store.borrow().state.draft.lines)?
+                == serde_json::to_value(&original.lines)?,
+        "import discarded invalid current edit"
+    );
+    ui.row_editors.borrow()[0].quantity.set_text(&format!(
+        "{}.{:03}",
+        original.lines[0].quantity_milli / 1000,
+        original.lines[0].quantity_milli % 1000
+    ));
+    ui.commit_table();
+    let before = ui.store.borrow().state.draft.clone();
+    ui.import_order(&imported);
+    wait_background(ui)?;
+    let confirmation = ui
+        .active_dialog
+        .borrow()
+        .clone()
+        .context("import confirmation missing")?;
+    confirmation.emit_by_name::<()>("response", &[&"replace"]);
+    wait_background(ui)?;
+    confirmation.close();
+    ensure!(
+        ui.store.borrow().state.draft.lines.len() == 1
+            && ui.store.borrow().state.draft.lines[0].quantity_milli == 5000
+            && !ui.store.borrow().state.draft.stale_ack
+            && ui.store.borrow().state.draft.customer == before.customer,
+        "validated order import mismatch"
+    );
+    let recovery = std::fs::read_dir(&dir)?
+        .filter_map(|entry| entry.ok())
+        .find(|entry| {
+            entry
+                .file_name()
+                .to_string_lossy()
+                .starts_with("before-order-import-")
+        })
+        .context("order import recovery backup missing")?;
+    ensure!(
+        serde_json::to_value(&Store::restore_preview(&recovery.path())?.draft.lines)?
+            == serde_json::to_value(&before.lines)?,
+        "order import backup did not retain previous rows"
+    );
+    ensure!(
+        ui.store.borrow().state.quotes.len() == quote_count,
+        "import changed immutable history"
+    );
+    ui.store.borrow_mut().change(|state| {
+        state.draft = original;
+        Ok(())
+    })?;
+    ui.fill_form();
+    ui.refresh_review();
+    ui.refresh_lists();
+    for row in descendants::<adw::ExpanderRow>(&ui.catalog_list) {
+        row.set_expanded(true);
+    }
+    let original = ui.store.borrow().state.draft.clone();
+    find_button(&ui.catalog_list, "افزودن")?.emit_clicked();
+    ensure!(
+        ui.store.borrow().state.draft.lines.len() == original.lines.len() + 1
+            && ui
+                .store
+                .borrow()
+                .state
+                .draft
+                .lines
+                .last()
+                .is_some_and(|line| line.quantity_milli == 1000 && line.chosen_code.is_some())
+            && !ui.store.borrow().state.draft.stale_ack,
+        "product manager failed exact-source one-unit append"
+    );
+    ensure!(
+        ui.store.borrow().state.quotes.len() == quote_count,
+        "product manager changed quote history"
+    );
+    ui.store.borrow_mut().change(|state| {
+        state.draft = original;
+        Ok(())
+    })?;
+    ui.fill_form();
+    ui.refresh_review();
+    let page = ui
+        .stack
+        .child_by_name("settings")
+        .context("settings missing")?;
+    let business = descendants::<adw::EntryRow>(&page)
+        .into_iter()
+        .find(|entry| entry.title() == "نام کسب‌وکار")
+        .context("business field missing")?;
+    let saved_name = ui.store.borrow().state.settings.business_name.clone();
+    business.set_text("تنظیمات موقت آزمون");
+    ensure!(
+        settings::has_unsaved(ui),
+        "settings change not marked pending"
+    );
+    ui.window.close();
+    let prompt = ui
+        .active_dialog
+        .borrow()
+        .clone()
+        .context("unsaved settings close prompt missing")?;
+    prompt.emit_by_name::<()>("response", &[&"cancel"]);
+    prompt.close();
+    ensure!(
+        ui.window.is_visible() && settings::has_unsaved(ui),
+        "cancel close discarded settings"
+    );
+    find_button(&page, "بازگرداندن")?.emit_clicked();
+    ensure!(
+        !settings::has_unsaved(ui) && ui.store.borrow().state.settings.business_name == saved_name,
+        "settings revert changed saved data"
+    );
+    let page = ui
+        .stack
+        .child_by_name("settings")
+        .context("settings missing")?;
+    let business = descendants::<adw::EntryRow>(&page)
+        .into_iter()
+        .find(|entry| entry.title() == "نام کسب‌وکار")
+        .context("business field missing")?;
+    business.set_text("bad\u{202e}name");
+    find_button(&page, "ذخیرهٔ تنظیمات")?.emit_clicked();
+    ensure!(
+        settings::has_unsaved(ui)
+            && ui.store.borrow().state.settings.business_name == saved_name
+            && business.has_css_class("error"),
+        "invalid settings saved or lacked field error"
+    );
+    settings::discard_staged(ui);
+    let report = serde_json::json!({"result":"passed", "checks":[
+        "order import native confirmation", "cancel import preserves rows", "invalid edit blocks replacement",
+        "confirmed import retains customer and resets stale acknowledgment", "exact prior rows retained in recovery backup",
+        "import preserves immutable quote history", "settings edits visibly pending", "settings close cancel retains edits and window",
+        "settings revert preserves saved data", "invalid settings rejected with native field feedback", "product manager appends exact-source unit without changing history"]});
+    sarv_quote::store::write_new(
+        &dir.join("polish-native-verification.json"),
+        &serde_json::to_vec_pretty(&report)?,
     )?;
     Ok(())
 }
@@ -456,17 +672,51 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
     let event_keys = gtk::EventControllerKey::new();
     event_keys.set_propagation_phase(gtk::PropagationPhase::Capture);
     let weak = Rc::downgrade(ui);
-    event_keys.connect_key_pressed(move |_,key,_,_| {
-        if let Some(u)=weak.upgrade() {let key=key.name().map(|s|s.to_string()).unwrap_or_default();
+    event_keys.connect_key_pressed(move |_, key, _, _| {
+        if let Some(ui) = weak.upgrade() {
+            let key = key.name().map(|s| s.to_string()).unwrap_or_default();
             glib::idle_add_local_once(move || {
-                let focus=gtk::prelude::GtkWindowExt::focus(&u.window);
-                let mut target="other".to_string();
-                for (i,row) in u.row_editors.borrow().iter().enumerate(){ if focus.as_ref().is_some_and(|w|w==row.query.upcast_ref::<gtk::Widget>()||w.is_ancestor(&row.query)){target=format!("row{i}-query");} else if focus.as_ref().is_some_and(|w|w==row.quantity.upcast_ref::<gtk::Widget>()||w.is_ancestor(&row.quantity)){target=format!("row{i}-quantity");} }
-                let event=serde_json::json!({"key":key,"focus":target,"page":u.stack.visible_child_name().map(|s|s.to_string()),"quotes":u.store.borrow().state.quotes.len()});
+                let focus = gtk::prelude::GtkWindowExt::focus(&ui.window);
+                let contains = |widget: &gtk::Widget| focus.as_ref().is_some_and(|w| w == widget || w.is_ancestor(widget));
+                let mut target = "other".to_string();
+                for row in ui.row_editors.borrow().iter() {
+                    if contains(row.query.upcast_ref()) {
+                        target = format!("row{}-query", row.index);
+                    } else if contains(row.quantity.upcast_ref()) {
+                        target = format!("row{}-quantity", row.index);
+                    }
+                }
+                for (name, field) in [("new-item", &ui.new_item), ("new-quantity", &ui.new_quantity), ("discount", &ui.discount), ("customer", &ui.customer), ("phone", &ui.phone)] {
+                    if contains(field.upcast_ref()) { target = name.into(); }
+                }
+                for (name, search) in [("search-catalog", &ui.search_catalog), ("search-customer", &ui.search_customer), ("search-quote", &ui.search_quote)] {
+                    if contains(search.upcast_ref()) { target = name.into(); }
+                }
+                let mut ancestor = focus.clone();
+                let mut focus_label = None;
+                while let Some(widget) = ancestor {
+                    if let Some(row) = widget.downcast_ref::<adw::EntryRow>() {
+                        focus_label = Some(row.title().to_string());
+                        break;
+                    }
+                    if let Some(button) = widget.downcast_ref::<gtk::Button>() {
+                        focus_label = button.label().map(|s| s.to_string());
+                        if focus_label.is_some() { break; }
+                    }
+                    ancestor = widget.parent();
+                }
+                let rect_values = |bounds: gtk::graphene::Rect| [bounds.x(), bounds.y(), bounds.width(), bounds.height()];
+                let focus_bounds = focus.as_ref().and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
+                let focus_clip_bounds = focus.as_ref().and_then(|widget| widget.ancestor(gtk::ScrolledWindow::static_type()))
+                    .and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
+                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some()});
                 use std::io::Write;
-                if let Ok(mut f)=std::fs::OpenOptions::new().create(true).append(true).open(directory(&u).join("keyboard-events.jsonl")){let _=writeln!(f,"{event}");}
+                if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(directory(&ui).join("keyboard-events.jsonl")) {
+                    let _ = writeln!(file, "{event}");
+                }
             });
-        } glib::Propagation::Proceed
+        }
+        glib::Propagation::Proceed
     });
     ui.window.add_controller(event_keys);
     if mode == "capture" {
@@ -539,6 +789,7 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
                     .context("catalog preview missing")?;
                 capture(&u.window, &directory(&u).join("native-catalog-preview.png"))?;
                 find_button(&dialog, "منبع و قیمت‌ها را تأیید می‌کنم")?.emit_clicked();
+                wait_background(&u)?;
             }
             u.fill_form();
             u.customer.set_text("فروشگاه نمونهٔ پارس");
@@ -583,7 +834,9 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
         let u = ui.clone();
         let approve = approve.clone();
         glib::timeout_add_local_once(std::time::Duration::from_secs(8), move || {
-            let r = native_flow(&u, &approve).and_then(|()| settings_flow(&u));
+            let r = native_flow(&u, &approve)
+                .and_then(|()| settings_flow(&u))
+                .and_then(|()| polish_flow(&u));
             if let Err(e) = &r {
                 let _ = sarv_quote::store::write_new(
                     &directory(&u).join("native-failure.txt"),
@@ -679,7 +932,11 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
             glib::timeout_add_local_once(std::time::Duration::from_secs(time), move || {
                 u.stack.set_visible_child_name(page);
                 if page == "catalog" || page == "quotes" {
-                    for row in descendants::<adw::ExpanderRow>(&u.window) {
+                    for row in descendants::<adw::ExpanderRow>(if page == "catalog" {
+                        &u.catalog_list
+                    } else {
+                        &u.quote_list
+                    }) {
                         row.set_expanded(true);
                     }
                 }

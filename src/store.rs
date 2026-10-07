@@ -48,6 +48,13 @@ pub struct Store {
     generation: i64,
     pub directory: PathBuf,
 }
+/// An immutable, owned candidate validated and serialized off the GTK thread.
+/// Private fields prevent changing either its data or generation after preparation.
+pub struct PreparedChange {
+    candidate: State,
+    payload: String,
+    expected_generation: i64,
+}
 impl Store {
     pub fn open(directory: &Path) -> Result<Self> {
         fs::create_dir_all(directory)?;
@@ -102,6 +109,42 @@ impl Store {
         self.generation = next_generation;
         Ok(result)
     }
+    pub fn snapshot(&self) -> Result<(i64, State)> {
+        self.ensure_current()?;
+        Ok((self.generation, self.state.clone()))
+    }
+    pub fn prepare_candidate(expected_generation: i64, candidate: State) -> Result<PreparedChange> {
+        ensure!(expected_generation >= 0, "نسخهٔ ذخیره‌سازی نامعتبر است");
+        candidate.validate()?;
+        let payload = serde_json::to_string(&candidate)?;
+        serde_json::to_writer_pretty(BackupSize(0), &backup_view(&candidate, payload.as_bytes()))
+            .context("ذخیره انجام نشد؛ داده باید در پشتیبان ۶۴ مگابایتی جا بگیرد")?;
+        Ok(PreparedChange {
+            candidate,
+            payload,
+            expected_generation,
+        })
+    }
+    pub fn commit_prepared(&mut self, prepared: PreparedChange) -> Result<()> {
+        self.check_generation(prepared.expected_generation)?;
+        let next_generation = self
+            .generation
+            .checked_add(1)
+            .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
+        let tx = self.conn.transaction()?;
+        let changed = tx.execute(
+            "UPDATE state SET generation=generation+1,payload=?1 WHERE id=1 AND generation=?2",
+            params![prepared.payload, prepared.expected_generation],
+        )?;
+        ensure!(
+            changed == 1,
+            "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
+        );
+        tx.commit()?;
+        self.state = prepared.candidate;
+        self.generation = next_generation;
+        Ok(())
+    }
     pub fn backup(&self, path: &Path) -> Result<()> {
         // A backup must contain committed data, not an old window's snapshot.
         let (generation, payload): (i64, String) = self.conn.query_row(
@@ -126,6 +169,11 @@ impl Store {
                     row.get(0)
                 })?;
         self.check_generation(generation)
+    }
+    /// Check an unchanged UI draft against the committed generation without
+    /// cloning or serializing the state. A stale window still must be reopened.
+    pub fn verify_current(&self) -> Result<()> {
+        self.ensure_current()
     }
     pub fn restore_preview(path: &Path) -> Result<State> {
         let mut file = open_regular(path)?;

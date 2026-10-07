@@ -56,6 +56,10 @@ pub fn csv_bytes(q: &Quote) -> Result<Vec<u8>> {
         "tax_rial",
         "display_digits",
         "date_display",
+        "customer_id",
+        "customer_contact",
+        "customer_email",
+        "customer_address",
     ])?;
     for l in &q.lines {
         w.write_record([
@@ -99,6 +103,10 @@ pub fn csv_bytes(q: &Quote) -> Result<Vec<u8>> {
             } else {
                 "iso".into()
             },
+            safe_cell(&q.customer_id),
+            safe_cell(&q.customer_contact),
+            safe_cell(&q.customer_email),
+            safe_cell(&q.customer_address),
         ])?;
     }
     let mut bytes = vec![0xef, 0xbb, 0xbf];
@@ -191,7 +199,7 @@ fn layout(cr: &cairo::Context, text: &Text) -> pango::Layout {
     layout.context().set_base_dir(pango::Direction::Rtl);
     layout.set_auto_dir(false);
     layout.set_font_description(Some(&pango::FontDescription::from_string(&format!(
-        "Noto Sans Arabic {}{}",
+        "Vazirmatn, Noto Sans Arabic {}{}",
         if text.bold { "Bold " } else { "" },
         text.size
     ))));
@@ -359,9 +367,9 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
         rule(&mut page, LEFT, separator_y, WIDTH);
         return Ok((page, separator_y + 14.0));
     }
-    let separator_y = 92.0_f64.max(brand_bottom + 10.0);
+    let separator_y = 82.0_f64.max(brand_bottom + 10.0);
     rule(&mut page, LEFT, separator_y, WIDTH);
-    let mut customer_y = separator_y + 13.0;
+    let mut customer_y = separator_y + 10.0;
     for value in [
         if q.issuer_phone.is_empty() {
             String::new()
@@ -383,13 +391,13 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
             block.color = MUTED;
             let block_height = height(cr, &block);
             if block_height <= 80.0 {
-                customer_y += block_height + 5.0;
+                customer_y += block_height + 3.0;
                 add(&mut page, block);
             }
         }
     }
     if !q.issuer_phone.is_empty() || !q.issuer_address.is_empty() || !q.header.is_empty() {
-        customer_y += 7.0;
+        customer_y += 3.0;
     }
     let mut customer = label(
         format!("مشتری: {}", q.customer),
@@ -399,8 +407,18 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
         12.0,
     );
     customer.bold = true;
-    let mut y = customer_y + height(cr, &customer) + 8.0;
+    let mut y = customer_y + height(cr, &customer) + 6.0;
     add(&mut page, customer);
+    for block in customer_blocks(q) {
+        if !block.is_empty() {
+            let text = label(block, LEFT, y, WIDTH, 9.0);
+            let block_height = height(cr, &text);
+            if block_height <= 80.0 {
+                y += block_height + 3.0;
+                add(&mut page, text);
+            }
+        }
+    }
     let metadata = [
         (
             "تاریخ پیشنهاد",
@@ -453,12 +471,34 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
             8.5,
         );
         let left = label(format!("{}: {}", pair[1].0, pair[1].1), LEFT, y, 253.0, 8.5);
-        y += height(cr, &right).max(height(cr, &left)) + 5.0;
+        y += height(cr, &right).max(height(cr, &left)) + 3.0;
         add(&mut page, right);
         add(&mut page, left);
     }
-    ensure!(y < 400.0, "اطلاعات سربرگ برای یک صفحه بسیار بلند است");
-    Ok((page, y + 15.0))
+    ensure!(
+        y < BOTTOM - 90.0,
+        "اطلاعات سربرگ برای یک صفحه بسیار بلند است"
+    );
+    Ok((page, y + 10.0))
+}
+fn customer_blocks(q: &Quote) -> [String; 3] {
+    [
+        if q.customer_contact.is_empty() {
+            String::new()
+        } else {
+            format!("شخص رابط: {}", q.customer_contact)
+        },
+        if q.customer_email.is_empty() {
+            String::new()
+        } else {
+            format!("ایمیل: {}", ltr(&q.customer_email))
+        },
+        if q.customer_address.is_empty() {
+            String::new()
+        } else {
+            format!("نشانی مشتری: {}", q.customer_address)
+        },
+    ]
 }
 // The monetary unit belongs to the whole table and is always explicit. Column
 // positions run left-to-right; their semantic order is RTL, with item at right.
@@ -507,9 +547,9 @@ fn row(cr: &cairo::Context, q: &Quote, index: usize, y: f64) -> (Vec<Text>, f64)
         document_digits(q, index + 1),
     ];
     let mut cells = Vec::new();
-    let mut row_height: f64 = 38.0;
+    let mut row_height: f64 = 34.0;
     for (column, ((x, width), value)) in COLS.iter().zip(values).enumerate() {
-        let mut text = label(value, x + 5.0, y + 9.0, width - 10.0, 9.0);
+        let mut text = label(value, x + 5.0, y + 6.0, width - 10.0, 9.5);
         if matches!(column, 2 | 3 | 5) {
             text.align = pango::Alignment::Center;
         }
@@ -518,9 +558,9 @@ fn row(cr: &cairo::Context, q: &Quote, index: usize, y: f64) -> (Vec<Text>, f64)
             let mut code = label(
                 ltr(&l.code),
                 x + 5.0,
-                y + 9.0 + name_height + 2.0,
+                y + 6.0 + name_height + 1.0,
                 width - 10.0,
-                8.0,
+                8.5,
             );
             code.color = MUTED;
             let code_height = height(cr, &code);
@@ -531,16 +571,16 @@ fn row(cr: &cairo::Context, q: &Quote, index: usize, y: f64) -> (Vec<Text>, f64)
                     l.source_unit.label()
                 ),
                 x + 5.0,
-                code.y + code_height + 2.0,
+                code.y + code_height + 1.0,
                 width - 10.0,
-                6.8,
+                7.5,
             );
             source.color = MUTED;
-            row_height = row_height.max(source.y - y + height(cr, &source) + 9.0);
+            row_height = row_height.max(source.y - y + height(cr, &source) + 6.0);
             cells.push(code);
             cells.push(source);
         }
-        row_height = row_height.max(height(cr, &text) + 18.0);
+        row_height = row_height.max(height(cr, &text) + 12.0);
         cells.push(text);
     }
     (cells, row_height)
@@ -610,6 +650,12 @@ fn document(q: &Quote) -> Result<Document> {
             y += 10.0;
         }
     }
+    for block in customer_blocks(q) {
+        if !block.is_empty() && height(&cr, &label(&block, LEFT, 0.0, WIDTH, 9.0)) > 80.0 {
+            paragraph(&mut doc, q, &cr, &block, &mut y, 9.0)?;
+            y += 10.0;
+        }
+    }
     if y + 75.0 > BOTTOM {
         y = next_page(&mut doc, q, &cr, false)?;
     }
@@ -632,7 +678,7 @@ fn document(q: &Quote) -> Result<Document> {
         y += row_height;
         rule(page, LEFT, y, WIDTH);
     }
-    y += 20.0;
+    y += 12.0;
     // Keep monetary rows together; the configured tax is an explicit optional
     // whole-document amount after discount, never a guessed statutory rate.
     let mut totals = vec![
@@ -652,10 +698,10 @@ fn document(q: &Quote) -> Result<Document> {
             height(&cr, &label(title, LEFT + 133.0, 0.0, 127.0, size)).max(height(
                 &cr,
                 &label(display_amount(q, *value), LEFT, 0.0, 130.0, size),
-            )) + 8.0
+            )) + 5.0
         })
         .sum::<f64>()
-        + 7.0;
+        + 5.0;
     if y + totals_height > BOTTOM {
         y = next_page(&mut doc, q, &cr, false)?;
     }
@@ -664,7 +710,7 @@ fn document(q: &Quote) -> Result<Document> {
         let final_row = index == last;
         if final_row {
             rule(page, LEFT, y, 260.0);
-            y += 7.0;
+            y += 5.0;
         }
         let size = if final_row { 11.0 } else { 9.0 };
         let mut title = label(title, LEFT + 133.0, y, 127.0, size);
@@ -674,9 +720,9 @@ fn document(q: &Quote) -> Result<Document> {
         let h = height(&cr, &title).max(height(&cr, &value));
         add(page, title);
         add(page, value);
-        y += h + 8.0;
+        y += h + 5.0;
     }
-    y += 15.0;
+    y += 10.0;
     if q.stale_ack {
         paragraph(
             &mut doc,

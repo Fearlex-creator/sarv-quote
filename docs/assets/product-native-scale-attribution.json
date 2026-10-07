@@ -1,0 +1,161 @@
+{
+  "binary_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad",
+  "result": "passed",
+  "phase_interval_note": "Heartbeat phase is the state-machine stage at interval end; a preceding synchronous action can appear under the next stage. Global timing includes synthetic fixture mutations, canonical validation and screenshots. No claim that every GTK operation is below250 ms.",
+  "phase_heartbeats_labeled": {
+    "0": {
+      "description": "Synthetic CSV fixture generation on GTK",
+      "maximum_gap_ms": 35.331195,
+      "ticks": 1
+    },
+    "1": {
+      "description": "Import preview first-page screenshot/next action",
+      "maximum_gap_ms": 181.628878,
+      "ticks": 22
+    },
+    "10": {
+      "description": "Editor next-page actions, initial setup wait",
+      "maximum_gap_ms": 466.208246,
+      "ticks": 57
+    },
+    "11": {
+      "description": "Final-page quantity save/refresh then screenshot wait",
+      "maximum_gap_ms": 318.830721,
+      "ticks": 12
+    },
+    "12": {
+      "description": "Editor previous-page actions and canonical validation",
+      "maximum_gap_ms": 268.319914,
+      "ticks": 11
+    },
+    "2": {
+      "description": "Import preview second-page screenshot",
+      "maximum_gap_ms": 156.272573,
+      "ticks": 8
+    },
+    "20": {
+      "description": "Cold indexed product picker invocation",
+      "maximum_gap_ms": 60.238307,
+      "ticks": 24
+    },
+    "21": {
+      "description": "Cold index/result readiness wait",
+      "maximum_gap_ms": 43.574973,
+      "ticks": 5
+    },
+    "22": {
+      "description": "Cold picker screenshot and precise search request",
+      "maximum_gap_ms": 30.874304000000002,
+      "ticks": 8
+    },
+    "23": {
+      "description": "Precise picker search wait/capture",
+      "maximum_gap_ms": 96.032323,
+      "ticks": 14
+    },
+    "24": {
+      "description": "Broad picker search wait and close",
+      "maximum_gap_ms": 104.064718,
+      "ticks": 13
+    },
+    "25": {
+      "description": "Warm cached picker invocation",
+      "maximum_gap_ms": 37.907298,
+      "ticks": 9
+    },
+    "26": {
+      "description": "Warm picker screenshot then synthetic unknown-line save/review",
+      "maximum_gap_ms": 45.401672,
+      "ticks": 7
+    },
+    "27": {
+      "description": "Unknown selector opening/search request",
+      "maximum_gap_ms": 555.431906,
+      "ticks": 6
+    },
+    "28": {
+      "description": "Unknown precise result wait, screenshot, explicit choice, canonical validation, fixture restore",
+      "maximum_gap_ms": 38.239674,
+      "ticks": 9
+    },
+    "3": {
+      "description": "Native catalogue next-page walk across 500 pages",
+      "maximum_gap_ms": 107.248408,
+      "ticks": 500
+    },
+    "30": {
+      "description": "Unknown choice/fixture-restoration callback end then composer opening",
+      "maximum_gap_ms": 902.889072,
+      "ticks": 13
+    },
+    "31": {
+      "description": "Composer initial render wait, first-page capture/next/search request",
+      "maximum_gap_ms": 212.666747,
+      "ticks": 6
+    },
+    "32": {
+      "description": "Composer precise last-product search wait/capture/close",
+      "maximum_gap_ms": 168.182835,
+      "ticks": 12
+    },
+    "4": {
+      "description": "Last catalogue page screenshot then synthetic1000-line draft commit/refresh",
+      "maximum_gap_ms": 40.367373,
+      "ticks": 14
+    },
+    "40": {
+      "description": "Actual CSV parse worker/request completion",
+      "maximum_gap_ms": 33.159145,
+      "ticks": 7
+    },
+    "41": {
+      "description": "Prepared catalogue acceptance worker",
+      "maximum_gap_ms": 20.960251,
+      "ticks": 20
+    },
+    "42": {
+      "description": "Acceptance commit/native refresh then preview setup wait",
+      "maximum_gap_ms": 101.478348,
+      "ticks": 15
+    },
+    "5": {
+      "description": "Restored editor wait/capture then PDF snapshot/start",
+      "maximum_gap_ms": 111.76115300000001,
+      "ticks": 23
+    },
+    "6": {
+      "description": "PDF busy query focus and genuine XTest Tab injection",
+      "maximum_gap_ms": 20.05958,
+      "ticks": 2
+    },
+    "7": {
+      "description": "PDF busy keyboard verification and settings navigation",
+      "maximum_gap_ms": 30.749477000000002,
+      "ticks": 7
+    },
+    "8": {
+      "description": "PDF busy settings screenshot/order navigation/resize",
+      "maximum_gap_ms": 49.818632,
+      "ticks": 8
+    },
+    "9": {
+      "description": "PDF busy resize/completion wait and final capture",
+      "maximum_gap_ms": 114.753548,
+      "ticks": 56
+    }
+  },
+  "global_maximum_gap_ms": 902.889072,
+  "global_gap_attribution": "Global maximum includes unknown-selector screenshot, actual explicit-choice transaction/native refresh, canonical validation and a separate harness restoring known fixture in one GTK callback before composer opens. Individual explicit-choice duration is not isolated; synchronous changed-save cost remains a production limitation.",
+  "actual_composer_copy_initial100_native_rows_ms": 179.034162,
+  "actual_changed_page_navigation_ms": 326.39471799999995,
+  "unchanged_page_navigation": {
+    "count": 17,
+    "min_ms": 165.52483600000002,
+    "median_ms": 238.654504,
+    "max_ms": 279.308211
+  },
+  "busy_pdf_ticks": 72,
+  "busy_pdf_max_gap_ms": 114.753548,
+  "rendered_capture_note": "Busy-settings screenshot catches GTK Stack crossfade; use settled ordinary settings capture for final presentation. Narrow editor, explicit unknown selector and exact-last composer screenshots reviewed for native layout.",
+  "untested": "Production customer data; Wayland; physical printer; target desktop packaging. Native composer confirmed bounded/searchable copy without confirming changes in this stress probe; full composer edits/confirmation covered separately by parent workflow QA."
+}

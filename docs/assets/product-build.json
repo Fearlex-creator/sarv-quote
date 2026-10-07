@@ -1,0 +1,43 @@
+{
+  "release_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad",
+  "baseline_commit": "4a1dbf7",
+  "baseline_profile": "artifacts/cloud-onboarding/native-s391yylu",
+  "final_native_profile": "artifacts/cloud-onboarding/native-ltc540kj",
+  "final_scale_profile": "artifacts/native-responsiveness-v9",
+  "ordinary_rust_passed": 105,
+  "separately_run_native_tests_passed": 2,
+  "native_checks_passed": 51,
+  "native_restart": {
+    "result": "passed",
+    "generation": 37,
+    "payload_sha256": "b4ad20b5c6b740922f5fc7063ef85de166c9241cd744f2b6ba3f56e941a15dfd",
+    "quotes": 3,
+    "backend": "X11"
+  },
+  "format": "passed",
+  "strict_clippy_all_targets": "passed",
+  "release_build_locked_offline": "passed",
+  "gtk": "4.22.5",
+  "libadwaita": "1.9.4",
+  "independent_keyboard": {
+    "result": "passed",
+    "checks": 50,
+    "profile": "artifacts/independent-native/run-hb6ai7ar",
+    "release_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad"
+  },
+  "independent_product": {
+    "result": "passed",
+    "checks": 28,
+    "profile": "artifacts/product-native/run-jy2z7w6i",
+    "release_sha256": "31eb8e01e32a6b5129d7abed135de4f3ba08130798b636db30343099017e83ad"
+  },
+  "scope": "Synthetic native X11/Cairo cloud verification; physical/Wayland/screenreader/production not verified",
+  "supplemental_followup": {
+    "checks": 9,
+    "result": "passed",
+    "profile": "artifacts/product-native/run-3xngo2kk",
+    "resumed_debug": true,
+    "scope": "Post-approval follow-up and actual wheel-scrolled900x560 total capture; separate from fresh28 flow"
+  },
+  "runtime_diagnostics": "Nonfatal GTK focus assertions remain in instrumented product/file-chooser follow-ups; attribution unresolved; logs and independent review retained."
+}

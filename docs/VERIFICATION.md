@@ -1,4 +1,7 @@
 # Verification evidence
+This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md).
+
+Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
 
 The native screenshots and 39-check GUI acceptance below describe the preceding local v1 build. The current snapshot includes subsequent software-risk fixes; see [SOFTWARE-RISKS.md](SOFTWARE-RISKS.md) for current checks and remaining native verification.
 All verification uses synthetic data. Current release evidence lives in `artifacts/delivery-complete/`; older `delivery-final`, `final-native`, `redesign-final` and `native-release-proof` artifacts are retained historical comparison runs. Evidence applies to the source/build that produced it, and no tax, accounting or accessibility compliance is claimed.

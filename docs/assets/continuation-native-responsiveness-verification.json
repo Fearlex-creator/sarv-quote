@@ -1,0 +1,314 @@
+{
+  "catalog_preview_pages_visited": 500,
+  "checks": [
+    "Actual GTK import preview first and next page contain 100 expected products",
+    "All 500 native pages reached by next button; final row is SCALE-50000; next disabled",
+    "Native editor reaches all ten pages with <=100 rows/page; first/last page quantity edits survive navigation and save; all1,000 canonical lines retained; exact100,802,501rial total",
+    "All seventeen unchanged native next/previous clicks preserve persisted generation; edited first-page navigation commits exactly one generation",
+    "Genuine X11 XTest Tab moves first row query focus to quantity while PDF worker is busy",
+    "Native settings navigation completes while PDF worker is busy",
+    "PDF export completed within 120-second total probe timeout; GTK heartbeat stayed below 250 ms while busy"
+  ],
+  "durations_ms": {
+    "1000_line_background_pdf_completion": 5264.042437,
+    "1000_line_store_commit_and_first_100_editor_widget_creation": 417.378965,
+    "catalog_pagination_all_500_pages_including_initial_setup": 26244.785279,
+    "catalog_preview_widget_creation": 224.664265,
+    "synthetic_catalog_validated_store_commit": 384.62816
+  },
+  "editor_page_clicks": [
+    {
+      "direction": "next",
+      "draft_changed": true,
+      "duration_ms": 279.59921399999996,
+      "from_page": 1,
+      "generation_after": 3,
+      "generation_before": 2
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 182.099173,
+      "from_page": 2,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 222.138903,
+      "from_page": 3,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 291.403055,
+      "from_page": 4,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 267.65365299999996,
+      "from_page": 5,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 235.03189999999998,
+      "from_page": 6,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 321.95909900000004,
+      "from_page": 7,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 226.966441,
+      "from_page": 8,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 271.782758,
+      "from_page": 9,
+      "generation_after": 3,
+      "generation_before": 3
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 268.556666,
+      "from_page": 10,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 190.77052799999998,
+      "from_page": 9,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 203.128263,
+      "from_page": 8,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 230.000871,
+      "from_page": 7,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 228.517993,
+      "from_page": 6,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 205.656001,
+      "from_page": 5,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 213.123089,
+      "from_page": 4,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 214.42080199999998,
+      "from_page": 3,
+      "generation_after": 4,
+      "generation_before": 4
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 218.997108,
+      "from_page": 2,
+      "generation_after": 4,
+      "generation_before": 4
+    }
+  ],
+  "failure": null,
+  "final_window_allocation": [
+    990,
+    770
+  ],
+  "heartbeat_count": 887,
+  "heartbeat_gaps_over_100_ms": [
+    {
+      "gap_ms": 613.5537760000001,
+      "pdf_busy": false,
+      "stage": 1
+    },
+    {
+      "gap_ms": 169.492388,
+      "pdf_busy": false,
+      "stage": 2
+    },
+    {
+      "gap_ms": 106.820464,
+      "pdf_busy": false,
+      "stage": 3
+    },
+    {
+      "gap_ms": 562.902018,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 102.49425500000001,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 303.125095,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 182.578081,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 222.780292,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 336.092835,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 268.48638400000004,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 235.511169,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 322.53105500000004,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 227.59505099999998,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 272.352009,
+      "pdf_busy": false,
+      "stage": 10
+    },
+    {
+      "gap_ms": 381.18611699999997,
+      "pdf_busy": false,
+      "stage": 11
+    },
+    {
+      "gap_ms": 113.727985,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 280.271125,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 191.20974800000002,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 203.606079,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 230.415234,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 228.915441,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 205.978898,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 213.42808,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 214.85835,
+      "pdf_busy": false,
+      "stage": 12
+    },
+    {
+      "gap_ms": 219.346274,
+      "pdf_busy": false,
+      "stage": 12
+    }
+  ],
+  "heartbeat_interval_ms": 20,
+  "heartbeat_ticks_while_pdf_busy": 248,
+  "limitations": [
+    "Synthetic scale fixture, not production customer data",
+    "SQLite state validation and persistence remain synchronous; measured setup/page-edit gaps are reported separately",
+    "No Wayland, physical printer or target desktop packaging certification"
+  ],
+  "maximum_heartbeat_gap_ms_including_setup_and_editor_paging": 613.5537760000001,
+  "maximum_heartbeat_gap_ms_while_pdf_busy": 90.129036,
+  "maximum_native_preview_rows": 100,
+  "maximum_unchanged_editor_page_click_ms": 321.95909900000004,
+  "pdf_busy_responsiveness_threshold_ms": 250,
+  "products": 50000,
+  "quote_lines": 1000,
+  "result": "passed",
+  "synthetic_only": true
+}

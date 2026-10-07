@@ -10,7 +10,10 @@ pub(super) fn label(s: &str) -> gtk::Label {
     let l = gtk::Label::new(Some(s));
     l.set_xalign(0.0);
     l.set_wrap(true);
-    l.set_selectable(true);
+    // Ordinary interface text must not add stops to keyboard navigation or
+    // become a selected paragraph when a native dialog initially takes focus.
+    // A caller can explicitly enable selection for copyable document content.
+    l.set_selectable(false);
     l
 }
 pub(super) fn heading(s: &str) -> gtk::Label {
@@ -31,7 +34,25 @@ pub(super) fn entry(placeholder: &str) -> gtk::Entry {
     let e = gtk::Entry::new();
     e.set_placeholder_text(Some(placeholder));
     e.set_hexpand(true);
+    e.add_css_class("sarv-entry");
     e
+}
+/// Native invalid styling and an accessible explanation accompany the same
+/// domain validation used by persistence. The tooltip also exposes the limit.
+pub(super) fn entry_validity(entry: &gtk::Entry, error: Option<&str>, hint: &str) {
+    let explanation = error.unwrap_or(hint);
+    if error.is_some() {
+        entry.add_css_class("error");
+    } else {
+        entry.remove_css_class("error");
+    }
+    entry.set_tooltip_text(Some(explanation));
+    entry.update_state(&[gtk::accessible::State::Invalid(if error.is_some() {
+        gtk::AccessibleInvalidState::True
+    } else {
+        gtk::AccessibleInvalidState::False
+    })]);
+    entry.update_property(&[gtk::accessible::Property::Description(explanation)]);
 }
 pub(super) fn scroll(w: &impl IsA<gtk::Widget>) -> gtk::ScrolledWindow {
     gtk::ScrolledWindow::builder()
@@ -163,6 +184,9 @@ pub(super) fn table_cell(text: &str, expand: bool) -> gtk::Label {
 pub(super) fn numeric_cell(text: &str) -> gtk::Label {
     let cell = table_cell(text, false);
     cell.add_css_class("numeric");
+    // Keep every monetary value readable on one line; the containing native
+    // table scrolls when a long amount needs more room.
+    cell.set_wrap(false);
     cell.set_direction(gtk::TextDirection::Ltr);
     cell.set_xalign(1.0);
     let attrs = gtk::pango::AttrList::new();

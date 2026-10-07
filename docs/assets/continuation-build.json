@@ -1,0 +1,18 @@
+{
+  "date": "2026-10-07",
+  "binary_sha256": "7ae06aab0d74bf819e79adb547c068a8d6695da88229058dede2ec5cd99915d2",
+  "baseline_commit": "c21c4ed",
+  "rust": "1.99.0",
+  "gtk": "4.22.5",
+  "libadwaita": "1.9.4",
+  "renderer": "GTK Cairo / X11 Xvfb / Openbox",
+  "ordinary_tests": 86,
+  "graphical_lifecycle_tests": 1,
+  "native_workflow_checks": 50,
+  "independent_checks": 50,
+  "stress_checks": 7,
+  "native_profile": "artifacts/cloud-onboarding/native-yotksugs",
+  "independent_profile": "artifacts/independent-native/run-golheng8",
+  "scale_profile": "artifacts/native-responsiveness-v6",
+  "synthetic_only": true
+}

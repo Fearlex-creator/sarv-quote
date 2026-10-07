@@ -1,32 +1,86 @@
-/* Libadwaita owns theme, typography, control states, focus and contrast.
- * These rules only arrange quotation content and its dense native table. */
-.page { padding: 18px; }
-.component-card { padding: 16px; }
-.section { padding: 8px 0; }
-.metadata { padding: 6px 0 8px; }
-.document-toolbar { padding-bottom: 8px; }
-.table {
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
+/* Native colours and focus states follow libadwaita in light, dark and high
+ * contrast. Scope the presentation to this app; never change global GTK. */
+.sarv-app {
+  font-family: "Vazirmatn", sans-serif;
+  font-size: 14px;
 }
-.table-header {
+.sarv-app .page { padding: 18px; }
+.sarv-app .component-card { padding: 12px; }
+.sarv-app .section { padding: 8px 0; }
+.sarv-app .metadata { padding: 4px 0 8px; }
+.sarv-app .document-toolbar { padding-bottom: 8px; }
+.sarv-app .document-actions {
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--window-bg-color);
+}
+.sarv-app .workspace-page-header { margin-bottom: 12px; }
+.sarv-app .page-title { font-weight: 600; }
+.sarv-app .field-label { font-weight: 500; }
+.sarv-app .caption { font-size: 12px; }
+.sarv-app button { font-weight: 500; }
+.sarv-app button.suggested-action { font-weight: 600; }
+.sarv-app .table {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background-color: var(--view-bg-color);
+}
+.sarv-app .table-header {
   background-color: var(--window-bg-color);
   color: var(--window-fg-color);
   border-bottom: 1px solid var(--border-color);
+  font-size: 12px;
+  font-weight: 500;
+}
+.sarv-app .table-row { border-bottom: 1px solid var(--border-color); min-height: 36px; }
+.sarv-app .table-cell { padding: 4px 8px; }
+.sarv-app .cell-editor {
+  min-height: 20px;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+.sarv-app .numeric { font-feature-settings: "tnum"; }
+.sarv-app .quote-summary { padding: 8px 0; }
+.sarv-app .totals-row { padding: 4px 0; }
+.sarv-app .total {
+  padding: 12px 0;
+  border-top: 1px solid var(--border-color);
   font-weight: 600;
 }
-.table-row { border-bottom: 1px solid var(--border-color); min-height: 36px; }
-.table-cell { padding: 5px 6px; }
-.cell-editor { min-height: 20px; padding: 4px 7px; }
-.quote-summary { padding: 8px 0; }
-.totals-row { padding: 6px 0; }
-.total {
-  padding: 10px 0;
-  border-top: 1px solid var(--border-color);
-  font-weight: 700;
+.sarv-app .status { padding: 4px 18px; font-size: 12px; }
+.sarv-app .status-label { padding: 4px 8px; }
+.sarv-app .validation { padding: 8px 12px; }
+.sarv-app .muted, .sarv-app .badge, .sarv-app .row-description { opacity: var(--dim-opacity); }
+
+/* Flat navigation uses one hierarchy and familiar theme symbolic icons. GTK
+ * still owns native toggle, keyboard focus and accessibility behaviour. */
+.sarv-app .sidebar { padding: 12px 8px; }
+.sarv-app .workspace-brand { padding: 4px 12px 12px; }
+.sarv-app .navigation-group {
+  padding: 12px 12px 4px;
+  font-size: 12px;
+  color: alpha(var(--window-fg-color), 0.64);
+  font-weight: 500;
 }
-.status { padding: 6px 18px; }
-.status-label { padding: 3px 6px; }
-.validation { padding: 10px 12px; }
-/* Compatibility for older labels; new components use .dimmed + .caption. */
-.muted, .badge, .row-description { opacity: var(--dim-opacity); }
+.sarv-app button.sarv-navigation-row {
+  padding: 8px 12px;
+  margin: 0 4px;
+  border-radius: 6px;
+}
+.sarv-app button.sarv-navigation-row:checked {
+  background-color: alpha(var(--accent-bg-color), 0.12);
+}
+.sarv-app .navigation-icon { color: var(--accent-color); }
+.sarv-app .navigation-label { font-weight: 500; }
+.sarv-app button.sarv-navigation-row:checked .navigation-label { font-weight: 600; }
+.sarv-app .navigation-shortcut { color: alpha(var(--window-fg-color), 0.50); font-size: 11px; }
+.sarv-app .navigation-count {
+  padding: 0 6px;
+  border-radius: 6px;
+  background-color: alpha(var(--window-fg-color), 0.06);
+}
+
+/* Managers keep ordinary boxed native rows with compact supporting text. */
+.sarv-app .manager-list row { min-height: 44px; }
+.sarv-app .manager-list row .subtitle { font-size: 12px; }
+.sarv-app .manager-toolbar { margin-bottom: 8px; }

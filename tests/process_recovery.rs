@@ -175,6 +175,7 @@ fn run_worker(mode: &str, directory: &Path) -> Result<()> {
                     id: id(),
                     name: "x".repeat(384),
                     phone: String::new(),
+                    ..Customer::default()
                 })
                 .collect();
             candidate.validate()?;
