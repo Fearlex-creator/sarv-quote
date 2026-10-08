@@ -1,0 +1,39 @@
+dbus-daemon[192960]: [session uid=1000 pid=192960 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=192966 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze3" label="kernel")
+dbus-daemon[192960]: [session uid=1000 pid=192960 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[192992]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=192966 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze3" label="kernel")
+dbus-daemon[192992]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{
+  "application_memory_kib_after_full_workflow": {
+    "VmHWM": 339136,
+    "VmRSS": 294816
+  },
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze3",
+  "sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "native_report": "/workspace/sarv-quote/artifacts/performance-m4/final-scale/synthetic-profile/native-responsiveness-verification.json",
+  "functional_result": "passed",
+  "strict_budgets": {
+    "maximum_heartbeat_gap_ms": {
+      "actual": 497.93376,
+      "budget": 50,
+      "passes": false
+    },
+    "unchanged_editor_page_ms": {
+      "actual": 140.156491,
+      "budget": 150,
+      "passes": true
+    },
+    "pdf_busy_heartbeat_ms": {
+      "actual": 130.624583,
+      "budget": 50,
+      "passes": false
+    }
+  },
+  "measurement": "n=1 complete native workflow; timer gaps include observer and scheduling; no p95 claim",
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "limits": [
+    "private X11/Cairo executor; Wayland and physical desktop untested",
+    "20 ms heartbeat is a responsiveness proxy, not a continuous CPU trace",
+    "probe screenshots and setup are included in global gaps"
+  ]
+}

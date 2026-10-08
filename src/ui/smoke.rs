@@ -676,7 +676,18 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
         if let Some(ui) = weak.upgrade() {
             let key = key.name().map(|s| s.to_string()).unwrap_or_default();
             glib::idle_add_local_once(move || {
-                let focus = gtk::prelude::GtkWindowExt::focus(&ui.window);
+                // A modal Dialog owns its focus independently of GtkWindow.
+                // Report that focus rather than an underlying header control.
+                let dialog = ui.visible_dialog();
+                let dialog_focus = dialog.as_ref().and_then(|dialog| dialog.focus());
+                let focus_scope = if dialog_focus.is_some() {
+                    "dialog"
+                } else if dialog.is_some() {
+                    "window-fallback"
+                } else {
+                    "window"
+                };
+                let focus = dialog_focus.or_else(|| gtk::prelude::GtkWindowExt::focus(&ui.window));
                 let contains = |widget: &gtk::Widget| focus.as_ref().is_some_and(|w| w == widget || w.is_ancestor(widget));
                 let mut target = "other".to_string();
                 for row in ui.row_editors.borrow().iter() {
@@ -709,7 +720,7 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
                 let focus_bounds = focus.as_ref().and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
                 let focus_clip_bounds = focus.as_ref().and_then(|widget| widget.ancestor(gtk::ScrolledWindow::static_type()))
                     .and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
-                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some()});
+                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some(),"focus_scope":focus_scope,"dialog_title":dialog.as_ref().map(|dialog|dialog.title().to_string())});
                 use std::io::Write;
                 if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(directory(&ui).join("keyboard-events.jsonl")) {
                     let _ = writeln!(file, "{event}");

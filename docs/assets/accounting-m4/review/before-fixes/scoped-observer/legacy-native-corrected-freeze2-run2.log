@@ -1,0 +1,53 @@
+dbus-daemon[184508]: [session uid=1000 pid=184508 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=184515 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze2" label="kernel")
+dbus-daemon[184508]: [session uid=1000 pid=184508 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[184543]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=184515 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze2" label="kernel")
+dbus-daemon[184543]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[184508]: [session uid=1000 pid=184508 pidfd=5] Activating service name='ca.desrt.dconf' requested by ':1.1' (uid=1000 pid=184515 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze2" label="kernel")
+dbus-daemon[184508]: [session uid=1000 pid=184508 pidfd=5] Successfully activated service 'ca.desrt.dconf'
+CHECK fresh native chooser verifies archivedM3 manual prefix backup without changing state True
+CHECK fresh actual native restore preserves exact old history except schema True
+CHECK old arbitrary prefix exposes ordinary reversal and no procurement source True
+CHECK real Enter opens ordinary reversal dialog with labelled-by reason True
+CHECK typed reason retained without posted history mutation False
+X connection to :9 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "production_source_sha256": "895386c1b3e66d58460c3e704487e8450833cb7ea581cc370c0fa9febf1ec8f2",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/legacy-corrected-etypot4g",
+  "scope": "Fresh native chooser/restored exact archived-M3 manual-prefix history; corrected labelled-by reason selector; actual XTest Enter, typed reason, Tab, Escape; no production change",
+  "checks": [
+    {
+      "name": "fresh native chooser verifies archivedM3 manual prefix backup without changing state",
+      "passed": true
+    },
+    {
+      "name": "fresh actual native restore preserves exact old history except schema",
+      "passed": true
+    },
+    {
+      "name": "old arbitrary prefix exposes ordinary reversal and no procurement source",
+      "passed": true
+    },
+    {
+      "name": "real Enter opens ordinary reversal dialog with labelled-by reason",
+      "passed": true
+    },
+    {
+      "name": "typed reason retained without posted history mutation",
+      "passed": false
+    }
+  ],
+  "original_backup": "/workspace/sarv-quote/artifacts/independent-m4/final-freeze2/legacy-m3/old-m3-manual-prefix-v4.json",
+  "original_backup_sha256": "eceac19c8f26b45461ca2ed0a19d53f4f5c3b0f1fec536dfddb55d66826ac1e5",
+  "error": "typed reason retained without posted history mutation"
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/independent-m4/legacy-native-final.py", line 42, in <module>
+    check('old arbitrary prefix exposes ordinary reversal and no procurement source',not find('منبع خرید و اثر موجودی',['button','push button']) and review.state(profile)==saved);press('سند معکوس با دلیل');reason=native.wait_for(lambda:find('دلیل ضروری',['entry','text']),label='actual labelled-by reason');check('real Enter opens ordinary reversal dialog with labelled-by reason',reason is not None and any(r['role']=='dialog' and r['name']=='ثبت سند معکوس' for r in access.tree()));focus('دلیل ضروری',['entry','text']);x11.type_ascii('independent cancellation focus proof');check('typed reason retained without posted history mutation',access.text(reason)=='independent cancellation focus proof' and review.state(profile)==saved);shot('legacy-reversal-typed.png')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/legacy-native-final.py", line 17, in check
+    def check(name,value,**detail):report['checks'].append({'name':name,'passed':bool(value),**detail});print('CHECK',name,bool(value),flush=True);assert value,name
+                                                                                                                                                          ^^^^^
+AssertionError: typed reason retained without posted history mutation

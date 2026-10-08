@@ -25,6 +25,20 @@ pub(super) fn heading(s: &str) -> gtk::Label {
 pub(super) fn button(s: &str) -> gtk::Button {
     gtk::Button::with_label(s)
 }
+/// Keep collapsed content out of GTK's keyboard traversal. GTK 4.22 may
+/// retain child-visible on the detached Expander child; traversing that child
+/// would ask for focus on a widget without a window. Its input stays intact.
+pub(super) fn expander_with_child(caption: &str, child: &impl IsA<gtk::Widget>) -> gtk::Expander {
+    let expander = gtk::Expander::new(Some(caption));
+    expander.set_child(Some(child));
+    child.as_ref().set_child_visible(false);
+    expander.connect_expanded_notify(|expander| {
+        if let Some(child) = expander.child() {
+            child.set_child_visible(expander.is_expanded());
+        }
+    });
+    expander
+}
 pub(super) fn accessible_name(widget: &impl IsA<gtk::Widget>, name: &str) {
     widget
         .as_ref()

@@ -368,6 +368,97 @@ fn show_result<T>(
     }
 }
 
+/// Share the ledger's worker/CAS boundary with the connected business pages.
+pub(super) fn command_runner(ui: &Rc<Ui>) -> super::core::RunCommand {
+    let weak = Rc::downgrade(ui);
+    Rc::new(move |dialog, error, save, message, command| {
+        let Some(ui) = weak.upgrade() else { return };
+        if ui.persistence_busy.get() || ui.background_busy.get() {
+            error.set_text("ذخیره یا خروجی دیگری در حال انجام است؛ ورودی شما حفظ شده است");
+            error.set_visible(true);
+            return;
+        }
+        let directory = ui.store.borrow().directory.clone();
+        let reserved = ui.store.borrow_mut().begin_detached();
+        let (generation, mut candidate) = match reserved {
+            Ok(value) => value,
+            Err(e) => {
+                error.set_text(&format!("{e:#}"));
+                error.set_visible(true);
+                return;
+            }
+        };
+        ui.persistence_busy.set(true);
+        save.set_sensitive(false);
+        dialog.set_can_close(false);
+        if let Some(content) = dialog.child() {
+            content.set_sensitive(false);
+        }
+        error.set_text("در حال بررسی و ذخیرهٔ اتمی…");
+        error.remove_css_class("error");
+        error.set_visible(true);
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let spawned = thread::Builder::new()
+            .name("sarv-business-commit".into())
+            .spawn(move || {
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    command(&mut candidate.accounting)?;
+                    let prepared = Store::prepare_candidate(generation, candidate)?;
+                    Store::commit_detached(directory, prepared)
+                }))
+                .unwrap_or_else(|_| Err(anyhow::anyhow!("ثبت قطع شد؛ ورودی شما حفظ شده است")));
+                let _ = sender.send(result);
+            });
+        if let Err(e) = spawned {
+            let result = ui.store.borrow_mut().finish_detached(Err(e.into()));
+            ui.persistence_busy.set(false);
+            save.set_sensitive(true);
+            dialog.set_can_close(true);
+            if let Some(content) = dialog.child() {
+                content.set_sensitive(true);
+            }
+            error.add_css_class("error");
+            if let Err(e) = result {
+                error.set_text(&format!("{e:#}"));
+            }
+            return;
+        }
+        glib::timeout_add_local(Duration::from_millis(16), move || {
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Err(anyhow::anyhow!("ثبت قطع شد؛ دوباره تلاش کنید"))
+                }
+            };
+            let result = ui.store.borrow_mut().finish_detached(result);
+            ui.persistence_busy.set(false);
+            save.set_sensitive(true);
+            dialog.set_can_close(true);
+            if let Some(content) = dialog.child() {
+                content.set_sensitive(true);
+            }
+            error.add_css_class("error");
+            match result {
+                Ok(()) => {
+                    dialog.close();
+                    super::procurement::refresh_all(&ui);
+                    ui.refresh_lists();
+                    ui.message(Ok(message));
+                    if ui.close_after_save.get() {
+                        ui.save_form_async();
+                    }
+                }
+                Err(e) => {
+                    error.set_text(&format!("{e:#}"));
+                    error.set_visible(true);
+                }
+            }
+            glib::ControlFlow::Break
+        });
+    })
+}
+
 pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let root = column();
     root.add_css_class("page");
@@ -443,18 +534,21 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let search = gtk::SearchEntry::new();
     search.set_placeholder_text(Some("شماره، منبع، رویداد، شرح یا حساب…"));
     search.set_widget_name("accounting-journal-search");
+    accessible_name(&search, "جست‌وجوی اسناد حسابداری");
     let journal_shell = column();
     journal_shell.append(&search);
     journal_shell.append(&scroll(&journals));
     let chart_search = gtk::SearchEntry::new();
     chart_search.set_placeholder_text(Some("کد، نام یا نوع حساب…"));
     chart_search.set_widget_name("accounting-account-search");
+    accessible_name(&chart_search, "جست‌وجوی حساب‌ها");
     let chart_shell = column();
     chart_shell.append(&chart_search);
     chart_shell.append(&scroll(&chart));
     let audit_search = gtk::SearchEntry::new();
     audit_search.set_placeholder_text(Some("عملیات، دلیل، شناسه یا تاریخ…"));
     audit_search.set_widget_name("accounting-audit-search");
+    accessible_name(&audit_search, "جست‌وجوی تاریخچه حسابداری");
     let audit_shell = column();
     audit_shell.append(&audit_search);
     audit_shell.append(&scroll(&audit));
@@ -602,6 +696,9 @@ impl Page {
         ui.persistence_busy.set(true);
         save.set_sensitive(false);
         dialog.set_can_close(false);
+        if let Some(content) = dialog.child() {
+            content.set_sensitive(false);
+        }
         error.set_text("در حال بررسی و ذخیرهٔ اتمی…");
         error.set_visible(true);
         error.remove_css_class("error");
@@ -621,6 +718,9 @@ impl Page {
             ui.persistence_busy.set(false);
             save.set_sensitive(true);
             dialog.set_can_close(true);
+            if let Some(content) = dialog.child() {
+                content.set_sensitive(true);
+            }
             error.add_css_class("error");
             let result = ui.store.borrow_mut().finish_detached(Err(e.into()));
             show_result(result, dialog, error, self, message);
@@ -642,9 +742,15 @@ impl Page {
             ui.persistence_busy.set(false);
             save.set_sensitive(true);
             dialog.set_can_close(true);
+            if let Some(content) = dialog.child() {
+                content.set_sensitive(true);
+            }
             error.add_css_class("error");
             let succeeded = result.is_ok();
             show_result(result, &dialog, &error, &page, message);
+            if succeeded {
+                super::procurement::refresh_all(&ui);
+            }
             if succeeded && ui.close_after_save.get() {
                 ui.save_form_async();
             }
@@ -1281,10 +1387,15 @@ impl Page {
         {
             let c = card();
             let reversed = state.journals.iter().any(|j| matches!(&j.kind, JournalKind::Reversal {journal_id} if journal_id == &journal.id));
-            let kind = match &journal.kind {
-                JournalKind::Opening => "افتتاحیهٔ دفتر کل",
-                JournalKind::Manual => "سند دستی",
-                JournalKind::Reversal { .. } => "سند معکوس",
+            let protected_source = state.has_typed_journal_source(&journal.id);
+            let kind = match (protected_source, journal.event.as_str()) {
+                (true, "procurement.receive.v1") => "رسید کالا • موجودی و کالای صورتحساب‌نشده",
+                (true, "procurement.bill.v1") => "صورتحساب تأمین‌کننده • تطبیق رسید",
+                _ => match &journal.kind {
+                    JournalKind::Opening => "افتتاحیهٔ دفتر کل",
+                    JournalKind::Manual => "سند دستی",
+                    JournalKind::Reversal { .. } => "سند معکوس",
+                },
             };
             c.append(&heading(&format!(
                 "{} • {} • {}",
@@ -1313,7 +1424,32 @@ impl Page {
                 }
             });
             buttons.insert(&details, -1);
-            if !reversed && !matches!(journal.kind, JournalKind::Reversal { .. }) {
+            if let Some(source) = state
+                .procurement
+                .records
+                .iter()
+                .find(|record| record.journal_id.as_deref() == Some(journal.id.as_str()))
+            {
+                let document = button("منبع خرید و اثر موجودی");
+                document.set_widget_name(&format!("accounting-procurement-source-{}", journal.id));
+                let id = source.id.clone();
+                let weak_ui = Rc::downgrade(&ui);
+                document.connect_clicked(move |_| {
+                    if let Some(ui) = weak_ui.upgrade() {
+                        super::procurement::open_document(&ui, &id);
+                    }
+                });
+                buttons.insert(&document, -1);
+            }
+            if protected_source {
+                c.append(&label(
+                    "این سند به جزئیات منبع متصل است و معکوس‌کردن مستقل آن مجاز نیست.",
+                ));
+            }
+            if !reversed
+                && !matches!(journal.kind, JournalKind::Reversal { .. })
+                && !protected_source
+            {
                 let reverse = button("سند معکوس با دلیل");
                 reverse.set_widget_name(&format!("accounting-reverse-{}", journal.id));
                 let id = journal.id.clone();
@@ -2052,6 +2188,7 @@ fn audit_operation(operation: &AuditOperation) -> &'static str {
         AuditOperation::PeriodReopened => "بازگشایی دوره",
         AuditOperation::CoreConfigured => "تنظیم رویه و نگاشت حساب‌ها",
         AuditOperation::CoreOpeningInitialized => "شروع دفتر بدون مانده و بدون سند مالی",
+        AuditOperation::ProcurementRecorded => "رویداد خرید یا گردش انبار بدون سند مالی",
     }
 }
 

@@ -147,7 +147,199 @@ impl Drop for PreviewPages {
     }
 }
 
+/// A source-specific explicit selection for an existing draft line.
+/// The worker checks the exact source and target before its single atomic save.
+pub(super) struct LineProductChoice {
+    pub(super) catalog_id: String,
+    pub(super) fingerprint: String,
+    pub(super) product_index: usize,
+    pub(super) code: String,
+    pub(super) line_index: usize,
+    pub(super) original_query: String,
+}
+
+pub(super) enum DraftSelection {
+    Product(LineProductChoice),
+    Customer(Customer),
+}
+
 impl Ui {
+    pub(super) fn choose_draft_selection_async(
+        self: &Rc<Self>,
+        selection: DraftSelection,
+        complete: impl FnOnce(&Rc<Self>, Result<bool>) + 'static,
+    ) {
+        if self.persistence_busy.get() {
+            complete(
+                self,
+                Err(anyhow::anyhow!(
+                    "ذخیره در حال انجام است؛ پس از پایان دوباره انتخاب کنید"
+                )),
+            );
+            return;
+        }
+        let draft = match self.form_draft() {
+            Ok((draft, _)) => draft,
+            Err(error) => {
+                complete(self, Err(error));
+                return;
+            }
+        };
+        let directory = self.store.borrow().directory.clone();
+        let detached = self.store.borrow_mut().begin_detached();
+        let (generation, mut candidate) = match detached {
+            Ok(value) => value,
+            Err(error) => {
+                complete(self, Err(error));
+                return;
+            }
+        };
+        let previous_customer = matches!(&selection, DraftSelection::Customer(_)).then(|| {
+            (
+                self.customer.text().to_string(),
+                self.phone.text().to_string(),
+            )
+        });
+        candidate.draft = draft;
+        let revision = self.edit_revision.get();
+        if let Some(pending) = self.pending.borrow_mut().take() {
+            pending.remove();
+        }
+        self.persistence_busy.set(true);
+        self.message(Ok(match &selection {
+            DraftSelection::Product(_) => "در حال ذخیرهٔ انتخاب کالا و پیش‌نویس…",
+            DraftSelection::Customer(_) => "در حال ذخیرهٔ انتخاب مشتری و پیش‌نویس…",
+        }));
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let spawned = thread::Builder::new()
+            .name("sarv-persistence".into())
+            .spawn(move || {
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    match selection {
+                        DraftSelection::Product(choice) => {
+                            anyhow::ensure!(
+                                candidate.draft.catalog_id == choice.catalog_id,
+                                "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
+                            );
+                            let catalog = candidate.catalog()?;
+                            anyhow::ensure!(
+                                catalog.id == choice.catalog_id
+                                    && catalog.fingerprint == choice.fingerprint
+                                    && catalog
+                                        .products
+                                        .get(choice.product_index)
+                                        .is_some_and(|product| product.code == choice.code),
+                                "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
+                            );
+                            let line = candidate
+                                .draft
+                                .lines
+                                .get_mut(choice.line_index)
+                                .ok_or_else(|| {
+                                    anyhow::anyhow!("ردیف تغییر کرده؛ دوباره بررسی کنید")
+                                })?;
+                            anyhow::ensure!(
+                                line.query == choice.original_query,
+                                "درخواست ردیف تغییر کرده؛ دوباره بررسی کنید"
+                            );
+                            line.chosen_code = Some(choice.code);
+                            candidate.draft.stale_ack = false;
+                        }
+                        DraftSelection::Customer(customer) => {
+                            let current = candidate
+                                .customers
+                                .iter()
+                                .find(|record| record.id == customer.id)
+                                .ok_or_else(|| {
+                                    anyhow::anyhow!("مشتری تغییر کرده؛ دوباره انتخاب کنید")
+                                })?;
+                            anyhow::ensure!(
+                                !current.archived
+                                    && serde_json::to_vec(current)?
+                                        == serde_json::to_vec(&customer)?,
+                                "مشتری تغییر کرده یا بایگانی شده؛ دوباره انتخاب کنید"
+                            );
+                            candidate.select_customer(&customer.id)?;
+                        }
+                    }
+                    let prepared = Store::prepare_candidate(generation, candidate)?;
+                    Store::commit_detached(directory, prepared)
+                }))
+                .unwrap_or_else(|_| {
+                    Err(anyhow::anyhow!(
+                        "ذخیرهٔ انتخاب قطع شد؛ ورودی شما حفظ شده است"
+                    ))
+                });
+                let _ = sender.send(result);
+            });
+        if let Err(error) = spawned {
+            let result = self.store.borrow_mut().finish_detached(Err(error.into()));
+            self.persistence_busy.set(false);
+            self.close_after_save.set(false);
+            self.pending_save_action.borrow_mut().take();
+            complete(self, result.map(|()| false));
+            return;
+        }
+        let ui = self.clone();
+        let mut complete = Some(complete);
+        glib::timeout_add_local(Duration::from_millis(20), move || {
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Err(anyhow::anyhow!("ذخیرهٔ انتخاب قطع شد؛ دوباره تلاش کنید"))
+                }
+            };
+            let result = ui.store.borrow_mut().finish_detached(result);
+            ui.persistence_busy.set(false);
+            let same_revision = ui.edit_revision.get() == revision;
+            if result.is_ok() && same_revision {
+                ui.finish_form_save();
+                ui.refresh_totals();
+            } else if result.is_err() {
+                ui.pending_save_action.borrow_mut().take();
+                ui.close_after_save.set(false);
+            }
+            let succeeded = result.is_ok();
+            if succeeded
+                && !same_revision
+                && let Some((name, phone)) = &previous_customer
+                && ui.customer.text().as_str() == name
+                && ui.phone.text().as_str() == phone
+            {
+                // Unrelated newer edits must not undo the explicit customer.
+                // Update only untouched identity widgets; changed text wins.
+                let (customer, phone) = {
+                    let store = ui.store.borrow();
+                    (
+                        store.state.draft.customer.clone(),
+                        store.state.draft.phone.clone(),
+                    )
+                };
+                let loading = ui.loading.replace(true);
+                ui.customer.set_text(&customer);
+                ui.phone.set_text(&phone);
+                ui.loading.set(loading);
+            }
+            if let Some(complete) = complete.take() {
+                complete(&ui, result.map(|()| same_revision));
+            }
+            if succeeded {
+                if !same_revision {
+                    // Never replace newer GTK inputs, including invalid text,
+                    // with the old receipt. Validate and save them separately.
+                    ui.save_form_async();
+                } else {
+                    ui.run_saved_action();
+                    if ui.close_after_save.replace(false) {
+                        ui.window.close();
+                    }
+                }
+            }
+            glib::ControlFlow::Break
+        });
+    }
+
     pub(super) fn save_form_async_then(
         self: &Rc<Self>,
         complete: impl FnOnce(&Rc<Self>) + 'static,

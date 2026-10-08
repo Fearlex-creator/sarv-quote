@@ -1,0 +1,84 @@
+--- freeze4/src/ui/procurement.rs
++++ completion-status/src/ui/procurement.rs
+@@ -228,12 +228,16 @@
+         },
+         move |ui, result| {
+             if complete_cache.pending.borrow().as_ref() != Some(&key) {
++                ui.message(Ok(
++                    "آماده‌سازی قیمت قبلی پایان یافت؛ منبع انتخاب‌شده تغییر کرد.",
++                ));
+                 return;
+             }
+             complete_cache.pending.borrow_mut().take();
+             match result {
+                 Ok(snapshot) => {
+                     *complete_cache.ready.borrow_mut() = Some(snapshot.clone());
++                    ui.message(Ok("جست‌وجوی قیمت سفارش خرید آماده است."));
+                     let callbacks = complete_cache
+                         .callbacks
+                         .borrow_mut()
+@@ -693,10 +697,18 @@
+             move |ui, result| {
+                 let Some(review) = weak.upgrade() else {
+                     finish_monitor(&completion, "closed");
++                    ui.message(Ok(
++                        "بازبینی پایان یافت؛ پنجره بسته شد و در این بازبینی سندی ثبت نشد.",
++                    ));
+                     return;
+                 };
+                 if !review.dialog.is_visible() || review.revision.get() != revision {
+                     finish_monitor(&completion, "stale_or_closed");
++                    ui.message(Ok(if review.dialog.is_visible() {
++                        "بازبینی قبلی پایان یافت؛ ورودی تغییر کرده است و باید دوباره بازبینی شود."
++                    } else {
++                        "بازبینی پایان یافت؛ پنجره بسته شد و در این بازبینی سندی ثبت نشد."
++                    }));
+                     return;
+                 }
+                 let phase_result = if result.is_ok() {
+@@ -712,10 +724,12 @@
+                         *review.verified.borrow_mut() = Some(validated);
+                         review.save.set_sensitive(true);
+                         reveal_review(&review.output);
++                        ui.message(Ok("بازبینی سند آماده است؛ هنوز ثبت نشده است."));
+                     }
+                     Err(error) => {
+                         show_error(&review.error, &error);
+                         review.output.append(&label(&error.to_string()));
++                        ui.message(Err::<String, _>(error));
+                     }
+                 }
+                 finish_monitor(&completion, phase_result);
+@@ -1618,8 +1632,14 @@
+                 Ok((r, c, records, document_index, master_index, masters))
+             },
+             move |ui, result| {
+-                let Some(p) = weak.upgrade() else { return };
++                let Some(p) = weak.upgrade() else {
++                    ui.message(Ok("خواندن منابع پایان یافت؛ صفحه بسته شده است."));
++                    return;
++                };
+                 if p.revision.get() != revision {
++                    ui.message(Ok(
++                        "خواندن نسخهٔ قبلی منابع پایان یافت؛ گزارش جاری تغییر کرده است.",
++                    ));
+                     return;
+                 }
+                 match result {
+@@ -2277,12 +2297,12 @@
+         let unit = money_unit(&self.unit);
+         let weak_page = Rc::downgrade(self);
+         let document = id.clone();
+-        let _=ui.run_background("خواندن منبع ثبت‌شده…",move||{let concise=concise_document(&snapshot.accounting,&company,&id,unit,&snapshot.settings)?;let report=sarv_quote::procurement_export::document_preview(&snapshot.accounting,&company,&id,unit,snapshot.settings.date_display,snapshot.settings.display_digits)?;Ok((report,concise))},move|_,result|{
+-            if !weak_dialog.upgrade().is_some_and(|d|d.is_visible()){return;}clear(&body);
++        let _=ui.run_background("خواندن منبع ثبت‌شده…",move||{let concise=concise_document(&snapshot.accounting,&company,&id,unit,&snapshot.settings)?;let report=sarv_quote::procurement_export::document_preview(&snapshot.accounting,&company,&id,unit,snapshot.settings.date_display,snapshot.settings.display_digits)?;Ok((report,concise))},move|ui,result|{
++            if !weak_dialog.upgrade().is_some_and(|d|d.is_visible()){ui.message(Ok("نمایش منبع لغو شد؛ ثبت‌ها تغییر نکردند."));return;}clear(&body);
+             match result{Ok((report,concise))=>{body.append(&heading(&report.title));body.append(&label(&format!("{} • {} • {}",report.company,isolate(&report.as_of),report.status)));body.append(&label("نسخهٔ ثبت‌شده ثابت است؛ بازبینی مجدد یا ثبت دیگری از این پنجره انجام نمی‌شود."));
+                 report_rows(&body,concise);let trace=gtk::Box::new(gtk::Orientation::Vertical,8);report_rows(&trace,report.lines);body.append(&disclosure("جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده",&trace));
+-                let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}body.append(&bar);
+-            },Err(e)=>show_error(&error,e)}
++                let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}body.append(&bar);ui.message(Ok("منبع ثبت‌شده آماده است • فقط خواندنی"));
++            },Err(e)=>{show_error(&error,&e);ui.message(Err::<String,_>(e));}}
+         });
+     }
+     fn export(self: &Rc<Self>, document: Option<String>, pdf: bool) {

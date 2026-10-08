@@ -1,0 +1,35 @@
+{
+  "result": "failed",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "production_source_sha256": "6b1996a41ed86807a91a18820f7fce4bb167e99399403b3fd25cf1b14e4aa36c",
+  "source_snapshot": "/workspace/sarv-quote",
+  "repository_epoch_may_advance": false,
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/final-scale/synthetic-profile",
+  "fixture_generation": 11,
+  "fixture_payload_sha256": "d4fccf7bda73efbb82eddef1b6432e6d7aa7a4ff7bbfd845fe20fc3d3cbf7fe4",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/catalog-worker-final5-sx45mr0h",
+  "scope": "Actual owned GTK controls/XTest keys; disposable SQLite backup; worker-caption-triggered native Close/reopen/indexed last product; transient loading sampling reported separately and exact persisted bytes/generation. Not performance measurement or forced worker-error injection.",
+  "checks": [
+    {
+      "name": "startup retains exact original payload and generation",
+      "passed": true
+    },
+    {
+      "name": "actual final5 plain Escape closes copied dialog with exact State and generation",
+      "passed": true,
+      "worker_start_observed": true,
+      "weak_discard_callback_observed": true
+    },
+    {
+      "name": "late worker completion after cancellation cannot mutate source or generation",
+      "passed": true
+    }
+  ],
+  "private_gtk_animation_policy": "Animations disabled in disposable XDG_CONFIG_HOME to make close lifetime independent of transition duration. Retained default-animation attempts are distinct.",
+  "manager_setup": "Existing SARV_EXPAND capture hook opens original manager expander; Composer opening and cancellation use actual keyboard controls.",
+  "native_close_input": "Actual XTest plain Escape on final5 current top Composer; header action attempts on4 retained separately, no pointer/header-focus claim.",
+  "worker_start_caption_observed": true,
+  "weak_discard_callback_observed": true,
+  "transient_loading_sampling_limit": "Previous default-motion full/scoped AT-SPI walks returned after Ready; neither loading visibility nor weak-discard branch is inferred if not directly observed.",
+  "error": "Timed out waiting for reopened initial indexed100 rows"
+}

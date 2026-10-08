@@ -1,0 +1,1073 @@
+{
+  "result": "passed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze2",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "checks": [
+    {
+      "page": "procurement",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "light",
+      "geometry": [
+        900,
+        560
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "procurement",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "light",
+      "geometry": [
+        650,
+        550
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "inventory",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "light",
+      "geometry": [
+        900,
+        560
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "inventory",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "light",
+      "geometry": [
+        650,
+        550
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "procurement",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "dark",
+      "geometry": [
+        900,
+        560
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "procurement",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "dark",
+      "geometry": [
+        650,
+        550
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "inventory",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "dark",
+      "geometry": [
+        900,
+        560
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    },
+    {
+      "page": "inventory",
+      "active_page_verified_by_gtk_native_key_event": true,
+      "appearance": "dark",
+      "geometry": [
+        650,
+        550
+      ],
+      "actual_primary_Tab_focus": true,
+      "actual_footer_Tab_focus": true,
+      "automatic_scroll_to_visible_focus": true
+    }
+  ],
+  "key_events": [
+    {
+      "target": "سفارش خرید تازه",
+      "actual_tab_presses": 4,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        611.0,
+        489.0,
+        258.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          611.0,
+          489.0,
+          258.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "سفارش خرید تازه",
+        "focus_name": "procurement-new-order",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 258,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 23,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        18.0,
+        489.0,
+        854.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          489.0,
+          854.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 854,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "سفارش خرید تازه",
+      "actual_tab_presses": 4,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        424.0,
+        147.0,
+        195.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          424.0,
+          147.0,
+          195.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "سفارش خرید تازه",
+        "focus_name": "procurement-new-order",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 195,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 23,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        18.0,
+        479.0,
+        604.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          479.0,
+          604.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 604,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "انتقال بین انبارها",
+      "actual_tab_presses": 4,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        567.0,
+        489.0,
+        302.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          567.0,
+          489.0,
+          302.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "انتقال بین انبارها",
+        "focus_name": "procurement-new-transfer",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 302,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 22,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        18.0,
+        489.0,
+        854.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          489.0,
+          854.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 854,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "انتقال بین انبارها",
+      "actual_tab_presses": 4,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        379.0,
+        147.0,
+        240.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          379.0,
+          147.0,
+          240.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "انتقال بین انبارها",
+        "focus_name": "procurement-new-transfer",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 240,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 22,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        18.0,
+        479.0,
+        604.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          479.0,
+          604.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 604,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "سفارش خرید تازه",
+      "actual_tab_presses": 4,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        611.0,
+        489.0,
+        258.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          611.0,
+          489.0,
+          258.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "سفارش خرید تازه",
+        "focus_name": "procurement-new-order",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 258,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 23,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        18.0,
+        489.0,
+        854.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          489.0,
+          854.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 854,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "سفارش خرید تازه",
+      "actual_tab_presses": 4,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        424.0,
+        147.0,
+        195.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          424.0,
+          147.0,
+          195.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "سفارش خرید تازه",
+        "focus_name": "procurement-new-order",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 195,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 23,
+      "active_page": "procurement",
+      "gtk_widget_root_bounds": [
+        18.0,
+        479.0,
+        604.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          479.0,
+          604.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 604,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "انتقال بین انبارها",
+      "actual_tab_presses": 4,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        567.0,
+        489.0,
+        302.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          567.0,
+          489.0,
+          302.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "انتقال بین انبارها",
+        "focus_name": "procurement-new-transfer",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 302,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 22,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        18.0,
+        489.0,
+        854.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        890.0,
+        477.0
+      ],
+      "gtk_root_window_size": [
+        890,
+        550
+      ],
+      "requested_x_window_geometry": [
+        900,
+        560
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          489.0,
+          854.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          890.0,
+          477.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          890,
+          550
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 854,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "انتقال بین انبارها",
+      "actual_tab_presses": 4,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        379.0,
+        147.0,
+        240.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          379.0,
+          147.0,
+          240.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "انتقال بین انبارها",
+        "focus_name": "procurement-new-transfer",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 240,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    },
+    {
+      "target": "به‌روزرسانی پایان روز",
+      "actual_tab_presses": 22,
+      "active_page": "inventory",
+      "gtk_widget_root_bounds": [
+        18.0,
+        479.0,
+        604.0,
+        34.0
+      ],
+      "gtk_scroll_clip_bounds": [
+        0.0,
+        46.0,
+        640.0,
+        467.0
+      ],
+      "gtk_root_window_size": [
+        640,
+        540
+      ],
+      "requested_x_window_geometry": [
+        650,
+        550
+      ],
+      "whole_control_inside_window_and_scroll_clip": true,
+      "settled_native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          479.0,
+          604.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "به‌روزرسانی پایان روز",
+        "focus_name": "procurement-refresh",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "inventory",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      },
+      "atspi_screen_extents_diagnostic_only": {
+        "x": 0,
+        "y": 0,
+        "width": 604,
+        "height": 34
+      },
+      "atspi_screen_position_supported": false
+    }
+  ],
+  "fixture_profile": "/workspace/sarv-quote/artifacts/procurement-native/run-oi4h0f5z/full",
+  "run": "/workspace/sarv-quote/artifacts/procurement-short-native/run-zw83uax4",
+  "scope": "Actual private XTest Tab navigation and auto-scroll in short native windows; synthetic10record5journal fixture copied read-only; no financial writes.",
+  "accounting_exactly_preserved": true,
+  "gtk_diagnostics": {
+    "light.log": "",
+    "dark.log": ""
+  }
+}

@@ -1,0 +1,122 @@
+{
+  "status": "Freeze5 quotation38 and scoped Escape6 passed; original scope/observer traces retained separately",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "production_source_sha256": "6b1996a41ed86807a91a18820f7fce4bb167e99399403b3fd25cf1b14e4aa36c",
+  "cases": [
+    {
+      "case": "full28",
+      "result": "passed",
+      "checks": 28,
+      "original_profile": "artifacts/product-native/run-829mv1xc",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/full28/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-829mv1xc/app.log",
+        "artifacts/product-native/run-829mv1xc/xvfb.log",
+        "artifacts/product-native/run-829mv1xc/openbox.log",
+        "artifacts/product-native/run-829mv1xc/restart.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary5; no LD_PRELOAD shim"
+    },
+    {
+      "case": "disclosure4",
+      "result": "passed",
+      "checks": 4,
+      "original_profile": "artifacts/product-native/run-r6bknyp9",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/disclosure4/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-r6bknyp9/app.log",
+        "artifacts/product-native/run-r6bknyp9/xvfb.log",
+        "artifacts/product-native/run-r6bknyp9/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary5; no LD_PRELOAD shim"
+    },
+    {
+      "case": "modal3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-zwkdbeqq",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/modal3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-zwkdbeqq/app.log",
+        "artifacts/product-native/run-zwkdbeqq/xvfb.log",
+        "artifacts/product-native/run-zwkdbeqq/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary5; no LD_PRELOAD shim"
+    },
+    {
+      "case": "failure3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-gqdxfkte",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/failure3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-gqdxfkte/app.log",
+        "artifacts/product-native/run-gqdxfkte/xvfb.log",
+        "artifacts/product-native/run-gqdxfkte/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary5; no LD_PRELOAD shim"
+    },
+    {
+      "case": "escape6",
+      "result": "passed",
+      "checks": 6,
+      "checks_passed": 6,
+      "original_profile": "artifacts/product-native/run-ecz2p6o4",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/escape6/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-ecz2p6o4/app.log",
+        "artifacts/product-native/run-ecz2p6o4/xvfb.log",
+        "artifacts/product-native/run-ecz2p6o4/openbox.log"
+      ],
+      "scope": "Six scoped checks pass on corrected observer",
+      "error": null
+    },
+    {
+      "case": "escape-search-owned-history",
+      "result": "failed",
+      "checks": 3,
+      "checks_passed": 3,
+      "original_profile": "artifacts/product-native/run-0jzshuso",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/escape-search-owned-history/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-0jzshuso/app.log",
+        "artifacts/product-native/run-0jzshuso/xvfb.log",
+        "artifacts/product-native/run-0jzshuso/openbox.log"
+      ],
+      "scope": "Retained scope/observer failure; not counted as complete pass",
+      "error": "RuntimeError('Timed out waiting for condition')"
+    },
+    {
+      "case": "escape-row-toggle-observer-history",
+      "result": "failed",
+      "checks": 5,
+      "checks_passed": 5,
+      "original_profile": "artifacts/product-native/run-r5e2qwi2",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze5/escape-row-toggle-observer-history/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-r5e2qwi2/app.log",
+        "artifacts/product-native/run-r5e2qwi2/xvfb.log",
+        "artifacts/product-native/run-r5e2qwi2/openbox.log"
+      ],
+      "scope": "Retained scope/observer failure; not counted as complete pass",
+      "error": "RuntimeError('Timed out waiting for native action ساخت نسخهٔ تازه')"
+    }
+  ],
+  "current_source_differences_at_collection": [],
+  "observer_sha256": {
+    "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+    "artifacts/m4-quote-diagnostics/repeat-final/disclosure4.py": "5778c8e35ed367d17980dfbb6ca6c2544d819a2abf4187a2e33493d9dc166205",
+    "artifacts/m4-quote-diagnostics/repeat-final/escape6.py": "887e2f4c907b75845cd990ae72acfdba305293b4374a5751bd32be1666039470",
+    "artifacts/m4-quote-diagnostics/repeat-final/failure3.py": "3b7ea7b9e1efcaf3584cbc18287a3b1fb48089d3cccc81e774907e0592f9d676",
+    "artifacts/m4-quote-diagnostics/repeat-final/full28.py": "ec5dceaf7eb1025cd59c5a59c2059fbe49a4bb412fb94103ff654cefe6d65aff",
+    "artifacts/m4-quote-diagnostics/repeat-final/modal3.py": "8d1458bf3edde6e08b5b549ce2b2489ed454564d85ed08100b30a4e1507a4cb1"
+  },
+  "escape_limits": "Actual focused name-field AT-SPI ancestry is proved. Latest initial Window key event remains focus_scope=window; real later events report dialog. Exact header/FlowBox focus not witnessed; plain Escape tested from actual name field. SearchEntry Escape owns stop-search, so nested default dismissal is tested from actual keyboard-focused Save. Original row-toggle timeout corrected by using main New Catalog button for native Close."
+}

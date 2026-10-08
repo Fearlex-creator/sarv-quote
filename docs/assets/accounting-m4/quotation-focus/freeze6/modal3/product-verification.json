@@ -1,0 +1,22 @@
+{
+  "result": "passed",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-h4yc8bxg",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-mkdjbqxn",
+  "checks": [
+    {
+      "name": "Nested confirmation Back preserves parent edited input",
+      "passed": true
+    },
+    {
+      "name": "Nested Back leaves active dialog keyboard reachable",
+      "passed": true
+    },
+    {
+      "name": "Parent Cancel returns to main focus and preserves full saved state",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions"
+}

@@ -1,0 +1,3 @@
+# Independent financial/recovery/export freeze4
+
+All14 frozen phases reran against exact source `70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c`. Native acceptance is separately in ../final-freeze5/. Root final5 changed only3 UI files; unchanged financial/schema/export file hashes are checked against both manifests. No14-phase final5 rerun is claimed. All9 final4 PDFs/14 separately rendered pages were personally inspected; word bounds and integer/CSV correctness are separate. Resource human-label4 checks reran on4. Earlier3 and2 remain separate. Read ../README.md and ../final-independent-review.json.

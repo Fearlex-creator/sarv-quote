@@ -1,0 +1,49 @@
+dbus-daemon[191175]: [session uid=1000 pid=191175 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=191182 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze3" label="kernel")
+dbus-daemon[191175]: [session uid=1000 pid=191175 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[191210]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=191182 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze3" label="kernel")
+dbus-daemon[191210]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+CHECK explicit completed refresh replaces global loading footer True
+CHECK preopening error replaces global loading footer and leaves exact State True
+CHECK error clears unavailable controls instead of showing stale zero or prior amounts True
+CHECK corrected report refresh returns global footer to ready with exact State True
+CHECK corrected refresh restores literal inventory480 AP329 GRNI50 controls False
+X connection to :10 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/refresh-freeze3-6ckg146n",
+  "scope": "Only freeze2→3 affected native success/error footer completion paths, real XTest report date/Return, complete State unchanged; footer label distinguished from page status by ancestor scroll pane",
+  "checks": [
+    {
+      "name": "explicit completed refresh replaces global loading footer",
+      "passed": true
+    },
+    {
+      "name": "preopening error replaces global loading footer and leaves exact State",
+      "passed": true
+    },
+    {
+      "name": "error clears unavailable controls instead of showing stale zero or prior amounts",
+      "passed": true
+    },
+    {
+      "name": "corrected report refresh returns global footer to ready with exact State",
+      "passed": true
+    },
+    {
+      "name": "corrected refresh restores literal inventory480 AP329 GRNI50 controls",
+      "passed": false
+    }
+  ],
+  "error": "corrected refresh restores literal inventory480 AP329 GRNI50 controls"
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/independent-m4/refresh-native-final.py", line 52, in <module>
+    fill('پایان روز گزارش','2026-03-27');press('به‌روزرسانی پایان روز');native.wait_for(lambda:footer(ready),label='global footer recovered ready');check('corrected report refresh returns global footer to ready with exact State',len(footer(ready))==1 and review.state(profile)==saved);focus('کنترل و تفصیل',['page tab']);x11.key('space');time.sleep(.3);names=[''.join(c for c in r['name'].translate(str.maketrans('۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩','01234567890123456789')) if unicodedata.category(c)!='Cf') for r in access.tree()];check('corrected refresh restores literal inventory480 AP329 GRNI50 controls',any('موجودی کالا • دفتر 480 ریال • تفصیل 480 ریال • اختلاف 0 ریال' in n for n in names) and any('حساب‌های پرداختنی • دفتر 329 ریال • تفصیل 329 ریال • اختلاف 0 ریال' in n for n in names) and any('کالای دریافت‌شده، صورتحساب‌نشده • دفتر 50 ریال • تفصیل 50 ریال • اختلاف 0 ریال' in n for n in names));shot('recovered-ready-footer.png')
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/refresh-native-final.py", line 17, in check
+    def check(name,value,**detail):report['checks'].append({'name':name,'passed':bool(value),**detail});print('CHECK',name,bool(value),flush=True);assert value,name
+                                                                                                                                                          ^^^^^
+AssertionError: corrected refresh restores literal inventory480 AP329 GRNI50 controls

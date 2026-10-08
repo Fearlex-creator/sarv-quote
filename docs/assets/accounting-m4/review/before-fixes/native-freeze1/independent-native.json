@@ -1,0 +1,66 @@
+{
+  "result": "failed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze1",
+  "binary_sha256": "cd14d26374c19ed04de32a2c3a4849304a3718511c2d2cc9ec4b56fe465e7668",
+  "fixture": "/workspace/sarv-quote/artifacts/procurement-native/run-fpyy1yz3",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/run-1ek79fw1",
+  "scope": "independent external XTest keys, AT-SPI own-process discovery/focus plus actual chooser Open action, raw SQLite exact-state; disposable copy only",
+  "checks": [
+    {
+      "name": "native stage pauses before PO effect",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "actual XTest181 total error retains value and no effect",
+      "passed": true
+    },
+    {
+      "name": "editing reviewed content invalidates post",
+      "passed": true
+    },
+    {
+      "name": "real Enter posts one immutable180 PO/no financial effect",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses purchases exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "actual Escape cancels draft without changing posted state",
+      "passed": true
+    },
+    {
+      "name": "keyboard PO and discarded draft exact across restart",
+      "passed": true
+    },
+    {
+      "name": "actual chooser verified preview distinguishes1opening/10operational/5journals",
+      "passed": true
+    },
+    {
+      "name": "actual native full restore retains full10records/5J/core/catalog/requests/audit",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses inventory exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses ledger REC-A exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "protected Receive journal has no generic reversal",
+      "passed": true
+    },
+    {
+      "name": "Alt7 source resolves immutable REC-A",
+      "passed": true
+    }
+  ],
+  "stage_original_v4_recovery": "/workspace/sarv-quote/artifacts/procurement-native/run-fpyy1yz3/full/before-schema5-045d9b73-d40c-45ad-8970-3dad4fbabfda.json",
+  "x11_errors": [],
+  "error": "real Tab focus جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده"
+}

@@ -634,18 +634,7 @@ impl Ui {
             }
         });
         dialog.set_child(Some(&dialog_toolbar(&scroll(&root))));
-        let weak = Rc::downgrade(self);
-        dialog.connect_closed(move |dialog| {
-            dialog.set_child(None::<&gtk::Widget>);
-            if let Some(ui) = weak.upgrade() {
-                let current = ui.active_dialog.borrow().as_ref() == Some(dialog);
-                if current {
-                    ui.active_dialog.borrow_mut().take();
-                }
-            }
-        });
-        *self.active_dialog.borrow_mut() = Some(dialog.clone());
-        dialog.present(Some(&self.window));
+        self.present_dialog(&dialog);
         name.grab_focus();
     }
 

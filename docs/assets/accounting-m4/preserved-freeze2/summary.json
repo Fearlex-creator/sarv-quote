@@ -1,0 +1,51 @@
+{
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "production_source_sha256": "895386c1b3e66d58460c3e704487e8450833cb7ea581cc370c0fa9febf1ec8f2",
+  "status": "Final frozen preserved regression suites; quotation external28 and focus extras documented separately.",
+  "suites": {
+    "core": {
+      "result": "passed",
+      "checks": 27,
+      "raw_report": "core.json",
+      "original": "artifacts/core-native/run-88ov1w26/core-independent-native.json",
+      "actual_gtk_warning_critical_lines": 0,
+      "logs_inspected": 9
+    },
+    "jalali": {
+      "result": "passed",
+      "checks": 44,
+      "raw_report": "jalali.json",
+      "original": "artifacts/jalali-native/run-r9hiwizu/jalali-independent-native.json",
+      "actual_gtk_warning_critical_lines": 0,
+      "logs_inspected": 5
+    },
+    "sidebar": {
+      "result": "passed",
+      "checks": 24,
+      "raw_report": "sidebar.json",
+      "original": "artifacts/sidebar-native/run-dzn8gzks/sidebar-verification.json",
+      "actual_gtk_warning_critical_lines": 0,
+      "logs_inspected": 4
+    },
+    "ledger": {
+      "result": "passed",
+      "checks": 16,
+      "raw_report": "ledger.json",
+      "original": "artifacts/accounting-native/run-fp70ej2y/accounting-independent-native.json",
+      "actual_gtk_warning_critical_lines": 0,
+      "logs_inspected": 4
+    },
+    "quote-smoke": {
+      "result": "passed",
+      "checks": 23,
+      "raw_report": "quote-smoke.json",
+      "original": "artifacts/m4-preserved/quote-u7338e26"
+    },
+    "close": {
+      "result": "passed",
+      "checks": 3,
+      "raw_report": "close.json",
+      "original": "artifacts/m4-preserved/close-freeze2"
+    }
+  }
+}

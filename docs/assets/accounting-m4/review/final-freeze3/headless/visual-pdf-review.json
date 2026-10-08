@@ -1,0 +1,77 @@
+{
+  "result": "passed",
+  "reviewer": "/root/m4_final_review",
+  "production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "method": "Actual rendered image inspection using view_image, all nine final freeze3 PDFs/fourteen pages; independent word bounds and resource-label proof are separate",
+  "observations": [
+    "Persian shaping and mixed-script references readable; no observed edge clipping",
+    "PO180 no financial or on-hand effect, receipt75/105, bills30/150 and original R1 bill50, transfer70 nonfinancial all labelled",
+    "Exact integer IRR appears beside precise toman amounts; quantities use declared base thousandths",
+    "Final controls twelve roles plus stock W1=30/350 W2=12/130, AP379/GRNI0 after original R1 bill, TB1431/1431",
+    "Original R1 paper date2026-03-01 and availability2026-03-21 are separate; original quantity/value and remaining0 retained",
+    "Six-page control export preserves continued titles/page numbering and full sequence/source movement trace",
+    "Resource-only role labels now read \u0645\u0634\u062a\u0631\u06cc \u062e\u06cc\u0631 / \u062a\u0623\u0645\u06cc\u0646\u200c\u06a9\u0646\u0646\u062f\u0647 \u0628\u0644\u0647 while canonical false/true booleans are preserved independently"
+  ],
+  "limits": [
+    "Physical printing and native reader/accountant user studies untested",
+    "Visual pass does not prove financial correctness; raw state/CSV oracle and replay/CAS/recovery probes are separate"
+  ],
+  "pages": [
+    {
+      "file": "export/render/bill-a-1.png",
+      "sha256": "94170de503fb22031862494e8bb9a5d2edaf721f2806ded097be3fa168305e4d"
+    },
+    {
+      "file": "export/render/bill-b-1.png",
+      "sha256": "997702424a6a0ed4933acac0a59dcd23cf21014ed316282157571aa9b0d4245b"
+    },
+    {
+      "file": "export/render/bill-opening-1.png",
+      "sha256": "3c435e79bdd9488acf589b367eb107d2bab8587ddb8a5e5d1c5aecd2cbe23006"
+    },
+    {
+      "file": "export/render/control-final-1.png",
+      "sha256": "619efc16ca4c0ea8c857532fe0dd6e58f854d0c3ef20c55d432abf8827823ab7"
+    },
+    {
+      "file": "export/render/control-final-2.png",
+      "sha256": "be53503dd58179a4c3d154bfe19d989bfd62804585d5f10c15885678d924eeda"
+    },
+    {
+      "file": "export/render/control-final-3.png",
+      "sha256": "ed4359b42455c9acb54fc1fcfbc41f3c8f50e0521fb893a877a0be5b8f64d4d6"
+    },
+    {
+      "file": "export/render/control-final-4.png",
+      "sha256": "316e3bb0e2f519dc38430293edfac21264ea4aeb9786bea578bafd0b67680862"
+    },
+    {
+      "file": "export/render/control-final-5.png",
+      "sha256": "c5732d525bc0803bf5b6b6050b3b392591c88bbfbe0b2038c6b2e710a338e6cf"
+    },
+    {
+      "file": "export/render/control-final-6.png",
+      "sha256": "fdf8553658284499c808f8df9948de2ac705b02ef7fd585151b82f239f5003cc"
+    },
+    {
+      "file": "export/render/masters-1.png",
+      "sha256": "5886bcbce38e85ab3922dcf7e4cf626c30e3bf1efb4aaa8dab296dd01a19cfbb"
+    },
+    {
+      "file": "export/render/po-main-1.png",
+      "sha256": "9cb35945381b85a4573c44d8f74972294841de2ec583a1ab65b8afd2ef90493b"
+    },
+    {
+      "file": "export/render/receipt-a-1.png",
+      "sha256": "971f724c6c94f6a15457d4bcb2ebe1d5e8906b8573aa16e300905aea635cfad3"
+    },
+    {
+      "file": "export/render/receipt-b-1.png",
+      "sha256": "4d61316ae1f827d753489eca1e889fa73a436e3b0060da11944d0af4de550c19"
+    },
+    {
+      "file": "export/render/transfer-main-1.png",
+      "sha256": "12a4bc6fcd68f772a8dfdd67b16cd58da7e123161cab40ce1b9f96a54c9df017"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "result": "passed-bounded-independent-correctness-native-review",
+  "reviewer": "/root/m4_final_review",
+  "scope": "Resources/immutable PO/partial receipts/exact-cost partial bills/nonfinancial transfer/EOD AP-GRNI-inventory/recovery; no full roadmap, professional production, tax, platform or performance-budget acceptance",
+  "final_production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "final_binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "source_binary_unchanged_after_targeted_native": true,
+  "evidence_boundaries": {
+    "final3_headless": {
+      "phases": 14,
+      "main_pass_lines": 43,
+      "actual_atomic_pass_lines": 5,
+      "Store_pass_lines": 4,
+      "migration_pass_lines": 3,
+      "date_pass_lines": 1,
+      "manual_revision_pass_lines": 1,
+      "archived_M3_recovery_pass_lines": 3,
+      "documents_csv": 8,
+      "cutoffs_csv": 7,
+      "pdfs": 9,
+      "pdf_pages": 14,
+      "report": "final-freeze3/headless/independent-frozen.json"
+    },
+    "freeze2_native_main": {
+      "actual_passing_assertions": 48,
+      "original_report_result": "failed after48 at wrong legacy reason selector",
+      "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+      "report": "native/independent-native.json"
+    },
+    "freeze2_affected_legacy_rerun": {
+      "checks_passed": 9,
+      "report": "native/legacy-corrected/legacy-corrected.json"
+    },
+    "final3_footer_live": {
+      "actual_passing_assertions": 4,
+      "original_report_result": "failed at auxiliary control text comparison due asymmetric ZWNJ normalization",
+      "report": "final-freeze3/native/refresh-targeted.json"
+    },
+    "final3_captured_tree_supplement": {
+      "controls": 12,
+      "other_checks": [
+        "actual app log no warnings/criticals",
+        "source/binary unchanged after owned process cleanup"
+      ],
+      "method": "Static parsing of actual retained native tree; no new GUI run",
+      "report": "final-freeze3/native/refresh-captured-controls.json"
+    },
+    "final3_role_labels": {
+      "checks_passed": 4,
+      "typed_booleans_unchanged": true,
+      "report": "final-freeze3/headless/resource-label-check.json"
+    },
+    "final3_pdf_visual": {
+      "actual_pages_inspected": 14,
+      "report": "final-freeze3/headless/visual-pdf-review.json"
+    }
+  },
+  "native_fixture_variants": {
+    "retained_restored_fixture": {
+      "records": 10,
+      "journals": 5,
+      "AP_irr": 329,
+      "GRNI_irr": 50,
+      "stock_quantity_thousandths": 42000,
+      "stock_irr": 480,
+      "trial_debit_credit_irr": 1431,
+      "report": "native/native-persisted-final.json"
+    },
+    "fresh_owner_freeze2_fixture": {
+      "same_literal_financial_results": true,
+      "IDs_timestamps_full_State_not_asserted_equal": true,
+      "report": "native-owner-freeze2/raw-persisted.json"
+    },
+    "scratch_final3_fixture": {
+      "records": 8,
+      "journals": 6,
+      "optional_original_R1_bill": true,
+      "AP_irr": 379,
+      "GRNI_irr": 0,
+      "stock_irr": 480,
+      "report": "final-freeze3/headless/raw-state.json"
+    }
+  },
+  "fixed_findings": [
+    "actual pre-M4 arbitrary reserved-text history compatibility and ordinary classification",
+    "source paper versus availability date and long PDF headers",
+    "GTK ActionRow parent criticals and disabled one-page pager keyboard trap",
+    "daily operational-first source summaries retaining resource history/full canonical trace",
+    "completed refresh global footer success/error and human resource-role Persian labels"
+  ],
+  "remaining_boundaries": [
+    "Performance final measurement and strict budget assessment owned separately; no passing performance claim here",
+    "Durable editable unposted purchase drafts absent; staged rows are memory only",
+    "Payments/direct expenses-assets/returns/cost variance/posted corrections and full PUR-INV-G3 outside this bounded slice",
+    "Professional accountant production acceptance, legal/tax/platform/accessibility/native-user/physical printing gates remain open",
+    "No hardware power-loss/disk-full or whole reference-dataset/normalized-storage proof"
+  ],
+  "preserved_observer_failures": [
+    "before-fixes/freeze2-selector",
+    "before-fixes/scoped-observer",
+    "final-freeze3/before-fixes/observer-startup-message",
+    "final-freeze3/before-fixes/observer-label-normalization"
+  ],
+  "verified_challenges": [
+    "Changed derived/source history rejected under valid recomputed outer checksum; early scratch sha256-field observer mistake is not called a production bug"
+  ]
+}

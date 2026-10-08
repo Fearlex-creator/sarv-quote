@@ -798,6 +798,9 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(21, 0);
         }
         21 => {
+            if ui.persistence_busy.get() {
+                return Ok(());
+            }
             let list = picker_results(ui)?;
             if list.row_at_index(29).is_none() {
                 return Ok(());
@@ -860,13 +863,26 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(25, 200);
         }
         25 => {
-            let started = Instant::now();
+            p.phase_started = Instant::now();
             ui.open_product_picker();
-            p.elapsed("50000_warm_cached_picker_open_and_native_results", started);
+            let started = p.phase_started;
+            p.elapsed("50000_warm_cached_picker_open_dispatch", started);
+            p.advance(125, 0);
+        }
+        125 => {
+            if ui.persistence_busy.get() {
+                return Ok(());
+            }
+            let list = picker_results(ui)?;
+            if page_rows(&list).len() != 30 {
+                return Ok(());
+            }
             ensure!(
-                page_rows(&picker_results(ui)?).len() == 30,
-                "warm picker cache did not supply bounded results"
+                list.row_at_index(30).is_none(),
+                "warm picker cache exceeded30 rows"
             );
+            let started = p.phase_started;
+            p.elapsed("50000_warm_cached_picker_open_and_native_results", started);
             p.advance(26, 200);
         }
         26 => {
@@ -937,8 +953,15 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.advance(27, 200);
         }
         27 => {
+            if ui.persistence_busy.get() {
+                return Ok(());
+            }
+            let list = picker_results(ui)?;
+            if page_rows(&list).len() != 30 {
+                return Ok(());
+            }
             ensure!(
-                page_rows(&picker_results(ui)?).len() == 30,
+                list.row_at_index(30).is_none(),
                 "unknown-line selector exceeded bounded picker"
             );
             p.phase_started = Instant::now();
@@ -963,8 +986,25 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
                 &ui.window,
                 &directory.join("native-scale-unknown-selector.png"),
             )?;
+            let started = Instant::now();
             named::<gtk::Button>(&active_dialog(ui)?, "product-picker-search-choose")?
                 .emit_clicked();
+            p.elapsed("50000_unknown_line_choice_dispatch_main_thread", started);
+            p.phase_started = started;
+            p.advance(131, 0);
+        }
+        131 => {
+            // Validate the actual committed choice, not merely an emitted click.
+            // Keep the original search endpoint and report choice dispatch and
+            // durable/native readiness separately without changing budgets.
+            if ui.persistence_busy.get() {
+                return Ok(());
+            }
+            let started = p.phase_started;
+            p.elapsed(
+                "50000_unknown_line_choice_durable_and_native_review_ready",
+                started,
+            );
             {
                 let store = ui.store.borrow();
                 ensure!(
@@ -997,11 +1037,19 @@ fn step(ui: &Rc<Ui>, probe: &Rc<RefCell<Probe>>) -> Result<()> {
             p.composer_generation = persisted_generation(ui)?;
             let started = Instant::now();
             catalog_editor::open(ui, Some(&catalog));
-            p.elapsed("50000_native_composer_copy_and_initial100_rows", started);
-            let list = descendants::<gtk::ListBox>(&active_dialog(ui)?)
+            p.elapsed("50000_native_composer_open_dispatch", started);
+            p.phase_started = started;
+            p.advance(130, 0);
+        }
+        130 => {
+            let Some(list) = descendants::<gtk::ListBox>(&active_dialog(ui)?)
                 .into_iter()
                 .find(|list| list.row_at_index(99).is_some())
-                .context("native large composer list missing")?;
+            else {
+                return Ok(());
+            };
+            let started = p.phase_started;
+            p.elapsed("50000_native_composer_copy_and_initial100_rows", started);
             ensure!(
                 list.row_at_index(100).is_none(),
                 "composer eagerly rendered more than100 products"

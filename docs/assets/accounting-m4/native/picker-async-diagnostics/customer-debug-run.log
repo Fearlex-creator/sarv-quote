@@ -1,0 +1,20 @@
+{
+  "result": "failed",
+  "binary": "/tmp/sarv-M4-picker-async-debug",
+  "binary_sha256": "976b8e8a227e4e368dc5c85b51e03051aaaf2095ba02fba5b588c8b8eb3c101e",
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/freeze5-repeated/quote-scale",
+  "run": "/workspace/sarv-quote/artifacts/picker-async/run-ljwg8nfg",
+  "scope": "Synthetic one-line quote and50k catalog; real XTest picker activation/selection and owned SQLite writer lock. Not a performance benchmark.",
+  "checks": [],
+  "gtk_diagnostics": {
+    "app-native.log": "Error: invalid character: found `Q` at 0\n"
+  },
+  "error": "actual app diagnostics must be empty"
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/docs/assets/accounting-m4/native/picker-async-diagnostics/customer-observer.py", line 24, in <module>
+    start(['openbox','--sm-disable','--config-file',str(n.ENVROOT/'sysroot/etc/xdg/openbox/rc.xml')],'openbox',env);p=start([str(binary)],'app-native',env);x=n.X11(display);w=n.wait_for(lambda:x.find(p.pid));n.wait_for(lambda:(profile/'initial.png').exists());a=Access(p.pid);x.focus(w);x.resize(w,1400,940);time.sleep(.3)
+                                                                                                                                                                               ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 34, in wait_for
+    raise RuntimeError(f'Timed out waiting for {label}')
+RuntimeError: Timed out waiting for condition

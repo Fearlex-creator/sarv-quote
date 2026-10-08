@@ -1,0 +1,38 @@
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+dbus-daemon[152388]: [session uid=1000 pid=152388 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=152396 comm="/workspace/sarv-quote/target/debug/sarv-quote" label="kernel")
+dbus-daemon[152388]: [session uid=1000 pid=152388 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[152424]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=152389 comm="/usr/bin/python3 /tmp/m4-keyboard-debug.py" label="kernel")
+dbus-daemon[152424]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+0 [('شرح و دلیل ثبت', 'text')]
+1 [('شناسهٔ منبع و سال مالی', 'button')]
+2 [('مشتری الف • \u2068CU-A\u2069', 'toggle button')]
+3 [('ریال • IRR', 'toggle button')]
+4 [('تخفیف در واحد مبلغ انتخاب\u200cشده', 'text')]
+5 [('جمع مستقل سند در واحد مبلغ انتخاب\u200cشده', 'text')]
+6 [('افزودن کالا و قیمت', 'button')]
+/tmp/m4-keyboard-g5hmev29
+Traceback (most recent call last):
+  File "/tmp/m4-keyboard-debug.py", line 32, in <module>
+    for p in reversed(procs):n.stop(p)
+                             ~~~~~~^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 218, in stop
+    os.killpg(proc.pid, signal.SIGTERM)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+ProcessLookupError: [Errno 3] No such process

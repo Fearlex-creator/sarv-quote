@@ -1,0 +1,4050 @@
+[
+  {
+    "name": "ساخت نسخهٔ تازهٔ فهرست",
+    "role": "dialog"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "جست‌وجوی کالا در ویرایش فهرست تازه",
+    "role": "entry"
+  },
+  {
+    "name": "۵۰۰۰۰ کالا · ۵۰۰۰۰ نتیجه · نمایش ۱ تا ۱۰۰ · تا تأیید نهایی ذخیره نمی‌شود",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "بررسی و تأیید فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "نام فهرست",
+    "role": "label"
+  },
+  {
+    "name": "نام فهرست",
+    "role": "text"
+  },
+  {
+    "name": "مشخصات کالا",
+    "role": "table cell"
+  },
+  {
+    "name": "قیمت و منبع",
+    "role": "table cell"
+  },
+  {
+    "name": "افزودن کالا",
+    "role": "button"
+  },
+  {
+    "name": "پاک‌کردن فرم",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll bar"
+  },
+  {
+    "name": "کالاهای قبلی",
+    "role": "button"
+  },
+  {
+    "name": "کالاهای بعدی",
+    "role": "button"
+  },
+  {
+    "name": "بررسی و تأیید فهرست تازه",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "مشخصات کالا",
+    "role": "grouping"
+  },
+  {
+    "name": "قیمت و منبع",
+    "role": "grouping"
+  },
+  {
+    "name": "افزودن کالا",
+    "role": "label"
+  },
+  {
+    "name": "پاک‌کردن فرم",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "کالاهای قبلی",
+    "role": "label"
+  },
+  {
+    "name": "کالاهای بعدی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 1 · ⁦SCALE-00001⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 2 · ⁦SCALE-00002⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 3 · ⁦SCALE-00003⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 4 · ⁦SCALE-00004⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 5 · ⁦SCALE-00005⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 6 · ⁦SCALE-00006⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 7 · ⁦SCALE-00007⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 8 · ⁦SCALE-00008⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 9 · ⁦SCALE-00009⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 10 · ⁦SCALE-00010⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 11 · ⁦SCALE-00011⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 12 · ⁦SCALE-00012⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 13 · ⁦SCALE-00013⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 14 · ⁦SCALE-00014⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 15 · ⁦SCALE-00015⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 16 · ⁦SCALE-00016⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 17 · ⁦SCALE-00017⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 18 · ⁦SCALE-00018⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 19 · ⁦SCALE-00019⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 20 · ⁦SCALE-00020⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 21 · ⁦SCALE-00021⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 22 · ⁦SCALE-00022⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 23 · ⁦SCALE-00023⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 24 · ⁦SCALE-00024⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 25 · ⁦SCALE-00025⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 26 · ⁦SCALE-00026⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 27 · ⁦SCALE-00027⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 28 · ⁦SCALE-00028⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 29 · ⁦SCALE-00029⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 30 · ⁦SCALE-00030⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 31 · ⁦SCALE-00031⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 32 · ⁦SCALE-00032⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 33 · ⁦SCALE-00033⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 34 · ⁦SCALE-00034⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 35 · ⁦SCALE-00035⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 36 · ⁦SCALE-00036⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 37 · ⁦SCALE-00037⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 38 · ⁦SCALE-00038⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 39 · ⁦SCALE-00039⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 40 · ⁦SCALE-00040⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 41 · ⁦SCALE-00041⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 42 · ⁦SCALE-00042⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 43 · ⁦SCALE-00043⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 44 · ⁦SCALE-00044⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 45 · ⁦SCALE-00045⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 46 · ⁦SCALE-00046⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 47 · ⁦SCALE-00047⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 48 · ⁦SCALE-00048⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 49 · ⁦SCALE-00049⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 50 · ⁦SCALE-00050⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 51 · ⁦SCALE-00051⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 52 · ⁦SCALE-00052⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 53 · ⁦SCALE-00053⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 54 · ⁦SCALE-00054⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 55 · ⁦SCALE-00055⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 56 · ⁦SCALE-00056⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 57 · ⁦SCALE-00057⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 58 · ⁦SCALE-00058⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 59 · ⁦SCALE-00059⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 60 · ⁦SCALE-00060⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 61 · ⁦SCALE-00061⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 62 · ⁦SCALE-00062⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 63 · ⁦SCALE-00063⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 64 · ⁦SCALE-00064⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 65 · ⁦SCALE-00065⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 66 · ⁦SCALE-00066⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 67 · ⁦SCALE-00067⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 68 · ⁦SCALE-00068⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 69 · ⁦SCALE-00069⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 70 · ⁦SCALE-00070⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 71 · ⁦SCALE-00071⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 72 · ⁦SCALE-00072⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 73 · ⁦SCALE-00073⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 74 · ⁦SCALE-00074⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 75 · ⁦SCALE-00075⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 76 · ⁦SCALE-00076⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 77 · ⁦SCALE-00077⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 78 · ⁦SCALE-00078⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 79 · ⁦SCALE-00079⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 80 · ⁦SCALE-00080⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 81 · ⁦SCALE-00081⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 82 · ⁦SCALE-00082⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 83 · ⁦SCALE-00083⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 84 · ⁦SCALE-00084⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 85 · ⁦SCALE-00085⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 86 · ⁦SCALE-00086⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 87 · ⁦SCALE-00087⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 88 · ⁦SCALE-00088⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 89 · ⁦SCALE-00089⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 90 · ⁦SCALE-00090⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 91 · ⁦SCALE-00091⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 92 · ⁦SCALE-00092⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 93 · ⁦SCALE-00093⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 94 · ⁦SCALE-00094⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 95 · ⁦SCALE-00095⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 96 · ⁦SCALE-00096⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 97 · ⁦SCALE-00097⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 98 · ⁦SCALE-00098⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 99 · ⁦SCALE-00099⁩",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 100 · ⁦SCALE-00100⁩",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ساخت نسخهٔ تازهٔ فهرست",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "مشخصات کالا",
+    "role": "label"
+  },
+  {
+    "name": "کد کالا کد کالا",
+    "role": "list item"
+  },
+  {
+    "name": "شرح کالا شرح کالا",
+    "role": "list item"
+  },
+  {
+    "name": "واحد شمارش واحد شمارش",
+    "role": "list item"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با | نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "list item"
+  },
+  {
+    "name": "قیمت و منبع",
+    "role": "label"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده قیمت در واحد منبع · بدون جداکننده",
+    "role": "list item"
+  },
+  {
+    "name": "واحد قیمت منبع",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD تاریخ منبع · YYYY-MM-DD",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 1 · ⁦SCALE-00001⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 1 · ⁦SCALE-00001⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00001 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 2 · ⁦SCALE-00002⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 2 · ⁦SCALE-00002⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00002 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 3 · ⁦SCALE-00003⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 3 · ⁦SCALE-00003⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00003 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 4 · ⁦SCALE-00004⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 4 · ⁦SCALE-00004⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00004 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 5 · ⁦SCALE-00005⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 5 · ⁦SCALE-00005⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00005 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 6 · ⁦SCALE-00006⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 6 · ⁦SCALE-00006⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00006 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 7 · ⁦SCALE-00007⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 7 · ⁦SCALE-00007⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00007 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 8 · ⁦SCALE-00008⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 8 · ⁦SCALE-00008⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00008 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 9 · ⁦SCALE-00009⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۰۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 9 · ⁦SCALE-00009⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00009 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 10 · ⁦SCALE-00010⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 10 · ⁦SCALE-00010⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00010 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 11 · ⁦SCALE-00011⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 11 · ⁦SCALE-00011⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00011 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 12 · ⁦SCALE-00012⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 12 · ⁦SCALE-00012⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00012 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 13 · ⁦SCALE-00013⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 13 · ⁦SCALE-00013⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00013 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 14 · ⁦SCALE-00014⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 14 · ⁦SCALE-00014⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00014 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 15 · ⁦SCALE-00015⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 15 · ⁦SCALE-00015⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00015 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 16 · ⁦SCALE-00016⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 16 · ⁦SCALE-00016⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00016 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 17 · ⁦SCALE-00017⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 17 · ⁦SCALE-00017⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00017 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 18 · ⁦SCALE-00018⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 18 · ⁦SCALE-00018⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00018 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 19 · ⁦SCALE-00019⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۱۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 19 · ⁦SCALE-00019⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00019 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 20 · ⁦SCALE-00020⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 20 · ⁦SCALE-00020⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00020 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 21 · ⁦SCALE-00021⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 21 · ⁦SCALE-00021⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00021 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 22 · ⁦SCALE-00022⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 22 · ⁦SCALE-00022⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00022 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 23 · ⁦SCALE-00023⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 23 · ⁦SCALE-00023⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00023 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 24 · ⁦SCALE-00024⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 24 · ⁦SCALE-00024⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00024 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 25 · ⁦SCALE-00025⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 25 · ⁦SCALE-00025⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00025 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 26 · ⁦SCALE-00026⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 26 · ⁦SCALE-00026⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00026 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 27 · ⁦SCALE-00027⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 27 · ⁦SCALE-00027⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00027 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 28 · ⁦SCALE-00028⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 28 · ⁦SCALE-00028⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00028 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 29 · ⁦SCALE-00029⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۲۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 29 · ⁦SCALE-00029⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00029 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 30 · ⁦SCALE-00030⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 30 · ⁦SCALE-00030⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00030 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 31 · ⁦SCALE-00031⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 31 · ⁦SCALE-00031⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00031 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 32 · ⁦SCALE-00032⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 32 · ⁦SCALE-00032⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00032 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 33 · ⁦SCALE-00033⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 33 · ⁦SCALE-00033⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00033 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 34 · ⁦SCALE-00034⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 34 · ⁦SCALE-00034⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00034 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 35 · ⁦SCALE-00035⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 35 · ⁦SCALE-00035⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00035 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 36 · ⁦SCALE-00036⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 36 · ⁦SCALE-00036⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00036 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 37 · ⁦SCALE-00037⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 37 · ⁦SCALE-00037⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00037 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 38 · ⁦SCALE-00038⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 38 · ⁦SCALE-00038⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00038 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 39 · ⁦SCALE-00039⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۳۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 39 · ⁦SCALE-00039⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00039 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 40 · ⁦SCALE-00040⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 40 · ⁦SCALE-00040⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00040 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 41 · ⁦SCALE-00041⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 41 · ⁦SCALE-00041⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00041 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 42 · ⁦SCALE-00042⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 42 · ⁦SCALE-00042⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00042 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 43 · ⁦SCALE-00043⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 43 · ⁦SCALE-00043⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00043 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 44 · ⁦SCALE-00044⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 44 · ⁦SCALE-00044⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00044 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 45 · ⁦SCALE-00045⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 45 · ⁦SCALE-00045⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00045 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 46 · ⁦SCALE-00046⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 46 · ⁦SCALE-00046⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00046 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 47 · ⁦SCALE-00047⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 47 · ⁦SCALE-00047⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00047 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 48 · ⁦SCALE-00048⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 48 · ⁦SCALE-00048⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00048 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 49 · ⁦SCALE-00049⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۴۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 49 · ⁦SCALE-00049⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00049 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 50 · ⁦SCALE-00050⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 50 · ⁦SCALE-00050⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00050 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 51 · ⁦SCALE-00051⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 51 · ⁦SCALE-00051⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00051 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 52 · ⁦SCALE-00052⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 52 · ⁦SCALE-00052⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00052 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 53 · ⁦SCALE-00053⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 53 · ⁦SCALE-00053⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00053 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 54 · ⁦SCALE-00054⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 54 · ⁦SCALE-00054⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00054 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 55 · ⁦SCALE-00055⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 55 · ⁦SCALE-00055⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00055 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 56 · ⁦SCALE-00056⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 56 · ⁦SCALE-00056⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00056 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 57 · ⁦SCALE-00057⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 57 · ⁦SCALE-00057⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00057 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 58 · ⁦SCALE-00058⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 58 · ⁦SCALE-00058⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00058 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 59 · ⁦SCALE-00059⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۵۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 59 · ⁦SCALE-00059⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00059 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 60 · ⁦SCALE-00060⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 60 · ⁦SCALE-00060⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00060 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 61 · ⁦SCALE-00061⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 61 · ⁦SCALE-00061⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00061 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 62 · ⁦SCALE-00062⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 62 · ⁦SCALE-00062⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00062 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 63 · ⁦SCALE-00063⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 63 · ⁦SCALE-00063⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00063 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 64 · ⁦SCALE-00064⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 64 · ⁦SCALE-00064⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00064 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 65 · ⁦SCALE-00065⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 65 · ⁦SCALE-00065⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00065 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 66 · ⁦SCALE-00066⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 66 · ⁦SCALE-00066⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00066 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 67 · ⁦SCALE-00067⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 67 · ⁦SCALE-00067⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00067 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 68 · ⁦SCALE-00068⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 68 · ⁦SCALE-00068⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00068 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 69 · ⁦SCALE-00069⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۶۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 69 · ⁦SCALE-00069⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00069 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 70 · ⁦SCALE-00070⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 70 · ⁦SCALE-00070⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00070 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 71 · ⁦SCALE-00071⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 71 · ⁦SCALE-00071⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00071 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 72 · ⁦SCALE-00072⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 72 · ⁦SCALE-00072⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00072 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 73 · ⁦SCALE-00073⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 73 · ⁦SCALE-00073⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00073 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 74 · ⁦SCALE-00074⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 74 · ⁦SCALE-00074⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00074 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 75 · ⁦SCALE-00075⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 75 · ⁦SCALE-00075⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00075 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 76 · ⁦SCALE-00076⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 76 · ⁦SCALE-00076⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00076 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 77 · ⁦SCALE-00077⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 77 · ⁦SCALE-00077⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00077 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 78 · ⁦SCALE-00078⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 78 · ⁦SCALE-00078⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00078 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 79 · ⁦SCALE-00079⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۷۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 79 · ⁦SCALE-00079⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00079 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 80 · ⁦SCALE-00080⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 80 · ⁦SCALE-00080⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00080 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 81 · ⁦SCALE-00081⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 81 · ⁦SCALE-00081⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00081 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 82 · ⁦SCALE-00082⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 82 · ⁦SCALE-00082⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00082 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 83 · ⁦SCALE-00083⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 83 · ⁦SCALE-00083⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00083 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 84 · ⁦SCALE-00084⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 84 · ⁦SCALE-00084⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00084 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 85 · ⁦SCALE-00085⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 85 · ⁦SCALE-00085⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00085 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 86 · ⁦SCALE-00086⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 86 · ⁦SCALE-00086⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00086 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 87 · ⁦SCALE-00087⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 87 · ⁦SCALE-00087⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00087 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 88 · ⁦SCALE-00088⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 88 · ⁦SCALE-00088⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00088 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 89 · ⁦SCALE-00089⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۸۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 89 · ⁦SCALE-00089⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00089 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 90 · ⁦SCALE-00090⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 90 · ⁦SCALE-00090⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00090 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 91 · ⁦SCALE-00091⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۱ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 91 · ⁦SCALE-00091⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00091 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 92 · ⁦SCALE-00092⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۲ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 92 · ⁦SCALE-00092⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00092 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 93 · ⁦SCALE-00093⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۳ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 93 · ⁦SCALE-00093⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00093 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 94 · ⁦SCALE-00094⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۴ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 94 · ⁦SCALE-00094⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00094 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 95 · ⁦SCALE-00095⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۵ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 95 · ⁦SCALE-00095⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00095 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 96 · ⁦SCALE-00096⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۶ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 96 · ⁦SCALE-00096⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00096 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 97 · ⁦SCALE-00097⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۷ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 97 · ⁦SCALE-00097⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00097 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 98 · ⁦SCALE-00098⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۸ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 98 · ⁦SCALE-00098⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00098 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 99 · ⁦SCALE-00099⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۰۹۹ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 99 · ⁦SCALE-00099⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00099 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 100 · ⁦SCALE-00100⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۰۰٬۱۰۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 100 · ⁦SCALE-00100⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-00100 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "کد کالا",
+    "role": "label"
+  },
+  {
+    "name": "کد کالا",
+    "role": "label"
+  },
+  {
+    "name": "کد کالا",
+    "role": "text"
+  },
+  {
+    "name": "شرح کالا",
+    "role": "label"
+  },
+  {
+    "name": "شرح کالا",
+    "role": "label"
+  },
+  {
+    "name": "شرح کالا",
+    "role": "text"
+  },
+  {
+    "name": "واحد شمارش",
+    "role": "label"
+  },
+  {
+    "name": "واحد شمارش",
+    "role": "label"
+  },
+  {
+    "name": "واحد شمارش",
+    "role": "text"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "label"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "label"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "text"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده",
+    "role": "label"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده",
+    "role": "label"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده",
+    "role": "text"
+  },
+  {
+    "name": "واحد قیمت منبع",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD",
+    "role": "text"
+  },
+  {
+    "name": "",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ریال",
+    "role": "label"
+  }
+]

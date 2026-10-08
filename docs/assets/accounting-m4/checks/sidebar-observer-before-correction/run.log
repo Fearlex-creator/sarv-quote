@@ -1,0 +1,7 @@
+dbus-daemon[166766]: [session uid=1000 pid=166766 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=166773 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze1" label="kernel")
+dbus-daemon[166766]: [session uid=1000 pid=166766 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[166802]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=166773 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze1" label="kernel")
+dbus-daemon[166802]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :10 broken (explicit kill or server shutdown).
+{"result": "failed", "checks": 11, "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-l56llqt8", "error": "AssertionError('Tab never reached دفتر حسابداری')"}

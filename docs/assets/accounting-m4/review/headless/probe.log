@@ -1,0 +1,43 @@
+PASS rejected unchanged immutable posted PO revision/quantity
+PASS literal PO/tworeceipts75+105/twobills30+150/transfer70/openingGRNI50; historicalEOD controls1251/1326/1431 and immutable beginningopening1251
+PASS rejected unchanged overreceive remaining source
+PASS rejected unchanged duplicate order source within one Receive batch
+PASS rejected unchanged duplicate receipt source within one Bill batch
+PASS rejected unchanged wrong supplier for receipt bill
+PASS rejected unchanged overbill source quantity
+PASS rejected unchanged per-line offset +1/-1 despite correct total
+PASS rejected unchanged duplicate original opening GRNI source reference/date despite different amount
+PASS rejected unchanged duplicate original opening AP invoice reference/date despite different amount
+PASS rejected unchanged receipt total cost variance
+PASS rejected unchanged bill total cost variance
+PASS rejected unchanged duplicate invoice new source identity
+PASS rejected unchanged same supplier/ref/date changed amount explicit duplicate block
+PASS rejected unchanged due-date only changed content retry
+PASS rejected unchanged same bill new key changed date/source revision
+PASS rejected unchanged stock backdate across warehouse
+PASS rejected unchanged transfer exceeds source stock
+PASS rejected unchanged same warehouse transfer
+PASS rejected unchanged unknown pack
+PASS rejected unchanged fractional indivisible basequantity
+PASS rejected unchanged foreign supplier
+PASS rejected unchanged historical match before opening availability
+PASS rejected unchanged allocation backdated before existing partialbill
+PASS rejected unchanged new bill into locked period
+PASS rejected unchanged procurement cannot reuse normal ledger key
+PASS rejected unchanged Order cannot reuse Transfer alias key
+PASS operationalGRNI originalW2 receipt stillbillable after W2 stock0/no subset recapture
+PASS rejected unchanged global company stockdate after different item/warehouse
+PASS newly added supplier/item/warehouse receive+bill17 fullyusable without second opening
+PASS rejected unchanged resource foreigncompany
+PASS rejected unchanged negative source price
+PASS rejected unchanged source price/quantity aggregate overflow
+PASS replay rejects derived transfer cost tamper
+PASS replay rejects movement cost tamper
+PASS replay rejects movement after value tamper
+PASS replay rejects sequence tamper
+PASS replay rejects bill due date tamper
+PASS correct recomputed checksum/complete State envelope reaches history and rejects forged transfercost: محتوا یا محاسبات تاریخچهٔ خرید نامعتبر است
+PASS rejected unchanged procurement cannot use Corezero key
+PASS zeroCore30freepieces ->transfer18/12, noJ/noordinaryrequests, crossnamespacekeys/retry/freshrestore
+PASS independent1IRRcarton: halfreceipts1/0,3+3piecepartialbills1/0,zero-valuedunbilled6pieces visible/consumed, transfer40/final201, noemptyJ/fullrestore
+PASS independent M4 literal financial/partial-rounding/request/costtamper/asof/openingGRNI/recovery probes

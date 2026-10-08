@@ -1,0 +1,11 @@
+{
+  "result": "failed",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "production_source_sha256": "895386c1b3e66d58460c3e704487e8450833cb7ea581cc370c0fa9febf1ec8f2",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/legacy-corrected-spmlxea7",
+  "scope": "Fresh native chooser/restored exact archived-M3 manual-prefix history; corrected labelled-by reason selector; actual XTest Enter, typed reason, Tab, Escape; no production change",
+  "checks": [],
+  "original_backup": "/workspace/sarv-quote/artifacts/independent-m4/final-freeze2/legacy-m3/old-m3-manual-prefix-v4.json",
+  "original_backup_sha256": "eceac19c8f26b45461ca2ed0a19d53f4f5c3b0f1fec536dfddb55d66826ac1e5",
+  "error": ""
+}

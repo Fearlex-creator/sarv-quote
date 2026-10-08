@@ -1,0 +1,12 @@
+{
+  "full_history_replay_valid": true,
+  "identical_and_same_revision_alias_retry_one_effect": true,
+  "journal_count_including_opening": 3,
+  "normative": "ACC-03 company/source revision/economic event; ACC-04 corrections separately require linked transition",
+  "not_a_generic_amendment_workflow": true,
+  "original_journal_unchanged": true,
+  "result": "observed_explicit_legacy_boundary",
+  "same_source_event_revision1_irr": 1,
+  "same_source_event_revision2_irr": 2,
+  "typed_procurement_all_revision_identity_stronger": true
+}

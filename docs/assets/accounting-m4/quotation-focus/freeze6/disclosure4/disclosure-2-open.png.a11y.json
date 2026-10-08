@@ -1,0 +1,1127 @@
+[
+  {
+    "node": 454962000,
+    "name": "sarv-M4-freeze6",
+    "role": "application"
+  },
+  {
+    "node": 455013200,
+    "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+    "role": "frame"
+  },
+  {
+    "node": 455012624,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454998384,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455018080,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455017776,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455002144,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455040384,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455041024,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455041520,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455002000,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455042016,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455042512,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455043008,
+    "name": "صفحه‌ها",
+    "role": "grouping"
+  },
+  {
+    "node": 455000336,
+    "name": "پیشنهاد قیمت",
+    "role": "grouping"
+  },
+  {
+    "node": 455043504,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455044000,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455044496,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455012176,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455045008,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455045504,
+    "name": "پیش‌نویس ذخیره شد • آفلاین",
+    "role": "label"
+  },
+  {
+    "node": 455046064,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455001536,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 455001392,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455017168,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455001248,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455048304,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455048768,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455049232,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455049696,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455050160,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455050624,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455051088,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455051552,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455052096,
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "node": 455052608,
+    "name": "پخش نمونهٔ سرو",
+    "role": "label"
+  },
+  {
+    "node": 455053040,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455053536,
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "node": 455054112,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455017024,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455054560,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455055072,
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "node": 455055696,
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "node": 455056192,
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "node": 455056736,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455057200,
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "node": 455057744,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455002864,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 455058208,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455058672,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455059168,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455059664,
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "node": 455060128,
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "node": 455060672,
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "node": 455061184,
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "node": 455063312,
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "node": 455063792,
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "node": 455064384,
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "node": 455064816,
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "node": 455065424,
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "node": 455065888,
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "node": 455066352,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455066800,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455067296,
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "node": 455067808,
+    "name": "تأییدشده DEMO-42 • نسخهٔ 2",
+    "role": "label"
+  },
+  {
+    "node": 455068304,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455068720,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 454999680,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455069232,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455069728,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455070224,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455070720,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455071232,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455071744,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455072256,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455072752,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455073248,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455073744,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455074208,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455074704,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455075168,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455075664,
+    "name": "تازه",
+    "role": "button"
+  },
+  {
+    "node": 455076160,
+    "name": "ذخیرهٔ پیش‌نویس",
+    "role": "button"
+  },
+  {
+    "node": 455076624,
+    "name": "پیش‌نمایش چاپ",
+    "role": "button"
+  },
+  {
+    "node": 455077136,
+    "name": "تأیید نسخه",
+    "role": "button"
+  },
+  {
+    "node": 454999376,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455077728,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455078224,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 455078736,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455079200,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455079696,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455080160,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455080656,
+    "name": "4",
+    "role": "label"
+  },
+  {
+    "node": 455081168,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455081584,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455082080,
+    "name": "2",
+    "role": "label"
+  },
+  {
+    "node": 455082592,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455083008,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455083504,
+    "name": "5",
+    "role": "label"
+  },
+  {
+    "node": 455084016,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455084432,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455084928,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455085392,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455086640,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 455087104,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455087600,
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "node": 455088080,
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "node": 455088592,
+    "name": "تازه",
+    "role": "label"
+  },
+  {
+    "node": 455089056,
+    "name": "ذخیرهٔ پیش‌نویس",
+    "role": "label"
+  },
+  {
+    "node": 455089488,
+    "name": "پیش‌نمایش چاپ",
+    "role": "label"
+  },
+  {
+    "node": 455089968,
+    "name": "تأیید نسخه",
+    "role": "label"
+  },
+  {
+    "node": 455000944,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455090480,
+    "name": "مخاطب مستقل • independent@example.test • تهران خیابان ساختگی پلاک 2",
+    "role": "label"
+  },
+  {
+    "node": 455091024,
+    "name": "جزئیات پیشنهاد • تاریخ، اعتبار و مرجع",
+    "role": "button"
+  },
+  {
+    "node": 455091520,
+    "name": "فهرست ساختگی مستقل  ·  ۱ کالا  ·  ورود ⁦08/10/2026⁩  ·  هشدار قدمت پس از ۷ روز",
+    "role": "label"
+  },
+  {
+    "node": 455092144,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455092608,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 455093104,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455046480,
+    "name": "Tab جابه‌جایی ستون‌ها • Enter بررسی و ذخیره • Ctrl+↑/↓ جابه‌جایی ردیف",
+    "role": "label"
+  },
+  {
+    "node": 455096448,
+    "name": "منبع قیمت‌های قدیمی را بررسی و تأیید کرده‌ام",
+    "role": "check box"
+  },
+  {
+    "node": 455096960,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455097456,
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "node": 455097968,
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "node": 455098400,
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "node": 455098864,
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "node": 455099328,
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "node": 455099792,
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "node": 455100304,
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "node": 455101616,
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "node": 455102128,
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "node": 455102560,
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "node": 455103040,
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "node": 455103584,
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "node": 455104048,
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "node": 455104544,
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "node": 455104976,
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  },
+  {
+    "node": 455011600,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455085888,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455086336,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455100928,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455106560,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455106976,
+    "name": "اقلام پیشنهاد",
+    "role": "label"
+  },
+  {
+    "node": 455107456,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455107920,
+    "name": "برگرداندن حذف",
+    "role": "button"
+  },
+  {
+    "node": 455108384,
+    "name": "ورود سفارش CSV",
+    "role": "button"
+  },
+  {
+    "node": 455108928,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455109424,
+    "name": "کد کالا یا نام مستعار برای ردیف تازه",
+    "role": "text"
+  },
+  {
+    "node": 455109984,
+    "name": "انتخاب کالا از فهرست قیمت",
+    "role": "button"
+  },
+  {
+    "node": 455110464,
+    "name": "تعداد ردیف تازه",
+    "role": "text"
+  },
+  {
+    "node": 455110944,
+    "name": "افزودن ردیف",
+    "role": "button"
+  },
+  {
+    "node": 455111440,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455112000,
+    "name": "منبع قیمت‌های قدیمی را بررسی و تأیید کرده‌ام",
+    "role": "label"
+  },
+  {
+    "node": 455112480,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455112944,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455114656,
+    "name": "مشتری",
+    "role": "label"
+  },
+  {
+    "node": 455018672,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455115168,
+    "name": "تلفن",
+    "role": "label"
+  },
+  {
+    "node": 455115632,
+    "name": "تلفن",
+    "role": "text"
+  },
+  {
+    "node": 455116096,
+    "name": "فهرست قیمت تأییدشده",
+    "role": "label"
+  },
+  {
+    "node": 455116528,
+    "name": "فهرست قیمت تأییدشده",
+    "role": "combo box"
+  },
+  {
+    "node": 455116992,
+    "name": "واحد مبلغ",
+    "role": "label"
+  },
+  {
+    "node": 455117552,
+    "name": "واحد مبلغ",
+    "role": "combo box"
+  },
+  {
+    "node": 455118000,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455118496,
+    "name": "برگرداندن حذف",
+    "role": "label"
+  },
+  {
+    "node": 455118976,
+    "name": "ورود سفارش CSV",
+    "role": "label"
+  },
+  {
+    "node": 455119488,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455113456,
+    "name": "افزودن ردیف",
+    "role": "label"
+  },
+  {
+    "node": 455114064,
+    "name": "یادداشت برای مشتری",
+    "role": "button"
+  },
+  {
+    "node": 455114480,
+    "name": "ویرایش متن CSV سفارش متن CSV سفارش • item,quantity",
+    "role": "button"
+  },
+  {
+    "node": 455121664,
+    "name": "قیمت فقط از فهرست تأییدشده • این پیشنهاد سند حسابداری نیست",
+    "role": "label"
+  },
+  {
+    "node": 455122192,
+    "name": "جمع اقلام  390.9 تومان",
+    "role": "label"
+  },
+  {
+    "node": 455122624,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455123120,
+    "name": "افزودهٔ تنظیم‌شده 5.00٪ • 14.5 تومان",
+    "role": "label"
+  },
+  {
+    "node": 455123680,
+    "name": "جمع نهایی  305.4 تومان",
+    "role": "label"
+  },
+  {
+    "node": 455013648,
+    "name": "",
+    "role": "text"
+  },
+  {
+    "node": 455124112,
+    "name": "انتخاب مشتری از دفتر مشتری‌ها",
+    "role": "button"
+  },
+  {
+    "node": 455124640,
+    "name": "فهرست قیمت تأییدشده",
+    "role": "toggle button"
+  },
+  {
+    "node": 455125104,
+    "name": "واحد مبلغ",
+    "role": "toggle button"
+  },
+  {
+    "node": 455125648,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455126112,
+    "name": "جزئیات پیشنهاد • تاریخ، اعتبار و مرجع",
+    "role": "label"
+  },
+  {
+    "node": 455908608,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455127120,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455127616,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455128112,
+    "name": "تخفیف کل",
+    "role": "label"
+  },
+  {
+    "node": 455128624,
+    "name": "تخفیف کل • تومان",
+    "role": "text"
+  },
+  {
+    "node": 455119936,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455120432,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455908992,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455130736,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455131232,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455919632,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 455131728,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455132224,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455920736,
+    "name": "ردیف",
+    "role": "label"
+  },
+  {
+    "node": 455921248,
+    "name": "کد / نام مستعار",
+    "role": "label"
+  },
+  {
+    "node": 455921680,
+    "name": "شرح کالا",
+    "role": "label"
+  },
+  {
+    "node": 455922192,
+    "name": "تعداد",
+    "role": "label"
+  },
+  {
+    "node": 455922656,
+    "name": "واحد",
+    "role": "label"
+  },
+  {
+    "node": 455923120,
+    "name": "قیمت واحد\nتومان",
+    "role": "label"
+  },
+  {
+    "node": 455923552,
+    "name": "مبلغ ردیف\nتومان",
+    "role": "label"
+  },
+  {
+    "node": 455924032,
+    "name": "بررسی",
+    "role": "label"
+  },
+  {
+    "node": 455924544,
+    "name": "",
+    "role": "label"
+  },
+  {
+    "node": 455925008,
+    "name": "1",
+    "role": "label"
+  },
+  {
+    "node": 455925472,
+    "name": "کد یا نام مستعار ردیف ۱",
+    "role": "text"
+  },
+  {
+    "node": 455926080,
+    "name": "کالای ساختگی مستقل با شرح بلند",
+    "role": "label"
+  },
+  {
+    "node": 455926688,
+    "name": "تعداد ردیف ۱",
+    "role": "text"
+  },
+  {
+    "node": 455927296,
+    "name": "عدد",
+    "role": "label"
+  },
+  {
+    "node": 455927760,
+    "name": "125.1",
+    "role": "label"
+  },
+  {
+    "node": 455928224,
+    "name": "390.9",
+    "role": "label"
+  },
+  {
+    "node": 455928688,
+    "name": "قیمت قدیمی",
+    "role": "label"
+  },
+  {
+    "node": 455929200,
+    "name": "×",
+    "role": "button"
+  },
+  {
+    "node": 454611920,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454612384,
+    "name": "یادداشت برای مشتری",
+    "role": "label"
+  },
+  {
+    "node": 454612864,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454613328,
+    "name": "ویرایش متن CSV سفارش",
+    "role": "label"
+  },
+  {
+    "node": 455919856,
+    "name": "متن CSV سفارش • item,quantity",
+    "role": "text"
+  },
+  {
+    "node": 454613808,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454614256,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455919120,
+    "name": "×",
+    "role": "label"
+  },
+  {
+    "node": 455129616,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 455130064,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454616624,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454617120,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 454617616,
+    "name": "فهرست ساختگی مستقل",
+    "role": "label"
+  },
+  {
+    "node": 454618096,
+    "name": "تومان",
+    "role": "label"
+  }
+]

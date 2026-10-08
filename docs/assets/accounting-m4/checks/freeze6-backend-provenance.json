@@ -1,0 +1,16 @@
+{
+  "scope": "Named financial/storage/export implementations are byte-identical to actual independently tested freeze4. This is source identity, not a claim that every historical GUI suite was rerun on6.",
+  "actual_financial_review_freeze": "4",
+  "current_ui_freeze": "6",
+  "files": {
+    "src/accounting.rs": "cb49eaf3d64ffb33098f77aa0c23151a8e7b68fbb55247c50b296b621aedac13",
+    "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+    "src/core.rs": "55594472a09edc53b917f7d1ff6bd47f3de20604a32f119793faa640921415ca",
+    "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+    "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+    "src/domain.rs": "bb52c060c553095cb55801249d8fefae16674fc094c6a474dd2843166a23325d",
+    "src/store.rs": "70ee1c79fe52624a47d29b52351decb7e66928309ec3a099b26073d1bd902e78",
+    "src/procurement.rs": "8130304adf8ecfda81f745db7797d04427fd6ebe9b02773252b2419997d22e8e",
+    "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062"
+  }
+}

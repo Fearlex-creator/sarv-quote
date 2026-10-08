@@ -1,0 +1,137 @@
+dbus-daemon[165107]: [session uid=1000 pid=165107 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=165114 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze1" label="kernel")
+dbus-daemon[165107]: [session uid=1000 pid=165107 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[165141]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=165114 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze1" label="kernel")
+dbus-daemon[165141]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :10 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "run": "/workspace/sarv-quote/artifacts/core-native/run-bpd7b3s8",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze1",
+  "binary_sha256": "cd14d26374c19ed04de32a2c3a4849304a3718511c2d2cc9ec4b56fe465e7668",
+  "backend": "private X11 GTK4 / Xvfb / Openbox; widget financial workflow plus actual XTest keyboard entry separately",
+  "checks": [
+    {
+      "name": "native financial forms completed",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "one company, opening source and journal",
+      "passed": true
+    },
+    {
+      "name": "literal independent ledger balances1251 and supplied952equity",
+      "passed": true,
+      "expected": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 200,
+        "Inventory": 300,
+        "ChequesReceivable": 200,
+        "Payables": -149,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952
+      }
+    },
+    {
+      "name": "independent exact journal matches supplied ledger facts",
+      "passed": true
+    },
+    {
+      "name": "independent cash and statement",
+      "passed": true
+    },
+    {
+      "name": "AR200/AP149 independently sum",
+      "passed": true
+    },
+    {
+      "name": "stock300/30000 base thousandths and GRNI subset50",
+      "passed": true
+    },
+    {
+      "name": "dualparty roles separate; cheque states distinct",
+      "passed": true
+    },
+    {
+      "name": "fiscal1405 canonical dates and frozen policy timezone",
+      "passed": true
+    },
+    {
+      "name": "backup/freshrestore/original restart",
+      "passed": true
+    },
+    {
+      "name": "opening-rial.pdf real PDF",
+      "passed": true
+    },
+    {
+      "name": "opening-toman.pdf real PDF",
+      "passed": true
+    },
+    {
+      "name": "native zero initialization completes without empty financial journal",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "independent durable zero effect and no journal",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches party name",
+      "passed": true
+    },
+    {
+      "name": "real Enter adds staged party",
+      "passed": true
+    },
+    {
+      "name": "real keyboard edits retained staged record",
+      "passed": true
+    },
+    {
+      "name": "real keyboard deletes staged record",
+      "passed": true
+    },
+    {
+      "name": "staged keyboard operations never write balances",
+      "passed": true
+    },
+    {
+      "name": "real Escape cancels opening unchanged",
+      "passed": true
+    },
+    {
+      "name": "discarded staged opening absent after restart",
+      "passed": true
+    },
+    {
+      "name": "actual light 1280 native layout",
+      "passed": true
+    },
+    {
+      "name": "actual light 650 native layout",
+      "passed": true
+    },
+    {
+      "name": "actual dark 1280 native layout",
+      "passed": true
+    },
+    {
+      "name": "actual dark 650 native layout",
+      "passed": true
+    },
+    {
+      "name": "read-only layout/restart keeps exact saved aggregate",
+      "passed": true
+    },
+    {
+      "name": "no unexpected X11 errors",
+      "passed": true
+    }
+  ],
+  "baseline_binary_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d"
+}

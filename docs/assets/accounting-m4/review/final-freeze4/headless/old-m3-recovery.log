@@ -1,0 +1,5 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.04s
+     Running `target/debug/sarv-independent-m3-recovery-compat /workspace/sarv-quote/artifacts/independent-m4/final-freeze4/migration /workspace/sarv-quote/artifacts/independent-m4/final-freeze4/old-m3-recovery`
+PASS actual preM4 recovery actual-quotes-manual: archived M3 library verifies/restores/reopens exact schema4 fullhistory and quotes byteexact
+PASS actual preM4 recovery actual-detailed-opening: archived M3 library verifies/restores/reopens exact schema4 fullhistory and quotes byteexact
+PASS actual preM4 recovery actual-zero-initialization: archived M3 library verifies/restores/reopens exact schema4 fullhistory and quotes byteexact

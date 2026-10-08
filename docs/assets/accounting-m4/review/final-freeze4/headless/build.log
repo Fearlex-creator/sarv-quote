@@ -1,0 +1,40 @@
+warning: function `transfer` is never used
+  --> src/main.rs:11:8
+   |
+11 | pub fn transfer(o:&OpeningCommand,id:&str,date:&str,q:i64)->Result<ProcurementCommand>{Ok(serde_json::from_value(json!({"Transfer":{...
+   |        ^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `reject` is never used
+  --> src/main.rs:18:4
+   |
+18 | fn reject(name:&str,s:&AccountingState,c:&ProcurementCommand,edit:impl FnOnce(&mut Value))->Result<()> {let mut v=serde_json::to_val...
+   |    ^^^^^^
+
+warning: function `retry` is never used
+  --> src/main.rs:19:4
+   |
+19 | fn retry(s:&mut AccountingState,c:ProcurementCommand)->Result<()> {let result=s.post_procurement_command(c.clone())?;let before=s.cl...
+   |    ^^^^^
+
+warning: function `main` is never used
+  --> src/main.rs:20:4
+   |
+20 | fn main()->Result<()> {
+   |    ^^^^
+
+warning: function `rounding` is never used
+  --> src/main.rs:82:4
+   |
+82 | fn rounding(out:&PathBuf)->Result<()> {
+   |    ^^^^^^^^
+
+warning: function `free_zero` is never used
+  --> src/main.rs:95:4
+   |
+95 | fn free_zero(out:&PathBuf)->Result<()> {
+   |    ^^^^^^^^^
+
+warning: `sarv-independent-m4-probe` (bin "sarv-independent-m4-atomic") generated 6 warnings
+    Finished `dev` profile [unoptimized] target(s) in 0.04s

@@ -220,6 +220,7 @@ pub enum AuditOperation {
     PeriodReopened,
     CoreConfigured,
     CoreOpeningInitialized,
+    ProcurementRecorded,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -249,6 +250,11 @@ pub struct AccountingState {
     pub audit: Vec<AuditEvent>,
     #[serde(default, skip_serializing_if = "crate::core::CoreFoundation::is_empty")]
     pub core: crate::core::CoreFoundation,
+    #[serde(
+        default,
+        skip_serializing_if = "crate::procurement::ProcurementState::is_empty"
+    )]
+    pub procurement: crate::procurement::ProcurementState,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TrialBalanceRow {
@@ -303,6 +309,7 @@ impl AccountingState {
             && self.requests.is_empty()
             && self.audit.is_empty()
             && self.core.is_empty()
+            && self.procurement.is_empty()
     }
     /// Validate a restored snapshot by replaying its complete command/audit history.
     /// This is integrity validation, not authentication against a file owner.
@@ -324,6 +331,8 @@ impl AccountingState {
                     .filter(|o| o.effect == crate::core::OpeningEffect::ZeroBalanceInitialization)
                     .map(|o| &o.journal_id),
             )
+            .map(String::as_str)
+            .chain(self.procurement_entity_ids())
         {
             text(entity_id)?;
             ensure!(ids.insert(entity_id), "شناسهٔ حسابداری تکراری است");
@@ -336,6 +345,31 @@ impl AccountingState {
                 .map_err(|_| anyhow::anyhow!("زمان تاریخچه نامعتبر است"))?;
             let before_audit = replay.audit.len();
             match event.operation {
+                AuditOperation::ProcurementRecorded => {
+                    let record = self
+                        .procurement
+                        .records
+                        .iter()
+                        .find(|r| r.id == event.entity_id && r.journal_id.is_none())
+                        .ok_or_else(|| anyhow::anyhow!("رویداد غیرمالی خرید یا انبار پیدا نشد"))?;
+                    let context = record.command.context();
+                    ensure!(
+                        context.company_id == event.company_id
+                            && context.actor == event.actor
+                            && context.reason == event.reason,
+                        "رویداد خرید و تاریخچهٔ آن سازگار نیستند"
+                    );
+                    let journal_count = replay.journals.len();
+                    ensure!(
+                        replay.replay_procurement_record(record)?.is_none()
+                            && replay.journals.len() == journal_count,
+                        "رویداد غیرمالی نباید سند مالی ایجاد کند"
+                    );
+                    ensure!(
+                        replay.procurement.records.last() == Some(record),
+                        "تصویر یا جزئیات رویداد خرید یا انبار نامعتبر است"
+                    );
+                }
                 AuditOperation::CoreConfigured => {
                     let setup = self
                         .core
@@ -496,10 +530,41 @@ impl AccountingState {
                         .find(|r| r.journal_id == j.id)
                         .ok_or_else(|| anyhow::anyhow!("درخواست سند ثبت‌شده پیدا نشد"))?;
                     let opening = self.core.openings.iter().find(|o| o.journal_id == j.id);
+                    let procurement = self
+                        .procurement
+                        .records
+                        .iter()
+                        .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
+                    ensure!(
+                        opening.is_none() || procurement.is_none(),
+                        "منبع سند مالی تکراری است"
+                    );
                     let generated = if let Some(opening) = opening {
                         replay.replay_core_opening(opening.command.clone())?
+                    } else if let Some(record) = procurement {
+                        let context = record.command.context();
+                        ensure!(
+                            context.company_id == event.company_id
+                                && context.actor == event.actor
+                                && context.reason == event.reason,
+                            "رویداد خرید و تاریخچهٔ سند مالی سازگار نیستند"
+                        );
+                        let generated =
+                            replay.replay_procurement_record(record)?.ok_or_else(|| {
+                                anyhow::anyhow!("رویداد خرید اثر مالی مورد انتظار را ندارد")
+                            })?;
+                        let mut expected = record.clone();
+                        expected.journal_id = Some(generated.clone());
+                        ensure!(
+                            replay.procurement.records.last() == Some(&expected),
+                            "تصویر یا بهای رویداد خرید نامعتبر است"
+                        );
+                        generated
                     } else {
-                        replay.post(request.command.clone())?
+                        // Event text was unrestricted in older manual ledgers.
+                        // Replay their existing namespace without granting the
+                        // control-account capability of a typed source.
+                        replay.post_internal(request.command.clone(), false, true)?
                     };
                     let posted = replay
                         .journals
@@ -517,6 +582,10 @@ impl AccountingState {
                     replay.requests.last_mut().unwrap().journal_id = j.id.clone();
                     if opening.is_some() {
                         replay.core.openings.last_mut().unwrap().journal_id = j.id.clone();
+                    }
+                    if procurement.is_some() {
+                        replay.procurement.records.last_mut().unwrap().journal_id =
+                            Some(j.id.clone());
                     }
                 }
             }
@@ -542,8 +611,18 @@ impl AccountingState {
                 "درخواست شروع دفتر به رویداد دیگری اشاره می‌کند"
             );
         }
+        let procurement_count = replay.procurement.records.len();
+        for request in &self.procurement.requests {
+            let result = replay.replay_procurement_request(request)?;
+            ensure!(
+                result.record_id == request.record_id,
+                "درخواست خرید یا انبار به رویداد دیگری اشاره می‌کند"
+            );
+        }
         ensure!(
-            replay.journals.len() == journal_count && replay.audit.len() == audit_count,
+            replay.journals.len() == journal_count
+                && replay.audit.len() == audit_count
+                && replay.procurement.records.len() == procurement_count,
             "درخواست بدون تاریخچهٔ ثبت وجود دارد"
         );
         // Original request order includes retry aliases between journal commands.
@@ -559,6 +638,11 @@ impl AccountingState {
         );
         replay.core.zero_requests = self.core.zero_requests.clone();
         ensure!(
+            replay.procurement.requests.len() == self.procurement.requests.len(),
+            "کلید درخواست خرید یا انبار تکراری است"
+        );
+        replay.procurement.requests = self.procurement.requests.clone();
+        ensure!(
             replay == *self,
             "دادهٔ حسابداری با تاریخچهٔ کامل آن سازگار نیست"
         );
@@ -569,10 +653,23 @@ impl AccountingState {
     pub fn validate_transition(&self, next: &Self) -> Result<()> {
         next.validate()?;
         self.core.validate_transition(&next.core)?;
+        self.procurement.validate_transition(&next.procurement)?;
         ensure!(
             next.journals.starts_with(&self.journals),
             "سند ثبت‌شده قابل تغییر یا حذف نیست؛ برگشت مرتبط ثبت کنید"
         );
+        for journal in &next.journals[self.journals.len()..] {
+            if journal.event == crate::core::CORE_OPENING_EVENT
+                || journal
+                    .event
+                    .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
+            {
+                ensure!(
+                    next.has_typed_journal_source(&journal.id),
+                    "رویداد کنترلی تازه به منبع معتبر و مرتبط نیاز دارد"
+                );
+            }
+        }
         ensure!(
             next.requests.starts_with(&self.requests),
             "تاریخچهٔ درخواست ثبت‌شده قابل تغییر یا حذف نیست"
@@ -810,7 +907,7 @@ impl AccountingState {
         Ok(())
     }
     pub fn post(&mut self, command: PostCommand) -> Result<String> {
-        self.post_internal(command, false)
+        self.post_internal(command, false, false)
     }
     pub(crate) fn post_core_opening(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
@@ -818,9 +915,25 @@ impl AccountingState {
                 && command.kind == JournalKind::Opening,
             "مجوز کنترل فقط برای افتتاحیهٔ تطبیق‌شده است"
         );
-        self.post_internal(command, true)
+        self.post_internal(command, true, false)
     }
-    fn post_internal(&mut self, command: PostCommand, control_allowed: bool) -> Result<String> {
+    /// Capability used only after the typed procurement command has been validated.
+    pub(crate) fn post_procurement(&mut self, command: PostCommand) -> Result<String> {
+        ensure!(
+            command
+                .event
+                .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
+                && command.kind == JournalKind::Manual,
+            "رویداد خرید فقط از گردش کار معتبر مجاز است"
+        );
+        self.post_internal(command, true, false)
+    }
+    fn post_internal(
+        &mut self,
+        command: PostCommand,
+        control_allowed: bool,
+        historical_namespace: bool,
+    ) -> Result<String> {
         // Validate retry identity before locks: successful historical retries do not mutate books.
         text(&command.request_key)?;
         ensure!(
@@ -830,6 +943,10 @@ impl AccountingState {
                 .iter()
                 .any(|r| r.request_key == command.request_key),
             "کلید درخواست برای شروع دفتر بدون مانده استفاده شده است"
+        );
+        ensure!(
+            !self.procurement.uses_nonfinancial_key(&command.request_key),
+            "کلید درخواست قبلاً برای رویداد غیرمالی خرید یا انبار استفاده شده است"
         );
         if let Some(prior) = self
             .requests
@@ -859,7 +976,12 @@ impl AccountingState {
             return Ok(journal_id);
         }
         ensure!(
-            control_allowed || command.event != crate::core::CORE_OPENING_EVENT,
+            control_allowed
+                || historical_namespace
+                || (command.event != crate::core::CORE_OPENING_EVENT
+                    && !command
+                        .event
+                        .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)),
             "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است"
         );
         ensure!(
@@ -1066,8 +1188,8 @@ impl AccountingState {
                 .find(|j| &j.id == journal_id)
                 .ok_or_else(|| anyhow::anyhow!("سند اصلی برگشت پیدا نشد"))?;
             ensure!(
-                original.event != crate::core::CORE_OPENING_EVENT,
-                "برگشت افتتاحیهٔ کنترلی به اصلاح هماهنگ جزئیات نیاز دارد؛ در این مرحله پشتیبانی نمی‌شود"
+                !self.has_typed_journal_source(&original.id),
+                "برگشت سند کنترلی به اصلاح هماهنگ جزئیات نیاز دارد؛ از گردش کار منبع استفاده کنید"
             );
             ensure!(
                 original.company_id == command.company_id,
@@ -1105,6 +1227,19 @@ impl AccountingState {
             );
         }
         Ok(())
+    }
+    /// The source association, rather than historically unrestricted event
+    /// text, determines whether a journal requires coordinated subledger work.
+    pub fn has_typed_journal_source(&self, journal_id: &str) -> bool {
+        self.core
+            .openings
+            .iter()
+            .any(|opening| opening.journal_id == journal_id)
+            || self
+                .procurement
+                .records
+                .iter()
+                .any(|record| record.journal_id.as_deref() == Some(journal_id))
     }
     #[allow(clippy::too_many_arguments)]
     pub fn reverse(

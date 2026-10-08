@@ -1,0 +1,11 @@
+{
+  "fresh_restore_and_restart_equal": true,
+  "generation_after": 42,
+  "generation_before": 41,
+  "legacy_manual_event": "procurement.receive.v1",
+  "original_and_linked_reversal_history_exact": true,
+  "result": "passed",
+  "schema_after": 5,
+  "schema_before": 4,
+  "typed_procurement_records": 0
+}

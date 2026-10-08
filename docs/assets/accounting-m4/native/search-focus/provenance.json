@@ -1,0 +1,19 @@
+{
+  "status": "functional diagnostic acceptance; final frozen release/performance rerun pending",
+  "production_file": "src/ui/procurement.rs",
+  "production_file_sha256": "c610cf1e68bad680a18ce7a781dd06968057e88c694c4de828e758111c5063eb",
+  "before_binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze3",
+  "before_binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "after_diagnostic_binary": "/tmp/sarv-M4-document-focus-debug2",
+  "after_diagnostic_binary_sha256": "4a47a69e1ca9cdbd4d12a6fde0476ef9e2c5067f0a73bfb498d8a3e6a78da2a7",
+  "after_checks": 17,
+  "after_financial_accounting_exactly_preserved": true,
+  "after_app_log_empty": true,
+  "before_tabs_to_matching_detail": [
+    7,
+    7
+  ],
+  "after_tabs_to_matching_detail": 1,
+  "performance_observer_unchanged": true,
+  "budget_unchanged_ms": 200
+}

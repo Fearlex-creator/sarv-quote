@@ -1,0 +1,22 @@
+{
+  "result": "passed",
+  "source_files": 32,
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "all_current_source_files_match_frozen6_manifest": true,
+  "changes_from4": [
+    "src/ui/background.rs",
+    "src/ui/catalog_editor.rs",
+    "src/ui/pickers.rs",
+    "src/ui/procurement.rs",
+    "src/ui/responsiveness.rs",
+    "src/ui/smoke.rs"
+  ],
+  "changes_from5": [
+    "src/ui/background.rs",
+    "src/ui/pickers.rs",
+    "src/ui/responsiveness.rs"
+  ],
+  "all_financial_schema_Store_export_source_byte_identical4": true,
+  "scope": "Read-only final integrity/provenance bookkeeping after all GUI and performance runs; no tests/builds/renders/reruns. Documentation changes excluded from production-source algorithm."
+}

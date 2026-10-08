@@ -45,7 +45,7 @@ fn schema_one_upgrade_preserves_quotation_bytes_and_verifies_recovery_before_upg
             p.file_name()
                 .unwrap()
                 .to_string_lossy()
-                .starts_with("before-schema4-")
+                .starts_with("before-schema5-")
         })
         .unwrap();
     let envelope: serde_json::Value =
@@ -77,7 +77,7 @@ fn schema_one_upgrade_preserves_quotation_bytes_and_verifies_recovery_before_upg
                 .unwrap()
                 .file_name()
                 .to_string_lossy()
-                .starts_with("before-schema4-"))
+                .starts_with("before-schema5-"))
             .count(),
         1
     );
@@ -159,7 +159,7 @@ fn schema_two_upgrade_verifies_m1_recovery_and_preserves_full_ledger_and_quote_h
             p.file_name()
                 .unwrap()
                 .to_string_lossy()
-                .starts_with("before-schema4-")
+                .starts_with("before-schema5-")
         })
         .unwrap();
     let saved: serde_json::Value =
@@ -171,11 +171,11 @@ fn schema_two_upgrade_verifies_m1_recovery_and_preserves_full_ledger_and_quote_h
             .unwrap(),
         serde_json::to_vec(&old).unwrap()
     );
-    let backup = dir.path().join("current-v4.json");
+    let backup = dir.path().join("current-v5.json");
     current.backup(&backup).unwrap();
     let new_envelope: serde_json::Value =
         serde_json::from_slice(&std::fs::read(&backup).unwrap()).unwrap();
-    assert_eq!(new_envelope["format"], "sarv-accounting-backup-v4");
+    assert_eq!(new_envelope["format"], "sarv-accounting-backup-v5");
     let fresh = tempfile::tempdir().unwrap();
     let mut restored = Store::open(fresh.path()).unwrap();
     restored
@@ -185,12 +185,12 @@ fn schema_two_upgrade_verifies_m1_recovery_and_preserves_full_ledger_and_quote_h
         serde_json::to_vec(&restored.state).unwrap(),
         serde_json::to_vec(&current.state).unwrap()
     );
-    if let Ok(output) = std::env::var("SARV_M3_LEGACY_MIGRATION_ARTIFACT_DIR") {
+    if let Ok(output) = std::env::var("SARV_M4_LEGACY_MIGRATION_ARTIFACT_DIR") {
         let p = std::path::Path::new(&output);
         std::fs::create_dir_all(p).unwrap();
-        std::fs::copy(recovery, p.join("verified-before-schema4-v2.json")).unwrap();
-        std::fs::copy(backup, p.join("current-v4.json")).unwrap();
-        std::fs::write(p.join("verification.json"),serde_json::to_vec_pretty(&serde_json::json!({"result":"passed","schema_before":2,"schema_after":4,"generation_before":17,"generation_after":18,"quotes":3,"journals":3,"exact_quotes_sha256":sarv_quote::imports::hash(&quote_bytes),"exact_ledger_sha256":sarv_quote::imports::hash(&ledger_bytes),"fresh_restore_full_state_equal":true,"interrupted_schema_upgrade":"untested"})).unwrap()).unwrap();
+        std::fs::copy(recovery, p.join("verified-before-schema5-v2.json")).unwrap();
+        std::fs::copy(backup, p.join("current-v5.json")).unwrap();
+        std::fs::write(p.join("verification.json"),serde_json::to_vec_pretty(&serde_json::json!({"result":"passed","schema_before":2,"schema_after":sarv_quote::domain::CURRENT_SCHEMA,"generation_before":17,"generation_after":18,"quotes":3,"journals":3,"exact_quotes_sha256":sarv_quote::imports::hash(&quote_bytes),"exact_ledger_sha256":sarv_quote::imports::hash(&ledger_bytes),"fresh_restore_full_state_equal":true,"interrupted_schema_upgrade":"untested"})).unwrap()).unwrap();
     }
     drop(current);
     assert_eq!(Store::open(dir.path()).unwrap().local_generation(), 18);

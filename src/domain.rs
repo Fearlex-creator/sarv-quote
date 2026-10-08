@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
-pub const CURRENT_SCHEMA: u32 = 4;
+pub const CURRENT_SCHEMA: u32 = 5;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
 pub const MAX_QUOTE_LINES: usize = 10_000;
 const MAX_REFERENCE_CHARS: usize = 160;
@@ -1287,7 +1287,11 @@ impl State {
     }
     pub fn validate(&self) -> Result<()> {
         self.settings.validate()?;
-        ensure!(matches!(self.schema, 1..=4), "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(matches!(self.schema, 1..=5), "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(
+            self.schema >= 5 || self.accounting.procurement.is_empty(),
+            "گردش خرید و موجودی نیازمند نسخهٔ دادهٔ ۵ است"
+        );
         ensure!(
             self.schema >= 4 || self.accounting.core.is_empty(),
             "تنظیمات و افتتاحیهٔ کنترلی نیازمند نسخهٔ دادهٔ ۴ است"

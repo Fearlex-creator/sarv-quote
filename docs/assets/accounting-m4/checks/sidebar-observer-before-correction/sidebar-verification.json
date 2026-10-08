@@ -1,0 +1,59 @@
+{
+  "result": "failed",
+  "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-l56llqt8",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze1",
+  "binary_sha256": "cd14d26374c19ed04de32a2c3a4849304a3718511c2d2cc9ec4b56fe465e7668",
+  "backend": "private X11/Xvfb/Openbox; real XTest keys; AT-SPI observation",
+  "synthetic_only": true,
+  "checks": [
+    {
+      "name": "Alt+1 opens order",
+      "passed": true
+    },
+    {
+      "name": "Alt+2 opens catalog",
+      "passed": true
+    },
+    {
+      "name": "Alt+3 opens customers",
+      "passed": true
+    },
+    {
+      "name": "Alt+4 opens quotes",
+      "passed": true
+    },
+    {
+      "name": "Alt+5 opens backup",
+      "passed": true
+    },
+    {
+      "name": "Alt+6 opens settings",
+      "passed": true
+    },
+    {
+      "name": "Alt+7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "Alt+8 opens procurement",
+      "passed": true
+    },
+    {
+      "name": "Alt+9 opens inventory",
+      "passed": true
+    },
+    {
+      "name": "Navigation preserves entire saved payload",
+      "passed": true
+    },
+    {
+      "name": "Native hierarchy exposes all three work groups",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Wayland and screen reader speech untested",
+    "High contrast and enlarged text untested"
+  ],
+  "error": "AssertionError('Tab never reached دفتر حسابداری')"
+}

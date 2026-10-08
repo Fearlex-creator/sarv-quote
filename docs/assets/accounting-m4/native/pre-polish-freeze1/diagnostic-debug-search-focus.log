@@ -1,0 +1,33 @@
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+dbus-daemon[154488]: [session uid=1000 pid=154488 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=154495 comm="/workspace/sarv-quote/target/debug/sarv-quote" label="kernel")
+dbus-daemon[154488]: [session uid=1000 pid=154488 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[154523]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=154489 comm="python3 /tmp/m4-search-focus-debug.py" label="kernel")
+dbus-daemon[154523]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+0 [('F2-core-v1 • شرکت ساختگی', 'toggle button')]
+1 [('میلادی • YYYY-MM-DD', 'toggle button')]
+2 [('پایان روز گزارش', 'text')]
+3 [('شمسی: \u20681405/07/15\u2069 • میلادی: \u20682026-10-07\u2069', 'label')]
+4 [('نمایش ریال', 'toggle button')]
+5 [('جست\u200cوجوی شماره، منبع، کالا یا طرف', 'entry')]
+CONTROL F [('جست\u200cوجوی شماره، منبع، کالا یا طرف', 'entry')]
+/tmp/m4-keyboard-3g5jnnr8
+X connection to :9 broken (explicit kill or server shutdown).

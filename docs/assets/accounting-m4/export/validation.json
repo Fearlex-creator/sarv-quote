@@ -1,0 +1,321 @@
+{
+  "format": "sarv-procurement-export-evidence-v1",
+  "synthetic_only": true,
+  "source_files": {
+    "src/procurement_export.rs": "87d03a4b07c24be227c7f5712748c17c5fe2aa145a4dd8ef9fdfe5417bcceaa9",
+    "tests/procurement_exports.rs": "bc64e65d0a0203ece4c15839cc845b0926eed7eaf80b916c944c4a459fac3894",
+    "docs/procurement-exports.md": "d87d634240034f08b01e6e15dae0450a3370d3ec179437637bed8a784423b780"
+  },
+  "test_command": "source /workspace/sarv-environment/activate.sh; SARV_PROCUREMENT_EXPORT_ARTIFACT_DIR=/tmp/sarv-m4-report-final-20261007T2040 cargo test --test procurement_exports",
+  "tests": {
+    "passed": 4,
+    "failed": 0,
+    "log": "artifacts/accounting-m4-export/procurement-export-tests.log"
+  },
+  "strict_library_clippy": "cargo clippy --lib -- -D warnings: passed",
+  "pdf_validation": [
+    {
+      "file": "bill-a.pdf",
+      "pages": 1,
+      "all_text_inside_margins": true,
+      "outliers": []
+    },
+    {
+      "file": "bill-b.pdf",
+      "pages": 1,
+      "all_text_inside_margins": true,
+      "outliers": []
+    },
+    {
+      "file": "procurement-reconciliation.pdf",
+      "pages": 6,
+      "all_text_inside_margins": true,
+      "outliers": []
+    },
+    {
+      "file": "purchase-order.pdf",
+      "pages": 1,
+      "all_text_inside_margins": true,
+      "outliers": []
+    },
+    {
+      "file": "receipt-a.pdf",
+      "pages": 1,
+      "all_text_inside_margins": true,
+      "outliers": []
+    },
+    {
+      "file": "receipt-b.pdf",
+      "pages": 1,
+      "all_text_inside_margins": true,
+      "outliers": []
+    },
+    {
+      "file": "warehouse-transfer.pdf",
+      "pages": 1,
+      "all_text_inside_margins": true,
+      "outliers": []
+    }
+  ],
+  "visually_inspected": [
+    "bill-b-page-1.png",
+    "warehouse-transfer-page-1.png",
+    "procurement-reconciliation-page-3.png",
+    "procurement-reconciliation-page-6.png"
+  ],
+  "final_controls": [
+    {
+      "role": "cash",
+      "ledger_irr": "251",
+      "detail_irr": "251",
+      "difference_irr": "0"
+    },
+    {
+      "role": "bank",
+      "ledger_irr": "300",
+      "detail_irr": "300",
+      "difference_irr": "0"
+    },
+    {
+      "role": "receivables",
+      "ledger_irr": "200",
+      "detail_irr": "200",
+      "difference_irr": "0"
+    },
+    {
+      "role": "cheques_receivable",
+      "ledger_irr": "200",
+      "detail_irr": "200",
+      "difference_irr": "0"
+    },
+    {
+      "role": "inventory",
+      "ledger_irr": "480",
+      "detail_irr": "480",
+      "difference_irr": "0"
+    },
+    {
+      "role": "supplier_advances",
+      "ledger_irr": "0",
+      "detail_irr": "0",
+      "difference_irr": "0"
+    },
+    {
+      "role": "payables",
+      "ledger_irr": "329",
+      "detail_irr": "329",
+      "difference_irr": "0"
+    },
+    {
+      "role": "cheques_payable",
+      "ledger_irr": "100",
+      "detail_irr": "100",
+      "difference_irr": "0"
+    },
+    {
+      "role": "grni",
+      "ledger_irr": "50",
+      "detail_irr": "50",
+      "difference_irr": "0"
+    },
+    {
+      "role": "customer_advances",
+      "ledger_irr": "0",
+      "detail_irr": "0",
+      "difference_irr": "0"
+    },
+    {
+      "role": "cogs",
+      "ledger_irr": "0",
+      "detail_irr": "0",
+      "difference_irr": "0"
+    },
+    {
+      "role": "inventory_loss",
+      "ledger_irr": "0",
+      "detail_irr": "0",
+      "difference_irr": "0"
+    }
+  ],
+  "final_stock": [
+    {
+      "item_id": "ITEM-A",
+      "warehouse_id": "W1",
+      "quantity_thousandths": "30000",
+      "value_irr": "350"
+    },
+    {
+      "item_id": "ITEM-A",
+      "warehouse_id": "W2",
+      "quantity_thousandths": "12000",
+      "value_irr": "130"
+    }
+  ],
+  "files": [
+    {
+      "file": "bill-a-page-1.png",
+      "bytes": 167324,
+      "sha256": "2532b00cdfffa0a5650f250a7d25e959f95a48f7c9ea87f057470e0401aa2479"
+    },
+    {
+      "file": "bill-a.csv",
+      "bytes": 40586,
+      "sha256": "8a3dc7dda7843c664791f5762dbc6e99ce12825a47820de95756568f517bfeaa"
+    },
+    {
+      "file": "bill-a.pdf",
+      "bytes": 29667,
+      "sha256": "b09fa960d1a0bde60393133eeff28678b8835afd78f345d0be9c7b951f59b6ba"
+    },
+    {
+      "file": "bill-a.txt",
+      "bytes": 2414,
+      "sha256": "950edee7020c093333e8c820ac0b70b4a3621810864e0d01b5c8334772e58db0"
+    },
+    {
+      "file": "bill-b-page-1.png",
+      "bytes": 190288,
+      "sha256": "183c7d6f36bb365601b62866043e20fc995d1cefff3cef7fa84fa7ef616f4296"
+    },
+    {
+      "file": "bill-b.csv",
+      "bytes": 46048,
+      "sha256": "5d99cbbfaea7076e81196eb5ba8c5101c5030754f96fd0869dca4b6784578ac2"
+    },
+    {
+      "file": "bill-b.pdf",
+      "bytes": 29833,
+      "sha256": "1b45675f2963ef2a3624629dce49ade3477304e48a37c3cb18a17196b285e2bc"
+    },
+    {
+      "file": "bill-b.txt",
+      "bytes": 2859,
+      "sha256": "e59e4f1fcb990f13c3206bf930494bf9155912bd8ed6f9c0e65a56acac79d4ef"
+    },
+    {
+      "file": "pdf-bounds.json",
+      "bytes": 798,
+      "sha256": "d0f412faddfb99e9374cc89741bf799642243f8b3ea732c74e691f50ed3f011b"
+    },
+    {
+      "file": "procurement-reconciliation-page-1.png",
+      "bytes": 172402,
+      "sha256": "304b0064d190e0a8fc21c63d7cdd40d420b5cd88cc9b8ddb02bc96a9af4d85f8"
+    },
+    {
+      "file": "procurement-reconciliation-page-2.png",
+      "bytes": 197166,
+      "sha256": "5511735c75303f4f3572acf46fa6f17e9116c6dba89c5200ccea6a1b7d9b95f7"
+    },
+    {
+      "file": "procurement-reconciliation-page-3.png",
+      "bytes": 229251,
+      "sha256": "69bab5672f3d788c7f77de0ce1486ea7d7209d6426d293e2d3bcf8acdc0766af"
+    },
+    {
+      "file": "procurement-reconciliation-page-6.png",
+      "bytes": 142506,
+      "sha256": "791381150ff7cf0401dca68acac3e0832a9c787d1ce8e633ba918da5eddfdd8c"
+    },
+    {
+      "file": "procurement-reconciliation-text.txt",
+      "bytes": 16841,
+      "sha256": "9b408780ee83f201880b7f5238fe5ba6211eb6289f7aa9ca165623d79d6e67f3"
+    },
+    {
+      "file": "procurement-reconciliation.csv",
+      "bytes": 102564,
+      "sha256": "e5428bbc67f0ee30a2aac8c463728c43b64fe54f03e4f51fd098b8239228af50"
+    },
+    {
+      "file": "procurement-reconciliation.pdf",
+      "bytes": 50204,
+      "sha256": "03ee8e1ac7175b8908c472fe4950f16dd349dbb5c8880df5759cbf925a71935d"
+    },
+    {
+      "file": "procurement-reconciliation.txt",
+      "bytes": 16841,
+      "sha256": "9b408780ee83f201880b7f5238fe5ba6211eb6289f7aa9ca165623d79d6e67f3"
+    },
+    {
+      "file": "purchase-order-page-1.png",
+      "bytes": 160265,
+      "sha256": "1a08e1d504be5afcd84dfa4a754940080d894373d500b07b41cd8fa91c8c00f1"
+    },
+    {
+      "file": "purchase-order.csv",
+      "bytes": 13460,
+      "sha256": "249293a89441d4140385f65982841a513abc831cde4cb2978e461c4ce66c4670"
+    },
+    {
+      "file": "purchase-order.pdf",
+      "bytes": 29533,
+      "sha256": "b06b28e19ceed8851de48f2af576207769af65f263cfa368d7447cff86d73b41"
+    },
+    {
+      "file": "purchase-order.txt",
+      "bytes": 2294,
+      "sha256": "469a2ce0b711d0521758c914644cc0d20bba916fc7c20702dcfd3017eddbb61a"
+    },
+    {
+      "file": "receipt-a-page-1.png",
+      "bytes": 190736,
+      "sha256": "165647fd9aa659f9f1e6af409728dd681180e64d08c9fefa0f211cbc2ef63a20"
+    },
+    {
+      "file": "receipt-a.csv",
+      "bytes": 18258,
+      "sha256": "6b74123c0a0955af77c87fa3ed7adda92549bba93b0907911d8491af12097477"
+    },
+    {
+      "file": "receipt-a.pdf",
+      "bytes": 29641,
+      "sha256": "932a79b8c4412d659359d86f337ea687159d0bd4940553f13b1353494f40d90e"
+    },
+    {
+      "file": "receipt-a.txt",
+      "bytes": 2724,
+      "sha256": "65374d391d7ac9eda230b2dcdd6bba83e7d79054d53674bbccf1ef683aa8fb80"
+    },
+    {
+      "file": "receipt-b-page-1.png",
+      "bytes": 191883,
+      "sha256": "865adff4081f738077d077dcdb5bfc0bf182caa466ef2cb6666c21bc3f6eaa8f"
+    },
+    {
+      "file": "receipt-b.csv",
+      "bytes": 18222,
+      "sha256": "4a03d373e2017a50fed3ced5c7a307ac7266e60045217d9f009ca13d25917232"
+    },
+    {
+      "file": "receipt-b.pdf",
+      "bytes": 29577,
+      "sha256": "6609d1a324400b9942701bedf064322ae5bdbd2e81013e341f3e619a9c2aa972"
+    },
+    {
+      "file": "receipt-b.txt",
+      "bytes": 2728,
+      "sha256": "4ccd6951f812b94169a16e1570fcb8ec8af0e04741b318d0fb45fc5aa32601e3"
+    },
+    {
+      "file": "warehouse-transfer-page-1.png",
+      "bytes": 190019,
+      "sha256": "7ee50a85ca2d35d0e2a757babffc2635a369145e0693e4e6d51f626802126b9c"
+    },
+    {
+      "file": "warehouse-transfer.csv",
+      "bytes": 14543,
+      "sha256": "af38c348430359a734c0c5e2fe6b9bbe33f1bfbf18455b96b7e9add673cfb937"
+    },
+    {
+      "file": "warehouse-transfer.pdf",
+      "bytes": 29313,
+      "sha256": "69af90143aa13308708846125548af4d30eaecf13c37a93b63a7f65ad8d412f6"
+    },
+    {
+      "file": "warehouse-transfer.txt",
+      "bytes": 2768,
+      "sha256": "6704999f13c81d9c00d7263e616504b135df7ae05ab82f9f2c07310d92f1a727"
+    }
+  ]
+}

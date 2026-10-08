@@ -1,0 +1,418 @@
+dbus-daemon[193513]: [session uid=1000 pid=193513 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=193520 comm="/workspace/sarv-quote/artifacts/procurement-search" label="kernel")
+dbus-daemon[193513]: [session uid=1000 pid=193513 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[193556]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=193520 comm="/workspace/sarv-quote/artifacts/procurement-search" label="kernel")
+dbus-daemon[193556]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :9 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze3",
+  "binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "checks": [],
+  "key_events": [],
+  "refresh_completion_checks": [],
+  "fixture_profile": "/workspace/sarv-quote/artifacts/procurement-native/run-cytwzvdu/full",
+  "run": "/workspace/sarv-quote/artifacts/procurement-search-focus/run-ldvnizmj",
+  "scope": "Actual private XTest Tab navigation and auto-scroll in short native windows; synthetic10record5journal fixture copied read-only; no financial writes.",
+  "diagnostic_only": true,
+  "route_cases": [
+    {
+      "query": "REC-A",
+      "atspi_focus_request_returned": false,
+      "atspi_request_immediately_focused": false,
+      "real_Tab_count_to_result": 7,
+      "route": [
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            800.0,
+            450.0,
+            195.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "اسناد",
+          "focus_name": "procurement-tab-documents",
+          "focus_type": "GtkToggleButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            540.0,
+            450.0,
+            248.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "کنترل و تفصیل",
+          "focus_name": "procurement-tab-controls",
+          "focus_type": "GtkToggleButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            295.0,
+            450.0,
+            233.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "تعریف منابع",
+          "focus_name": "procurement-tab-masters",
+          "focus_type": "GtkToggleButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            706.0,
+            502.0,
+            289.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "سفارش خرید تازه",
+          "focus_name": "procurement-new-order",
+          "focus_type": "GtkButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            355.0,
+            502.0,
+            337.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "صورتحساب و تطبیق رسید",
+          "focus_name": "procurement-new-bill",
+          "focus_type": "GtkButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            18.0,
+            607.0,
+            980.0,
+            60.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": null,
+          "focus_name": "AdwActionRow",
+          "focus_type": "AdwActionRow",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            32.0,
+            609.0,
+            127.0,
+            56.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "جزئیات و خروجی",
+          "focus_name": "procurement-document-detail",
+          "focus_type": "GtkButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        }
+      ]
+    },
+    {
+      "query": "REC-B",
+      "atspi_focus_request_returned": false,
+      "atspi_request_immediately_focused": false,
+      "real_Tab_count_to_result": 7,
+      "route": [
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            800.0,
+            450.0,
+            195.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "اسناد",
+          "focus_name": "procurement-tab-documents",
+          "focus_type": "GtkToggleButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            540.0,
+            450.0,
+            248.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "کنترل و تفصیل",
+          "focus_name": "procurement-tab-controls",
+          "focus_type": "GtkToggleButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            295.0,
+            450.0,
+            233.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "تعریف منابع",
+          "focus_name": "procurement-tab-masters",
+          "focus_type": "GtkToggleButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            706.0,
+            502.0,
+            289.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "سفارش خرید تازه",
+          "focus_name": "procurement-new-order",
+          "focus_type": "GtkButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            355.0,
+            502.0,
+            337.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "صورتحساب و تطبیق رسید",
+          "focus_name": "procurement-new-bill",
+          "focus_type": "GtkButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            18.0,
+            607.0,
+            980.0,
+            60.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": null,
+          "focus_name": "AdwActionRow",
+          "focus_type": "AdwActionRow",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            32.0,
+            609.0,
+            127.0,
+            56.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            1016.0,
+            817.0
+          ],
+          "focus_label": "جزئیات و خروجی",
+          "focus_name": "procurement-document-detail",
+          "focus_type": "GtkButton",
+          "key": "Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            1270,
+            890
+          ]
+        }
+      ]
+    }
+  ],
+  "accounting_exactly_preserved": true,
+  "gtk_diagnostics": {
+    "light.log": ""
+  }
+}

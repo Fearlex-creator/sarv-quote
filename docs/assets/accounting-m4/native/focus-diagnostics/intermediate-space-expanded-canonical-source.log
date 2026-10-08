@@ -1,0 +1,37 @@
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+dbus-daemon[171210]: [session uid=1000 pid=171210 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=171217 comm="/workspace/sarv-quote/target/debug/sarv-quote" label="kernel")
+dbus-daemon[171210]: [session uid=1000 pid=171210 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[171245]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=171211 comm="python3 /tmp/m4-readonly-space-final.py" label="kernel")
+dbus-daemon[171245]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+DISCLOSURE states [('enabled', False), ('focusable', True), ('focused', False), ('sensitive', True), ('showing', True), ('visible', True)] rect {'x': 0, 'y': 0, 'width': 640, 'height': 34}
+GRABFOCUS False
+0 [('', 'scroll pane')]
+1 [('انصراف', 'button')]
+2 [('جزئیات کامل منبع، شناسه\u200cها و اثر ثبت\u200cشده', 'button')]
+SPACE EXPANDED True
+CANONICAL ID VISIBLE 88129029-eb52-4f48-b418-bb6f8ac5ca44 True
+TRACE TAB 0 [('جزئیات کامل منبع، شناسه\u200cها و اثر ثبت\u200cشده', 'button')]
+TRACE TAB 1 [('خروجی سند CSV', 'button')]
+TRACE TAB 2 [('خروجی سند PDF', 'button')]
+TRACE TAB 3 [('انصراف', 'button')]
+/tmp/m4-keyboard-q16wlzgf
+X connection to :9 broken (explicit kill or server shutdown).

@@ -1,0 +1,3125 @@
+{
+  "format": "sarv-accounting-backup-v5",
+  "checksum": "88ee6d1f0a1cb7bb38c227d54d395404a5179f262b090414a424c26b02091b21",
+  "state": {
+    "schema": 5,
+    "catalogs": [],
+    "customers": [],
+    "quotes": [],
+    "draft": {
+      "series": "8db513d4-c590-492d-8a14-8816b97812d7",
+      "catalog_id": "",
+      "customer": "",
+      "phone": "",
+      "lines": [],
+      "discount_rial": 0,
+      "display_unit": "Toman",
+      "stale_ack": false,
+      "quote_date": "2026-10-07"
+    },
+    "accounting": {
+      "companies": [
+        {
+          "id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "name": "F2 independent reviewer"
+        }
+      ],
+      "periods": [
+        {
+          "id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "name": "1405",
+          "start_date": "2026-03-21",
+          "end_date": "2027-03-20",
+          "locked": false
+        }
+      ],
+      "accounts": [
+        {
+          "id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": null,
+          "code": "1",
+          "name": "دارایی‌ها",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": false,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": null,
+          "code": "2",
+          "name": "بدهی‌ها",
+          "classification": "Liability",
+          "normal_balance": "Credit",
+          "postable": false,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "60364f1c-5ad8-4fb0-b22d-77c8f9fec6cf",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": null,
+          "code": "3",
+          "name": "حقوق مالکانه",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": false,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "2cd39c11-6aa7-43a7-b518-1b425ab5549b",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": null,
+          "code": "4",
+          "name": "درآمدها",
+          "classification": "Revenue",
+          "normal_balance": "Credit",
+          "postable": false,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "f099b358-8a0d-473f-a240-f0a7ae8931df",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": null,
+          "code": "5",
+          "name": "هزینه‌ها",
+          "classification": "Expense",
+          "normal_balance": "Debit",
+          "postable": false,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "9a4196b7-f181-4c09-ad09-2fc776d39248",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1101",
+          "name": "صندوق",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "ad0faa52-3685-4922-b95a-3fee51a71984",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1102",
+          "name": "بانک",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1201",
+          "name": "حساب‌های دریافتنی",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "87783587-b07f-4979-9d97-2af8adcf596a",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1202",
+          "name": "اسناد دریافتنی",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1301",
+          "name": "موجودی کالا",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "be489eac-def4-4803-8ed5-0f13827c28c2",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1401",
+          "name": "پیش‌پرداخت تأمین‌کنندگان",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "016ae765-e268-4c8c-aedb-73b167160ea0",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "code": "1501",
+          "name": "دارایی‌های ثابت",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "code": "2101",
+          "name": "حساب‌های پرداختنی",
+          "classification": "Liability",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "7897cf60-b94f-416e-a419-bbf54eb610c1",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "code": "2102",
+          "name": "اسناد پرداختنی",
+          "classification": "Liability",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "code": "2201",
+          "name": "کالای دریافت‌شده، صورتحساب‌نشده",
+          "classification": "Liability",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "code": "2301",
+          "name": "پیش‌دریافت مشتریان",
+          "classification": "Liability",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "code": "2401",
+          "name": "وام‌ها",
+          "classification": "Liability",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "a8596179-ac03-4d79-817a-8399215d6607",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "60364f1c-5ad8-4fb0-b22d-77c8f9fec6cf",
+          "code": "3101",
+          "name": "سرمایه",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "13949996-6e8a-4fee-b70a-8dd0041e44f9",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "60364f1c-5ad8-4fb0-b22d-77c8f9fec6cf",
+          "code": "3102",
+          "name": "برداشت مالک",
+          "classification": "Equity",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "3c192963-f52a-488a-a4d7-3ee85c2a4371",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "60364f1c-5ad8-4fb0-b22d-77c8f9fec6cf",
+          "code": "3201",
+          "name": "سود انباشته",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "2cd39c11-6aa7-43a7-b518-1b425ab5549b",
+          "code": "4101",
+          "name": "فروش",
+          "classification": "Revenue",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "2484ac39-4243-4e9a-a183-283db6d298e5",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "2cd39c11-6aa7-43a7-b518-1b425ab5549b",
+          "code": "4102",
+          "name": "برگشت از فروش",
+          "classification": "Revenue",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "f099b358-8a0d-473f-a240-f0a7ae8931df",
+          "code": "5101",
+          "name": "بهای تمام‌شده کالای فروش‌رفته",
+          "classification": "Expense",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "f099b358-8a0d-473f-a240-f0a7ae8931df",
+          "code": "5201",
+          "name": "هزینه‌های عملیاتی",
+          "classification": "Expense",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "90cf44ee-c4ea-49b1-8f53-719a24f60708",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "f099b358-8a0d-473f-a240-f0a7ae8931df",
+          "code": "5202",
+          "name": "کارمزد بانکی",
+          "classification": "Expense",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "ce6b802d-3981-4f80-b282-b721a0187e81",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "parent_id": "f099b358-8a0d-473f-a240-f0a7ae8931df",
+          "code": "5301",
+          "name": "ضایعات و کسری موجودی",
+          "classification": "Expense",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": true,
+          "archived": false,
+          "version": 1
+        }
+      ],
+      "journals": [
+        {
+          "id": "9a75e778-8e9e-440d-90d2-f3c7ac189974",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+          "date": "2026-03-21",
+          "source_id": "core-opening:e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "source_revision": 1,
+          "event": "core.opening.v1",
+          "actor": "Independent reviewer",
+          "reason": "Literal fixture, no balancing helper",
+          "kind": "Opening",
+          "lines": [
+            {
+              "account": {
+                "id": "9a4196b7-f181-4c09-ad09-2fc776d39248",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+                "code": "1101",
+                "name": "صندوق",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 251,
+              "credit": 0,
+              "description": "literal-cash"
+            },
+            {
+              "account": {
+                "id": "ad0faa52-3685-4922-b95a-3fee51a71984",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+                "code": "1102",
+                "name": "بانک",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 300,
+              "credit": 0,
+              "description": "literal-bank"
+            },
+            {
+              "account": {
+                "id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+                "code": "1201",
+                "name": "حساب‌های دریافتنی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 200,
+              "credit": 0,
+              "description": "literal-receivables"
+            },
+            {
+              "account": {
+                "id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+                "code": "1301",
+                "name": "موجودی کالا",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 300,
+              "credit": 0,
+              "description": "literal-inventory"
+            },
+            {
+              "account": {
+                "id": "87783587-b07f-4979-9d97-2af8adcf596a",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+                "code": "1202",
+                "name": "اسناد دریافتنی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 200,
+              "credit": 0,
+              "description": "literal-cheques_receivable"
+            },
+            {
+              "account": {
+                "id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+                "code": "2101",
+                "name": "حساب‌های پرداختنی",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 149,
+              "description": "literal-payables"
+            },
+            {
+              "account": {
+                "id": "7897cf60-b94f-416e-a419-bbf54eb610c1",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+                "code": "2102",
+                "name": "اسناد پرداختنی",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 100,
+              "description": "literal-cheques_payable"
+            },
+            {
+              "account": {
+                "id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+                "code": "2201",
+                "name": "کالای دریافت‌شده، صورتحساب‌نشده",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 50,
+              "description": "literal-grni"
+            },
+            {
+              "account": {
+                "id": "a8596179-ac03-4d79-817a-8399215d6607",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "60364f1c-5ad8-4fb0-b22d-77c8f9fec6cf",
+                "code": "3101",
+                "name": "سرمایه",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 952,
+              "description": "literal-owner_capital"
+            }
+          ],
+          "recorded_at": "2026-10-07T23:20:53.038246047+00:00"
+        },
+        {
+          "id": "9a7eb78c-ce53-447a-b2f9-f495d0e32f56",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+          "date": "2026-03-22",
+          "source_id": "round-receipt-a",
+          "source_revision": 1,
+          "event": "procurement.receive.v1",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+                "code": "1301",
+                "name": "موجودی کالا",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1,
+              "credit": 0,
+              "description": "GR-round-receipt-a"
+            },
+            {
+              "account": {
+                "id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+                "code": "2201",
+                "name": "کالای دریافت‌شده، صورتحساب‌نشده",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1,
+              "description": "GR-round-receipt-a"
+            }
+          ],
+          "recorded_at": "2026-10-07T23:20:53.043283560+00:00"
+        },
+        {
+          "id": "9c099b14-c035-4813-a514-b5b4ab12e344",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+          "date": "2026-03-24",
+          "source_id": "round-bill-a",
+          "source_revision": 1,
+          "event": "procurement.bill.v1",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+                "code": "2201",
+                "name": "کالای دریافت‌شده، صورتحساب‌نشده",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1,
+              "credit": 0,
+              "description": "ROUND-BILL-A"
+            },
+            {
+              "account": {
+                "id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "parent_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+                "code": "2101",
+                "name": "حساب‌های پرداختنی",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1,
+              "description": "ROUND-BILL-A"
+            }
+          ],
+          "recorded_at": "2026-10-07T23:20:53.058859108+00:00"
+        }
+      ],
+      "requests": [
+        {
+          "command": {
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+            "date": "2026-03-21",
+            "source_id": "core-opening:e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "source_revision": 1,
+            "event": "core.opening.v1",
+            "request_key": "arbitrary-review-key",
+            "actor": "Independent reviewer",
+            "reason": "Literal fixture, no balancing helper",
+            "kind": "Opening",
+            "lines": [
+              {
+                "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248",
+                "debit": 251,
+                "credit": 0,
+                "description": "literal-cash"
+              },
+              {
+                "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984",
+                "debit": 300,
+                "credit": 0,
+                "description": "literal-bank"
+              },
+              {
+                "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98",
+                "debit": 200,
+                "credit": 0,
+                "description": "literal-receivables"
+              },
+              {
+                "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+                "debit": 300,
+                "credit": 0,
+                "description": "literal-inventory"
+              },
+              {
+                "account_id": "87783587-b07f-4979-9d97-2af8adcf596a",
+                "debit": 200,
+                "credit": 0,
+                "description": "literal-cheques_receivable"
+              },
+              {
+                "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+                "debit": 0,
+                "credit": 149,
+                "description": "literal-payables"
+              },
+              {
+                "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1",
+                "debit": 0,
+                "credit": 100,
+                "description": "literal-cheques_payable"
+              },
+              {
+                "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                "debit": 0,
+                "credit": 50,
+                "description": "literal-grni"
+              },
+              {
+                "account_id": "a8596179-ac03-4d79-817a-8399215d6607",
+                "debit": 0,
+                "credit": 952,
+                "description": "literal-owner_capital"
+              }
+            ]
+          },
+          "journal_id": "9a75e778-8e9e-440d-90d2-f3c7ac189974"
+        },
+        {
+          "command": {
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+            "date": "2026-03-22",
+            "source_id": "round-receipt-a",
+            "source_revision": 1,
+            "event": "procurement.receive.v1",
+            "request_key": "independent-round-receipt-a",
+            "actor": "Independent M4 reviewer",
+            "reason": "Literal supplied source; no guessed balancing amount",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+                "debit": 1,
+                "credit": 0,
+                "description": "GR-round-receipt-a"
+              },
+              {
+                "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                "debit": 0,
+                "credit": 1,
+                "description": "GR-round-receipt-a"
+              }
+            ]
+          },
+          "journal_id": "9a7eb78c-ce53-447a-b2f9-f495d0e32f56"
+        },
+        {
+          "command": {
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+            "date": "2026-03-24",
+            "source_id": "round-bill-a",
+            "source_revision": 1,
+            "event": "procurement.bill.v1",
+            "request_key": "independent-round-bill-a",
+            "actor": "Independent M4 reviewer",
+            "reason": "Literal supplied source; no guessed balancing amount",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                "debit": 1,
+                "credit": 0,
+                "description": "ROUND-BILL-A"
+              },
+              {
+                "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+                "debit": 0,
+                "credit": 1,
+                "description": "ROUND-BILL-A"
+              }
+            ]
+          },
+          "journal_id": "9c099b14-c035-4813-a514-b5b4ab12e344"
+        }
+      ],
+      "audit": [
+        {
+          "id": "95ed302c-3806-4198-bda9-39e03efe718c",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "operation": "CompanyCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد کسب‌وکار",
+          "recorded_at": "2026-10-07T23:20:53.036832045+00:00"
+        },
+        {
+          "id": "0ab9b574-b4d1-410f-8054-010a962e29e4",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+          "operation": "PeriodCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T23:20:53.036854529+00:00"
+        },
+        {
+          "id": "93e36bbc-0bec-4c85-b643-5539f0052db4",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "0faaa5fc-a940-4b74-a0de-602c71370c34",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036859967+00:00"
+        },
+        {
+          "id": "6385570a-714c-4b65-9bcc-df3c25ef45cc",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "27048a4d-44a5-4d54-8aa3-603528820888",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036865866+00:00"
+        },
+        {
+          "id": "86357681-30f8-4b6b-9d5e-0dda7db0b278",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "60364f1c-5ad8-4fb0-b22d-77c8f9fec6cf",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036871445+00:00"
+        },
+        {
+          "id": "d3b66edd-6157-4f59-988b-4fe5f3bffea2",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "2cd39c11-6aa7-43a7-b518-1b425ab5549b",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036908050+00:00"
+        },
+        {
+          "id": "d811f656-2fc0-4ad4-8239-bbef134b7e54",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "f099b358-8a0d-473f-a240-f0a7ae8931df",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036931876+00:00"
+        },
+        {
+          "id": "f9f5700c-8559-4c7f-b934-7347a264437a",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "9a4196b7-f181-4c09-ad09-2fc776d39248",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036942342+00:00"
+        },
+        {
+          "id": "f08757ee-4c69-4fca-bb0d-2088a849c700",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "ad0faa52-3685-4922-b95a-3fee51a71984",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036952968+00:00"
+        },
+        {
+          "id": "d661c75d-5e20-4bb9-acfe-100bd3f66150",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036965126+00:00"
+        },
+        {
+          "id": "63658fab-e3ed-44b4-a036-6bb818f13f36",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "87783587-b07f-4979-9d97-2af8adcf596a",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036978045+00:00"
+        },
+        {
+          "id": "22670732-380e-4abc-8b97-5564f41c036b",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.036992076+00:00"
+        },
+        {
+          "id": "4d82f259-b94f-4455-a8af-9ad2f1c7002c",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "be489eac-def4-4803-8ed5-0f13827c28c2",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037007229+00:00"
+        },
+        {
+          "id": "033be04c-929a-4556-bcaf-0669e9c1c96b",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "016ae765-e268-4c8c-aedb-73b167160ea0",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037023344+00:00"
+        },
+        {
+          "id": "b1edb8f9-86d7-4534-a59c-1f3b959401f5",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037041501+00:00"
+        },
+        {
+          "id": "b246950b-0847-443d-9123-598a6508bd41",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "7897cf60-b94f-416e-a419-bbf54eb610c1",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037060590+00:00"
+        },
+        {
+          "id": "29f88aa2-c533-4729-9c80-e0a0f5f70435",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037081361+00:00"
+        },
+        {
+          "id": "4a58351d-be78-47d3-ba34-360e0fc2007f",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037104836+00:00"
+        },
+        {
+          "id": "ab506b6f-7d8e-4fa2-bed3-90d85374eb39",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037128502+00:00"
+        },
+        {
+          "id": "3ddd1a6b-e78d-4c1f-94f9-d5bbbe38f88c",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "a8596179-ac03-4d79-817a-8399215d6607",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037152538+00:00"
+        },
+        {
+          "id": "0454d937-4261-4950-b888-f36b7a030e2f",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037178007+00:00"
+        },
+        {
+          "id": "56ed43e0-f581-4d64-bb78-fc4d4ee6bd8b",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037204627+00:00"
+        },
+        {
+          "id": "1be59d2d-1635-49f6-b712-070ca3fc50a8",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037232148+00:00"
+        },
+        {
+          "id": "3563f1be-9112-46ea-b838-4b275bf3c635",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "2484ac39-4243-4e9a-a183-283db6d298e5",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037261002+00:00"
+        },
+        {
+          "id": "c2490e00-56a5-4395-9260-c3d311cb52f0",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037293230+00:00"
+        },
+        {
+          "id": "4f107cec-7cb9-46a4-95c1-6778948119f9",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037324948+00:00"
+        },
+        {
+          "id": "98983e98-9b8b-4712-9dd2-c59c75c2ad45",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037357457+00:00"
+        },
+        {
+          "id": "76f700d3-52f8-434c-b51c-d06994f4cd2a",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "ce6b802d-3981-4f80-b282-b721a0187e81",
+          "operation": "AccountCreated",
+          "actor": "Independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T23:20:53.037390858+00:00"
+        },
+        {
+          "id": "5673cde2-aa12-4338-a155-9d106d5a18c6",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+          "operation": "CoreConfigured",
+          "actor": "Independent reviewer",
+          "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی",
+          "recorded_at": "2026-10-07T23:20:53.037574635+00:00"
+        },
+        {
+          "id": "ee890e3f-d053-49be-9458-755027cc4778",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "9a75e778-8e9e-440d-90d2-f3c7ac189974",
+          "operation": "JournalPosted",
+          "actor": "Independent reviewer",
+          "reason": "Literal fixture, no balancing helper",
+          "recorded_at": "2026-10-07T23:20:53.038246047+00:00"
+        },
+        {
+          "id": "5721b76b-49bc-4f54-98ac-a04a5692bdf6",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+          "operation": "ProcurementRecorded",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.041411028+00:00"
+        },
+        {
+          "id": "4875faab-387a-4e69-89c7-f9370f7a2acc",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "9a7eb78c-ce53-447a-b2f9-f495d0e32f56",
+          "operation": "JournalPosted",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.043283560+00:00"
+        },
+        {
+          "id": "2cd9669c-1180-4388-aba7-e42a6d5d95a0",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "3d12672d-8cb5-4cb8-8999-80acdd44bc14",
+          "operation": "ProcurementRecorded",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.046799790+00:00"
+        },
+        {
+          "id": "e2a92162-8ee6-472f-aec4-28e0b716ce2e",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "9c099b14-c035-4813-a514-b5b4ab12e344",
+          "operation": "JournalPosted",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.058859108+00:00"
+        },
+        {
+          "id": "19442dc8-ae95-4025-8474-129a61cc99de",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "03a6ee19-b243-4d60-9970-70a1603e6d8b",
+          "operation": "ProcurementRecorded",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.062148897+00:00"
+        },
+        {
+          "id": "df22768a-2175-4083-acda-c7de8dbfff6d",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "05def2e0-91e9-4764-a475-6a1289c0280b",
+          "operation": "ProcurementRecorded",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.080375211+00:00"
+        },
+        {
+          "id": "e2487939-acda-434b-b267-55e9766e88b5",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "862624c3-2054-45c4-85b4-89b8633dd304",
+          "operation": "ProcurementRecorded",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.084857106+00:00"
+        },
+        {
+          "id": "4285c49d-66a8-4c44-8542-f9fb1e4dd2c8",
+          "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+          "entity_id": "9571e89c-9384-4669-b0db-08c3defa11db",
+          "operation": "ProcurementRecorded",
+          "actor": "Independent M4 reviewer",
+          "reason": "Literal supplied source; no guessed balancing amount",
+          "recorded_at": "2026-10-07T23:20:53.088812669+00:00"
+        }
+      ],
+      "core": {
+        "setups": [
+          {
+            "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+            "command": {
+              "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+              "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+              "policy": {
+                "version": "core-policy-v1",
+                "effective_date": "2026-03-21",
+                "timezone": "AsiaTehran",
+                "recognition": "AccrualPerpetualCombinedDelivery",
+                "valuation": "MovingWeightedAveragePerItemWarehouse",
+                "rounding": "PositiveHalfUpWholeRial",
+                "returns": "OriginalAllocationCumulativeFinalResidual",
+                "currency": "IRR",
+                "quantity_scale": 1000,
+                "tax_enabled": false,
+                "allow_negative_stock": false,
+                "allow_stock_backdating": false
+              },
+              "mappings": [
+                {
+                  "role": "Cash",
+                  "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                },
+                {
+                  "role": "Bank",
+                  "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                },
+                {
+                  "role": "Receivables",
+                  "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                },
+                {
+                  "role": "ChequesReceivable",
+                  "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                },
+                {
+                  "role": "Inventory",
+                  "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                },
+                {
+                  "role": "SupplierAdvances",
+                  "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                },
+                {
+                  "role": "FixedAssets",
+                  "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                },
+                {
+                  "role": "Payables",
+                  "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                },
+                {
+                  "role": "ChequesPayable",
+                  "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                },
+                {
+                  "role": "Grni",
+                  "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                },
+                {
+                  "role": "CustomerAdvances",
+                  "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                },
+                {
+                  "role": "Loans",
+                  "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                },
+                {
+                  "role": "OwnerCapital",
+                  "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                },
+                {
+                  "role": "OwnerDrawings",
+                  "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                },
+                {
+                  "role": "RetainedEarnings",
+                  "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                },
+                {
+                  "role": "Sales",
+                  "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                },
+                {
+                  "role": "SalesReturns",
+                  "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                },
+                {
+                  "role": "Cogs",
+                  "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                },
+                {
+                  "role": "OperatingExpense",
+                  "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                },
+                {
+                  "role": "BankFees",
+                  "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                },
+                {
+                  "role": "InventoryLoss",
+                  "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                }
+              ],
+              "actor": "Independent reviewer",
+              "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+            },
+            "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+          }
+        ],
+        "openings": [
+          {
+            "command": {
+              "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+              "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+              "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "as_of": "2026-03-21",
+              "source_id": "independent-F2-source",
+              "request_key": "arbitrary-review-key",
+              "actor": "Independent reviewer",
+              "reason": "Literal fixture, no balancing helper",
+              "balances": [
+                {
+                  "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248",
+                  "debit": 251,
+                  "credit": 0,
+                  "source_reference": "literal-cash"
+                },
+                {
+                  "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984",
+                  "debit": 300,
+                  "credit": 0,
+                  "source_reference": "literal-bank"
+                },
+                {
+                  "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98",
+                  "debit": 200,
+                  "credit": 0,
+                  "source_reference": "literal-receivables"
+                },
+                {
+                  "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b",
+                  "debit": 300,
+                  "credit": 0,
+                  "source_reference": "literal-inventory"
+                },
+                {
+                  "account_id": "87783587-b07f-4979-9d97-2af8adcf596a",
+                  "debit": 200,
+                  "credit": 0,
+                  "source_reference": "literal-cheques_receivable"
+                },
+                {
+                  "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2",
+                  "debit": 0,
+                  "credit": 149,
+                  "source_reference": "literal-payables"
+                },
+                {
+                  "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1",
+                  "debit": 0,
+                  "credit": 100,
+                  "source_reference": "literal-cheques_payable"
+                },
+                {
+                  "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7",
+                  "debit": 0,
+                  "credit": 50,
+                  "source_reference": "literal-grni"
+                },
+                {
+                  "account_id": "a8596179-ac03-4d79-817a-8399215d6607",
+                  "debit": 0,
+                  "credit": 952,
+                  "source_reference": "literal-owner_capital"
+                },
+                {
+                  "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2",
+                  "debit": 0,
+                  "credit": 0,
+                  "source_reference": "literal-supplier_advances"
+                },
+                {
+                  "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a",
+                  "debit": 0,
+                  "credit": 0,
+                  "source_reference": "literal-customer_advances"
+                },
+                {
+                  "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012",
+                  "debit": 0,
+                  "credit": 0,
+                  "source_reference": "literal-cogs"
+                },
+                {
+                  "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81",
+                  "debit": 0,
+                  "credit": 0,
+                  "source_reference": "literal-inventory_loss"
+                }
+              ],
+              "parties": [
+                {
+                  "id": "party-a",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "dual role A",
+                  "customer": true,
+                  "supplier": true
+                },
+                {
+                  "id": "party-b",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "dual role B",
+                  "customer": true,
+                  "supplier": true
+                }
+              ],
+              "units": [
+                {
+                  "id": "piece",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "piece"
+                },
+                {
+                  "id": "carton",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "carton"
+                }
+              ],
+              "items": [
+                {
+                  "id": "item-a",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "sku": "A",
+                  "name": "item A",
+                  "base_unit_id": "piece",
+                  "indivisible": true,
+                  "packs": [
+                    {
+                      "unit_id": "carton",
+                      "numerator": 12,
+                      "denominator": 1
+                    }
+                  ]
+                }
+              ],
+              "warehouses": [
+                {
+                  "id": "w1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "W1"
+                },
+                {
+                  "id": "w2",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "W2"
+                }
+              ],
+              "cash": [
+                {
+                  "id": "c1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "C1",
+                  "balance": 251,
+                  "source_reference": "count251"
+                }
+              ],
+              "banks": [
+                {
+                  "id": "b1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "B1",
+                  "bank_reference": "bank-number-B1",
+                  "balance": 300,
+                  "statement_balance": 300,
+                  "source_reference": "statement300"
+                }
+              ],
+              "open_items": [
+                {
+                  "id": "ar-a",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-a",
+                  "side": "Receivable",
+                  "document_reference": "INV-A",
+                  "document_date": "2026-02-01",
+                  "due_date": "2026-04-01",
+                  "remaining": 125
+                },
+                {
+                  "id": "ar-b",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-b",
+                  "side": "Receivable",
+                  "document_reference": "INV-B",
+                  "document_date": "2026-02-02",
+                  "due_date": "2026-04-02",
+                  "remaining": 75
+                },
+                {
+                  "id": "ap-a",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-a",
+                  "side": "Payable",
+                  "document_reference": "BILL-A",
+                  "document_date": "2026-02-03",
+                  "due_date": "2026-04-03",
+                  "remaining": 100
+                },
+                {
+                  "id": "ap-b",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-b",
+                  "side": "Payable",
+                  "document_reference": "BILL-B",
+                  "document_date": "2026-02-04",
+                  "due_date": "2026-04-04",
+                  "remaining": 49
+                }
+              ],
+              "advances": [],
+              "cheques": [
+                {
+                  "id": "cr1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-a",
+                  "direction": "Receivable",
+                  "state": "Held",
+                  "bank_reference": "CR-bank",
+                  "holder": "C1",
+                  "cheque_reference": "CR1",
+                  "settlement_reference": "SETTLED-OLD-INVOICE200",
+                  "issue_date": "2026-02-10",
+                  "due_date": "2026-05-10",
+                  "amount": 200
+                },
+                {
+                  "id": "cp1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-a",
+                  "direction": "Payable",
+                  "state": "Issued",
+                  "bank_reference": "CP-bank",
+                  "holder": "supplier A",
+                  "cheque_reference": "CP1",
+                  "settlement_reference": "SETTLED-OLD-BILL100",
+                  "issue_date": "2026-02-11",
+                  "due_date": "2026-05-11",
+                  "amount": 100
+                }
+              ],
+              "stock": [
+                {
+                  "id": "stock-w1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "unit_id": "carton",
+                  "quantity_thousandths": 2000,
+                  "value": 240,
+                  "source_reference": "count-2-cartons"
+                },
+                {
+                  "id": "stock-w2",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "item_id": "item-a",
+                  "warehouse_id": "w2",
+                  "unit_id": "piece",
+                  "quantity_thousandths": 6000,
+                  "value": 60,
+                  "source_reference": "count6-includesR1"
+                }
+              ],
+              "grni": [
+                {
+                  "id": "r1",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "party_id": "party-a",
+                  "item_id": "item-a",
+                  "warehouse_id": "w2",
+                  "unit_id": "piece",
+                  "quantity_thousandths": 5000,
+                  "value": 50,
+                  "receipt_reference": "R1",
+                  "received_date": "2026-03-01"
+                }
+              ]
+            },
+            "journal_id": "9a75e778-8e9e-440d-90d2-f3c7ac189974",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "command_sha256": "a780455730fea3056e4128ba63d16b0cf1d249ae03baaac039807f08864aff1a",
+            "effect": "Journal"
+          }
+        ]
+      },
+      "procurement": {
+        "records": [
+          {
+            "id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+            "command": {
+              "Order": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "po-rial",
+                  "source_revision": 1,
+                  "date": "2026-03-21",
+                  "request_key": "independent-po-rial",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "supplier_id": "party-a",
+                "reference": "PO-po-rial",
+                "document_date": "2026-03-21",
+                "lines": [
+                  {
+                    "id": "po-rial-line",
+                    "item_id": "item-a",
+                    "warehouse_id": "w1",
+                    "unit_id": "carton",
+                    "quantity_thousandths": 1000,
+                    "unit_price": 1,
+                    "line_discount": 0,
+                    "price_reference": "Independent quoted purchase price",
+                    "price_date": "2026-03-21",
+                    "override_reason": null
+                  }
+                ],
+                "document_discount": 0,
+                "supplied_total": 1
+              }
+            },
+            "command_sha256": "c12aff7031fd6b042fa65b76142cdb78576fe460ba2a93113ac407a1f8278121",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 2,
+            "journal_id": null,
+            "data": {
+              "Order": {
+                "supplier": {
+                  "id": "party-a",
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "name": "dual role A",
+                  "customer": true,
+                  "supplier": true
+                },
+                "lines": [
+                  {
+                    "input": {
+                      "id": "po-rial-line",
+                      "item_id": "item-a",
+                      "warehouse_id": "w1",
+                      "unit_id": "carton",
+                      "quantity_thousandths": 1000,
+                      "unit_price": 1,
+                      "line_discount": 0,
+                      "price_reference": "Independent quoted purchase price",
+                      "price_date": "2026-03-21",
+                      "override_reason": null
+                    },
+                    "item": {
+                      "id": "item-a",
+                      "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                      "sku": "A",
+                      "name": "item A",
+                      "base_unit_id": "piece",
+                      "indivisible": true,
+                      "packs": [
+                        {
+                          "unit_id": "carton",
+                          "numerator": 12,
+                          "denominator": 1
+                        }
+                      ]
+                    },
+                    "base_quantity_thousandths": 12000,
+                    "gross": 1,
+                    "document_discount": 0,
+                    "net": 1
+                  }
+                ],
+                "total": 1
+              }
+            },
+            "movements": []
+          },
+          {
+            "id": "a58bbda2-bd6d-46a2-aa39-f7ce8f3cf913",
+            "command": {
+              "Receive": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-receipt-a",
+                  "source_revision": 1,
+                  "date": "2026-03-22",
+                  "request_key": "independent-round-receipt-a",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "order_id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+                "reference": "GR-round-receipt-a",
+                "document_date": "2026-03-22",
+                "lines": [
+                  {
+                    "id": "round-receipt-a-line",
+                    "order_line_id": "po-rial-line",
+                    "warehouse_id": "w1",
+                    "unit_id": "carton",
+                    "quantity_thousandths": 500
+                  }
+                ],
+                "supplied_total": 1
+              }
+            },
+            "command_sha256": "ca0811b2a01480686adf4d1ad5f808c4dc23625e7d4a6ef5f8962fdba284eff1",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 3,
+            "journal_id": "9a7eb78c-ce53-447a-b2f9-f495d0e32f56",
+            "data": {
+              "Receive": {
+                "order_id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+                "supplier_id": "party-a",
+                "lines": [
+                  {
+                    "id": "round-receipt-a-line",
+                    "order_line_id": "po-rial-line",
+                    "item_id": "item-a",
+                    "warehouse_id": "w1",
+                    "quantity_thousandths": 6000,
+                    "value": 1
+                  }
+                ],
+                "total": 1
+              }
+            },
+            "movements": [
+              {
+                "id": "stock:3bc62cfeddb856a231c24238a753b98417c5959b98df71f5d26b090ba993f5a3",
+                "item_id": "item-a",
+                "warehouse_id": "w1",
+                "direction": "In",
+                "quantity_thousandths": 6000,
+                "value": 1,
+                "source_line_id": "round-receipt-a-line",
+                "before": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 24000,
+                  "value": 240
+                },
+                "after": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 30000,
+                  "value": 241
+                }
+              }
+            ]
+          },
+          {
+            "id": "3d12672d-8cb5-4cb8-8999-80acdd44bc14",
+            "command": {
+              "Receive": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-receipt-b",
+                  "source_revision": 1,
+                  "date": "2026-03-23",
+                  "request_key": "independent-round-receipt-b",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "order_id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+                "reference": "GR-round-receipt-b",
+                "document_date": "2026-03-23",
+                "lines": [
+                  {
+                    "id": "round-receipt-b-line",
+                    "order_line_id": "po-rial-line",
+                    "warehouse_id": "w1",
+                    "unit_id": "carton",
+                    "quantity_thousandths": 500
+                  }
+                ],
+                "supplied_total": 0
+              }
+            },
+            "command_sha256": "8fc1c24418128fccf63ccb4ce1527c535d6f65e24948d058a5dc603d57ec3e5c",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 4,
+            "journal_id": null,
+            "data": {
+              "Receive": {
+                "order_id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+                "supplier_id": "party-a",
+                "lines": [
+                  {
+                    "id": "round-receipt-b-line",
+                    "order_line_id": "po-rial-line",
+                    "item_id": "item-a",
+                    "warehouse_id": "w1",
+                    "quantity_thousandths": 6000,
+                    "value": 0
+                  }
+                ],
+                "total": 0
+              }
+            },
+            "movements": [
+              {
+                "id": "stock:37bed860afdfbff70586b0f6ad359187927c55cad99ce039d63254d586e8ca11",
+                "item_id": "item-a",
+                "warehouse_id": "w1",
+                "direction": "In",
+                "quantity_thousandths": 6000,
+                "value": 0,
+                "source_line_id": "round-receipt-b-line",
+                "before": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 30000,
+                  "value": 241
+                },
+                "after": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 36000,
+                  "value": 241
+                }
+              }
+            ]
+          },
+          {
+            "id": "f73863c9-fa7a-4fb5-a124-66683c1ad2c1",
+            "command": {
+              "Bill": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-bill-a",
+                  "source_revision": 1,
+                  "date": "2026-03-24",
+                  "request_key": "independent-round-bill-a",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "supplier_id": "party-a",
+                "reference": "ROUND-BILL-A",
+                "document_date": "2026-03-24",
+                "due_date": "2026-05-01",
+                "lines": [
+                  {
+                    "id": "round-bill-a-line-0",
+                    "receipt_line_id": "round-receipt-a-line",
+                    "quantity_thousandths": 3000,
+                    "supplied_value": 1
+                  }
+                ],
+                "supplied_total": 1
+              }
+            },
+            "command_sha256": "2527aadf3dab2fb4b3f0fa3da473ce80cb1e81a528f7afa06ffe3ae0ec9e19a9",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 5,
+            "journal_id": "9c099b14-c035-4813-a514-b5b4ab12e344",
+            "data": {
+              "Bill": {
+                "supplier_id": "party-a",
+                "lines": [
+                  {
+                    "id": "round-bill-a-line-0",
+                    "receipt_line_id": "round-receipt-a-line",
+                    "quantity_thousandths": 3000,
+                    "value": 1
+                  }
+                ],
+                "total": 1
+              }
+            },
+            "movements": []
+          },
+          {
+            "id": "03a6ee19-b243-4d60-9970-70a1603e6d8b",
+            "command": {
+              "Bill": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-bill-b",
+                  "source_revision": 1,
+                  "date": "2026-03-25",
+                  "request_key": "independent-round-bill-b",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "supplier_id": "party-a",
+                "reference": "ROUND-BILL-B",
+                "document_date": "2026-03-25",
+                "due_date": "2026-05-01",
+                "lines": [
+                  {
+                    "id": "round-bill-b-line-0",
+                    "receipt_line_id": "round-receipt-a-line",
+                    "quantity_thousandths": 3000,
+                    "supplied_value": 0
+                  }
+                ],
+                "supplied_total": 0
+              }
+            },
+            "command_sha256": "c4030a06a9652f764d0d64c7d9172f41536600ff024b6aec7658ca5bca709b8d",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 6,
+            "journal_id": null,
+            "data": {
+              "Bill": {
+                "supplier_id": "party-a",
+                "lines": [
+                  {
+                    "id": "round-bill-b-line-0",
+                    "receipt_line_id": "round-receipt-a-line",
+                    "quantity_thousandths": 3000,
+                    "value": 0
+                  }
+                ],
+                "total": 0
+              }
+            },
+            "movements": []
+          },
+          {
+            "id": "05def2e0-91e9-4764-a475-6a1289c0280b",
+            "command": {
+              "Bill": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-bill-c",
+                  "source_revision": 1,
+                  "date": "2026-03-26",
+                  "request_key": "independent-round-bill-c",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "supplier_id": "party-a",
+                "reference": "ROUND-BILL-C",
+                "document_date": "2026-03-26",
+                "due_date": "2026-05-01",
+                "lines": [
+                  {
+                    "id": "round-bill-c-line-0",
+                    "receipt_line_id": "round-receipt-b-line",
+                    "quantity_thousandths": 6000,
+                    "supplied_value": 0
+                  }
+                ],
+                "supplied_total": 0
+              }
+            },
+            "command_sha256": "2fbbb551729e2e801d0e4e10c9e8ecb8692e96f3c142d1cb99e5fc39d9b2c677",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 7,
+            "journal_id": null,
+            "data": {
+              "Bill": {
+                "supplier_id": "party-a",
+                "lines": [
+                  {
+                    "id": "round-bill-c-line-0",
+                    "receipt_line_id": "round-receipt-b-line",
+                    "quantity_thousandths": 6000,
+                    "value": 0
+                  }
+                ],
+                "total": 0
+              }
+            },
+            "movements": []
+          },
+          {
+            "id": "862624c3-2054-45c4-85b4-89b8633dd304",
+            "command": {
+              "Transfer": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-transfer-a",
+                  "source_revision": 1,
+                  "date": "2026-03-27",
+                  "request_key": "independent-round-transfer-a",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "item_id": "item-a",
+                "source_warehouse_id": "w1",
+                "target_warehouse_id": "w2",
+                "unit_id": "piece",
+                "quantity_thousandths": 6000
+              }
+            },
+            "command_sha256": "dccce6f54468d16021727e9f74b82c611e187124c4b73853bd1a622bda481c07",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 8,
+            "journal_id": null,
+            "data": {
+              "Transfer": {
+                "item_id": "item-a",
+                "quantity_thousandths": 6000,
+                "value": 40
+              }
+            },
+            "movements": [
+              {
+                "id": "stock:f9421d455eb743ba9bcb11e343ce60408cf0923eb7ece145d0bafa457bb0d2e4",
+                "item_id": "item-a",
+                "warehouse_id": "w1",
+                "direction": "Out",
+                "quantity_thousandths": 6000,
+                "value": 40,
+                "source_line_id": "round-transfer-a",
+                "before": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 36000,
+                  "value": 241
+                },
+                "after": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 30000,
+                  "value": 201
+                }
+              },
+              {
+                "id": "stock:70270ab4687352cadfc05b71dfadb739df8fb6c864f5eb984c5f81edf4cae2f5",
+                "item_id": "item-a",
+                "warehouse_id": "w2",
+                "direction": "In",
+                "quantity_thousandths": 6000,
+                "value": 40,
+                "source_line_id": "round-transfer-a",
+                "before": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w2",
+                  "quantity_thousandths": 6000,
+                  "value": 60
+                },
+                "after": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w2",
+                  "quantity_thousandths": 12000,
+                  "value": 100
+                }
+              }
+            ]
+          },
+          {
+            "id": "9571e89c-9384-4669-b0db-08c3defa11db",
+            "command": {
+              "Transfer": {
+                "context": {
+                  "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                  "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                  "setup_id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+                  "source_id": "round-transfer-final",
+                  "source_revision": 1,
+                  "date": "2026-03-28",
+                  "request_key": "independent-round-transfer-final",
+                  "actor": "Independent M4 reviewer",
+                  "reason": "Literal supplied source; no guessed balancing amount"
+                },
+                "item_id": "item-a",
+                "source_warehouse_id": "w1",
+                "target_warehouse_id": "w2",
+                "unit_id": "piece",
+                "quantity_thousandths": 30000
+              }
+            },
+            "command_sha256": "d588b2f0401ef8831c0b37a03275ecdd2e19d47035a56712315c6cf4ea7bcdee",
+            "frozen_setup": {
+              "id": "bec51296-85fc-4248-b776-cd9224bbf5e2",
+              "command": {
+                "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+                "period_id": "fa6b69d1-222f-4173-9ec6-8c368901f4d3",
+                "policy": {
+                  "version": "core-policy-v1",
+                  "effective_date": "2026-03-21",
+                  "timezone": "AsiaTehran",
+                  "recognition": "AccrualPerpetualCombinedDelivery",
+                  "valuation": "MovingWeightedAveragePerItemWarehouse",
+                  "rounding": "PositiveHalfUpWholeRial",
+                  "returns": "OriginalAllocationCumulativeFinalResidual",
+                  "currency": "IRR",
+                  "quantity_scale": 1000,
+                  "tax_enabled": false,
+                  "allow_negative_stock": false,
+                  "allow_stock_backdating": false
+                },
+                "mappings": [
+                  {
+                    "role": "Cash",
+                    "account_id": "9a4196b7-f181-4c09-ad09-2fc776d39248"
+                  },
+                  {
+                    "role": "Bank",
+                    "account_id": "ad0faa52-3685-4922-b95a-3fee51a71984"
+                  },
+                  {
+                    "role": "Receivables",
+                    "account_id": "649a2b41-1204-4fce-8c5b-9c38e1db3d98"
+                  },
+                  {
+                    "role": "ChequesReceivable",
+                    "account_id": "87783587-b07f-4979-9d97-2af8adcf596a"
+                  },
+                  {
+                    "role": "Inventory",
+                    "account_id": "1b3e9177-e279-4b63-9237-e53f7d71de8b"
+                  },
+                  {
+                    "role": "SupplierAdvances",
+                    "account_id": "be489eac-def4-4803-8ed5-0f13827c28c2"
+                  },
+                  {
+                    "role": "FixedAssets",
+                    "account_id": "016ae765-e268-4c8c-aedb-73b167160ea0"
+                  },
+                  {
+                    "role": "Payables",
+                    "account_id": "e6ee2d49-0a2c-49c8-a765-042f1c1575c2"
+                  },
+                  {
+                    "role": "ChequesPayable",
+                    "account_id": "7897cf60-b94f-416e-a419-bbf54eb610c1"
+                  },
+                  {
+                    "role": "Grni",
+                    "account_id": "e68609a2-ad76-45d0-ba3b-4879453483e7"
+                  },
+                  {
+                    "role": "CustomerAdvances",
+                    "account_id": "9c8aaf7a-bf84-4503-87b8-bc97de1e9d9a"
+                  },
+                  {
+                    "role": "Loans",
+                    "account_id": "6f7f1f92-2e57-4a49-aa44-bdc422ae901c"
+                  },
+                  {
+                    "role": "OwnerCapital",
+                    "account_id": "a8596179-ac03-4d79-817a-8399215d6607"
+                  },
+                  {
+                    "role": "OwnerDrawings",
+                    "account_id": "13949996-6e8a-4fee-b70a-8dd0041e44f9"
+                  },
+                  {
+                    "role": "RetainedEarnings",
+                    "account_id": "3c192963-f52a-488a-a4d7-3ee85c2a4371"
+                  },
+                  {
+                    "role": "Sales",
+                    "account_id": "2c1519e6-2ebd-468b-a7b5-ee9043b66b8d"
+                  },
+                  {
+                    "role": "SalesReturns",
+                    "account_id": "2484ac39-4243-4e9a-a183-283db6d298e5"
+                  },
+                  {
+                    "role": "Cogs",
+                    "account_id": "617a42f6-0efb-4efb-9f1f-bb6cca46d012"
+                  },
+                  {
+                    "role": "OperatingExpense",
+                    "account_id": "6e0b0a2c-3ea9-4b4d-82f6-f177cce2774f"
+                  },
+                  {
+                    "role": "BankFees",
+                    "account_id": "90cf44ee-c4ea-49b1-8f53-719a24f60708"
+                  },
+                  {
+                    "role": "InventoryLoss",
+                    "account_id": "ce6b802d-3981-4f80-b282-b721a0187e81"
+                  }
+                ],
+                "actor": "Independent reviewer",
+                "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+              },
+              "command_sha256": "cae38514c153a061ec3562603c3756b3ced831994fc5d3d89f677f210399fa2f"
+            },
+            "sequence": 9,
+            "journal_id": null,
+            "data": {
+              "Transfer": {
+                "item_id": "item-a",
+                "quantity_thousandths": 30000,
+                "value": 201
+              }
+            },
+            "movements": [
+              {
+                "id": "stock:e0f4a0ad271e835e306ee3bf46c6df6b752b8ddddcc8d852e35fc34e9d6a4a26",
+                "item_id": "item-a",
+                "warehouse_id": "w1",
+                "direction": "Out",
+                "quantity_thousandths": 30000,
+                "value": 201,
+                "source_line_id": "round-transfer-final",
+                "before": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 30000,
+                  "value": 201
+                },
+                "after": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w1",
+                  "quantity_thousandths": 0,
+                  "value": 0
+                }
+              },
+              {
+                "id": "stock:e4465190b22c57e7b2b321ee662e97964ff7f3abebb726006355f7a4fc4234b8",
+                "item_id": "item-a",
+                "warehouse_id": "w2",
+                "direction": "In",
+                "quantity_thousandths": 30000,
+                "value": 201,
+                "source_line_id": "round-transfer-final",
+                "before": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w2",
+                  "quantity_thousandths": 12000,
+                  "value": 100
+                },
+                "after": {
+                  "item_id": "item-a",
+                  "warehouse_id": "w2",
+                  "quantity_thousandths": 42000,
+                  "value": 301
+                }
+              }
+            ]
+          }
+        ],
+        "requests": [
+          {
+            "request_key": "independent-po-rial",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "0b5c0eb0-1a28-4547-a23c-a44ab76eb290",
+            "business_sha256": "96068587be9fe812eb6dc7a5d959095f3d0f5c976671b9bb93e3a20cbb4ee118"
+          },
+          {
+            "request_key": "independent-round-receipt-a",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "a58bbda2-bd6d-46a2-aa39-f7ce8f3cf913",
+            "business_sha256": "e62d4b098d62096c0a1cc85e136ee2d6a83d32295c9a463d9a84af36fe675d48"
+          },
+          {
+            "request_key": "independent-round-receipt-b",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "3d12672d-8cb5-4cb8-8999-80acdd44bc14",
+            "business_sha256": "e08b7f0f8a81b10ae587d51bc9fa9e2fca89c670d8dd0d0e18d7cf10000a6f6d"
+          },
+          {
+            "request_key": "round-receipt-b-alias",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "3d12672d-8cb5-4cb8-8999-80acdd44bc14",
+            "business_sha256": "e08b7f0f8a81b10ae587d51bc9fa9e2fca89c670d8dd0d0e18d7cf10000a6f6d"
+          },
+          {
+            "request_key": "independent-round-bill-a",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "f73863c9-fa7a-4fb5-a124-66683c1ad2c1",
+            "business_sha256": "7a8e26b22c904e144edb4acc9ac0fad73549c95a09a73a451e6febf2b1f91aab"
+          },
+          {
+            "request_key": "independent-round-bill-b",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "03a6ee19-b243-4d60-9970-70a1603e6d8b",
+            "business_sha256": "c67f912d8a2722e1b4261934ae567851b1927128dc710b7de7295dcc23611e89"
+          },
+          {
+            "request_key": "round-bill-b-alias",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "03a6ee19-b243-4d60-9970-70a1603e6d8b",
+            "business_sha256": "c67f912d8a2722e1b4261934ae567851b1927128dc710b7de7295dcc23611e89"
+          },
+          {
+            "request_key": "independent-round-bill-c",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "05def2e0-91e9-4764-a475-6a1289c0280b",
+            "business_sha256": "03aabe30d0faa9adbbeb7c65952b2ab5b8bc44649f1203977abc54ab8804cbc5"
+          },
+          {
+            "request_key": "independent-round-transfer-a",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "862624c3-2054-45c4-85b4-89b8633dd304",
+            "business_sha256": "844f29ffc5a73205d48b97d19f0326528ce772ec54958bacd8c02e259bdfa5af"
+          },
+          {
+            "request_key": "independent-round-transfer-final",
+            "company_id": "e5614179-a4cd-4da4-9d75-4a65369481a6",
+            "record_id": "9571e89c-9384-4669-b0db-08c3defa11db",
+            "business_sha256": "728a1669b0509cc74218dbd91b086ab8557265d3e52e1d26575572e68b12ea02"
+          }
+        ]
+      }
+    }
+  }
+}

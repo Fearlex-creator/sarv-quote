@@ -1,0 +1,8 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze2",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "production_source_sha256": "895386c1b3e66d58460c3e704487e8450833cb7ea581cc370c0fa9febf1ec8f2",
+  "source_files_all_match": true,
+  "full_harness_sha256": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+  "g_debug": "fatal-criticals"
+}

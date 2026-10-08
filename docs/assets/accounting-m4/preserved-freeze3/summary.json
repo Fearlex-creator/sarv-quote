@@ -1,0 +1,11 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze3",
+  "binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "result": "passed",
+  "suite": "Full quotation native smoke",
+  "checks": 23,
+  "actual_gtk_warning_critical_lines": 0,
+  "original_profile": "/workspace/sarv-quote/artifacts/m4-preserved/quote-1l6d12ix",
+  "other_regressions": "Untouched quotation/core/calendar/sidebar/manual sources retain separately attributed freeze2 results; they were not relabelled as freeze3 runs."
+}

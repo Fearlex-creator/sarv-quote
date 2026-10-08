@@ -1,0 +1,527 @@
+{
+  "result": "failed",
+  "binary": "/tmp/sarv-M4-document-focus-debug",
+  "binary_sha256": "e9ff96c3cb4daec9f320f3956371a2f5e9b50c930b8ec765e361e8745cf26a2a",
+  "checks": [
+    {
+      "name": "REC-A one Tab 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-A revealed focus 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-B one Tab 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-B revealed focus 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-A one Tab 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          586.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "REC-A revealed focus 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "REC-B one Tab 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "REC-B revealed focus 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "multi-match one Tab",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "Enter opens exact first source REC-B",
+      "passed": true,
+      "canonical_source_id": "dd45dcfb-b709-4989-babf-b23a925eb534"
+    },
+    {
+      "name": "all toolbar controls reachable backwards",
+      "passed": true,
+      "route": [
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            18.0,
+            455.0,
+            604.0,
+            60.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": null,
+          "focus_name": "AdwActionRow",
+          "focus_type": "AdwActionRow",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            167.0,
+            348.0,
+            243.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": "صورتحساب و تطبیق رسید",
+          "focus_name": "procurement-new-bill",
+          "focus_type": "GtkButton",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            424.0,
+            348.0,
+            195.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": "سفارش خرید تازه",
+          "focus_name": "procurement-new-order",
+          "focus_type": "GtkButton",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            144.0,
+            296.0,
+            158.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": "تعریف منابع",
+          "focus_name": "procurement-tab-masters",
+          "focus_type": "GtkToggleButton",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            314.0,
+            296.0,
+            173.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": "کنترل و تفصیل",
+          "focus_name": "procurement-tab-controls",
+          "focus_type": "GtkToggleButton",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            499.0,
+            296.0,
+            120.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": "اسناد",
+          "focus_name": "procurement-tab-documents",
+          "focus_type": "GtkToggleButton",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        },
+        {
+          "dialog_open": false,
+          "focus": "other",
+          "focus_bounds": [
+            49.0,
+            247.0,
+            542.0,
+            34.0
+          ],
+          "focus_clip_bounds": [
+            0.0,
+            46.0,
+            640.0,
+            467.0
+          ],
+          "focus_label": null,
+          "focus_name": "GtkText",
+          "focus_type": "GtkText",
+          "key": "ISO_Left_Tab",
+          "page": "procurement",
+          "quotes": 0,
+          "settings_dirty": false,
+          "window_size": [
+            640,
+            540
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ShiftTab from search preserves previous display-unit route",
+      "passed": false,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          167.0,
+          604.0,
+          34.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkToggleButton",
+        "focus_type": "GtkToggleButton",
+        "key": "ISO_Left_Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    }
+  ],
+  "key_events": [],
+  "refresh_completion_checks": [],
+  "fixture_profile": "/workspace/sarv-quote/artifacts/procurement-native/run-cytwzvdu/full",
+  "run": "/workspace/sarv-quote/artifacts/procurement-search-focus/run-awxtct8c",
+  "scope": "Read-only native keyboard acceptance for filtered document lookup, default/backward navigation, exact source opening and toolbar reachability; synthetic data only; no performance-budget claim.",
+  "diagnostic_only": true,
+  "route_cases": [],
+  "gtk_diagnostics": {
+    "light.log": ""
+  }
+}

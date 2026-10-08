@@ -880,6 +880,10 @@ impl AccountingState {
                 .any(|r| r.command.request_key == command.request_key),
             "کلید درخواست قبلاً برای عملیات مالی استفاده شده است"
         );
+        ensure!(
+            !self.procurement.uses_nonfinancial_key(&command.request_key),
+            "کلید درخواست قبلاً برای رویداد خرید یا انبار استفاده شده است"
+        );
         let record = ZeroOpeningRequest {
             request_key: command.request_key.clone(),
             company_id: command.company_id.clone(),
@@ -1065,6 +1069,7 @@ impl AccountingState {
             .chain(self.core.setups.iter().map(|x| x.id.as_str()))
             .chain(self.core.openings.iter().map(|o| o.journal_id.as_str()))
             .collect();
+        ids.extend(self.procurement_entity_ids());
         for opening in self
             .core
             .openings

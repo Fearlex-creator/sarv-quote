@@ -1,0 +1,96 @@
+dbus-daemon[182845]: [session uid=1000 pid=182845 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=182852 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[182845]: [session uid=1000 pid=182845 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[182878]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=182852 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[182878]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :9 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "profile": "/workspace/sarv-quote/artifacts/accounting-native/run-fp70ej2y",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "backend": "private X11 Xvfb/Openbox GTK4; signal financial workflow and actual XTest navigation separately",
+  "checks": [
+    {
+      "name": "native financial form workflow passed",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "native workflow normal exit",
+      "passed": true
+    },
+    {
+      "name": "fresh-profile restore and both database restarts match",
+      "passed": true
+    },
+    {
+      "name": "independent counts after financial workflow",
+      "passed": true
+    },
+    {
+      "name": "trial-before-reversal-rial.pdf exists",
+      "passed": true
+    },
+    {
+      "name": "trial-final-toman.pdf exists",
+      "passed": true
+    },
+    {
+      "name": "real Alt7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches company action",
+      "passed": true,
+      "focused_names": [
+        "اسناد",
+        "تاریخچه",
+        "تراز آزمایشی",
+        "تعریف دورهٔ مالی",
+        "تنظیمات",
+        "خریدها",
+        "دفتر حسابداری",
+        "شرکت تازه",
+        "شرکت تازه با راهنمای هسته",
+        "شرکت ساختگی سرو • آزمون دفتر",
+        "شرکت و دوره",
+        "قفل دوره با دلیل",
+        "موجودی و انتقال",
+        "پشتیبان و بازیابی",
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "real Tab reaches journal tab",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches journal action",
+      "passed": true
+    },
+    {
+      "name": "real Enter opens journal dialog",
+      "passed": true
+    },
+    {
+      "name": "real Escape closes unsaved journal",
+      "passed": true
+    },
+    {
+      "name": "Escape preserves complete saved state",
+      "passed": true
+    },
+    {
+      "name": "accounting accepts 1280x900",
+      "passed": true
+    },
+    {
+      "name": "accounting accepts 650x760",
+      "passed": true
+    },
+    {
+      "name": "keyboard and narrow layouts preserve accounting state",
+      "passed": true
+    }
+  ]
+}

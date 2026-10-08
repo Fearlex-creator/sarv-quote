@@ -1,4 +1,43 @@
-# Current schema 4 core-foundation checkpoint
+# Current schema 5 procurement checkpoint
+
+M4 adds an optional immutable procurement aggregate: resource additions, purchase
+orders, partial receipts, matched supplier bills, paired warehouse movements,
+frozen policy/master/price/cost snapshots and retry aliases. Existing quotations,
+manual books and M3 openings are preserved; no operational documents or resources
+are inferred from their balances. Current writes require schema5. Schemas1–4
+remain readable only after validation of their original schema and checksum.
+An older schema claiming procurement records is rejected.
+
+Legacy manual journals may contain event names that M4 now reserves for typed
+procurement. They and their exact request/audit history remain readable and
+restorable. Protected reversal and native source navigation use the actual linked
+core/procurement record, rather than historical event text. Ordinary reversals of
+these legacy manual journals remain available subject to fiscal locks and normal
+account validation. New manual reserved events, including forged new persistence
+appends, are rejected. Root regression tests and independent fixtures created by
+the actual archived M3 implementation verify both sides of this boundary.
+
+Before upgrading an existing profile, Store publishes and verifies a synced,
+uniquely named `before-schema5-<uuid>.json` recovery matching the exact preceding
+logical state. A schema4 recovery keeps `sarv-accounting-backup-v4`; current
+backups use `sarv-accounting-backup-v5`. The conditional SQLite UPDATE changes
+schema and generation together, and subsequent opens do not migrate again.
+The database remains the existing generation-checked SQLite aggregate, WAL and
+`synchronous=FULL`; this checkpoint does not introduce a normalized ledger store.
+
+The final frozen migration tests retain both historical quotations/manual journals and the detailed M3 opening. They verify generation41→42, exact full-state preservation except schema, one original verified v4 recovery, fresh v5 restore and restart. Competing receipt candidates have one durable winner; a different-key retry resolves the same effect, and mutated posted cost is rejected without changing the durable generation. The ordinary final repository run passes five procurement migration cases and two Store cases. The separately run actual M3 executable rejects schema5 without changing payload/generation; an independent archived M3 implementation verifies and restores three original pre-M4 v4 recovery profiles.
+
+The final independent suite also exercises actual process contention and SIGKILL before commit and after durable commit/lost adoption, requiring exact old-or-complete state and SQLite integrity `ok`. Current [schema4 recovery evidence](docs/assets/accounting-m4/migration/schema4), [procurement restore](docs/assets/accounting-m4/restore/po-receipt/verification.json), preserved older-schema restores and [M4 delivery](requirements/milestone-M4.md) retain exact boundaries. These are software interruption/recovery results; no physical power-loss or disk-full claim follows.
+
+Automatic downgrade is unsupported. Retain the full upgraded profile and v5
+backups. To recover the state before M4, restore the verified v4 recovery into a
+separate fresh profile with the compatible M3 build; that old state excludes all
+new procurement events. Final software interruption checks retain the exact
+old row when an owned child is killed while startup waits for a writer, before
+the schema UPDATE; the next open upgrades once. This does not establish physical
+power-loss safety or interruption inside that UPDATE.
+
+## Historical schema 4 core-foundation checkpoint
 
 M3 adds typed, company-specific policy/account-role snapshots and an immutable, reconciled fresh-company opening with its party, unit, item, warehouse, cashbox, bank, open-invoice/bill, advance, outstanding-cheque, stock and GRNI detail. Empty core state is omitted; existing manual books receive no policies, chart, registry or balances automatically. Current writes require schema4. Schema1/2/3 remain readable and are upgraded only after a synced, uniquely named `before-schema4-<uuid>.json` recovery has been checksum/domain-validated and matched to the exact preceding logical snapshot. Schema3 recovery retains `sarv-accounting-backup-v3`; new backups use v4. The conditional SQLite UPDATE changes schema and generation together; repeated opens do not migrate again.
 

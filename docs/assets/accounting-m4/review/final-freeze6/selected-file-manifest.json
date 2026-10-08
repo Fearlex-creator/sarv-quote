@@ -1,0 +1,155 @@
+{
+  "scope": "Selected synthetic portable independent evidence; actual4 financial/5 catalog/6 picker evidence retain separate source epochs and every preserved failure; no executable/cache/SQLite/source tar.",
+  "files": [
+    {
+      "path": "README.md",
+      "bytes": 5027,
+      "sha256": "8990a47547c65df54e1aa07dd97c6643941f5d40e16c405810935570f139012f"
+    },
+    {
+      "path": "before-fixes/invalid-customer-id/app.log",
+      "bytes": 41,
+      "sha256": "e824c5bb35d437150f81348043e10763de1a8b86f615cc8918e3dcd53d296f3c"
+    },
+    {
+      "path": "before-fixes/invalid-customer-id/openbox.log",
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    {
+      "path": "before-fixes/invalid-customer-id/picker-persistence-native.json",
+      "bytes": 1559,
+      "sha256": "781f62c5fb4e81a0f8ed7b56717781342124bc9555c4baf981ad119d9d632cc5"
+    },
+    {
+      "path": "before-fixes/invalid-customer-id/runner.log",
+      "bytes": 2278,
+      "sha256": "cd95f64515fcdb14edbd259bd18b5f2d946ad5081f1a02fe80fd252ac81b80e5"
+    },
+    {
+      "path": "before-fixes/invalid-customer-id/xvfb.log",
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    {
+      "path": "freeze5-to6-ui.patch",
+      "bytes": 24753,
+      "sha256": "1a6971b2926d1b71d46b67f2e5306526a9a475eb4f56a081632f8711e384bbe6"
+    },
+    {
+      "path": "freeze6-manifest.json",
+      "bytes": 3526,
+      "sha256": "0ee8822a24c44f599acd10230bed4a9241bb72e2050f99fc74f97cff83b6c78e"
+    },
+    {
+      "path": "independent-review.json",
+      "bytes": 3769,
+      "sha256": "aa58352aecead73be6c879129ede0f2a5ea6422ffdfc95911d9d32d1e8688913"
+    },
+    {
+      "path": "native/app-newer.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native/app-race-restart.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native/app-race.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native/app-restart.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native/app.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "native/choice-quantity-focus.png",
+      "bytes": 137633,
+      "sha256": "2a5c51ca5cec32e8e88e1380522d24c385a9b7f7d51d057a6efa6e4618fe6607"
+    },
+    {
+      "path": "native/customer-newer-invalid-retained.png",
+      "bytes": 138406,
+      "sha256": "c7aa6bdc0bb2a14016195642c4ac0cd9754e2f74792edc1cb76362339cb3e827"
+    },
+    {
+      "path": "native/newer-invalid-retained.png",
+      "bytes": 142302,
+      "sha256": "f8687e1f5759423917fb864b21ecb71fd20bbe96a6078712abdec4e7b81e246a"
+    },
+    {
+      "path": "native/openbox.log",
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    {
+      "path": "native/picker-persistence-native.json",
+      "bytes": 3906,
+      "sha256": "011862b731568e94c46f814a514b4f3324f22b245aa56a9ca9965a45949639c9"
+    },
+    {
+      "path": "native/runner.log",
+      "bytes": 6848,
+      "sha256": "e5ddb160bdb831d90bd6f529fbac2f4ccddf720b5b96f0611c3f3d3d1b90b53d"
+    },
+    {
+      "path": "native/stale-generation-error.png",
+      "bytes": 146892,
+      "sha256": "7f966be47f0e0d4510eabcb6b52ca93387621efd865b8e34ad486199670f18ba"
+    },
+    {
+      "path": "native/writer-lock-busy.png",
+      "bytes": 141254,
+      "sha256": "731b7ecee448743076d15c626cb1882de2731f7cf78326566cb1a8f379b138b1"
+    },
+    {
+      "path": "native/writer-lock-error.png",
+      "bytes": 148301,
+      "sha256": "689579fb6b4a92c19269adbcdf5e780c94e26f8858ea281b291acbef2660ba3d"
+    },
+    {
+      "path": "native/xvfb.log",
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    {
+      "path": "performance-attribution.json",
+      "bytes": 3293,
+      "sha256": "ed7ba260768bd04310a7ce968b1abca21b596380cbb6ee40d02c820e65f8a9be"
+    },
+    {
+      "path": "source-and-evidence-final-check.json",
+      "bytes": 859,
+      "sha256": "901abd5384ef5fdc85b35bab317435c72766216dd36999bf5a9301811dc9095f"
+    },
+    {
+      "path": "sources/native-review.py",
+      "bytes": 27608,
+      "sha256": "7c390b4fefa9039422ab89765f8145ad922326b371f135d2f7a60f942949152e"
+    },
+    {
+      "path": "sources/picker-persistence-native.py",
+      "bytes": 19269,
+      "sha256": "7ffad6da7f98b3c298c676d328857447701daf23ccad6a7cbaf041a1f503b07e"
+    },
+    {
+      "path": "sources/scripts/qa-native.py",
+      "bytes": 32128,
+      "sha256": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e"
+    },
+    {
+      "path": "sources/scripts/qa_access.py",
+      "bytes": 5777,
+      "sha256": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+    }
+  ]
+}

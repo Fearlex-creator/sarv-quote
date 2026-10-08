@@ -1,0 +1,78 @@
+{
+  "status": "Freeze4 quotation functional/focus repeats passed; kept distinct from later final5 affected-path evidence",
+  "binary_sha256": "499c2607747f00f5c9ada4c3e94d3e59e174a918f4df467a8f3cfedf47a14001",
+  "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+  "current_source_differences_at_collection": [],
+  "quote_catalog_source_paths_still_match_freeze4_after_all_runs": true,
+  "later_source_edit_scope": "Final5 changes only three presentation/diagnostic files: procurement completion wording for cached_catalog success/stale, review verified/rejected/stale/closed, refresh dead/stale and detail ready/error/closed; catalog composer plain-Escape ownership with nested/popover/modified-key guards; opt-in smoke focus diagnostics use visible dialog focus before window focus. Validation, gating, posting, data and all financial sources unchanged. Exact freeze4 results remain retained; catalog changes require actual freeze5 quotation repeats.",
+  "cases": [
+    {
+      "case": "full28",
+      "result": "passed",
+      "checks": 28,
+      "original_profile": "artifacts/product-native/run-vy4e2sa9",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze4/full28/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-vy4e2sa9/app.log",
+        "artifacts/product-native/run-vy4e2sa9/xvfb.log",
+        "artifacts/product-native/run-vy4e2sa9/openbox.log",
+        "artifacts/product-native/run-vy4e2sa9/restart.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary4; no LD_PRELOAD shim"
+    },
+    {
+      "case": "disclosure4",
+      "result": "passed",
+      "checks": 4,
+      "original_profile": "artifacts/product-native/run-w0beo_or",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze4/disclosure4/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-w0beo_or/app.log",
+        "artifacts/product-native/run-w0beo_or/xvfb.log",
+        "artifacts/product-native/run-w0beo_or/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary4; no LD_PRELOAD shim"
+    },
+    {
+      "case": "modal3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-i0uk_xve",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze4/modal3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-i0uk_xve/app.log",
+        "artifacts/product-native/run-i0uk_xve/xvfb.log",
+        "artifacts/product-native/run-i0uk_xve/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary4; no LD_PRELOAD shim"
+    },
+    {
+      "case": "failure3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-77dtbsf8",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze4/failure3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-77dtbsf8/app.log",
+        "artifacts/product-native/run-77dtbsf8/xvfb.log",
+        "artifacts/product-native/run-77dtbsf8/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary4; no LD_PRELOAD shim"
+    }
+  ],
+  "personally_rendered": [
+    "full28/editor-900x560-total.png"
+  ],
+  "observers": {
+    "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+    "artifacts/m4-quote-diagnostics/repeat-final/full28.py": "ec5dceaf7eb1025cd59c5a59c2059fbe49a4bb412fb94103ff654cefe6d65aff",
+    "artifacts/m4-quote-diagnostics/repeat-final/disclosure4.py": "5778c8e35ed367d17980dfbb6ca6c2544d819a2abf4187a2e33493d9dc166205",
+    "artifacts/m4-quote-diagnostics/repeat-final/modal3.py": "8d1458bf3edde6e08b5b549ce2b2489ed454564d85ed08100b30a4e1507a4cb1",
+    "artifacts/m4-quote-diagnostics/repeat-final/failure3.py": "3b7ea7b9e1efcaf3584cbc18287a3b1fb48089d3cccc81e774907e0592f9d676"
+  },
+  "production_source_files_match_freeze4_after_all_runs": true
+}

@@ -1,0 +1,10 @@
+dbus-daemon[208132]: [session uid=1000 pid=208132 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=208139 comm="/tmp/sarv-M4-picker-async-debug" label="kernel")
+dbus-daemon[208132]: [session uid=1000 pid=208132 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[208178]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=208139 comm="/tmp/sarv-M4-picker-async-debug" label="kernel")
+dbus-daemon[208178]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X Error of failed request:  BadWindow (invalid Window parameter)
+  Major opcode of failed request:  20 (X_GetProperty)
+  Resource id in failed request:  0x600004
+  Serial number of failed request:  108
+  Current serial number in output stream:  108

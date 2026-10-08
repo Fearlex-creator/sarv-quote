@@ -1,0 +1,73 @@
+{
+  "attribution": "Owner exact6 reports read independently, no reviewer benchmark rerun",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "frozen_production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "raw_repeated": "artifacts/performance-m4/freeze6-repeated/performance.json",
+  "raw_scale": "artifacts/performance-m4/freeze6-scale/performance.json",
+  "frozen_source_and_binary_stable": true,
+  "bounded_procurement_targets_pass": true,
+  "document_visible_p95_ms": 128.108,
+  "document_focused_p95_ms": 141.436,
+  "core_visible_p95_ms": 93.643,
+  "core_focused_p95_ms": 124.378,
+  "search_n": 20,
+  "accepted_measurable_procurement_worker_phases": 22,
+  "accepted_worker_max_gap_ms": 43.674,
+  "all_accepted_worker_gaps_within_50ms": true,
+  "additional_rejected_phase": "23rd raw receipt preview rejected; measurable=false/passes=false; excluded from accepted latency assertions, no invented pass",
+  "core_preview_post_max_gap_ms": [
+    16.089,
+    46.34
+  ],
+  "repeated_startup_n": 10,
+  "repeated_startup_core_quote_procurement_p95_ms": [
+    865.763,
+    1250.606,
+    862.787
+  ],
+  "initial_rss_budget_250MB_pass_all_datasets": true,
+  "scale_functional_checks_passed": 15,
+  "scale_products": 50000,
+  "scale_lines": 1000,
+  "scale_exact_total_irr": 100802501,
+  "strict_full_app_misses": {
+    "global_heartbeat_ms": [
+      280.552,
+      50
+    ],
+    "unchanged_page_ms": [
+      161.263,
+      150
+    ],
+    "pdf_busy_ms": [
+      127.266,
+      50
+    ]
+  },
+  "save_dispatch_ms": 6.473,
+  "shared_persistence_busy_max_gap_ms": 98.725,
+  "shared_persistence_scope": "Existing raw save-busy field now covers asynchronous product/customer choice via shared persistence_busy; not isolated Ctrl+S causation or comparable5 Save-only regression",
+  "choice_dispatch_ms": 7.66,
+  "choice_durable_adoption_callback_ready_ms": 540.58,
+  "choice_endpoint": "Raw key says durable_and_native_review_ready; actual assertion certifies committed canonical choice/amount and callback/review dispatch, not independently settled widgets",
+  "catalog_open_dispatch_ms": 15.859,
+  "catalog_initial_100_ready_ms": 169.55,
+  "limits": [
+    "Private shared executor/X11/Cairo, uncontrolled cache/scheduling; first fresh-backup process is not physical/cache-cold",
+    "Startup n10/search n20 nearest-rank p99 is worst; scale n1 is not tail estimate",
+    "Global gaps include probe screenshot/setup/fixture mutation/resize; no pure kernel or Save causation",
+    "Initial RSS pass does not certify large final/peak memory",
+    "No complete100000-doc/million-journal/10000-party/five-year/dedicated reference hardware/Wayland/Windows/physical power-loss or printing claim"
+  ],
+  "full_app_PERF": "partial",
+  "quote_later_RSS_HWM_KiB": [
+    268672,
+    319140
+  ],
+  "cold_picker_dispatch_ms": 12.517,
+  "cold_index_and_30_widget_rows_ready_ms": 133.115,
+  "warm_picker_dispatch_ms": 10.684,
+  "warm_30_widget_rows_ready_ms": 33.41,
+  "picker_readiness_scope": "Cold/warm raw readiness observes actual30 GTK child rows after shared persistence clears; no independent fully settled frame or pixel-ready endpoint. Dispatch remains separate.",
+  "portable_owner_report": "../../performance/freeze6/README.md"
+}

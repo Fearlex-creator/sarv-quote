@@ -1,0 +1,41 @@
+dbus-daemon[208719]: [session uid=1000 pid=208719 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=208742 comm="/tmp/sarv-M4-picker-async-debug2" label="kernel")
+dbus-daemon[208719]: [session uid=1000 pid=208719 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[208794]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=208742 comm="/tmp/sarv-M4-picker-async-debug2" label="kernel")
+dbus-daemon[208794]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :11 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary": "/tmp/sarv-M4-picker-async-debug2",
+  "binary_sha256": "7d93b1c8301f622595c5b33a042c0af21c77b0fa9ac61ce4ab599d4edcac824a",
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/freeze5-repeated/quote-scale",
+  "run": "/workspace/sarv-quote/artifacts/picker-async/run-x02xybkf",
+  "scope": "Synthetic one-line quote and50k catalog; real XTest picker activation/selection and owned SQLite writer lock. Not a performance benchmark.",
+  "checks": [
+    {
+      "name": "async customer opening preserves saved state",
+      "passed": true
+    },
+    {
+      "name": "pending accepted selection refuses Escape and stays responsive",
+      "passed": true
+    },
+    {
+      "name": "no intermediate write under owned SQLite writer lock",
+      "passed": true
+    }
+  ],
+  "gtk_diagnostics": {
+    "app-native.log": ""
+  }
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/docs/assets/accounting-m4/native/picker-async-diagnostics/customer-observer.py", line 56, in <module>
+    n.wait_for(lambda:state()['draft']['customer_id']=='00000000-0000-4000-8000-000000000123',seconds=12,label='one candidate durable explicit choice');n.wait_for(lambda:not picker(),label='choice dialog closes after receipt');time.sleep(.3)
+    ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 30, in wait_for
+    result = predicate()
+  File "/workspace/sarv-quote/docs/assets/accounting-m4/native/picker-async-diagnostics/customer-observer.py", line 56, in <lambda>
+    n.wait_for(lambda:state()['draft']['customer_id']=='00000000-0000-4000-8000-000000000123',seconds=12,label='one candidate durable explicit choice');n.wait_for(lambda:not picker(),label='choice dialog closes after receipt');time.sleep(.3)
+                      ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+KeyError: 'customer_id'

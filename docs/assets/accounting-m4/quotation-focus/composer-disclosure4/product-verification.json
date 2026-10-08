@@ -1,0 +1,55 @@
+{
+  "result": "passed",
+  "binary_sha256": "11343fc6139f4c6df6c43b4a001c14761cb769adefa530661679f1e46d8040f1",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-h5uoht31",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-oaxx9dln",
+  "checks": [
+    {
+      "name": "Expanded/collapsed disclosure retains edited جزئیات پیشنهاد • تاریخ، اعتبار و مرجع",
+      "passed": true,
+      "expected": "M4-EXPANDER-REFERENCE",
+      "actual": "M4-EXPANDER-REFERENCE"
+    },
+    {
+      "name": "Expanded/collapsed disclosure retains edited یادداشت برای مشتری",
+      "passed": true,
+      "expected": "M4-EXPANDER-NOTES",
+      "actual": "M4-EXPANDER-NOTES"
+    },
+    {
+      "name": "Expanded/collapsed disclosure retains edited ویرایش متن CSV سفارش",
+      "passed": true,
+      "expected": "item,quantity\nQA-NATIVE-1,4.125\n",
+      "actual": "item,quantity\nQA-NATIVE-1,4.125\n"
+    },
+    {
+      "name": "Disclosure edits preserve approved quote and accounting histories",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "captures": {
+    "disclosure-0-open.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "disclosure-1-open.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "disclosure-2-open.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    }
+  }
+}

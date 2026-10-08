@@ -1,0 +1,15 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze5",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "production_source_sha256": "6b1996a41ed86807a91a18820f7fce4bb167e99399403b3fd25cf1b14e4aa36c",
+  "source_files_all_match": true,
+  "full_harness_sha256": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+  "owned_observer_sha256": {
+    "short-layout-observer.py": "7b5643e907dac016f531bbef9fdc2b8cb4a7c40b6558f063ca363122ebd991b8",
+    "search-focus-acceptance.py": "775bda6494a7f2a596cc60134668d9b6a4adc16239bafbc213ff960fca84d770"
+  },
+  "completion_observer_sha256": "2ad380063b8473607439053bf5862ddfc3dad7895a88482955fdc5d792a76569",
+  "g_debug": "fatal-criticals",
+  "parallel_functional_runs_only_not_performance": true,
+  "short_guard_fixture": "read-only synthetic freeze4 full fixture copied into independent5 profiles; current5 binary/source; full5 financial workflow uses a new M3 seed"
+}

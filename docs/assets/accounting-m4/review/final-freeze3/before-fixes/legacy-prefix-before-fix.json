@@ -1,0 +1,33 @@
+{
+  "actual_old_implementation": "bdc304cb139e3d258b107b9ce18c7f4682ec5a89",
+  "cases": [
+    {
+      "case": "original",
+      "completed_legacy_retry_oneeffect": true,
+      "current_new_ordinary_reversal_error": "برگشت سند کنترلی به اصلاح هماهنگ جزئیات نیاز دارد؛ از گردش کار منبع استفاده کنید",
+      "current_restore_preview_error": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "current_upgrade_error": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "current_validation_error": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "failed_upgrade_oldrow_exact": true,
+      "new_legacy_alias_oneeffect": true,
+      "new_reserved_prefix_rejection": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "old_source": "artifacts/independent-m4/legacy-prefix-1/old-m3-manual-prefix-v4.json",
+      "persisted_generation": 71
+    },
+    {
+      "case": "linked-reversal",
+      "completed_legacy_retry_oneeffect": true,
+      "current_new_ordinary_reversal_error": null,
+      "current_restore_preview_error": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "current_upgrade_error": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "current_validation_error": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "failed_upgrade_oldrow_exact": true,
+      "new_legacy_alias_oneeffect": true,
+      "new_reserved_prefix_rejection": "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است",
+      "old_source": "artifacts/independent-m4/legacy-prefix-1/old-m3-linked-reversal-v4.json",
+      "persisted_generation": 71
+    }
+  ],
+  "result": "observed_backward_compatibility_blocker",
+  "scope": "Actual oldM3 generated/verifiedv4manual procurement.receive and linkedreversal; currentfullhistory/backup/Storemigration and prospective ordinary reversal"
+}

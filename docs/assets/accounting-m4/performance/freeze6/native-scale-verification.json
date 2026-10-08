@@ -1,0 +1,481 @@
+{
+  "catalog_preview_pages_visited": 500,
+  "checks": [
+    "Actual50,000-row CSV parse and prepared catalogue acceptance complete via native background workflows",
+    "Actual GTK import preview first and next page contain 100 expected products",
+    "All 500 native pages reached by next button; final row is SCALE-50000; next disabled",
+    "Native Save dispatches bounded worker; double save commits once; SQLite lock leaves GTK navigation live; old receipt preserves newer invalid input and focuses quantity; recovery saves latest edits; reopened profile retains all1,000 lines",
+    "Actual explicit Save refreshes exact100,001rial first-row amount, clears review pending, preserves native quantity focus and selection, and does not duplicate an unchanged commit",
+    "Genuine XTest Ctrl+Up on reused final-page row1000 focuses global row999, selects its exact code and keeps page10",
+    "Native reused final-page remove and Undo preserve global row1000 identity/order, quantity3 and exact100,802,501rial total",
+    "Native editor reaches all ten pages with <=100 rows/page; first/last page quantity edits survive navigation and save; all1,000 canonical lines retained; exact100,802,501rial total",
+    "All seventeen unchanged native next/previous clicks preserve persisted generation; edited first-page navigation commits exactly one generation",
+    "Review worker and detached20-row construction both preserve newer invalid typed quantity; aborted presentation leaves canonical query/quantity unchanged",
+    "Cold/warm50,000-product indexed picker keeps<=30 rows, finds exact last code, reports all broad matches; unknown-line native selector avoids giant dropdown and persists explicit choice while preserving request and exact price",
+    "Native50,000-product composer copy keeps<=100 rows, next page and exact last-product search reachable, retains full product count and leaves persisted source/generation unchanged when closed",
+    "Genuine X11 XTest Tab moves first row query focus to quantity while PDF worker is busy",
+    "Native settings navigation completes while PDF worker is busy",
+    "PDF export completed within 120-second total probe timeout; GTK heartbeat stayed below 250 ms while busy"
+  ],
+  "durations_ms": {
+    "1000_line_background_pdf_completion": 1758.950799,
+    "1000_line_store_commit_and_review_dispatch": 160.650235,
+    "50000_catalog_1000_line_save_dispatch_main_thread": 6.472682,
+    "50000_catalog_prepare_commit_and_native_refresh": 407.377098,
+    "50000_cold_picker_index_and_first_results_ready": 133.115215,
+    "50000_cold_picker_open_invocation": 12.517207,
+    "50000_composer_indexed_last_code_search_including_debounce": 175.30109099999999,
+    "50000_csv_parse_request_to_completion": 161.872116,
+    "50000_csv_worker_parse_ms": 125.19053299999999,
+    "50000_indexed_broad_search_including_debounce": 7.6878329999999995,
+    "50000_indexed_exact_code_search_including_debounce": 93.00662799999999,
+    "50000_native_composer_copy_and_initial100_rows": 169.549695,
+    "50000_native_composer_open_dispatch": 15.859069,
+    "50000_unknown_line_choice_dispatch_main_thread": 7.659793,
+    "50000_unknown_line_choice_durable_and_native_review_ready": 540.580433,
+    "50000_unknown_line_indexed_search_including_debounce": 138.664803,
+    "50000_warm_cached_picker_open_and_native_results": 33.409973,
+    "50000_warm_cached_picker_open_dispatch": 10.684112,
+    "catalog_pagination_all_500_pages_including_initial_setup": 24752.285888,
+    "catalog_preview_widget_creation": 148.45661299999998,
+    "locked_worker_save_newer_invalid_edit_and_recovery": 577.867944,
+    "restore_known_line_fixture_changed_save_and_review_dispatch": 188.298754,
+    "synthetic_50000_csv_fixture_creation": 15.240306,
+    "unknown_line_fixture_changed_save_and_review_dispatch": 179.65883499999998,
+    "unknown_line_request_to_ready_including_probe_poll": 552.441128
+  },
+  "editor_page_clicks": [
+    {
+      "direction": "next",
+      "draft_changed": true,
+      "duration_ms": 339.216562,
+      "from_page": 1,
+      "generation_after": 5,
+      "generation_before": 4
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 120.516868,
+      "from_page": 2,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 121.15107,
+      "from_page": 3,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 118.471469,
+      "from_page": 4,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 117.80534300000001,
+      "from_page": 5,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 126.754952,
+      "from_page": 6,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 141.34006,
+      "from_page": 7,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 128.832475,
+      "from_page": 8,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 122.428386,
+      "from_page": 9,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 139.382124,
+      "from_page": 10,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 125.143161,
+      "from_page": 9,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 120.234029,
+      "from_page": 8,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 161.262857,
+      "from_page": 7,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 133.545267,
+      "from_page": 6,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 127.22256800000001,
+      "from_page": 5,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 129.611521,
+      "from_page": 4,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 131.241408,
+      "from_page": 3,
+      "generation_after": 8,
+      "generation_before": 8
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 121.914433,
+      "from_page": 2,
+      "generation_after": 8,
+      "generation_before": 8
+    }
+  ],
+  "failure": null,
+  "final_window_allocation": [
+    990,
+    770
+  ],
+  "heartbeat_count": 1052,
+  "heartbeat_gaps_over_100_ms": [
+    {
+      "gap_ms": 156.094012,
+      "pdf_busy": false,
+      "stage": 1,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 163.23776700000002,
+      "pdf_busy": false,
+      "stage": 2,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 113.395813,
+      "pdf_busy": false,
+      "stage": 3,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 280.335934,
+      "pdf_busy": false,
+      "stage": 60,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 100.33371100000001,
+      "pdf_busy": false,
+      "stage": 64,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 170.268431,
+      "pdf_busy": false,
+      "stage": 11,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 169.78564,
+      "pdf_busy": false,
+      "stage": 112,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 170.961587,
+      "pdf_busy": false,
+      "stage": 113,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 280.5516,
+      "pdf_busy": false,
+      "stage": 126,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 237.540474,
+      "pdf_busy": false,
+      "stage": 30,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 176.531767,
+      "pdf_busy": false,
+      "stage": 32,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 103.52072700000001,
+      "pdf_busy": false,
+      "stage": 5,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 127.265841,
+      "pdf_busy": true,
+      "stage": 9,
+      "worker_busy": true
+    },
+    {
+      "gap_ms": 100.93354000000001,
+      "pdf_busy": true,
+      "stage": 9,
+      "worker_busy": true
+    }
+  ],
+  "heartbeat_interval_ms": 20,
+  "heartbeat_ticks_while_pdf_busy": 71,
+  "heartbeat_ticks_while_save_busy": 34,
+  "limitations": [
+    "Synthetic scale fixture, not production customer data",
+    "Explicit and automatic draft persistence validation, serialization and SQLite commit run on one bounded worker; GTK still clones the snapshot and some dependent document commands, catalog acceptance, replacements and row rebuilds remain synchronous. Global and per-phase gaps are reported rather than hidden; the 50ms overall budget is not accepted",
+    "Injected lock is a responsiveness fixture, not hardware power-loss proof",
+    "No Wayland, physical printer or target desktop packaging certification"
+  ],
+  "lookup_readiness_observation": "30ms polling for exact native contents; no deliberate250ms wait",
+  "maximum_heartbeat_gap_ms_including_setup_and_editor_paging": 280.5516,
+  "maximum_heartbeat_gap_ms_while_pdf_busy": 127.265841,
+  "maximum_heartbeat_gap_ms_while_save_busy": 98.724842,
+  "maximum_native_composer_rows": 100,
+  "maximum_native_picker_rows": 30,
+  "maximum_native_preview_rows": 100,
+  "maximum_unchanged_editor_page_click_ms": 161.262857,
+  "pdf_busy_responsiveness_threshold_ms": 250,
+  "phase_heartbeats": {
+    "0": {
+      "maximum_gap_ms": 34.069764,
+      "ticks": 1
+    },
+    "1": {
+      "maximum_gap_ms": 156.094012,
+      "ticks": 21
+    },
+    "10": {
+      "maximum_gap_ms": 72.934835,
+      "ticks": 66
+    },
+    "11": {
+      "maximum_gap_ms": 170.268431,
+      "ticks": 14
+    },
+    "111": {
+      "maximum_gap_ms": 84.54012,
+      "ticks": 7
+    },
+    "112": {
+      "maximum_gap_ms": 169.78564,
+      "ticks": 9
+    },
+    "113": {
+      "maximum_gap_ms": 170.961587,
+      "ticks": 9
+    },
+    "12": {
+      "maximum_gap_ms": 78.190044,
+      "ticks": 43
+    },
+    "125": {
+      "maximum_gap_ms": 21.782069,
+      "ticks": 2
+    },
+    "126": {
+      "maximum_gap_ms": 280.5516,
+      "ticks": 5
+    },
+    "127": {
+      "maximum_gap_ms": 22.031364,
+      "ticks": 1
+    },
+    "128": {
+      "maximum_gap_ms": 59.92515,
+      "ticks": 7
+    },
+    "130": {
+      "maximum_gap_ms": 42.612631,
+      "ticks": 5
+    },
+    "131": {
+      "maximum_gap_ms": 98.724842,
+      "ticks": 19
+    },
+    "2": {
+      "maximum_gap_ms": 163.23776700000002,
+      "ticks": 7
+    },
+    "20": {
+      "maximum_gap_ms": 51.043786,
+      "ticks": 26
+    },
+    "21": {
+      "maximum_gap_ms": 40.888262000000005,
+      "ticks": 5
+    },
+    "22": {
+      "maximum_gap_ms": 29.421168,
+      "ticks": 8
+    },
+    "23": {
+      "maximum_gap_ms": 82.534166,
+      "ticks": 5
+    },
+    "24": {
+      "maximum_gap_ms": 95.89782299999999,
+      "ticks": 1
+    },
+    "25": {
+      "maximum_gap_ms": 36.381945,
+      "ticks": 9
+    },
+    "26": {
+      "maximum_gap_ms": 49.58096,
+      "ticks": 7
+    },
+    "27": {
+      "maximum_gap_ms": 48.882197000000005,
+      "ticks": 8
+    },
+    "28": {
+      "maximum_gap_ms": 36.899246,
+      "ticks": 5
+    },
+    "3": {
+      "maximum_gap_ms": 113.395813,
+      "ticks": 501
+    },
+    "30": {
+      "maximum_gap_ms": 237.540474,
+      "ticks": 13
+    },
+    "31": {
+      "maximum_gap_ms": 81.373302,
+      "ticks": 4
+    },
+    "32": {
+      "maximum_gap_ms": 176.531767,
+      "ticks": 8
+    },
+    "4": {
+      "maximum_gap_ms": 38.361264999999996,
+      "ticks": 14
+    },
+    "40": {
+      "maximum_gap_ms": 34.036393,
+      "ticks": 8
+    },
+    "41": {
+      "maximum_gap_ms": 20.990968,
+      "ticks": 18
+    },
+    "42": {
+      "maximum_gap_ms": 71.68011800000001,
+      "ticks": 16
+    },
+    "5": {
+      "maximum_gap_ms": 103.52072700000001,
+      "ticks": 22
+    },
+    "6": {
+      "maximum_gap_ms": 20.068708,
+      "ticks": 2
+    },
+    "60": {
+      "maximum_gap_ms": 280.335934,
+      "ticks": 47
+    },
+    "61": {
+      "maximum_gap_ms": 20.125935000000002,
+      "ticks": 8
+    },
+    "62": {
+      "maximum_gap_ms": 39.283305,
+      "ticks": 5
+    },
+    "63": {
+      "maximum_gap_ms": 34.2311,
+      "ticks": 7
+    },
+    "64": {
+      "maximum_gap_ms": 100.33371100000001,
+      "ticks": 11
+    },
+    "65": {
+      "maximum_gap_ms": 38.572428,
+      "ticks": 9
+    },
+    "7": {
+      "maximum_gap_ms": 24.541535,
+      "ticks": 7
+    },
+    "8": {
+      "maximum_gap_ms": 41.4782,
+      "ticks": 8
+    },
+    "9": {
+      "maximum_gap_ms": 127.265841,
+      "ticks": 54
+    }
+  },
+  "products": 50000,
+  "quote_lines": 1000,
+  "result": "passed",
+  "synthetic_only": true
+}

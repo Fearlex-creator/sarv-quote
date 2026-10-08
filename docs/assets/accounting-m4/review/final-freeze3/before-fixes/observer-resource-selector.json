@@ -1,0 +1,7 @@
+{
+  "status": "superseded static observer selector assumption",
+  "original_failure": "StopIteration selecting CSV row_kind metadata; actual emitted row_kind is document_metadata",
+  "scope": "Initial resource-label helper failed before source-snapshot comparison; actual generated CSV/PDF and production source were unchanged",
+  "correction": "Select document_metadata; final resource-label-check.json passes four declared checks",
+  "retention": "This is a reviewer observation record from the tool transcript. The initial redirected helper log was replaced by its corrective run; this record is not represented as the original raw log."
+}

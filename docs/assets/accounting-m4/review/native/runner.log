@@ -1,0 +1,401 @@
+dbus-daemon[181312]: [session uid=1000 pid=181312 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=181319 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze2" label="kernel")
+dbus-daemon[181312]: [session uid=1000 pid=181312 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[181347]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=181319 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze2" label="kernel")
+dbus-daemon[181347]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+CHECK native stage pauses before PO effect True
+CHECK actual XTest181 total error retains value and no effect True
+CHECK editing reviewed content invalidates post True
+CHECK real Enter posts one immutable180 PO/no financial effect True
+CHECK actual CtrlF focuses purchases exact named SearchEntry True
+CHECK actual Escape cancels draft without changing posted state True
+CHECK keyboard PO and discarded draft exact across restart True
+dbus-daemon[181312]: [session uid=1000 pid=181312 pidfd=5] Activating service name='ca.desrt.dconf' requested by ':1.5' (uid=1000 pid=182316 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze2" label="kernel")
+dbus-daemon[181312]: [session uid=1000 pid=181312 pidfd=5] Successfully activated service 'ca.desrt.dconf'
+CHECK actual chooser verified preview distinguishes1opening/10operational/5journals True
+CHECK actual native full restore retains full10records/5J/core/catalog/requests/audit True
+CHECK document summary distinguishes6documents/4resourceevents True
+CHECK actual CtrlF focuses inventory exact named SearchEntry True
+CHECK actual CtrlF focuses sidebar inventory anchor exact named SearchEntry True
+CHECK actual Tab enters sidebar at selected Inventory row True
+CHECK actual sidebar UpEnter opens Purchases True
+CHECK actual sidebar UpEnter opens Accounting unchanged True
+CHECK actual CtrlF focuses ledger REC-A exact named SearchEntry True
+CHECK protected Receive journal has no generic reversal True
+CHECK Alt7 source resolves immutable REC-A True
+CHECK actual Space expands canonical source trace REC-A True
+CHECK actual Space collapses source trace REC-A True
+CHECK actual CtrlF focuses ledger REC-B exact named SearchEntry True
+CHECK protected Receive journal has no generic reversal True
+CHECK Alt7 source resolves immutable REC-B True
+CHECK actual Space expands canonical source trace REC-B True
+CHECK actual Space collapses source trace REC-B True
+CHECK actual CtrlF focuses ledger BILL-A exact named SearchEntry True
+CHECK protected Bill journal has no generic reversal True
+CHECK Alt7 source resolves immutable BILL-A True
+CHECK actual Space expands canonical source trace BILL-A True
+CHECK actual Space collapses source trace BILL-A True
+CHECK actual CtrlF focuses ledger BILL-B exact named SearchEntry True
+CHECK protected Bill journal has no generic reversal True
+CHECK Alt7 source resolves immutable BILL-B True
+CHECK actual Tab reaches full source disclosure from Cancel True
+CHECK actual Space expands canonical source trace BILL-B True
+CHECK actual Space collapses source trace BILL-B True
+CHECK native cutoff before opening reports unavailable without stale or zero controls True
+CHECK native final EOD controls return after unavailable cutoff True
+CHECK light explicit final has twelve literal reconciled controls True
+CHECK light actual pool detail retains W1=30/350 W2=12/130 and distinct receipt paper/availability labels True
+CHECK light narrow source retains immutable BILL-B True
+CHECK dark explicit final has twelve literal reconciled controls True
+CHECK dark actual pool detail retains W1=30/350 W2=12/130 and distinct receipt paper/availability labels True
+CHECK dark narrow source retains immutable BILL-B True
+CHECK full source drilldown/layout/restarts never alter financial state True
+CHECK actual chooser restores archivedM3 manual prefix history exactly True
+CHECK actual CtrlF focuses legacy ledger exact named SearchEntry True
+CHECK legacy arbitrary prefix is ordinary manual journal without fake procurement source True
+X connection to :12 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze2",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "fixture": "/workspace/sarv-quote/artifacts/procurement-native/run-fpyy1yz3",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/run-yrvj2t60",
+  "scope": "independent external XTest keys, AT-SPI own-process discovery/focus plus actual chooser Open action, raw SQLite exact-state; disposable copy only",
+  "checks": [
+    {
+      "name": "native stage pauses before PO effect",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "actual XTest181 total error retains value and no effect",
+      "passed": true
+    },
+    {
+      "name": "editing reviewed content invalidates post",
+      "passed": true
+    },
+    {
+      "name": "real Enter posts one immutable180 PO/no financial effect",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses purchases exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "actual Escape cancels draft without changing posted state",
+      "passed": true
+    },
+    {
+      "name": "keyboard PO and discarded draft exact across restart",
+      "passed": true
+    },
+    {
+      "name": "actual chooser verified preview distinguishes1opening/10operational/5journals",
+      "passed": true
+    },
+    {
+      "name": "actual native full restore retains full10records/5J/core/catalog/requests/audit",
+      "passed": true
+    },
+    {
+      "name": "document summary distinguishes6documents/4resourceevents",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses inventory exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses sidebar inventory anchor exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "actual Tab enters sidebar at selected Inventory row",
+      "passed": true
+    },
+    {
+      "name": "actual sidebar UpEnter opens Purchases",
+      "passed": true
+    },
+    {
+      "name": "actual sidebar UpEnter opens Accounting unchanged",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses ledger REC-A exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "protected Receive journal has no generic reversal",
+      "passed": true
+    },
+    {
+      "name": "Alt7 source resolves immutable REC-A",
+      "passed": true
+    },
+    {
+      "name": "actual Space expands canonical source trace REC-A",
+      "passed": true
+    },
+    {
+      "name": "actual Space collapses source trace REC-A",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses ledger REC-B exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "protected Receive journal has no generic reversal",
+      "passed": true
+    },
+    {
+      "name": "Alt7 source resolves immutable REC-B",
+      "passed": true
+    },
+    {
+      "name": "actual Space expands canonical source trace REC-B",
+      "passed": true
+    },
+    {
+      "name": "actual Space collapses source trace REC-B",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses ledger BILL-A exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "protected Bill journal has no generic reversal",
+      "passed": true
+    },
+    {
+      "name": "Alt7 source resolves immutable BILL-A",
+      "passed": true
+    },
+    {
+      "name": "actual Space expands canonical source trace BILL-A",
+      "passed": true
+    },
+    {
+      "name": "actual Space collapses source trace BILL-A",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses ledger BILL-B exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "protected Bill journal has no generic reversal",
+      "passed": true
+    },
+    {
+      "name": "Alt7 source resolves immutable BILL-B",
+      "passed": true
+    },
+    {
+      "name": "actual Tab reaches full source disclosure from Cancel",
+      "passed": true
+    },
+    {
+      "name": "actual Space expands canonical source trace BILL-B",
+      "passed": true
+    },
+    {
+      "name": "actual Space collapses source trace BILL-B",
+      "passed": true
+    },
+    {
+      "name": "native cutoff before opening reports unavailable without stale or zero controls",
+      "passed": true
+    },
+    {
+      "name": "native final EOD controls return after unavailable cutoff",
+      "passed": true
+    },
+    {
+      "name": "light explicit final has twelve literal reconciled controls",
+      "passed": true,
+      "observed": {
+        "صندوق": [
+          251,
+          251,
+          0
+        ],
+        "بانک": [
+          300,
+          300,
+          0
+        ],
+        "حساب‌های دریافتنی": [
+          200,
+          200,
+          0
+        ],
+        "اسناد دریافتنی": [
+          200,
+          200,
+          0
+        ],
+        "موجودی کالا": [
+          480,
+          480,
+          0
+        ],
+        "پیش‌پرداخت تأمین‌کنندگان": [
+          0,
+          0,
+          0
+        ],
+        "حساب‌های پرداختنی": [
+          329,
+          329,
+          0
+        ],
+        "اسناد پرداختنی": [
+          100,
+          100,
+          0
+        ],
+        "کالای دریافت‌شده، صورتحساب‌نشده": [
+          50,
+          50,
+          0
+        ],
+        "پیش‌دریافت مشتریان": [
+          0,
+          0,
+          0
+        ],
+        "بهای تمام‌شده کالای فروش‌رفته": [
+          0,
+          0,
+          0
+        ],
+        "ضایعات و کسری موجودی": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "light actual pool detail retains W1=30/350 W2=12/130 and distinct receipt paper/availability labels",
+      "passed": true
+    },
+    {
+      "name": "light narrow source retains immutable BILL-B",
+      "passed": true
+    },
+    {
+      "name": "dark explicit final has twelve literal reconciled controls",
+      "passed": true,
+      "observed": {
+        "صندوق": [
+          251,
+          251,
+          0
+        ],
+        "بانک": [
+          300,
+          300,
+          0
+        ],
+        "حساب‌های دریافتنی": [
+          200,
+          200,
+          0
+        ],
+        "اسناد دریافتنی": [
+          200,
+          200,
+          0
+        ],
+        "موجودی کالا": [
+          480,
+          480,
+          0
+        ],
+        "پیش‌پرداخت تأمین‌کنندگان": [
+          0,
+          0,
+          0
+        ],
+        "حساب‌های پرداختنی": [
+          329,
+          329,
+          0
+        ],
+        "اسناد پرداختنی": [
+          100,
+          100,
+          0
+        ],
+        "کالای دریافت‌شده، صورتحساب‌نشده": [
+          50,
+          50,
+          0
+        ],
+        "پیش‌دریافت مشتریان": [
+          0,
+          0,
+          0
+        ],
+        "بهای تمام‌شده کالای فروش‌رفته": [
+          0,
+          0,
+          0
+        ],
+        "ضایعات و کسری موجودی": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "name": "dark actual pool detail retains W1=30/350 W2=12/130 and distinct receipt paper/availability labels",
+      "passed": true
+    },
+    {
+      "name": "dark narrow source retains immutable BILL-B",
+      "passed": true
+    },
+    {
+      "name": "full source drilldown/layout/restarts never alter financial state",
+      "passed": true
+    },
+    {
+      "name": "actual chooser restores archivedM3 manual prefix history exactly",
+      "passed": true
+    },
+    {
+      "name": "actual CtrlF focuses legacy ledger exact named SearchEntry",
+      "passed": true
+    },
+    {
+      "name": "legacy arbitrary prefix is ordinary manual journal without fake procurement source",
+      "passed": true
+    }
+  ],
+  "stage_original_v4_recovery": "/workspace/sarv-quote/artifacts/procurement-native/run-fpyy1yz3/full/before-schema5-045d9b73-d40c-45ad-8970-3dad4fbabfda.json",
+  "x11_errors": [
+    {
+      "code": 3,
+      "request": 20
+    }
+  ],
+  "error": "Timed out waiting for legacy ordinary reversal dialog"
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/independent-m4/native-review.py", line 191, in <module>
+    if __name__=='__main__':main()
+                            ~~~~^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/native-review.py", line 176, in main
+    check('legacy arbitrary prefix is ordinary manual journal without fake procurement source',not any(r['name']=='منبع خرید و اثر موجودی' and r['role'] in ['button','push button'] and mapped_sensitive(r) for r in access.tree()) and state(legacy)==legacy_expected);shot('legacy-prefix-ordinary-ledger.png');press('سند معکوس با دلیل');native.wait_for(lambda:find('دلیل معکوس',['text','entry']),label='legacy ordinary reversal dialog');shot('legacy-prefix-ordinary-reversal.png');focus('انصراف');x11.key('Escape');time.sleep(.3);check('legacy ordinary reversal dialog cancels without history mutation',state(legacy)==legacy_expected)
+                                                                                                                                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 34, in wait_for
+    raise RuntimeError(f'Timed out waiting for {label}')
+RuntimeError: Timed out waiting for legacy ordinary reversal dialog

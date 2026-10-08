@@ -1,0 +1,11 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze5",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "production_source_sha256": "6b1996a41ed86807a91a18820f7fce4bb167e99399403b3fd25cf1b14e4aa36c",
+  "result": "passed",
+  "full_quotation_smoke_checks": 23,
+  "actual_gtk_warning_critical_lines": 0,
+  "original_quote_profile": "/workspace/sarv-quote/artifacts/m4-preserved/quote-iu41po_e",
+  "held_save_close_proof": "The actual locked-save-close3 remains separately attributed freeze4; Ui/background save implementation hashes unchanged in5.",
+  "scope": "Actual full quotation native smoke against binary5; final external keyboard/disclosure/modal/validation results remain separately owned."
+}

@@ -1,0 +1,19 @@
+{
+  "scope": "Candidate debug development checks, not final frozen6 release acceptance. Two current owned source files compiled into debug2; root responsiveness edits separately owned. No assertion of prebuild whole-source freeze for earlier debug executable. Frozen6 independent owner establishes release attribution.",
+  "source": {
+    "background": {
+      "freeze5_sha256": "51bb648bef63ed53c58eab3e3e095256f8849285769b7501c19343e6aa16d13a",
+      "candidate_sha256": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff"
+    },
+    "pickers": {
+      "freeze5_sha256": "ebd6f99566478699e446fb15b8cd139b35d9b5b6f375b7f79977d29675577cbe",
+      "candidate_sha256": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5"
+    }
+  },
+  "debug_binary_sha256": {
+    "earlier": "976b8e8a227e4e368dc5c85b51e03051aaaf2095ba02fba5b588c8b8eb3c101e",
+    "current": "7d93b1c8301f622595c5b33a042c0af21c77b0fa9ac61ce4ab599d4edcac824a"
+  },
+  "check_log": "/tmp/sarv-M4-picker-final-check.log",
+  "strict_clippy_before_equivalent_raw_customer_capture": "/tmp/sarv-M4-picker-async-clippy.log"
+}

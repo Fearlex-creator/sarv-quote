@@ -1,0 +1,22 @@
+{
+  "reviewer": "Integration lead",
+  "method": "Personally viewed actual local native PNGs via view_image",
+  "scope": "Actual readable Persian text, LTR source/product codes, selected page, explicit unit, visible focus, short-window scrolled target; visual judgment separated from financial oracle and keyboard observer",
+  "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+  "files": {
+    "preserved-freeze4/native-review.png": "50d3253d92ff292d4f1e9b143fb08576a8da90a022e71e6cc64bca855c882a11",
+    "native/freeze4/M4-after-procurement-dark-1280.png": "3ad8a0a7fae36fbd7207a1ba4155bd2d6378dcdded29c230c6d9d98bdd61f0a3",
+    "native/freeze4/procurement-light-650x550-focused-action.png": "f5a50c0462444d147906c0c7d889168edaf0f2c6fa73fc5bc8d10c637d864668",
+    "native/freeze4/M4-after-inventory-light-1280.png": "00da9831950eace40e3662240d50f5f75ef131a963425dc688d48ed93e899e88"
+  },
+  "observations": [
+    "Quotation table retains separate quantity/unit/unit-price/amount and explicit product-resolution errors; focused customer text visible.",
+    "Purchases dark wide page shows clear selected native navigation, mixed-script REC/BILL IDs, six operational sources and four resource events; scroll is required for remaining records.",
+    "650x550 purchases: actual focused NewOrder action is fully visible after native page scroll; header and persistent footer remain readable.",
+    "Inventory light wide: selected Inventory page and real transfer action are visible; Documents shares linked sources intentionally. Controls view has separately exercised reconciled reports."
+  ],
+  "limits": [
+    "No screen-reader/user-study/contrast-matrix/all-platform claim.",
+    "Static visual review does not establish amount correctness or keyboard reachability."
+  ]
+}

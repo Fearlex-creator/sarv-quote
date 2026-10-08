@@ -1,0 +1,78 @@
+{
+  "result": "passed",
+  "method": "Scoped static verification of actual retained final3 native failure tree after four passing live footer/state assertions; actual and expected Persian glyphs normalized symmetrically. No new GUI run or modified production source.",
+  "production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "original_live_report": "artifacts/independent-m4/native/refresh-freeze3-6ckg146n/refresh-targeted.json",
+  "original_report_sha256": "9fa76835a46fc9af523d2a76dff6b844f0ec155c5386045af454bcffc4e0eba0",
+  "original_live_assertions_passed": 4,
+  "original_live_report_result": "failed at final auxiliary control-label comparison, observer ZWNJ normalization mismatch",
+  "supplement_checks": [
+    "twelve retained actual control rows equal independently supplied GL/detail/zero differences",
+    "actual owned app log has no warnings or criticals",
+    "production source and pinned binary match final3 after native cleanup"
+  ],
+  "controls": {
+    "صندوق": [
+      251,
+      251,
+      0
+    ],
+    "بانک": [
+      300,
+      300,
+      0
+    ],
+    "حسابهای دریافتنی": [
+      200,
+      200,
+      0
+    ],
+    "اسناد دریافتنی": [
+      200,
+      200,
+      0
+    ],
+    "موجودی کالا": [
+      480,
+      480,
+      0
+    ],
+    "پیشپرداخت تأمینکنندگان": [
+      0,
+      0,
+      0
+    ],
+    "حسابهای پرداختنی": [
+      329,
+      329,
+      0
+    ],
+    "اسناد پرداختنی": [
+      100,
+      100,
+      0
+    ],
+    "کالای دریافتشده، صورتحسابنشده": [
+      50,
+      50,
+      0
+    ],
+    "پیشدریافت مشتریان": [
+      0,
+      0,
+      0
+    ],
+    "بهای تمامشده کالای فروشرفته": [
+      0,
+      0,
+      0
+    ],
+    "ضایعات و کسری موجودی": [
+      0,
+      0,
+      0
+    ]
+  },
+  "actual_diagnostics": []
+}

@@ -1,0 +1,78 @@
+{
+  "status": "Final immutable quotation functional/focus repeats passed; this is not whole accounting or performance acceptance",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "production_source_sha256": "895386c1b3e66d58460c3e704487e8450833cb7ea581cc370c0fa9febf1ec8f2",
+  "source_file_hashes_match_after_all_runs": true,
+  "cases": [
+    {
+      "case": "full28",
+      "result": "passed",
+      "checks": 28,
+      "original_profile": "artifacts/product-native/run-r2z_90ls",
+      "report": "docs/assets/accounting-m4/quotation-focus/final-full28/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-r2z_90ls/app.log",
+        "artifacts/product-native/run-r2z_90ls/xvfb.log",
+        "artifacts/product-native/run-r2z_90ls/openbox.log",
+        "artifacts/product-native/run-r2z_90ls/restart.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary; no LD_PRELOAD shim"
+    },
+    {
+      "case": "disclosure4",
+      "result": "passed",
+      "checks": 4,
+      "original_profile": "artifacts/product-native/run-13u014en",
+      "report": "docs/assets/accounting-m4/quotation-focus/final-disclosure4/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-13u014en/app.log",
+        "artifacts/product-native/run-13u014en/xvfb.log",
+        "artifacts/product-native/run-13u014en/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary; no LD_PRELOAD shim"
+    },
+    {
+      "case": "modal3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-r_aihykd",
+      "report": "docs/assets/accounting-m4/quotation-focus/final-modal3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-r_aihykd/app.log",
+        "artifacts/product-native/run-r_aihykd/xvfb.log",
+        "artifacts/product-native/run-r_aihykd/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary; no LD_PRELOAD shim"
+    },
+    {
+      "case": "failure3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-1brz_7p7",
+      "report": "docs/assets/accounting-m4/quotation-focus/final-failure3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-1brz_7p7/app.log",
+        "artifacts/product-native/run-1brz_7p7/xvfb.log",
+        "artifacts/product-native/run-1brz_7p7/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary; no LD_PRELOAD shim"
+    }
+  ],
+  "personally_rendered": [
+    "final-full28/editor-900x560-input.png",
+    "final-full28/editor-900x560-total.png"
+  ],
+  "historical_debug_summary": "summary.json",
+  "source_history": "freeze1 and debug artifacts retain original distinct provenance; observer corrections are not attributed to product failures",
+  "observers": {
+    "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+    "artifacts/m4-quote-diagnostics/repeat-final/full28.py": "ec5dceaf7eb1025cd59c5a59c2059fbe49a4bb412fb94103ff654cefe6d65aff",
+    "artifacts/m4-quote-diagnostics/repeat-final/disclosure4.py": "5778c8e35ed367d17980dfbb6ca6c2544d819a2abf4187a2e33493d9dc166205",
+    "artifacts/m4-quote-diagnostics/repeat-final/modal3.py": "8d1458bf3edde6e08b5b549ce2b2489ed454564d85ed08100b30a4e1507a4cb1",
+    "artifacts/m4-quote-diagnostics/repeat-final/failure3.py": "3b7ea7b9e1efcaf3584cbc18287a3b1fb48089d3cccc81e774907e0592f9d676"
+  }
+}

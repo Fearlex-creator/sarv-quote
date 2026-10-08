@@ -1,0 +1,51 @@
+{
+  "status": "candidate; final legacy namespace compatibility challenge pending",
+  "production_source_sha256": "094e88d146b804018fde01233a46f85c215a7ec5eacda49d52d578824a0e13e5",
+  "source_file_sha256": {
+    "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+    "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+    "src/accounting.rs": "5806e31e5ae26a8108f1a43f69daeb4eff05a2717f8541fe6de9621f5a2ef6e6",
+    "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+    "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+    "src/core.rs": "55594472a09edc53b917f7d1ff6bd47f3de20604a32f119793faa640921415ca",
+    "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+    "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+    "src/domain.rs": "bb52c060c553095cb55801249d8fefae16674fc094c6a474dd2843166a23325d",
+    "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+    "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+    "src/lib.rs": "b3dbec5fc5751db0e2fb74ff36c709449851d9178637da52ff9e760882ee5419",
+    "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+    "src/procurement.rs": "8130304adf8ecfda81f745db7797d04427fd6ebe9b02773252b2419997d22e8e",
+    "src/procurement_export.rs": "87d03a4b07c24be227c7f5712748c17c5fe2aa145a4dd8ef9fdfe5417bcceaa9",
+    "src/store.rs": "70ee1c79fe52624a47d29b52351decb7e66928309ec3a099b26073d1bd902e78",
+    "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+    "src/ui.rs": "89d3a19a61132a6f8fcc7c8ffbdf619fca9341228dc3d889f4138b5779289e7d",
+    "src/ui/accounting.rs": "95853adf41f201ffd875d53479189fb22e10491494b981224c15c1bfa627e30b",
+    "src/ui/background.rs": "51bb648bef63ed53c58eab3e3e095256f8849285769b7501c19343e6aa16d13a",
+    "src/ui/catalog_editor.rs": "1f92fa8ed2523479022f7686da6a32221c9045c4adb6b5896f966725c2f94c04",
+    "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+    "src/ui/components.rs": "c304885c9e6d621195407176e45322a2bdcc10ff26a8fc15b632ed4bacba773a",
+    "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+    "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+    "src/ui/managers.rs": "7c318b672025f930e18aaff84ba2a79f453ebf34d417444b5feb6e7c5c114354",
+    "src/ui/pickers.rs": "ebd6f99566478699e446fb15b8cd139b35d9b5b6f375b7f79977d29675577cbe",
+    "src/ui/procurement.rs": "db297a89de6a8818f8c4f31148d0ef4d00342725273212bad6536bd26b85c324",
+    "src/ui/responsiveness.rs": "4fecdeb60ea0615c91e01eb524e32bf1b6046699c8df20c1cb634e94413800ca",
+    "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+    "src/ui/smoke.rs": "42ecfdeabd4be5ac3857cfb8105f517dc0530acc18ceec80b9281239abc6b5a2",
+    "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+  },
+  "native_debug_binary_sha256": "a692f7dd88e5a0f4877aec828582b5198ac282fd4794fee6a9e7b42346cfe7d7",
+  "ordinary_results": {
+    "passed": 192,
+    "failed": 0,
+    "ignored": 3
+  },
+  "fmt": "passed",
+  "all_target_strict_clippy": "passed",
+  "native_extended": {
+    "passed": 30,
+    "failed": 0,
+    "report": "artifacts/procurement-native/run-0kew3x3t/procurement-independent-native.json"
+  }
+}

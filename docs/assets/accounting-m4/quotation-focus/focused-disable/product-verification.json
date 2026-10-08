@@ -1,0 +1,15 @@
+{
+  "result": "failed",
+  "binary_sha256": "62ad6b15d24b24591c6e9bf57c0de1aae11e35a61be47553dc7a2388795e0cd4",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-sr6rccwj",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-0cawx_86",
+  "checks": [
+    {
+      "name": "Nested confirmation Back preserves parent edited input",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "error": "RuntimeError('Timed out waiting for condition')"
+}

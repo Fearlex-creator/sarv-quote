@@ -1,0 +1,9 @@
+dbus-daemon[166547]: [session uid=1000 pid=166547 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=166557 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[166547]: [session uid=1000 pid=166547 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[166583]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=166557 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[166583]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[166547]: [session uid=1000 pid=166547 pidfd=5] Activating service name='ca.desrt.dconf' requested by ':1.1' (uid=1000 pid=166557 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[166547]: [session uid=1000 pid=166547 pidfd=5] Successfully activated service 'ca.desrt.dconf'
+X connection to :12 broken (explicit kill or server shutdown).
+{"result": "passed", "checks": 28, "profile": "/workspace/sarv-quote/artifacts/product-native/run-dy22ednh", "error": null}

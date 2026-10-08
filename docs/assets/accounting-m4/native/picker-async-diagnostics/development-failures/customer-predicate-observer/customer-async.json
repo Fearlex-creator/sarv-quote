@@ -1,0 +1,25 @@
+{
+  "result": "failed",
+  "binary": "/tmp/sarv-M4-picker-async-debug2",
+  "binary_sha256": "7d93b1c8301f622595c5b33a042c0af21c77b0fa9ac61ce4ab599d4edcac824a",
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/freeze5-repeated/quote-scale",
+  "run": "/workspace/sarv-quote/artifacts/picker-async/run-x02xybkf",
+  "scope": "Synthetic one-line quote and50k catalog; real XTest picker activation/selection and owned SQLite writer lock. Not a performance benchmark.",
+  "checks": [
+    {
+      "name": "async customer opening preserves saved state",
+      "passed": true
+    },
+    {
+      "name": "pending accepted selection refuses Escape and stays responsive",
+      "passed": true
+    },
+    {
+      "name": "no intermediate write under owned SQLite writer lock",
+      "passed": true
+    }
+  ],
+  "gtk_diagnostics": {
+    "app-native.log": ""
+  }
+}

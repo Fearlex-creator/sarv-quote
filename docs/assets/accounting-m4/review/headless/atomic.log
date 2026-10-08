@@ -1,0 +1,5 @@
+PASS receiptCAS same-key: one winner/oneconflict, reopened retry onefinancialeffect
+PASS receiptCAS different-key: one winner/oneconflict, reopened retry onefinancialeffect
+PASS overlappingbillCAS: one2piece/67allocation, loserreload cannot allocate remaining1piece twice
+PASS kill-before: actualSIGKILL -> old300inventory/50GRNI integrityok
+PASS kill-after: actualSIGKILL -> complete375inventory/125GRNI integrityok

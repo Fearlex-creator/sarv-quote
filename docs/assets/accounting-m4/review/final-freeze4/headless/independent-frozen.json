@@ -1,0 +1,21 @@
+{
+  "result": "passed",
+  "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+  "scope": "Independent scratch suite compiled against frozen production; raw integer state/report reconstruction; actual processCAS/SIGKILL; prior M3 library original recovery verification. Native release checked separately.",
+  "checks": [
+    "probe43",
+    "atomic5",
+    "integration4",
+    "migration3",
+    "dates",
+    "manual-revision-boundary",
+    "raw-state",
+    "export",
+    "raw-csv",
+    "pdf-bounds9/14",
+    "old-m3-legacy-fixture",
+    "legacy-prefix-fixed2",
+    "old-m3-recovery3"
+  ],
+  "output": "/workspace/sarv-quote/artifacts/independent-m4/final-freeze4"
+}

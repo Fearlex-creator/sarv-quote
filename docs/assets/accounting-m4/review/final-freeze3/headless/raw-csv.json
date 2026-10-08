@@ -1,0 +1,28 @@
+{
+  "result": "passed",
+  "oracle": "Independent literal timeline over canonical CSV plus exact immutable source snapshots; no Sarv helper",
+  "documents": 8,
+  "historical_eod_snapshots": 7,
+  "final_stock_quantity_thousandths": 42000,
+  "final_stock_irr": 480,
+  "final_ap_irr": 379,
+  "final_grni_irr": 0,
+  "csv_sha256": {
+    "bill-a.csv": "f20d5fca7c92c41db4139357a87b10bab8b1f704f3fe47c3026062f658a1075c",
+    "bill-b.csv": "733469f511a3675e4a2f0a58dc8e03d37f0755012d22e1aeaa81af734674ae65",
+    "bill-opening.csv": "1e5f4dedd6507b6c48f22011e5c758a71b3c89cc388ca8d00aa92040d2a449d3",
+    "control-2026-03-21.csv": "c86e78d4e850a1539954078758828eecf9e1b0e2c2c78ac942173b7ec503e489",
+    "control-2026-03-22.csv": "f92243bbe4cec19c5199398503c3a57e1086626143dbeec78e5e9c9307347ff7",
+    "control-2026-03-23.csv": "58bb47ee4cdc5901c9f55d15a23e341ba924f83502a17ca8ee8cb8b65a0c27bb",
+    "control-2026-03-24.csv": "9a800463b9cb2ba2569c925da7173d770fcbc1f9240a5878780f98ea412de552",
+    "control-2026-03-25.csv": "f0d08714c2fa73ce3485a71a65fd5519514eaba07ca1b8c96afca659ee1b66c9",
+    "control-2026-03-26.csv": "f8e7cc6749f92e4610f7e2b42a8c9e841eed11987bad1f4b7abc26e313fe058f",
+    "control-2026-03-27.csv": "8d49530ad6d81509d61940bf7f14d062255c82784d75717e9a706fd1308efdca",
+    "masters.csv": "259061664cdda6dfe308a400b42501a045fee1646f9917a688c9a342108c85cb",
+    "outside-jalali.csv": "0b9b6097e327a20ebc52334426f8365301f842be5b4d7bd27eb5141503e6e7af",
+    "po-main.csv": "b3afe1ecae24bc57c98df08c898086baa099be87930be4a36d2628875223d280",
+    "receipt-a.csv": "5d99fd851b5a42ed2a92b35ff46b88a90b35dfa122043f081156c4632030342b",
+    "receipt-b.csv": "f78989a8b159a18c9b5e33ae2dae8c703090abc8df15cbfa34348e9f4706394d",
+    "transfer-main.csv": "eeb922563205b93ac2279fc1b6a0d63beccda509d14788a8f37932da1395a42d"
+  }
+}

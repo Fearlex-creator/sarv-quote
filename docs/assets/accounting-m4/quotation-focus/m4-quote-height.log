@@ -1,0 +1,26 @@
+dbus-daemon[173487]: [session uid=1000 pid=173487 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=173502 comm="/tmp/sarv-M4-expander-debug" label="kernel")
+dbus-daemon[173487]: [session uid=1000 pid=173487 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[173526]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=173502 comm="/tmp/sarv-M4-expander-debug" label="kernel")
+dbus-daemon[173526]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+M4 HEIGHT depth=0 AdwApplicationWindow AdwApplicationWindow min=200 natural=2136
+M4 HEIGHT depth=1 AdwDialogHost AdwDialogHost min=0 natural=2126
+M4 HEIGHT depth=2 AdwBin AdwBin min=0 natural=2126
+M4 HEIGHT depth=4 AdwToolbarView AdwToolbarView min=648 natural=2126
+M4 HEIGHT depth=5 AdwNavigationSplitView AdwNavigationSplitView min=575 natural=2053
+M4 HEIGHT depth=10 GtkViewport GtkViewport min=542 natural=542
+M4 HEIGHT depth=11 GtkListBox workspace-destinations min=542 natural=542
+M4 HEIGHT depth=6 AdwBin AdwBin min=575 natural=2053
+M4 HEIGHT depth=7 AdwNavigationPage AdwNavigationPage min=575 natural=2053
+M4 HEIGHT depth=8 GtkStack GtkStack min=575 natural=2053
+M4 HEIGHT depth=11 GtkViewport GtkViewport min=625 natural=632
+M4 HEIGHT depth=12 GtkBox GtkBox min=625 natural=632
+M4 HEIGHT depth=11 GtkViewport GtkViewport min=2035 natural=2053
+M4 HEIGHT depth=12 AdwClamp AdwClamp min=2035 natural=2053
+M4 HEIGHT depth=13 GtkBox GtkBox min=2015 natural=2015
+M4 HEIGHT depth=14 AdwPreferencesGroup AdwPreferencesGroup min=468 natural=468
+M4 HEIGHT depth=15 GtkBox GtkBox min=468 natural=468
+M4 HEIGHT depth=9 GtkBox accounting-page min=406 natural=406
+M4 HEIGHT depth=9 GtkBox procurement-workspace min=575 natural=575
+M4 HEIGHT depth=9 GtkBox inventory-workspace min=575 natural=575
+M4 HEIGHT depth=1 AdwGizmo AdwGizmo min=0 natural=0

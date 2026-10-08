@@ -1,0 +1,47 @@
+{
+  "result": "passed-bounded-final6-picker-review",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "native_actual_checks": 17,
+  "report": "native/picker-persistence-native.json",
+  "actual_app_logs_empty": 5,
+  "source_and_binary_stable_before_after_actual_run": true,
+  "financial_implementation": "Actual14 independent phases on4; all accounting, procurement, Store, schema and export implementation byte-identical6. Only three UI paths changed5→6. No14-phase6 rerun claim.",
+  "catalog_copy": "Actual independent9 on5, unchanged catalog_editor/run_background paths6; not a9-check6 rerun.",
+  "patch_static_review": [
+    "Exact three-file5→6 diff read completely against verified32-path5 snapshot",
+    "Atomic form plus selection prepared/validated on detached worker, one generation CAS, no interim form write",
+    "Product ID/fingerprint/index/code and line index/original query guard",
+    "Customer activeID and complete selected-record snapshot guard",
+    "Raw customer/phone captured; selective newer-revision merge only when both raw widgets untouched; changed identity wins",
+    "Busy reservation/strong Ui lifetime/definite receipt, panic/spawn/channel error cleanup and retained re-enabled controls",
+    "Async opening uses existing pending save action; newer invalid widgets preserved",
+    "Opt-in scale adapter retains original readiness/search endpoints/budgets, distinguishes dispatch/actual30-row readiness and committed canonical choice/amount callback readiness; raw native-ready key does not independently certify fully settled widgets"
+  ],
+  "visual_inspection": {
+    "method": "Reviewer personally viewed all six actual6 PNGs individually",
+    "files": [
+      "writer-lock-busy.png",
+      "stale-generation-error.png",
+      "customer-newer-invalid-retained.png",
+      "newer-invalid-retained.png",
+      "choice-quantity-focus.png",
+      "writer-lock-error.png"
+    ],
+    "observed": "Persian/mixed codes and source rial/display toman readable; pending controls disabled, loading status visible; error retained search with blue focus; selected price15000toman/source150000IRR; retained invalid product/customer widget and Persian CAS recovery",
+    "limits": [
+      "Quantity focus was requested through own AT-SPI Component, not an independent automatic-return assertion",
+      "Quantity screenshot follows receipt and does not establish settled async totals; invalid-input captures intentionally retain prior presentation",
+      "SQLite-lock message exposes raw English technical detail alongside Persian retry guidance",
+      "Private reduced-motion XDG config; no default-motion/platform/accessibility or numeric modal placement certification"
+    ]
+  },
+  "client_diagnostics": "AT-SPI client cache warnings when owned apps restart retained in runner.log; all five actual GTK app logs empty; no diagnostic suppression",
+  "failure_history": "before-fixes/invalid-customer-id: wrong observer synthetic customer UUID rejected before mapped GTK window, zero checks; corrected full actual17 run retained separately",
+  "unobserved_guards": [
+    "Forced worker spawn/panic/channel failure not injected",
+    "Catalog ID/fingerprint/product index guard and archived/changed customer guards reviewed statically, not all mutated through this GUI observer",
+    "No physical/cache-cold, power-loss/disk-full or full app performance acceptance"
+  ],
+  "performance": "Actual6 owner raw metrics reviewed: bounded procurement targets PASS; full-scale strict global280.552/50,page161.263/150,PDF127.266/50 MISS, full PERF partial. See performance-attribution.json. No benchmark rerun."
+}

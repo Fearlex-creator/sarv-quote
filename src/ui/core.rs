@@ -1237,6 +1237,7 @@ fn opening_dialog(ui: &Rc<Ui>, setup: CoreSetup, run: RunCommand) {
     let form = card();
     records.append(&form);
     let search = gtk::SearchEntry::new();
+    search.set_search_delay(60);
     search.set_widget_name("core-record-search");
     accessible_name(&search, "جستجوی سطرهای جزئیات");
     records.append(&search);
@@ -1596,6 +1597,7 @@ fn posted_dialog(ui: &Rc<Ui>, opening: OpeningRecord) {
         )));
     }
     let search = gtk::SearchEntry::new();
+    search.set_search_delay(60);
     search.set_widget_name("core-posted-search");
     accessible_name(&search, "جستجوی منبع جزئیات افتتاحیه");
     content.append(&field("جستجوی منبع جزئیات", &search));

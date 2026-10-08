@@ -7,6 +7,7 @@ mod core;
 mod editor;
 mod managers;
 mod pickers;
+mod procurement;
 mod responsiveness;
 mod settings;
 mod smoke;
@@ -76,6 +77,7 @@ struct Ui {
     displayed_unit: Cell<Unit>,
     pending: RefCell<Option<glib::SourceId>>,
     active_dialog: RefCell<Option<adw::Dialog>>,
+    dialog_return_focus: RefCell<Option<glib::WeakRef<gtk::Widget>>>,
     background_busy: Cell<bool>,
     persistence_busy: Cell<bool>,
     edit_revision: Cell<u64>,
@@ -143,6 +145,24 @@ fn activate_named_button(widget: &impl IsA<gtk::Widget>, name: &str) -> bool {
     while let Some(w) = child {
         child = w.next_sibling();
         if activate_named_button(&w, name) {
+            return true;
+        }
+    }
+    false
+}
+fn focus_page_search(widget: &impl IsA<gtk::Widget>) -> bool {
+    let widget = widget.as_ref();
+    if widget.is::<gtk::SearchEntry>()
+        && widget.is_mapped()
+        && widget.is_sensitive()
+        && widget.grab_focus()
+    {
+        return true;
+    }
+    let mut child = widget.first_child();
+    while let Some(w) = child {
+        child = w.next_sibling();
+        if focus_page_search(&w) {
             return true;
         }
     }
@@ -519,17 +539,73 @@ impl Ui {
         }
         Ok(())
     }
+    fn visible_dialog(&self) -> Option<adw::Dialog> {
+        self.window
+            .downcast_ref::<adw::ApplicationWindow>()
+            .and_then(|window| window.visible_dialog())
+    }
     fn present_dialog(self: &Rc<Self>, dialog: &adw::Dialog) {
+        // Let the focused text receive focus-out before libadwaita shadows its
+        // parent. Otherwise its cursor timer can survive the lost focus.
+        let parent = self.visible_dialog();
+        let parent_focus = parent
+            .as_ref()
+            .and_then(|dialog| dialog.focus())
+            .map(|widget| widget.downgrade());
+        let parent = parent.map(|dialog| {
+            dialog.set_focus(None::<&gtk::Widget>);
+            dialog.downgrade()
+        });
+        if parent.is_none() {
+            *self.dialog_return_focus.borrow_mut() =
+                gtk::prelude::GtkWindowExt::focus(&self.window).map(|widget| widget.downgrade());
+        }
+        gtk::prelude::GtkWindowExt::set_focus(&self.window, None::<&gtk::Widget>);
         *self.active_dialog.borrow_mut() = Some(dialog.clone());
         let weak = Rc::downgrade(self);
         dialog.connect_closed(move |d| {
-            d.set_child(None::<&gtk::Widget>);
-            if let Some(ui) = weak.upgrade() {
-                let current = ui.active_dialog.borrow().as_ref() == Some(d);
-                if current {
-                    ui.active_dialog.borrow_mut().take();
-                }
+            let Some(ui) = weak.upgrade() else {
+                d.set_child(None::<&gtk::Widget>);
+                return;
+            };
+            if gtk::prelude::GtkWindowExt::focus(&ui.window)
+                .is_some_and(|widget| widget.is_ancestor(d))
+            {
+                gtk::prelude::GtkWindowExt::set_focus(&ui.window, None::<&gtk::Widget>);
             }
+            d.set_child(None::<&gtk::Widget>);
+            let current = ui.active_dialog.borrow().as_ref() == Some(d);
+            if current {
+                *ui.active_dialog.borrow_mut() = ui.visible_dialog().filter(|next| next != d);
+            }
+            let weak = Rc::downgrade(&ui);
+            let parent = parent.clone();
+            let parent_focus = parent_focus.clone();
+            glib::idle_add_local_once(move || {
+                let Some(ui) = weak.upgrade() else { return };
+                if !ui.window.is_visible() {
+                    return;
+                }
+                if let Some(visible) = ui.visible_dialog() {
+                    if parent.and_then(|dialog| dialog.upgrade()).as_ref() == Some(&visible)
+                        && visible.focus().is_none()
+                        && let Some(widget) = parent_focus.and_then(|widget| widget.upgrade())
+                        && widget.is_mapped()
+                        && widget.is_sensitive()
+                    {
+                        widget.grab_focus();
+                    }
+                    return;
+                }
+                let return_focus = ui.dialog_return_focus.borrow_mut().take();
+                if gtk::prelude::GtkWindowExt::focus(&ui.window).is_none()
+                    && let Some(widget) = return_focus.and_then(|widget| widget.upgrade())
+                    && widget.is_mapped()
+                    && widget.is_sensitive()
+                {
+                    widget.grab_focus();
+                }
+            });
         });
         dialog.present(Some(&self.window));
     }
@@ -773,6 +849,8 @@ impl Ui {
             fa(candidate.catalogs.len()), fa(candidate.customers.len()), fa(candidate.quotes.len()))));
         content.append(&label(&format!("دفترهای پشتیبان: {} شرکت • {} دوره • {} حساب • {} سند ثبت‌شده\nدفتر جاری: {} سند ثبت‌شده\nاین عمل همهٔ دفترها و تاریخچهٔ جاری را با پشتیبان جایگزین می‌کند. نسخهٔ ایمنیِ تأییدشده پیش از جایگزینی نگه داشته می‌شود.",
             fa(candidate.accounting.companies.len()), fa(candidate.accounting.periods.len()), fa(candidate.accounting.accounts.len()), fa(candidate.accounting.journals.len()), fa(self.store.borrow().state.accounting.journals.len()))));
+        content.append(&label(&format!("جزئیات پشتیبان: {} افتتاحیهٔ تطبیق‌شده • {} رویداد خرید و انبار\nتمام منبع‌ها، مقادیر، بهاها، درخواست‌ها و تاریخچهٔ این رویدادها نیز جایگزین می‌شوند.",
+            fa(candidate.accounting.core.openings.len()), fa(candidate.accounting.procurement.records.len()))));
         let confirm = button("بازیابی و ذخیرهٔ نسخهٔ ایمنی");
         confirm.add_css_class("destructive-action");
         let cancel = button("انصراف");
@@ -811,6 +889,18 @@ impl Ui {
                             }
                             ui.stack
                                 .add_named(&accounting::build(ui), Some("accounting"));
+                            for (name, kind) in [
+                                ("procurement", procurement::PageKind::Purchases),
+                                ("inventory", procurement::PageKind::Inventory),
+                            ] {
+                                if let Some(page) = ui.stack.child_by_name(name) {
+                                    ui.stack.remove(&page);
+                                }
+                                ui.stack.add_named(
+                                    &procurement::build(ui, kind, accounting::command_runner(ui)),
+                                    Some(name),
+                                );
+                            }
                         }
                     },
                 );
@@ -1001,6 +1091,8 @@ fn build(app: &gtk::Application, store: Store) {
         &store.state.settings.business_name,
     ));
     let stack = gtk::Stack::new();
+    // Hidden workspaces must not impose their minimum height on this page.
+    stack.set_vhomogeneous(false);
     stack.set_hexpand(true);
     stack.set_vexpand(true);
     stack.set_transition_type(gtk::StackTransitionType::Crossfade);
@@ -1122,9 +1214,8 @@ fn build(app: &gtk::Application, store: Store) {
             adaptive_optional.attach(widget, (i % columns) as i32, (i / columns) as i32, 1, 1);
         }
     });
-    let details = gtk::Expander::new(Some("جزئیات پیشنهاد • تاریخ، اعتبار و مرجع"));
+    let details = expander_with_child("جزئیات پیشنهاد • تاریخ، اعتبار و مرجع", &optional);
     details.set_widget_name("quote-details");
-    details.set_child(Some(&optional));
     order_page.append(&details);
     let source_hint = label("");
     source_hint.add_css_class("muted");
@@ -1189,8 +1280,7 @@ fn build(app: &gtk::Application, store: Store) {
     let note_scroll = scroll(&notes);
     note_scroll.set_height_request(55);
     note_scroll.set_vexpand(false);
-    let note_expander = gtk::Expander::new(Some("یادداشت برای مشتری"));
-    note_expander.set_child(Some(&note_scroll));
+    let note_expander = expander_with_child("یادداشت برای مشتری", &note_scroll);
     remarks.append(&note_expander);
     let order = gtk::TextView::new();
     accessible_name(&order, "متن CSV سفارش • item,quantity");
@@ -1200,8 +1290,7 @@ fn build(app: &gtk::Application, store: Store) {
     let order_scroll = scroll(&order);
     order_scroll.set_height_request(95);
     order_scroll.set_vexpand(false);
-    let advanced = gtk::Expander::new(Some("ویرایش متن CSV سفارش"));
-    advanced.set_child(Some(&order_scroll));
+    let advanced = expander_with_child("ویرایش متن CSV سفارش", &order_scroll);
     remarks.append(&advanced);
     remarks.append(&label(
         "قیمت فقط از فهرست تأییدشده • این پیشنهاد سند حسابداری نیست",
@@ -1279,12 +1368,12 @@ fn build(app: &gtk::Application, store: Store) {
     let backup_page = column();
     backup_page.add_css_class("page");
     backup_page.append(&heading("پشتیبان و بازیابی"));
-    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادهای تأییدشده و پیش‌نویس است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
+    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
     let backup = button("ساخت پشتیبان JSON");
     let restore = button("انتخاب پشتیبان و بررسی بازیابی");
     backup_page.append(&backup);
     backup_page.append(&restore);
-    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…7 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. موجودی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
+    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش عملیاتی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
     let destinations = gtk::ListBox::new();
     destinations.set_widget_name("workspace-destinations");
@@ -1356,6 +1445,24 @@ fn build(app: &gtk::Application, store: Store) {
             "accessories-calculator-symbolic",
             Some("حسابداری"),
             Some("شرکت، اسناد و تراز آزمایشی"),
+            false,
+        ),
+        (
+            8,
+            "procurement",
+            "خریدها",
+            "view-list-symbolic",
+            None,
+            Some("سفارش، دریافت کالا و صورتحساب"),
+            false,
+        ),
+        (
+            9,
+            "inventory",
+            "موجودی و انتقال",
+            "folder-symbolic",
+            None,
+            Some("مقدار، ارزش و گردش انبار"),
             false,
         ),
         (
@@ -1504,6 +1611,7 @@ fn build(app: &gtk::Application, store: Store) {
         displayed_unit: Cell::new(Unit::Toman),
         pending: RefCell::new(None),
         active_dialog: RefCell::new(None),
+        dialog_return_focus: RefCell::new(None),
         background_busy: Cell::new(false),
         persistence_busy: Cell::new(false),
         edit_revision: Cell::new(0),
@@ -1514,6 +1622,22 @@ fn build(app: &gtk::Application, store: Store) {
     ui.refresh_settings();
     ui.stack
         .add_named(&accounting::build(&ui), Some("accounting"));
+    ui.stack.add_named(
+        &procurement::build(
+            &ui,
+            procurement::PageKind::Purchases,
+            accounting::command_runner(&ui),
+        ),
+        Some("procurement"),
+    );
+    ui.stack.add_named(
+        &procurement::build(
+            &ui,
+            procurement::PageKind::Inventory,
+            accounting::command_runner(&ui),
+        ),
+        Some("inventory"),
+    );
     ui.fill_form();
     ui.refresh_review();
     ui.refresh_lists();
@@ -1744,6 +1868,15 @@ fn build(app: &gtk::Application, store: Store) {
                             u.search_quote.grab_focus();
                         }
                         Some("order") => u.open_customer_picker(),
+                        Some("accounting" | "procurement" | "inventory") => {
+                            if !u
+                                .stack
+                                .visible_child()
+                                .is_some_and(|page| focus_page_search(&page))
+                            {
+                                return glib::Propagation::Proceed;
+                            }
+                        }
                         _ => return glib::Propagation::Proceed,
                     }
                 }
@@ -1761,6 +1894,8 @@ fn build(app: &gtk::Application, store: Store) {
                 gtk::gdk::Key::_5 => "backup",
                 gtk::gdk::Key::_6 => "settings",
                 gtk::gdk::Key::_7 => "accounting",
+                gtk::gdk::Key::_8 => "procurement",
+                gtk::gdk::Key::_9 => "inventory",
                 _ => return glib::Propagation::Proceed,
             };
             u.stack.set_visible_child_name(page);
@@ -1838,6 +1973,7 @@ fn build(app: &gtk::Application, store: Store) {
     window.present();
     ui.customer.grab_focus();
     accounting::schedule(&ui);
+    procurement::schedule(&ui);
     core::start_core_smoke(&ui);
     smoke::schedule(&ui, &approve);
     responsiveness::schedule(&ui);

@@ -1,0 +1,11 @@
+{
+  "exact_old_row_after_kill": true,
+  "integrity": "ok",
+  "next_open_generation": 42,
+  "no_recovery_before_kill": true,
+  "repeat_open_generation": 42,
+  "result": "passed",
+  "schema_after": 5,
+  "schema_before": 4,
+  "scope": "owned-child kill while startup INSERT waits, before schema UPDATE; software interruption only"
+}

@@ -115,7 +115,7 @@ fn immutable_details_policy_and_recomputed_backup_checksum_cannot_bypass_restore
     forged.accounting.core.openings[0].command.open_items[0].due_date = "2026-06-01".into();
     let payload = exact(&forged);
     let p = dir.path().join("forged.json");
-    std::fs::write(&p,serde_json::to_vec(&serde_json::json!({"format":"sarv-accounting-backup-v4","checksum":hash(&payload),"state":forged})).unwrap()).unwrap();
+    std::fs::write(&p,serde_json::to_vec(&serde_json::json!({"format":"sarv-accounting-backup-v5","checksum":hash(&payload),"state":forged})).unwrap()).unwrap();
     assert!(Store::restore_preview(&p).is_err());
     assert_eq!(exact(&Store::open(dir.path()).unwrap().state), before);
 }
@@ -127,7 +127,7 @@ fn complete_core_backup_fresh_restore_and_restart_keep_all_financial_and_source_
     let c = command(&store.state, &company, "opening");
     store.change(|s| s.accounting.post_opening(c)).unwrap();
     let before = exact(&store.state);
-    let backup = dir.path().join("core-v4.json");
+    let backup = dir.path().join("core-v5.json");
     store.backup(&backup).unwrap();
     let fresh = tempfile::tempdir().unwrap();
     let mut restored = Store::open(fresh.path()).unwrap();
@@ -148,9 +148,9 @@ fn complete_core_backup_fresh_restore_and_restart_keep_all_financial_and_source_
             .len(),
         35
     );
-    if let Ok(output) = std::env::var("SARV_M3_CORE_RESTORE_ARTIFACT_DIR") {
+    if let Ok(output) = std::env::var("SARV_M4_CORE_RESTORE_ARTIFACT_DIR") {
         std::fs::create_dir_all(&output).unwrap();
-        std::fs::copy(backup, std::path::Path::new(&output).join("core-v4.json")).unwrap();
+        std::fs::copy(backup, std::path::Path::new(&output).join("core-v5.json")).unwrap();
         std::fs::write(std::path::Path::new(&output).join("verification.json"),serde_json::to_vec_pretty(&serde_json::json!({"result":"passed","fresh_restore_full_state_equal":true,"restart_equal":true,"state_sha256":hash(&before),"journal_count":1,"total_debit_irr":1251,"total_credit_irr":1251,"controls":12,"all_control_differences_irr":0,"complete_source_rows":restored.state.accounting.core.openings[0].command.import_source.as_ref().unwrap().rows.len()})).unwrap()).unwrap();
     }
 }

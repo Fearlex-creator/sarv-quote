@@ -1,0 +1,267 @@
+{
+  "result": "passed",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-h4yc8bxg",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-uq36csiy",
+  "checks": [
+    {
+      "name": "Actual focused name field belongs to visible composer dialog",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          286.0,
+          1076.0,
+          61.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          198.0,
+          1076.0,
+          687.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_scope": "window",
+        "focus_type": "AdwActionRow",
+        "key": "Return",
+        "page": "catalog",
+        "quotes": 4,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "ancestry": [
+        {
+          "role": "text",
+          "name": "نام فهرست"
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "scroll pane",
+          "name": ""
+        },
+        {
+          "role": "grouping",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "dialog",
+          "name": "ساخت نسخهٔ تازهٔ فهرست"
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "frame",
+          "name": "سرو | آماده‌سازی پیشنهاد قیمت"
+        },
+        {
+          "role": "application",
+          "name": "sarv-M4-freeze6"
+        }
+      ]
+    },
+    {
+      "name": "Modified Escape preserves composer and edited input",
+      "passed": true
+    },
+    {
+      "name": "Dropdown Escape closes only popup and retains composer input",
+      "passed": true
+    },
+    {
+      "name": "Nested confirmation Escape closes only confirmation and retains parent inputs",
+      "passed": true
+    },
+    {
+      "name": "Plain Escape closes composer at witnessed focus with exact saved state",
+      "passed": true
+    },
+    {
+      "name": "Native Close still preserves full saved state and main focus",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "modal_focus_observation": {
+    "actual_focused_field": true,
+    "accessible_ancestry": [
+      {
+        "role": "text",
+        "name": "نام فهرست"
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "scroll pane",
+        "name": ""
+      },
+      {
+        "role": "grouping",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "dialog",
+        "name": "ساخت نسخهٔ تازهٔ فهرست"
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "frame",
+        "name": "سرو | آماده‌سازی پیشنهاد قیمت"
+      },
+      {
+        "role": "application",
+        "name": "sarv-M4-freeze6"
+      }
+    ],
+    "latest_window_event": {
+      "dialog_open": false,
+      "dialog_title": null,
+      "focus": "other",
+      "focus_bounds": [
+        18.0,
+        286.0,
+        1076.0,
+        61.0
+      ],
+      "focus_clip_bounds": [
+        18.0,
+        198.0,
+        1076.0,
+        687.0
+      ],
+      "focus_label": null,
+      "focus_name": "AdwActionRow",
+      "focus_scope": "window",
+      "focus_type": "AdwActionRow",
+      "key": "Return",
+      "page": "catalog",
+      "quotes": 4,
+      "settings_dirty": false,
+      "window_size": [
+        1390,
+        930
+      ]
+    },
+    "limitation": "Window key-controller events may not observe subsequent modal key events; actual focused field ancestry is authoritative here"
+  },
+  "captures": {
+    "currency-popover-before-Escape.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "composer-plain-Escape-focus.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    }
+  },
+  "nested_Escape_focus": {
+    "role": "button",
+    "name": "تأیید منبع و ذخیرهٔ فهرست",
+    "actual_focused": true,
+    "limitation": "GtkSearchEntry may consume Escape as stop-search; this tests native nested-dialog dismissal from the actual Save button"
+  },
+  "escape_focus": {
+    "native_header_or_FlowBox_witnessed": false,
+    "event": {
+      "dialog_open": true,
+      "dialog_title": "ساخت نسخهٔ تازهٔ فهرست",
+      "focus": "other",
+      "focus_bounds": [
+        311.0,
+        815.0,
+        768.0,
+        34.0
+      ],
+      "focus_clip_bounds": [
+        295.0,
+        111.0,
+        800.0,
+        754.0
+      ],
+      "focus_label": "بررسی و تأیید فهرست تازه",
+      "focus_name": "GtkButton",
+      "focus_scope": "dialog",
+      "focus_type": "GtkButton",
+      "key": "ISO_Left_Tab",
+      "page": "catalog",
+      "quotes": 4,
+      "settings_dirty": false,
+      "window_size": [
+        1390,
+        930
+      ]
+    },
+    "limitation": "Exact FlowBox/header focus was not witnessed; actual name-field Escape is checked instead"
+  }
+}
