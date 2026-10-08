@@ -1,0 +1,9 @@
+{
+  "result": "FAILED fixture wait timeout",
+  "no_GUI_or_ATSPI_or_app": true,
+  "own_worker_stopped_in_finally": true,
+  "failure": "subprocess.TimeoutExpired: Command [/usr/bin/python3] timed out after2 seconds after cleanup returned",
+  "cleanup_result_and_exact_identity": "unavailable; in-memory result not saved before fixture wait",
+  "failure_predicate_or_cause": "unknown; do not infer",
+  "separate_preserved_diagnostic": "actual-pidfd-cleanup-diagnostic.json"
+}

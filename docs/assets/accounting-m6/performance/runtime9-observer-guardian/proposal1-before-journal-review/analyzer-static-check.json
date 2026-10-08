@@ -1,0 +1,34 @@
+{
+  "no_gui": true,
+  "cases": [
+    {
+      "case": "old epoch retains continuous editor heartbeat unmeasured",
+      "result": "PASS"
+    },
+    {
+      "case": "v3 only excludes heartbeat outside declared window",
+      "result": "PASS"
+    },
+    {
+      "case": "editor terminal gap51 strictMISS retained",
+      "result": "PASS"
+    },
+    {
+      "case": "200 association with accepted editor remains bounded",
+      "result": "PASS"
+    },
+    {
+      "case": "missing200 association unmeasured",
+      "result": "PASS"
+    },
+    {
+      "case": "duplicate accepted editor unmeasured",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid native record cannot pass gap gate",
+      "result": "PASS"
+    }
+  ],
+  "total": 7
+}

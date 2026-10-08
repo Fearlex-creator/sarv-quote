@@ -1,0 +1,9 @@
+{"name": "xvfb", "pid": 379264, "pgid": 379264, "comm": "Xvfb", "starttime_ticks": 9466782, "command": ["Xvfb", "-displayfd", "3", "-screen", "0", "1450x1050x24", "-nolisten", "tcp", "-xkbdir", "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"]}
+{"name": "openbox", "pid": 379268, "pgid": 379268, "comm": "openbox", "starttime_ticks": 9466788, "command": ["openbox", "--sm-disable", "--config-file", "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"]}
+{"name": "source120-billed-search", "pid": 379287, "pgid": 379287, "comm": "sarv-M6-candida", "starttime_ticks": 9466793, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}
+{"name": "source120-unbilled-search", "pid": 379326, "pgid": 379326, "comm": "sarv-M6-candida", "starttime_ticks": 9468165, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}
+{"name": "return20-billed-workflow", "pid": 379389, "pgid": 379389, "comm": "sarv-M6-candida", "starttime_ticks": 9469308, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}
+{"name": "return20-billed-restart", "pid": 379439, "pgid": 379439, "comm": "sarv-M6-candida", "starttime_ticks": 9471445, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}
+{"name": "return20-unbilled-workflow", "pid": 379466, "pgid": 379466, "comm": "sarv-M6-candida", "starttime_ticks": 9471561, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}
+{"name": "return20-unbilled-restart", "pid": 379516, "pgid": 379516, "comm": "sarv-M6-candida", "starttime_ticks": 9473599, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}
+{"name": "return200-billed-workflow", "pid": 379542, "pgid": 379542, "comm": "sarv-M6-candida", "starttime_ticks": 9473709, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}

@@ -1,5 +1,9 @@
 # M6 development checkpoint — native shell and linked purchase returns
 
+Current C9 long-document follow-up: [full200 native checklist and evidence](checkpoint-M6-followup.md) completes all200 keyboard inputs, all400 preview details, settled standard/narrow validation, user-focus retention and exact3,000IRR posting/restart. The independent pilot financial/visual review passes. Final quiet n10/n20 completed with25 measured checks passing and14 strict misses; full performance acceptance remains open. Dark-mode observation and final independent measurement review are recorded in the follow-up. The existing Rust/GTK4/libadwaita shell and accounting history are preserved. Earlier C8 and other candidate notes below are historical execution scopes, not the latest200/performance status. No production/statutory acceptance is claimed.
+
+## Historical merged M6 baseline and earlier evidence
+
 This is a **development snapshot**, prepared for the authorized commit and integration under the user's 2026-10-08 instruction to commit all work and merge Sarv PRs into `main`. Current C8 release/source and bounded financial/native/export checks pass. Complete current200-line rendering/focus and final performance validation remain **open** after the benchmark observer terminated with SIGSEGV. No full M6/PERF/G4 or production acceptance is claimed. The local source checkpoint is identified by tag `sarv-m6-development-local`; Git integration status is verified separately after publication.
 
 

@@ -1,0 +1,375 @@
+{
+  "result": "qualified_scoped20_opening_no_input_or_post",
+  "diagnostic_only": true,
+  "timed_budget_claim": false,
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate8",
+  "startup": {},
+  "source_picker_search": {
+    "source120-billed": {
+      "result": "measured",
+      "samples": [
+        {
+          "index": 0,
+          "query": "PERF-A",
+          "expected_reference": "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL",
+          "key_dispatch_ms": 0.09362099808640778,
+          "correct_visible_ms": 358.07437798939645,
+          "focused_usable_ms": 716.4038789924234
+        },
+        {
+          "index": 1,
+          "query": "PERF-B",
+          "expected_reference": "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL",
+          "key_dispatch_ms": 0.10558000940363854,
+          "correct_visible_ms": 416.33356901002117,
+          "focused_usable_ms": 797.9640470002778
+        }
+      ],
+      "filtered_pages": [
+        {
+          "page": 2,
+          "expected_reference": "M6-PERF-SOURCES-BILLED-PERF-B-035-BILL",
+          "correct_visible_ms": 452.3413669958245,
+          "focused_usable_ms": 936.6764470032649
+        },
+        {
+          "page": 3,
+          "expected_reference": "M6-PERF-SOURCES-BILLED-PERF-B-010-BILL",
+          "correct_visible_ms": 174.70869299722835,
+          "focused_usable_ms": 452.8076249989681
+        }
+      ],
+      "identity_checks": [
+        {
+          "query": "PERF-A",
+          "expected_reference": "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL",
+          "exact_count": 60,
+          "current_parent_child_membership": true,
+          "visible_sensitive_geometry": true,
+          "actual_focus": true
+        },
+        {
+          "query": "PERF-B",
+          "expected_reference": "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL",
+          "exact_count": 60,
+          "current_parent_child_membership": true,
+          "visible_sensitive_geometry": true,
+          "actual_focus": true
+        }
+      ],
+      "zero_result_exact": true,
+      "selected_source_receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-010-GR-L001",
+      "visible": {
+        "n": 2,
+        "p50": 358.07437798939645,
+        "p95": 416.33356901002117,
+        "p99": 416.33356901002117,
+        "worst": 416.33356901002117,
+        "method": "nearest rank"
+      },
+      "focused": {
+        "n": 2,
+        "p50": 716.4038789924234,
+        "p95": 797.9640470002778,
+        "p99": 797.9640470002778,
+        "worst": 797.9640470002778,
+        "method": "nearest rank"
+      },
+      "application_memory_kib": {
+        "VmRSS": 161840,
+        "VmHWM": 161840
+      },
+      "durable_state_unchanged": true
+    },
+    "source120-unbilled": {
+      "result": "measured",
+      "samples": [
+        {
+          "index": 0,
+          "query": "PERF-A",
+          "expected_reference": "M6-PERF-SOURCES-UNBILLED-PERF-A-060-GR",
+          "key_dispatch_ms": 0.12135300494264811,
+          "correct_visible_ms": 405.8774849982001,
+          "focused_usable_ms": 807.8679660102352
+        },
+        {
+          "index": 1,
+          "query": "PERF-B",
+          "expected_reference": "M6-PERF-SOURCES-UNBILLED-PERF-B-060-GR",
+          "key_dispatch_ms": 0.10046099487226456,
+          "correct_visible_ms": 372.2344289999455,
+          "focused_usable_ms": 715.6923099973937
+        }
+      ],
+      "filtered_pages": [
+        {
+          "page": 2,
+          "expected_reference": "M6-PERF-SOURCES-UNBILLED-PERF-B-035-GR",
+          "correct_visible_ms": 424.47431800246704,
+          "focused_usable_ms": 809.7301130037522
+        },
+        {
+          "page": 3,
+          "expected_reference": "M6-PERF-SOURCES-UNBILLED-PERF-B-010-GR",
+          "correct_visible_ms": 241.73875400447287,
+          "focused_usable_ms": 502.52095599716995
+        }
+      ],
+      "identity_checks": [
+        {
+          "query": "PERF-A",
+          "expected_reference": "M6-PERF-SOURCES-UNBILLED-PERF-A-060-GR",
+          "exact_count": 60,
+          "current_parent_child_membership": true,
+          "visible_sensitive_geometry": true,
+          "actual_focus": true
+        },
+        {
+          "query": "PERF-B",
+          "expected_reference": "M6-PERF-SOURCES-UNBILLED-PERF-B-060-GR",
+          "exact_count": 60,
+          "current_parent_child_membership": true,
+          "visible_sensitive_geometry": true,
+          "actual_focus": true
+        }
+      ],
+      "zero_result_exact": true,
+      "selected_source_receipt_line_id": "M6-PERF-SOURCES-UNBILLED-PERF-B-010-GR-L001",
+      "visible": {
+        "n": 2,
+        "p50": 372.2344289999455,
+        "p95": 405.8774849982001,
+        "p99": 405.8774849982001,
+        "worst": 405.8774849982001,
+        "method": "nearest rank"
+      },
+      "focused": {
+        "n": 2,
+        "p50": 715.6923099973937,
+        "p95": 807.8679660102352,
+        "p99": 807.8679660102352,
+        "worst": 807.8679660102352,
+        "method": "nearest rank"
+      },
+      "application_memory_kib": {
+        "VmRSS": 150952,
+        "VmHWM": 150952
+      },
+      "durable_state_unchanged": true
+    }
+  },
+  "return_workflows": {},
+  "capture_samples": [
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m6/observer-sig11-diagnostic2/source120-billed-search/selected-source-exact.png",
+      "elapsed_ms": 124.92924500838853
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m6/observer-sig11-diagnostic2/source120-unbilled-search/selected-source-exact.png",
+      "elapsed_ms": 124.77860899525695
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m6/observer-sig11-diagnostic2/opened20-editor.png",
+      "elapsed_ms": 127.54227100231219
+    }
+  ],
+  "owned_process_records": [
+    {
+      "name": "xvfb",
+      "pid": 376138,
+      "pgid": 376138,
+      "starttime_ticks": 9226819,
+      "command": [
+        "Xvfb",
+        "-displayfd",
+        "3",
+        "-screen",
+        "0",
+        "1450x1050x24",
+        "-nolisten",
+        "tcp",
+        "-xkbdir",
+        "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+      ]
+    },
+    {
+      "name": "openbox",
+      "pid": 376142,
+      "pgid": 376142,
+      "starttime_ticks": 9226824,
+      "command": [
+        "openbox",
+        "--sm-disable",
+        "--config-file",
+        "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+      ]
+    },
+    {
+      "name": "source120-billed-search",
+      "pid": 376161,
+      "pgid": 376161,
+      "starttime_ticks": 9226831,
+      "command": [
+        "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+      ]
+    },
+    {
+      "name": "source120-unbilled-search",
+      "pid": 376192,
+      "pgid": 376192,
+      "starttime_ticks": 9228090,
+      "command": [
+        "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+      ]
+    },
+    {
+      "name": "return20-opening",
+      "pid": 376223,
+      "pgid": 376223,
+      "starttime_ticks": 9229186,
+      "command": [
+        "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+      ]
+    }
+  ],
+  "x11_error_observations": [],
+  "rejected_source_observations": [
+    {
+      "event": "exact-zero-result-warmup",
+      "monotonic_ns": 92274145097291,
+      "reason": "Retired/unowned source child or common path",
+      "root_node": "0xff251f0",
+      "rows_node": "0xff31fc0"
+    },
+    {
+      "event": "exact-zero-result-warmup",
+      "monotonic_ns": 92285507329439,
+      "reason": "Retired/unowned source child or common path",
+      "root_node": "0xfcbae80",
+      "rows_node": "0xff4c600"
+    },
+    {
+      "event": "query=PERF-A;page=1;reference=M6-PERF-SOURCES-UNBILLED-PERF-A-060-GR;focused=False",
+      "monotonic_ns": 92285622209774,
+      "reason": "Retired/unowned source child or common path",
+      "root_node": "0xfcbae80",
+      "rows_node": "0xff4c600"
+    },
+    {
+      "event": "one-original-source;reference=M6-PERF-return20-billed-BILL",
+      "monotonic_ns": 92295432097330,
+      "reason": "Source/query/status/children changed during observation",
+      "root_node": "0x1002f750",
+      "rows_node": "0x10032550"
+    }
+  ],
+  "completed_checkpoint_boundaries": [
+    {
+      "event": "source120-billed:exact-zero-result-warmup",
+      "monotonic_ns": 92274195083578
+    },
+    {
+      "event": "source120-billed:completed-query:0",
+      "monotonic_ns": 92274913152768
+    },
+    {
+      "event": "source120-billed:completed-query:1",
+      "monotonic_ns": 92276236058342
+    },
+    {
+      "event": "source120-billed:completed-filtered-page:2",
+      "monotonic_ns": 92277780266987
+    },
+    {
+      "event": "source120-billed:completed-filtered-page:3",
+      "monotonic_ns": 92278742862429
+    },
+    {
+      "event": "source120-billed:completed-source-picker",
+      "monotonic_ns": 92280876611196
+    },
+    {
+      "event": "source120-unbilled:exact-zero-result-warmup",
+      "monotonic_ns": 92285563438820
+    },
+    {
+      "event": "source120-unbilled:completed-query:0",
+      "monotonic_ns": 92286372938817
+    },
+    {
+      "event": "source120-unbilled:completed-query:1",
+      "monotonic_ns": 92287548362913
+    },
+    {
+      "event": "source120-unbilled:completed-filtered-page:2",
+      "monotonic_ns": 92288871666141
+    },
+    {
+      "event": "source120-unbilled:completed-filtered-page:3",
+      "monotonic_ns": 92289878027441
+    },
+    {
+      "event": "source120-unbilled:completed-source-picker",
+      "monotonic_ns": 92291846091660
+    },
+    {
+      "event": "diagnostic-completed20-opening",
+      "monotonic_ns": 92298638417241
+    }
+  ],
+  "identity_path_qualifications": [
+    {
+      "scope": "source",
+      "rows_node": "0xff31fc0",
+      "root_node": "0xff251f0",
+      "direct_source_children": 26,
+      "qualified_path_edges": 11,
+      "outside_dispatch_interval": true
+    },
+    {
+      "scope": "source",
+      "rows_node": "0xff4c600",
+      "root_node": "0xfcbae80",
+      "direct_source_children": 26,
+      "qualified_path_edges": 11,
+      "outside_dispatch_interval": true
+    },
+    {
+      "scope": "source",
+      "rows_node": "0x10032550",
+      "root_node": "0x1002f750",
+      "direct_source_children": 4,
+      "qualified_path_edges": 11,
+      "outside_dispatch_interval": true
+    },
+    {
+      "scope": "editor",
+      "root_node": "0xfda5f90",
+      "stable_entry_nodes": [
+        "0x1004b540",
+        "0x1004b880",
+        "0x1004bbc0",
+        "0x1004bf00",
+        "0x1004c240",
+        "0x1004c580",
+        "0x1004c8c0",
+        "0xfa81600",
+        "0xfa78440",
+        "0xf86fc80",
+        "0x1004d4c0",
+        "0x1004da20",
+        "0x1004e0b0",
+        "0x1004e710",
+        "0x1004ed70",
+        "0x1004f3d0",
+        "0x1004fa30",
+        "0x10050090",
+        "0x100506f0",
+        "0x1004ce60"
+      ],
+      "qualified_path_edges": 71,
+      "outside_dispatch_interval": true
+    }
+  ],
+  "quantity20_current_empty": true
+}

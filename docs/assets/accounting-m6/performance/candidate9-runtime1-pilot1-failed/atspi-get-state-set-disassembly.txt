@@ -1,0 +1,138 @@
+
+/usr/lib/x86_64-linux-gnu/libatspi.so.0.0.1:     file format elf64-x86-64
+
+
+Disassembly of section .init:
+
+Disassembly of section .plt:
+
+Disassembly of section .plt.got:
+
+Disassembly of section .text:
+
+0000000000015c20 <atspi_accessible_get_state_set@@Base>:
+   15c20:	f3 0f 1e fa          	endbr64
+   15c24:	41 54                	push   %r12
+   15c26:	55                   	push   %rbp
+   15c27:	53                   	push   %rbx
+   15c28:	48 83 ec 50          	sub    $0x50,%rsp
+   15c2c:	64 48 8b 04 25 28 00 	mov    %fs:0x28,%rax
+   15c33:	00 00 
+   15c35:	48 89 44 24 48       	mov    %rax,0x48(%rsp)
+   15c3a:	48 8b 47 18          	mov    0x18(%rdi),%rax
+   15c3e:	48 85 c0             	test   %rax,%rax
+   15c41:	0f 84 19 01 00 00    	je     15d60 <atspi_accessible_get_state_set@@Base+0x140>
+   15c47:	48 83 78 28 00       	cmpq   $0x0,0x28(%rax)
+   15c4c:	0f 84 0e 01 00 00    	je     15d60 <atspi_accessible_get_state_set@@Base+0x140>
+   15c52:	be 10 00 00 00       	mov    $0x10,%esi
+   15c57:	48 89 fb             	mov    %rdi,%rbx
+   15c5a:	e8 51 c3 ff ff       	call   11fb0 <_atspi_accessible_test_cache@plt>
+   15c5f:	85 c0                	test   %eax,%eax
+   15c61:	0f 85 8d 00 00 00    	jne    15cf4 <atspi_accessible_get_state_set@@Base+0xd4>
+   15c67:	48 8b 05 32 72 02 00 	mov    0x27232(%rip),%rax        # 3cea0 <dbind_any_free_ptr@@Base+0x12e10>
+   15c6e:	4c 8d 05 56 80 01 00 	lea    0x18056(%rip),%r8        # 2dccb <dbind_any_free_ptr@@Base+0x3c3b>
+   15c75:	31 c9                	xor    %ecx,%ecx
+   15c77:	48 89 df             	mov    %rbx,%rdi
+   15c7a:	48 8d 15 bb 78 01 00 	lea    0x178bb(%rip),%rdx        # 2d53c <dbind_any_free_ptr@@Base+0x34ac>
+   15c81:	48 8b 30             	mov    (%rax),%rsi
+   15c84:	31 c0                	xor    %eax,%eax
+   15c86:	e8 f5 ba ff ff       	call   11780 <_atspi_dbus_call_partial@plt>
+   15c8b:	48 89 c5             	mov    %rax,%rbp
+   15c8e:	48 85 c0             	test   %rax,%rax
+   15c91:	0f 84 c9 00 00 00    	je     15d60 <atspi_accessible_get_state_set@@Base+0x140>
+   15c97:	48 89 c7             	mov    %rax,%rdi
+   15c9a:	e8 91 ca ff ff       	call   12730 <dbus_message_get_type@plt>
+   15c9f:	83 f8 03             	cmp    $0x3,%eax
+   15ca2:	74 7c                	je     15d20 <atspi_accessible_get_state_set@@Base+0x100>
+   15ca4:	48 89 ef             	mov    %rbp,%rdi
+   15ca7:	e8 d4 ca ff ff       	call   12780 <dbus_message_get_signature@plt>
+   15cac:	80 38 61             	cmpb   $0x61,(%rax)
+   15caf:	0f 85 e3 00 00 00    	jne    15d98 <atspi_accessible_get_state_set@@Base+0x178>
+   15cb5:	80 78 01 75          	cmpb   $0x75,0x1(%rax)
+   15cb9:	0f 85 d9 00 00 00    	jne    15d98 <atspi_accessible_get_state_set@@Base+0x178>
+   15cbf:	80 78 02 00          	cmpb   $0x0,0x2(%rax)
+   15cc3:	0f 85 cf 00 00 00    	jne    15d98 <atspi_accessible_get_state_set@@Base+0x178>
+   15cc9:	48 89 e6             	mov    %rsp,%rsi
+   15ccc:	48 89 ef             	mov    %rbp,%rdi
+   15ccf:	e8 1c b9 ff ff       	call   115f0 <dbus_message_iter_init@plt>
+   15cd4:	48 89 e6             	mov    %rsp,%rsi
+   15cd7:	48 89 df             	mov    %rbx,%rdi
+   15cda:	e8 31 cd ff ff       	call   12a10 <_atspi_dbus_set_state@plt>
+   15cdf:	48 89 ef             	mov    %rbp,%rdi
+   15ce2:	e8 29 c0 ff ff       	call   11d10 <dbus_message_unref@plt>
+   15ce7:	be 10 00 00 00       	mov    $0x10,%esi
+   15cec:	48 89 df             	mov    %rbx,%rdi
+   15cef:	e8 6c bf ff ff       	call   11c60 <_atspi_accessible_add_cache@plt>
+   15cf4:	48 8b 44 24 48       	mov    0x48(%rsp),%rax
+   15cf9:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+   15d00:	00 00 
+   15d02:	0f 85 ef 00 00 00    	jne    15df7 <atspi_accessible_get_state_set@@Base+0x1d7>
+   15d08:	48 8b 7b 50          	mov    0x50(%rbx),%rdi
+   15d0c:	48 83 c4 50          	add    $0x50,%rsp
+   15d10:	5b                   	pop    %rbx
+   15d11:	5d                   	pop    %rbp
+   15d12:	41 5c                	pop    %r12
+   15d14:	e9 47 bc ff ff       	jmp    11960 <g_object_ref@plt>
+   15d19:	0f 1f 80 00 00 00 00 	nopl   0x0(%rax)
+   15d20:	48 89 e1             	mov    %rsp,%rcx
+   15d23:	45 31 c0             	xor    %r8d,%r8d
+   15d26:	ba 73 00 00 00       	mov    $0x73,%edx
+   15d2b:	31 f6                	xor    %esi,%esi
+   15d2d:	48 89 ef             	mov    %rbp,%rdi
+   15d30:	31 c0                	xor    %eax,%eax
+   15d32:	e8 a9 cc ff ff       	call   129e0 <dbus_message_get_args@plt>
+   15d37:	48 8b 1c 24          	mov    (%rsp),%rbx
+   15d3b:	48 85 db             	test   %rbx,%rbx
+   15d3e:	74 16                	je     15d56 <atspi_accessible_get_state_set@@Base+0x136>
+   15d40:	e8 3b cc ff ff       	call   12980 <_atspi_error_quark@plt>
+   15d45:	48 89 d9             	mov    %rbx,%rcx
+   15d48:	ba 01 00 00 00       	mov    $0x1,%edx
+   15d4d:	31 ff                	xor    %edi,%edi
+   15d4f:	89 c6                	mov    %eax,%esi
+   15d51:	e8 aa c6 ff ff       	call   12400 <g_set_error_literal@plt>
+   15d56:	48 89 ef             	mov    %rbp,%rdi
+   15d59:	e8 b2 bf ff ff       	call   11d10 <dbus_message_unref@plt>
+   15d5e:	66 90                	xchg   %ax,%ax
+   15d60:	31 ff                	xor    %edi,%edi
+   15d62:	e8 a9 b8 ff ff       	call   11610 <atspi_state_set_new@plt>
+   15d67:	be 06 00 00 00       	mov    $0x6,%esi
+   15d6c:	48 89 c7             	mov    %rax,%rdi
+   15d6f:	48 89 c3             	mov    %rax,%rbx
+   15d72:	e8 c9 b2 ff ff       	call   11040 <atspi_state_set_add@plt>
+   15d77:	48 8b 44 24 48       	mov    0x48(%rsp),%rax
+   15d7c:	64 48 2b 04 25 28 00 	sub    %fs:0x28,%rax
+   15d83:	00 00 
+   15d85:	75 70                	jne    15df7 <atspi_accessible_get_state_set@@Base+0x1d7>
+   15d87:	48 83 c4 50          	add    $0x50,%rsp
+   15d8b:	48 89 d8             	mov    %rbx,%rax
+   15d8e:	5b                   	pop    %rbx
+   15d8f:	5d                   	pop    %rbp
+   15d90:	41 5c                	pop    %r12
+   15d92:	c3                   	ret
+   15d93:	0f 1f 44 00 00       	nopl   0x0(%rax,%rax,1)
+   15d98:	48 89 ef             	mov    %rbp,%rdi
+   15d9b:	e8 e0 c9 ff ff       	call   12780 <dbus_message_get_signature@plt>
+   15da0:	48 83 ec 08          	sub    $0x8,%rsp
+   15da4:	48 8d 15 25 8e 01 00 	lea    0x18e25(%rip),%rdx        # 2ebd0 <dbind_any_free_ptr@@Base+0x4b40>
+   15dab:	4c 8d 0d 70 76 01 00 	lea    0x17670(%rip),%r9        # 2d422 <dbind_any_free_ptr@@Base+0x3392>
+   15db2:	68 dd 02 00 00       	push   $0x2dd
+   15db7:	49 89 c0             	mov    %rax,%r8
+   15dba:	31 c0                	xor    %eax,%eax
+   15dbc:	48 8d 0d eb 84 01 00 	lea    0x184eb(%rip),%rcx        # 2e2ae <dbind_any_free_ptr@@Base+0x421e>
+   15dc3:	be 10 00 00 00       	mov    $0x10,%esi
+   15dc8:	48 8d 3d 7a 89 01 00 	lea    0x1897a(%rip),%rdi        # 2e749 <dbind_any_free_ptr@@Base+0x46b9>
+   15dcf:	e8 9c cb ff ff       	call   12970 <g_log@plt>
+   15dd4:	48 89 ef             	mov    %rbp,%rdi
+   15dd7:	e8 34 bf ff ff       	call   11d10 <dbus_message_unref@plt>
+   15ddc:	31 ff                	xor    %edi,%edi
+   15dde:	e8 2d b8 ff ff       	call   11610 <atspi_state_set_new@plt>
+   15de3:	be 06 00 00 00       	mov    $0x6,%esi
+   15de8:	48 89 c7             	mov    %rax,%rdi
+   15deb:	48 89 c3             	mov    %rax,%rbx
+   15dee:	e8 4d b2 ff ff       	call   11040 <atspi_state_set_add@plt>
+   15df3:	58                   	pop    %rax
+   15df4:	5a                   	pop    %rdx
+   15df5:	eb 80                	jmp    15d77 <atspi_accessible_get_state_set@@Base+0x157>
+   15df7:	e8 d4 c3 ff ff       	call   121d0 <__stack_chk_fail@plt>
+
+Disassembly of section .fini:

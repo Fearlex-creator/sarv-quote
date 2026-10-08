@@ -1,0 +1,418 @@
+{
+  "result": "PASS corrected exactknownvalidationprefix staticreview",
+  "reviewer": "m6_observer_native_reviewer",
+  "observer_sha256": "63edfdab8e16e96fb3451e14a54f0a8fab8417062d0d4302f2abbf292a446b6b",
+  "diff_sha256": "a68fede69b08274a197062016503a894708807fad29f541a53dc5dd11df43b43",
+  "author_actualcanonical_cases": [
+    104,
+    77
+  ],
+  "independent_cases": 100,
+  "cases": [
+    {
+      "case": "actualmember ready exactprefix accepted; baselineunchanged",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness labelname rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness labelparent rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness labelpid rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness labeldefunct rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness extra rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness reorder rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness raw rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "late readiness focus rejectsrollback",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling0 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling0 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling0 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling0 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling1 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling1 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling1 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling1 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling2 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling2 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling2 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling2 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling3 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling3 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling3 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling3 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling4 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling4 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling4 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling4 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling5 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling5 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling5 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling5 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling6 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling6 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling6 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling6 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling7 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling7 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling7 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling7 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling8 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling8 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling8 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling8 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling9 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling9 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling9 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling9 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling10 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling10 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling10 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling10 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling11 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling11 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling11 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling11 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling12 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling12 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling12 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling12 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling13 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling13 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling13 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling13 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling14 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling14 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling14 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling14 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling15 foreign rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling15 defunct rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling15 wrongparent rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "originalsibling15 wrongrole rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "extra label sibling rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "extra entry sibling rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "extra button sibling rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "replacement SAMEliteral label identity AFTERqualification rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "wrong errorliteral 'wrong literal'",
+      "result": "PASS"
+    },
+    {
+      "case": "wrong errorliteral ''",
+      "result": "PASS"
+    },
+    {
+      "case": "nested hidden entry errorcaption rejects",
+      "result": "PASS"
+    },
+    {
+      "case": "lastfield visible required",
+      "result": "PASS"
+    },
+    {
+      "case": "lastfield sensitive required",
+      "result": "PASS"
+    },
+    {
+      "case": "lastfield allocated required",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical current_node",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical member",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical ready",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical source_result",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical source_rows",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical source_action_shape",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical source_pager_shape",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical page_state",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical turn",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical user_wins_invalid_reveal",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical preview_pages",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical literal_return",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical original_prefix",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical raw_controls",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical strict_phases",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical quantiles",
+      "result": "PASS"
+    },
+    {
+      "case": "unchangedcanonical startups",
+      "result": "PASS"
+    }
+  ],
+  "late_readiness_finding": "resolved; archivedoriginalreproduced in separate receipt; correctedrollback verified",
+  "original16baseline_preserved": true,
+  "page400_post_restart_focus_financial_phase_budgets_preserved": true,
+  "no_native_GUI_build_network": true,
+  "currentfull200post_perf_acceptance": false
+}

@@ -1,0 +1,32 @@
+{
+  "reviewer": "m6_observer_native_reviewer",
+  "result": "PASS exact source-only runtime freeze; no execution/native/performance acceptance",
+  "runtime_manifest_sha256": "c8f1d61c552737e8925adf9a07a399c1302e374862f52282ab07d04a4549c672",
+  "current_exact_files": 81,
+  "archived_exact_files": 81,
+  "added_paths": [
+    "docs/assets/accounting-m6/performance/runtime7-rpc-refinement/observer-v1.2.py",
+    "docs/assets/accounting-m6/performance/runtime9-observer-guardian/analyzer-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime9-observer-guardian/guardian-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime9-observer-guardian/membership-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime9-observer-guardian/observer-v2.1-cb145.py",
+    "docs/assets/accounting-m6/performance/runtime9-observer-guardian/synthetic-faulthandler-exercise.py",
+    "docs/assets/accounting-m6/review/observer-native-candidate8/check-candidate9-200-raw.py"
+  ],
+  "changed_prior_runtime_paths": {
+    "docs/assets/accounting-m6/performance/analyze.py": {
+      "before": "fa2d1a891df12900f26e2af337587197b6dd987e8c6dcfaa3f4beef510a45a26",
+      "after": "a0e520632179fe6df38af9b049f8390dbcacaa8637e7b56c54d357354fba24aa"
+    },
+    "docs/assets/accounting-m6/performance/coordinator.py": {
+      "before": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+      "after": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f"
+    },
+    "scripts/native-performance-M6.py": {
+      "before": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408",
+      "after": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910"
+    }
+  },
+  "source_only": true,
+  "GUI_build_network": false
+}

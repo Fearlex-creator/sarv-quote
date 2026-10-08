@@ -7,6 +7,7 @@ This observer never builds, changes source, flushes caches or opens live profile
 """
 import argparse
 import ctypes as C
+import faulthandler
 import hashlib
 import json
 import math
@@ -21,6 +22,10 @@ import time
 from collections import deque
 from importlib.util import module_from_spec, spec_from_file_location
 
+# Enable before importing any native accessibility/X11 infrastructure. Fatal
+# native signals can bypass Python finally; the external coordinator owns cleanup.
+faulthandler.enable(all_threads=True)
+
 from qa_access import Access
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -29,7 +34,7 @@ SPEC = spec_from_file_location('m6_unchanged_infrastructure', ROOT / 'scripts/na
 legacy = module_from_spec(SPEC)
 SPEC.loader.exec_module(legacy)
 helper, native = legacy.helper, legacy.native
-PROTOCOL = 'm6-scoped-v2.1'
+PROTOCOL = 'm6-scoped-v3'
 QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
 PREVIEW = 'بازبینی مقدار و اثر سند'
 POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
@@ -37,6 +42,7 @@ RETURN = 'برگشت خرید با بهای اصلی'
 SEARCH = 'جست‌وجوی منبع، تأمین‌کننده، کالا یا انبار'
 NEXT = 'ردیف‌های برگشت بعد'
 PREVIOUS = 'ردیف‌های برگشت پیشین'
+INVALID_QUANTITY = 'مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد'
 CONTROL_NAMES = (PREVIEW, POST, RETURN, SEARCH, NEXT, PREVIOUS)
 ISOLATION = dict.fromkeys(map(ord, '\u2066\u2067\u2068\u2069\u200e\u200f'), None)
 DIGITS = str.maketrans('۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩', '01234567890123456789')
@@ -147,6 +153,8 @@ def ready(access, row, root, focus=False):
 
 def current_node(access, node):
     """Fresh owned live node metadata; state/name/role/parent are never cached."""
+    if not node:
+        return None
     access.a.atspi_accessible_clear_cache(node)
     states = access.a.atspi_accessible_get_state_set(node)
     if not states or access.a.atspi_state_set_contains(states, 6):
@@ -166,6 +174,8 @@ class CurrentPaths:
     """
     def __init__(self, access, root, nodes):
         self.root, self.edges, self.roles = root, {}, {}
+        self.validation_prefixes = {}
+        self.validation_sibling_roles = {}
         for leaf in [root, *nodes]:
             node = leaf
             for _ in range(40):
@@ -194,8 +204,31 @@ class CurrentPaths:
         for parent in dict.fromkeys(self.edges.values()):
             access.a.atspi_accessible_clear_cache(parent)
             children[parent] = tuple(access.children(parent))
-        if self.stable_children is not None and children != self.stable_children:
-            return None
+        if self.stable_children is not None:
+            if children.keys() != self.stable_children.keys():
+                return None
+            for parent, original in self.stable_children.items():
+                current = children[parent]
+                if current == original:
+                    continue
+                label = self.validation_prefixes.get(parent)
+                if label is None or current != (label, *original):
+                    return None
+                row = current_node(access, label)
+                if not row or row['parent'] != parent or row['role'] != 'label' or row['name'] != INVALID_QUANTITY:
+                    return None
+                access.a.atspi_accessible_clear_cache(label)
+                if access.children(label) or current_node(access, label) != row:
+                    return None
+                expected_roles = self.validation_sibling_roles.get(parent, {})
+                if len(original) != 16 or set(expected_roles) != set(original):
+                    return None
+                for sibling in original:
+                    sibling_row = current_node(access, sibling)
+                    if not sibling_row or sibling_row['parent'] != parent or sibling_row['role'] != expected_roles[sibling]:
+                        return None
+                    rows[sibling] = sibling_row
+                rows[label] = row
         if any(rows[node]['parent'] != parent or node not in children[parent]
                for node, parent in self.edges.items()):
             return None
@@ -265,16 +298,33 @@ def phase_records(profile):
 
 def strict_phases(records):
     result = []
+    accepted = {'editor': 'preview_requested', 'preview': 'verified', 'post': 'worker_finished'}
+    def finite(value):
+        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value >= 0
     for row in records:
-        gaps = row['gaps_ms']
-        actual = max(gaps) if gaps else None
-        if actual is not None:
-            assert abs(actual - row['max_gap_ms']) < 1e-6
-            assert len(gaps) == row['ticks'] + 1 and row['interval_ms'] == 16
-            assert abs(sum(gaps) - row['elapsed_ms']) < 1e-5
-        expected = 'verified' if row['phase'] == 'preview' else 'worker_finished'
-        measured = row['operation'] == 'return' and row['result'] == expected and row['ticks'] > 0 and actual is not None
-        result.append({**row, 'max_gap_recomputed_ms': actual, 'terminal_gap_ms': gaps[-1] if gaps else None,
+        gaps, ticks = row.get('gaps_ms'), row.get('ticks')
+        valid_gaps = isinstance(gaps, list) and bool(gaps) and all(finite(value) for value in gaps)
+        valid_ticks = isinstance(ticks, int) and not isinstance(ticks, bool) and ticks >= 0
+        actual = max(gaps) if valid_gaps else None
+        errors = []
+        if not valid_gaps:
+            errors.append('Missing, nonfinite or negative complete gaps')
+        if not valid_ticks:
+            errors.append('Ticks must be a nonnegative integer, never bool')
+        if type(row.get('interval_ms')) is not int or row['interval_ms'] != 16:
+            errors.append('Native interval must be integer16ms')
+        if not finite(row.get('elapsed_ms')) or not finite(row.get('max_gap_ms')):
+            errors.append('Elapsed/max must be finite and nonnegative')
+        if valid_gaps and valid_ticks and len(gaps) != ticks + 1:
+            errors.append('Every tick and terminal gap required')
+        if valid_gaps and finite(row.get('max_gap_ms')) and abs(actual - row['max_gap_ms']) >= 1e-6:
+            errors.append('Recorded max differs from complete gaps')
+        if valid_gaps and finite(row.get('elapsed_ms')) and abs(sum(gaps) - row['elapsed_ms']) >= 1e-5:
+            errors.append('Complete gap sum differs from elapsed')
+        expected = accepted.get(row.get('phase'))
+        measured = not errors and expected is not None and row.get('operation') == 'return' and row.get('result') == expected and ticks > 0
+        result.append({**row, 'max_gap_recomputed_ms': actual, 'terminal_gap_ms': gaps[-1] if isinstance(gaps, list) and gaps else None,
+                       'record_valid': not errors, 'validation_errors': errors,
                        'budget_ms': 50, 'measurable_accepted': measured,
                        'strict_status': ('pass' if actual <= 50 else 'miss') if measured else 'unmeasured_or_rejected'})
     return result
@@ -444,8 +494,16 @@ class Observer:
         self.processes.append(process)
         proc_stat = Path(f'/proc/{process.pid}/stat').read_text()
         suffix = proc_stat[proc_stat.rfind(')') + 2:].split()
-        self.report['owned_process_records'].append({'name': name, 'pid': process.pid, 'pgid': int(suffix[2]),
-                                                    'starttime_ticks': int(suffix[19]), 'command': command})
+        record = {'name': name, 'pid': process.pid, 'pgid': int(suffix[2]),
+                  'comm': proc_stat[proc_stat.find('(') + 1:proc_stat.rfind(')')],
+                  'starttime_ticks': int(suffix[19]), 'command': command}
+        self.report['owned_process_records'].append(record)
+        # Write before any native discovery. This I/O remains in Popen startup
+        # timing, and is never subtracted. The coordinator reads complete lines.
+        with (self.args.output / 'owned-processes.jsonl').open('a') as ledger:
+            ledger.write(json.dumps(record, ensure_ascii=False) + '\n')
+            ledger.flush()
+            os.fsync(ledger.fileno())
         return process
 
     def setup(self):
@@ -590,8 +648,12 @@ class Observer:
     def source_rows(self, access, rows, root, event, validate=None):
         paths = self.source_paths[rows]
         before = paths.snapshot(access)
+        if not before:
+            return self.reject_source(event, rows, root, 'Retired/unowned source common path before child read')
         access.a.atspi_accessible_clear_cache(rows)
         direct = tuple(access.children(rows))
+        if any(not node for node in direct):
+            return self.reject_source(event, rows, root, 'Missing current direct source child during hierarchy rebind')
         records = [current_node(access, node) for node in direct]
         if not before or any(not row or row['parent'] != rows for row in records):
             return self.reject_source(event, rows, root, 'Retired/unowned source child or common path')
@@ -621,6 +683,8 @@ class Observer:
         final_status_children = tuple(access.children(records[0]['node']))
         access.a.atspi_accessible_clear_cache(rows)
         final_direct = tuple(access.children(rows))
+        if any(not node for node in final_direct):
+            return self.reject_source(event, rows, root, 'Missing final direct source child during hierarchy rebind')
         after = paths.snapshot(access)
         if final_status_children or shapes != final_shapes or direct != final_direct or records != final_records or pager_shape != final_pager_shape or not paths.coherent(before, after):
             return self.reject_source(event, rows, root, 'Source/query/status/children changed during observation')
@@ -744,6 +808,12 @@ class Observer:
         nodes = [row['node'] for row in quantities]
         paths = CurrentPaths(access, editor, [markers[0]['node'], *nodes])
         paths.stable_children = paths.snapshot(access)['children']
+        validation_parent = paths.edges[markers[0]['node']]
+        original = paths.stable_children[validation_parent]
+        if len(original) == 16:
+            siblings = [current_node(access, node) for node in original]
+            assert all(row and row['parent'] == validation_parent for row in siblings), 'Current original16 sibling ownership/edges required'
+            paths.validation_sibling_roles[validation_parent] = {row['node']: row['role'] for row in siblings}
         self.editor_paths[editor] = {'paths': paths, 'nodes': nodes, 'marker': markers[0]['node'],
                                     'expected': dict.fromkeys(receipt_ids, '')}
         assert self.page_state(access, editor, receipt_ids, 1) is not None, 'Initial editor binding is not coherent'
@@ -780,6 +850,48 @@ class Observer:
         # Exact ordered identities plus per-parent ordered child lists reject mixed
         # persistent widget rebinding; correct complete rebinding is expected.
         return quantities
+
+    def qualify_invalid_quantity_label(self, access, editor, receipt_ids, page):
+        """Qualify only the observed factory's one error prefix, outside timers."""
+        cache = self.editor_paths[editor]
+        paths = cache['paths']
+        parent = paths.edges[cache['marker']]
+        original = paths.stable_children[parent]
+        assert len(original) == 16 and not paths.validation_prefixes, 'One billed factory16-sibling qualification only'
+        def attempt():
+            owner = current_node(access, parent)
+            if not owner or owner['role'] != 'panel' or owner['name'] != '':
+                return None
+            access.a.atspi_accessible_clear_cache(parent)
+            current = tuple(access.children(parent))
+            if len(current) != 17 or current[1:] != original or not current[0]:
+                return None
+            label = current[0]
+            row = current_node(access, label)
+            if not row or row['role'] != 'label' or row['name'] != INVALID_QUANTITY or row['parent'] != parent:
+                return None
+            # Registration never replaces/rebaselines any original child list.
+            paths.validation_prefixes[parent] = label
+            accepted = False
+            try:
+                before = paths.snapshot(access)
+                fields = self.page_state(access, editor, receipt_ids, page)
+                last_ready = bool(fields and fields[-1]['name'] == QUANTITY_PREFIX + receipt_ids[-1]
+                                  and access.text(fields[-1]) == '2' and ready(access, fields[-1], editor, True)
+                                  and access.text(fields[-1]) == '2')
+                after = paths.snapshot(access)
+                accepted = bool(last_ready and paths.coherent(before, after))
+                if accepted:
+                    return {'parent_node': hex(parent), 'label_node': hex(label), 'literal_name': INVALID_QUANTITY,
+                            'original16_children': [hex(node) for node in original], 'childless_current_owned_label': True,
+                            'two_coherent_current_snapshots': True, 'all_ordered_source_names_and_raw_values_checked': True,
+                            'outside_latency_intervals': True}
+            finally:
+                if not accepted:
+                    paths.validation_prefixes.pop(parent, None)
+            return None
+        proof = observe(attempt, 'one exact live invalid-quantity label before unchanged16 siblings')
+        self.report.setdefault('validation_prefix_qualifications', []).append(proof)
 
     def turn(self, access, editor, receipt_ids, target_page, direction, expected_text=None):
         pager = find(access, NEXT if direction == 'next' else PREVIOUS, editor, ('button', 'push button'))
@@ -915,8 +1027,15 @@ class Observer:
         profile, recipe = self.copied(name, name + '-workflow')
         result = {'result': 'incomplete', 'page_samples': [], 'input_samples': [], 'native_phase_records': []}
         self.report['return_workflows'][name] = result
-        app, window, access = self.app(profile, name + '-workflow', True)
         before, baseline = state(profile), payload(profile)
+        write(profile / 'before-state.json', before)
+        result.update(profile=str(profile), baseline_generation=baseline[0], baseline_payload_sha256=hashlib.sha256(baseline[1].encode()).hexdigest())
+        self.checkpoint(name + ':before-first-return-app-opening')
+        app, window, access = self.app(profile, name + '-workflow', True)
+        standard_geometry = self.x11.geometry(window)
+        origin = self.x11.origin(window)
+        assert origin[0] >= 0 and origin[1] >= 0 and origin[0] + standard_geometry[0] <= 1450 and origin[1] + standard_geometry[1] <= 1050, 'Natural standard client must fit the declared display'
+        result['standard_client_geometry'] = {'size': standard_geometry, 'origin': list(origin), 'display': [1450, 1050], 'natural_default': True}
         self.purchases(access)
         receipt_ids = recipe['receipt_line_ids']
         quantity, editor, opening = self.open_source(access, recipe['source_reference'], receipt_ids[0])
@@ -930,6 +1049,18 @@ class Observer:
         if recipe['kind'] == 'billed':
             fill(access, 'مرجع بستانکار تأمین‌کننده', f'M6-PERF-CREDIT-{name}', self.x11, editor)
         pages = math.ceil(len(receipt_ids) / 25)
+        def first_preview_coverage():
+            entered = [row['receipt_line_id'] for row in result['input_samples']]
+            assert entered == receipt_ids, 'First Preview requires every exact source input in order'
+            result['editor_first_preview_coverage'] = {'entered_lines': len(entered), 'receipt_line_ids': entered,
+                'all_entered_before_first_preview': True, 'native_scope': 'After ReturnRows::new, before Review setup/dialog presentation/layout, to first Preview dispatch; includes remaining setup/layout, common metadata, all inputs, pagers and inter-action checkpoints; excludes ReturnRows construction and later reveal/preview/post'}
+            self.checkpoint(name + ':all-inputs-before-first-preview-dispatch')
+        def accepted_editor():
+            rows = observe(lambda: [row for row in phase_records(profile) if row['phase'] == 'editor'], 'terminal editor phase receipt')
+            checks = strict_phases(rows)
+            assert len(checks) == 1 and checks[0]['measurable_accepted'], 'Exactly one positive complete accepted editor phase required'
+            result['native_phase_records'] = phase_records(profile)
+            result['strict_phase_checks'] = strict_phases(result['native_phase_records'])
         for page in range(1, pages + 1):
             if page > 1:
                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'next'))
@@ -956,10 +1087,13 @@ class Observer:
             for page in range(pages - 1, 0, -1):
                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'previous', '1'))
                 self.checkpoint(f'{name}:completed-previous-page:{page}')
+            first_preview_coverage()
             press(access, PREVIEW, self.x11, editor)
             invalid = observe(lambda: find(access, QUANTITY_PREFIX + receipt_ids[-1], editor, ('entry', 'text')), 'offpage invalid source row revealed')
             observe(lambda: ready(access, invalid, editor, True) and access.text(invalid) == '2', 'actual invalid last row retained/focused')
             assert payload(profile) == baseline
+            accepted_editor()
+            self.qualify_invalid_quantity_label(access, editor, receipt_ids, pages)
             result['hidden_invalid_last_row_retained_focused'] = True
             self.checkpoint(name + ':completed-hidden-invalid-focus')
             settled_begin = time.perf_counter()
@@ -983,6 +1117,35 @@ class Observer:
                     'no_focus_scroll_or_key_mutation': True, 'screenshot': str(image),
                     'pixel_visibility': 'requires independent settled screenshot review; modal GTK geometry unavailable'})
                 self.checkpoint(f'{name}:passive-hidden-invalid-settled:{minimum:g}s')
+            result['hidden_invalid_narrow_settled_observations'] = []
+            self.x11.resize(window, 620, 800)
+            self.x11.check()
+            observe(lambda: self.x11.geometry(window) == [620, 800], 'actual narrow620x800 app geometry')
+            resize_begin = time.perf_counter()
+            for minimum in (.5, 1., 2.):
+                remaining = minimum - (time.perf_counter() - resize_begin)
+                if remaining > 0:
+                    time.sleep(remaining)
+                fields = self.page_state(access, editor, receipt_ids, pages)
+                assert fields and fields[-1]['name'] == QUANTITY_PREFIX + receipt_ids[-1]
+                assert access.text(fields[-1]) == '2' and ready(access, fields[-1], editor, True)
+                assert payload(profile) == baseline and self.x11.geometry(window) == [620, 800]
+                image = profile / f'invalid-last-row-narrow-settled-min{minimum:g}s.png'
+                self.capture(window, image)
+                result['hidden_invalid_narrow_settled_observations'].append({
+                    'minimum_delay_s': minimum, 'capture_completion_delay_s': time.perf_counter() - resize_begin,
+                    'geometry': [620, 800], 'receipt_line_id': receipt_ids[-1], 'raw_text': '2',
+                    'actual_focus': True, 'current_membership': True, 'durable_state_unchanged': True,
+                    'no_focus_scroll_or_key_mutation_after_resize': True, 'screenshot': str(image),
+                    'pixel_visibility': 'requires independent settled screenshot review; modal GTK geometry unavailable'})
+                self.checkpoint(f'{name}:passive-narrow-hidden-invalid-settled:{minimum:g}s')
+            self.x11.resize(window, *standard_geometry)
+            self.x11.check()
+            observe(lambda: self.x11.geometry(window) == standard_geometry, 'restored exact natural standard client before later timed actions')
+            time.sleep(.5)
+            assert payload(profile) == baseline
+            result['geometry_restored_before_later_timed_actions'] = standard_geometry
+            self.checkpoint(name + ':restored-standard-geometry')
             self.user_wins_invalid_reveal(access, editor, receipt_ids, pages, window, profile, baseline, result, name)
             fill(access, invalid['name'], '1', self.x11, editor)
             self.editor_paths[editor]['expected'][receipt_ids[-1]] = '1'
@@ -1005,10 +1168,13 @@ class Observer:
         assert not legacy.sensitive(access, post), 'Old verification unexpectedly retained'
         preview = find(access, PREVIEW, editor, ('button', 'push button'))
         focus(access, preview, self.x11)
+        if pages == 1:
+            first_preview_coverage()
         begin = time.perf_counter()
         self.x11.key('space')
         observe(lambda: legacy.sensitive(access, post), 'actual return preview enables post')
         result['preview_observed_ms'] = (time.perf_counter() - begin) * 1000
+        accepted_editor()
         assert payload(profile) == baseline
         observe(lambda: any(row['phase'] == 'preview' and row['result'] == 'verified'
                             for row in phase_records(profile)[phase_begin:]), 'terminal preview phase before checkpoint')
@@ -1034,9 +1200,10 @@ class Observer:
         result['native_phase_records'] = phase_records(profile)
         result['strict_phase_checks'] = strict_phases(result['native_phase_records'])
         result['accepted_phase_coverage'] = {phase: sum(row['measurable_accepted'] for row in result['strict_phase_checks'] if row['phase'] == phase)
-                                             for phase in ('preview', 'post')}
+                                             for phase in ('editor', 'preview', 'post')}
+        assert result['accepted_phase_coverage']['editor'] == 1, 'Exactly one accepted editor phase per workflow'
         result['memory_kib_after_post'] = helper.rss(app.pid)
-        result['read_only_page_edit_continuous_heartbeat'] = 'unmeasured; loaded action latencies are not GTK heartbeat traces'
+        result['read_only_page_edit_continuous_heartbeat'] = 'Measured only ready editor to first Preview dispatch; later error reveal, edits, preview and post outside this editor scope'
         self.checkpoint(name + ':completed-exact-literal-and-phase-proof')
         self.capture(window, profile / 'posted.png')
         native.stop(app)
@@ -1086,6 +1253,7 @@ class Observer:
                 time.sleep(.5)
                 memory = helper.rss(app.pid)
                 result['samples'].append({'index': index, 'startup_ms': duration, 'interactive_before_png_ms': pre_png,
+                                          'natural_client_geometry': self.x11.geometry(window),
                                           'steady_rss_kib': memory['VmRSS'], 'kernel_peak_rss_kib': memory['VmHWM'],
                                           'rss_observer_samples': len(memory_samples), 'rss_observer_raw_kib': memory_samples,
                                           'screenshot': str(screenshot)})
@@ -1164,15 +1332,16 @@ def main():
                            'rust': helper.command('rustc', '--version'), 'gtk_libadwaita': helper.command('pkg-config', '--modversion', 'gtk4', 'libadwaita-1')},
               'boundaries': {'startup': 'Popen to owned mapped window, usable Save, real Tab focus response and completed PNG; pre-PNG/capture separate. Initial stopped-backup launch n1 separately; repeated n10 new processes with warm/uncontrolled OS pages. No physical OS-cold claim.',
                              'source_picker': 'Actual Ctrl+A/ASCII query to exact first current reference/count/page/action, allocated visible sensitive then actual focus. Qualified direct source-child snapshots before/after every observation, fresh parent-child membership, debounce/layout/AT-SPI5ms poll included. Initial picker/index discovery and zero warmup outside timer.',
-                             'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 persistent identity paths qualified outside dispatch, all roles/names/text/marker/current edges refreshed before/after each poll. Passive invalid2 settled captures require independent pixel review; modal GTK window-key geometry unavailable. Main-thread read-only continuous heartbeat unmeasured.',
+                             'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 persistent identity paths qualified outside dispatch, all roles/names/text/marker/current edges refreshed before/after each poll. Natural initial client geometry is recorded, narrow620x800 invalid2 captures are untimed, and exact initial client size restored before later timed actions. Passive standard/narrow invalid2 settled captures require independent pixel review; modal GTK window-key geometry unavailable.',
+                             'editor_heartbeat': 'C9 native16ms starts after ReturnRows::new, before Review setup/dialog presentation/layout, and ends at first Preview collect/dispatch with explicit return/preview_requested result. Includes remaining setup/layout, common metadata, all20/200 real-key inputs, Next/Previous and inter-action checkpoint I/O; excludes ReturnRows construction and later invalid reveal/correction/preview/post. Initial gap remains included. Exact ordered input association precedes first dispatch. One positive complete accepted editor trace per workflow, separate50ms maximum; no pooling/subtraction.',
                              'preview_post': 'Actual real-key preview/post dispatch through usable Post or durable return and visible result. Existing native16ms dispatch-to-render/busy-release phases independently retain every tick/terminal gap; zero-tick/rejected/absent unmeasured. n1 per20billed/20unbilled/200billed workflow.',
-                             'lifecycle_and_partial_checkpoints': 'm6-scoped-v1.2: private owned-PID window discovery drains X11 requests with XSync and rejects only exact retired-window PID-property BadWindow. Full raw partial JSON is atomically checkpointed after completed endpoints/native terminal phases, outside active intervals; inter-action disk/cache effects remain possible.',
+                             'lifecycle_and_partial_checkpoints': 'm6-scoped-v3: early Python faulthandler plus fsynced exact PID/PGID/starttime/comm/command spawn ledger before native discovery and external identity-verified SIGTERM cleanup. Journaling remains inside startup timing; partial raw JSON checkpoints occur after latency endpoints, including before first return opening. Editor trace deliberately includes inter-action checkpoint I/O. X11 private owned-PID discovery still drains with XSync/rejects only exact retired-window PID-property BadWindow. Native hard-exit cause remains unknown; no reliability/cause claim from diagnostic passes.',
                              'memory': 'Application PID only; /proc10ms startup sampling +500ms idle; later search/editor/preview/post RSS/HWM points separate. Helpers excluded.'},
               'historical_M5_strict_misses_retained': {'pages_ms': [51.488974,51.002871,51.904600], 'choice_ms':73.664108,'internal_PDF_ms':80.439368,'global_ms':289.749728,'PDF_busy_ms':107.151621,'persistence_busy_ms':96.586120},
               'limits': ['Shared virtual hardware: no dedicated4core8GBSSD, genuine physical-cache-cold or causal Rust-speed/competitor/production/statutory claim.',
                          'No full five-year100k-doc/million-journal/50k-item/10k-party reference profile;200line returns do not establish1000line or posted-ledger capacity.',
                          'n10/n20 p99 equals worst; sequential page samples and n1 commands/memory are descriptive, not independent tail estimates.',
-                         'Read-only page/edit GTK heartbeat unmeasured; latency and accessibility readiness do not prove pixels or isolated CPU.',
+                         'Editor GTK heartbeat is bounded to ready editor→first Preview; later error reveal/page/edit and unrelated read-only activity remain unmeasured. Latency and accessibility readiness do not prove pixels or isolated CPU.',
                          'Observer XSync contributes to lifecycle discovery; per-completed-observation atomic checkpoint I/O occurs between actions and may affect subsequent caches/work. Protocol v2 qualifies direct source hierarchy and stable editor identity paths before dispatch; every poll refreshes ownership/DEFUNCT/current edges and all names/roles/text before/after. Reduced discovery RPC is a new observer method, never subtracted from or causally compared with preserved v1.2 misses. Search still includes native input,50ms debounce, rendering and RPC; no isolated product speed inference.',
                          'Typical20line INVOICE, annual reports/import, Windows/Wayland/physical print/screen readers/hardware loss/leaks/professional review remain unmeasured.']}
     observer = Observer(args, report, dataset)

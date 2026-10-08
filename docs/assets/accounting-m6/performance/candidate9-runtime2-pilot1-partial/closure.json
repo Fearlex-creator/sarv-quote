@@ -1,0 +1,49 @@
+{
+  "result": "PARTIAL functionalpilot Pythonassertion at first passive invalid-field check",
+  "strict_measured_gate": "FAILED",
+  "diagnostic_misses": 15,
+  "all_known_owned_workers_inactive": true,
+  "all_coordinator_and_observer_guards_exact": true,
+  "states": [
+    {
+      "profile": "return20-billed-workflow",
+      "generation": 2,
+      "payload_sha256": "57722c188e08b5369642e442f066f3bfbb61f740687304e3bb58593c2170e6e4",
+      "proof": "whole stopped State exact posted/restarted after-State",
+      "integrity": "ok"
+    },
+    {
+      "profile": "return20-unbilled-workflow",
+      "generation": 2,
+      "payload_sha256": "f8d4f5c06a7f43383480eeb67a4424258bb686d05510b31520f278edd9ff8c53",
+      "proof": "whole stopped State exact posted/restarted after-State",
+      "integrity": "ok"
+    },
+    {
+      "profile": "return200-billed-workflow",
+      "generation": 1,
+      "payload_sha256": "f548f3324ce6e24e5fcc619c16c9e486d7d7c73e80bc049fe758d004f4e65137",
+      "proof": "whole stopped generation/payload exact prepared fixture",
+      "integrity": "ok"
+    },
+    {
+      "profile": "source120-unbilled-search",
+      "generation": 1,
+      "payload_sha256": "bffe28c2f05d003139335edc0a2a66d9268c6b21f07804351a1fbe8392fcbf81",
+      "proof": "whole stopped generation/payload exact prepared fixture",
+      "integrity": "ok"
+    },
+    {
+      "profile": "source120-billed-search",
+      "generation": 1,
+      "payload_sha256": "69f0716aee2b654548ec99f2f9b93880ac01e71c67dcba1243b8f2410763cf2d",
+      "proof": "whole stopped generation/payload exact prepared fixture",
+      "integrity": "ok"
+    }
+  ],
+  "functional_20_billed_unbilled_post_restart": true,
+  "actual_200_inputs": 200,
+  "current_200_post_400_details_narrow_user_focus": "incomplete/untested",
+  "final_n10_n20": "not run",
+  "failure": "page_state not-ready at first passive>=0.5s check; precise path/topology delta not captured"
+}

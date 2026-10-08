@@ -1,0 +1,22 @@
+{
+  "protocol": "m6-scoped-v3",
+  "proposal_only": true,
+  "native_replay_not_run": true,
+  "observer_sha256": "63edfdab8e16e96fb3451e14a54f0a8fab8417062d0d4302f2abbf292a446b6b",
+  "baseline_sha256": "daf7210c50843e173161675b0f70eec5d263c864c11e11dfb88805b9c30a1255",
+  "coordinator_sha256": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f",
+  "analyzer_sha256": "a0e520632179fe6df38af9b049f8390dbcacaa8637e7b56c54d357354fba24aa",
+  "author_cases": {
+    "membership_validation": 104,
+    "phases_guardian_unchanged": 77
+  },
+  "files": {
+    "observer-v3-daf721.py": "daf7210c50843e173161675b0f70eec5d263c864c11e11dfb88805b9c30a1255",
+    "observer.diff": "a68fede69b08274a197062016503a894708807fad29f541a53dc5dd11df43b43",
+    "validation-static-check.py": "ea8276e7fadb48d7d887be879a34cab6f817e154d86a693bccea23073770e124",
+    "static-check.json": "9a17a0202b8fcc59caa1a02e5cd07a5ef8625e2b499e8ebaff71e89869818ef3",
+    "guardian-static-check.py": "1d8c4d040ff1e1b6373221d74459fdaf3a7b0586b9b64fa645e21218dc55081e",
+    "guardian-static-check.json": "64dd05751c39bbbfdf3a552a01118bccb8413860fcd476a23b4eeec76490976d"
+  },
+  "supersedes": "proposal1-before-final-snapshot-review retains first proposal bytes; final coherence now follows readiness and raw2 reread"
+}

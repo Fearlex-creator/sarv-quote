@@ -1,0 +1,13 @@
+# C9 editor heartbeat static production review
+
+Verdict: **PASS for instrumentation scope; no P2/P3 defect found.** Actual editor event-loop performance remains unmeasured until native evidence closes. Root's independent build/test gate is separate.
+
+Reviewed the full current `ProcurementPhase`, Return constructor/collector and preview/post ownership, plus the exact diff against merged `main` and `requirements/checkpoint-M6-followup.md`. Reviewed source SHA256: `b76bd5a631788e3f08a8668d38a35d18dca7b063b5adb14edda1cd0b2aed5689`. Receipt: `candidate9-editor-trace-review.json` (17 static checks).
+
+The diff adds no financial command, record, history, schema or account change. It reuses the existing explicit trace=1, test-instance and canonicalized `/tmp`/project-artifacts guards. Ordinary operation receives `None`. The timer holds the trace and only a weak Ui reference; dialog-close and collection closures hold the optional trace without introducing a strong Ui cycle. `done.replace(true)` permits one record; the next timer dispatch breaks. Dialog close emits `closed`; a missing Ui emits `closed`; editor alone uses the extended timeout, with other phases retaining120s.
+
+The16ms timer begins after `ReturnRows::new`, so construction is excluded. The first collection callback finishes it with `preview_requested` **before** `collected_rows.collect`, including when that first collection rejects an invalid value. This is an editing/paging interval through the first Preview request, not validation latency or subsequent error reveal/editing. Preview/post logic is unchanged and remains separately traced. Every interval includes its final segment; ticks are actual dispatched timer ticks (`gaps.len()-1`), so zero ticks remain distinguishable. The background JSONL writer changes only test-side metrics and can fail silently; absent records must remain missing/unmeasured.
+
+The observer must accept this distinct editor scope only for operation `return`, phase `editor`, result `preview_requested`, positive ticks, interval16ms, complete finite/nonnegative gaps with `len=ticks+1`, sum matching elapsed and independently recomputed maximum including the terminal gap. It must associate the record with the actual native workflow and independently compare the unchanged50ms budget. `closed`, timeout, zero-tick and absent records cannot pass. A matching trace alone cannot establish that all200 keys/pages or any painted field were correct; those still require actual identity/raw-value evidence and settled images/geometry. Any measured gap miss remains a miss.
+
+No GUI, build, network, native replay or production edit by this reviewer. This review qualifies the opt-in mechanism only, with no performance or final M6 acceptance claim.

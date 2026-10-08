@@ -1,0 +1,186 @@
+{
+  "result": "PASS bounded actual C9 current200 functionality/raw accounting/restart/native images and provenance; pilot performance FAILED13",
+  "reviewer": "m6_observer_native_reviewer",
+  "input_receipt_ids_ordered": 200,
+  "preview_pages": 16,
+  "preview_rows_exact_ordered": 400,
+  "financial_independent_assertions": 872,
+  "financial_receipt": "candidate9-runtime3-pilot1-200-raw-review.json",
+  "all_original_State_prefix_and_quotes_exact": true,
+  "after_restart_whole_State_exact": true,
+  "actual_restart_process_journaled": true,
+  "independently_viewed_native_images": {
+    "invalid-last-row-settled-min2s.png": "6db91fb3942c91c141dc32b570429045fcf5724fa97eaeb8b1e8be3450007985",
+    "invalid-last-row-narrow-settled-min2s.png": "de72b62d94ee958f7bb7f983bf7e38f8388af9fb200aca24690aada7a5e5e596",
+    "invalid-user-tab-focus-retained.png": "7d13df61cba44ab23ba0c86cbd05680d482bc5de9907b85acf73a21a2aaa7f6c",
+    "last-preview-page.png": "266c60764f0b2001556192291fb9128bebac89bd2b8ddc3f77642ce35e100ac6",
+    "posted.png": "733fff5f26ec97af7e1f058afd4eefd1ce1c5eebc2cd173918a8ab61fc1989e4"
+  },
+  "visible_standard_and_narrow_whole_L200_raw2_error_above_footer": true,
+  "actual_Space_Tab_error_label_focus_retained_without_jump": true,
+  "passive_observations_standard_narrow": 6,
+  "native_phase_records": [
+    {
+      "workflow": "return20-billed",
+      "phase": "editor",
+      "result": "preview_requested",
+      "ticks": 964,
+      "elapsed_ms": 16129.7849,
+      "max_gap_ms": 60.676642
+    },
+    {
+      "workflow": "return20-billed",
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "elapsed_ms": 65.984796,
+      "max_gap_ms": 25.530166
+    },
+    {
+      "workflow": "return20-billed",
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 3,
+      "elapsed_ms": 76.413231,
+      "max_gap_ms": 31.273193
+    },
+    {
+      "workflow": "return20-unbilled",
+      "phase": "editor",
+      "result": "preview_requested",
+      "ticks": 892,
+      "elapsed_ms": 14756.830983,
+      "max_gap_ms": 45.261665
+    },
+    {
+      "workflow": "return20-unbilled",
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "elapsed_ms": 53.603986,
+      "max_gap_ms": 16.087864
+    },
+    {
+      "workflow": "return20-unbilled",
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 3,
+      "elapsed_ms": 67.09162,
+      "max_gap_ms": 29.27327
+    },
+    {
+      "workflow": "return200-billed",
+      "phase": "editor",
+      "result": "preview_requested",
+      "ticks": 8078,
+      "elapsed_ms": 132098.864394,
+      "max_gap_ms": 49.030512
+    },
+    {
+      "workflow": "return200-billed",
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "elapsed_ms": 53.064936,
+      "max_gap_ms": 16.086697
+    },
+    {
+      "workflow": "return200-billed",
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 10,
+      "elapsed_ms": 189.74521099999998,
+      "max_gap_ms": 32.938462
+    }
+  ],
+  "current_frozen_verification_files_exact": 88,
+  "portable_inventory_files_exact": 81,
+  "stopped_SQLite_mode_ro_integrity_exact_states": 11,
+  "known_complete_journaled_workers_inactive": 22,
+  "external_cleanup_signals": 0,
+  "exact_guards_before_after": true,
+  "strict_pilot_misses": [
+    {
+      "scope": "source120-billed:query:correct_visible_ms",
+      "limit": 200,
+      "observed": 433.4034429921303,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-billed:filtered-page:correct_visible_ms",
+      "limit": 150,
+      "observed": 435.69656398904044,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-billed:query:focused_usable_ms",
+      "limit": 200,
+      "observed": 825.5407209944678,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-billed:filtered-page:focused_usable_ms",
+      "limit": 150,
+      "observed": 854.4807119906181,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-unbilled:query:correct_visible_ms",
+      "limit": 200,
+      "observed": 372.703269997146,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:correct_visible_ms",
+      "limit": 150,
+      "observed": 366.07238999567926,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-unbilled:query:focused_usable_ms",
+      "limit": 200,
+      "observed": 791.1077559983823,
+      "metric": "p95"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:focused_usable_ms",
+      "limit": 150,
+      "observed": 823.65704899712,
+      "metric": "p95"
+    },
+    {
+      "scope": "return20-billed:native-editor-maximum-gap",
+      "limit": 50,
+      "observed": 60.676642,
+      "metric": "worst"
+    },
+    {
+      "scope": "return200-billed:editor:next:correct_visible_ms",
+      "limit": 150,
+      "observed": 829.654194007162,
+      "metric": "p95"
+    },
+    {
+      "scope": "return200-billed:editor:next:focused_usable_ms",
+      "limit": 150,
+      "observed": 1571.4631089940667,
+      "metric": "p95"
+    },
+    {
+      "scope": "return200-billed:editor:previous:correct_visible_ms",
+      "limit": 150,
+      "observed": 941.2754079967272,
+      "metric": "p95"
+    },
+    {
+      "scope": "return200-billed:editor:previous:focused_usable_ms",
+      "limit": 150,
+      "observed": 1598.232411997742,
+      "metric": "p95"
+    }
+  ],
+  "final_n10_n20_acceptance": "PENDING; pilot n2 startup/source and descriptive workflow samples only",
+  "dark200_native": "PENDING separate untimed scope",
+  "universal_production_performance_acceptance": false,
+  "GUI_build_replay": false
+}

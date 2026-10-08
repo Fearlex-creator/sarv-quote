@@ -1,0 +1,9 @@
+# C9 runtime2 partial functional pilot
+
+The one guarded pilot closed with Python exit1, preserving raw arrays and reports. Both source-search cohorts completed their n2 diagnostic samples. Both20-line billed/unbilled workflows completed actual inputs, exact post and restart checks. All200 quantities were entered in order through eight pages before first Preview. The invalid last raw2 became actually focused and its immediate PNG shows the whole field above the footer, but the first passive observation failed strict topology readiness.
+
+The full200400-detail preview/post/restart, settled/narrow/user-focus checks and startup cohort were not completed here. No complete200 financial acceptance or final percentile is claimed. The separate targeted diagnostic identifies one exact validation label added before the unchanged16 siblings; this historical partial run is retained without rewriting.
+
+Analysis retains15 diagnostic strict misses, including the200 editor maximum74.873073ms against50ms. Its maximum is initial gap index0; the next largest41.939064ms and other gaps fit50ms. The native phase begins after ReturnRows::new, before Review setup/dialog presentation/layout; remaining setup/layout is included. Earlier report wording that excluded all construction was too broad; raw records and original reports remain unchanged. AT-SPI polling/key/debounce/checkpoint overhead prevents product-only causal interpretation of detection latency. n2 samples do not establish finaln20 percentiles.
+
+All coordinator guards were exact and all known newly journaled workers were inactive before curation. Both posted20 States and their restart data, three unchanged private source/200 States, original held observer and all checkpoints/phases/logs/images are portable here. No SQLite database or executable is included. Final quietn10/n20 has not run.

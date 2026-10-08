@@ -1,0 +1,18 @@
+{
+  "result": "STATIC ONLY; NO GUI",
+  "observer_sha256": "daf7210c50843e173161675b0f70eec5d263c864c11e11dfb88805b9c30a1255",
+  "diff_sha256": "01baec9c93e0d45806bc2a1a7c45557cc474ce3f27751c3d1bab74ac809a3ebd",
+  "checks": {
+    "null_membership_AST": 71,
+    "prior_phase_guardian_AST": 76,
+    "py_compile": "PASS"
+  },
+  "unchanged_coordinator_sha256": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f",
+  "unchanged_analyzer_sha256": "a0e520632179fe6df38af9b049f8390dbcacaa8637e7b56c54d357354fba24aa",
+  "actual_crash_node_argument": "unknown",
+  "new_verification_sources": [
+    "docs/assets/accounting-m6/performance/runtime10-null-node/null-membership-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime10-null-node/guardian-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime10-null-node/observer-v3-c79ee7.py"
+  ]
+}

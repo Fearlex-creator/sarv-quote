@@ -1,0 +1,99 @@
+{
+  "result": "PASS sole observed conditional-error topology delta and settled target visibility; diagnostic only",
+  "reviewer": "m6_observer_native_reviewer",
+  "diagnostic_sha256": "edd7ddca9b1b4877116d7aab9b6478d5f90d5a3dabf93857a3b3197b1edf952f",
+  "delta_sha256": "00557ab12cd8ddfbbc3479f0b74ce0c178a9150657132e610f2567906ac133a0",
+  "observations": [
+    {
+      "variation": "standard",
+      "minimum_s": 0.5,
+      "actual_delay_s": 1.3947115640039556,
+      "geometry": [
+        1400,
+        940
+      ],
+      "error_node": 327170128,
+      "parent": 327850496,
+      "image_sha256": "7766a419137b75b6680050b5ac532837fca5d2dd4c58733194c5c11e692ac0e1"
+    },
+    {
+      "variation": "standard",
+      "minimum_s": 1.0,
+      "actual_delay_s": 2.3942266939993715,
+      "geometry": [
+        1400,
+        940
+      ],
+      "error_node": 327170128,
+      "parent": 327850496,
+      "image_sha256": "e1b25b5ad2ea3327ec658511d6fe90bd11c3069bc6a662a12892e47b39147c42"
+    },
+    {
+      "variation": "standard",
+      "minimum_s": 2.0,
+      "actual_delay_s": 3.299187429001904,
+      "geometry": [
+        1400,
+        940
+      ],
+      "error_node": 327170128,
+      "parent": 327850496,
+      "image_sha256": "660c3fd60baa6de0beb08841b997caf33cbbfa4b9d4d84465f59e5b162866e24"
+    },
+    {
+      "variation": "narrow",
+      "minimum_s": 0.5,
+      "actual_delay_s": 1.4888747689983575,
+      "geometry": [
+        620,
+        800
+      ],
+      "error_node": 327170128,
+      "parent": 327850496,
+      "image_sha256": "ef01c467554793caf478fd2e6552ac680e501d20a7672d5ff56803383d7fc136"
+    },
+    {
+      "variation": "narrow",
+      "minimum_s": 1.0,
+      "actual_delay_s": 2.460871508999844,
+      "geometry": [
+        620,
+        800
+      ],
+      "error_node": 327170128,
+      "parent": 327850496,
+      "image_sha256": "d4247e874c295c520fa930652649572728ec66d885e3335fa9f46ddb4a9fb94f"
+    },
+    {
+      "variation": "narrow",
+      "minimum_s": 2.0,
+      "actual_delay_s": 3.344773491000524,
+      "geometry": [
+        620,
+        800
+      ],
+      "error_node": 327170128,
+      "parent": 327850496,
+      "image_sha256": "ba2198545ddae903cd5d0447a66fde6ed8e275595f3c0e89670f002f9ffa07f3"
+    }
+  ],
+  "all6same16originalorderedchildren_plus1exactlabel": true,
+  "current_qualified_nodes_roles_parents_unchanged": true,
+  "guardian_guards_exact_knownowned_inactive": true,
+  "personally_inspected_min2_standard_narrow": {
+    "whole_L200_field_raw2_error_readable_above_footer": true,
+    "geometry": [
+      [
+        1400,
+        940
+      ],
+      [
+        620,
+        800
+      ]
+    ]
+  },
+  "single_quantity_entered": true,
+  "current200_financial_post_restart_or_timing_acceptance": false,
+  "no_GUI_or_replay_by_reviewer": true
+}

@@ -48,17 +48,29 @@ def analyze(raw, directory):
                     check(f'{name}:editor:{direction}:{boundary}', [r[boundary] for r in samples], 150)
         for row in data.get('strict_phase_checks', []):
             gaps = row['gaps_ms']
+            if row.get('record_valid') is False:
+                phases.append({'workflow': name, **row, 'gap_quantiles': {'n': 0, 'status': 'invalid native record'}})
+                unmeasured.append(f"{name}:invalid-{row.get('phase')}-native-record")
+                continue
             assert len(gaps) == row['ticks'] + 1
             assert abs(sum(gaps)-row['elapsed_ms']) < 1e-5
             assert abs(max(gaps)-row['max_gap_ms']) < 1e-6
             phases.append({'workflow': name, **row, 'gap_quantiles': quantiles(gaps)})
             if row['measurable_accepted']:
                 check(f"{name}:native-{row['phase']}-maximum-gap", gaps, 50, 'worst')
-        for phase in ('preview', 'post'):
+        required_phases = ('editor', 'preview', 'post') if raw.get('protocol') == 'm6-scoped-v3' else ('preview', 'post')
+        for phase in required_phases:
             if not any(r['measurable_accepted'] and r['phase'] == phase for r in data.get('strict_phase_checks', [])):
                 unmeasured.append(f'{name}:accepted-{phase}-positive-tick-heartbeat')
         if data['result'] != 'measured':
             unmeasured.append(f'{name}:complete-native-workflow')
+        if raw.get('protocol') == 'm6-scoped-v3':
+            coverage = data.get('editor_first_preview_coverage', {})
+            expected_lines = 200 if name == 'return200-billed' else 20
+            if not coverage.get('all_entered_before_first_preview') or coverage.get('entered_lines') != expected_lines:
+                unmeasured.append(f'{name}:all-inputs-before-first-preview-editor-scope')
+            if sum(row['measurable_accepted'] and row['phase'] == 'editor' for row in data.get('strict_phase_checks', [])) != 1:
+                unmeasured.append(f'{name}:exactly-one-accepted-editor-phase')
     expected = {'startup': 6, 'source_picker_search': 2, 'return_workflows': 3}
     for key, count in expected.items():
         if len(raw[key]) != count:
@@ -79,7 +91,8 @@ def analyze(raw, directory):
             'all_native_phase_records_with_terminal_gaps': phases,
             'application_warnings': warnings, 'warning_count': len(warnings),
             'historical_M5_strict_misses_retained': raw['historical_M5_strict_misses_retained'],
-            'always_unmeasured': ['Read-only page/edit continuous GTK heartbeat', 'Dedicated reference hardware and real OS-cold',
+            'always_unmeasured': [('Read-only page/edit heartbeat outside ready editor→first Preview window' if raw.get('protocol') == 'm6-scoped-v3'
+                                   else 'Read-only page/edit continuous GTK heartbeat'), 'Dedicated reference hardware and real OS-cold',
                                  'Full reference five-year dataset', 'Typical invoice/annual report/import budgets',
                                  'Production, tax/statutory and competitor acceptance'],
             'limits': raw['limits']}

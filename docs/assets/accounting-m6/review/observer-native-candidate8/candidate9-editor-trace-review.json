@@ -1,0 +1,49 @@
+{
+  "reviewer": "m6_observer_native_reviewer",
+  "result": "PASS static instrumentation scope; no native heartbeat acceptance yet",
+  "source_file": "src/ui/procurement.rs",
+  "source_sha256": "b76bd5a631788e3f08a8668d38a35d18dca7b063b5adb14edda1cd0b2aed5689",
+  "baseline_main_blob_sha256": "c215efcc86165f13d92fc76d12cf3d1865b856849342506c64f9dd6aecf3faf6",
+  "checks": {
+    "explicit_trace_equals_1": true,
+    "test_instance_required": true,
+    "canonicalized_directory": true,
+    "tmp_or_project_artifacts_guard": true,
+    "timer_16ms": true,
+    "weak_ui": true,
+    "no_tick_after_done": true,
+    "only_editor_timeout_extended": true,
+    "terminal_gap_retained": true,
+    "positive_ticks_not_synthesized": true,
+    "done_idempotent": true,
+    "writer_only_jsonl": true,
+    "editor_start_after_construct": true,
+    "closed_finish": true,
+    "first_collect_finish": true,
+    "preview_post_phase_code_unchanged": true,
+    "other_files_not_edited_by_review": true
+  },
+  "no_financial_command_schema_history_changes_in_diff": true,
+  "ownership": "timer holds trace only and weak Ui; dialog/collect hold optional trace; done flag stops duplicate records/timer",
+  "observed_boundary": "after ReturnRows construction to first collection request, before collected_rows.collect; excludes construction and all later invalid reveal/editing/preview/post",
+  "requires_observer_acceptance": [
+    "operation return",
+    "phase editor",
+    "result preview_requested",
+    "ticks > 0",
+    "interval_ms = 16",
+    "len(gaps_ms) = ticks+1",
+    "all gaps finite/nonnegative, sum equals elapsed_ms",
+    "recompute max including terminal gap",
+    "at least one corresponding completed actual native all200 editor workflow",
+    "closed/timeout/missing/zero-tick unmeasured",
+    "independent <=50ms comparison with retained misses"
+  ],
+  "limitations": [
+    "Static instrumentation review only; root compile/tests running separately",
+    "Opt-in trace guards establish intentional local test scope, not external synthetic-data attestation",
+    "JSONL background writer may fail; absent record cannot pass",
+    "First collection can be invalid; later reveal and editing are outside editor heartbeat and require separate evidence"
+  ],
+  "GUI_build_network": false
+}
