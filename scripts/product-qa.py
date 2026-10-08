@@ -253,7 +253,7 @@ def main():
             key('n', 'Control_L')
             # New document may have a deliberate preservation dialog.
             for row in tree():
-                if row['name'] == 'پیشنهاد تازه' and row['role'] == 'button':
+                if row['name'] == 'پیش‌فاکتور تازه' and row['role'] == 'button':
                     access.click(row)
                     time.sleep(.3)
                     break
@@ -370,7 +370,7 @@ def main():
         key('f', 'Control_L')
         x.type_ascii(fields[3])
         time.sleep(.6)
-        action('پیشنهادهای مشتری ' + fields[0])
+        action('پیش‌فاکتورهای مشتری ' + fields[0])
         capture('customer-linked-history.png')
         check('Customer-linked native history exposes the approved quote number', native.wait_for(lambda: has_text(approved['number'])))
         key('Escape')
@@ -397,8 +397,8 @@ def main():
         # AdwComboRow is an actual native combo. Open its accessible action,
         # select with real keys, save, then verify the persisted setting.
         for index, appearance in [(2, 'Dark'), (1, 'Light')]:
-            control('ظاهر', ['combo box'])
-            tab_to(label='ظاهر')
+            control('تم برنامه', ['combo box'])
+            tab_to(label='تم برنامه')
             key('Return')
             key('Home')
             for _ in range(index):

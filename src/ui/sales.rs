@@ -251,7 +251,7 @@ fn catalog_picker(
     root.set_margin_bottom(16);
     root.set_margin_start(16);
     root.set_margin_end(16);
-    root.append(&label("این انتخاب فهرست یا پیشنهاد فروش را تغییر نمی‌دهد. کالا و واحد هسته را در سطر سفارش صریحاً تطبیق دهید؛ قیمت به ازای همان واحد منبع است."));
+    root.append(&label("این انتخاب فهرست یا پیش‌فاکتور فروش را تغییر نمی‌دهد. کالا و واحد سفارش را با کالای انتخاب‌شده تطبیق دهید. قیمت برای واحد درج‌شده است."));
     let sources = choice("فهرست قیمت", "sales-price-catalog", &catalogs);
     root.append(&field("فهرست قیمت و تاریخ منبع", &sources));
     let search = search_entry("کد، نام یا نام مستعار کالا", "sales-price-search");
@@ -792,7 +792,7 @@ fn context(ui: &Ui, company: &str, date: &str) -> Result<ProcurementContext> {
         .setups
         .iter()
         .find(|s| s.command.company_id == company)
-        .ok_or_else(|| anyhow::anyhow!("ابتدا راه‌اندازی هسته را کامل کنید"))?;
+        .ok_or_else(|| anyhow::anyhow!("ابتدا راه‌اندازی شرکت را کامل کنید"))?;
     anyhow::ensure!(
         s.core
             .openings
@@ -837,12 +837,12 @@ fn review(
     run: RunCommand,
     collect: Collect<SalesCommand>,
 ) -> Rc<Review<SalesCommand, SalesPreview>> {
-    let check = action("بازبینی مقدار و اثر سند", "sales-preview");
+    let check = action("پیش‌نمایش ثبت", "sales-preview");
     body.append(&check);
     let output = column();
     output.set_widget_name("sales-preview-output");
     body.append(&output);
-    save.set_label("تأیید و ثبت نسخهٔ بازبینی‌شده");
+    save.set_label("ثبت نهایی");
     let footer_total = label("");
     footer_total.set_widget_name("sales-post-total");
     footer_total.set_visible(false);
@@ -1103,8 +1103,10 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     root.set_widget_name("sales-workspace");
     let content = column();
     content.set_widget_name("sales-scroll-content");
-    content.append(&heading("فروش‌ها • سفارش، تحویل و برگشت"));
-    content.append(&label("تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد"));
+    content.append(&heading("فروش"));
+    content.append(&label(
+        "فاکتور فروش و حوالهٔ خروج با هم ثبت می‌شوند. ثبت دریافت وجه در دسترس نیست.",
+    ));
     let company = choice("شرکت", "sales-company", &[]);
     content.append(&field("شرکت", &company));
     let as_of = date_field(
@@ -1119,10 +1121,10 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     unit.set_widget_name("sales-display-unit");
     content.append(&unit);
     let flow = column();
-    let new = action("سفارش فروش تازه", "sales-new");
+    let new = action("سفارش فروش جدید", "sales-new");
     new.add_css_class("suggested-action");
     flow.append(&new);
-    let quote = action("از پیشنهاد تأییدشده", "sales-from-quote");
+    let quote = action("تبدیل پیش‌فاکتور به سفارش", "sales-from-quote");
     flow.append(&quote);
     let refresh = action("به‌روزرسانی", "sales-refresh");
     flow.append(&refresh);
@@ -1138,7 +1140,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
             let card = column();
             let title = heading("");
             let summary = label("");
-            let open = button("جزئیات و جریان کار");
+            let open = button("مشاهدهٔ جزئیات");
             card.append(&title);
             card.append(&summary);
             card.append(&open);
@@ -1458,11 +1460,7 @@ impl Page {
             },
             move |ui, result| {
                 let Some(p) = weak.upgrade() else {
-                    ui.page_load_message(
-                        "sales",
-                        "خواندن اسناد فروش…",
-                        result.map(|_| "خواندن اسناد فروش پایان یافت."),
-                    );
+                    ui.page_load_message("sales", "خواندن اسناد فروش…", result.map(|_| "آماده"));
                     return;
                 };
                 if p.current_ui().is_none() || p.revision.get() != revision {
@@ -1477,11 +1475,7 @@ impl Page {
                     Ok(snapshot) => {
                         *p.snapshot.borrow_mut() = Some(snapshot);
                         p.render();
-                        ui.page_load_message(
-                            "sales",
-                            "خواندن اسناد فروش…",
-                            Ok("اسناد فروش آماده‌اند."),
-                        );
+                        ui.page_load_message("sales", "خواندن اسناد فروش…", Ok("آماده"));
                     }
                     Err(e) => {
                         p.invalidate_rows();
@@ -1561,7 +1555,7 @@ impl Page {
                 if *draft {
                     "ادامهٔ پیش‌نویس"
                 } else {
-                    "جزئیات و جریان کار"
+                    "مشاهدهٔ جزئیات"
                 },
             );
             update_name(&slot.open, &format!("sales-open-{id}"));
@@ -1670,17 +1664,17 @@ impl Page {
             })
             .collect::<Vec<_>>();
         let (dialog, body, error, save) =
-            form_dialog(&ui, "تبدیل پیشنهاد تأییدشده", "sales-quotation");
-        let choice = choice("پیشنهاد تأییدشده", "sales-quotation-choice", &quotes);
+            form_dialog(&ui, "تبدیل پیش‌فاکتور تأییدشده", "sales-quotation");
+        let choice = choice("پیش‌فاکتور تأییدشده", "sales-quotation-choice", &quotes);
         body.append(&choice);
-        body.append(&label("پیشنهاد اصلی حفظ می‌شود؛ مالیات‌دار یا نگاشت مبهم قابل تبدیل نیست. انبار و مشتری را پیش از ذخیرهٔ سفارش بررسی کنید."));
+        body.append(&label("پیش‌فاکتور اصلی حفظ می‌شود؛ مالیات‌دار یا نگاشت مبهم قابل تبدیل نیست. انبار و مشتری را پیش از ذخیرهٔ سفارش بررسی کنید."));
         save.set_label("بازکردن پیش‌نویس مرتبط");
         let weak = Rc::downgrade(&ui);
         let d = dialog.clone();
         save.connect_clicked(move |_| {
             let Some(ui) = weak.upgrade() else { return };
             let result: Result<_> = (|| {
-                let id = selected(&choice, &ids(&quotes), "پیشنهاد")?;
+                let id = selected(&choice, &ids(&quotes), "پیش‌فاکتور")?;
                 let state = &ui.store.borrow().state;
                 let draft = state.sales_draft_from_quote(&id, &company)?;
                 let resources = state.accounting.procurement_resources(&company)?;
@@ -1772,7 +1766,7 @@ fn order_dialog(ui: &Rc<Ui>, draft: RawSalesDraft, resources: RegisterResources)
     body.append(&status);
     if let Some(q) = &draft.quotation {
         body.append(&label(&format!(
-            "مرتبط با پیشنهاد {} • نسخه {}؛ قیمت‌ها و مقادیر اصلی باید حفظ شوند",
+            "مرتبط با پیش‌فاکتور {} • نسخه {}؛ قیمت‌ها و مقادیر اصلی باید حفظ شوند",
             isolate(&q.quote_number),
             q.quote_revision
         )));
@@ -2185,7 +2179,7 @@ impl Editor {
                     e.dialog.set_can_close(true);
                     e.dialog.close();
                 }
-                ui.message(Ok("سفارش فروش ثبت شد • هنوز تحویل یا صورتحساب نشده است."));
+                ui.message(Ok("سفارش فروش ثبت شد • هنوز تحویل یا فاکتور نشده است."));
             },
         );
     }
@@ -2451,11 +2445,11 @@ fn line_dialog(editor: &Rc<Editor>, index: Option<usize>) {
     let items = resources_choices(&editor.resources, "item");
     let units = resources_choices(&editor.resources, "unit");
     let warehouses = resources_choices(&editor.resources, "warehouse");
-    let item = choice("کالای هسته", "sales-line-item", &items);
+    let item = choice("کالا", "sales-line-item", &items);
     let unit = choice("واحد ردیف", "sales-line-unit", &units);
     let warehouse = choice("انبار فروش", "sales-line-warehouse", &warehouses);
     for (title, c) in [
-        ("کالای هسته", &item),
+        ("کالا", &item),
         ("واحد مقدار و قیمت", &unit),
         ("انبار خروج کالا", &warehouse),
     ] {
@@ -2654,8 +2648,8 @@ fn record_summary(
         ),
         (SalesCommand::Fulfill(c), SalesData::Fulfill(f)) => (
             format!(
-                "تحویل {} • صورتحساب {}",
-                c.delivery_reference, c.invoice_reference
+                "فاکتور فروش {} • حواله خروج {}",
+                c.invoice_reference, c.delivery_reference
             ),
             format!(
                 "{} • {} • {} • بهای {} • {}؛ وصول انجام نشده",
@@ -2668,7 +2662,7 @@ fn record_summary(
         ),
         (SalesCommand::Return(c), SalesData::Return(v)) => (
             format!(
-                "برگشت {} • بستانکار {}",
+                "برگشت از فروش {} • بستانکار {}",
                 c.return_reference, c.credit_reference
             ),
             format!(
@@ -2792,19 +2786,19 @@ pub(super) fn open_document(ui: &Rc<Ui>, record_id: &str) {
     ui.run_background("خواندن منبع فروش…",move||{let resources=state.accounting.procurement_resources(&company)?;let order=if matches!(record.data,SalesData::Order(_)){state.accounting.sales_order_remaining(&id)?}else{vec![]};let returns=if matches!(record.data,SalesData::Fulfill(_)){state.accounting.sales_invoice_returnable(&id)?}else{vec![]};let report=sarv_quote::sales_export::document_preview(&state.accounting,&company,&id,MoneyUnit::Rial,state.settings.date_display,state.settings.display_digits)?;Ok((state,record,resources,order,returns,report))},move|ui,result|{let Some(dialog)=weak.upgrade().filter(|d|d.is_visible())else{ui.message(result.map(|_| "خواندن منبع فروش پایان یافت؛ پنجره بسته شده است."));return};clear(&body);match result{Err(e)=>{show_error(&error,format!("{e:#}"));ui.message(Err::<String,_>(e));},Ok((state,record,resources,order,returns,report))=>{
         body.append(&heading(&report.title));body.append(&label(&format!("{} • {} • {}",report.company,financial_date(ui,&report.as_of),report.status)));
         body.append(&label(&format!("منبع ثابت {} • ترتیب {} • سیاست {}",isolate(&record.id),fa(record.sequence),record.frozen_setup.command.policy.version)));
-        match &record.data {SalesData::Order(_)=>{let complete=order.iter().all(|l|l.remaining_quantity_thousandths==0);body.append(&label(if complete{"سفارش کاملاً تحویل و صورتحساب شده؛ برگشت مقدار سفارش را باز نمی‌کند."}else{"سفارش تأیید‌شده • مانده برای تحویل و صورتحساب • بدون رزرو موجودی"}));
+        match &record.data {SalesData::Order(_)=>{let complete=order.iter().all(|l|l.remaining_quantity_thousandths==0);body.append(&label(if complete{"سفارش کاملاً تحویل و فاکتور شده؛ برگشت مقدار سفارش را باز نمی‌کند."}else{"سفارش تأیید‌شده • مانده برای تحویل و فاکتور • بدون رزرو موجودی"}));
             for l in &order{body.append(&label(&format!("{} • سفارش {} • تحویل {} • مانده {} {} • خالص مانده {} ریال",l.item.name,isolate(&quantity_text(l.original_quantity_thousandths)),isolate(&quantity_text(l.fulfilled_quantity_thousandths)),isolate(&quantity_text(l.remaining_quantity_thousandths)),resource_name(&resources,"unit",&l.item.base_unit_id),l.remaining_net.rials())));}
-            if !complete{let b=action("تحویل جزئی و صورتحساب هم‌زمان","sales-fulfill");let id=record.id.clone();let weak=Rc::downgrade(ui);b.connect_clicked(move |_|{if let Some(ui)=weak.upgrade() && let Err(e)=fulfill_dialog(&ui,&id){ui.message(Err::<String,_>(e));}});body.append(&b);}
-        },SalesData::Fulfill(f)=>{body.append(&label(&format!("تحویل انجام شده • صورتحساب ثبت‌شده • وصول انجام نشده\nشناسهٔ تحویل {}\nشناسهٔ صورتحساب {}",isolate(&f.delivery_id),isolate(&f.invoice_id))));
-            let remaining=returns.iter().try_fold(Money::ZERO,|s,l|s.checked_add(l.net)).unwrap_or(Money::ZERO);body.append(&label(&format!("ماندهٔ دریافتنی این صورتحساب {} ریال • فقط بستانکارهای مرتبط کسر شده‌اند؛ پرداختی در این مرحله ثبت نمی‌شود",remaining.rials())));
+            if !complete{let b=action("صدور فاکتور فروش و حواله خروج","sales-fulfill");let id=record.id.clone();let weak=Rc::downgrade(ui);b.connect_clicked(move |_|{if let Some(ui)=weak.upgrade() && let Err(e)=fulfill_dialog(&ui,&id){ui.message(Err::<String,_>(e));}});body.append(&b);}
+        },SalesData::Fulfill(f)=>{body.append(&label(&format!("تحویل انجام شده • فاکتور ثبت‌شده • وصول انجام نشده\nشناسهٔ تحویل {}\nشناسهٔ فاکتور {}",isolate(&f.delivery_id),isolate(&f.invoice_id))));
+            let remaining=returns.iter().try_fold(Money::ZERO,|s,l|s.checked_add(l.net)).unwrap_or(Money::ZERO);body.append(&label(&format!("ماندهٔ دریافتنی این فاکتور {} ریال • فقط بستانکارهای مرتبط کسر شده‌اند؛ پرداختی در این مرحله ثبت نمی‌شود",remaining.rials())));
             for l in &returns{body.append(&label(&format!("{} • مقدار قابل برگشت {} {} • اعتبار مانده {} ریال • بهای اصلی مانده {} ریال",l.item.name,isolate(&quantity_text(l.quantity_thousandths)),resource_name(&resources,"unit",&l.item.base_unit_id),l.net.rials(),l.cost.rials())));}
-            if returns.iter().any(|l|l.quantity_thousandths>0){let b=action("برگشت کالا و بستانکار مرتبط","sales-return");let id=record.id.clone();let weak=Rc::downgrade(ui);b.connect_clicked(move |_|{if let Some(ui)=weak.upgrade() && let Err(e)=return_dialog(&ui,&id){ui.message(Err::<String,_>(e));}});body.append(&b);}
+            if returns.iter().any(|l|l.quantity_thousandths>0){let b=action("برگشت از فروش","sales-return");let id=record.id.clone();let weak=Rc::downgrade(ui);b.connect_clicked(move |_|{if let Some(ui)=weak.upgrade() && let Err(e)=return_dialog(&ui,&id){ui.message(Err::<String,_>(e));}});body.append(&b);}
             add_link(&body,ui,"سفارش اصلی",&f.order_id);
-        },SalesData::Return(v)=>{body.append(&label(&format!("کالا به انبار اصلی بازگشت • بستانکار ثبت‌شده\nشناسهٔ برگشت {}\nشناسهٔ بستانکار {}\nاعتبار {} ریال • بهای اصلی {} ریال",isolate(&v.return_id),isolate(&v.credit_id),v.total.rials(),v.cost.rials())));add_link(&body,ui,"تحویل و صورتحساب اصلی",&v.fulfillment_id);}}
+        },SalesData::Return(v)=>{body.append(&label(&format!("کالا به انبار اصلی بازگشت • بستانکار ثبت‌شده\nشناسهٔ برگشت {}\nشناسهٔ بستانکار {}\nاعتبار {} ریال • بهای اصلی {} ریال",isolate(&v.return_id),isolate(&v.credit_id),v.total.rials(),v.cost.rials())));add_link(&body,ui,"فاکتور فروش و حواله خروج اصلی",&v.fulfillment_id);}}
         let links=column();for child in state.accounting.sales.records.iter(){let linked=match &child.data{SalesData::Fulfill(f)=>f.order_id==record.id,SalesData::Return(v)=>v.fulfillment_id==record.id,_=>false};if linked{let (title,_)=record_summary(child,&resources,&state.settings,MoneyUnit::Rial);add_link(&links,ui,&title,&child.id);}}if links.first_child().is_some(){body.append(&heading("اسناد مرتبط"));body.append(&links);}
         body.append(&label("تحویل جزئی از تخصیص اصلی سفارش استفاده می‌کند. خالص و تخفیف‌ها جداگانه و تجمعی گرد می‌شوند؛ ناخالص تخصیص‌یافته جمع آن‌هاست و آخرین بخش باقیماندهٔ دقیق را می‌گیرد. قیمت اصلی سفارش حفظ شده است."));let rows=column();paged_text(ui,&rows,report.lines);body.append(&disclosure("ردیف‌ها، اثر دفتر و جزئیات منبع",&rows));
         let flow=row();for pdf in [false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},if pdf{"sales-export-pdf"}else{"sales-export-csv"});let weak=Rc::downgrade(ui);let id=record.id.clone();let company=record.command.context().company_id.clone();b.connect_clicked(move |_|{if let Some(ui)=weak.upgrade(){export_document(&ui,&company,&id,pdf);}});flow.append(&b);}body.append(&flow);
-        let weak_ui=Rc::downgrade(ui);dialog.connect_closed(move |_|{if let Some(ui)=weak_ui.upgrade(){refresh_all(&ui);}});ui.message(Ok("منبع فروش و جریان کار آماده‌اند."));
+        let weak_ui=Rc::downgrade(ui);dialog.connect_closed(move |_|{if let Some(ui)=weak_ui.upgrade(){refresh_all(&ui);}});ui.message(Ok("جزئیات سند آماده است."));
     }}});
 }
 fn add_link(body: &gtk::Box, ui: &Rc<Ui>, title: &str, id: &str) {
@@ -3111,8 +3105,8 @@ fn fulfill_dialog(ui: &Rc<Ui>, id: &str) -> Result<()> {
     let resources = state.procurement_resources(&record.command.context().company_id)?;
     let date = command_date(ui, &record.command.context().date);
     let (dialog, body, error, save) =
-        form_dialog(ui, "تحویل جزئی و صورتحساب هم‌زمان", "sales-fulfill");
-    body.append(&label("مقدار مثبت را در واحد پایه وارد کنید. در یک ثبت اتمی، تحویل و صورتحساب با شناسه‌های جدا ایجاد می‌شوند؛ دریافت وجه ثبت نمی‌شود."));
+        form_dialog(ui, "صدور فاکتور فروش و حواله خروج", "sales-fulfill");
+    body.append(&label("مقدار مثبت را در واحد پایه وارد کنید. در یک ثبت اتمی، تحویل و فاکتور با شناسه‌های جدا ایجاد می‌شوند؛ دریافت وجه ثبت نمی‌شود."));
     let common = Common::new(
         ui,
         &body,
@@ -3151,19 +3145,19 @@ fn fulfill_dialog(ui: &Rc<Ui>, id: &str) -> Result<()> {
         true,
     );
     let invoice = named_entry(
-        "مرجع صورتحساب فروش",
+        "شمارهٔ فاکتور فروش",
         "sales-fulfill-invoice-reference",
         "",
         true,
     );
     body.append(&field("مرجع تحویل کالا", &delivery));
-    body.append(&field("مرجع صورتحساب فروش", &invoice));
-    let due = date_field(ui, "سررسید صورتحساب", "sales-fulfill-due-date", &date);
+    body.append(&field("شمارهٔ فاکتور فروش", &invoice));
+    let due = date_field(ui, "سررسید فاکتور", "sales-fulfill-due-date", &date);
     body.append(&due.widget);
-    let total = named_entry("جمع خالص مستقل صورتحساب", "sales-fulfill-total", "", true);
+    let total = named_entry("جمع اعلام‌شدهٔ فاکتور", "sales-fulfill-total", "", true);
     let money = MoneyFields::new("sales-fulfill-money-unit", vec![total.clone()], &error);
     body.append(&money.choice);
-    body.append(&field("جمع خالص مستقل صورتحساب", &total));
+    body.append(&field("جمع اعلام‌شدهٔ فاکتور", &total));
     let c = common.clone();
     let l = line.clone();
     let q = qty.clone();
@@ -3187,7 +3181,7 @@ fn fulfill_dialog(ui: &Rc<Ui>, id: &str) -> Result<()> {
             delivery_id: delivery_id.clone(),
             invoice_id: invoice_id.clone(),
             delivery_reference: required(&d, "مرجع تحویل")?,
-            invoice_reference: required(&i, "مرجع صورتحساب")?,
+            invoice_reference: required(&i, "مرجع فاکتور")?,
             document_date: date_value(&c.document_date)?,
             due_date: date_value(&due_c)?,
             lines: vec![FulfillLine {
@@ -3229,10 +3223,10 @@ fn return_dialog(ui: &Rc<Ui>, id: &str) -> Result<()> {
         .into_iter()
         .filter(|r| r.quantity_thousandths > 0)
         .collect::<Vec<_>>();
-    anyhow::ensure!(!remaining.is_empty(), "صورتحساب مقدار قابل برگشت ندارد");
+    anyhow::ensure!(!remaining.is_empty(), "فاکتور مقدار قابل برگشت ندارد");
     let resources = state.procurement_resources(&record.command.context().company_id)?;
     let date = command_date(ui, &record.command.context().date);
-    let (dialog, body, error, save) = form_dialog(ui, "برگشت کالا و بستانکار مرتبط", "sales-return");
+    let (dialog, body, error, save) = form_dialog(ui, "برگشت از فروش", "sales-return");
     body.append(&label("فقط کالای سالم به انبار اصلی برمی‌گردد. اعتبار و بهای برگشت از تخصیص اصلی است؛ پرداخت یا استرداد وجه در این مرحله انجام نمی‌شود."));
     let common = Common::new(
         ui,
@@ -4146,7 +4140,7 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         "authentic retained quote link absent"
                     );
                     e.reference.set_text("SO-Q-M5");
-                    e.reason.set_text("تبدیل پیشنهاد تأییدشدهٔ ساختگی");
+                    e.reason.set_text("تبدیل پیش‌فاکتور تأییدشدهٔ ساختگی");
                     qa_date(&e.dialog, "sales-order-date", "2026-03-31")?;
                     e.total.set_text("20");
                     line_dialog(&e, Some(0));

@@ -841,7 +841,7 @@ fn return_rows<'a>(
     report.status_label = if posted.credit_id.is_some() {
         "برگشت فیزیکی: برگشت‌شده • اعتبار تأمین‌کننده: ثبت‌شده؛ پرداخت یا بازپرداخت نیست"
     } else {
-        "برگشت فیزیکی: برگشت‌شده • بدون اعتبار تأمین‌کننده؛ دریافت صورتحساب‌نشده"
+        "برگشت فیزیکی: برگشت‌شده • بدون اعتبار تأمین‌کننده؛ دریافت فاکتور‌نشده"
     }
     .into();
     metadata.id = identity.into();
@@ -891,7 +891,7 @@ fn return_rows<'a>(
     } else {
         metadata
             .label
-            .push_str("\nبدون اعتبار تأمین‌کننده • بدهکار دریافت صورتحساب‌نشده / بستانکار موجودی");
+            .push_str("\nبدون اعتبار تأمین‌کننده • بدهکار دریافت فاکتور‌نشده / بستانکار موجودی");
     }
     // Evaluate original allocation cursors at this record, never at today's cursor.
     let mut at_record = state.clone();
@@ -903,7 +903,7 @@ fn return_rows<'a>(
     if let Some(bill_id) = &posted.bill_id {
         let bill = state.procurement_document(bill_id)?;
         let ProcurementData::Bill(source) = &bill.data else {
-            anyhow::bail!("منبع اعتبار صورتحساب نیست")
+            anyhow::bail!("منبع اعتبار فاکتور نیست")
         };
         let mut remaining = source.total;
         for r in &at_record.procurement.records {
@@ -916,7 +916,7 @@ fn return_rows<'a>(
         remaining_payable = Some(remaining);
         field(metadata, "bill_id", bill_id);
         field(metadata, "remaining_payable_irr", remaining.rials());
-        metadata.label.push_str(&format!("\nصورتحساب اصلی {} • ماندهٔ همان صورتحساب پس از این رویداد {} IRR • بدهکار پرداختنی / بستانکار موجودی", source_code(bill_id), ltr(&remaining.rials().to_string())));
+        metadata.label.push_str(&format!("\nفاکتور اصلی {} • ماندهٔ همان فاکتور پس از این رویداد {} IRR • بدهکار پرداختنی / بستانکار موجودی", source_code(bill_id), ltr(&remaining.rials().to_string())));
         related.push(bill);
     }
     for line in &posted.lines {
@@ -968,7 +968,7 @@ fn return_rows<'a>(
         ));
         if let Some(id) = &line.bill_line_id {
             row.label.push_str(&format!(
-                "\nردیف خاص صورتحساب {} • برگشت فقط از تخصیص همان ردیف",
+                "\nردیف خاص فاکتور {} • برگشت فقط از تخصیص همان ردیف",
                 source_code(id)
             ));
             field(&mut row, "bill_line_id", id);
@@ -1020,13 +1020,13 @@ fn return_rows<'a>(
         if let Some(bill_id) = &posted.bill_id {
             let bill = state.procurement_document(bill_id)?;
             let ProcurementCommand::Bill(bill_input) = &bill.command else {
-                anyhow::bail!("فرمان صورتحساب اصلی ناسازگار است")
+                anyhow::bail!("فرمان فاکتور اصلی ناسازگار است")
             };
             field(&mut row, "bill_reference", &bill_input.reference);
             field(&mut row, "bill_document_date", &bill_input.document_date);
             field(&mut row, "bill_financial_date", &bill_input.context.date);
             row.label.push_str(&format!(
-                "\nمرجع صورتحساب {} • تاریخ سند صورتحساب میلادی {} • تاریخ مالی صورتحساب میلادی {}",
+                "\nمرجع فاکتور {} • تاریخ سند فاکتور میلادی {} • تاریخ مالی فاکتور میلادی {}",
                 source_code(&bill_input.reference),
                 ltr(&bill_input.document_date),
                 ltr(&bill_input.context.date)
@@ -1114,11 +1114,14 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
     let (kind, title) = match &record.data {
         ProcurementData::Resources(_) => ("resources", "تعریف منابع خرید و انبار"),
         ProcurementData::Order(_) => ("purchase_order", "سفارش خرید"),
-        ProcurementData::Receive(_) => ("goods_receipt", "رسید کالا"),
-        ProcurementData::Bill(_) => ("supplier_bill", "صورتحساب تأمین‌کننده"),
+        ProcurementData::Receive(_) => ("goods_receipt", "رسید انبار"),
+        ProcurementData::Bill(_) => ("supplier_bill", "فاکتور خرید"),
         ProcurementData::Transfer(_) => ("warehouse_transfer", "انتقال داخلی انبار"),
         ProcurementData::Return(_) if credit_view => ("supplier_credit", "اعتبار تأمین‌کننده"),
-        ProcurementData::Return(_) => ("purchase_return", "برگشت فیزیکی خرید"),
+        ProcurementData::Return(v) if v.credit_id.is_none() => {
+            ("purchase_return", "برگشت رسید انبار")
+        }
+        ProcurementData::Return(_) => ("purchase_return", "برگشت از خرید"),
     };
     let mut report = Report {
         company_id: company_id.into(),
@@ -1339,7 +1342,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             report.rows.push(Row {
                 kind: "document_total".into(),
                 id: "TOTAL".into(),
-                label: "جمع ارزش رسید؛ موجودی در برابر کالای دریافت‌شده صورتحساب‌نشده".into(),
+                label: "جمع ارزش رسید؛ موجودی در برابر کالای دریافت‌شده فاکتور‌نشده".into(),
                 amount: Some(posted.total),
                 ..Row::default()
             });
@@ -1383,8 +1386,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             report.rows.push(Row {
                 kind: "document_total".into(),
                 id: "TOTAL".into(),
-                label: "جمع صورتحساب؛ تسویهٔ کالای دریافت‌شده صورتحساب‌نشده در برابر حساب پرداختنی"
-                    .into(),
+                label: "جمع فاکتور؛ تسویهٔ کالای دریافت‌شده فاکتور‌نشده در برابر حساب پرداختنی".into(),
                 amount: Some(posted.total),
                 ..Row::default()
             });
@@ -1697,7 +1699,7 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
             receipt.original_value.rials(),
         );
         row.label = format!(
-            "دریافت صورتحساب‌نشده • {} • کد {} • تأمین‌کننده {} • انبار منبع {} • واحد پایه {}\nارزش اولیه {} IRR • تاریخ سند منبع میلادی {} • تاریخ دسترسی مالی میلادی {} • مبلغ نمایش‌شده ارزش باقی‌مانده است",
+            "دریافت فاکتور‌نشده • {} • کد {} • تأمین‌کننده {} • انبار منبع {} • واحد پایه {}\nارزش اولیه {} IRR • تاریخ سند منبع میلادی {} • تاریخ دسترسی مالی میلادی {} • مبلغ نمایش‌شده ارزش باقی‌مانده است",
             i.name,
             ltr(&i.sku),
             name,

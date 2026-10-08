@@ -87,7 +87,7 @@ def main():
         def press(name):focus(name,['button','push button']);x11.key('Return');time.sleep(.3)
         def screenshot(name):subprocess.run(['/usr/bin/import','-display',display,'-window',str(window),str(profile/name)],check=True)
         x11.key('8','Alt_L');time.sleep(.4)
-        press('سفارش خرید تازه');fill('شماره یا مرجع سند','KBD-CANCEL');fill('شرح و دلیل ثبت','Keyboard synthetic cancelled order')
+        press('سفارش خرید جدید');fill('شماره یا مرجع سند','KBD-CANCEL');fill('شرح و دلیل ثبت','Keyboard synthetic cancelled order')
         press('افزودن کالا و قیمت');fill('مقدار در واحد مشخص‌شده (تا سه رقم اعشار)','1');fill('قیمت هر واحد ردیف','0.1');fill('مرجع قیمت دستی','KBD-MANUAL-PRICE');fill('دلیل قیمت دستی یا تغییر قیمت منبع','Keyboard explicit manual price')
         press('افزودن ردیف به سفارش')
         check('actual XTest fractionalIRR error retains typed input',access.text(access.find('قیمت هر واحد ردیف',['text','entry']))=='0.1' and any('کسری از ریال' in r['name'] for r in access.tree()))
@@ -97,7 +97,7 @@ def main():
         check('actual keyboard edits staged quantity',any('2.000' in r['name'] for r in access.tree()))
         press('حذف ردیف');check('actual keyboard removes staged line',not any(r['name']=='ویرایش ردیف' for r in access.tree()))
         focus('انصراف',['button','push button']);x11.key('Escape');time.sleep(.35)
-        check('actual Escape cancellation preserves posted aggregate',state(profile)==raw and not any(r['name']=='تأیید و ثبت نسخهٔ بازبینی‌شده' for r in access.tree()))
+        check('actual Escape cancellation preserves posted aggregate',state(profile)==raw and not any(r['name']=='ثبت نهایی' for r in access.tree()))
         # A real entered query observes exactly the expected immutable source row.
         x11.key('f','Control_L');native.wait_for(lambda:any(r['name']=='جست‌وجوی شماره، منبع، کالا یا طرف' and r['role'] in ['text','entry'] and access.focused(r) for r in access.tree()),label='real Ctrl+F focuses active native search');x11.type_ascii('REC-A');native.wait_for(lambda:any('REC-A' in r['name'] for r in access.tree()) and not any('REC-B' in r['name'] for r in access.tree()),label='native normalized document search')
         check('actual typed immutable document search',True);x11.key('a','Control_L');x11.key('BackSpace');time.sleep(.2)

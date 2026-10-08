@@ -1,0 +1,34 @@
+{
+  "result": "passed",
+  "source": "/workspace/sarv-quote/artifacts/purchase-returns-native/run-illjtffj/main",
+  "profile": "/workspace/sarv-quote/artifacts/ui-copy/before-x0fh_3cs",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate9",
+  "binary_sha256": "da427a634b9b31a58ff81da2cca67043f9c8a9a7ddddb378f4c21e084e8a1903",
+  "checks": [
+    {
+      "name": "sales native render and byte-exact saved state",
+      "passed": true
+    },
+    {
+      "name": "procurement native render and byte-exact saved state",
+      "passed": true
+    },
+    {
+      "name": "inventory native render and byte-exact saved state",
+      "passed": true
+    },
+    {
+      "name": "accounting native render and byte-exact saved state",
+      "passed": true
+    },
+    {
+      "name": "order native render and byte-exact saved state",
+      "passed": true
+    },
+    {
+      "name": "settings native render and byte-exact saved state",
+      "passed": true
+    }
+  ],
+  "synthetic_only": true
+}

@@ -1,0 +1,79 @@
+{
+  "checks": [
+    {
+      "label": "fmt",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7845961659913883,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "clippy",
+      "command": "cargo clippy --offline --locked --all-targets -- -D warnings",
+      "exit_code": 0,
+      "elapsed_seconds": 5.408271815991611,
+      "log_sha256": "55a4c79f35b79295482138c8be963943b1426389ed6cbe40dfaa9d8a93e52b31"
+    },
+    {
+      "label": "all-targets",
+      "command": "cargo test --offline --locked --all-targets",
+      "exit_code": 0,
+      "elapsed_seconds": 32.87587395698938,
+      "log_sha256": "985b8e5b56cab68c669b34ad0829ea7487b3499f96123e874ba808d59fa676b1"
+    },
+    {
+      "label": "font-opt-in",
+      "command": "cargo test --offline --locked --bin sarv-quote ui::background::tests::four_row_business_quote_with_native_fonts_fits_one_a4_page -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 0.18361194599128794,
+      "log_sha256": "b5592afd72a119ea563dddff1a7799f52ae78f7b05fd24b6ea2f46740ab80a7f"
+    },
+    {
+      "label": "actual-M3-refusal",
+      "command": "SARV_M3_COMPAT_BINARY=/workspace/sarv-evidence/bin/sarv-M3-final cargo test --offline --locked --test procurement_migration actual_m3_binary_rejects_current_schema_without_modifying_committed_row -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 0.14055276699946262,
+      "log_sha256": "2e5669cad5b0e9a29794bef4e148b7ca816d3f929c37aff282d940e66fd090dd"
+    },
+    {
+      "label": "actual-M4-refusal",
+      "command": "SARV_M4_COMPAT_BINARY=/workspace/sarv-evidence/bin/sarv-M4-final cargo test --offline --locked --test sales_migration actual_m4_binary_refuses_current_schema_without_changing_row -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 0.16817750500922557,
+      "log_sha256": "d0e81bbf8d4549d0878f0c05928d1a96bc8f6eff30fdb33fa52b7ff1f2ed605b"
+    },
+    {
+      "label": "actual-M5-refusal",
+      "command": "SARV_M6_MIGRATION_ARTIFACT_DIR=/workspace/sarv-quote/docs/assets/ui-copy/checks/copy-final2/migration SARV_M5_COMPAT_BINARY=/workspace/sarv-evidence/bin/sarv-M5-candidate12 cargo test --offline --locked --test purchase_return_migration actual_m5_binary_refuses_schema7_without_modifying_committed_row -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 0.3992659600044135,
+      "log_sha256": "2058a2f7be60ebb374fe7a1ed62b5b1315ce3618d03035b072437c3912eb6d1d"
+    },
+    {
+      "label": "gtk-lifecycle",
+      "command": "python3 /tmp/sarv-M5-gtk-gate.py /workspace/sarv-quote/docs/assets/ui-copy/checks/copy-final2/gtk-owned.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.31678940600249916,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "release",
+      "command": "cargo build --release --offline --locked",
+      "exit_code": 0,
+      "elapsed_seconds": 57.45770771699608,
+      "log_sha256": "0b05b3d6508fbc4a5faaa1cf454deb2e326c836adb0d381c4d0578c4b225efb7"
+    }
+  ],
+  "passed": true,
+  "verification_scope": "Compiled Rust test sources; native/Python observers and their helpers are frozen separately at each actual execution and final source snapshot.",
+  "binary_path": "/workspace/sarv-evidence/bin/sarv-M6-copy-final2",
+  "binary_sha256": "cb813399348a0bb2bf8a55a0e2c0162b0292b2063dc8bbf7acc8badc6c9b4f95",
+  "binary_bytes": 13823464,
+  "ordinary_test_results": {
+    "passed": 240,
+    "failed": 0,
+    "ignored": 5,
+    "suite_summaries": 38
+  },
+  "source_stable": true
+}

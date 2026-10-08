@@ -166,9 +166,9 @@ def main():
             time.sleep(.4)
             subprocess.run(['/usr/bin/import', '-display', display, '-window', str(window), str(profile / f'keyboard-accounting-{width}x{height}.png')], check=True)
             check(f'accounting accepts {width}x{height}', True)
-        history = native.wait_for(lambda: access.find('تاریخچه', ['page tab']), label='narrow native history tab')
+        history = native.wait_for(lambda: access.find('سوابق تغییرات', ['page tab']), label='narrow native history tab')
         tabs = [native.wait_for(lambda title=title: access.find(title, ['page tab']), label=f'narrow tab {title}')
-                for title in ['شرکت و دوره', 'کدینگ', 'اسناد', 'تراز آزمایشی', 'تاریخچه']]
+                for title in ['شرکت و دوره', 'کدینگ', 'اسناد', 'تراز آزمایشی', 'سوابق تغییرات']]
         # All labels must have positive native extents within the same 650px
         # page; the span check catches horizontally clipped destinations.
         bounds = [access.rect(tab) for tab in tabs]
@@ -179,16 +179,16 @@ def main():
             x11.key('Tab'); time.sleep(.03)
         check('real Tab reaches history at650px', access.focused(history))
         x11.key('space'); time.sleep(.3)
-        check('real Space activates narrow history', access.find('تاریخچهٔ محلی برنامه؛ در برابر مالک فایل‌ها مصون از دست‌کاری نیست. هویت فعلی: تک‌کاربر محلی.', ['label']) is not None and any(row['name'] == 'تاریخچه' and access.focused(row) for row in access.tree()))
+        check('real Space activates narrow history', access.find('سوابق تغییرات محلی برنامه؛ در برابر مالک فایل‌ها مصون از دست‌کاری نیست. هویت فعلی: تک‌کاربر محلی.', ['label']) is not None and any(row['name'] == 'سوابق تغییرات' and access.focused(row) for row in access.tree()))
         subprocess.run(['/usr/bin/import', '-display', display, '-window', str(window), str(profile / 'keyboard-accounting-history-650x760.png')], check=True)
         check('keyboard and narrow layouts preserve accounting state', state(profile) == baseline)
         # The same disposable profile also proves document and due dates use
         # the shared native calendar field without changing any accounting data.
         x11.resize(window, 1280, 900); time.sleep(.2)
         x11.key('1', 'Alt_L'); time.sleep(.3)
-        details = native.wait_for(lambda: access.find('جزئیات پیشنهاد • تاریخ، اعتبار و مرجع'), label='quote details expander')
+        details = native.wait_for(lambda: access.find('جزئیات پیش‌فاکتور • تاریخ، اعتبار و مرجع'), label='quote details expander')
         check('native quote details expand', access.click(details)); time.sleep(.3)
-        quote_date = native.wait_for(lambda: access.find('تاریخ پیشنهاد', ['text']), label='quote document date')
+        quote_date = native.wait_for(lambda: access.find('تاریخ پیش‌فاکتور', ['text']), label='quote document date')
         validity = native.wait_for(lambda: access.find('اعتبار تا • اختیاری', ['text']), label='quote validity date')
         def tab_to(control, title):
             for _ in range(120):

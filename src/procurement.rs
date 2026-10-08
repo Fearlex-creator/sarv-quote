@@ -457,7 +457,7 @@ impl AccountingState {
                         a.company_id == company
                             && (a.entity_id == *id || journal == Some(a.entity_id.as_str()))
                     })
-                    .ok_or_else(|| anyhow::anyhow!("حرکت انبار بدون تاریخچهٔ معتبر است"))?;
+                    .ok_or_else(|| anyhow::anyhow!("حرکت انبار بدون سوابق تغییرات معتبر است"))?;
                 Ok((position, c, moves))
             })
             .collect::<Result<Vec<_>>>()?;
@@ -535,15 +535,15 @@ impl AccountingState {
                     for x in &b.lines {
                         let receipt = receipts
                             .get_mut(&x.receipt_line_id)
-                            .ok_or_else(|| anyhow::anyhow!("رسید صورتحساب پیدا نشد"))?;
+                            .ok_or_else(|| anyhow::anyhow!("رسید فاکتور پیدا نشد"))?;
                         receipt.quantity_thousandths = receipt
                             .quantity_thousandths
                             .checked_sub(x.quantity_thousandths)
-                            .ok_or_else(|| anyhow::anyhow!("سرریز مقدار صورتحساب"))?;
+                            .ok_or_else(|| anyhow::anyhow!("سرریز مقدار فاکتور"))?;
                         receipt.value = receipt.value.checked_sub(x.value)?;
                         ensure!(
                             receipt.quantity_thousandths >= 0 && receipt.value.rials() >= 0,
-                            "تخصیص صورتحساب از رسید بیشتر است"
+                            "تخصیص فاکتور از رسید بیشتر است"
                         );
                     }
                 }
@@ -618,11 +618,11 @@ impl AccountingState {
                 let payable = out
                     .iter_mut()
                     .find(|p| &p.id == bill_id)
-                    .ok_or_else(|| anyhow::anyhow!("ماندهٔ صورتحساب برگشت پیدا نشد"))?;
+                    .ok_or_else(|| anyhow::anyhow!("ماندهٔ فاکتور برگشت پیدا نشد"))?;
                 payable.remaining = payable.remaining.checked_sub(v.total)?;
                 ensure!(
                     payable.remaining.rials() >= 0,
-                    "اعتبار برگشت از ماندهٔ صورتحساب بیشتر است"
+                    "اعتبار برگشت از ماندهٔ فاکتور بیشتر است"
                 );
             }
         }
@@ -688,11 +688,11 @@ impl AccountingState {
     ) -> Result<PurchaseReturnableLine> {
         let source = self.procurement.records.iter().find(|r| r.command.context().company_id == company
             && matches!(&r.data, ProcurementData::Bill(v) if v.lines.iter().any(|l| l.id == line)))
-            .ok_or_else(|| anyhow::anyhow!("ردیف صورتحساب عملیاتی پیدا نشد"))?;
+            .ok_or_else(|| anyhow::anyhow!("ردیف فاکتور عملیاتی پیدا نشد"))?;
         let (ProcurementData::Bill(b), ProcurementCommand::Bill(c)) =
             (&source.data, &source.command)
         else {
-            anyhow::bail!("منبع صورتحساب نامعتبر است")
+            anyhow::bail!("منبع فاکتور نامعتبر است")
         };
         let orig = b.lines.iter().find(|l| l.id == line).unwrap();
         let mut out = self.procurement_receipt_returnable(company, &orig.receipt_line_id)?;
@@ -731,7 +731,7 @@ impl AccountingState {
             out.remaining_quantity_thousandths >= 0
                 && out.remaining_value.rials() >= 0
                 && (out.remaining_quantity_thousandths != 0 || out.remaining_value == Money::ZERO),
-            "برگشت از ردیف صورتحساب بیشتر است"
+            "برگشت از ردیف فاکتور بیشتر است"
         );
         out.date = self
             .receipt_allocation_date(company, &orig.receipt_line_id, &c.context.date)
@@ -1232,13 +1232,13 @@ impl AccountingState {
                 civil_date(&x.due_date)?;
                 ensure!(
                     x.due_date >= x.document_date,
-                    "سررسید پیش از تاریخ صورتحساب است"
+                    "سررسید پیش از تاریخ فاکتور است"
                 );
                 supplier(&x.supplier_id)?;
                 money(x.supplied_total)?;
                 ensure!(
                     (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف صورتحساب نامعتبر است"
+                    "تعداد ردیف فاکتور نامعتبر است"
                 );
                 ensure!(
                     !self
@@ -1250,9 +1250,9 @@ impl AccountingState {
                             && r.party_id == x.supplier_id
                             && normalize(&r.document_reference) == normalize(&x.reference)
                             && r.document_date == x.document_date),
-                    "این صورتحساب پرداختنی قبلاً در افتتاحیه منظور شده است"
+                    "این فاکتور پرداختنی قبلاً در افتتاحیه منظور شده است"
                 );
-                ensure!(!self.procurement.records.iter().any(|r|matches!(&r.command,ProcurementCommand::Bill(b) if b.context.company_id==c.company_id&&b.supplier_id==x.supplier_id&&normalize(&b.reference)==normalize(&x.reference)&&b.document_date==x.document_date)),"مرجع صورتحساب این تأمین‌کننده قبلاً ثبت شده است؛ بازبینی مستقل لازم است");
+                ensure!(!self.procurement.records.iter().any(|r|matches!(&r.command,ProcurementCommand::Bill(b) if b.context.company_id==c.company_id&&b.supplier_id==x.supplier_id&&normalize(&b.reference)==normalize(&x.reference)&&b.document_date==x.document_date)),"مرجع فاکتور این تأمین‌کننده قبلاً ثبت شده است؛ بازبینی مستقل لازم است");
                 let receipts = self.procurement_receipts(&c.company_id, "9999-12-31")?;
                 let mut lines = Vec::new();
                 let mut source_ids = HashSet::new();
@@ -1261,15 +1261,15 @@ impl AccountingState {
                     money(l.supplied_value)?;
                     ensure!(
                         source_ids.insert(&l.receipt_line_id),
-                        "رسید در یک صورتحساب تکراری است"
+                        "رسید در یک فاکتور تکراری است"
                     );
                     let r = receipts
                         .iter()
                         .find(|r| r.id == l.receipt_line_id)
-                        .ok_or_else(|| anyhow::anyhow!("رسید صورتحساب پیدا نشد"))?;
+                        .ok_or_else(|| anyhow::anyhow!("رسید فاکتور پیدا نشد"))?;
                     ensure!(
                         r.supplier_id == x.supplier_id && c.date >= r.date,
-                        "شخص یا تاریخ صورتحساب با رسید سازگار نیست"
+                        "شخص یا تاریخ فاکتور با رسید سازگار نیست"
                     );
                     let resources_item = resources
                         .items
@@ -1279,7 +1279,7 @@ impl AccountingState {
                     ensure!(
                         l.quantity_thousandths > 0
                             && (!resources_item.indivisible || l.quantity_thousandths % 1000 == 0),
-                        "مقدار صورتحساب واحد پایه نامعتبر است"
+                        "مقدار فاکتور واحد پایه نامعتبر است"
                     );
                     ensure!(
                         c.date.as_str()
@@ -1288,7 +1288,7 @@ impl AccountingState {
                                 &l.receipt_line_id,
                                 &r.date
                             ),
-                        "تاریخ صورتحساب پیش از آخرین تخصیص یا برگشت همین رسید است"
+                        "تاریخ فاکتور پیش از آخرین تخصیص یا برگشت همین رسید است"
                     );
                     // Bills and unbilled returns consume one original receipt cursor.
                     let value = allocation(
@@ -1300,7 +1300,7 @@ impl AccountingState {
                     )?;
                     ensure!(
                         value == l.supplied_value,
-                        "اختلاف بهای صورتحساب: انتظار {} ریال، منبع {} ریال؛ اصلاح بهای دیرهنگام پشتیبانی نمی‌شود",
+                        "اختلاف بهای فاکتور: انتظار {} ریال، منبع {} ریال؛ اصلاح بهای دیرهنگام پشتیبانی نمی‌شود",
                         value.rials(),
                         l.supplied_value.rials()
                     );
@@ -1312,7 +1312,7 @@ impl AccountingState {
                     });
                 }
                 let total = sum(lines.iter().map(|l| l.value))?;
-                ensure!(total == x.supplied_total, "جمع مستقل صورتحساب برابر نیست");
+                ensure!(total == x.supplied_total, "جمع مستقل فاکتور برابر نیست");
                 if total.rials() > 0 {
                     journal_lines = pair(
                         setup,
@@ -1345,7 +1345,7 @@ impl AccountingState {
                     x.lines.iter().all(|l| l.bill_line_id.is_some() == billed)
                         && x.credit_id.is_some() == billed
                         && x.credit_reference.is_some() == billed,
-                    "برگشت صورتحساب‌شده و صورتحساب‌نشده قابل ترکیب نیست؛ شناسه و مرجع اعتبار الزامی است"
+                    "برگشت فاکتور‌شده و فاکتور‌نشده قابل ترکیب نیست؛ شناسه و مرجع اعتبار الزامی است"
                 );
                 claim(&x.return_id, &mut ids)?;
                 if let Some(credit) = &x.credit_id {
@@ -1386,12 +1386,12 @@ impl AccountingState {
                         let e = self.procurement_bill_returnable(&c.company_id, bill_line)?;
                         ensure!(
                             e.receipt_line_id == l.receipt_line_id,
-                            "ردیف صورتحساب به این رسید تعلق ندارد"
+                            "ردیف فاکتور به این رسید تعلق ندارد"
                         );
                         if let Some(prior) = &bill_id {
                             ensure!(
                                 e.bill_id.as_ref() == Some(prior),
-                                "برگشت باید به یک صورتحساب تعلق داشته باشد"
+                                "برگشت باید به یک فاکتور تعلق داشته باشد"
                             );
                         }
                         bill_id = e.bill_id.clone();
@@ -1400,7 +1400,7 @@ impl AccountingState {
                         if let Some(prior) = &receipt_id {
                             ensure!(
                                 *prior == source.id,
-                                "برگشت صورتحساب‌نشده باید به یک رسید تعلق داشته باشد"
+                                "برگشت فاکتور‌نشده باید به یک رسید تعلق داشته باشد"
                             );
                         }
                         receipt_id = Some(source.id.clone());
@@ -1475,10 +1475,10 @@ impl AccountingState {
                     let payable = payables
                         .iter()
                         .find(|p| &p.id == bill)
-                        .ok_or_else(|| anyhow::anyhow!("ماندهٔ پرداختنی صورتحساب پیدا نشد"))?;
+                        .ok_or_else(|| anyhow::anyhow!("ماندهٔ پرداختنی فاکتور پیدا نشد"))?;
                     ensure!(
                         total.rials() <= payable.remaining.rials(),
-                        "اعتبار از ماندهٔ پرداخت‌نشدهٔ صورتحساب بیشتر است"
+                        "اعتبار از ماندهٔ پرداخت‌نشدهٔ فاکتور بیشتر است"
                     );
                 }
                 if total != Money::ZERO {
@@ -1751,13 +1751,13 @@ impl AccountingState {
             !self.operational_known_ids().contains(&record.id)
                 && !data_ids(&record.data).contains(&record.id.as_str())
                 && !record.movements.iter().any(|m| m.id == record.id),
-            "شناسهٔ تاریخچهٔ خرید با شناسهٔ منبع تداخل دارد"
+            "شناسهٔ سوابق تغییرات خرید با شناسهٔ منبع تداخل دارد"
         );
         let before = self.procurement.records.len();
         let out = self.post_procurement_command(record.command.clone())?;
         ensure!(
             self.procurement.records.len() == before + 1,
-            "تاریخچهٔ رویداد خرید تکراری است"
+            "سوابق تغییرات رویداد خرید تکراری است"
         );
         let created = self.procurement.records.last_mut().unwrap();
         created.id = record.id.clone();
@@ -1766,7 +1766,7 @@ impl AccountingState {
         expected.journal_id = out.journal_id.clone();
         ensure!(
             *created == expected && record.journal_id.is_some() == out.journal_id.is_some(),
-            "محتوا یا محاسبات تاریخچهٔ خرید نامعتبر است"
+            "محتوا یا محاسبات سوابق تغییرات خرید نامعتبر است"
         );
         if out.journal_id.is_none() {
             self.audit.last_mut().unwrap().entity_id = record.id.clone();

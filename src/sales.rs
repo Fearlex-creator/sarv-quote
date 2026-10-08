@@ -507,7 +507,7 @@ impl AccountingState {
     pub fn sales_invoice_returnable(&self, id: &str) -> Result<Vec<SaleReturnRemainder>> {
         let r = self.sales_document(id)?;
         let SalesData::Fulfill(f) = &r.data else {
-            anyhow::bail!("منبع برگشت تحویل و صورتحساب نیست")
+            anyhow::bail!("منبع برگشت تحویل و فاکتور نیست")
         };
         let mut out = Vec::new();
         for l in &f.lines {
@@ -897,7 +897,7 @@ impl AccountingState {
                 civil_date(&x.due_date)?;
                 ensure!(
                     x.due_date >= x.document_date,
-                    "سررسید پیش از تاریخ صورتحساب است"
+                    "سررسید پیش از تاریخ فاکتور است"
                 );
                 money(x.supplied_total)?;
                 ensure!(
@@ -928,9 +928,9 @@ impl AccountingState {
                             && r.party_id == order.customer.id
                             && normalize(&r.document_reference) == normalize(&x.invoice_reference)
                             && r.document_date == x.document_date),
-                    "این صورتحساب قبلاً در افتتاحیه منظور شده است"
+                    "این فاکتور قبلاً در افتتاحیه منظور شده است"
                 );
-                ensure!(!self.sales.records.iter().any(|r|matches!((&r.command,&r.data),(SalesCommand::Fulfill(p),SalesData::Fulfill(f))if p.context.company_id==c.company_id&&f.customer.id==order.customer.id&&p.document_date==x.document_date&&(normalize(&p.invoice_reference)==normalize(&x.invoice_reference)||normalize(&p.delivery_reference)==normalize(&x.delivery_reference)))),"مرجع تحویل یا صورتحساب مشتری تکراری است");
+                ensure!(!self.sales.records.iter().any(|r|matches!((&r.command,&r.data),(SalesCommand::Fulfill(p),SalesData::Fulfill(f))if p.context.company_id==c.company_id&&f.customer.id==order.customer.id&&p.document_date==x.document_date&&(normalize(&p.invoice_reference)==normalize(&x.invoice_reference)||normalize(&p.delivery_reference)==normalize(&x.delivery_reference)))),"مرجع تحویل یا فاکتور مشتری تکراری است");
                 let remaining = self.sales_order_remaining(&x.order_id)?;
                 let mut source_ids = HashSet::new();
                 let mut pools = self.operational_stock_pools(&c.company_id, "9999-12-31")?;
@@ -1017,7 +1017,7 @@ impl AccountingState {
                 let cost = sum(lines.iter().map(|l| l.cost))?;
                 ensure!(
                     total == x.supplied_total,
-                    "جمع مستقل صورتحساب با تخصیص سفارش برابر نیست"
+                    "جمع مستقل فاکتور با تخصیص سفارش برابر نیست"
                 );
                 journal_lines.extend(pair(
                     setup,
@@ -1073,7 +1073,7 @@ impl AccountingState {
                     "شرکت یا تاریخ برگشت با تحویل سازگار نیست"
                 );
                 let SalesData::Fulfill(f) = &record.data else {
-                    anyhow::bail!("منبع برگشت تحویل و صورتحساب نیست")
+                    anyhow::bail!("منبع برگشت تحویل و فاکتور نیست")
                 };
                 ensure!(!self.sales.records.iter().any(|r|matches!((&r.command,&r.data),(SalesCommand::Return(p),SalesData::Return(v))if p.context.company_id==c.company_id&&v.customer_id==f.customer.id&&p.document_date==x.document_date&&(normalize(&p.return_reference)==normalize(&x.return_reference)||normalize(&p.credit_reference)==normalize(&x.credit_reference)))),"مرجع برگشت یا اعتبار مشتری تکراری است");
                 let remaining = self.sales_invoice_returnable(&x.fulfillment_id)?;
@@ -1365,13 +1365,13 @@ impl AccountingState {
             !self.operational_known_ids().contains(&record.id)
                 && !data_ids(&record.data).contains(&record.id.as_str())
                 && !record.movements.iter().any(|m| m.id == record.id),
-            "شناسهٔ تاریخچهٔ فروش با منبع تداخل دارد"
+            "شناسهٔ سوابق تغییرات فروش با منبع تداخل دارد"
         );
         let before = self.sales.records.len();
         let out = self.post_sales_command(record.command.clone())?;
         ensure!(
             self.sales.records.len() == before + 1,
-            "تاریخچهٔ رویداد فروش تکراری است"
+            "سوابق تغییرات رویداد فروش تکراری است"
         );
         let created = self.sales.records.last_mut().unwrap();
         created.id = record.id.clone();
@@ -1380,7 +1380,7 @@ impl AccountingState {
         expected.journal_id = out.journal_id.clone();
         ensure!(
             *created == expected && record.journal_id.is_some() == out.journal_id.is_some(),
-            "محتوا یا محاسبات تاریخچهٔ فروش نامعتبر است"
+            "محتوا یا محاسبات سوابق تغییرات فروش نامعتبر است"
         );
         if out.journal_id.is_none() {
             self.audit.last_mut().unwrap().entity_id = record.id.clone();

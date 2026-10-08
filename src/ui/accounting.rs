@@ -467,7 +467,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     root.set_widget_name("accounting-page");
     root.append(&workspace::page_header(
         "دفتر حسابداری",
-        Some("دفتر کل و کنترل مانده‌ها • ریال پایه • تک‌کاربر محلی"),
+        Some("اسناد حسابداری، کدینگ و ماندهٔ حساب‌ها"),
     ));
     let top = actions();
     let companies = choice("شرکت فعال", &[]);
@@ -494,11 +494,11 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     switcher.set_widget_name("accounting-tabs");
     accessible_name(&switcher, "بخش‌های دفتر حسابداری");
     for (name, title) in [
-        ("setup", "شرکت و دوره"),
-        ("chart", "کدینگ"),
-        ("journals", "اسناد"),
+        ("setup", "شرکت و سال مالی"),
+        ("chart", "کدینگ حساب‌ها"),
+        ("journals", "اسناد حسابداری"),
         ("trial", "تراز آزمایشی"),
-        ("audit", "تاریخچه"),
+        ("audit", "سوابق تغییرات"),
     ] {
         let tab = gtk::ToggleButton::builder()
             .label(title)
@@ -550,7 +550,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let audit_search = gtk::SearchEntry::new();
     audit_search.set_placeholder_text(Some("عملیات، دلیل، شناسه یا تاریخ…"));
     audit_search.set_widget_name("accounting-audit-search");
-    accessible_name(&audit_search, "جست‌وجوی تاریخچه حسابداری");
+    accessible_name(&audit_search, "جست‌وجوی سوابق تغییرات حسابداری");
     let audit_shell = column();
     audit_shell.append(&audit_search);
     audit_shell.append(&scroll(&audit));
@@ -582,7 +582,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         ("chart", "کدینگ", chart_shell.upcast()),
         ("journals", "اسناد", journal_shell.upcast()),
         ("trial", "تراز آزمایشی", report.upcast()),
-        ("audit", "تاریخچه", audit_shell.upcast()),
+        ("audit", "سوابق تغییرات", audit_shell.upcast()),
     ] {
         tabs.add_titled(&widget, Some(name), title);
     }
@@ -819,7 +819,7 @@ impl Page {
         self.setup
             .append(&super::core::build(&ui, self.company_id(), run));
         let Some(company_id) = self.company_id() else {
-            self.setup.append(&empty_state("دفتر شرکت هنوز ساخته نشده", "شرکت تازه بسازید، مرزهای سال مالی و کدینگ خود را مشخص کنید، سپس سند متوازن ثبت کنید. پیشنهادهای قیمت به دفتر کل ارسال نمی‌شوند."));
+            self.setup.append(&empty_state("دفتر شرکت هنوز ساخته نشده", "شرکت تازه بسازید، مرزهای سال مالی و کدینگ خود را مشخص کنید، سپس سند متوازن ثبت کنید. پیش‌فاکتورها به دفتر کل ارسال نمی‌شوند."));
             return;
         };
         let state = ui.store.borrow().state.accounting.clone();
@@ -1040,7 +1040,7 @@ impl Page {
                     .contains(&normalize(&self.audit_search.text()))
             })
             .collect::<Vec<_>>();
-        self.audit.append(&label("تاریخچهٔ محلی برنامه؛ در برابر مالک فایل‌ها مصون از دست‌کاری نیست. هویت فعلی: تک‌کاربر محلی."));
+        self.audit.append(&label("سوابق تغییرات محلی برنامه؛ در برابر مالک فایل‌ها مصون از دست‌کاری نیست. هویت فعلی: تک‌کاربر محلی."));
         if events.is_empty() {
             self.audit.append(&label("هنوز عملیاتی ثبت نشده است."));
         }
@@ -1181,7 +1181,7 @@ impl Page {
             form.append(&field(caption, &widget));
         }
         form.append(&postable);
-        form.append(&label("نوع و ماهیت مستقل و صریح‌اند. این مرحله فقط حساب عادی دارد؛ حساب کنترل زیرسیستم‌های آینده قابل ثبت دستی نیست."));
+        form.append(&label("نوع و ماهیت حساب را انتخاب کنید. ثبت دستی در حساب‌های کنترل خرید، فروش و انبار مجاز نیست."));
         let weak = Rc::downgrade(self);
         save.connect_clicked(move |save| {
             let Some(p) = weak.upgrade() else {
@@ -1260,13 +1260,13 @@ impl Page {
                 &dialog,
                 &error,
                 save,
-                "عملیات با دلیل در تاریخچه ثبت شد",
+                "عملیات با دلیل در سوابق تغییرات ثبت شد",
                 move |state| command(state, &reason),
             );
         });
     }
     fn lock_dialog(self: &Rc<Self>, id: String, locked: bool) {
-        self.reason_dialog(if locked { "قفل دوره" } else { "بازگشایی دوره" }, if locked { "تمام ثبت‌ها و ابطال‌ها در این دوره مسدود می‌شوند. این عملیات انتقال سود و بستن سال نیست." } else { "بازگشایی امکان ثبت بعدی را فراهم می‌کند. دلیل و هویت محلی در تاریخچه باقی می‌ماند؛ مجوز چندکاربره هنوز وجود ندارد." }, move |state, reason| state.set_period_lock(&id, locked, ACTOR, reason));
+        self.reason_dialog(if locked { "قفل دوره" } else { "بازگشایی دوره" }, if locked { "تمام ثبت‌ها و ابطال‌ها در این دوره مسدود می‌شوند. این عملیات انتقال سود و بستن سال نیست." } else { "بازگشایی امکان ثبت بعدی را فراهم می‌کند. دلیل و هویت محلی در سوابق تغییرات باقی می‌ماند؛ مجوز چندکاربره هنوز وجود ندارد." }, move |state, reason| state.set_period_lock(&id, locked, ACTOR, reason));
     }
     fn archive_dialog(self: &Rc<Self>, id: String) {
         self.reason_dialog(
@@ -1391,8 +1391,8 @@ impl Page {
             let reversed = state.journals.iter().any(|j| matches!(&j.kind, JournalKind::Reversal {journal_id} if journal_id == &journal.id));
             let protected_source = state.has_typed_journal_source(&journal.id);
             let kind = match (protected_source, journal.event.as_str()) {
-                (true, "procurement.receive.v1") => "رسید کالا • موجودی و کالای صورتحساب‌نشده",
-                (true, "procurement.bill.v1") => "صورتحساب تأمین‌کننده • تطبیق رسید",
+                (true, "procurement.receive.v1") => "رسید کالا • موجودی و کالای بدون فاکتور خرید",
+                (true, "procurement.bill.v1") => "فاکتور تأمین‌کننده • تطبیق رسید",
                 _ => match &journal.kind {
                     JournalKind::Opening => "افتتاحیهٔ دفتر کل",
                     JournalKind::Manual => "سند دستی",
@@ -1699,7 +1699,7 @@ impl Page {
                     financial_date(&ui, &balance.as_of),
                     unit_name
                 )));
-                self.trial.append(&label("دفتر کل دستی • فقط اسناد ثبت‌شده تا تاریخ مالی انتخاب‌شده؛ شامل سند معکوس • ماندهٔ بدهکار/بستانکار هر حساب. سیاست شناسایی و زیرسیستم‌ها پیکربندی نشده‌اند."));
+                self.trial.append(&label("ماندهٔ بدهکار و بستانکار حساب‌ها تا تاریخ انتخاب‌شده؛ شامل اسناد حسابداری، خرید و فروش و اسناد معکوس."));
                 let totals = card();
                 totals.append(&label(&format!(
                     "جمع ماندهٔ بدهکار: {} {}\nجمع ماندهٔ بستانکار: {} {}",

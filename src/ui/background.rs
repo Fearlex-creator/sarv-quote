@@ -899,7 +899,7 @@ mod tests {
         quote.issuer_name = "پخش نمونهٔ سرو".into();
         quote.issuer_phone = "02100000000".into();
         quote.issuer_address = "تهران • نشانی نمایشی".into();
-        quote.header = "سربرگ نمایشی • فقط پیشنهاد قیمت".into();
+        quote.header = "سربرگ نمایشی • فقط پیش‌فاکتور".into();
         quote.terms = "اعتبار قراردادی چهارده روز؛ بدون رزرو موجودی.".into();
         quote.footer = "قیمت‌ها نیازمند تأیید منبع هستند.".into();
         quote.number = "DEMO-42".into();

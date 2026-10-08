@@ -256,8 +256,8 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
     for (title, value) in [
         ("نام کسب‌وکار", "پخش نمونهٔ سرو"),
         ("تلفن کسب‌وکار", "۰۲۱۰۰۰۰۰۰۰۰"),
-        ("پیشوند شمارهٔ پیشنهاد", "DEMO-"),
-        ("شمارهٔ بعدی (پس از نخستین تأیید افزایش می‌یابد)", "۴۲"),
+        ("پیشوند شماره", "DEMO-"),
+        ("شمارهٔ بعدی", "۴۲"),
     ] {
         rows.iter()
             .find(|r| r.title() == title)
@@ -266,10 +266,10 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
     }
     for (title, value) in [
         ("نشانی", "تهران • نشانی نمایشی"),
-        ("متن سربرگ", "سربرگ نمایشی • فقط پیشنهاد قیمت"),
+        ("متن سربرگ", "سربرگ نمایشی • فقط پیش‌فاکتور"),
         ("متن پایانی", "قیمت‌ها نیازمند تأیید منبع هستند."),
         (
-            "شرایط پیش‌فرض پیشنهاد تازه",
+            "شرایط پیش‌فاکتور",
             "اعتبار قراردادی چهارده روز؛ بدون رزرو موجودی.",
         ),
     ] {
@@ -295,7 +295,7 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
     currency.set_selected(1);
     let discount = rows
         .iter()
-        .find(|r| r.title() == "تخفیف پیش‌فرض در واحد مبلغ انتخاب‌شده")
+        .find(|r| r.title() == "تخفیف پیش‌فرض")
         .context("discount setting missing")?;
     discount.set_text("۱۰۰۰");
     currency.set_selected(0);
@@ -303,21 +303,20 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
         Unit::Toman.nonnegative(&discount.text())? == 1000,
         "settings currency changed canonical discount"
     );
-    for (title, value) in [
-        ("اعتبار پیش‌فرض (روز)", 14.0),
-        ("نرخ افزودهٔ قراردادی (یک‌صدم درصد؛ ۱۰۰ = ۱٪)", 500.0),
-    ] {
-        descendants::<adw::SpinRow>(&page)
-            .iter()
-            .find(|r| r.title() == title)
-            .context("spin setting missing")?
-            .set_value(value);
-    }
+    descendants::<adw::SpinRow>(&page)
+        .iter()
+        .find(|r| r.title() == "مدت اعتبار (روز)")
+        .context("validity setting missing")?
+        .set_value(14.0);
+    rows.iter()
+        .find(|r| r.title() == "نرخ افزودهٔ پیش‌فاکتور (%)")
+        .context("rate setting missing")?
+        .set_text("5.00");
     for (title, n) in [
-        ("ظاهر", 1),
-        ("تراکم جدول‌ها", 1),
+        ("تم برنامه", 1),
+        ("تراکم جدول", 1),
         ("نمایش ارقام", 1),
-        ("نمایش تاریخ", 1),
+        ("قالب تاریخ", 1),
     ] {
         combos
             .iter()
@@ -890,7 +889,7 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
                         &u2.window,
                         &directory(&u2).join("native-after-quotation.png"),
                     )
-                    .map(|()| "پیشنهاد ثبت شد"),
+                    .map(|()| "پیش‌فاکتور ثبت شد"),
                 );
                 u2.preview_document();
             });

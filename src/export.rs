@@ -118,7 +118,7 @@ pub fn csv(q: &Quote, path: &Path) -> Result<()> {
 }
 pub fn summary(q: &Quote) -> String {
     format!(
-        "پیشنهاد قیمت • نسخهٔ {}\n{}\nمشتری: {}  |  {}\nفهرست: {}\nتأیید: {}\nجمع نهایی: {}\nتخفیف: {}\nفقط پیشنهاد قیمت — بدون ثبت حسابداری یا تعهد موجودی",
+        "پیش‌فاکتور • نسخهٔ {}\n{}\nمشتری: {}  |  {}\nفهرست: {}\nتأیید: {}\nجمع نهایی: {}\nتخفیف: {}\nفقط پیش‌فاکتور — بدون ثبت حسابداری یا تعهد موجودی",
         document_digits(q, q.version),
         number(q),
         q.customer,
@@ -319,7 +319,7 @@ fn validate_amounts(q: &Quote) -> Result<i64> {
 fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f64)> {
     let mut page = Page::default();
     let mut title = label(
-        "پیشنهاد قیمت",
+        "پیش‌فاکتور",
         300.0,
         30.0,
         259.0,
@@ -329,7 +329,7 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
     add(&mut page, title);
     let mut brand = label(
         if q.issuer_name.is_empty() {
-            "سرو / پیشنهاد قیمت"
+            "سرو / پیش‌فاکتور"
         } else {
             &q.issuer_name
         },
@@ -421,7 +421,7 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
     }
     let metadata = [
         (
-            "تاریخ پیشنهاد",
+            "تاریخ پیش‌فاکتور",
             if q.quote_date.is_empty() {
                 "ثبت نشده".into()
             } else {
@@ -455,9 +455,9 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
         ("فهرست قیمت", q.catalog_name.clone()),
         (
             if q.number.is_empty() {
-                "شناسهٔ پیشنهاد"
+                "شناسهٔ پیش‌فاکتور"
             } else {
-                "شمارهٔ پیشنهاد"
+                "شمارهٔ پیش‌فاکتور"
             },
             number(q),
         ),
@@ -746,7 +746,7 @@ fn document(q: &Quote) -> Result<Document> {
         if y + 60.0 > BOTTOM {
             y = next_page(&mut doc, q, &cr, false)?;
         }
-        paragraph(&mut doc, q, &cr, "شرایط پیشنهاد", &mut y, 9.5)?;
+        paragraph(&mut doc, q, &cr, "شرایط پیش‌فاکتور", &mut y, 9.5)?;
         paragraph(&mut doc, q, &cr, &q.terms, &mut y, 9.0)?;
         y += 10.0;
     }
@@ -755,7 +755,7 @@ fn document(q: &Quote) -> Result<Document> {
             &mut doc,
             q,
             &cr,
-            "نرخ مالیات صرفاً تنظیم کاربر است؛ این پیشنهاد، تأیید انطباق مالیاتی یا صورتحساب قانونی نیست.",
+            "نرخ مالیات صرفاً تنظیم کاربر است؛ این پیش‌فاکتور، تأیید انطباق مالیاتی یا فاکتور قانونی نیست.",
             &mut y,
             7.5,
         )?;
@@ -777,7 +777,7 @@ fn document(q: &Quote) -> Result<Document> {
         &mut doc,
         q,
         &cr,
-        "فقط پیشنهاد قیمت؛ بدون ثبت سند حسابداری، تعهد موجودی یا وضعیت ارسال به مشتری.",
+        "فقط پیش‌فاکتور؛ بدون ثبت سند حسابداری، تعهد موجودی یا وضعیت ارسال به مشتری.",
         &mut y,
         7.5,
     )?;
@@ -787,13 +787,13 @@ fn document(q: &Quote) -> Result<Document> {
         let footer_text = if short_footer {
             q.footer.clone()
         } else if !q.issuer_name.is_empty() {
-            format!("{} · پیشنهاد قیمت", q.issuer_name)
+            format!("{} · پیش‌فاکتور", q.issuer_name)
         } else {
-            "سرو · پیشنهاد قیمت · دادهٔ محلی".into()
+            "سرو · پیش‌فاکتور · دادهٔ محلی".into()
         };
         let mut footer = label(footer_text, 260.0, 803.0, 299.0, 7.0);
         if height(&cr, &footer) > 25.0 {
-            footer.value = "پیشنهاد قیمت · دادهٔ محلی".into();
+            footer.value = "پیش‌فاکتور · دادهٔ محلی".into();
         }
         footer.color = MUTED;
         add(page, footer);

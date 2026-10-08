@@ -243,7 +243,7 @@ def discover_sales_page_cache(access, page_root, search, metadata):
     """Discover initial populated slot0 outside query/page timers; no extra query."""
     started = time.perf_counter()
     action = observe(lambda: button(access, 'ادامهٔ پیش‌نویس', page_root)
-                     or button(access, 'جزئیات و جریان کار', page_root), 'initial persistent Sales slot0')
+                     or button(access, 'مشاهدهٔ جزئیات', page_root), 'initial persistent Sales slot0')
     card = access.a.atspi_accessible_get_parent(action['node'], None)
     title = observe(lambda: helper.first_accessible(access, lambda row:
         access.string(access.a.atspi_accessible_get_role_name, row['node'], None) in ('label', 'heading')
@@ -425,8 +425,8 @@ def measure_procurement(output, opening, binary, env, start, x11, capture, searc
     access = Access(app.pid)
     window = native.wait_for(lambda: x11.find(app.pid), label='owned staged PO window')
     x11.focus(window)
-    preview = native.wait_for(lambda: button(access, 'بازبینی مقدار و اثر سند'), label='PO preview')
-    post = native.wait_for(lambda: button(access, 'تأیید و ثبت نسخهٔ بازبینی‌شده'), label='PO post')
+    preview = native.wait_for(lambda: button(access, 'پیش‌نمایش ثبت'), label='PO preview')
+    post = native.wait_for(lambda: button(access, 'ثبت نهایی'), label='PO post')
     assert not sensitive(access, post), 'Staged PO unexpectedly already verified'
     baseline = helper.payload(staged)
     phase_start = len(procurement_phases(staged))
@@ -491,7 +491,7 @@ def measure_procurement(output, opening, binary, env, start, x11, capture, searc
     # The unique heading identifies Purchases; scoped Ctrl+F reveals its entry.
     page_heading = native.wait_for(lambda: helper.first_accessible(access, lambda row:
         access.string(access.a.atspi_accessible_get_name, row['node'], None)
-        == 'خرید • سفارش، رسید جزئی و تطبیق صورتحساب'),
+        == 'خرید'),
         label='unique Purchases page anchor')
     page_root = access.a.atspi_accessible_get_parent(page_heading['node'], None)
     assert page_root, 'Purchases page container absent'
@@ -510,9 +510,9 @@ def measure_procurement(output, opening, binary, env, start, x11, capture, searc
         native.wait_for(lambda: ready(access, search, focus=True), label='current-page usable search focus')
     streams = [
         ('document', 'اسناد', [('REC-A', 'REC-A'), ('REC-B', 'REC-B')], True),
-        ('party', 'تعریف منابع', [('CU-A', 'CU-A'), ('CU-B', 'CU-B')], False),
-        ('item', 'تعریف منابع', [('SKU-A', 'ITEM-A'), ('SKU-B', 'ITEM-B')], False),
-        ('mixed_master', 'تعریف منابع', [('CU-A', 'CU-A'), ('SKU-B', 'ITEM-B')], False),
+        ('party', 'تعاریف پایه', [('CU-A', 'CU-A'), ('CU-B', 'CU-B')], False),
+        ('item', 'تعاریف پایه', [('SKU-A', 'ITEM-A'), ('SKU-B', 'ITEM-B')], False),
+        ('mixed_master', 'تعاریف پایه', [('CU-A', 'CU-A'), ('SKU-B', 'ITEM-B')], False),
     ]
     result['searches'] = {}
     for name, tab_name, pairs, actionable in streams:
@@ -555,7 +555,7 @@ def measure_procurement(output, opening, binary, env, start, x11, capture, searc
                 parent = access.a.atspi_accessible_get_parent(target['node'], None)
                 # ActionRow's title/subtitle labels may be nested; climb to its action.
                 for _ in range(4):
-                    action = button(access, 'جزئیات و خروجی', parent)
+                    action = button(access, 'جزئیات و چاپ', parent)
                     if action and ready(access, action):
                         return action
                     parent = access.a.atspi_accessible_get_parent(parent, None)
@@ -917,7 +917,7 @@ def sales_editor_root(access, control):
 
 def sales_scope(access, x11):
     x11.key('0', 'Alt_L')
-    anchor = observe(lambda: helper.find_name(access, 'فروش‌ها • سفارش، تحویل و برگشت'), 'Sales page anchor')
+    anchor = observe(lambda: helper.find_name(access, 'فروش'), 'Sales page anchor')
     root = access.a.atspi_accessible_get_parent(anchor['node'], None)
     assert root
     search = observe(lambda: helper.find_name(access, 'جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس', root), 'Sales search')
@@ -984,9 +984,9 @@ def posted_sales_search(access, x11, profile, samples, report_target=None):
                         or not ready(access, cache.nodes['status']):
                     return None
                 action = cache.nodes['action']
-                return action if query in title and 'صورتحساب' in title \
+                return action if query in title and 'فاکتور' in title \
                     and ready(access, cache.nodes['title']) \
-                    and action_name == 'جزئیات و جریان کار' and ready(access, action) else None
+                    and action_name == 'مشاهدهٔ جزئیات' and ready(access, action) else None
             return cache.predicate('posted_current_result', current)
         action = observe(result, f'correct current posted Sales invoice {query}')
         visible_ms = (time.perf_counter() - begin) * 1000

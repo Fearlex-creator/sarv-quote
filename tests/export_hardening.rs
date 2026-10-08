@@ -39,7 +39,7 @@ fn quote(count: usize) -> Quote {
         reference: "PO-2026/۱۲۳".into(),
         quote_date: "2026-10-07".into(),
         valid_until: "2026-10-14".into(),
-        notes: "یادداشت نمونه: قیمت‌ها فقط براساس فهرست تأییدشده است.\nاین سند پیشنهاد قیمت است و سند حسابداری محسوب نمی‌شود.".into(),
+        notes: "یادداشت نمونه: قیمت‌ها فقط براساس فهرست تأییدشده است.\nاین سند پیش‌فاکتور است و سند حسابداری محسوب نمی‌شود.".into(),
     }
 }
 
@@ -157,7 +157,7 @@ fn pdf_page_count(path: &Path) -> Option<usize> {
 #[test]
 fn multipage_pdf_matches_native_preview_and_long_notes_continue() {
     let mut q = quote(44);
-    q.notes = (0..70).map(|index| format!("یادداشت آزمایشی {}: متن فارسی همراه SKU-X/123 و توضیح شرایط پیشنهاد برای سنجش شکست خط و ادامهٔ متن در صفحهٔ بعد.\n", fa(index + 1))).collect();
+    q.notes = (0..70).map(|index| format!("یادداشت آزمایشی {}: متن فارسی همراه SKU-X/123 و توضیح شرایط پیش‌فاکتور برای سنجش شکست خط و ادامهٔ متن در صفحهٔ بعد.\n", fa(index + 1))).collect();
     let dir = tempfile::tempdir().unwrap();
     let pdf = dir.path().join("many.pdf");
     export::pdf(&q, &pdf).unwrap();
@@ -373,7 +373,7 @@ fn configured_quote() -> Quote {
     q.issuer_address = "نشانی نمونه ADDRESS-SNAPSHOT".into();
     q.header = "سربرگ نمونه HEADER-SNAPSHOT".into();
     q.footer = "FOOTER-SNAPSHOT · شرایط نمونه".into();
-    q.terms = "TERMS-SNAPSHOT · این شرایط صرفاً برای پیشنهاد آزمایشی است.".into();
+    q.terms = "TERMS-SNAPSHOT · این شرایط صرفاً برای پیش‌فاکتور آزمایشی است.".into();
     q.tax_basis_points = 925; // Deliberately configured test rate, no legal rate claim.
     q.tax_rial = tax_amount(q.total_rial, q.tax_basis_points).unwrap();
     q.total_rial += q.tax_rial;

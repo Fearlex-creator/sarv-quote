@@ -299,7 +299,7 @@ fn catalog_picker(
     root.set_margin_bottom(16);
     root.set_margin_start(16);
     root.set_margin_end(16);
-    root.append(&label("این انتخاب فهرست یا پیشنهاد فروش را تغییر نمی‌دهد. کالا و واحد هسته را در سطر سفارش صریحاً تطبیق دهید؛ قیمت به ازای همان واحد منبع است."));
+    root.append(&label("این انتخاب فهرست یا پیش‌فاکتور فروش را تغییر نمی‌دهد. کالا و واحد سفارش را با کالای انتخاب‌شده تطبیق دهید. قیمت برای واحد درج‌شده است."));
     let sources = choice("فهرست قیمت", "procurement-price-catalog", &catalogs);
     root.append(&field("فهرست قیمت و تاریخ منبع", &sources));
     let search = search_entry("کد، نام یا نام مستعار کالا", "procurement-price-search");
@@ -966,7 +966,7 @@ fn context(ui: &Ui, company: &str, date: &str) -> Result<ProcurementContext> {
         .setups
         .iter()
         .find(|s| s.command.company_id == company)
-        .ok_or_else(|| anyhow::anyhow!("ابتدا راه‌اندازی هسته را کامل کنید"))?;
+        .ok_or_else(|| anyhow::anyhow!("ابتدا شرکت و مانده‌های افتتاحیه را ثبت کنید"))?;
     anyhow::ensure!(
         s.core
             .openings
@@ -1002,12 +1002,12 @@ fn review(
     run: RunCommand,
     collect: Collect<ProcurementCommand>,
 ) -> Rc<Review<ProcurementCommand, ProcurementPreview>> {
-    let check = action("بازبینی مقدار و اثر سند", "procurement-preview");
+    let check = action("پیش‌نمایش ثبت", "procurement-preview");
     body.append(&check);
     let output = gtk::Box::new(gtk::Orientation::Vertical, 8);
     output.set_widget_name("procurement-preview-output");
     body.append(&output);
-    save.set_label("تأیید و ثبت نسخهٔ بازبینی‌شده");
+    save.set_label("ثبت نهایی");
     let display_ui = Rc::downgrade(ui);
     let footer_total = label("");
     footer_total.set_widget_name("procurement-post-total");
@@ -1217,9 +1217,9 @@ impl ReturnPreviewRows {
 
 fn render_preview(body: &gtk::Box, p: &ProcurementPreview, s: &Settings, state: &AccountingState) {
     body.append(&label(if p.nonfinancial {
-        "این رویداد غیرمالی است؛ سند مالی خالی ایجاد نمی‌شود."
+        "این عملیات سند حسابداری ندارد."
     } else {
-        "یک سند مالی متوازن و منبع ثابت ثبت خواهد شد."
+        "سند حسابداری زیر ثبت می‌شود."
     }));
     body.append(&label(&format!(
         "ارزش {} • {} ردیف دفتر کل • {} حرکت انبار",
@@ -1229,15 +1229,15 @@ fn render_preview(body: &gtk::Box, p: &ProcurementPreview, s: &Settings, state: 
     )));
     if let ProcurementData::Return(r) = &p.data {
         body.append(&label(if r.credit_id.is_some() {
-            "برگشت کالا ثبت می‌شود؛ بستانکار مرتبط، ماندهٔ همان صورتحساب را کاهش می‌دهد."
+            "برگشت کالا ثبت می‌شود؛ بستانکار مرتبط، ماندهٔ همان فاکتور را کاهش می‌دهد."
         } else {
-            "برگشت رسید صورتحساب‌نشده ثبت می‌شود؛ ماندهٔ کالای دریافت‌شدهٔ تطبیق‌نشده کاهش می‌یابد."
+            "برگشت رسید بدون فاکتور خرید ثبت می‌شود؛ ماندهٔ کالای دریافت‌شدهٔ تطبیق‌نشده کاهش می‌یابد."
         }));
         let total = label(&format!(
             "خروج موجودی با بهای اصلی {} • کاهش {} {}",
             display_money(s, p.total, MoneyUnit::Rial),
             if r.credit_id.is_some() {
-                "بدهی همان صورتحساب"
+                "بدهی همان فاکتور"
             } else {
                 "کالای دریافت‌شدهٔ تطبیق‌نشده"
             },
@@ -1248,7 +1248,7 @@ fn render_preview(body: &gtk::Box, p: &ProcurementPreview, s: &Settings, state: 
         let mut details = Vec::with_capacity(r.lines.len() + p.movements.len());
         for l in &r.lines {
             details.push(format!(
-                "{} • انبار اصلی {} • مقدار پایه {} • بهای اصلی {} • منبع {} • ردیف صورتحساب {}",
+                "{} • انبار اصلی {} • مقدار پایه {} • بهای اصلی {} • منبع {} • ردیف فاکتور {}",
                 friendly_resource(state, "item", &l.item_id),
                 friendly_resource(state, "warehouse", &l.warehouse_id),
                 isolate(&quantity_text(l.quantity_thousandths)),
@@ -1422,11 +1422,11 @@ pub(super) fn build(ui: &Rc<Ui>, kind: PageKind, run: RunCommand) -> gtk::Widget
         "inventory-workspace"
     });
     root.append(&label(if kind == PageKind::Purchases {
-        "خرید • سفارش، رسید جزئی و تطبیق صورتحساب"
+        "خرید"
     } else {
-        "انبار • موجودی، انتقال و کنترل مانده‌ها"
+        "انبار"
     }));
-    root.append(&label("ریال پایه • مقدار تا سه رقم اعشار • مالیات غیرفعال • تاریخ مؤثر مدنی و ثبت UTC • پس از افتتاحیهٔ تأیید‌شده"));
+    root.append(&label("مبلغ‌ها به واحد انتخاب‌شده نمایش داده می‌شوند."));
     let company = choice("شرکت", "procurement-company", &[]);
     root.append(&company);
     let as_of = date_field(
@@ -1452,8 +1452,8 @@ pub(super) fn build(ui: &Rc<Ui>, kind: PageKind, run: RunCommand) -> gtk::Widget
     let controls = gtk::Box::new(gtk::Orientation::Vertical, 8);
     let masters = gtk::Box::new(gtk::Orientation::Vertical, 8);
     for (name, title, b) in [
-        ("documents", "اسناد و جریان کار", &documents),
-        ("controls", "کنترل و تفصیل پایان روز", &controls),
+        ("documents", "اسناد خرید و انبار", &documents),
+        ("controls", "مانده‌ها و گردش حساب", &controls),
         ("masters", "طرف‌ها، کالا، واحد و انبار", &masters),
     ] {
         stack.add_titled(b, Some(name), title);
@@ -1462,8 +1462,8 @@ pub(super) fn build(ui: &Rc<Ui>, kind: PageKind, run: RunCommand) -> gtk::Widget
         &stack,
         &[
             ("documents", "اسناد"),
-            ("controls", "کنترل و تفصیل"),
-            ("masters", "تعریف منابع"),
+            ("controls", "مانده‌ها و گردش"),
+            ("masters", "تعاریف پایه"),
         ],
     ));
     root.append(&stack);
@@ -1850,9 +1850,9 @@ impl Page {
         self.documents.append(&bar);
         for (caption, name, kind) in if self.kind == PageKind::Purchases {
             vec![
-                ("سفارش خرید تازه", "procurement-new-order", 0),
-                ("صورتحساب و تطبیق رسید", "procurement-new-bill", 1),
-                ("برگشت خرید با بهای اصلی", "procurement-new-return", 5),
+                ("سفارش خرید جدید", "procurement-new-order", 0),
+                ("ثبت فاکتور خرید", "procurement-new-bill", 1),
+                ("برگشت از خرید", "procurement-new-return", 5),
             ]
         } else {
             vec![("انتقال بین انبارها", "procurement-new-transfer", 2)]
@@ -1877,7 +1877,7 @@ impl Page {
             .filter(|r| matches!(r.data, ProcurementData::Resources(_)))
             .count();
         self.documents.append(&label(&format!(
-            "{} سند عملیاتی • {} رویداد تعریف منابع • {} نتیجه • صفحهٔ {}",
+            "{} سند عملیاتی • {} رویداد تعاریف پایه • {} نتیجه • صفحهٔ {}",
             records.len() - resource_events,
             resource_events,
             total,
@@ -1899,7 +1899,7 @@ impl Page {
                 .subtitle_lines(3)
                 .build();
             row.set_use_markup(false);
-            let b = action("جزئیات و خروجی", "procurement-document-detail");
+            let b = action("جزئیات و چاپ", "procurement-document-detail");
             if self.first_document_action.borrow().is_none() {
                 *self.first_document_action.borrow_mut() = Some(b.downgrade());
             }
@@ -1926,7 +1926,7 @@ impl Page {
                 record.data,
                 ProcurementData::Receive(_) | ProcurementData::Bill(_)
             ) {
-                let b = action("برگشت از این منبع", "procurement-source-return");
+                let b = action("برگشت کالا", "procurement-source-return");
                 row.add_suffix(&b);
                 let id = record.id.clone();
                 let weak = Rc::downgrade(self);
@@ -1953,7 +1953,7 @@ impl Page {
         }
         if has_history {
             self.documents.append(&heading(
-                "تاریخچهٔ تعریف منابع • جزئیات تعاریف در زبانهٔ منابع",
+                "سوابق تغییرات تعاریف پایه • جزئیات تعاریف در زبانهٔ منابع",
             ));
             self.documents.append(&history);
         }
@@ -2236,7 +2236,7 @@ fn return_document_links(state: &AccountingState, id: &str) -> Result<Vec<(Strin
     let mut targets = Vec::new();
     if let ProcurementData::Return(ret) = &record.data {
         if let Some(id) = ret.bill_id.as_ref() {
-            targets.push(("صورتحساب اصلی", id.clone()));
+            targets.push(("فاکتور اصلی", id.clone()));
         }
         if let Some(id) = ret.receipt_id.as_ref() {
             targets.push(("رسید اصلی", id.clone()));
@@ -2296,12 +2296,13 @@ fn resource_name(r: &RegisterResources, kind: &str, id: &str) -> String {
 
 fn record_title(d: &ProcurementData) -> &'static str {
     match d {
-        ProcurementData::Resources(_) => "تعریف منابع",
+        ProcurementData::Resources(_) => "تعاریف پایه",
         ProcurementData::Order(_) => "سفارش خرید",
         ProcurementData::Receive(_) => "رسید انبار",
-        ProcurementData::Bill(_) => "صورتحساب تطبیق‌شده",
+        ProcurementData::Bill(_) => "فاکتور خرید",
         ProcurementData::Transfer(_) => "انتقال غیرمالی انبار",
-        ProcurementData::Return(_) => "برگشت خرید • ثبت‌شده",
+        ProcurementData::Return(v) if v.credit_id.is_none() => "برگشت رسید انبار • ثبت‌شده",
+        ProcurementData::Return(_) => "برگشت از خرید • ثبت‌شده",
     }
 }
 fn record_summary(r: &ProcurementRecord, resources: &RegisterResources, ui: &Ui) -> String {
@@ -2526,7 +2527,7 @@ impl Page {
         let (dialog, body, error, save) =
             form_dialog(&ui, "منبع ثبت‌شده • فقط خواندنی", "procurement-detail");
         save.set_visible(false);
-        body.append(&label("در حال خواندن منبع ثابت، اثر ثبت‌شده و جزئیات…"));
+        body.append(&label("در حال بارگذاری جزئیات…"));
         let weak_dialog = dialog.downgrade();
         let unit = money_unit(&self.unit);
         let weak_page = Rc::downgrade(self);
@@ -2539,7 +2540,7 @@ impl Page {
                 let trace=gtk::Box::new(gtk::Orientation::Vertical,8);report_rows(&trace,report.lines);body.append(&disclosure("جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده",&trace));
                 let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}
                 if let Some(credit_id)=supplier_credit_id {for pdf in [false,true] {let b=action(if pdf {"خروجی اعتبار تأمین‌کننده PDF"}else{"خروجی اعتبار تأمین‌کننده CSV"},"procurement-export-supplier-credit");let weak=weak_page.clone();let id=credit_id.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}}
-                body.append(&bar);ui.message(Ok("منبع ثبت‌شده آماده است • فقط خواندنی"));
+                body.append(&bar);ui.message(Ok("جزئیات سند آماده است."));
             },Err(e)=>{show_error(&error,&e);ui.message(Err::<String,_>(e));}}
         });
     }
@@ -2825,17 +2826,16 @@ fn bill_dialog(
         !remainders.is_empty(),
         "رسید تطبیق‌نشده وجود ندارد؛ ابتدا رسید انبار را ثبت کنید"
     );
-    let (dialog, body, error, save) =
-        form_dialog(ui, "صورتحساب تأمین‌کننده و تطبیق جزئی", "procurement-bill");
+    let (dialog, body, error, save) = form_dialog(ui, "فاکتور خرید", "procurement-bill");
     let common = Common::new(ui, &body, company, date, "procurement-bill")?;
-    let due = date_field(ui, "سررسید صورتحساب", "procurement-bill-due", date);
+    let due = date_field(ui, "سررسید فاکتور", "procurement-bill-due", date);
     body.append(&due.widget);
     let suppliers = resources_choices(&r, "supplier");
     let supplier = choice("تأمین‌کننده", "procurement-bill-supplier", &suppliers);
     body.append(&label("تأمین‌کننده"));
     body.append(&supplier);
     body.append(&label("برای ردیف‌های همین تأمین‌کننده مقدار پایه و ارزش مستقل وارد کنید؛ ردیف خالی تطبیق نمی‌شود. هزینه باید دقیقاً برابر سهم منبع ثابت باشد؛ موجودی دوباره ساخته نمی‌شود."));
-    let total = named_entry("جمع مستقل صورتحساب", "procurement-bill-total", "", true);
+    let total = named_entry("جمع اعلام‌شدهٔ فاکتور", "procurement-bill-total", "", true);
     let mut money_entries = vec![total.clone()];
     let mut fields = Vec::new();
     for rem in remainders {
@@ -2908,7 +2908,7 @@ fn bill_dialog(
         Ok(ProcurementCommand::Bill(MatchBill {
             context: c.collect()?,
             supplier_id,
-            reference: required(&c.reference, "شمارهٔ صورتحساب")?,
+            reference: required(&c.reference, "شمارهٔ فاکتور")?,
             document_date: date_value(&c.document_date)?,
             due_date: date_value(&d)?,
             lines,
@@ -2952,7 +2952,7 @@ fn returnable_sources(state: &AccountingState, company: &str) -> Result<Vec<Retu
                         lines.push(source);
                     }
                 }
-                format!("رسید صورتحساب‌نشده {}", isolate(&c.reference))
+                format!("رسید بدون فاکتور خرید {}", isolate(&c.reference))
             }
             (ProcurementCommand::Bill(c), ProcurementData::Bill(b)) => {
                 for l in &b.lines {
@@ -2962,7 +2962,7 @@ fn returnable_sources(state: &AccountingState, company: &str) -> Result<Vec<Retu
                         if source.remaining_quantity_thousandths > 0 { lines.push(source); }
                     }
                 }
-                format!("صورتحساب {} • بستانکار مرتبط", isolate(&c.reference))
+                format!("فاکتور {} • بستانکار مرتبط", isolate(&c.reference))
             }
             _ => continue,
         };
@@ -3065,7 +3065,7 @@ fn return_sources(
     let (dialog, body, error, save) =
         form_dialog(ui, "انتخاب منبع برگشت خرید", "procurement-return-sources");
     save.set_visible(false);
-    body.append(&label("یک رسید صورتحساب‌نشده یا یک صورتحساب مشخص انتخاب کنید. بهای اصلی و انبار منبع ثابت می‌ماند؛ پرداخت یا بازگشایی سفارش انجام نمی‌شود."));
+    body.append(&label("یک رسید بدون فاکتور خرید یا یک فاکتور مشخص انتخاب کنید. بهای اصلی و انبار منبع ثابت می‌ماند؛ پرداخت یا بازگشایی سفارش انجام نمی‌شود."));
     let search = search_entry(
         "جست‌وجوی منبع، تأمین‌کننده، کالا یا انبار",
         "procurement-return-source-search",
@@ -3394,7 +3394,7 @@ impl ReturnRows {
     }
     fn render_source(&self, row: &ReturnRow, line: &ReturnDraftLine) {
         let l = &line.source;
-        row.source.set_text(&format!("{} • انبار اصلی {} • منبع {} • ردیف صورتحساب {}\nاصل مقدار {} • اصل بها {} • ماندهٔ مقدار {} • ماندهٔ بها {}",resource_name(&self.resources,"item",&l.item_id),resource_name(&self.resources,"warehouse",&l.warehouse_id),isolate(&l.receipt_line_id),isolate(l.bill_line_id.as_deref().unwrap_or("ندارد")),isolate(&quantity_text(l.original_quantity_thousandths)),display_money(&self.settings,l.original_value,money_unit(&self.unit)),isolate(&quantity_text(l.remaining_quantity_thousandths)),display_money(&self.settings,l.remaining_value,money_unit(&self.unit))));
+        row.source.set_text(&format!("{} • انبار اصلی {} • منبع {} • ردیف فاکتور {}\nاصل مقدار {} • اصل بها {} • ماندهٔ مقدار {} • ماندهٔ بها {}",resource_name(&self.resources,"item",&l.item_id),resource_name(&self.resources,"warehouse",&l.warehouse_id),isolate(&l.receipt_line_id),isolate(l.bill_line_id.as_deref().unwrap_or("ندارد")),isolate(&quantity_text(l.original_quantity_thousandths)),display_money(&self.settings,l.original_value,money_unit(&self.unit)),isolate(&quantity_text(l.remaining_quantity_thousandths)),display_money(&self.settings,l.remaining_value,money_unit(&self.unit))));
     }
     fn render_cost(&self, row: &ReturnRow, line: &ReturnDraftLine) {
         row.cost.set_text(&if let Some(error) = &line.error {
@@ -3500,13 +3500,12 @@ fn return_dialog(
 ) -> Result<()> {
     anyhow::ensure!(!source.lines.is_empty(), "منبع ماندهٔ قابل برگشت ندارد");
     let billed = source.lines[0].bill_line_id.is_some();
-    let (dialog, body, error, save) =
-        form_dialog(ui, "برگشت خرید با بهای اصلی", "procurement-return");
+    let (dialog, body, error, save) = form_dialog(ui, "برگشت از خرید", "procurement-return");
     body.append(&heading(&source.title));
     body.append(&label(if billed {
-        "برگشت از یک صورتحساب • بستانکار همان صورتحساب • انبار و بهای اصلی ثابت • بدون پرداخت"
+        "برگشت از یک فاکتور • بستانکار همان فاکتور • انبار و بهای اصلی ثابت • بدون پرداخت"
     } else {
-        "برگشت از یک رسید صورتحساب‌نشده • کاهش ماندهٔ تطبیق‌نشده • بدون بستانکار تأمین‌کننده"
+        "برگشت از یک رسید بدون فاکتور خرید • کاهش ماندهٔ تطبیق‌نشده • بدون بستانکار تأمین‌کننده"
     }));
     let common = Common::new(ui, &body, company, date, "procurement-return")?;
     let credit = named_entry(
@@ -3872,17 +3871,13 @@ fn order_dialog(
     resources: RegisterResources,
     run: RunCommand,
 ) -> Result<()> {
-    let (dialog, body, error, save) = form_dialog(
-        ui,
-        "سفارش خرید • منبع ثابت و قیمت منجمد",
-        "procurement-order",
-    );
+    let (dialog, body, error, save) = form_dialog(ui, "سفارش خرید جدید", "procurement-order");
     let common = Common::new(ui, &body, company, date, "procurement-order")?;
     let suppliers = resources_choices(&resources, "supplier");
     let supplier = choice("تأمین‌کننده", "procurement-order-supplier", &suppliers);
     body.append(&label("تأمین‌کننده"));
     body.append(&supplier);
-    body.append(&label("ورودی و ردیف‌های این پنجره هنوز ثبت نشده‌اند؛ انصراف یا بستن برنامه آن‌ها را کنار می‌گذارد. سفارش غیرمالی است. هر ردیف به کالای هسته، انبار و واحد دقیق نگاشت می‌شود. قیمت فهرست با منبع و تاریخ ثابت حفظ می‌شود؛ تغییر قیمت نیاز به دلیل دارد."));
+    body.append(&label("سفارش، موجودی یا بدهی ایجاد نمی‌کند. تغییر قیمت به دلیل نیاز دارد؛ با بستن این پنجره، ورودی‌های ذخیره‌نشده از دست می‌روند."));
     let discount = named_entry("تخفیف کل سند", "procurement-order-discount", "0", true);
     let total = named_entry("جمع خالص مستقل سفارش", "procurement-order-total", "", true);
     let money = MoneyFields::new(
@@ -4060,15 +4055,15 @@ fn line_dialog(
     } else {
         "افزودن ردیف به سفارش"
     });
-    body.append(&label("انتخاب فهرست قیمت مقدار یا واحد هسته را تغییر نمی‌دهد. تفاوت واحد، کالا یا تاریخ منبع نیاز به دلیل دارد؛ واحد فهرست و واحد ردیف را صریحاً بررسی کنید؛ انصراف، فقط این ویرایش ردیف را کنار می‌گذارد."));
+    body.append(&label("انتخاب قیمت، مقدار یا واحد ردیف را تغییر نمی‌دهد. واحد کالا را بررسی کنید؛ تفاوت با فهرست قیمت به دلیل نیاز دارد."));
     let items = resources_choices(&resources, "item");
     let units = resources_choices(&resources, "unit");
     let warehouses = resources_choices(&resources, "warehouse");
-    let item = choice("کالای هسته", "procurement-line-item", &items);
+    let item = choice("کالا", "procurement-line-item", &items);
     let unit = choice("واحد ردیف", "procurement-line-unit", &units);
     let warehouse = choice("انبار مقصد", "procurement-line-warehouse", &warehouses);
     for (caption, d) in [
-        ("کالای هسته", &item),
+        ("کالا", &item),
         ("واحد ردیف؛ نگاشت صریح", &unit),
         ("انبار مقصد", &warehouse),
     ] {
@@ -4217,13 +4212,13 @@ fn line_dialog(
     save.connect_clicked(move |_| {
         let result: Result<()> = (|| {
             let value = money_entry(&price, money.unit())?;
-            let item_id = selected(&item, &ids(&items), "کالای هسته")?;
+            let item_id = selected(&item, &ids(&items), "کالا")?;
             let unit_id = selected(&unit, &ids(&units), "واحد ردیف")?;
             let mapped_item = resources
                 .items
                 .iter()
                 .find(|x| x.id == item_id)
-                .ok_or_else(|| anyhow::anyhow!("کالای هسته پیدا نشد"))?;
+                .ok_or_else(|| anyhow::anyhow!("کالا پیدا نشد"))?;
             let unit_name = units
                 .iter()
                 .find(|x| x.0 == unit_id)
@@ -5094,7 +5089,7 @@ fn concise_document(
         }
         (ProcurementCommand::Bill(c), ProcurementData::Bill(b)) => {
             out.push(format!(
-                "صورتحساب {} • {} • تاریخ سند {} • سررسید {} • جمع {}",
+                "فاکتور {} • {} • تاریخ سند {} • سررسید {} • جمع {}",
                 isolate(&c.reference),
                 resource_name(&resources, "supplier", &b.supplier_id),
                 date(&c.document_date),
@@ -5126,16 +5121,24 @@ fn concise_document(
                 if r.credit_state.is_some() {
                     "بستانکار ثبت‌شده"
                 } else {
-                    "رسید صورتحساب‌نشده"
+                    "رسید بدون فاکتور خرید"
                 }
             ));
             out.push(format!(
-                "منبع عملیاتی رسید {} • صورتحساب {}",
+                "منبع عملیاتی رسید {} • فاکتور {}",
                 isolate(r.receipt_id.as_deref().unwrap_or("ندارد")),
                 isolate(r.bill_id.as_deref().unwrap_or("ندارد"))
             ));
             for l in &r.lines {
-                out.push(format!("{} • انبار اصلی {} • مقدار پایه {} • بهای اصلی {} • رسید {} • ردیف صورتحساب {}", resource_name(&resources,"item",&l.item_id), resource_name(&resources,"warehouse",&l.warehouse_id), isolate(&quantity_text(l.quantity_thousandths)), money(l.value), isolate(&receipt_reference(state,&l.receipt_line_id)), isolate(l.bill_line_id.as_deref().unwrap_or("ندارد"))));
+                out.push(format!(
+                    "{} • انبار اصلی {} • مقدار پایه {} • بهای اصلی {} • رسید {} • ردیف فاکتور {}",
+                    resource_name(&resources, "item", &l.item_id),
+                    resource_name(&resources, "warehouse", &l.warehouse_id),
+                    isolate(&quantity_text(l.quantity_thousandths)),
+                    money(l.value),
+                    isolate(&receipt_reference(state, &l.receipt_line_id)),
+                    isolate(l.bill_line_id.as_deref().unwrap_or("ندارد"))
+                ));
             }
         }
         (ProcurementCommand::Transfer(c), ProcurementData::Transfer(t)) => {

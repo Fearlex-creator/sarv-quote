@@ -4,6 +4,45 @@ use anyhow::{Context, Result};
 use sarv_quote::domain::*;
 use std::rc::Rc;
 
+fn rate_percent(basis_points: u32) -> String {
+    format!("{}.{:02}", basis_points / 100, basis_points % 100)
+}
+
+/// Percent input is presentation only; the saved rate stays exact integer basis points.
+fn parse_rate_percent(input: &str) -> Result<u32> {
+    let input = digits(input.trim()).replace('٫', ".");
+    anyhow::ensure!(
+        !input.is_empty() && input.len() <= 16,
+        "نرخ را بین صفر و صد درصد وارد کنید"
+    );
+    let (whole, fractional) = input.split_once('.').unwrap_or((&input, ""));
+    anyhow::ensure!(
+        !whole.is_empty()
+            && whole.bytes().all(|c| c.is_ascii_digit())
+            && fractional.len() <= 2
+            && fractional.bytes().all(|c| c.is_ascii_digit())
+            && (!input.contains('.') || !fractional.is_empty()),
+        "نرخ باید عددی با حداکثر دو رقم اعشار باشد"
+    );
+    let whole: u32 = whole
+        .parse()
+        .context("نرخ را بین صفر و صد درصد وارد کنید")?;
+    let fractional: u32 = if fractional.is_empty() {
+        0
+    } else {
+        let value: u32 = fractional.parse()?;
+        if fractional.len() == 1 {
+            value * 10
+        } else {
+            value
+        }
+    };
+    anyhow::ensure!(whole <= 100, "نرخ را بین صفر و صد درصد وارد کنید");
+    let basis_points = whole * 100 + fractional;
+    anyhow::ensure!(basis_points <= 10_000, "نرخ را بین صفر و صد درصد وارد کنید");
+    Ok(basis_points)
+}
+
 fn entry(title: &str, value: &str) -> adw::EntryRow {
     let row = adw::EntryRow::builder().title(title).text(value).build();
     row.set_direction(gtk::TextDirection::Rtl);
@@ -74,13 +113,13 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let save_group = adw::PreferencesGroup::new();
     let save_row = adw::ActionRow::builder()
         .title("تنظیمات برنامه")
-        .subtitle("Ctrl+S برای ذخیره • تغییرات به اسناد قبلی منتقل نمی‌شوند.")
+        .subtitle("Ctrl+S برای ذخیرهٔ تغییرات")
         .build();
     let save = gtk::Button::with_label("ذخیرهٔ تنظیمات");
     save.set_widget_name("save-settings");
     save.add_css_class("suggested-action");
     save.set_valign(gtk::Align::Center);
-    let discard = gtk::Button::with_label("بازگرداندن");
+    let discard = gtk::Button::with_label("لغو تغییرات");
     discard.set_widget_name("discard-settings");
     discard.set_tooltip_text(Some("بازگرداندن همهٔ فیلدها به آخرین تنظیمات ذخیره‌شده"));
     discard.set_sensitive(false);
@@ -98,9 +137,9 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     save_group.add(&feedback);
     page.add(&save_group);
     let business = adw::PreferencesGroup::builder()
-        .title("اطلاعات کسب‌وکار")
+        .title("اطلاعات کسب‌وکار در پیش‌فاکتور")
         .description(
-            "این اطلاعات در پیشنهادهای تازه و خروجی آن‌ها درج می‌شود؛ اسناد قبلی تغییر نمی‌کنند.",
+            "برای چاپ پیش‌فاکتورهای جدید؛ اطلاعات شرکت حسابداری در بخش حسابداری تعریف می‌شود.",
         )
         .build();
     let name = entry("نام کسب‌وکار", &settings.business_name);
@@ -111,35 +150,31 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     let address = multiline(&business, "نشانی", &settings.business_address);
     page.add(&business);
     let document = adw::PreferencesGroup::builder()
-        .title("سند و شرایط")
-        .description("متن ساده؛ حداکثر ۴۰۰۰ نویسه برای هر بخش.")
+        .title("سربرگ و شرایط پیش‌فاکتور")
         .build();
     let header = multiline(&document, "متن سربرگ", &settings.header);
     let footer = multiline(&document, "متن پایانی", &settings.footer);
-    let terms = multiline(
-        &document,
-        "شرایط پیش‌فرض پیشنهاد تازه",
-        &settings.default_terms,
-    );
-    let defaults = adw::PreferencesGroup::builder().title("پیش‌فرض پیشنهاد تازه")
-        .description("۱ تومان = ۱۰ ریال؛ تغییر واحد، مبلغ دقیق را حفظ می‌کند. پیش‌فرض‌ها فقط روی پیشنهاد تازه اعمال می‌شوند.").build();
+    let terms = multiline(&document, "شرایط پیش‌فاکتور", &settings.default_terms);
+    let defaults = adw::PreferencesGroup::builder()
+        .title("پیش‌فرض‌های پیش‌فاکتور")
+        .description(
+            "برای پیش‌فاکتورهای جدید. ۱ تومان = ۱۰ ریال؛ تغییر واحد، مبلغ تخفیف را تبدیل می‌کند.",
+        )
+        .build();
     let currency = combo(
         "واحد مبلغ",
         &["تومان", "ریال"],
         u32::from(settings.default_currency == Unit::Rial),
     );
-    let prefix = entry("پیشوند شمارهٔ پیشنهاد", &settings.quote_prefix);
+    let prefix = entry("پیشوند شماره", &settings.quote_prefix);
     prefix.set_direction(gtk::TextDirection::Ltr);
-    let next = entry(
-        "شمارهٔ بعدی (پس از نخستین تأیید افزایش می‌یابد)",
-        &settings.next_number.to_string(),
-    );
+    let next = entry("شمارهٔ بعدی", &settings.next_number.to_string());
     next.set_direction(gtk::TextDirection::Ltr);
     let days = adw::SpinRow::with_range(0.0, 3650.0, 1.0);
-    days.set_title("اعتبار پیش‌فرض (روز)");
+    days.set_title("مدت اعتبار (روز)");
     days.set_value(f64::from(settings.default_validity_days));
     let discount = entry(
-        "تخفیف پیش‌فرض در واحد مبلغ انتخاب‌شده",
+        "تخفیف پیش‌فرض",
         &settings
             .default_currency
             .number(settings.default_discount_rial),
@@ -183,12 +218,15 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
             }
         }
     });
-    let tax = adw::SpinRow::with_range(0.0, 10_000.0, 1.0);
-    tax.set_title("نرخ افزودهٔ قراردادی (یک‌صدم درصد؛ ۱۰۰ = ۱٪)");
-    tax.set_subtitle(
-        "نرخ را خودتان تعیین می‌کنید؛ برنامه نرخ قانونی یا انطباق مالیاتی را تأیید نمی‌کند.",
+    let tax = entry(
+        "نرخ افزودهٔ پیش‌فاکتور (%)",
+        &rate_percent(settings.tax_basis_points),
     );
-    tax.set_value(f64::from(settings.tax_basis_points));
+    tax.set_widget_name("settings-quote-rate");
+    tax.set_direction(gtk::TextDirection::Ltr);
+    tax.set_tooltip_text(Some(
+        "نرخ دلخواه، فقط برای پیش‌فاکتور؛ برای نمونه ۹٫۷۵ یعنی ۹٫۷۵٪.",
+    ));
     for row in [
         &currency.clone().upcast::<gtk::Widget>(),
         &days.clone().upcast(),
@@ -199,15 +237,15 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     }
     page.add(&defaults);
     let numbering = adw::PreferencesGroup::builder()
-        .title("شماره‌گذاری")
+        .title("شماره‌گذاری پیش‌فاکتور")
         .description(
-            "شماره فقط با تأیید پیشنهاد تازه مصرف می‌شود؛ اصلاح نسخه، شمارهٔ سند را نگه می‌دارد.",
+            "شماره پس از تأیید پیش‌فاکتور جدید افزایش می‌یابد؛ اصلاح نسخه همان شماره را نگه می‌دارد.",
         )
         .build();
     numbering.add(&prefix);
     numbering.add(&next);
     let number_preview = adw::ActionRow::builder()
-        .title("شمارهٔ پیشنهاد تازه")
+        .title("شمارهٔ پیش‌فاکتور بعدی")
         .subtitle(format!("{}{}", settings.quote_prefix, settings.next_number))
         .use_markup(false)
         .build();
@@ -228,8 +266,8 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     page.add(&numbering);
     let appearance_group = adw::PreferencesGroup::builder().title("نمایش").build();
     let appearance = combo(
-        "ظاهر",
-        &["پیروی از سیستم", "روشن", "تیره"],
+        "تم برنامه",
+        &["سیستم", "روشن", "تیره"],
         match settings.appearance {
             Appearance::System => 0,
             Appearance::Light => 1,
@@ -237,8 +275,8 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         },
     );
     let density = combo(
-        "تراکم جدول‌ها",
-        &["راحت", "فشرده"],
+        "تراکم جدول",
+        &["معمولی", "فشرده"],
         u32::from(settings.density == Density::Compact),
     );
     let digit_choice = combo(
@@ -247,7 +285,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         u32::from(settings.display_digits == DisplayDigits::Latin),
     );
     let date_choice = combo(
-        "نمایش تاریخ",
+        "قالب تاریخ",
         &[
             "میلادی YYYY-MM-DD",
             "میلادی DD/MM/YYYY",
@@ -263,9 +301,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     appearance_group.add(&density);
     appearance_group.add(&digit_choice);
     date_choice.set_widget_name("settings-date-display");
-    date_choice.set_subtitle(
-        "تقویم نمایش و پیش‌فرض ورود تاریخ مالی؛ تاریخ واقعی سند و مرز دوره تغییر نمی‌کند.",
-    );
+    date_choice.set_subtitle("قالب نمایش و ورود تاریخ؛ تاریخ اسناد ثبت‌شده تغییر نمی‌کند.");
     appearance_group.add(&date_choice);
     page.add(&appearance_group);
     page.add(&document);
@@ -314,7 +350,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
             dirty_feedback.set_text("تغییرات ذخیره نشده‌اند • Ctrl+S برای ذخیره");
         }
     });
-    for row in [&name, &phone, &prefix, &next, &discount] {
+    for row in [&name, &phone, &prefix, &next, &discount, &tax] {
         let dirty = mark_dirty.clone();
         row.connect_changed(move |row| {
             row.remove_css_class("error");
@@ -343,10 +379,8 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
         let dirty = mark_dirty.clone();
         row.connect_selected_notify(move |_| dirty());
     }
-    for row in [&days, &tax] {
-        let dirty = mark_dirty.clone();
-        row.connect_value_notify(move |_| dirty());
-    }
+    let dirty = mark_dirty.clone();
+    days.connect_value_notify(move |_| dirty());
     let weak_discard = Rc::downgrade(ui);
     discard.connect_clicked(move |_| {
         if let Some(ui) = weak_discard.upgrade() {
@@ -394,7 +428,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                         "نشانی کسب‌وکار",
                         "متن سربرگ",
                         "متن پایانی",
-                        "شرایط پیش‌فرض پیشنهاد تازه",
+                        "شرایط پیش‌فرض پیش‌فاکتور تازه",
                     ][index],
                 )?;
             }
@@ -404,9 +438,14 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                 Unit::Rial
             };
             anyhow::ensure!(
-                days.value().fract() == 0.0 && tax.value().fract() == 0.0,
-                "روز اعتبار و واحد نرخ باید عدد صحیح باشند"
+                days.value().fract() == 0.0,
+                "مدت اعتبار باید تعداد روز کامل باشد"
             );
+            let tax_basis_points = parse_rate_percent(&tax.text()).inspect_err(|_| {
+                tax.add_css_class("error");
+                tax.grab_focus();
+            })?;
+            tax.remove_css_class("error");
             let requested_next: u64 = digits(next.text().trim())
                 .parse()
                 .context("شمارهٔ بعدی باید یک عدد صحیح مثبت باشد")
@@ -457,7 +496,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                         discount.grab_focus();
                     },
                 )?,
-                tax_basis_points: tax.value() as u32,
+                tax_basis_points,
                 appearance: match appearance.selected() {
                     1 => Appearance::Light,
                     2 => Appearance::Dark,
@@ -492,7 +531,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                 page.remove_css_class("settings-dirty");
             }
             discard.set_sensitive(false);
-            Ok("تنظیمات ذخیره شد؛ پیش‌فرض‌ها روی پیشنهاد تازه اعمال می‌شوند.")
+            Ok("تنظیمات ذخیره شد.")
         })();
         match &result {
             Ok(message) => {
@@ -578,4 +617,55 @@ pub(super) fn apply(ui: &Rc<Ui>) {
     apply_digits(&ui.window, settings.display_digits);
     super::editor::performance_trace("settings_global_digits", digits_started);
     super::editor::performance_trace("settings_global_apply", apply_started);
+}
+
+#[cfg(test)]
+mod rate_tests {
+    use super::{parse_rate_percent, rate_percent};
+
+    #[test]
+    fn every_existing_rate_round_trips_without_rounding_or_float_money() {
+        for basis_points in 0..=10_000 {
+            assert_eq!(
+                parse_rate_percent(&rate_percent(basis_points)).unwrap(),
+                basis_points
+            );
+        }
+    }
+
+    #[test]
+    fn percent_entry_accepts_persian_arabic_and_latin_digits_exactly() {
+        for text in ["9.75", "۹٫۷۵", "٩٫٧٥", " ۹.۷۵ "] {
+            assert_eq!(parse_rate_percent(text).unwrap(), 975);
+        }
+        assert_eq!(parse_rate_percent("0.01").unwrap(), 1);
+        assert_eq!(parse_rate_percent("9.5").unwrap(), 950);
+        assert_eq!(parse_rate_percent("100").unwrap(), 10_000);
+        assert_eq!(parse_rate_percent("۰").unwrap(), 0);
+    }
+
+    #[test]
+    fn invalid_or_over_precise_rates_are_rejected_instead_of_truncated() {
+        for text in [
+            "",
+            "-1",
+            "+1",
+            "100.01",
+            "101",
+            "0.001",
+            "9.750",
+            "1e2",
+            "NaN",
+            "inf",
+            "1,50",
+            "1..0",
+            "10%",
+            "10.",
+            "0x10",
+            "9999999999999999",
+            "9\u{202e}.75",
+        ] {
+            assert!(parse_rate_percent(text).is_err(), "accepted {text:?}");
+        }
+    }
 }

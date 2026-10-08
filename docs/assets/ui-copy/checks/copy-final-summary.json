@@ -1,0 +1,20 @@
+{
+  "checks": [
+    {
+      "label": "fmt",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7815226280072238,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "clippy",
+      "command": "cargo clippy --offline --locked --all-targets -- -D warnings",
+      "exit_code": 101,
+      "elapsed_seconds": 7.406172870003502,
+      "log_sha256": "b1b2a4d121b515627f063d64248186a513be355d61ca63fd666f54bff68d4b7f"
+    }
+  ],
+  "passed": false,
+  "verification_scope": "Compiled Rust test sources; native/Python observers and their helpers are frozen separately at each actual execution and final source snapshot."
+}

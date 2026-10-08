@@ -434,7 +434,7 @@ impl Composer {
         root.set_margin_top(16);
         root.set_margin_bottom(16);
         let explanation = label(
-            "این فهرست به‌عنوان منبع تازه ذخیره و در پیشنهاد انتخاب می‌شود. منبع قبلی و قیمت نسخه‌های تأییدشده محفوظ می‌مانند.",
+            "این فهرست به‌عنوان منبع تازه ذخیره و در پیش‌فاکتور انتخاب می‌شود. منبع قبلی و قیمت نسخه‌های تأییدشده محفوظ می‌مانند.",
         );
         explanation.add_css_class("caption");
         root.append(&explanation);

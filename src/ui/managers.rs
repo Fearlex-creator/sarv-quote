@@ -172,7 +172,7 @@ impl Ui {
         self.search_catalog
             .set_placeholder_text(Some("نام فهرست، کد، شرح یا نام مستعار کالا"));
         self.search_quote
-            .set_placeholder_text(Some("شماره، مشتری، مرجع یا کالای پیشنهاد"));
+            .set_placeholder_text(Some("شماره، مشتری، مرجع یا کالای پیش‌فاکتور"));
         clear(&self.catalog_list);
         clear(&self.customer_list);
         clear(&self.quote_list);
@@ -383,7 +383,7 @@ impl Ui {
             let use_customer = compact_button("استفاده");
             accessible_name(
                 &use_customer,
-                &format!("استفاده از مشتری {} در پیشنهاد", customer.name),
+                &format!("استفاده از مشتری {} در پیش‌فاکتور", customer.name),
             );
             use_customer.set_sensitive(!customer.archived);
             item.add_suffix(&use_customer);
@@ -426,8 +426,8 @@ impl Ui {
                     ui.customer_dialog(Some(&customer_id));
                 }
             });
-            let history = compact_button("پیشنهادهای مشتری");
-            accessible_name(&history, &format!("پیشنهادهای مشتری {}", customer.name));
+            let history = compact_button("پیش‌فاکتورهای مشتری");
+            accessible_name(&history, &format!("پیش‌فاکتورهای مشتری {}", customer.name));
             actions.insert(&history, -1);
             let customer_snapshot = customer.clone();
             let weak = Rc::downgrade(self);
@@ -496,7 +496,7 @@ impl Ui {
         drop(store);
         if start + PAGE_SIZE < ids.len() {
             let more = action_row(
-                "نمایش مشتری‌های بیشتر",
+                "نمایش مشتریان بیشتر",
                 &format!(
                     "{} مشتری دیگر",
                     self.manager_number(ids.len() - start - PAGE_SIZE)
@@ -663,7 +663,7 @@ impl Ui {
             .collect::<Vec<_>>();
         drop(store);
         let dialog = adw::Dialog::builder()
-            .title(format!("پیشنهادهای {}", customer.name))
+            .title(format!("پیش‌فاکتورهای {}", customer.name))
             .content_width(760)
             .content_height(620)
             .build();
@@ -683,7 +683,7 @@ impl Ui {
         }
         if ids.is_empty() {
             root.append(&empty_state(
-                "پیشنهادی ثبت نشده",
+                "پیش‌فاکتوری ثبت نشده",
                 "نسخه‌های تأییدشدهٔ این مشتری اینجا نمایش داده می‌شوند.",
             ));
         } else {
@@ -886,10 +886,10 @@ impl Ui {
             ));
             item.add_suffix(&price);
             let add = compact_button("افزودن");
-            accessible_name(&add, &format!("افزودن {} به پیشنهاد", product.code));
+            accessible_name(&add, &format!("افزودن {} به پیش‌فاکتور", product.code));
             add.set_sensitive(catalog.id == store.state.draft.catalog_id);
             add.set_tooltip_text(Some(if catalog.id == store.state.draft.catalog_id {
-                "افزودن یک واحد از این کالا به پیشنهاد، با همین قیمت منبع"
+                "افزودن یک واحد از این کالا به پیش‌فاکتور، با همین قیمت منبع"
             } else {
                 "ابتدا فهرست را انتخاب کنید؛ انتخاب فهرست نیازمند بررسی دوبارهٔ قیمت اقلام است"
             }));
@@ -919,7 +919,7 @@ impl Ui {
                             })
                         });
                     let ok = result.is_ok();
-                    ui.message(result.map(|()| "کالا با قیمت منبع به پیشنهاد افزوده و ذخیره شد"));
+                    ui.message(result.map(|()| "کالا با قیمت منبع به پیش‌فاکتور افزوده و ذخیره شد"));
                     if ok {
                         ui.fill_form();
                         ui.visual_pending.set(true);
@@ -1019,7 +1019,7 @@ impl Ui {
         if ids.is_empty() {
             container.append(&empty_state(
                 "نسخهٔ تأییدشده پیدا نشد",
-                "عبارت یا فیلتر را تغییر دهید. پیشنهادها پس از تأیید نسخه اینجا ذخیره می‌شوند.",
+                "عبارت یا فیلتر را تغییر دهید. پیش‌فاکتورها پس از تأیید نسخه اینجا ذخیره می‌شوند.",
             ));
             return;
         }
@@ -1091,10 +1091,10 @@ impl Ui {
                     "{} قلم · {}{}",
                     self.manager_number(quote.lines.len()),
                     if quote.quote_date.is_empty() {
-                        "تاریخ پیشنهاد ثبت نشده".into()
+                        "تاریخ پیش‌فاکتور ثبت نشده".into()
                     } else {
                         format!(
-                            "تاریخ پیشنهاد {}",
+                            "تاریخ پیش‌فاکتور {}",
                             ltr(&self.manager_date(&quote.quote_date))
                         )
                     },
@@ -1120,15 +1120,15 @@ impl Ui {
                 ("PDF", "pdf"),
                 ("CSV", "csv"),
                 ("نسخهٔ جدید", "revise"),
-                ("کپی در پیشنهاد تازه", "duplicate"),
+                ("کپی در پیش‌فاکتور تازه", "duplicate"),
             ] {
                 let action = compact_button(caption);
                 action.set_tooltip_text(Some(match kind {
                     "preview" => "بررسی سند همین نسخهٔ تأییدشده",
                     "pdf" => "خروجی PDF از همین نسخه و قیمت‌های بایگانی‌شده",
                     "csv" => "خروجی CSV از همین نسخه و قیمت‌های بایگانی‌شده",
-                    "revise" => "ویرایش در همان شمارهٔ پیشنهاد؛ نسخهٔ پیشین حفظ می‌شود",
-                    _ => "پیشنهاد تازه با شمارهٔ تازه؛ قیمت‌های این نسخه حفظ می‌شود",
+                    "revise" => "ویرایش در همان شمارهٔ پیش‌فاکتور؛ نسخهٔ پیشین حفظ می‌شود",
+                    _ => "پیش‌فاکتور تازه با شمارهٔ تازه؛ قیمت‌های این نسخه حفظ می‌شود",
                 }));
                 actions.insert(&action, -1);
                 let quote = quote.clone();
@@ -1155,7 +1155,7 @@ impl Ui {
                                     if kind == "revise" {
                                         "پیش‌نویس نسخهٔ جدید ذخیره شد؛ نسخهٔ پیشین محفوظ است"
                                     } else {
-                                        "پیش‌نویس پیشنهاد تازه از نسخهٔ بایگانی ساخته شد"
+                                        "پیش‌نویس پیش‌فاکتور تازه از نسخهٔ بایگانی ساخته شد"
                                     }
                                 }));
                                 if saved {
@@ -1204,7 +1204,7 @@ impl Ui {
         drop(store);
         if start + PAGE_SIZE < ids.len() {
             let more = action_row(
-                "پیشنهادهای بیشتر",
+                "پیش‌فاکتورهای بیشتر",
                 &format!(
                     "{} نسخهٔ دیگر",
                     self.manager_number(ids.len() - start - PAGE_SIZE)

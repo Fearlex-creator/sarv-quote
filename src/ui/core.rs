@@ -9,7 +9,7 @@ pub(super) type Mutation = Box<dyn FnOnce(&mut AccountingState) -> Result<()> + 
 pub(super) type RunCommand =
     Rc<dyn Fn(adw::Dialog, gtk::Label, gtk::Button, &'static str, Mutation)>;
 const ACTOR: &str = "local-single-user";
-const POLICY: &str = "سیاست هسته v1 • تعهدی و موجودی دائمی\nذخیرهٔ دقیق ریال؛ ۱ تومان = ۱۰ ریال • مقدار تا سه رقم اعشار • گردکردن مثبت نیم‌به‌بالا\nمیانگین موزون متحرک برای هر کالا/انبار؛ موجودی منفی و ثبت قبل از آخرین تاریخ موجودی ممنوع؛ برگشت با بهای اصلی\nمالیات و ارسال قانونی غیرفعال؛ این تنظیمات گواهی حرفه‌ای یا قانونی نیست. تاریخ مالی، روز مدنی است؛ زمان ثبت رویداد جداگانه و UTC است.";
+const POLICY: &str = "روش ثبت تعهدی و موجودی دائمی\nذخیرهٔ دقیق ریال؛ ۱ تومان = ۱۰ ریال • مقدار تا سه رقم اعشار • گردکردن مثبت نیم‌به‌بالا\nمیانگین موزون متحرک برای هر کالا/انبار؛ موجودی منفی و ثبت قبل از آخرین تاریخ موجودی ممنوع؛ برگشت با بهای اصلی\nمالیات و ارسال قانونی غیرفعال؛ این تنظیمات گواهی حرفه‌ای یا قانونی نیست. تاریخ مالی، روز مدنی است؛ زمان ثبت رویداد جداگانه و UTC است.";
 
 // Opt-in measurements run only in explicitly selected disposable test profiles.
 struct PhaseMonitor {
@@ -153,8 +153,8 @@ fn class(c: AccountClass) -> &'static str {
 pub(super) fn build(ui: &Rc<Ui>, company_id: Option<String>, run: RunCommand) -> gtk::Widget {
     let panel = card();
     panel.set_widget_name("core-foundation-panel");
-    panel.append(&heading("راه‌اندازی هسته و افتتاحیهٔ تطبیق‌شده"));
-    let setup = button("شرکت تازه با راهنمای هسته");
+    panel.append(&heading("راه‌اندازی شرکت و مانده‌های افتتاحیه"));
+    let setup = button("راه‌اندازی شرکت");
     setup.set_widget_name("core-new-company");
     panel.append(&setup);
     let weak = Rc::downgrade(ui);
@@ -165,7 +165,9 @@ pub(super) fn build(ui: &Rc<Ui>, company_id: Option<String>, run: RunCommand) ->
         }
     });
     let Some(company) = company_id else {
-        panel.append(&label("یک شرکت تازه با کدینگ قابل ویرایش، سیاست مشخص و سال مالی بسازید. هیچ مانده‌ای هنگام ساخت شرکت ایجاد نمی‌شود."));
+        panel.append(&label(
+            "شرکت، سال مالی و کدینگ حساب‌ها را تعریف کنید؛ سپس مانده‌های افتتاحیه را وارد کنید.",
+        ));
         return panel.upcast();
     };
     let state = ui.store.borrow().state.accounting.clone();
@@ -176,10 +178,13 @@ pub(super) fn build(ui: &Rc<Ui>, company_id: Option<String>, run: RunCommand) ->
         .find(|s| s.command.company_id == company)
         .cloned()
     else {
-        panel.append(&label("این شرکت دفتر دستی موجود دارد. حساب‌ها و اسناد آن حفظ می‌شوند؛ تبدیل به زیر‌دفتر و افتتاحیهٔ دوم در این مرحله مجاز نیست. برای شروع هسته از شرکت تازه استفاده کنید."));
+        panel.append(&label("این شرکت دفتر دستی موجود دارد. حساب‌ها و اسناد آن حفظ می‌شوند؛ تبدیل به زیر‌دفتر و افتتاحیهٔ دوم در این مرحله مجاز نیست. برای خرید، فروش و انبار، شرکت را با راهنمای راه‌اندازی تعریف کنید."));
         return panel.upcast();
     };
-    panel.append(&label(POLICY));
+    panel.append(&expander_with_child(
+        "روش ثبت و بهای موجودی",
+        &label(POLICY),
+    ));
     panel.append(&label(&format!(
         "منطقهٔ زمانی شرکت: {} • نسخهٔ سیاست و نگاشت حساب‌ها ثابت است.",
         config.command.policy.timezone.label()
@@ -306,7 +311,7 @@ fn setup_dialog(ui: &Rc<Ui>, run: RunCommand) {
                 dialog.clone(),
                 error.clone(),
                 save.clone(),
-                "شرکت و سیاست هسته ساخته شد",
+                "شرکت و سال مالی ایجاد شد",
                 Box::new(move |state| state.setup_core_company(command).map(|_| ())),
             ),
             Err(e) => fail(&error, e),
@@ -360,13 +365,13 @@ impl Kind {
             Self::Cash => "صندوق و وجه شمارش‌شده",
             Self::Bank => "بانک و ماندهٔ صورت‌حساب",
             Self::Ar => "فاکتور باز مشتری",
-            Self::Ap => "صورتحساب باز تأمین‌کننده",
+            Self::Ap => "فاکتور باز تأمین‌کننده",
             Self::SupplierAdvance => "پیش‌پرداخت تأمین‌کننده",
             Self::CustomerAdvance => "پیش‌دریافت مشتری",
             Self::Cr => "چک دریافتی؛ نگهداری‌شده و وصول‌نشده",
             Self::Cp => "چک پرداختی؛ صادرشده و پاس‌نشده",
             Self::Stock => "موجودی مقدار و ارزش",
-            Self::Grni => "رسید بدون صورتحساب؛ بخشی از موجودی",
+            Self::Grni => "رسید بدون فاکتور؛ بخشی از موجودی",
         }
     }
 }
@@ -601,7 +606,7 @@ impl Editor {
             }
             Kind::Stock | Kind::Grni => {
                 if k == Kind::Grni {
-                    self.form.append(&label("رسید بدون صورتحساب از مقدار و ارزش موجودی همین کالا/انبار است؛ این سطر موجودی اضافی ایجاد نمی‌کند."));
+                    self.form.append(&label("رسید بدون فاکتور از مقدار و ارزش موجودی همین کالا/انبار است؛ این سطر موجودی اضافی ایجاد نمی‌کند."));
                     self.choices("party", "تأمین‌کننده", parties());
                     self.date(&ui, "date", "تاریخ دریافت اصلی");
                 }
@@ -1731,7 +1736,7 @@ fn posted_rows(ui: &Ui, c: &OpeningCommand) -> Vec<String> {
         ));
     }
     for p in &c.grni {
-        out.push(format!("دریافت بدون صورتحساب {} • {} • تأمین‌کننده {} • کالا {} / انبار {} • {} {} • {} ریال، داخل موجودی • {}",p.id,p.receipt_reference,p.party_id,p.item_id,p.warehouse_id,quantity_text(p.quantity_thousandths),p.unit_id,p.value.rials(),display_date(ui,&p.received_date)));
+        out.push(format!("دریافت بدون فاکتور {} • {} • تأمین‌کننده {} • کالا {} / انبار {} • {} {} • {} ریال، داخل موجودی • {}",p.id,p.receipt_reference,p.party_id,p.item_id,p.warehouse_id,quantity_text(p.quantity_thousandths),p.unit_id,p.value.rials(),display_date(ui,&p.received_date)));
     }
     if let Some(source) = &c.import_source {
         out.push(format!("اصل فایل CSV محفوظ است • SHA-256 {} • {} سطر؛ مقادیر ویرایش‌شده همراه اصل فایل نگهداری شدند",source.sha256,source.rows.len()));

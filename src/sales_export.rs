@@ -791,10 +791,8 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
     let resources = state.procurement_resources(company_id)?;
     let (kind, title) = match &record.data {
         SalesData::Order(_) => ("sales_order", "سفارش فروش"),
-        SalesData::Fulfill(v) if document_id == v.delivery_id => {
-            ("delivery_note", "برگهٔ تحویل کالا")
-        }
-        SalesData::Fulfill(_) => ("sales_invoice", "صورتحساب فروش و تحویل"),
+        SalesData::Fulfill(v) if document_id == v.delivery_id => ("delivery_note", "حواله خروج"),
+        SalesData::Fulfill(_) => ("sales_invoice", "فاکتور فروش"),
         SalesData::Return(v) if document_id == v.return_id => {
             ("sales_return", "برگهٔ برگشت و ورود به انبار")
         }
@@ -942,7 +940,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             field(&mut metadata, "invoice_state", "posted");
             field(&mut metadata, "party_id", &posted.customer.id);
             field(&mut metadata, "party_name", &posted.customer.name);
-            metadata.label.push_str(&format!("\nتحویل {} • مرجع {} • وضعیت تحویل‌شده\nصورتحساب {} • مرجع {} • وضعیت ثبت‌شده\nمشتری {} • تاریخ سند میلادی {} • شمسی {} • سررسید میلادی {} • شمسی {}\nسفارش منبع {} • ثبت همزمان تحویل و صورتحساب؛ پرداخت ثبت نشده",ltr(&posted.delivery_id),ltr(&input.delivery_reference),ltr(&posted.invoice_id),ltr(&input.invoice_reference),posted.customer.name,ltr(&input.document_date),ltr(&date(&input.document_date,DateDisplay::Jalali)?),ltr(&input.due_date),ltr(&date(&input.due_date,DateDisplay::Jalali)?),ltr(&posted.order_id)));
+            metadata.label.push_str(&format!("\nتحویل {} • مرجع {} • وضعیت تحویل‌شده\nفاکتور {} • مرجع {} • وضعیت ثبت‌شده\nمشتری {} • تاریخ سند میلادی {} • شمسی {} • سررسید میلادی {} • شمسی {}\nسفارش منبع {} • ثبت همزمان تحویل و فاکتور؛ پرداخت ثبت نشده",ltr(&posted.delivery_id),ltr(&input.delivery_reference),ltr(&posted.invoice_id),ltr(&input.invoice_reference),posted.customer.name,ltr(&input.document_date),ltr(&date(&input.document_date,DateDisplay::Jalali)?),ltr(&input.due_date),ltr(&date(&input.due_date,DateDisplay::Jalali)?),ltr(&posted.order_id)));
             quotation(&mut metadata, order_input, None)?;
             metadata.label.push_str(&format!("\n{ALLOCATION_NOTE}"));
             field(
@@ -1017,7 +1015,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
                 kind: "document_total".into(),
                 id: posted.invoice_id.clone(),
                 label: format!(
-                    "جمع خالص صورتحساب • بهای خروج {} IRR",
+                    "جمع خالص فاکتور • بهای خروج {} IRR",
                     ltr(&posted.cost.rials().to_string())
                 ),
                 amount: Some(posted.total),
@@ -1029,7 +1027,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             let (SalesCommand::Fulfill(fulfill_input), SalesData::Fulfill(fulfill_data)) =
                 (&fulfillment.command, &fulfillment.data)
             else {
-                anyhow::bail!("منبع صورتحساب ناسازگار است")
+                anyhow::bail!("منبع فاکتور ناسازگار است")
             };
             let order = record_for(state, &fulfill_data.order_id)?;
             related.extend([fulfillment, order]);
@@ -1050,7 +1048,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             field(&mut metadata, "delivery_id", &fulfill_data.delivery_id);
             field(&mut metadata, "party_id", &fulfill_data.customer.id);
             field(&mut metadata, "party_name", &fulfill_data.customer.name);
-            metadata.label.push_str(&format!("\nبرگشت {} • مرجع {} • ورود به انبار اصلی\nاعتبار {} • مرجع {} • ثبت‌شده\nصورتحساب اصلی {} • مرجع {} • مشتری {}\nتاریخ سند میلادی {} • شمسی {} • بازگردانی بهای اصلی؛ سفارش دوباره باز نمی‌شود",ltr(&posted.return_id),ltr(&input.return_reference),ltr(&posted.credit_id),ltr(&input.credit_reference),ltr(&fulfill_data.invoice_id),ltr(&fulfill_input.invoice_reference),fulfill_data.customer.name,ltr(&input.document_date),ltr(&date(&input.document_date,DateDisplay::Jalali)?)));
+            metadata.label.push_str(&format!("\nبرگشت {} • مرجع {} • ورود به انبار اصلی\nاعتبار {} • مرجع {} • ثبت‌شده\nفاکتور اصلی {} • مرجع {} • مشتری {}\nتاریخ سند میلادی {} • شمسی {} • بازگردانی بهای اصلی؛ سفارش دوباره باز نمی‌شود",ltr(&posted.return_id),ltr(&input.return_reference),ltr(&posted.credit_id),ltr(&input.credit_reference),ltr(&fulfill_data.invoice_id),ltr(&fulfill_input.invoice_reference),fulfill_data.customer.name,ltr(&input.document_date),ltr(&date(&input.document_date,DateDisplay::Jalali)?)));
             quotation(&mut metadata, order_input, None)?;
             metadata.label.push_str(&format!("\n{ALLOCATION_NOTE}"));
             field(
@@ -1196,8 +1194,7 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         }
         .into(),
         basis: "accrual_perpetual_end_of_day".into(),
-        basis_label: "تعهدی / موجودی دائمی • مانده در پایان روز مالی • بدون تسویه و پرداخت M5"
-            .into(),
+        basis_label: "تعهدی / موجودی دائمی • مانده در پایان روز مالی • بدون تسویه و پرداخت".into(),
         kind: "sales_reconciliation".into(),
         source_id: format!("reconciliation:{company_id}:{as_of}"),
         title: "تطبیق فروش، دریافتنی و موجودی تا پایان روز".into(),
@@ -1294,7 +1291,7 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
             serde_json::to_string(&receivable.credit_ids)?,
         );
         row.label = format!(
-            "ماندهٔ دریافتنی • مشتری {} • صورتحساب {}\nتاریخ سند میلادی {} • شمسی {} • سررسید میلادی {} • شمسی {}\nمبلغ اصلی {} IRR • اعتبارهای پیوندشده {} • مبلغ زیر مانده است؛ بدون ثبت وصول وجه",
+            "ماندهٔ دریافتنی • مشتری {} • فاکتور {}\nتاریخ سند میلادی {} • شمسی {} • سررسید میلادی {} • شمسی {}\nمبلغ اصلی {} IRR • اعتبارهای پیوندشده {} • مبلغ زیر مانده است؛ بدون ثبت وصول وجه",
             party_name,
             ltr(&receivable.id),
             ltr(&receivable.document_date),
@@ -1345,19 +1342,15 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         });
     }
     for (kind, label, value) in [
-        (
-            "typed_sales_total",
-            "فروش ناشی از صورتحساب‌های پیوندشده M5",
-            result.typed_sales,
-        ),
+        ("typed_sales_total", "فروش ثبت‌شده", result.typed_sales),
         (
             "typed_sales_returns_total",
-            "برگشت ناشی از اعتبارهای پیوندشده M5",
+            "برگشت ناشی از اعتبارهای پیوندشده",
             result.typed_sales_returns,
         ),
         (
             "typed_cogs_total",
-            "بهای ناشی از خروج و برگشت اصلی M5",
+            "بهای ناشی از خروج و برگشت اصلی",
             result.typed_cogs,
         ),
     ] {
@@ -1379,7 +1372,7 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
             ..Row::default()
         };
         row.label = format!(
-            "تعدیل سند عادی دفتر کل • سند {} • نقش {} • تاریخ میلادی {}؛ صورتحساب یا برگشت خودکار نیست",
+            "تعدیل سند عادی دفتر کل • سند {} • نقش {} • تاریخ میلادی {}؛ فاکتور یا برگشت خودکار نیست",
             ltr(&adjustment.journal_id),
             ltr(adjustment.role.key()),
             ltr(&adjustment.date)
