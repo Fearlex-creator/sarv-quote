@@ -1,0 +1,264 @@
+{
+  "scope": "Read-only raw SQLite extraction from isolated synthetic M3 opening and freeze3 M4 native profile; no database included",
+  "source_opening_exactly_preserved": true,
+  "before_journal_count": 1,
+  "after_journal_count": 5,
+  "after_operational_record_count": 10,
+  "after_movement_count": 4,
+  "literal_trial_debit_credit": [
+    1431,
+    1431
+  ],
+  "independently_verified_control_balances": {
+    "Cash": 251,
+    "Bank": 300,
+    "Receivables": 200,
+    "Inventory": 480,
+    "ChequesReceivable": 200,
+    "Payables": -329,
+    "ChequesPayable": -100,
+    "Grni": -50,
+    "OwnerCapital": -952
+  },
+  "native_document_effects": [
+    {
+      "source_record_id": "016c1c75-cb5b-47f5-8e68-b6820aec991a",
+      "data": {
+        "Order": {
+          "supplier": {
+            "id": "SU-A",
+            "company_id": "6fb1d10b-4480-4db9-a7f6-06d3340a4762",
+            "name": "تأمین‌کننده الف",
+            "customer": false,
+            "supplier": true
+          },
+          "lines": [
+            {
+              "input": {
+                "id": "94c46016-db22-4273-aef5-eb9fe2a1003c",
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "unit_id": "PIECE",
+                "quantity_thousandths": 12000,
+                "unit_price": 15,
+                "line_discount": 0,
+                "price_reference": "فهرست M4-synthetic-prices | catalog=e1fe430d-3605-45ca-9e9f-6344ca5a1ac1 | SHA256=c4263e9adcc3a46128ad4aecc34d58bdf90b9823ca0cbb53b742662d5502555d | SKU=SKU-A | نام=کالای الف خرید | اندازه=عدد | واحدمنبع=ریال | قیمت‌ریال=15 | تاریخ‌منبع=2026-03-22T09:00:00Z | نگاشت‌کالا=SKU-A | نگاشت‌واحد=PIECE",
+                "price_date": "2026-03-22",
+                "override_reason": null
+              },
+              "item": {
+                "id": "ITEM-A",
+                "company_id": "6fb1d10b-4480-4db9-a7f6-06d3340a4762",
+                "sku": "SKU-A",
+                "name": "کالای الف",
+                "base_unit_id": "PIECE",
+                "indivisible": true,
+                "packs": [
+                  {
+                    "unit_id": "CARTON",
+                    "numerator": 12,
+                    "denominator": 1
+                  }
+                ]
+              },
+              "base_quantity_thousandths": 12000,
+              "gross": 180,
+              "document_discount": 0,
+              "net": 180
+            }
+          ],
+          "total": 180
+        }
+      },
+      "journal_id": null,
+      "movements": []
+    },
+    {
+      "source_record_id": "2fc0a7e1-77e7-4789-a6c8-ac0223df64d2",
+      "data": {
+        "Receive": {
+          "order_id": "016c1c75-cb5b-47f5-8e68-b6820aec991a",
+          "supplier_id": "SU-A",
+          "lines": [
+            {
+              "id": "88072100-8060-4330-9663-6ff25cbd48cc",
+              "order_line_id": "94c46016-db22-4273-aef5-eb9fe2a1003c",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "quantity_thousandths": 5000,
+              "value": 75
+            }
+          ],
+          "total": 75
+        }
+      },
+      "journal_id": "ceb1a59a-71f1-4285-834d-8a6a680867b7",
+      "movements": [
+        {
+          "id": "stock:ee6fff9647d8d953a5f9d7a1a5be5e7ef616709096e0b34a496bbc6656f8ad80",
+          "item_id": "ITEM-A",
+          "warehouse_id": "W1",
+          "direction": "In",
+          "quantity_thousandths": 5000,
+          "value": 75,
+          "source_line_id": "88072100-8060-4330-9663-6ff25cbd48cc",
+          "before": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "quantity_thousandths": 24000,
+            "value": 240
+          },
+          "after": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "quantity_thousandths": 29000,
+            "value": 315
+          }
+        }
+      ]
+    },
+    {
+      "source_record_id": "dd45dcfb-b709-4989-babf-b23a925eb534",
+      "data": {
+        "Receive": {
+          "order_id": "016c1c75-cb5b-47f5-8e68-b6820aec991a",
+          "supplier_id": "SU-A",
+          "lines": [
+            {
+              "id": "ca770387-9b96-4e5f-83dd-40b59dccfd96",
+              "order_line_id": "94c46016-db22-4273-aef5-eb9fe2a1003c",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "quantity_thousandths": 7000,
+              "value": 105
+            }
+          ],
+          "total": 105
+        }
+      },
+      "journal_id": "3e03b94a-3307-4940-accd-1d147455efbd",
+      "movements": [
+        {
+          "id": "stock:347ed8d43ca7e712d3425d8c99665779e29236f4b9367a99ed430bf892b5b604",
+          "item_id": "ITEM-A",
+          "warehouse_id": "W1",
+          "direction": "In",
+          "quantity_thousandths": 7000,
+          "value": 105,
+          "source_line_id": "ca770387-9b96-4e5f-83dd-40b59dccfd96",
+          "before": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "quantity_thousandths": 29000,
+            "value": 315
+          },
+          "after": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "quantity_thousandths": 36000,
+            "value": 420
+          }
+        }
+      ]
+    },
+    {
+      "source_record_id": "8c894e89-b7bd-4269-bdfa-ebea6c87b1cb",
+      "data": {
+        "Bill": {
+          "supplier_id": "SU-A",
+          "lines": [
+            {
+              "id": "d3e53ea7-8219-468c-a46c-e5644e2668fe",
+              "receipt_line_id": "88072100-8060-4330-9663-6ff25cbd48cc",
+              "quantity_thousandths": 2000,
+              "value": 30
+            }
+          ],
+          "total": 30
+        }
+      },
+      "journal_id": "f555ad86-4070-4282-884a-9c9c87bcb4f3",
+      "movements": []
+    },
+    {
+      "source_record_id": "9937caa3-5465-4a75-83b4-8ef24b2d2b80",
+      "data": {
+        "Bill": {
+          "supplier_id": "SU-A",
+          "lines": [
+            {
+              "id": "eadd9c4a-eff8-4129-b3a0-527d9f2c3d50",
+              "receipt_line_id": "88072100-8060-4330-9663-6ff25cbd48cc",
+              "quantity_thousandths": 3000,
+              "value": 45
+            },
+            {
+              "id": "ab035c5b-a9d0-4c76-9b16-35c7c623240f",
+              "receipt_line_id": "ca770387-9b96-4e5f-83dd-40b59dccfd96",
+              "quantity_thousandths": 7000,
+              "value": 105
+            }
+          ],
+          "total": 150
+        }
+      },
+      "journal_id": "9b77d72e-d0d2-4a9d-88cc-baa0da26c1b3",
+      "movements": []
+    },
+    {
+      "source_record_id": "3110b18a-ffcf-48fe-b901-25696f7902db",
+      "data": {
+        "Transfer": {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 6000,
+          "value": 70
+        }
+      },
+      "journal_id": null,
+      "movements": [
+        {
+          "id": "stock:24564d83748dd261d586468e7d80d34cd29010721643ae9ce97240ba4a7e3d81",
+          "item_id": "ITEM-A",
+          "warehouse_id": "W1",
+          "direction": "Out",
+          "quantity_thousandths": 6000,
+          "value": 70,
+          "source_line_id": "1ec540ee-f4e2-43b9-bdac-48cd2e36ff19",
+          "before": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "quantity_thousandths": 36000,
+            "value": 420
+          },
+          "after": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "quantity_thousandths": 30000,
+            "value": 350
+          }
+        },
+        {
+          "id": "stock:7a5055a0c2790fc4818fb6b677063c5b0bb9261b6081371c1541af57a286b0d8",
+          "item_id": "ITEM-A",
+          "warehouse_id": "W2",
+          "direction": "In",
+          "quantity_thousandths": 6000,
+          "value": 70,
+          "source_line_id": "1ec540ee-f4e2-43b9-bdac-48cd2e36ff19",
+          "before": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W2",
+            "quantity_thousandths": 6000,
+            "value": 60
+          },
+          "after": {
+            "item_id": "ITEM-A",
+            "warehouse_id": "W2",
+            "quantity_thousandths": 12000,
+            "value": 130
+          }
+        }
+      ]
+    }
+  ]
+}

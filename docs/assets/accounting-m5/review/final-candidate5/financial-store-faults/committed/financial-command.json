@@ -1,0 +1,32 @@
+{
+  "Fulfill": {
+    "context": {
+      "company_id": "76bb774f-e602-439f-8d67-0a0378a1a4ba",
+      "period_id": "86b2e8cc-46b6-4e0c-9728-cc58c3a1805a",
+      "setup_id": "df06f390-cedf-4b49-b1b2-0618de7abcef",
+      "source_id": "fault-financial-fulfill",
+      "source_revision": 1,
+      "date": "2026-04-04",
+      "request_key": "fault-financial-key",
+      "actor": "Independent financial fault reviewer",
+      "reason": "Literal one-piece20IRR fulfillment after final interleaved fixture"
+    },
+    "order_id": "4bce8553-9885-45af-a9cc-490af34c9dfb",
+    "delivery_id": "fault-delivery",
+    "invoice_id": "fault-invoice",
+    "delivery_reference": "FAULT-DEL",
+    "invoice_reference": "FAULT-INV",
+    "document_date": "2026-04-04",
+    "due_date": "2026-05-01",
+    "lines": [
+      {
+        "id": "fault-issued-line",
+        "order_line_id": "fault-order-line",
+        "warehouse_id": "w1",
+        "unit_id": "piece",
+        "quantity_thousandths": 1000
+      }
+    ],
+    "supplied_total": 20
+  }
+}

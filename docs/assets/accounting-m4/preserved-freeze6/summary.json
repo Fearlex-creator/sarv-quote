@@ -1,0 +1,17 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze6",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "result": "passed",
+  "full_quotation_smoke_checks": 23,
+  "held_save_close_checks": 3,
+  "scope": "Actual immutable6 full quotation smoke and held-save-close. External38/Escape6 and independent product/customer guards remain separate evidence.",
+  "original_quote_profile": "/workspace/sarv-quote/artifacts/m4-preserved/quote-knyo3nxk",
+  "original_close_profile": "/workspace/sarv-quote/artifacts/m4-preserved/close-freeze6",
+  "actual_gtk_warning_critical_lines": 0,
+  "integration_visual_review": {
+    "actual_image": "quote-native-review.png",
+    "reviewer": "root integration lead",
+    "findings": "Actual immutable6 synthetic quotation render: readable Persian labels, explicit toman, mixed-script codes, visible blue focus, row validation, exact-unapproved totals and full sidebar. This screenshot is not an accounting or screen-reader proof."
+  }
+}

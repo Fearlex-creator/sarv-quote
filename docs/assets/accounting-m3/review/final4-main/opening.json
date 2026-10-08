@@ -1,0 +1,276 @@
+{
+  "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+  "period_id": "2e37ff22-b244-49d4-9e15-de0c9e3221ca",
+  "setup_id": "2a1a17fd-3c58-4d5b-b971-98fe69c07442",
+  "as_of": "2026-03-21",
+  "source_id": "independent-F2-source",
+  "request_key": "arbitrary-review-key",
+  "actor": "Independent reviewer",
+  "reason": "Literal fixture, no balancing helper",
+  "balances": [
+    {
+      "account_id": "9ccc5c39-4b41-420b-b316-a47cd6cf6ae0",
+      "debit": 251,
+      "credit": 0,
+      "source_reference": "literal-cash"
+    },
+    {
+      "account_id": "ba6f78b6-4c11-4319-928f-98152d9b4fdb",
+      "debit": 300,
+      "credit": 0,
+      "source_reference": "literal-bank"
+    },
+    {
+      "account_id": "a505d90e-51f3-47e6-b62c-ba606654a39b",
+      "debit": 200,
+      "credit": 0,
+      "source_reference": "literal-receivables"
+    },
+    {
+      "account_id": "5a3ec714-028f-421c-99d5-36520ca9b685",
+      "debit": 300,
+      "credit": 0,
+      "source_reference": "literal-inventory"
+    },
+    {
+      "account_id": "d96c5842-551e-4a67-8153-caf3d1bae28b",
+      "debit": 200,
+      "credit": 0,
+      "source_reference": "literal-cheques_receivable"
+    },
+    {
+      "account_id": "a08e27d4-7004-4040-90b3-5e3a142dfeab",
+      "debit": 0,
+      "credit": 149,
+      "source_reference": "literal-payables"
+    },
+    {
+      "account_id": "2e6a5cc6-b3dd-43a2-bf3c-ddff8ec03748",
+      "debit": 0,
+      "credit": 100,
+      "source_reference": "literal-cheques_payable"
+    },
+    {
+      "account_id": "5da37c4d-fddb-4325-a82a-00122d261409",
+      "debit": 0,
+      "credit": 50,
+      "source_reference": "literal-grni"
+    },
+    {
+      "account_id": "86f3f390-2871-4a91-8ada-511246ba0947",
+      "debit": 0,
+      "credit": 952,
+      "source_reference": "literal-owner_capital"
+    },
+    {
+      "account_id": "b260d8d2-1499-459e-9d9e-30f08f845a4d",
+      "debit": 0,
+      "credit": 0,
+      "source_reference": "literal-supplier_advances"
+    },
+    {
+      "account_id": "f5ee1638-fa2e-405d-be19-d28ef4f7948b",
+      "debit": 0,
+      "credit": 0,
+      "source_reference": "literal-customer_advances"
+    },
+    {
+      "account_id": "34e01531-d351-4f5f-8fe7-17d2914c1e53",
+      "debit": 0,
+      "credit": 0,
+      "source_reference": "literal-cogs"
+    },
+    {
+      "account_id": "e06da461-0ff2-4770-97b4-a118f307d4fa",
+      "debit": 0,
+      "credit": 0,
+      "source_reference": "literal-inventory_loss"
+    }
+  ],
+  "parties": [
+    {
+      "id": "party-a",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "dual role A",
+      "customer": true,
+      "supplier": true
+    },
+    {
+      "id": "party-b",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "dual role B",
+      "customer": true,
+      "supplier": true
+    }
+  ],
+  "units": [
+    {
+      "id": "piece",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "piece"
+    },
+    {
+      "id": "carton",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "carton"
+    }
+  ],
+  "items": [
+    {
+      "id": "item-a",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "sku": "A",
+      "name": "item A",
+      "base_unit_id": "piece",
+      "indivisible": true,
+      "packs": [
+        {
+          "unit_id": "carton",
+          "numerator": 12,
+          "denominator": 1
+        }
+      ]
+    }
+  ],
+  "warehouses": [
+    {
+      "id": "w1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "W1"
+    },
+    {
+      "id": "w2",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "W2"
+    }
+  ],
+  "cash": [
+    {
+      "id": "c1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "C1",
+      "balance": 251,
+      "source_reference": "count251"
+    }
+  ],
+  "banks": [
+    {
+      "id": "b1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "name": "B1",
+      "bank_reference": "bank-number-B1",
+      "balance": 300,
+      "statement_balance": 300,
+      "source_reference": "statement300"
+    }
+  ],
+  "open_items": [
+    {
+      "id": "ar-a",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-a",
+      "side": "Receivable",
+      "document_reference": "INV-A",
+      "document_date": "2026-02-01",
+      "due_date": "2026-04-01",
+      "remaining": 125
+    },
+    {
+      "id": "ar-b",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-b",
+      "side": "Receivable",
+      "document_reference": "INV-B",
+      "document_date": "2026-02-02",
+      "due_date": "2026-04-02",
+      "remaining": 75
+    },
+    {
+      "id": "ap-a",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-a",
+      "side": "Payable",
+      "document_reference": "BILL-A",
+      "document_date": "2026-02-03",
+      "due_date": "2026-04-03",
+      "remaining": 100
+    },
+    {
+      "id": "ap-b",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-b",
+      "side": "Payable",
+      "document_reference": "BILL-B",
+      "document_date": "2026-02-04",
+      "due_date": "2026-04-04",
+      "remaining": 49
+    }
+  ],
+  "advances": [],
+  "cheques": [
+    {
+      "id": "cr1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-a",
+      "direction": "Receivable",
+      "state": "Held",
+      "bank_reference": "CR-bank",
+      "holder": "C1",
+      "cheque_reference": "CR1",
+      "settlement_reference": "SETTLED-OLD-INVOICE200",
+      "issue_date": "2026-02-10",
+      "due_date": "2026-05-10",
+      "amount": 200
+    },
+    {
+      "id": "cp1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-a",
+      "direction": "Payable",
+      "state": "Issued",
+      "bank_reference": "CP-bank",
+      "holder": "supplier A",
+      "cheque_reference": "CP1",
+      "settlement_reference": "SETTLED-OLD-BILL100",
+      "issue_date": "2026-02-11",
+      "due_date": "2026-05-11",
+      "amount": 100
+    }
+  ],
+  "stock": [
+    {
+      "id": "stock-w1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "item_id": "item-a",
+      "warehouse_id": "w1",
+      "unit_id": "carton",
+      "quantity_thousandths": 2000,
+      "value": 240,
+      "source_reference": "count-2-cartons"
+    },
+    {
+      "id": "stock-w2",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "item_id": "item-a",
+      "warehouse_id": "w2",
+      "unit_id": "piece",
+      "quantity_thousandths": 6000,
+      "value": 60,
+      "source_reference": "count6-includesR1"
+    }
+  ],
+  "grni": [
+    {
+      "id": "r1",
+      "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+      "party_id": "party-a",
+      "item_id": "item-a",
+      "warehouse_id": "w2",
+      "unit_id": "piece",
+      "quantity_thousandths": 5000,
+      "value": 50,
+      "receipt_reference": "R1",
+      "received_date": "2026-03-01"
+    }
+  ]
+}

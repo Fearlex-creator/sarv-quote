@@ -1,0 +1,36 @@
+M4 MODAL PRESENT parent=0x55bcbcfa48f0/AdwApplicationWindow visible=(nil)/none focus=(nil)/none root=(nil)/none
+M4 FOCUSED DISABLE parent=0x55bcbe1e2ef0/AdwEntryRow focused=0x55bcbe1e7380/GtkText time=1791411820
+/tmp/m4-quote-sensitive.so(gtk_widget_set_sensitive+0xdc) [0x7f2ffa5e42e5]
+/tmp/sarv-M4-dialog-height-debug(+0x7113fc) [0x55bcb18f23fc]
+/tmp/sarv-M4-dialog-height-debug(+0x576b86) [0x55bcb1757b86]
+/tmp/sarv-M4-dialog-height-debug(+0x575338) [0x55bcb1756338]
+/tmp/sarv-M4-dialog-height-debug(+0x7dc28e) [0x55bcb19bd28e]
+/tmp/sarv-M4-dialog-height-debug(+0x770d2b) [0x55bcb1951d2b]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0(+0x17b81) [0x7f2ff9486b81]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0(+0x2d8b8) [0x7f2ff949c8b8]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0(g_signal_emit_valist+0x36) [0x7f2ff94a25a6]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libgobject-2.0.so.0(g_signal_emit+0x93) [0x7f2ff94a2663]
+/workspace/sarv-environment/native/lib/libgtk-4.so.1(+0x126104) [0x7f2ff99df104]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0(+0x5f44e) [0x7f2ff937544e]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0(+0x5c3c5) [0x7f2ff93723c5]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0(+0x5e5f7) [0x7f2ff93745f7]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libglib-2.0.so.0(g_main_context_iteration+0x30) [0x7f2ff9374d60]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libgio-2.0.so.0(g_application_run+0x1ed) [0x7f2ff95bcf1d]
+/tmp/sarv-M4-dialog-height-debug(+0x7e8336) [0x55bcb19c9336]
+/tmp/sarv-M4-dialog-height-debug(+0x646300) [0x55bcb1827300]
+/tmp/sarv-M4-dialog-height-debug(+0x71cb7e) [0x55bcb18fdb7e]
+/tmp/sarv-M4-dialog-height-debug(+0x524703) [0x55bcb1705703]
+/tmp/sarv-M4-dialog-height-debug(+0x579c36) [0x55bcb175ac36]
+/tmp/sarv-M4-dialog-height-debug(+0x579b69) [0x55bcb175ab69]
+/tmp/sarv-M4-dialog-height-debug(+0xed8919) [0x55bcb20b9919]
+/tmp/sarv-M4-dialog-height-debug(+0x579b51) [0x55bcb175ab51]
+/tmp/sarv-M4-dialog-height-debug(+0x71d0b5) [0x55bcb18fe0b5]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libc.so.6(+0x29ca8) [0x7f2ff902cca8]
+/workspace/sarv-environment/sysroot/usr/lib/x86_64-linux-gnu/libc.so.6(__libc_start_main+0x85) [0x7f2ff902cd65]
+/tmp/sarv-M4-dialog-height-debug(+0x40e211) [0x55bcb15ef211]
+
+(sarv-M4-dialog-height-debug:175606): Gtk-WARNING **: 22:23:40.308: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well
+M4 MODAL PRESENT parent=0x55bcbcfa48f0/AdwApplicationWindow visible=0x55bcbd986010/AdwDialog focus=(nil)/none root=(nil)/none

@@ -1,0 +1,201 @@
+{
+  "adjustments": [
+    {
+      "amount": 17,
+      "date": "2026-03-22",
+      "journal_id": "f99aa4f3-2b33-4140-86be-aa9e9af81997",
+      "role": "Sales"
+    },
+    {
+      "amount": 3,
+      "date": "2026-03-22",
+      "journal_id": "de826118-626c-4305-9274-ebf4162d0561",
+      "role": "SalesReturns"
+    }
+  ],
+  "as_of": "2026-03-22",
+  "cogs": 0,
+  "company_id": "fe6a07ba-a554-4c55-8eff-84bf9b4a65d6",
+  "controls": [
+    {
+      "account_id": "89f4010b-87ed-422c-a0f6-67c721455d46",
+      "detail": 251,
+      "difference": 0,
+      "ledger": 251,
+      "role": "Cash"
+    },
+    {
+      "account_id": "b743c4f9-a147-4968-beb5-dbee0fe2ca77",
+      "detail": 300,
+      "difference": 0,
+      "ledger": 300,
+      "role": "Bank"
+    },
+    {
+      "account_id": "5fd7ba9c-b311-4f22-9c69-5afce9bc8843",
+      "detail": 200,
+      "difference": 0,
+      "ledger": 200,
+      "role": "Receivables"
+    },
+    {
+      "account_id": "9e039701-c8c4-447f-bfe8-40405932783b",
+      "detail": 200,
+      "difference": 0,
+      "ledger": 200,
+      "role": "ChequesReceivable"
+    },
+    {
+      "account_id": "4b20364b-1460-47d6-a0b5-74757f3ce270",
+      "detail": 300,
+      "difference": 0,
+      "ledger": 300,
+      "role": "Inventory"
+    },
+    {
+      "account_id": "48960613-2f87-492a-a9ef-d47b6a04d2c2",
+      "detail": 0,
+      "difference": 0,
+      "ledger": 0,
+      "role": "SupplierAdvances"
+    },
+    {
+      "account_id": "e1c46d47-eeb7-4cb1-b6c3-bfebd38d50a0",
+      "detail": 149,
+      "difference": 0,
+      "ledger": 149,
+      "role": "Payables"
+    },
+    {
+      "account_id": "bff0b972-f32f-41e2-befe-9144206ad496",
+      "detail": 100,
+      "difference": 0,
+      "ledger": 100,
+      "role": "ChequesPayable"
+    },
+    {
+      "account_id": "7df2f2db-5772-4a29-972c-144c02b1d74a",
+      "detail": 50,
+      "difference": 0,
+      "ledger": 50,
+      "role": "Grni"
+    },
+    {
+      "account_id": "ec15b314-dbbd-49e4-bf92-97ec3cc4cb5d",
+      "detail": 0,
+      "difference": 0,
+      "ledger": 0,
+      "role": "CustomerAdvances"
+    },
+    {
+      "account_id": "5991d1fa-22d6-4763-bb53-8b39da37e341",
+      "detail": 0,
+      "difference": 0,
+      "ledger": 0,
+      "role": "Cogs"
+    },
+    {
+      "account_id": "763dd223-3a52-4d83-ba5a-83be3350ff74",
+      "detail": 0,
+      "difference": 0,
+      "ledger": 0,
+      "role": "InventoryLoss"
+    },
+    {
+      "account_id": "812a3ee8-755e-4da6-ae97-39f4838f295c",
+      "detail": 17,
+      "difference": 0,
+      "ledger": 17,
+      "role": "Sales"
+    },
+    {
+      "account_id": "acd5f6ed-f839-4ab2-9d8e-58c357ab0796",
+      "detail": 3,
+      "difference": 0,
+      "ledger": 3,
+      "role": "SalesReturns"
+    }
+  ],
+  "payables": [
+    {
+      "document_date": "2026-02-03",
+      "due_date": "2026-04-03",
+      "id": "ap-a",
+      "party_id": "party-a",
+      "reference": "BILL-A",
+      "remaining": 100,
+      "source_id": "independent-F2-source"
+    },
+    {
+      "document_date": "2026-02-04",
+      "due_date": "2026-04-04",
+      "id": "ap-b",
+      "party_id": "party-b",
+      "reference": "BILL-B",
+      "remaining": 49,
+      "source_id": "independent-F2-source"
+    }
+  ],
+  "profit": 14,
+  "receipts": [
+    {
+      "date": "2026-03-21",
+      "id": "r1",
+      "item_id": "item-a",
+      "original_quantity_thousandths": 5000,
+      "original_value": 50,
+      "quantity_thousandths": 5000,
+      "reference": "R1",
+      "source_id": "independent-F2-source",
+      "supplier_id": "party-a",
+      "value": 50,
+      "warehouse_id": "w2"
+    }
+  ],
+  "receivables": [
+    {
+      "credit_ids": [],
+      "document_date": "2026-02-01",
+      "due_date": "2026-04-01",
+      "id": "ar-a",
+      "original": 125,
+      "party_id": "party-a",
+      "reference": "INV-A",
+      "remaining": 125,
+      "source_id": "independent-F2-source"
+    },
+    {
+      "credit_ids": [],
+      "document_date": "2026-02-02",
+      "due_date": "2026-04-02",
+      "id": "ar-b",
+      "original": 75,
+      "party_id": "party-b",
+      "reference": "INV-B",
+      "remaining": 75,
+      "source_id": "independent-F2-source"
+    }
+  ],
+  "reconciled": true,
+  "sales": 17,
+  "sales_returns": 3,
+  "stock": [
+    {
+      "item_id": "item-a",
+      "quantity_thousandths": 24000,
+      "value": 240,
+      "warehouse_id": "w1"
+    },
+    {
+      "item_id": "item-a",
+      "quantity_thousandths": 6000,
+      "value": 60,
+      "warehouse_id": "w2"
+    }
+  ],
+  "total_credit": 1268,
+  "total_debit": 1268,
+  "typed_cogs": 0,
+  "typed_sales": 0,
+  "typed_sales_returns": 0
+}

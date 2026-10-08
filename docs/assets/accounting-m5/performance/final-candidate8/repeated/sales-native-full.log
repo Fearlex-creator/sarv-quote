@@ -1,0 +1,25 @@
+SARV_MAIN_THREAD review_snapshot_clone 0.048ms
+SARV_MAIN_THREAD review_100_row_widget_construction 0.183ms
+SARV_MAIN_THREAD review_settings_apply 0.004ms
+SARV_MAIN_THREAD review_snapshot_clone 0.059ms
+SARV_MAIN_THREAD review_100_row_widget_construction 0.580ms
+SARV_MAIN_THREAD review_settings_apply 0.004ms
+SARV_MAIN_THREAD review_snapshot_clone 0.085ms
+SARV_MAIN_THREAD review_100_row_widget_construction 0.557ms
+SARV_MAIN_THREAD review_settings_apply 0.004ms
+SARV_MAIN_THREAD review_snapshot_clone 0.211ms
+SARV_MAIN_THREAD review_100_row_widget_construction 1.956ms
+SARV_MAIN_THREAD review_settings_apply 0.007ms
+
+(sarv-M5-candidate8:288295): Gtk-WARNING **: 04:25:37.763: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well
+SARV_MAIN_THREAD review_snapshot_clone 0.085ms
+SARV_MAIN_THREAD review_reuse_setters 0.012ms
+SARV_MAIN_THREAD review_reuse_chrome 1.036ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 1.250ms
+SARV_MAIN_THREAD review_snapshot_clone 0.212ms
+SARV_MAIN_THREAD review_reuse_setters 0.014ms
+SARV_MAIN_THREAD review_reuse_chrome 0.058ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 0.264ms

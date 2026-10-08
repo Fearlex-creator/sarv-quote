@@ -1,0 +1,446 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/sales-native/run-rv4bcr0m",
+  "binary_sha256": "6f496fce32d01d783dc5edd7ec48c2d9839c4b3182a35a0551dfd77c4967d451",
+  "production_source_sha256": "5bae38fe9fa4772f20a097455d4c9fb18b37fd65cad4ed551ccf56efefa996f9",
+  "observer_sha256": "1164cd4f9acb514c86ba2806fbd499c77e21d7d9e0992acdf55b34ac07552d94",
+  "result": "rejected diagnostic candidate",
+  "checks_passed": 82,
+  "checks_total": 83,
+  "files": [
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M4-before.log",
+      "target": "main/M4-before.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-detail-pages.log",
+      "target": "main/M5-detail-pages.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-draft-restart.log",
+      "target": "main/M5-draft-restart.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-draft.log",
+      "target": "main/M5-draft.log",
+      "sha256": "cda5763dc8835ab882aee27884eacb026e9e5c0252e0d5d7a8cb91b8a6b6a735"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-full.log",
+      "target": "main/M5-full.log",
+      "sha256": "5a575157e60941e2ff87ed1d0124760eb928b63be35949120f9e3651173755ca"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-layout-dark.log",
+      "target": "main/M5-layout-dark.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-layout-light.log",
+      "target": "main/M5-layout-light.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-stage-restart.log",
+      "target": "main/M5-stage-restart.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/M5-stage.log",
+      "target": "main/M5-stage.log",
+      "sha256": "57002a6e1dac47055bdab41e753151d30a54f948ddcc2b819743f6b261229bcf"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/detail-pages/M5-detail-pages-restart.png",
+      "target": "main/detail-pages/M5-detail-pages-restart.png",
+      "sha256": "cfbc9a4b90aaa06a92a01be99ee379bbea37dedb525d6b58f632afb85a9c449e"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/detail-pages/M5-real-detail-last-page.png",
+      "target": "main/detail-pages/M5-real-detail-last-page.png",
+      "sha256": "3fb2b3fe55081100b07d04a2652fc08d2cb88354705b86aed786460e5c9fc845"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/detail-pages/keyboard-events.jsonl",
+      "target": "main/detail-pages/keyboard-events.jsonl",
+      "sha256": "ca7734f608d1bf13492dc075ef44f880558ae56181a0904a0d0d0934615bd309"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/detail-pages/sales-detail-pager-focus.jsonl",
+      "target": "main/detail-pages/sales-detail-pager-focus.jsonl",
+      "sha256": "212efea41e180d56b4c01b53c2f6324b681f4f1d275e65838f3100c8770fb34b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/detail-pages/synthetic-raw-fixture.json",
+      "target": "main/detail-pages/synthetic-raw-fixture.json",
+      "sha256": "028c5ce3a02978f73f11005880b00c6de3204a3381957bcaa15f1b269ecf4c17"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-catalog-picker.png",
+      "target": "main/draft/M5-catalog-picker.png",
+      "sha256": "e1413d336db0015598fb4619238f96084a22144a32b839358c1686f3eb608d4f"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-draft-narrow-editor.png",
+      "target": "main/draft/M5-draft-narrow-editor.png",
+      "sha256": "bb2cac087c8e8a8347b15c4ef7b46bfd5048140342da27c66fc3f59ea7097eef"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-draft-reopened-editor.png",
+      "target": "main/draft/M5-draft-reopened-editor.png",
+      "sha256": "a9e4cba7672428c5eca3ded52e2a0871616b53b0c422b2b4c20d4468ac522745"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-draft-restart.png",
+      "target": "main/draft/M5-draft-restart.png",
+      "sha256": "237a534245114b903c1c914fcd73188ac6f1cd1e331ae7a0f93ae8d2e34f785b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-frozen-catalog-line.png",
+      "target": "main/draft/M5-frozen-catalog-line.png",
+      "sha256": "ec4354faf96b16b6345b0b73103822dc4c1b2ce10aaa03046ea23c2886e5e1eb"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-invalid-raw-line-reopened.png",
+      "target": "main/draft/M5-invalid-raw-line-reopened.png",
+      "sha256": "67392964e422a64c097c81fe6c808f684be4d05456741409b288b930a617513e"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-saved-raw-draft.png",
+      "target": "main/draft/M5-saved-raw-draft.png",
+      "sha256": "6bfe84870120167a429eeb696aa9d4c579b03f64eac3b7f8326e4f69ebe1215d"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/M5-synthetic-prices.csv",
+      "target": "main/draft/M5-synthetic-prices.csv",
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/before-schema6-25712a3b-7a97-445a-8919-b4504a823509.json",
+      "target": "main/draft/before-schema6-25712a3b-7a97-445a-8919-b4504a823509.json",
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/keyboard-events.jsonl",
+      "target": "main/draft/keyboard-events.jsonl",
+      "sha256": "5496d8fbb151fcbc2f8571051464eba8479aecf11977c2da3face7e22863cd4c"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/sales-focus-diagnostic.jsonl",
+      "target": "main/draft/sales-focus-diagnostic.jsonl",
+      "sha256": "f0ff40a376811381a61bdb5928052360cbf6799d737eeaba6fd1fce25f61b9ca"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/sales-native-verification.json",
+      "target": "main/draft/sales-native-verification.json",
+      "sha256": "f15c0428917628c2307c01a21232ab17c5fa669c7a0e4db3ead16eb6e2dfcd82"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/draft/sales-stage-ready.json",
+      "target": "main/draft/sales-stage-ready.json",
+      "sha256": "f15c0428917628c2307c01a21232ab17c5fa669c7a0e4db3ead16eb6e2dfcd82"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/failed-access-tree.json",
+      "target": "main/failed-access-tree.json",
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/frozen-source-manifest.json",
+      "target": "main/frozen-source-manifest.json",
+      "sha256": "240fd1501e6768e3fd0c0b4a7f7dce96d0a88c09e5185b15e7578a69c66091fc"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-authentic-quotation.png",
+      "target": "main/full/M5-authentic-quotation.png",
+      "sha256": "a4733f8a725f75e22d40dd3cb9f50ac077b445675609d1a174b8e63880f92aa8"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-catalog-picker.png",
+      "target": "main/full/M5-catalog-picker.png",
+      "sha256": "7851e3c3ccc7f6b250a5e33d712b9ac3e2a98c83219cea56803c08a21a3647c9"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-controls.csv",
+      "target": "main/full/M5-controls.csv",
+      "sha256": "55302d2ebc95a9d62f4daffc53a5e911eaeae72e2dccf0e095f35826fbfe9c5c"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-controls.pdf",
+      "target": "main/full/M5-controls.pdf",
+      "sha256": "bef36bb555191d16ea73bd39ac8edc0c41f2362c428bfb255b9154061fc1482b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-converted-quotation-preview.png",
+      "target": "main/full/M5-converted-quotation-preview.png",
+      "sha256": "2474b4119de59f21ed5d0ba41a915db574813155f5cb722c83ff65fb505beffe"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-final-controls.png",
+      "target": "main/full/M5-final-controls.png",
+      "sha256": "8accfa1baa3369bcb5e104d73d4a6edeec940dd47db3ea37583c86212b2c8426"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-final-pair-preview.png",
+      "target": "main/full/M5-final-pair-preview.png",
+      "sha256": "18324095e408f38210cb98bae8f040590b93ad25ac47705f36e4103f99b79ee8"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-final-return-preview.png",
+      "target": "main/full/M5-final-return-preview.png",
+      "sha256": "45f301be782ae08e779e194cc5e4b2e11897c638f645c41e7abbb4d00d9c9624"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-first-pair-preview.png",
+      "target": "main/full/M5-first-pair-preview.png",
+      "sha256": "894427b0f880e2c59a10dae9aaa6afd61d4dbeefcee7f0215fba27a1f35145a1"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-first-return-preview.png",
+      "target": "main/full/M5-first-return-preview.png",
+      "sha256": "7786c0ab81f7d01417260f8a8e70420a80b84f84b8baedfb9b66b99281adffb8"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-frozen-catalog-line.png",
+      "target": "main/full/M5-frozen-catalog-line.png",
+      "sha256": "2ea64f3b3dfead7f466906712c3ca1fb64a87836e0b51f9267bb71f706c9c298"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-lifecycle-unchanged-backup.json",
+      "target": "main/full/M5-lifecycle-unchanged-backup.json",
+      "sha256": "cfa79d234f4a26f0ad9075d873831021a143e801e2a3f679713042cdb2bcacb9"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-order-preview.png",
+      "target": "main/full/M5-order-preview.png",
+      "sha256": "8c1ce029ba77be021586d86162d76e916e442f91ee00693c6b8483e7b545a40b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-real-export-action-focus.png",
+      "target": "main/full/M5-real-export-action-focus.png",
+      "sha256": "39cba9d661ff905f09f245262168064103824f9cd35879853752f9d502731d04"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-real-filtered-search.png",
+      "target": "main/full/M5-real-filtered-search.png",
+      "sha256": "396f7317aa26889de1eeaf34c8953d2fce77a4367309860806cdfc18e8047c41"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-real-order-detail.png",
+      "target": "main/full/M5-real-order-detail.png",
+      "sha256": "af7a20677ea5dcaab20e62476c9261c41be7d07c50f92d35c7c00b222188a00f"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-real-restored-new-order.png",
+      "target": "main/full/M5-real-restored-new-order.png",
+      "sha256": "acfa2d80fc6c88e31ef6ce607266d56f57e54132675dcd54c9e64f3d775ab4ba"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-real-retained-overreturn.png",
+      "target": "main/full/M5-real-retained-overreturn.png",
+      "sha256": "cdff2198ba50bec9b4487692b0a2bd4477c41b0de2948ad093cc9652b29e6ada"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-restart-dark.png",
+      "target": "main/full/M5-restart-dark.png",
+      "sha256": "45c73c663ade5dccef977c306748a7dc4226b31f3ffd522d7e15ddacb1276595"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-restart-light.png",
+      "target": "main/full/M5-restart-light.png",
+      "sha256": "732688ce362bea4c438fe52bd1c2f1c3d3e27c3d5fc1f817f121c3427b143cb6"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-dark-1280x900.png",
+      "target": "main/full/M5-sales-dark-1280x900.png",
+      "sha256": "c3a493b582c90d7df89f42190f02e37953d688e8e221080a7d4ed40b492060cf"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-dark-650x550-focused-source.png",
+      "target": "main/full/M5-sales-dark-650x550-focused-source.png",
+      "sha256": "42ed00441038cd7669c542ed80c361117b75a3ecd6c80dcc5cf9e9938f1fc7e5"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-dark-650x550-record.png",
+      "target": "main/full/M5-sales-dark-650x550-record.png",
+      "sha256": "adeb576aea1243075383a7b2b143702ab141dcb8ad019f663b88f6d5a6d9fb8c"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-dark-650x550-zero.png",
+      "target": "main/full/M5-sales-dark-650x550-zero.png",
+      "sha256": "95cdbd952d1ca56fb932088ac4ba4cb25d484c266b8d484f533303f7ade10011"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-dark-650x550.png",
+      "target": "main/full/M5-sales-dark-650x550.png",
+      "sha256": "7f6680e09b45df6f52d4cfa238df2514edf0c329e14bce40bd67f829934a2c05"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-light-1280x900.png",
+      "target": "main/full/M5-sales-light-1280x900.png",
+      "sha256": "ec55399fedfe147403c03afa9d5a2fac5dce1c486b86ea0d122918d1f2cf8f86"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-light-650x550-focused-source.png",
+      "target": "main/full/M5-sales-light-650x550-focused-source.png",
+      "sha256": "146b3109a2c48b7dfbf0522ce6c1ffb3d70695091deca15fcac1b30d4fb0e01e"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-light-650x550-record.png",
+      "target": "main/full/M5-sales-light-650x550-record.png",
+      "sha256": "9a996e926c5af0f4b5764361e00580812ea3c478b9f5807ae2027c3cec5857fd"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-light-650x550-zero.png",
+      "target": "main/full/M5-sales-light-650x550-zero.png",
+      "sha256": "c74ff0a338d1dc8912107989b368be3183bc1696749181e6a2ed0eb97e4f0978"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-sales-light-650x550.png",
+      "target": "main/full/M5-sales-light-650x550.png",
+      "sha256": "6e2953d01246ac3fd00ccb0184587135a67f040b8afa65b55fc1a7c4e45a3524"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/M5-synthetic-prices.csv",
+      "target": "main/full/M5-synthetic-prices.csv",
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/before-restore-7b18b5a8-391f-4913-9aff-e5f518414bfe.json",
+      "target": "main/full/before-restore-7b18b5a8-391f-4913-9aff-e5f518414bfe.json",
+      "sha256": "cfa79d234f4a26f0ad9075d873831021a143e801e2a3f679713042cdb2bcacb9"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/before-schema6-ae18a0d6-d685-460d-b342-e67f71807003.json",
+      "target": "main/full/before-schema6-ae18a0d6-d685-460d-b342-e67f71807003.json",
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/keyboard-events.jsonl",
+      "target": "main/full/keyboard-events.jsonl",
+      "sha256": "5ad9230cb89958ef339328149a4b361c653a6335b9432c89653f7805ad24ab2d"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/sales-focus-diagnostic.jsonl",
+      "target": "main/full/sales-focus-diagnostic.jsonl",
+      "sha256": "136c975552b4faf3e19f477ea38c341fc95ab0cf1751153c1327bfeb32fd1ad8"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/full/sales-native-verification.json",
+      "target": "main/full/sales-native-verification.json",
+      "sha256": "dc2adbca752ddfc2cc16362fd18da6288b68aa48f2e9f110fc94f0a26f2aed64"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/m4-before/M4-before.png",
+      "target": "main/m4-before/M4-before.png",
+      "sha256": "86d08ef2e050d1e64ca5129eb79ae774e33620b46e504b6d34f98ddf48a167ba"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/openbox.log",
+      "target": "main/openbox.log",
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/sales-check-progress.jsonl",
+      "target": "main/sales-check-progress.jsonl",
+      "sha256": "2f1210e21aaeea59810b5280eacba67885927c6a95be361c7f08405161392620"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/sales-independent-native.json",
+      "target": "main/sales-independent-native.json",
+      "sha256": "b47d11bf12a3e97253d9890d03d8ca7b0e5548e33cc309bdd715fd2da3a4f85f"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-catalog-picker.png",
+      "target": "main/stage/M5-catalog-picker.png",
+      "sha256": "ff7fc6ae270f813e3078f07023feab8d87d5eb4ae464771b06a6e72bfb77a75b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-frozen-catalog-line.png",
+      "target": "main/stage/M5-frozen-catalog-line.png",
+      "sha256": "02c441b4a7af563893e672274212f950cf304a28074eba5460921db09912113a"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-real-keyboard-posted-return.png",
+      "target": "main/stage/M5-real-keyboard-posted-return.png",
+      "sha256": "e532399a330f17b12ab87e87c2284d4b75976aee1332b8b0659a292c434d8919"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-saved-raw-draft.png",
+      "target": "main/stage/M5-saved-raw-draft.png",
+      "sha256": "e255df2b76fbfd577676dfef917f7d962dd4ae239e564e327bf840db5b7b81f0"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-stage-narrow-editor.png",
+      "target": "main/stage/M5-stage-narrow-editor.png",
+      "sha256": "05f24e8caeb29991477c4c8d58ead005560aa4306e958b9db5ab6f03be83b8bc"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-stage-reopened-editor.png",
+      "target": "main/stage/M5-stage-reopened-editor.png",
+      "sha256": "d42acda05ab2757de6745cc63119b02dbd9ca77df832cbba36f5fd4c716415fc"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-stage-restart.png",
+      "target": "main/stage/M5-stage-restart.png",
+      "sha256": "616fbe3d8d21d72b5f2eed037d57d0908e58cc2a7c277ddbda040bb9ea6711b4"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/M5-synthetic-prices.csv",
+      "target": "main/stage/M5-synthetic-prices.csv",
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/before-schema6-717c489c-7beb-4e0b-9451-1b6e2e782d03.json",
+      "target": "main/stage/before-schema6-717c489c-7beb-4e0b-9451-1b6e2e782d03.json",
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/keyboard-events.jsonl",
+      "target": "main/stage/keyboard-events.jsonl",
+      "sha256": "26a65a059bec7533ac01cca5d24f80dc82f6c59bbae49a80ac65efc54f11c839"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/sales-focus-diagnostic.jsonl",
+      "target": "main/stage/sales-focus-diagnostic.jsonl",
+      "sha256": "50c9dd911df6d801364e5b7a06495b283946e76cf4146686afe1885166563674"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/sales-native-verification.json",
+      "target": "main/stage/sales-native-verification.json",
+      "sha256": "b0d3d95412d0482068fc7a6a7db62234da8d0f8f0a5e600f8893d9d9f7d051f4"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/stage/sales-stage-ready.json",
+      "target": "main/stage/sales-stage-ready.json",
+      "sha256": "b0d3d95412d0482068fc7a6a7db62234da8d0f8f0a5e600f8893d9d9f7d051f4"
+    },
+    {
+      "source": "artifacts/sales-native/run-rv4bcr0m/xvfb.log",
+      "target": "main/xvfb.log",
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    {
+      "source": "artifacts/sales-native/candidate10-diagnostic-observer.log",
+      "target": "observer.log",
+      "sha256": "948e8f318c8226746c7425ca224faee83afc76304f30d9ade7dd0df05af6ce25"
+    },
+    {
+      "source": "artifacts/sales-native/candidate10-diagnostic-observer-setup-failure.log",
+      "target": "setup-failure/observer.log",
+      "sha256": "e37679ffbc01251d45d386e64a28dacb3de9decbbb4fc423013bae5275a39d30"
+    },
+    {
+      "source": "artifacts/sales-native/run-x4fiumzu/sales-independent-native.json",
+      "target": "setup-failure/sales-independent-native.json",
+      "sha256": "319ca967ec9cf60254fa312c205edfb1aada9bcf72dde0144a2aecd26c9cbfea"
+    },
+    {
+      "source": "docs/assets/accounting-m5/checks/candidate10-diagnostic/verification-source/scripts/sales-qa.py",
+      "target": "sales-qa-frozen-candidate10.py",
+      "sha256": "1164cd4f9acb514c86ba2806fbd499c77e21d7d9e0992acdf55b34ac07552d94"
+    }
+  ]
+}

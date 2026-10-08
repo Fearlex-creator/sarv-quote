@@ -1,0 +1,8 @@
+    Finished `test` profile [unoptimized] target(s) in 0.05s
+     Running tests/purchase_return_migration.rs (target/debug/deps/purchase_return_migration-6e0339dc5abc74f0)
+
+running 1 test
+test actual_m5_binary_refuses_schema7_without_modifying_committed_row ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 4 filtered out; finished in 0.39s
+

@@ -1,0 +1,26 @@
+{
+  "result": "passed",
+  "scope": "source comparison only; candidate5 execution proof stays on candidate5 binary; candidate6 compile/runtime receipts separately required",
+  "changed_files": [
+    "src/ui/responsiveness.rs"
+  ],
+  "unchanged_file_count": 35,
+  "exact_single_substitution": {
+    "old": "ui.row_editors.borrow()[0].quantity.text() == \"1\"",
+    "new": "quantity(ui.row_editors.borrow()[0].quantity.text().as_str()).ok() == Some(1000)"
+  },
+  "archives": [
+    {
+      "epoch": "candidate5",
+      "archive_files": 36,
+      "aggregate_sha256": "07d0edcee2f5a13d4a708faff3e444016829f15ea6149d4d182b23037860822c"
+    },
+    {
+      "epoch": "candidate6",
+      "archive_files": 36,
+      "aggregate_sha256": "4f14b3f0c29e74bb686611779d2e916db9edb2c62174ff5630e9c7db483f6857"
+    }
+  ],
+  "normal_application_behavior": "unchanged; probe schedule requires SARV_RESPONSIVENESS=1; normalization retains exact quantity1000 thousandths plus all existing readiness conditions",
+  "performance_acceptance": "pending; candidate5 incomplete pilot not accepted"
+}

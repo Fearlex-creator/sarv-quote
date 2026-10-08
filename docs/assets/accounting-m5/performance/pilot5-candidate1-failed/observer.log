@@ -1,0 +1,26 @@
+dbus-daemon[256709]: [session uid=1000 pid=256709 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=256710 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[256709]: [session uid=1000 pid=256709 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[256745]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=256710 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[256745]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"core_search": {"n": 2, "p50": 116.34084999968763, "p95": 124.09963599930052, "p99": 124.09963599930052, "worst": 124.09963599930052, "method": "nearest rank"}, "preview_ms": 63.48592699941946, "post_ms": 12.175174000731204}
+{"procurement_searches": {"document": {"n": 2, "p50": 100.39943999436218, "p95": 100.48195299896179, "p99": 100.48195299896179, "worst": 100.48195299896179, "method": "nearest rank"}, "party": {"n": 2, "p50": 78.06906499899924, "p95": 81.13551700080279, "p99": 81.13551700080279, "worst": 81.13551700080279, "method": "nearest rank"}, "item": {"n": 2, "p50": 79.59190000110539, "p95": 82.02022100158501, "p99": 82.02022100158501, "worst": 82.02022100158501, "method": "nearest rank"}, "mixed_master": {"n": 2, "p50": 80.53410099819303, "p95": 80.75779800128657, "p99": 80.75779800128657, "worst": 80.75779800128657, "method": "nearest rank"}}}
+
+(process:256710): dbind-WARNING **: 01:37:15.054: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+X connection to :10 broken (explicit kill or server shutdown).
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1285, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1196, in main
+    sales, sales_profile, sales_large = measure_sales(output, procurement_profile, binary, env, start, x11, capture, args.search_samples, args.pilot, report)
+                                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 790, in measure_sales
+    result['external_stage'] = measure_sales_stage(output, procurement_source, binary, env, start, x11, capture, result)
+                               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 628, in measure_sales_stage
+    keyboard_focus(access, opener, x11)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 99, in keyboard_focus
+    raise RuntimeError('Native Tab did not focus the pre-discovered search control')
+RuntimeError: Native Tab did not focus the pre-discovered search control

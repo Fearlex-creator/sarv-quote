@@ -1,0 +1,10 @@
+{
+  "scope": "Independent read-only C9 immutable-archive inspection and raw SQLite payload snapshots; no new application or GUI execution.",
+  "files": {
+    "identity-final-state.json": "7f1d6e127aa23ac9f8a6c3b095fbb42d8dc3cef2f0a593eb2bf7cc82f047d6be",
+    "inspection.log": "afa37a9683d564230984772b219f7f7bd0b612a9ae6b0775dedea094af6ceed6",
+    "independent-inspection.json": "24a95eb81d7de0949c4da98669a534bd1b200b2faa8fa4461c766e11693a8995",
+    "inspect.py": "c3653cb451d58d7acc63a4b68f015c6e4c0416f6b5ba4a322f84bb052b4362ca",
+    "native-full-state.json": "ba12c98ae5aed115e91ce7b55b7bd5b481fed85327b2e8a75ee2180f766e79ac"
+  }
+}

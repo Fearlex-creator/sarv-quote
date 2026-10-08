@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/docs/assets/accounting-m5/native/inspect-focus-boundary.py", line 16, in <module>
+    spec.loader.exec_module(native)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^
+  File "<frozen importlib._bootstrap_external>", line 1026, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 21, in <module>
+    from qa_access import Access
+ModuleNotFoundError: No module named 'qa_access'

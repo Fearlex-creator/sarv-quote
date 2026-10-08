@@ -1,0 +1,12 @@
+{
+  "all_control_differences_irr": 0,
+  "complete_source_rows": 35,
+  "controls": 12,
+  "fresh_restore_full_state_equal": true,
+  "journal_count": 1,
+  "restart_equal": true,
+  "result": "passed",
+  "state_sha256": "7b0d82163c8551262b5d16768a900ccc3f2921b60855defc44c3b344621bfa56",
+  "total_credit_irr": 1251,
+  "total_debit_irr": 1251
+}

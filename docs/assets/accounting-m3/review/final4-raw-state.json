@@ -1,0 +1,47 @@
+{
+  "result": "passed",
+  "profile": "artifacts/independent-m3/final4-main/profile",
+  "schema": 4,
+  "generation": 1,
+  "payload_sha256": "b8a4948cf8863d0c59bc6f6485ca379fb3408b04a2554e0f3650fde3e4fa0cb4",
+  "sqlite_integrity": "ok",
+  "debit_irr": 1251,
+  "credit_irr": 1251,
+  "signed_ledger_by_role": {
+    "Cash": 251,
+    "Bank": 300,
+    "Receivables": 200,
+    "ChequesReceivable": 200,
+    "Inventory": 300,
+    "SupplierAdvances": 0,
+    "FixedAssets": 0,
+    "Payables": -149,
+    "ChequesPayable": -100,
+    "Grni": -50,
+    "CustomerAdvances": 0,
+    "Loans": 0,
+    "OwnerCapital": -952,
+    "OwnerDrawings": 0,
+    "RetainedEarnings": 0,
+    "Sales": 0,
+    "SalesReturns": 0,
+    "Cogs": 0,
+    "OperatingExpense": 0,
+    "BankFees": 0,
+    "InventoryLoss": 0
+  },
+  "quantity_thousandths_by_warehouse": {
+    "w1": 24000,
+    "w2": 6000
+  },
+  "stock_value_irr_by_warehouse": {
+    "w1": 240,
+    "w2": 60
+  },
+  "grni_is_subset": true,
+  "net_assets_equity_irr": 952,
+  "pnl_irr": 0,
+  "source_id": "independent-F2-source",
+  "opening_date": "2026-03-21",
+  "oracle": "Python standard-library integers over raw persisted state; literal expectations, no production helper"
+}

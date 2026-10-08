@@ -1,0 +1,40 @@
+{
+  "production_source_sha256": "0afa43f953def0394b3eb31f996918df13fd96ee8d6ac7bb4025d393956df9df",
+  "algorithm": "sorted src/**/*.rs + src/style.css + Cargo.toml + Cargo.lock, each relative path NUL file bytes NUL",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "binary_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1",
+  "result": "bounded M3 engineering workflow accepted",
+  "financial_probe_named_passes": 33,
+  "rejected_unchanged_commands": 30,
+  "regression_test_passes": 20,
+  "artifacts": [
+    "final4-main.log",
+    "final4-atomic.log",
+    "final4-migration.log",
+    "final4-reports.log",
+    "final4-regressions.log",
+    "final4-raw-state.json",
+    "final4-reports/independent-report-check.json"
+  ],
+  "production_source_sha256_after": "0afa43f953def0394b3eb31f996918df13fd96ee8d6ac7bb4025d393956df9df",
+  "native_checks_passed": 38,
+  "native_report": "native/run-chag02yz/core-independent-native.json",
+  "native_persisted_oracle": "native/run-chag02yz/independent-native-persisted.json",
+  "dark_modal_report": "native/dark-modal-47sl_di3/modal-check.json",
+  "native_method": "Real keyboard path entry into owned FileDialog, AT-SPI action on actual Open widget; preview/post and separate party edit/cancel use XTest keys",
+  "limits": "PERF and all deferred legal/tax/professional/production/platform/scale acceptance remain open",
+  "probe_sources_sha256": {
+    "artifacts/independent-m3/fixture-template.csv": "a1604bc8c6c1d1d5573a1e20a269beb910bdedf11c91841aac5e91e8462e4cc0",
+    "artifacts/independent-m3/make-fixture.py": "d5001832432ed87e9ea0392d5cd73315125bc2b2339faa22ba650125627f3e4e",
+    "artifacts/independent-m3/modal-review.py": "582bfe2b6f4cdb9586e0d4def921cf4bf89031644ec27f439308d4d422989e43",
+    "artifacts/independent-m3/native-persisted-check.py": "2b2c0dcca200ce335fd60dcf968470ae50644df1e25b39cef3ac671b9acaacef",
+    "artifacts/independent-m3/native-review.py": "22ca5912a6910193abcb8865c44213b8d2578eb96b2190f16e384b36c96ff3d9",
+    "artifacts/independent-m3/probe/Cargo.toml": "b4758b25c501f58b18a5eadd2c8d26ae4105c96572162534f5b1a8004eb54945",
+    "artifacts/independent-m3/probe/src/atomic.rs": "2aca8c1f6c9801b61548947d9b07632218e0ca376a4ef72afdab669b53d4a693",
+    "artifacts/independent-m3/probe/src/main.rs": "fc6f1ee293fe2c9d4e3ac22616a1a17fee2e932e43634d11446ead945d68b6a9",
+    "artifacts/independent-m3/probe/src/migration.rs": "47bf97d15c758c753465f8310b2b523ff138bc5eef8258ebbabce451e6d53967",
+    "artifacts/independent-m3/probe/src/reports.rs": "4a2b21a5b5286bf4aebf430ed1795f56eec27da02b6b827bbc137fa1f2b76b2c",
+    "artifacts/independent-m3/raw-state-check.py": "17c70df654c903379e2896596599a34ce8df5209ec7900ad3270a8aaefac0f10",
+    "artifacts/independent-m3/report-text-check.py": "3c8f75cc4bc90857e6c2910865d72895a103e6d462d74ff60582a89a932b85bd"
+  }
+}

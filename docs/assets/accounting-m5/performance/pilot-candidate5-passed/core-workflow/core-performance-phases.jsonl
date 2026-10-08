@@ -1,0 +1,4 @@
+{"boundary":"dispatch through completed UI result rendering","elapsed_ms":51.784656,"gaps_ms":[17.573598999999998,16.044985,17.570213000000003,0.595859],"interval_ms":16,"max_gap_ms":17.573598999999998,"phase":"preview","result":"differences","ticks":3}
+{"boundary":"dispatch through completed UI result rendering","elapsed_ms":52.016375,"gaps_ms":[16.315662000000003,16.183004,16.159587,3.358122],"interval_ms":16,"max_gap_ms":16.315662000000003,"phase":"preview","result":"verified","ticks":3}
+{"boundary":"dispatch through completed UI result rendering","elapsed_ms":51.414823,"gaps_ms":[16.096006,16.099798,16.08217,3.136849],"interval_ms":16,"max_gap_ms":16.099798,"phase":"preview","result":"verified","ticks":3}
+{"boundary":"dispatch through observed persistence busy release; durable state independently checked","elapsed_ms":79.394493,"gaps_ms":[18.572735,60.821317,0.000441],"interval_ms":16,"max_gap_ms":60.821317,"phase":"post","result":"worker_finished","ticks":2}

@@ -1,0 +1,69 @@
+{
+  "scope": "Documentation/capture integrity only; no product acceptance",
+  "capture_count": 12,
+  "all_http_200": true,
+  "all_capture_text_hashes_match": true,
+  "checks": [
+    {
+      "id": "hesabfa-purchase-return",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "hesabfa-purchase-returns",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "hesabfa-purchase",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "holoo-supermarket",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "sepidar-warehouse",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "sepidar-commercial",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "zoho-vendor-credits",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "zoho-bills",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "grandtotal-product",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "grandtotal-guides",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "zoho-vendor-credit-create",
+      "http_status": 200,
+      "capture_hash_matches": true
+    },
+    {
+      "id": "zoho-vendor-credit-functions",
+      "http_status": 200,
+      "capture_hash_matches": true
+    }
+  ],
+  "missing_local_document_links": []
+}

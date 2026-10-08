@@ -1,0 +1,72 @@
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+dbus-daemon[151800]: [session uid=1000 pid=151800 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=151807 comm="/workspace/sarv-quote/target/debug/sarv-quote" label="kernel")
+dbus-daemon[151800]: [session uid=1000 pid=151800 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[151835]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=151801 comm="/usr/bin/python3 /tmp/m4-keyboard-debug.py" label="kernel")
+dbus-daemon[151835]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+0 [('شرح و دلیل ثبت', 'text')]
+1 [('شناسهٔ منبع و سال مالی', 'button')]
+2 [('شناسهٔ منبع و سال مالی', 'button')]
+3 [('شناسهٔ منبع و سال مالی', 'button')]
+4 [('شناسهٔ منبع و سال مالی', 'button')]
+5 [('شناسهٔ منبع و سال مالی', 'button')]
+6 [('شناسهٔ منبع و سال مالی', 'button')]
+7 [('شناسهٔ منبع و سال مالی', 'button')]
+8 [('شناسهٔ منبع و سال مالی', 'button')]
+9 [('شناسهٔ منبع و سال مالی', 'button')]
+10 [('شناسهٔ منبع و سال مالی', 'button')]
+11 [('شناسهٔ منبع و سال مالی', 'button')]
+12 [('شناسهٔ منبع و سال مالی', 'button')]
+13 [('شناسهٔ منبع و سال مالی', 'button')]
+14 [('شناسهٔ منبع و سال مالی', 'button')]
+15 [('شناسهٔ منبع و سال مالی', 'button')]
+16 [('شناسهٔ منبع و سال مالی', 'button')]
+17 [('شناسهٔ منبع و سال مالی', 'button')]
+18 [('شناسهٔ منبع و سال مالی', 'button')]
+19 [('شناسهٔ منبع و سال مالی', 'button')]
+20 [('شناسهٔ منبع و سال مالی', 'button')]
+21 [('شناسهٔ منبع و سال مالی', 'button')]
+22 [('شناسهٔ منبع و سال مالی', 'button')]
+23 [('شناسهٔ منبع و سال مالی', 'button')]
+24 [('شناسهٔ منبع و سال مالی', 'button')]
+25 [('شناسهٔ منبع و سال مالی', 'button')]
+26 [('شناسهٔ منبع و سال مالی', 'button')]
+27 [('شناسهٔ منبع و سال مالی', 'button')]
+28 [('شناسهٔ منبع و سال مالی', 'button')]
+29 [('شناسهٔ منبع و سال مالی', 'button')]
+30 [('شناسهٔ منبع و سال مالی', 'button')]
+31 [('شناسهٔ منبع و سال مالی', 'button')]
+32 [('شناسهٔ منبع و سال مالی', 'button')]
+33 [('شناسهٔ منبع و سال مالی', 'button')]
+34 [('شناسهٔ منبع و سال مالی', 'button')]
+35 [('شناسهٔ منبع و سال مالی', 'button')]
+36 [('شناسهٔ منبع و سال مالی', 'button')]
+37 [('شناسهٔ منبع و سال مالی', 'button')]
+38 [('شناسهٔ منبع و سال مالی', 'button')]
+39 [('شناسهٔ منبع و سال مالی', 'button')]
+40 [('شناسهٔ منبع و سال مالی', 'button')]
+41 [('شناسهٔ منبع و سال مالی', 'button')]
+42 [('شناسهٔ منبع و سال مالی', 'button')]
+43 [('شناسهٔ منبع و سال مالی', 'button')]
+44 [('شناسهٔ منبع و سال مالی', 'button')]
+/tmp/m4-keyboard-bk19asm0
+Traceback (most recent call last):
+  File "/tmp/m4-keyboard-debug.py", line 32, in <module>
+    for p in reversed(procs):n.stop(p)
+                             ~~~~~~^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 218, in stop
+    os.killpg(proc.pid, signal.SIGTERM)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+ProcessLookupError: [Errno 3] No such process

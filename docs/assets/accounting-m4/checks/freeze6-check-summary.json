@@ -1,0 +1,31 @@
+{
+  "ordinary": {
+    "passed": 194,
+    "failed": 0,
+    "ignored": 3
+  },
+  "separate_opt_ins": {
+    "font-pdf": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "gtk-lifecycle": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    },
+    "old-binary": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0
+    }
+  },
+  "formatting": "passed",
+  "strict_all_target_clippy": "passed",
+  "release_build_seconds": 32.63,
+  "source_before_after_all32_identical": true,
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "scope": "Local executor checks only; GUI suites, independent review, performance and historical proofs separately attributed; no hosted Actions triggered"
+}

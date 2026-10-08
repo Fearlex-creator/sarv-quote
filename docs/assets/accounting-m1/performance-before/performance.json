@@ -1,0 +1,467 @@
+{
+  "result": "measured",
+  "binary": "/workspace/sarv-evidence/bin/sarv-quote-accounting-final",
+  "binary_sha256": "ae35fe5d21095af53c194e75081d8b2087f7e31d96a3b0d1565a7f1aa1228f65",
+  "source_head": "4aa82c2988fb2ea48a2fa2ae9824c06187f3d76a",
+  "source_status": "M src/domain.rs\n M src/lib.rs\n M src/store.rs\n M src/ui.rs\n M src/ui/background.rs\n M src/ui/editor.rs\n M src/ui/responsiveness.rs\n M tests/process_recovery.rs\n M tests/qa_invariants.rs\n M tests/storage_hardening.rs\n M tests/workflow.rs\n?? decisions.md\n?? migrations.md\n?? requirements/\n?? scripts/accounting-performance.py\n?? scripts/accounting-qa.py\n?? scripts/native-save-close.py\n?? src/accounting.rs\n?? src/accounting_export.rs\n?? src/ui/accounting.rs\n?? tests/accounting_exports.rs\n?? tests/accounting_kernel.rs\n?? tests/accounting_migration.rs\n?? tests/detached_save.rs",
+  "source_code_sha256": "e616654b51e6e8e167bd40f42867402bf16b9a53f1fbdd113578e1579e6ad9f9",
+  "utc": "2026-10-07T15:51:52Z",
+  "synthetic_only": true,
+  "datasets": {
+    "g1-small": {
+      "source": "/workspace/sarv-evidence/independent-ledger-final/profile",
+      "source_shape": {
+        "schema": 2,
+        "generation": 8,
+        "payload_sha256": "de70ecb717ed3f55eee1e541808f74bc3a29976428e2b95f170c03a8945d311f",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 2,
+          "accounts": 2,
+          "journals": 3,
+          "requests": 4,
+          "audit": 10
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 807.5323449997995,
+          "steady_rss_kib": 86260,
+          "kernel_peak_rss_kib": 93012,
+          "rss_observer_samples": 127,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 864.0201169998818,
+          "steady_rss_kib": 86128,
+          "kernel_peak_rss_kib": 92884,
+          "rss_observer_samples": 131,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 776.7666369998096,
+          "steady_rss_kib": 86184,
+          "kernel_peak_rss_kib": 92728,
+          "rss_observer_samples": 123,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 745.1808690000234,
+          "steady_rss_kib": 86368,
+          "kernel_peak_rss_kib": 93076,
+          "rss_observer_samples": 121,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 795.4340879998654,
+          "steady_rss_kib": 86088,
+          "kernel_peak_rss_kib": 92748,
+          "rss_observer_samples": 126,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 891.9890910001413,
+          "steady_rss_kib": 87124,
+          "kernel_peak_rss_kib": 93904,
+          "rss_observer_samples": 135,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 795.4158380000536,
+          "steady_rss_kib": 86912,
+          "kernel_peak_rss_kib": 93576,
+          "rss_observer_samples": 126,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 813.5376360000919,
+          "steady_rss_kib": 86228,
+          "kernel_peak_rss_kib": 92968,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 761.0972219999894,
+          "steady_rss_kib": 86420,
+          "kernel_peak_rss_kib": 92812,
+          "rss_observer_samples": 123,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 739.7048489999634,
+          "steady_rss_kib": 86252,
+          "kernel_peak_rss_kib": 92704,
+          "rss_observer_samples": 121,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 792.6914139998189,
+          "steady_rss_kib": 86432,
+          "kernel_peak_rss_kib": 92960,
+          "rss_observer_samples": 126,
+          "screenshot": "/workspace/sarv-evidence/performance-final/g1-small/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 2,
+        "generation": 8,
+        "payload_sha256": "de70ecb717ed3f55eee1e541808f74bc3a29976428e2b95f170c03a8945d311f",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 2,
+          "accounts": 2,
+          "journals": 3,
+          "requests": 4,
+          "audit": 10
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 792.6914139998189,
+        "p95": 891.9890910001413,
+        "p99": 891.9890910001413,
+        "worst": 891.9890910001413,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 86252,
+        "p95": 87124,
+        "p99": 87124,
+        "worst": 87124,
+        "method": "nearest rank"
+      },
+      "peak_rss_kib": {
+        "n": 10,
+        "p50": 92884,
+        "p95": 93904,
+        "p99": 93904,
+        "worst": 93904,
+        "method": "nearest rank"
+      },
+      "final_shape": {
+        "schema": 2,
+        "generation": 8,
+        "payload_sha256": "de70ecb717ed3f55eee1e541808f74bc3a29976428e2b95f170c03a8945d311f",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 2,
+          "accounts": 2,
+          "journals": 3,
+          "requests": 4,
+          "audit": 10
+        }
+      }
+    },
+    "quote-scale": {
+      "source": "/workspace/sarv-evidence/native-before-current",
+      "source_shape": {
+        "schema": 1,
+        "generation": 7,
+        "payload_sha256": "3b75e786f3daef592d1521032470a08797d818f796e19eb28a40e79e07caf2f0",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {}
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 1385.3878899999472,
+          "steady_rss_kib": 151064,
+          "kernel_peak_rss_kib": 154036,
+          "rss_observer_samples": 184,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1139.1740369999752,
+          "steady_rss_kib": 148768,
+          "kernel_peak_rss_kib": 151844,
+          "rss_observer_samples": 159,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 1132.9348389999723,
+          "steady_rss_kib": 148980,
+          "kernel_peak_rss_kib": 152044,
+          "rss_observer_samples": 159,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 1093.2499979999193,
+          "steady_rss_kib": 148868,
+          "kernel_peak_rss_kib": 152012,
+          "rss_observer_samples": 156,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 1163.0948150000222,
+          "steady_rss_kib": 148896,
+          "kernel_peak_rss_kib": 151968,
+          "rss_observer_samples": 160,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 1183.6268560000462,
+          "steady_rss_kib": 148816,
+          "kernel_peak_rss_kib": 151944,
+          "rss_observer_samples": 162,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 1285.5794609999975,
+          "steady_rss_kib": 149668,
+          "kernel_peak_rss_kib": 152840,
+          "rss_observer_samples": 173,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 1179.926986000055,
+          "steady_rss_kib": 148820,
+          "kernel_peak_rss_kib": 151848,
+          "rss_observer_samples": 163,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 1336.624188000087,
+          "steady_rss_kib": 148772,
+          "kernel_peak_rss_kib": 151832,
+          "rss_observer_samples": 177,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 1170.848119999846,
+          "steady_rss_kib": 148832,
+          "kernel_peak_rss_kib": 151968,
+          "rss_observer_samples": 162,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 1134.5641190000606,
+          "steady_rss_kib": 149764,
+          "kernel_peak_rss_kib": 152952,
+          "rss_observer_samples": 160,
+          "screenshot": "/workspace/sarv-evidence/performance-final/quote-scale/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 2,
+        "generation": 8,
+        "payload_sha256": "70c42a0d0d4c9e2ff5fd6b1c9d9af5925d2b4c2b53cd0c6e2ca7b8071cf5f403",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {}
+      },
+      "indexed_search_samples": [
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 246.64553999991767
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 256.93222099994273
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 246.28002000008564
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 249.92518399994879
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 250.08084099999905
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 250.3109570000106
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 253.7558030001037
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 243.38936999993166
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 256.1808180000753
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 245.3965209999751
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 250.9677630000624
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 253.55410700012726
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 251.07038300006934
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 255.12054399996487
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 248.59026000012818
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 257.97624899996663
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 265.9793200000422
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 263.57526099991446
+        },
+        {
+          "query": "SCALE-50000",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 50000",
+          "duration_ms": 268.388873000049
+        },
+        {
+          "query": "SCALE-49999",
+          "expected_title": "کالای ساختگی پاسخ‌گویی 49999",
+          "duration_ms": 264.1870630000085
+        }
+      ],
+      "indexed_search_ms": {
+        "n": 20,
+        "p50": 251.07038300006934,
+        "p95": 265.9793200000422,
+        "p99": 268.388873000049,
+        "worst": 268.388873000049,
+        "method": "nearest rank"
+      },
+      "steady_rss_picker_kib": {
+        "VmRSS": 195268,
+        "VmHWM": 195268
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 1163.0948150000222,
+        "p95": 1336.624188000087,
+        "p99": 1336.624188000087,
+        "worst": 1336.624188000087,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 148832,
+        "p95": 149764,
+        "p99": 149764,
+        "worst": 149764,
+        "method": "nearest rank"
+      },
+      "peak_rss_kib": {
+        "n": 10,
+        "p50": 151968,
+        "p95": 152952,
+        "p99": 152952,
+        "worst": 152952,
+        "method": "nearest rank"
+      },
+      "final_shape": {
+        "schema": 2,
+        "generation": 8,
+        "payload_sha256": "70c42a0d0d4c9e2ff5fd6b1c9d9af5925d2b4c2b53cd0c6e2ca7b8071cf5f403",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {}
+      }
+    }
+  },
+  "hardware": {
+    "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "filesystem": "Filesystem     Type    1K-blocks    Used Available Use% Mounted on\noverlay        overlay  32978704 2185536  29099064   7% /workspace",
+    "meminfo": "MemTotal:       18440136 kB\nMemFree:        14871640 kB\nMemAvailable:   16884652 kB\nBuffers:           11156 kB\nCached:          2277840 kB\nSwapCached:            0 kB\nActive:           810468 kB\nInactive:        2178120 kB\nActive(anon):      15596 kB\nInactive(anon):   753440 kB\nActive(file):     794872 kB\nInactive(file):  1424680 kB\nUnevictable:       29920 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:             52640 kB\nWriteback:             0 kB\nAnonPages:        729624 kB\nMapped:           168632 kB\nShmem:             39596 kB\nKReclaimable:     118700 kB\nSlab:             172676 kB\nSReclaimable:     118700 kB\nSUnreclaim:        53976 kB\nKernelStack:        4200 kB\nPageTables:        10412 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     9220068 kB\nCommitted_AS:    2168136 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:        6464 kB\nVmallocChunk:          0 kB\nPercpu:             1296 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:     20480 kB\nFilePmdMapped:         0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:      114688 kB\nDirectMap2M:    11227136 kB\nDirectMap1G:    28311552 kB\n",
+    "cgroup_memory_max": "17179869184",
+    "screen": "1450x1050x24 Xvfb, scale 1, X11, Cairo, Openbox",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "gtk_libadwaita": "4.22.5\n1.9.4",
+    "database_source_configuration": "SQLite WAL; synchronous=FULL; busy timeout 3s (src/store.rs)"
+  },
+  "boundaries": {
+    "startup": "Popen dispatch to owned mapped GTK window, visible editor save control, real XTest Tab focus roundtrip, and X11 screenshot completion. Screenshot acquisition/AT-SPI polling observer overhead included.",
+    "first_on_clone": "First process on freshly backed-up synthetic database; schema migration may be included. OS page cache uncontrolled.",
+    "repeated_startup": "New process each sample, same initialized profile; OS page cache warm/uncontrolled, AT-SPI session preinitialized. Not machine-cold.",
+    "search": "AT-SPI text replacement dispatch to exact expected product title in a visible selectable and sensitive list item; includes debounce, rendering, AT-SPI observer overhead.",
+    "rss": "Owned application /proc VmRSS and kernel VmHWM in KiB, polled every 10ms from process launch. Steady after 500ms idle; peak excludes X server, accessibility registry and helpers."
+  },
+  "limits": [
+    "No OS-cache flush, physical cold launch, SSD hardware declaration, or reference four-core/8GB certification.",
+    "No five-year/100,000-document/1,000,000-journal-line/10,000-party fixture; small G1 and existing 50,000-product/1,000-line quote only.",
+    "External AT-SPI polling/screenshot observer affects latency; p99 for n=10 is simply the worst sample.",
+    "No report/posting/import/Wayland/package/printer benchmark in this harness."
+  ],
+  "source_code_sha256_after": "e616654b51e6e8e167bd40f42867402bf16b9a53f1fbdd113578e1579e6ad9f9",
+  "binary_sha256_after": "ae35fe5d21095af53c194e75081d8b2087f7e31d96a3b0d1565a7f1aa1228f65"
+}

@@ -1,0 +1,78 @@
+--- runtime3/scripts/native-performance-M6.py
++++ runtime4-prepared/scripts/native-performance-M6.py
+@@ -29,7 +29,7 @@
+ legacy = module_from_spec(SPEC)
+ SPEC.loader.exec_module(legacy)
+ helper, native = legacy.helper, legacy.native
+-PROTOCOL = 'm6-scoped-v1'
++PROTOCOL = 'm6-scoped-v1.1'
+ QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
+ PREVIEW = 'بازبینی مقدار و اثر سند'
+ POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
+@@ -361,19 +361,31 @@
+         rows = access.a.atspi_accessible_get_parent(status['node'], None)
+         return search, root, rows
+ 
+-    def source_rows(self, access, rows, root):
++    def source_rows(self, access, rows, root, event):
+         result = walk(access, rows, 500)
+         statuses = [row for row in result if re.fullmatch(r'\d+ منبع قابل برگشت • صفحهٔ \d+', normalize(row['name']))]
+         actions = [row for row in result if row['role'] in ('button', 'push button')
+                    and (normalize(row['name']).startswith('صورتحساب ') or normalize(row['name']).startswith('رسید صورتحساب‌نشده '))]
+         assert len(actions) <= 25
+-        assert all(member(access, row, root) for row in [*statuses, *actions])
++        membership = [{'name': row['name'], 'role': row['role'], 'node': hex(row['node']),
++                       'current_member': member(access, row, root)} for row in [*statuses, *actions]]
++        if not all(row['current_member'] for row in membership):
++            # Search/pager updates replace children asynchronously. Reject this
++            # observation; callers must retry a fresh walk, never use stale rows.
++            self.report['rejected_source_observations'].append({
++                'event': event, 'monotonic_ns': time.monotonic_ns(),
++                'reason': 'Source-picker row retired during bounded current-subtree observation',
++                'root_node': hex(root), 'rows_node': hex(rows), 'membership': membership})
++            return None
+         return statuses, actions
+ 
+     def source_result(self, access, search, root, rows, query, expected_ref, page=1):
+         if access.text(search) != query or not ready(access, search, root):
+             return None
+-        statuses, actions = self.source_rows(access, rows, root)
++        current = self.source_rows(access, rows, root, f'query={query};page={page};reference={expected_ref}')
++        if current is None:
++            return None
++        statuses, actions = current
+         if len(statuses) != 1 or normalize(statuses[0]['name']) != f'60 منبع قابل برگشت • صفحهٔ {page}':
+             return None
+         if len(actions) != min(25, 60 - 25 * (page - 1)):
+@@ -393,7 +405,10 @@
+         search, root, rows = self.source_picker(access)
+         fill(access, SEARCH, 'M6-NO-ELIGIBLE-SOURCE', self.x11, root)
+         def zero():
+-            statuses, actions = self.source_rows(access, rows, root)
++            current = self.source_rows(access, rows, root, 'exact-zero-result-warmup')
++            if current is None:
++                return False
++            statuses, actions = current
+             return access.text(search) == 'M6-NO-ELIGIBLE-SOURCE' and len(statuses) == 1 and normalize(statuses[0]['name']) == '0 منبع قابل برگشت • صفحهٔ 1' and not actions
+         observe(zero, 'exact zero-result source scope')
+         result['zero_result_exact'] = True
+@@ -447,7 +462,10 @@
+         search, root, rows = self.source_picker(access)
+         fill(access, SEARCH, reference, self.x11, root)
+         def chosen():
+-            statuses, actions = self.source_rows(access, rows, root)
++            current = self.source_rows(access, rows, root, f'one-original-source;reference={reference}')
++            if current is None:
++                return None
++            statuses, actions = current
+             if len(statuses) != 1 or normalize(statuses[0]['name']) != '1 منبع قابل برگشت • صفحهٔ 1' or len(actions) != 1:
+                 return None
+             refs = re.findall('\u2068([^\u2069]+)\u2069', actions[0]['name'])
+@@ -741,6 +759,7 @@
+               'source_manifest_sha256': sha(args.source_manifest), 'verification_manifest_sha256': sha(args.verification_manifest),
+               'dataset_manifest_sha256': sha(args.dataset_manifest), 'dataset_files_before': fixtures_before,
+               'startup': {}, 'source_picker_search': {}, 'return_workflows': {}, 'capture_samples': [],
++              'rejected_source_observations': [],
+               'hardware': {'lscpu': helper.command('lscpu'), 'os': Path('/etc/os-release').read_text(),
+                            'filesystem': helper.command('df', '-T', '/workspace'), 'meminfo': Path('/proc/meminfo').read_text(),
+                            'cgroup_cpu_max': Path('/sys/fs/cgroup/cpu.max').read_text().strip(),

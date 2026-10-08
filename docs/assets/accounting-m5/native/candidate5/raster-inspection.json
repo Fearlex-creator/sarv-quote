@@ -1,0 +1,34 @@
+{
+  "personally_inspected": true,
+  "scope": "candidate5 native qualification; no performance claim",
+  "files": {
+    "full/M5-real-restored-new-order.png": {
+      "sha256": "42170473d8315052584281f3f35382f46994526c37a24965c7e00a46d567086e",
+      "observation": "Both dates show2026-04-01 after actual restore; reference entry focus ring, usable customer/current source."
+    },
+    "full/M5-real-filtered-search.png": {
+      "sha256": "8dd863ad16cefc713d46f113c3b63d89d659d598b3011399f01c03a0414233c7",
+      "observation": "Actual typed SO-M5 search/focus ring, one matching199 order, idle ready footer, disabled pager."
+    },
+    "full/M5-sales-light-650x550.png": {
+      "sha256": "7c1b4cbe16da731a23bb89d90de3269f9d9c701cab39758d4d3669d1b402505e",
+      "observation": "Persian/RTL labels readable at650x550; top actions/search present, first source row in scroll viewport."
+    },
+    "full/M5-sales-dark-650x550.png": {
+      "sha256": "090ce7f42a1555fcc6f6477c568bf3f8d29c60ea092a908e877db90bb7367efa",
+      "observation": "Dark650x550 counterpart readable with same action/search/source layout."
+    },
+    "full/M5-real-export-action-focus.png": {
+      "sha256": "8a0aafc033cb6412c65584744d03c46cc5327ed96be6f681997e4bfe704b3ac9",
+      "observation": "Source exact order/fulfillment links readable; PDF button own visible focus ring; idle detail-ready footer."
+    },
+    "m4-before/M4-before.png": {
+      "sha256": "86d08ef2e050d1e64ca5129eb79ae774e33620b46e504b6d34f98ddf48a167ba",
+      "observation": "Actual archived M4 binary renders unchanged opening/procurement baseline; latest transfer2026-03-27 visible."
+    },
+    "identity/M5-reused-lines-current-review-error.png": {
+      "sha256": "aaf470efb531619be6d499ba48f87abb8f37ee6bab51a4d0c3d12bb268296f51",
+      "observation": "Retained synthetic KBD-REUSE-30 editor after delete/reorder; stale total rejection visible in red footer and post disabled."
+    }
+  }
+}

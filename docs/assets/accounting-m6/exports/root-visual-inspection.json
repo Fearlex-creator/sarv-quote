@@ -1,0 +1,18 @@
+{
+  "scope": "root actual raster inspection; these two pages only, complete PDF inspection belongs to export owner and independent review",
+  "pages": {
+    "docs/assets/accounting-m6/exports/billed-supplier-credit-page-1.png": "252df139644aabfa06295b47d7bf96e14f1704adbfbc69eb93b1aceff4e40d8b",
+    "docs/assets/accounting-m6/exports/long-physical-return-page-4.png": "6ec487a044c5b447e65a8c7f0f25ce6a9c53f956f713a02b44713be209343bde"
+  },
+  "observations": [
+    "Persian glyph shaping and mixed codes readable",
+    "supplier credit heading and distinct physical return/credit references retained",
+    "45 IRR = 4.5 toman and 180 IRR = 18 toman explicit",
+    "long document header repeats with page4 shown; no visible clipping on inspected rasters"
+  ],
+  "not_established": [
+    "physical print",
+    "professional accountant acceptance",
+    "all other pages"
+  ]
+}

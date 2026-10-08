@@ -1,0 +1,4 @@
+   Compiling sarv-independent-m5-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m5/probe)
+    Finished `dev` profile [unoptimized] target(s) in 1.04s
+     Running `target/debug/sarv-independent-m5-quote-draft artifacts/independent-m5/diagnostic-1/interleaved/state.json artifacts/independent-m5/diagnostic-3/quote-draft`
+PASS 20 independent authentic full quote metadata/mapping/raw draft/retry/revision/tax-preservation observations; exact49IRR source and54IRR taxed historical quote.

@@ -1,0 +1,177 @@
+{
+  "result": "failed",
+  "binary_sha256": "cd14d26374c19ed04de32a2c3a4849304a3718511c2d2cc9ec4b56fe465e7668",
+  "source": "/workspace/sarv-quote/artifacts/m4-preserved/quote-mcjjhntx",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-bkn3b2i1",
+  "checks": [
+    {
+      "name": "Native customer Enter preserves all five independently typed fields",
+      "passed": true
+    },
+    {
+      "name": "Customer creation leaves approved history unchanged",
+      "passed": true
+    },
+    {
+      "name": "Conflicting duplicate native customer submission remains unchanged",
+      "passed": true
+    },
+    {
+      "name": "Conflicting duplicate shows explicit edit guidance",
+      "passed": true
+    },
+    {
+      "name": "Native CSV import presents row/column diagnostics for both invalid records",
+      "passed": true
+    },
+    {
+      "name": "Native rejected multi-error import preserves exact whole persisted state",
+      "passed": true
+    },
+    {
+      "name": "In-app CSV template is actually copied and natively pasteable",
+      "passed": true
+    },
+    {
+      "name": "Composer staging does not persist a partial catalog",
+      "passed": true
+    },
+    {
+      "name": "Duplicate native product is rejected without partial persistence",
+      "passed": true
+    },
+    {
+      "name": "Duplicate product displays a validation reason",
+      "passed": true
+    },
+    {
+      "name": "Native approved catalog persists exact source, aliases and rial amount",
+      "passed": true,
+      "product": {
+        "code": "QA-NATIVE-1",
+        "name": "کالای ساختگی مستقل با شرح بلند",
+        "measure": "عدد",
+        "price_rial": 1251,
+        "source_unit": "Rial",
+        "source_at": "2020-01-01T00:00:00Z",
+        "aliases": [
+          "alias independent",
+          "نام ساختگی"
+        ]
+      }
+    },
+    {
+      "name": "In-document customer picker loads identity/contact/email/address snapshot",
+      "passed": true
+    },
+    {
+      "name": "Customer picker Escape preserves exact saved draft",
+      "passed": true
+    },
+    {
+      "name": "Product alias picker → quantity Enter adds exact explicit source",
+      "passed": true
+    },
+    {
+      "name": "Native approval retains exact integer totals and contact snapshot",
+      "passed": true,
+      "expected_subtotal_rial": 2971,
+      "expected_tax_rial": 99,
+      "expected_total_rial": 2070
+    },
+    {
+      "name": "Native preview CSV saves the shown contact/address and exact total",
+      "passed": true
+    },
+    {
+      "name": "Native preview CSV export leaves approved history unchanged",
+      "passed": true
+    },
+    {
+      "name": "Native preview PDF contains the selected code and contact email",
+      "passed": true
+    },
+    {
+      "name": "Native preview PDF export leaves approved history unchanged",
+      "passed": true
+    }
+  ],
+  "resumed_debug": false,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "captures": {
+    "customer-dialog.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "import-diagnostics.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-composer.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-confirm.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customer-picker.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "product-picker.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "editor-approved.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "document-preview.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "archive-expanded-probe.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    }
+  },
+  "archive_expander_bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1076,
+    "height": 60
+  },
+  "window_origin": [
+    25,
+    55
+  ],
+  "error": "AssertionError('Native Tab cannot reach row0-quantity')"
+}

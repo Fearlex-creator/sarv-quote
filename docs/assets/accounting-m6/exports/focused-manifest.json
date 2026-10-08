@@ -1,0 +1,53 @@
+{
+  "generated_at_utc": "2026-10-08T06:20:34.721427+00:00",
+  "baseline_head": "eb8f8c29648fd4a206a26d65ae4eaca5cf945a1b",
+  "branch": "codex/accounting-baseline-m1",
+  "working_tree": "M6 collaborative changes; this is focused-test evidence, not final freeze acceptance",
+  "command": "source /workspace/sarv-environment/activate.sh; SARV_PURCHASE_RETURN_EXPORT_ARTIFACT_DIR=/workspace/sarv-quote/docs/assets/accounting-m6/exports cargo test --offline --locked --test purchase_return_exports -- --nocapture",
+  "test_binary": {
+    "path": "/workspace/sarv-quote/target/debug/deps/purchase_return_exports-df2cd442749b2237",
+    "sha256": "654fd26f502579894fb3687c32a678aef240361313ba01b3ccaa88724b1764c0"
+  },
+  "source_capture_after_focused_run": {
+    "src/procurement_export.rs": "48337574a7be8dd62c303d8ff03b7922ba8d31dfbbdfb466234f7e99359cadde",
+    "tests/purchase_return_exports.rs": "611e29a6ae5ea77805da90cbae9301bef10baaf621e4341ed731b4c0e218cf77",
+    "src/procurement.rs": "c92cb4c6fb8cd63a22a6405cd76a968f6d2febbc1a160cbfe13e77b9bc367bac",
+    "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+    "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+    "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+    "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+    "assets/fonts/Vazirmatn-Regular.ttf": "b69fd4c680b8f3f225feabcc655a2c585d97627b8f5f5c0f9985e894069f3a56",
+    "assets/fonts/Vazirmatn-Bold.ttf": "f635fdbea28f265de395ba83b4b1570dcf2f58d13c65469e61903b1c2d2ae723",
+    "assets/fonts/OFL.txt": "17e355067c8284f47743a1ee3b1ef7ff684ff0601eda357f9353b10b3016ab31"
+  },
+  "artifacts": {
+    "billed-physical-return-page-1.png": "cbb4b9f736df60f85e802acebecaa1de8e94b88add6d56d9227cf5225e61cca9",
+    "billed-physical-return.csv": "1517abd5058bf7226ebf22116a9981153f44427daaf44697f562eb80e3db7fe4",
+    "billed-physical-return.pdf": "ae9da77747ef9954d580bf0994adc1678509e400517e3fecc13e80ca00b1de34",
+    "billed-supplier-credit-page-1.png": "252df139644aabfa06295b47d7bf96e14f1704adbfbc69eb93b1aceff4e40d8b",
+    "billed-supplier-credit.csv": "2b3e839b794756dd06071eb03314e44a5462477dbaaa16fef35b6eeaf16bb1c3",
+    "billed-supplier-credit.pdf": "915838b105a4960500b40b940c639c2a4dbdffb145eb5cc4477e533a2b452291",
+    "long-physical-return-page-1.png": "fb757e0ce495b8d204b1e8d9249fedc1fbc29e879becf21e09702e394d60c4a0",
+    "long-physical-return-page-2.png": "9dc8ff5160bde845c19ef68ef48e7c14b278a30ddbb83771096fc3b8590e9276",
+    "long-physical-return-page-3.png": "9f6a6fd0869e298baeb700077d8a2d39f51a5650605e9d7f58404f224d0ced2c",
+    "long-physical-return-page-4.png": "6ec487a044c5b447e65a8c7f0f25ce6a9c53f956f713a02b44713be209343bde",
+    "long-physical-return-page-5.png": "90953b88b36051500ba7b69430b09d2908257eedd941d8005344f4bfde4b78e1",
+    "long-physical-return-page-6.png": "d61b4325a5ba02f481ef8c3770b680778da776cc07417956e5a81cd0e2c974e6",
+    "long-physical-return.csv": "3896cc6431ed0b9994981400171e2fd3fcf38425e79ed0f8ce4fa00d18ce57c5",
+    "long-physical-return.pdf": "b99f1509197f21bb1af10c18b84cfe77788ac8eeb2e08a9a892b09c262b0e62f",
+    "unbilled-return-one-rial-page-1.png": "ac660f915f133aeb9cb69e71f6ad304664938bee26be958caa1d4f8984d84384",
+    "unbilled-return-one-rial.csv": "ab2c9acff34bdd34f846493d6f8724ead5e705fe868d02b23e9c2674635a7d0f",
+    "unbilled-return-one-rial.pdf": "2de6d37e40da4bdc103e0f1d4611703bb8b11afdf9963d6ba69c8e960c276c35",
+    "zero-supplier-credit-page-1.png": "4566af167d2a5eb86fe141e5a8376d16700c6155d1ea0b47d43b36585a2246cb",
+    "zero-supplier-credit.csv": "a91778aef9ee5c1aac093da1fa982acea39340e5ef454fb3053bc0d41e3e9ce5",
+    "zero-supplier-credit.pdf": "c98cec812ad11d5947e36a6fd3a766912d4885fd1e49472acadd66da69f547d6"
+  },
+  "inspection": {
+    "billed-physical-return.pdf": 1,
+    "billed-supplier-credit.pdf": 1,
+    "unbilled-return-one-rial.pdf": 1,
+    "zero-supplier-credit.pdf": 1,
+    "long-physical-return.pdf": 6
+  },
+  "scope": "Synthetic M6 focused export arithmetic/layout checks; no accountant/statutory/production/physical-print acceptance"
+}

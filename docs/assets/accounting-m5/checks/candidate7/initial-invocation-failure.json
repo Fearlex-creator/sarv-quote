@@ -1,0 +1,6 @@
+{
+  "result": "invocation_failed_before_application_start",
+  "reason": "Root omitted source /workspace/sarv-environment/activate.sh; Xvfb not found on default PATH",
+  "exception": "FileNotFoundError: [Errno 2] No such file or directory: Xvfb",
+  "scope": "No Xvfb/app started; no product failure or callback check result. Original partial directory preserved; corrected fresh candidate7-session will use activated runtime."
+}

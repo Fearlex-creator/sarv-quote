@@ -1,0 +1,29 @@
+{
+  "result": "passed",
+  "literal_PDF_substrings": {
+    "125.1": true,
+    "1251": true,
+    "2026-03-21": true,
+    "1405/01/01": true,
+    "2026-02-01": true,
+    "2026-04-01": true,
+    "2026-02-10": true,
+    "2026-05-10": true,
+    "2026-03-01": true,
+    "SETTLED-OLD-INVOICE200": true,
+    "SETTLED-OLD-BILL100": true,
+    "2.000": true,
+    "24.000": true,
+    "6.000": true,
+    "5.000": true,
+    "24000": true,
+    "6000": true,
+    "5000": true,
+    "1 carton = 12 / 1 piece": true
+  },
+  "CSV_controls": 12,
+  "zero_difference": true,
+  "basis": "initial_opening_beginning_of_day",
+  "display_unit": "toman",
+  "limits": "Physical printing/native-reader comprehension not established by extraction; actual rendered pages independently inspected."
+}

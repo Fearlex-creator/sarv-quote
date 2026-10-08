@@ -1,0 +1,6 @@
+   Compiling sarv-independent-review-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-review)
+    Finished `dev` profile [unoptimized] target(s) in 0.29s
+     Running `target/debug/sarv-independent-cache-probe /workspace/sarv-evidence/independent-cache-all-fixed`
+change result Err(سند ثبت‌شده قابل تغییر یا حذف نیست؛ برگشت مرتبط ثبت کنید); persisted journal count 3; expected rejection and 3 journals
+prepared result Err(سند ثبت‌شده قابل تغییر یا حذف نیست؛ برگشت مرتبط ثبت کنید); persisted journal count 3; expected rejection and 3 journals
+PASS synchronous change, prepared and detached candidates cannot remove committed history; explicit verified restore remains permitted.

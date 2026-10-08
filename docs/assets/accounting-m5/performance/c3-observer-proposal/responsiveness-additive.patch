@@ -1,0 +1,570 @@
+--- a/src/ui/responsiveness.rs
++++ b/src/ui/responsiveness.rs
+@@ -112,6 +112,156 @@
+     Ok(std::process::Command::new("/usr/bin/python3")
+         .args(["-c", &script])
+         .spawn()?)
++}
++
++// Additive action clocks do not alter the original broad heartbeat sampler.
++// Observer fixtures, screenshots and disk verification remain outside scopes.
++struct ActionScope {
++    id: usize,
++    operation: &'static str,
++    origin: &'static str,
++    began: Instant,
++    last: Instant,
++    gaps: Vec<f64>,
++    before: serde_json::Value,
++    frames: Rc<Cell<usize>>,
++    frame_guard: Rc<Cell<bool>>,
++    first_ready_frame: Option<usize>,
++    ready_observed_ms: Option<f64>,
++    legacy_elapsed_ms: Option<f64>,
++}
++
++fn action_metadata(ui: &Ui) -> serde_json::Value {
++    let rows = ui.row_editors.borrow();
++    serde_json::json!({
++        "generation": ui.store.borrow().local_generation(),
++        "edit_revision": ui.edit_revision.get(), "page": ui.table_page.get() + 1,
++        "rows": rows.len(), "first_id": rows.first().map(|row| row.index),
++        "first_query": rows.first().map(|row| row.query.text().to_string()),
++        "first_quantity": rows.first().map(|row| row.quantity.text().to_string()),
++        "first_quantity_selection": rows.first().and_then(|row| row.quantity.selection_bounds()),
++        "first_query_visible_and_focused": rows.first()
++            .is_some_and(|row| entry_visible_and_focused(ui, &row.query)),
++        "first_quantity_visible_and_focused": rows.first()
++            .is_some_and(|row| entry_visible_and_focused(ui, &row.quantity)),
++        "first_amount": rows.first().and_then(|row| named::<gtk::Label>(
++            &ui.review, &format!("quote-row-amount-{}", row.index)).ok())
++            .map(|label| label.text().to_string()),
++        "last_id": rows.last().map(|row| row.index),
++        "last_query": rows.last().map(|row| row.query.text().to_string()),
++        "total": ui.total.text().to_string(),
++        "focus_widget": gtk::prelude::GtkWindowExt::focus(&ui.window)
++            .map(|focus| focus.widget_name().to_string()),
++        "persistence_busy": ui.persistence_busy.get(),
++        "review_pending": ui.review_requested.get().is_some(),
++        "visual_pending": ui.visual_pending.get(),
++        "active_dialog": ui.active_dialog.borrow().is_some(),
++    })
++}
++
++fn entry_visible_and_focused(ui: &Ui, entry: &gtk::Entry) -> bool {
++    if !entry.is_mapped() || !gtk::prelude::WidgetExt::is_visible(entry) || !entry.is_sensitive() {
++        return false;
++    }
++    let Some(bounds) = entry.compute_bounds(&ui.window) else {
++        return false;
++    };
++    if bounds.width() <= 0. || bounds.height() <= 0. {
++        return false;
++    }
++    let intersects = |other: &gtk::graphene::Rect| {
++        bounds.x() < other.x() + other.width()
++            && bounds.x() + bounds.width() > other.x()
++            && bounds.y() < other.y() + other.height()
++            && bounds.y() + bounds.height() > other.y()
++    };
++    if !intersects(&gtk::graphene::Rect::new(
++        0.,
++        0.,
++        ui.window.width() as f32,
++        ui.window.height() as f32,
++    )) {
++        return false;
++    }
++    let mut ancestor = entry.parent();
++    while let Some(widget) = ancestor {
++        if widget.is::<gtk::ScrolledWindow>() {
++            let Some(clip) = widget.compute_bounds(&ui.window) else {
++                return false;
++            };
++            if !intersects(&clip) {
++                return false;
++            }
++        }
++        ancestor = widget.parent();
++    }
++    gtk::prelude::GtkWindowExt::focus(&ui.window).is_some_and(|focus| {
++        focus == entry.clone().upcast::<gtk::Widget>() || focus.is_ancestor(entry)
++    })
++}
++
++// The fixture has fixed prices100001..101000 and only first/last quantities
++// change. Checking its rendered exact total avoids recomputing1,000 lines in
++// a readiness poll. Full economic/on-disk verification remains outside scope.
++fn action_review_ready(ui: &Ui, page: usize, quantity_focus: bool) -> Result<bool> {
++    if ui.persistence_busy.get()
++        || ui.review_requested.get().is_some()
++        || ui.visual_pending.get()
++        || ui.active_dialog.borrow().is_some()
++        || ui.table_page.get() != page
++        || ui.stack.visible_child_name().as_deref() != Some("order")
++    {
++        return Ok(false);
++    }
++    let store = ui.store.borrow();
++    let state = &store.state;
++    if state.draft.lines.len() != 1000 {
++        return Ok(false);
++    }
++    let rows = ui.row_editors.borrow();
++    let start = page * 100;
++    if rows.len() != 100
++        || rows.iter().enumerate().any(|(offset, row)| {
++            row.index != start + offset
++                || row.query.text().as_str() != state.draft.lines[start + offset].query
++        })
++    {
++        return Ok(false);
++    }
++    let amount = line_total(
++        100_001 + start as i64,
++        state.draft.lines[start].quantity_milli,
++    )?;
++    let expected = state.settings.display_digits.format(
++        state
++            .draft
++            .display_unit
++            .display(amount)
++            .trim_end_matches(state.draft.display_unit.label())
++            .trim(),
++    );
++    if named::<gtk::Label>(&ui.review, &format!("quote-row-amount-{start}"))?.text() != expected {
++        return Ok(false);
++    }
++    let total = 100_500_500 - 100_001 - 101_000
++        + line_total(100_001, state.draft.lines[0].quantity_milli)?
++        + line_total(101_000, state.draft.lines[999].quantity_milli)?;
++    let expected_total = format!(
++        "جمع نهایی  {}",
++        state
++            .settings
++            .display_digits
++            .format(state.draft.display_unit.display(total))
++    );
++    if ui.total.text() != expected_total {
++        return Ok(false);
++    }
++    let entry = if quantity_focus {
++        &rows[0].quantity
++    } else {
++        &rows[0].query
++    };
++    Ok(entry_visible_and_focused(ui, entry))
+ }
+ 
+ struct Probe {
+@@ -149,6 +299,11 @@
+     save_ticks: usize,
+     save_max_gap_ms: f64,
+     pending_editor_page: Option<(usize, i64, Instant, bool)>,
++    action_scope: Option<ActionScope>,
++    action_records: Vec<serde_json::Value>,
++    unchanged_save_generation: Option<i64>,
++    additive_pdf_done: bool,
++    additive_pdf_error: Option<String>,
+ }
+ 
+ impl Probe {
+@@ -189,7 +344,113 @@
+             save_ticks: 0,
+             save_max_gap_ms: 0.,
+             pending_editor_page: None,
+-        }
++            action_scope: None,
++            action_records: vec![],
++            unchanged_save_generation: None,
++            additive_pdf_done: false,
++            additive_pdf_error: None,
++        }
++    }
++    fn start_action(
++        &mut self,
++        ui: &Ui,
++        operation: &'static str,
++        origin: &'static str,
++    ) -> Result<()> {
++        ensure!(
++            self.action_scope.is_none(),
++            "overlapping additive action scope"
++        );
++        let before = action_metadata(ui);
++        let frames = Rc::new(Cell::new(0usize));
++        let frame_guard = Rc::new(Cell::new(true));
++        let tick_frames = frames.clone();
++        let tick_guard = frame_guard.clone();
++        ui.review.add_tick_callback(move |_, _| {
++            if !tick_guard.get() {
++                return glib::ControlFlow::Break;
++            }
++            tick_frames.set(tick_frames.get() + 1);
++            glib::ControlFlow::Continue
++        });
++        // Start marker precedes the clock; subsequent existing main-thread
++        // spans can be correlated with this action without hiding app work.
++        eprintln!(
++            "SARV_ACTION_START {} {} {}",
++            self.action_records.len() + 1,
++            operation,
++            origin
++        );
++        let now = Instant::now();
++        self.action_scope = Some(ActionScope {
++            id: self.action_records.len() + 1,
++            operation,
++            origin,
++            began: now,
++            last: now,
++            gaps: vec![],
++            before,
++            frames,
++            frame_guard,
++            first_ready_frame: None,
++            ready_observed_ms: None,
++            legacy_elapsed_ms: None,
++        });
++        Ok(())
++    }
++    fn mark_legacy_completion(&mut self, started: Instant) -> f64 {
++        let scope = self.action_scope.as_mut().expect("additive action missing");
++        *scope
++            .legacy_elapsed_ms
++            .get_or_insert_with(|| started.elapsed().as_secs_f64() * 1000.)
++    }
++    fn action_ready(&mut self, exact_ready: bool) -> bool {
++        let Some(scope) = self.action_scope.as_mut() else {
++            return false;
++        };
++        if !exact_ready {
++            scope.first_ready_frame = None;
++            scope.ready_observed_ms = None;
++            return false;
++        }
++        let frame = scope.frames.get();
++        scope
++            .ready_observed_ms
++            .get_or_insert_with(|| scope.began.elapsed().as_secs_f64() * 1000.);
++        let first = *scope.first_ready_frame.get_or_insert(frame);
++        frame >= first + 2
++    }
++    fn close_action(&mut self, ui: &Ui, result: &str) {
++        let Some(scope) = self.action_scope.take() else {
++            return;
++        };
++        let now = Instant::now();
++        scope.frame_guard.set(false);
++        let terminal = now.duration_since(scope.last).as_secs_f64() * 1000.;
++        let maximum = scope.gaps.iter().copied().fold(terminal, f64::max);
++        let status = if maximum > 50. {
++            "miss"
++        } else if scope.gaps.is_empty() {
++            "unmeasured_zero_ticks"
++        } else if result == "accepted" {
++            "pass"
++        } else {
++            "incomplete"
++        };
++        let record = serde_json::json!({"id":scope.id,"operation":scope.operation,
++            "origin":scope.origin,"result":result,"before":scope.before,
++            "after":action_metadata(ui),"elapsed_ms":now.duration_since(scope.began).as_secs_f64()*1000.,
++            "started_since_probe_ms":scope.began.duration_since(self.began).as_secs_f64()*1000.,
++            "ended_since_probe_ms":now.duration_since(self.began).as_secs_f64()*1000.,
++            "ready_observed_ms":scope.ready_observed_ms,
++            "interval_ms":20,"ticks":scope.gaps.len(),"gaps_ms":scope.gaps,
++            "terminal_gap_ms":terminal,"max_gap_ms":maximum,"budget_ms":50,
++            "strict_status":status,"ready_frames":scope.frames.get(),
++            "legacy_completion_ms":scope.legacy_elapsed_ms,
++            "boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof",
++            "fixture_capture_disk_verification_inside_scope":false});
++        eprintln!("SARV_ACTION_PHASE {}", record);
++        self.action_records.push(record);
+     }
+     fn advance(&mut self, stage: u8, delay_ms: u64) {
+         self.stage = stage;
+@@ -205,11 +466,15 @@
+         if self.finished {
+             return;
+         }
++        self.close_action(ui, error.as_deref().unwrap_or("incomplete_at_finish"));
+         self.finished = true;
+         let passed = error.is_none();
+         let report = serde_json::json!({
+             "result": if passed {"passed"} else {"failed"},
+             "synthetic_only": true,
++            "additive_action_protocol": "m5-action-v1",
++            "additive_action_phases": self.action_records,
++            "additive_scope_limits": ["New scopes do not replace original broad strict budgets", "Two rendered readiness frames and observer polling are included", "PDF is a second separately declared internal-helper export, not native PDF file-picker action", "Original global includes extra PDF/probe work; changed observer protocol forbids identical-endpoint causal comparison", "Legacy page duration is latched on original busy-release/page/adopted-generation condition before stronger focus/frame wait; disk verification moves after scope closure", "Legacy choice duration is latched at original pending-review/busy-release boundary before stronger exact row/focus wait", "Changed Save recovery uses actual native Save button; original recovery workflow duration now includes stronger final readiness"],
+             "products": 50_000, "quote_lines": 1_000,
+             "catalog_preview_pages_visited": self.page + 1,
+             "maximum_native_preview_rows": self.max_rows,
+@@ -525,13 +790,23 @@
+                 "invalid quantity not focused after asynchronous receipt"
+             );
+             ui.row_editors.borrow()[0].quantity.set_text("1");
+-            ui.save_form_async();
++            p.start_action(
++                ui,
++                "quote_changed_save_recovery",
++                "native_save_button_after_lock_released",
++            )?;
++            button_named(&ui.window, "ذخیرهٔ پیش‌نویس")?.emit_clicked();
+             p.advance(63, 100);
+         }
+         63 => {
+-            if ui.persistence_busy.get() {
+-                return Ok(());
+-            }
++            let exact_ready = ui.store.borrow().local_generation() == p.save_generation + 2
++                && ui.customer.text() == "نسخهٔ تازه در زمان ذخیرهٔ ساختگی"
++                && ui.row_editors.borrow()[0].quantity.text() == "1"
++                && action_review_ready(ui, 0, true)?;
++            if !p.action_ready(exact_ready) {
++                return Ok(());
++            }
++            p.close_action(ui, "accepted");
+             ensure!(
+                 persisted_generation(ui)? == p.save_generation + 2,
+                 "latest valid edits not saved exactly once"
+@@ -559,15 +834,25 @@
+             rows[0].quantity.grab_focus();
+             rows[0].quantity.select_region(0, 1);
+             drop(rows);
+-            let generation = persisted_generation(ui)?;
++            p.unchanged_save_generation = Some(persisted_generation(ui)?);
++            p.start_action(ui, "quote_unchanged_save_refresh", "native_save_button")?;
+             button_named(&ui.window, "ذخیرهٔ پیش‌نویس")?.emit_clicked();
+-            ensure!(
+-                persisted_generation(ui)? == generation,
++            p.advance(65, 200);
++        }
++        65 => {
++            let exact_ready = ui.store.borrow().local_generation()
++                == p.unchanged_save_generation
++                    .context("unchanged save generation missing")?
++                && ui.row_editors.borrow()[0].quantity.selection_bounds() == Some((0, 1))
++                && action_review_ready(ui, 0, true)?;
++            if !p.action_ready(exact_ready) {
++                return Ok(());
++            }
++            p.close_action(ui, "accepted");
++            ensure!(
++                persisted_generation(ui)? == p.unchanged_save_generation.take().unwrap(),
+                 "explicit unchanged Save created an extra commit"
+             );
+-            p.advance(65, 200);
+-        }
+-        65 => {
+             let amount = named::<gtk::Label>(&ui.review, "quote-row-amount-0")?;
+             let store = ui.store.borrow();
+             let expected = store.state.settings.display_digits.format(
+@@ -608,14 +893,29 @@
+                     ui.table_page.get() == page + 1,
+                     "deferred page navigation failed"
+                 );
++                ensure!(
++                    ui.store.borrow().local_generation() == before + i64::from(page == 0),
++                    "page adopted generation mismatch"
++                );
++                let legacy_duration = p.mark_legacy_completion(started);
++                let exact_ready = action_review_ready(ui, page + 1, false)?;
++                if !p.action_ready(exact_ready) {
++                    return Ok(());
++                }
++                p.close_action(ui, "accepted");
++                ensure!(
++                    ui.table_page.get() == page + 1,
++                    "deferred page navigation failed"
++                );
+                 let after = persisted_generation(ui)?;
+                 ensure!(
+                     after == before + i64::from(page == 0),
+                     "page save commit mismatch"
+                 );
+-                p.page_clicks.push(serde_json::json!({"direction":"next", "from_page":page + 1,
++                p.page_clicks
++                    .push(serde_json::json!({"direction":"next", "from_page":page + 1,
+                     "draft_changed":page == 0, "generation_before":before,
+-                    "generation_after":after, "duration_ms":started.elapsed().as_secs_f64()*1000.}));
++                    "generation_after":after, "duration_ms":legacy_duration}));
+                 p.pending_editor_page = None;
+                 return Ok(());
+             }
+@@ -634,6 +934,15 @@
+                 let page = ui.table_page.get();
+                 let before = persisted_generation(ui)?;
+                 let started = Instant::now();
++                p.start_action(
++                    ui,
++                    if page == 0 {
++                        "quote_page_changed_save"
++                    } else {
++                        "quote_page_unchanged_next"
++                    },
++                    "native_pager_button",
++                )?;
+                 button_named(&ui.review, "بعدی")?.emit_clicked();
+                 p.pending_editor_page = Some((page, before, started, true));
+                 return Ok(());
+@@ -742,6 +1051,23 @@
+         }
+         12 => {
+             if let Some((page, before, started, _)) = p.pending_editor_page {
++                if ui.persistence_busy.get() {
++                    return Ok(());
++                }
++                ensure!(
++                    ui.table_page.get() + 1 == page,
++                    "previous page navigation failed"
++                );
++                ensure!(
++                    ui.store.borrow().local_generation() == before,
++                    "unchanged page adopted generation mismatch"
++                );
++                let legacy_duration = p.mark_legacy_completion(started);
++                let exact_ready = action_review_ready(ui, page - 1, false)?;
++                if !p.action_ready(exact_ready) {
++                    return Ok(());
++                }
++                p.close_action(ui, "accepted");
+                 ensure!(
+                     ui.table_page.get() + 1 == page,
+                     "previous page navigation failed"
+@@ -754,7 +1080,7 @@
+                 p.page_clicks.push(
+                     serde_json::json!({"direction":"previous", "from_page":page + 1,
+                     "draft_changed":false, "generation_before":before,
+-                    "generation_after":after, "duration_ms":started.elapsed().as_secs_f64()*1000.}),
++                    "generation_after":after, "duration_ms":legacy_duration}),
+                 );
+                 p.pending_editor_page = None;
+                 ensure!(
+@@ -767,6 +1093,7 @@
+                 let page = ui.table_page.get();
+                 let before = persisted_generation(ui)?;
+                 let started = Instant::now();
++                p.start_action(ui, "quote_page_unchanged_previous", "native_pager_button")?;
+                 button_named(&ui.review, "قبلی")?.emit_clicked();
+                 p.pending_editor_page = Some((page, before, started, false));
+                 return Ok(());
+@@ -987,6 +1314,7 @@
+                 &directory.join("native-scale-unknown-selector.png"),
+             )?;
+             let started = Instant::now();
++            p.start_action(ui, "quote_product_choice", "native_product_choose_button")?;
+             named::<gtk::Button>(&active_dialog(ui)?, "product-picker-search-choose")?
+                 .emit_clicked();
+             p.elapsed("50000_unknown_line_choice_dispatch_main_thread", started);
+@@ -1001,10 +1329,32 @@
+                 return Ok(());
+             }
+             let started = p.phase_started;
+-            p.elapsed(
+-                "50000_unknown_line_choice_durable_and_native_review_ready",
+-                started,
+-            );
++            let legacy_duration = p.mark_legacy_completion(started);
++            p.durations.insert(
++                "50000_unknown_line_choice_durable_and_native_review_ready".into(),
++                serde_json::json!(legacy_duration),
++            );
++            let expected_generation = p
++                .action_scope
++                .as_ref()
++                .context("choice action missing")?
++                .before["generation"]
++                .as_i64()
++                .context("choice generation missing")?
++                + 1;
++            let exact_choice = {
++                let store = ui.store.borrow();
++                store.local_generation() == expected_generation
++                    && store.state.draft.lines[0].query == "SYNTHETIC-UNMATCHED-REQUEST"
++                    && store.state.draft.lines[0].chosen_code.as_deref() == Some("SCALE-00001")
++            };
++            let exact_ready = exact_choice && action_review_ready(ui, 0, false)?;
++            if !p.action_ready(exact_ready) {
++                return Ok(());
++            }
++            p.close_action(ui, "accepted");
++            // The original callback/readiness duration is latched above;
++            // exact post-render/focus completion is the additive scope only.
+             {
+                 let store = ui.store.borrow();
+                 ensure!(
+@@ -1226,6 +1576,50 @@
+                 "PDF absent or empty"
+             );
+             p.checks.push("PDF export completed within 120-second total probe timeout; GTK heartbeat stayed below 250 ms while busy".into());
++            // The historical PDF busy window above is complete and keeps its
++            // original screenshots/timer/reset. The additive export is distinct.
++            p.advance(140, 0);
++        }
++        140 => {
++            ui.row_editors.borrow()[0].quantity.grab_focus();
++            p.start_action(
++                ui,
++                "quote_pdf_preview_and_export",
++                "internal_probe_preview_then_background_pdf",
++            )?;
++            let quote = ui.store.borrow().state.preview()?;
++            let path = directory.join("native-additive-1000-lines.pdf");
++            drop(p);
++            let completion = probe.clone();
++            ensure!(
++                ui.run_background(
++                    "آزمون افزوده؛ PDF هزار ردیف",
++                    move || export::pdf(&quote, &path),
++                    move |_, result| {
++                        let mut p = completion.borrow_mut();
++                        p.additive_pdf_done = true;
++                        p.additive_pdf_error = result.err().map(|error| format!("{error:#}"));
++                    }
++                ),
++                "additive PDF worker rejected"
++            );
++            probe.borrow_mut().advance(141, 0);
++        }
++        141 => {
++            if let Some(error) = &p.additive_pdf_error {
++                anyhow::bail!("additive PDF failed: {error}");
++            }
++            let exact_ready = p.additive_pdf_done
++                && !ui.background_busy.get()
++                && action_review_ready(ui, 0, true)?;
++            if !p.action_ready(exact_ready) {
++                return Ok(());
++            }
++            p.close_action(ui, "accepted");
++            ensure!(
++                std::fs::metadata(directory.join("native-additive-1000-lines.pdf"))?.len() > 1000,
++                "additive PDF absent or empty"
++            );
+             p.finish(ui, None);
+         }
+         _ => {}
+@@ -1324,6 +1718,22 @@
+         }
+         glib::ControlFlow::Continue
+     });
++    // Separate20ms clock; never writes legacy heartbeat_last/max/busy fields.
++    let action_probe = probe.clone();
++    glib::timeout_add_local(Duration::from_millis(20), move || {
++        let mut p = action_probe.borrow_mut();
++        if p.finished {
++            return glib::ControlFlow::Break;
++        }
++        if let Some(scope) = p.action_scope.as_mut() {
++            let now = Instant::now();
++            scope
++                .gaps
++                .push(now.duration_since(scope.last).as_secs_f64() * 1000.);
++            scope.last = now;
++        }
++        glib::ControlFlow::Continue
++    });
+     let weak = Rc::downgrade(ui);
+     glib::timeout_add_local(Duration::from_millis(30), move || {
+         let Some(ui) = weak.upgrade() else {

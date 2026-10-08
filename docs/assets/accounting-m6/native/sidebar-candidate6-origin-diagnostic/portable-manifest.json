@@ -1,0 +1,26 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/sidebar-native/run-1t5cu6ua",
+  "files": {
+    "accounting-narrow-history-light.png": "32b81c1baff70c0a00f07e777da3a093b3abf55b413bf56e124397ab285bb60d",
+    "accounting-narrow-light.png": "8f5beb93b95b582d92e8030e89ebb379e2c1b1ba620e61c90bc0e30669af747f",
+    "failure-tree.json": "d550dc26a28f2e50970f0da7e0c04222b9958b3687bdfb3e7d2b2730c8d8430f",
+    "failure.png": "7873c74b51877c47feae0d7a5a83fccc347f1d5f6c963ffc37798467e222e809",
+    "initial.png": "35428a3b2055114c27ef8e0bcd723e4ca2fb9eea1ae19cd1d8a4b5b13bbdf039",
+    "keyboard-events.jsonl": "ef88558bc90d2f0fbc14fc6ce90912e9b33c1f1ea42fb774ce97bbb43290488d",
+    "native-sidebar.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "shell-wide-hidden-page-change.png": "9d1425877878a629cd36a6b71bce060ca199ce6ae3b15e99eb6fefa11d7f450c",
+    "shell-wide-sidebar-hidden.png": "0774e8952f4db9e3e1d0aafe00c8269e019447e62f027a7d0683064b83fbebf5",
+    "shell-wide-sidebar-restored.png": "5ad25f9fa0fa8971f4abf45182d25039e41bd5465f54452a57f34760c39d23b3",
+    "sidebar-narrow-light-focus.png": "d4d3528e10ec2cfc7b518fb2e96a652baa960128a4ba897d66507fa5e69dca34",
+    "sidebar-standard-light-focus.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-standard-light.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-verification.json": "6a570bbbf45b63438aef3891024388e2c8791bd18489913d43515bee7a3e2239",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "executed-observer.py": "b072d6543019ef61351f47b77541c18f815f518fe4cab180f6d31cf7077e1d1f"
+  },
+  "result": "failed",
+  "checks": 27,
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "scope": "Actual first C6 pointer diagnostic; observer used incorrect AT-SPI overlay origin0,0. Menu staysopen; do not claim closebuttonactivation or financial failure. Corrected observer/runtime2 rerun pending."
+}

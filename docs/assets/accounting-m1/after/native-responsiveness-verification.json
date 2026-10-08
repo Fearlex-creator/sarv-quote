@@ -1,0 +1,556 @@
+{
+  "catalog_preview_pages_visited": 500,
+  "checks": [
+    "Actual50,000-row CSV parse and prepared catalogue acceptance complete via native background workflows",
+    "Actual GTK import preview first and next page contain 100 expected products",
+    "All 500 native pages reached by next button; final row is SCALE-50000; next disabled",
+    "Native Save dispatches bounded worker; double save commits once; SQLite lock leaves GTK navigation live; old receipt preserves newer invalid input and focuses quantity; recovery saves latest edits; reopened profile retains all1,000 lines",
+    "Actual explicit Save refreshes exact100,001rial first-row amount, clears review pending, preserves native quantity focus and selection, and does not duplicate an unchanged commit",
+    "Native editor reaches all ten pages with <=100 rows/page; first/last page quantity edits survive navigation and save; all1,000 canonical lines retained; exact100,802,501rial total",
+    "All seventeen unchanged native next/previous clicks preserve persisted generation; edited first-page navigation commits exactly one generation",
+    "Cold/warm50,000-product indexed picker keeps<=30 rows, finds exact last code, reports all broad matches; unknown-line native selector avoids giant dropdown and persists explicit choice while preserving request and exact price",
+    "Native50,000-product composer copy keeps<=100 rows, next page and exact last-product search reachable, retains full product count and leaves persisted source/generation unchanged when closed",
+    "Genuine X11 XTest Tab moves first row query focus to quantity while PDF worker is busy",
+    "Native settings navigation completes while PDF worker is busy",
+    "PDF export completed within 120-second total probe timeout; GTK heartbeat stayed below 250 ms while busy"
+  ],
+  "durations_ms": {
+    "1000_line_background_pdf_completion": 2123.870484,
+    "1000_line_store_commit_and_first_100_editor_widget_creation": 341.234418,
+    "50000_catalog_1000_line_save_dispatch_main_thread": 6.509715999999999,
+    "50000_catalog_prepare_commit_and_native_refresh": 408.313152,
+    "50000_cold_picker_index_and_first_results_ready": 172.225614,
+    "50000_cold_picker_open_invocation": 11.728715000000001,
+    "50000_composer_indexed_last_code_search_including_debounce": 255.165831,
+    "50000_csv_parse_request_to_completion": 150.442107,
+    "50000_csv_worker_parse_ms": 123.060732,
+    "50000_indexed_broad_search_including_debounce": 285.649585,
+    "50000_indexed_exact_code_search_including_debounce": 279.938391,
+    "50000_native_composer_copy_and_initial100_rows": 146.938768,
+    "50000_unknown_line_indexed_search_including_debounce": 257.71631499999995,
+    "50000_warm_cached_picker_open_and_native_results": 10.748311,
+    "catalog_pagination_all_500_pages_including_initial_setup": 28132.807584,
+    "catalog_preview_widget_creation": 183.04100200000002,
+    "locked_worker_save_newer_invalid_edit_and_recovery": 629.471995,
+    "restore_known_line_fixture_changed_save": 401.745092,
+    "synthetic_50000_csv_fixture_creation": 15.503286,
+    "unknown_line_fixture_changed_save_and_native_review": 380.78304299999996
+  },
+  "editor_page_clicks": [
+    {
+      "direction": "next",
+      "draft_changed": true,
+      "duration_ms": 490.806488,
+      "from_page": 1,
+      "generation_after": 5,
+      "generation_before": 4
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 342.736224,
+      "from_page": 2,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 240.96184300000002,
+      "from_page": 3,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 240.024863,
+      "from_page": 4,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 232.542643,
+      "from_page": 5,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 263.877002,
+      "from_page": 6,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 247.91000499999998,
+      "from_page": 7,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 281.876266,
+      "from_page": 8,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "next",
+      "draft_changed": false,
+      "duration_ms": 260.79398199999997,
+      "from_page": 9,
+      "generation_after": 5,
+      "generation_before": 5
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 277.506643,
+      "from_page": 10,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 302.199061,
+      "from_page": 9,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 322.706703,
+      "from_page": 8,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 181.235576,
+      "from_page": 7,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 241.024205,
+      "from_page": 6,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 251.870674,
+      "from_page": 5,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 274.09500799999995,
+      "from_page": 4,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 291.709266,
+      "from_page": 3,
+      "generation_after": 6,
+      "generation_before": 6
+    },
+    {
+      "direction": "previous",
+      "draft_changed": false,
+      "duration_ms": 181.22438,
+      "from_page": 2,
+      "generation_after": 6,
+      "generation_before": 6
+    }
+  ],
+  "failure": null,
+  "final_window_allocation": [
+    990,
+    770
+  ],
+  "heartbeat_count": 961,
+  "heartbeat_gaps_over_100_ms": [
+    {
+      "gap_ms": 219.465849,
+      "pdf_busy": false,
+      "stage": 1,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 148.204881,
+      "pdf_busy": false,
+      "stage": 2,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 111.731421,
+      "pdf_busy": false,
+      "stage": 3,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 516.5640070000001,
+      "pdf_busy": false,
+      "stage": 60,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 116.811856,
+      "pdf_busy": false,
+      "stage": 64,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 334.282179,
+      "pdf_busy": false,
+      "stage": 65,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 343.16690900000003,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 342.966241,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 241.07975000000002,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 240.270734,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 232.678098,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 263.985705,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 248.02729300000001,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 282.01802999999995,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 260.982917,
+      "pdf_busy": false,
+      "stage": 10,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 426.66051300000004,
+      "pdf_busy": false,
+      "stage": 11,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 289.117369,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 302.698905,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 323.356704,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 181.60931,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 241.441635,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 252.192821,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 274.565838,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 292.162619,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 181.616011,
+      "pdf_busy": false,
+      "stage": 12,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 108.261835,
+      "pdf_busy": false,
+      "stage": 23,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 108.659825,
+      "pdf_busy": false,
+      "stage": 24,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 497.07025500000003,
+      "pdf_busy": false,
+      "stage": 27,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 970.6039499999999,
+      "pdf_busy": false,
+      "stage": 30,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 156.851177,
+      "pdf_busy": false,
+      "stage": 31,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 161.59724,
+      "pdf_busy": false,
+      "stage": 32,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 122.164858,
+      "pdf_busy": false,
+      "stage": 5,
+      "worker_busy": false
+    },
+    {
+      "gap_ms": 148.553125,
+      "pdf_busy": true,
+      "stage": 9,
+      "worker_busy": true
+    },
+    {
+      "gap_ms": 108.062488,
+      "pdf_busy": true,
+      "stage": 9,
+      "worker_busy": true
+    }
+  ],
+  "heartbeat_interval_ms": 20,
+  "heartbeat_ticks_while_pdf_busy": 84,
+  "heartbeat_ticks_while_save_busy": 26,
+  "limitations": [
+    "Synthetic scale fixture, not production customer data",
+    "Explicit and automatic draft persistence validation, serialization and SQLite commit run on one bounded worker; GTK still clones the snapshot and some dependent document commands, catalog acceptance, replacements and row rebuilds remain synchronous. Global and per-phase gaps are reported rather than hidden; the 50ms overall budget is not accepted",
+    "Injected lock is a responsiveness fixture, not hardware power-loss proof",
+    "No Wayland, physical printer or target desktop packaging certification"
+  ],
+  "maximum_heartbeat_gap_ms_including_setup_and_editor_paging": 970.6039499999999,
+  "maximum_heartbeat_gap_ms_while_pdf_busy": 148.553125,
+  "maximum_heartbeat_gap_ms_while_save_busy": 46.337249,
+  "maximum_native_composer_rows": 100,
+  "maximum_native_picker_rows": 30,
+  "maximum_native_preview_rows": 100,
+  "maximum_unchanged_editor_page_click_ms": 342.736224,
+  "pdf_busy_responsiveness_threshold_ms": 250,
+  "phase_heartbeats": {
+    "0": {
+      "maximum_gap_ms": 32.341406000000006,
+      "ticks": 1
+    },
+    "1": {
+      "maximum_gap_ms": 219.465849,
+      "ticks": 20
+    },
+    "10": {
+      "maximum_gap_ms": 343.16690900000003,
+      "ticks": 41
+    },
+    "11": {
+      "maximum_gap_ms": 426.66051300000004,
+      "ticks": 11
+    },
+    "12": {
+      "maximum_gap_ms": 323.356704,
+      "ticks": 11
+    },
+    "2": {
+      "maximum_gap_ms": 148.204881,
+      "ticks": 7
+    },
+    "20": {
+      "maximum_gap_ms": 58.329196,
+      "ticks": 24
+    },
+    "21": {
+      "maximum_gap_ms": 50.948367000000005,
+      "ticks": 6
+    },
+    "22": {
+      "maximum_gap_ms": 44.652606999999996,
+      "ticks": 6
+    },
+    "23": {
+      "maximum_gap_ms": 108.261835,
+      "ticks": 14
+    },
+    "24": {
+      "maximum_gap_ms": 108.659825,
+      "ticks": 13
+    },
+    "25": {
+      "maximum_gap_ms": 54.603087,
+      "ticks": 8
+    },
+    "26": {
+      "maximum_gap_ms": 48.330106,
+      "ticks": 6
+    },
+    "27": {
+      "maximum_gap_ms": 497.07025500000003,
+      "ticks": 6
+    },
+    "28": {
+      "maximum_gap_ms": 42.850116,
+      "ticks": 8
+    },
+    "3": {
+      "maximum_gap_ms": 111.731421,
+      "ticks": 500
+    },
+    "30": {
+      "maximum_gap_ms": 970.6039499999999,
+      "ticks": 14
+    },
+    "31": {
+      "maximum_gap_ms": 156.851177,
+      "ticks": 7
+    },
+    "32": {
+      "maximum_gap_ms": 161.59724,
+      "ticks": 11
+    },
+    "4": {
+      "maximum_gap_ms": 41.37984,
+      "ticks": 14
+    },
+    "40": {
+      "maximum_gap_ms": 35.781417000000005,
+      "ticks": 7
+    },
+    "41": {
+      "maximum_gap_ms": 20.165852,
+      "ticks": 18
+    },
+    "42": {
+      "maximum_gap_ms": 67.45551499999999,
+      "ticks": 15
+    },
+    "5": {
+      "maximum_gap_ms": 122.164858,
+      "ticks": 22
+    },
+    "6": {
+      "maximum_gap_ms": 20.030704,
+      "ticks": 2
+    },
+    "60": {
+      "maximum_gap_ms": 516.5640070000001,
+      "ticks": 48
+    },
+    "61": {
+      "maximum_gap_ms": 20.083224,
+      "ticks": 8
+    },
+    "62": {
+      "maximum_gap_ms": 46.337249,
+      "ticks": 4
+    },
+    "63": {
+      "maximum_gap_ms": 42.534318,
+      "ticks": 8
+    },
+    "64": {
+      "maximum_gap_ms": 116.811856,
+      "ticks": 11
+    },
+    "65": {
+      "maximum_gap_ms": 334.282179,
+      "ticks": 7
+    },
+    "7": {
+      "maximum_gap_ms": 25.757378,
+      "ticks": 8
+    },
+    "8": {
+      "maximum_gap_ms": 39.668212000000004,
+      "ticks": 8
+    },
+    "9": {
+      "maximum_gap_ms": 148.553125,
+      "ticks": 67
+    }
+  },
+  "products": 50000,
+  "quote_lines": 1000,
+  "result": "passed",
+  "synthetic_only": true
+}

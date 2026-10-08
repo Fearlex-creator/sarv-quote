@@ -1,0 +1,13 @@
+dbus-daemon[374108]: [session uid=1000 pid=374108 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=374109 comm="/usr/bin/python3 /workspace/sarv-quote/scripts/nat" label="kernel")
+dbus-daemon[374108]: [session uid=1000 pid=374108 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[374136]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=374109 comm="/usr/bin/python3 /workspace/sarv-quote/scripts/nat" label="kernel")
+dbus-daemon[374136]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+(process:374109): dbind-WARNING **: 16:34:52.973: AT-SPI: Error in GetItems, sender=:1.2, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"source_picker": "source120-billed", "focused": {"n": 2, "p50": 666.6856899973936, "p95": 797.808728995733, "p99": 797.808728995733, "worst": 797.808728995733, "method": "nearest rank"}}
+
+(process:374109): dbind-WARNING **: 16:35:03.877: AT-SPI: Error in GetItems, sender=:1.3, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"source_picker": "source120-unbilled", "focused": {"n": 2, "p50": 720.2675640000962, "p95": 731.4045700040879, "p99": 731.4045700040879, "worst": 731.4045700040879, "method": "nearest rank"}}
+
+(process:374109): dbind-WARNING **: 16:35:14.431: AT-SPI: Error in GetItems, sender=:1.4, error=Object does not exist at path “/org/a11y/atspi/cache”

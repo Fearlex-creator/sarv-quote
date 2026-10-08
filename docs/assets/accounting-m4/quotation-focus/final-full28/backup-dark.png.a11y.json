@@ -1,0 +1,562 @@
+[
+  {
+    "node": 119599536,
+    "name": "sarv-M4-freeze2",
+    "role": "application"
+  },
+  {
+    "node": 119636272,
+    "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+    "role": "frame"
+  },
+  {
+    "node": 119636048,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119638368,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119655504,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119655200,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119651376,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119630496,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119633056,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119679088,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119650848,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119679584,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119680080,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119680576,
+    "name": "صفحه‌ها",
+    "role": "grouping"
+  },
+  {
+    "node": 119650544,
+    "name": "پشتیبان و بازیابی",
+    "role": "grouping"
+  },
+  {
+    "node": 119681072,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119681568,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119682064,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119637728,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119682576,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119683072,
+    "name": "تنظیمات ذخیره شد؛ پیش‌فرض‌ها روی پیشنهاد تازه اعمال می‌شوند.",
+    "role": "label"
+  },
+  {
+    "node": 119683632,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119636864,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 119636720,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119686800,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119687728,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119688192,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119688656,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119689120,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119689664,
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "node": 119690176,
+    "name": "پخش نمونهٔ سرو",
+    "role": "label"
+  },
+  {
+    "node": 119690608,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119691104,
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "node": 119691616,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 126029008,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119692064,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119692576,
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "node": 119693200,
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "node": 119693696,
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "node": 119694240,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119694704,
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "node": 126029584,
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "node": 126034848,
+    "name": "داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود.",
+    "role": "label"
+  },
+  {
+    "node": 126035328,
+    "name": "ساخت پشتیبان JSON",
+    "role": "button"
+  },
+  {
+    "node": 126035744,
+    "name": "انتخاب پشتیبان و بررسی بازیابی",
+    "role": "button"
+  },
+  {
+    "node": 126038160,
+    "name": "مسیر داده: /workspace/sarv-quote/artifacts/product-native/run-r2z_90ls\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش عملیاتی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",
+    "role": "label"
+  },
+  {
+    "node": 119695712,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119696176,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119696672,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119697168,
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "node": 119697632,
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "node": 119698176,
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "node": 119698688,
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "node": 119700816,
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "node": 119701296,
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "node": 119701888,
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "node": 119702320,
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "node": 119702928,
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "node": 119703392,
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "node": 119703856,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119704304,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 126038640,
+    "name": "ساخت پشتیبان JSON",
+    "role": "label"
+  },
+  {
+    "node": 126039072,
+    "name": "انتخاب پشتیبان و بررسی بازیابی",
+    "role": "label"
+  },
+  {
+    "node": 119706704,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119707200,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119707696,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119708192,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119708704,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119709216,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119709728,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119710224,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119710720,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119711216,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119711680,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119712176,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119712640,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119715200,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119715696,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 119716208,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119716672,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119717168,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119717632,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119718128,
+    "name": "4",
+    "role": "label"
+  },
+  {
+    "node": 119718640,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119719056,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119719552,
+    "name": "2",
+    "role": "label"
+  },
+  {
+    "node": 119720064,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119720480,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119720976,
+    "name": "5",
+    "role": "label"
+  },
+  {
+    "node": 119721488,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119721904,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119722400,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119722864,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119724112,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 119724576,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 119725072,
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "node": 119725552,
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "node": 119734208,
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "node": 119734720,
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "node": 119735152,
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "node": 119735616,
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "node": 119736080,
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "node": 119736544,
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "node": 119737056,
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "node": 119738368,
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "node": 119738880,
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "node": 119739312,
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "node": 119739792,
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "node": 119740336,
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "node": 119740800,
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "node": 119741296,
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "node": 119741728,
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  }
+]

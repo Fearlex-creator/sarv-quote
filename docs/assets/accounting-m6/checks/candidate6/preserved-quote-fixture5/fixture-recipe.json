@@ -1,0 +1,50 @@
+{
+  "synthetic_only": true,
+  "typed_Store_revision_approval_fixture": true,
+  "source": "/workspace/sarv-quote/artifacts/m6-preserved/quote-b9hhntuc",
+  "profile": "/workspace/sarv-quote/artifacts/m6-preserved/quote-rows-tab_yq82",
+  "source_state_sha256": "5bd49b7d9bfebde2c0d8533a273f0e862a49ae04782258cc8f16e1e8edc76607",
+  "draft": {
+    "series": "93801ad3-854c-40dc-ab40-b8bda1e0f47d",
+    "catalog_id": "13d3686b-ee4d-47a4-9d8d-e2978b51b637",
+    "customer": "فروشگاه نمونهٔ پارس",
+    "phone": "۰۹۱۲۰۰۰۰۰۰۰",
+    "lines": [
+      {
+        "query": "P-101",
+        "quantity_milli": 3000,
+        "chosen_code": "P-101"
+      },
+      {
+        "query": "قلم آبی",
+        "quantity_milli": 12000,
+        "chosen_code": "P-102"
+      },
+      {
+        "query": "خودکار",
+        "quantity_milli": 3000,
+        "chosen_code": "P-103"
+      },
+      {
+        "query": "کد نامشخص",
+        "quantity_milli": 1000,
+        "chosen_code": "P-104"
+      }
+    ],
+    "discount_rial": 10000,
+    "display_unit": "Toman",
+    "stale_ack": true,
+    "quote_date": "2026-10-08",
+    "customer_id": "8dc1d75b-78e6-4dde-8559-c7bb02a88dda"
+  },
+  "source_quote_id": "10be9e65-2516-4f8e-97df-b8145eb22151",
+  "row_count": 4,
+  "original_whole_state_prefix_exact": true,
+  "all_other_payload_exact": true,
+  "helper_hashes": {
+    "/workspace/sarv-quote/target/debug/libsarv_quote.rlib": "bac6f5d5824a7c8b6a46b54e7e97d735fed334cbc756772294acc6d7dbe5962b",
+    "/tmp/sarv-M6-prepare-quote": "cd3e7ad618e1830e8c6f07c9f7b8d33cd68335505de0836a88bdb6a792aaacf4",
+    "/tmp/sarv-M6-prepare-quote.rs": "60b99f39d3f769a5224dd46d2250bbce92c5b4acf5d27e2f30ae430aff5e6d18"
+  },
+  "source_native_receipt_scope": "Copied original23-check programmatic proof; not a claim that modified draft reran that proof. Actual Store revise/approve prepares a four-row fixture afterward, asserting exact same-content approval ID/count. Original history remains a complete prefix; all other payload unchanged. Keyboard observer tests this prepared approved draft."
+}

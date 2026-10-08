@@ -1,0 +1,5 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+   Compiling sarv-independent-m5-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m5/probe)
+    Finished `dev` profile [unoptimized] target(s) in 3.41s
+     Running `target/debug/sarv-independent-m5-guards artifacts/independent-m5/diagnostic-1/interleaved/state.json artifacts/independent-m5/diagnostic-1/guards`
+PASS 22 independent identity/retry/input/lock/reversal/tamper observations. No acceptance of untested native/fault cases.

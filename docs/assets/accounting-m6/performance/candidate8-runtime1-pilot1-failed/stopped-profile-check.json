@@ -1,0 +1,10 @@
+{
+  "source_profile": "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/profile/sarv.sqlite3",
+  "stopped_profile": "/workspace/sarv-quote/artifacts/performance-m6/candidate8-runtime1-pilot1/observer/source120-billed-search/sarv.sqlite3",
+  "generation": 1,
+  "payload_sha256": "69f0716aee2b654548ec99f2f9b93880ac01e71c67dcba1243b8f2410763cf2d",
+  "source_generation_payload_bytes_exact": true,
+  "source_integrity": "ok",
+  "stopped_integrity": "ok",
+  "no_return_post_or_read_only_mutation": true
+}

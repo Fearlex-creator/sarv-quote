@@ -1,0 +1,22 @@
+docs/assets/accounting-m2/jalali/tested-jalali-qa.py whitespace=-blank-at-eol
+
+# Preserve exact generated M3 evidence bytes and CSV source provenance.
+docs/assets/accounting-m3/**/*.csv whitespace=cr-at-eol
+docs/assets/accounting-m3/opening.csv whitespace=cr-at-eol
+docs/assets/accounting-m3/**/*.log whitespace=-blank-at-eof,cr-at-eol
+docs/assets/accounting-m3/performance/latency-samples.svg whitespace=-blank-at-eol
+
+# Preserve exact generated M4 CSV and raw check/diagnostic log bytes.
+docs/assets/accounting-m4/**/*.csv whitespace=cr-at-eol
+docs/assets/accounting-m4/**/*.log whitespace=-blank-at-eof,cr-at-eol
+
+# Preserve exact generated M4 patch contexts and plotting/diagnostic bytes.
+docs/assets/accounting-m4/checks/freeze4-to5-ui.patch whitespace=-blank-at-eol
+docs/assets/accounting-m4/checks/freeze5-to6-ui.patch whitespace=-blank-at-eol
+docs/assets/accounting-m4/native/picker-async-diagnostics/freeze5-to6-background.patch whitespace=-blank-at-eol
+docs/assets/accounting-m4/review/final-freeze5/freeze4-to5-ui.patch whitespace=-blank-at-eol
+docs/assets/accounting-m4/review/final-freeze6/freeze5-to6-ui.patch whitespace=-blank-at-eol
+docs/assets/accounting-m4/performance/latency-samples.svg whitespace=-blank-at-eol
+docs/assets/accounting-m4/performance/freeze5/latency-samples.svg whitespace=-blank-at-eol
+docs/assets/accounting-m4/performance/freeze6/latency-samples.svg whitespace=-blank-at-eol
+docs/assets/accounting-m4/review/final-freeze5/before-fixes/catalog-worker-freeze4-run10.log whitespace=-blank-at-eol,-blank-at-eof,cr-at-eol

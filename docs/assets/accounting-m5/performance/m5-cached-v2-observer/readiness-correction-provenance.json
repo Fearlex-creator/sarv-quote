@@ -1,0 +1,11 @@
+{
+  "protocol": "m5-cached-v2",
+  "initial_C7_build_snapshot_observer_sha256": "ef30d01efd0ffed9d1cf1ea6d58d1ff81ee2ccf834bb3340968f27559dba0b20",
+  "qualified_external_epoch_observer_sha256": "2d0c095580318890e665b8aa7583fca28ab72e97759520ed32ba92ea3368b258",
+  "initial_snapshot_and_artifact_bytes_preserved": true,
+  "correction": "Restore posted result ready(status); explicitly await exact zero result plus cached action insensitive/not-showing and cached title not-showing before reveal. No production source or budget changes.",
+  "syntax_py_compile": "passed on exact staged bytes",
+  "runtime_qualification": "pending",
+  "C7_binary_sha256": "7f83e3e60afe439e6d7e3af2b33e3b325547ce81190d11aa3d7492420b07a6d5",
+  "C7_production_source_sha256": "03aa9377ee5fd7a1568d34bb804c44c14e1d6c98db3e6492aafccbb89c410db0"
+}

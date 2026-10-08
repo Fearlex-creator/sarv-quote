@@ -1,0 +1,9 @@
+{
+  "result": "failed",
+  "binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/refresh-freeze3-2rnwrgta",
+  "scope": "Only freeze2→3 affected native success/error footer completion paths, real XTest report date/Return, complete State unchanged; footer label distinguished from page status by ancestor scroll pane",
+  "checks": [],
+  "error": "Timed out waiting for global footer completed initial refresh"
+}

@@ -1,0 +1,19 @@
+{
+  "baseline_source": "4aa82c2988fb2ea48a2fa2ae9824c06187f3d76a",
+  "exact_quotes_sha256": "0c5c11fa3810adc9ccd37c05c33b829c27622a6f70ee98d52d6ec3335080d8eb",
+  "fresh_restore_full_state_equal": true,
+  "generation_after": 43,
+  "generation_before": 42,
+  "integrity": "ok",
+  "interrupted_schema_upgrade": "untested",
+  "quotes": 3,
+  "repeat_open_generation": 43,
+  "result": "passed",
+  "schema_after": 2,
+  "schema_before": 1,
+  "legacy_fresh_restore_schema": 1,
+  "legacy_fresh_restore_quotes": 3,
+  "legacy_restore_log": "LEGACY_RESTORE_OK schema=1 quotes=3 exact_quotes_sha256=0c5c11fa3810adc9ccd37c05c33b829c27622a6f70ee98d52d6ec3335080d8eb",
+  "legacy_and_migrated_quote_pdf_text_equal": true,
+  "quote_pdf_text_sha256": "07d3de14311bbd97e455bd55aa2e669976b77d0bd8c19e160e9ef1d7d40c0d08"
+}

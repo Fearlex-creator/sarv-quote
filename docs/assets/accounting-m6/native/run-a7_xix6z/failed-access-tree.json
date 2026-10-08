@@ -1,0 +1,766 @@
+[
+  {
+    "name": "sarv-quote",
+    "role": "application"
+  },
+  {
+    "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+    "role": "frame"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌ها",
+    "role": "grouping"
+  },
+  {
+    "name": "خریدها",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "منبع ثبت‌شده آماده است • فقط خواندنی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "پیشنهاد قیمت · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll bar"
+  },
+  {
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "خرید • سفارش، رسید جزئی و تطبیق صورتحساب",
+    "role": "label"
+  },
+  {
+    "name": "ریال پایه • مقدار تا سه رقم اعشار • مالیات غیرفعال • تاریخ مؤثر مدنی و ثبت UTC • پس از افتتاحیهٔ تأیید‌شده",
+    "role": "label"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "combo box"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "نمایش ریال",
+    "role": "combo box"
+  },
+  {
+    "name": "منابع و گزارش پایان روز آماده است.",
+    "role": "label"
+  },
+  {
+    "name": "جست‌وجوی شماره، منبع، کالا یا طرف",
+    "role": "entry"
+  },
+  {
+    "name": "",
+    "role": "page tab list"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "به‌روزرسانی پایان روز",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۱",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۱",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۳",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۶",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "toggle button"
+  },
+  {
+    "name": "پایان روز گزارش",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "combo box"
+  },
+  {
+    "name": "پایان روز گزارش",
+    "role": "text"
+  },
+  {
+    "name": "شمسی: ⁨1405/07/16⁩ • میلادی: ⁨2026-10-08⁩",
+    "role": "label"
+  },
+  {
+    "name": "نمایش ریال",
+    "role": "toggle button"
+  },
+  {
+    "name": "اسناد",
+    "role": "table cell"
+  },
+  {
+    "name": "کنترل و تفصیل",
+    "role": "table cell"
+  },
+  {
+    "name": "تعریف منابع",
+    "role": "table cell"
+  },
+  {
+    "name": "اسناد و جریان کار",
+    "role": "panel"
+  },
+  {
+    "name": "کنترل و تفصیل پایان روز",
+    "role": "panel"
+  },
+  {
+    "name": "طرف‌ها، کالا، واحد و انبار",
+    "role": "panel"
+  },
+  {
+    "name": "به‌روزرسانی پایان روز",
+    "role": "label"
+  },
+  {
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، تحویل و صورتحساب، برگشت",
+    "role": "label"
+  },
+  {
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "toggle button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "اسناد",
+    "role": "page tab"
+  },
+  {
+    "name": "کنترل و تفصیل",
+    "role": "page tab"
+  },
+  {
+    "name": "تعریف منابع",
+    "role": "page tab"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "اسناد",
+    "role": "label"
+  },
+  {
+    "name": "کنترل و تفصیل",
+    "role": "label"
+  },
+  {
+    "name": "تعریف منابع",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "7 سند عملیاتی • 4 رویداد تعریف منابع • 1 نتیجه • صفحهٔ 1",
+    "role": "label"
+  },
+  {
+    "name": "اسناد عملیاتی • تازه‌ترین ثبت‌ها در ابتدا",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سفارش خرید تازه",
+    "role": "table cell"
+  },
+  {
+    "name": "صورتحساب و تطبیق رسید",
+    "role": "table cell"
+  },
+  {
+    "name": "برگشت خرید با بهای اصلی",
+    "role": "table cell"
+  },
+  {
+    "name": "برگشت خرید • ثبت‌شده",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سفارش خرید تازه",
+    "role": "button"
+  },
+  {
+    "name": "صورتحساب و تطبیق رسید",
+    "role": "button"
+  },
+  {
+    "name": "برگشت خرید با بهای اصلی",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سفارش خرید تازه",
+    "role": "label"
+  },
+  {
+    "name": "صورتحساب و تطبیق رسید",
+    "role": "label"
+  },
+  {
+    "name": "برگشت خرید با بهای اصلی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "نمایش ریال",
+    "role": "label"
+  },
+  {
+    "name": "برگشت خرید • ثبت‌شده",
+    "role": "label"
+  },
+  {
+    "name": "⁨PR-M6-NATIVE-1⁩ • تأمین‌کننده الف • ⁨۲۰۲۶-۰۴-۰۱⁩ • ⁨۴۵⁩ ریال • دارای سند مالی",
+    "role": "label"
+  },
+  {
+    "name": "جزئیات و خروجی",
+    "role": "button"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "جزئیات و خروجی",
+    "role": "label"
+  }
+]

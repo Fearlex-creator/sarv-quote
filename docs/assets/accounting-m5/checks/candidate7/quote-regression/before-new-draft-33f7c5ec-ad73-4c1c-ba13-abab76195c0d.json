@@ -1,0 +1,250 @@
+{
+  "format": "sarv-accounting-backup-v6",
+  "checksum": "75cd539e39818e5bb8f41b0b9911b23d708f732c922fbad5500a245b426f3d33",
+  "state": {
+    "schema": 6,
+    "catalogs": [
+      {
+        "id": "aa0e7310-236f-4197-81fc-de1307a7f641",
+        "name": "prices",
+        "imported_at": "2026-10-08T03:53:56.156255829+00:00",
+        "fingerprint": "e7d85b48be2559f946658527c5e89b4205b9f17a18abe7afd06e1df93d698d58",
+        "products": [
+          {
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "price_rial": 1250000,
+            "source_unit": "Toman",
+            "source_at": "2026-10-01T08:00:00Z",
+            "aliases": [
+              "کاغذ آ4",
+              "کاغذ سفید"
+            ]
+          },
+          {
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "price_rial": 85000,
+            "source_unit": "Rial",
+            "source_at": "2026-10-01T08:00:00Z",
+            "aliases": [
+              "خودکار",
+              "قلم آبی"
+            ]
+          },
+          {
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "price_rial": 95000,
+            "source_unit": "Rial",
+            "source_at": "2026-09-01T08:00:00Z",
+            "aliases": [
+              "خودکار",
+              "قلم مشکی"
+            ]
+          },
+          {
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "price_rial": 200000,
+            "source_unit": "Toman",
+            "source_at": "2026-10-01T08:00:00Z",
+            "aliases": [
+              "پوشه"
+            ]
+          }
+        ]
+      }
+    ],
+    "customers": [
+      {
+        "id": "3b83f912-fafa-4bb1-a2e6-8843a3b2aff5",
+        "name": "فروشگاه نمونهٔ پارس",
+        "phone": "۰۹۱۲۰۰۰۰۰۰۰"
+      }
+    ],
+    "quotes": [
+      {
+        "id": "989317e0-d674-4a7e-b083-d99923822c94",
+        "series": "c6ed9839-05b3-49e3-8640-08a2a6d86441",
+        "version": 1,
+        "customer": "فروشگاه نمونهٔ پارس",
+        "phone": "۰۹۱۲۰۰۰۰۰۰۰",
+        "approved_at": "2026-10-08T03:54:02.244757800+00:00",
+        "catalog_id": "aa0e7310-236f-4197-81fc-de1307a7f641",
+        "catalog_name": "prices",
+        "lines": [
+          {
+            "query": "P-101",
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "quantity_milli": 2000,
+            "price_rial": 1250000,
+            "total_rial": 2500000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          },
+          {
+            "query": "قلم آبی",
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 12000,
+            "price_rial": 85000,
+            "total_rial": 1020000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "خودکار",
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 3000,
+            "price_rial": 95000,
+            "total_rial": 285000,
+            "source_at": "2026-09-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "کد نامشخص",
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 200000,
+            "total_rial": 200000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          }
+        ],
+        "discount_rial": 10000,
+        "total_rial": 3995000,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2026-10-08",
+        "number": "Q-1",
+        "customer_id": "3b83f912-fafa-4bb1-a2e6-8843a3b2aff5"
+      },
+      {
+        "id": "192c0261-1e4a-4828-80f2-2c82d72f71c8",
+        "series": "c6ed9839-05b3-49e3-8640-08a2a6d86441",
+        "version": 2,
+        "customer": "فروشگاه نمونهٔ پارس",
+        "phone": "۰۹۱۲۰۰۰۰۰۰۰",
+        "approved_at": "2026-10-08T03:54:02.439034620+00:00",
+        "catalog_id": "aa0e7310-236f-4197-81fc-de1307a7f641",
+        "catalog_name": "prices",
+        "lines": [
+          {
+            "query": "P-101",
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "quantity_milli": 3000,
+            "price_rial": 1250000,
+            "total_rial": 3750000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          },
+          {
+            "query": "قلم آبی",
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 12000,
+            "price_rial": 85000,
+            "total_rial": 1020000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "خودکار",
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 3000,
+            "price_rial": 95000,
+            "total_rial": 285000,
+            "source_at": "2026-09-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "کد نامشخص",
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 200000,
+            "total_rial": 200000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          }
+        ],
+        "discount_rial": 10000,
+        "total_rial": 5245000,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2026-10-08",
+        "number": "Q-1",
+        "customer_id": "3b83f912-fafa-4bb1-a2e6-8843a3b2aff5"
+      }
+    ],
+    "draft": {
+      "series": "c6ed9839-05b3-49e3-8640-08a2a6d86441",
+      "catalog_id": "aa0e7310-236f-4197-81fc-de1307a7f641",
+      "customer": "فروشگاه نمونهٔ پارس",
+      "phone": "۰۹۱۲۰۰۰۰۰۰۰",
+      "lines": [
+        {
+          "query": "P-101",
+          "quantity_milli": 3000,
+          "chosen_code": "P-101"
+        },
+        {
+          "query": "قلم آبی",
+          "quantity_milli": 12000,
+          "chosen_code": "P-102"
+        },
+        {
+          "query": "خودکار",
+          "quantity_milli": 3000,
+          "chosen_code": "P-103"
+        },
+        {
+          "query": "کد نامشخص",
+          "quantity_milli": 1000,
+          "chosen_code": "P-104"
+        }
+      ],
+      "discount_rial": 10000,
+      "display_unit": "Toman",
+      "stale_ack": true,
+      "quote_date": "2026-10-08",
+      "customer_id": "3b83f912-fafa-4bb1-a2e6-8843a3b2aff5"
+    },
+    "settings": {
+      "business_name": "پخش نمونهٔ سرو",
+      "business_phone": "۰۲۱۰۰۰۰۰۰۰۰",
+      "business_address": "تهران • نشانی نمایشی",
+      "header": "سربرگ نمایشی • فقط پیشنهاد قیمت",
+      "footer": "قیمت‌ها نیازمند تأیید منبع هستند.",
+      "default_terms": "اعتبار قراردادی چهارده روز؛ بدون رزرو موجودی.",
+      "default_currency": "Toman",
+      "quote_prefix": "DEMO-",
+      "next_number": 42,
+      "default_validity_days": 14,
+      "default_discount_rial": 1000,
+      "tax_basis_points": 500,
+      "appearance": "Light",
+      "density": "Compact",
+      "display_digits": "Latin",
+      "date_display": "DayMonthYear"
+    }
+  }
+}

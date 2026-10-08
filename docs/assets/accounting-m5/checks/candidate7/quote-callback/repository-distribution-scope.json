@@ -1,0 +1,17 @@
+{
+  "scope": "Additional distribution clarification; original delivery receipt unchanged",
+  "portable_repository_files": {
+    "after.json": "874f05155f395591287f9ee3826b70a12cb679e8d9aed7e417470f277d992a54",
+    "application.log": "4ec6d9dfd11d4a85cac33aee7573bd34258ab44f80db3a1c65ae23848791c92a",
+    "before.json": "874f05155f395591287f9ee3826b70a12cb679e8d9aed7e417470f277d992a54",
+    "manifest.json": "623dee2583904eb27c34aaf9bf998ee891f4976108421dcbf9972c142e766912",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "profile/final-state.json": "682e35371bc39a4a00df1a469671e623ef456182f413fd0b223863d948ceaf07",
+    "profile/quote-callback-verification.json": "08c2a45440e772b9cc95262ffb764fd9c0fd451cf831adf894888530d4488f8c",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "local_only_ignored_files": {
+    "profile/sarv.sqlite3": "989fd2db4a14fe14a806fe7ab694977294057238cce899ae1e9e7ac491fac4aa"
+  },
+  "note": "Synthetic standalone SQLite backup is local-only and Git-ignored; exact generation/State JSON, reports/logs/provenance are repository-distributed. No live data used."
+}

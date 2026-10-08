@@ -1,0 +1,1 @@
+Early observer restart to increase exact realTab bounded loop from80 to160 for100 linebuttons plus fields/footer. No production defect; interrupted own Python, report/cleanup retained. Not acceptance.

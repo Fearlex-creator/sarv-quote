@@ -1,0 +1,26 @@
+{
+  "old_protocol": "m6-scoped-v1.2",
+  "new_protocol": "m6-scoped-v2",
+  "observer_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+  "old_observer_sha256": "39409332a7caae630d45cf94858df7dc4baf9c0f56b377f47fbbe757b505fc0c",
+  "diff_sha256": "7d805f1b710d0d3c8748c803d8e2f64ebd10d685cccd43861a64e0e869b3bf24",
+  "static_check_sha256": "3c8d2f0fb66b90295e32f1a9cc1ee91c6ec71815f3cb88193a6e2efd4200940d",
+  "static_receipt_sha256": "d1e1a3c0a1c7bfc957151ec40b5561d9b65af13ce52bc0f04ac77c0e52e59209",
+  "GUI_build": false,
+  "budget_waiver": false,
+  "isolated_static_cases": 46,
+  "independent_static_review": {
+    "accepted_observer_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+    "reviewer_receipt_sha256": "8d5482cf9909361794ff86ae497dda4b4d587f14242aca1f2e7dbff4657ea8ae",
+    "isolated_ast_cases_independently_passed": 46,
+    "native_qualification": "pending"
+  },
+  "prepared_epoch": {
+    "candidate": "candidate8",
+    "runtime": "runtime1",
+    "receipt_path": "docs/assets/accounting-m6/performance/candidate8-runtime1-coordinator-receipt.json",
+    "receipt_sha256": "e1e3ca060d1b0b1b46de0161e6e85bcaf9b3ee7db4c108334ab4dede81287784",
+    "pilot_GO": false,
+    "final_quiet_GO": false
+  }
+}

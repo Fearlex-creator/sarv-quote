@@ -1,0 +1,9 @@
+{
+  "changed": [
+    "src/ui/sales.rs"
+  ],
+  "unchanged_paths": 35,
+  "explanation": "All kernel, serialization, migration, exports, date, global UI and preserved quote/core/procurement/sidebar implementation paths remain byte-identical to candidate1. Only Sales action-group layout changes for native keyboard traversal. Candidate1 evidence retains its exact epoch; candidate2 runs affected native/scale proof and guarded gates independently.",
+  "source1": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+  "source2": "30dc57763c904f740a42df7f863276b2c2f08e2c4c8510901603d6b6571fda5b"
+}

@@ -1,0 +1,146 @@
+{
+  "result": "PASS15 native functional checks and22 accepted additive endpoints; no final performance acceptance",
+  "source_sha256": "efd4fdda06b2aa492239aac3dde74741b1a439c4d54afb11fa34ae0699244c72",
+  "binary_sha256": "c8ff9dd27b9e5a0d1946978de13c231e0c12ca1d6c30496636a00f00e01b0aad",
+  "actual_wrapper_before_after_equal": true,
+  "protocol": "m5-action-v1.2",
+  "choice_actual_quantityfocus": true,
+  "terminal_segments_included_and_raw_maxima_recomputed": true,
+  "phases": [
+    {
+      "operation": "quote_changed_save_recovery",
+      "functional": "accepted",
+      "observed_gap_ms": 49.237375,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_unchanged_save_refresh",
+      "functional": "accepted",
+      "observed_gap_ms": 33.302543,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_page_changed_save",
+      "functional": "accepted",
+      "observed_gap_ms": 60.933649,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 51.620196,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 65.335713,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 60.973149,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 68.62531,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 60.221298,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 65.59224900000001,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 68.221777,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_next",
+      "functional": "accepted",
+      "observed_gap_ms": 71.07243700000001,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 52.415954,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 43.882926000000005,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 43.761212,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 56.224572,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 54.912585,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 58.620022,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 45.660674,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 46.059205,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_page_unchanged_previous",
+      "functional": "accepted",
+      "observed_gap_ms": 42.295934,
+      "diagnostic_strict_status": "pass"
+    },
+    {
+      "operation": "quote_product_choice",
+      "functional": "accepted",
+      "observed_gap_ms": 67.848173,
+      "diagnostic_strict_status": "miss"
+    },
+    {
+      "operation": "quote_pdf_preview_and_export",
+      "functional": "accepted",
+      "observed_gap_ms": 31.88302,
+      "diagnostic_strict_status": "pass"
+    }
+  ],
+  "diagnostic_strict_misses": "13 of18 page scopes and choice; legacyglobal/PDF/save and17page target also miss asreported; preserved without final timing acceptance",
+  "limits": "functionalpilot=True; no quiet final performance acceptance; compiled observer Quantitycontract corrected, failedpriorv1.1 retained",
+  "actual_wrapper_matches_issued_C8_source36_binary": true
+}

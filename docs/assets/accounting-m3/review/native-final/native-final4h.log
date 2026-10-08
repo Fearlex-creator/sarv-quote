@@ -1,0 +1,194 @@
+dbus-daemon[109401]: [session uid=1000 pid=109401 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=109408 comm="/workspace/sarv-evidence/bin/sarv-M3-final" label="kernel")
+dbus-daemon[109401]: [session uid=1000 pid=109401 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[109434]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=109408 comm="/workspace/sarv-evidence/bin/sarv-M3-final" label="kernel")
+dbus-daemon[109434]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+dbus-daemon[109401]: [session uid=1000 pid=109401 pidfd=5] Activating service name='ca.desrt.dconf' requested by ':1.6' (uid=1000 pid=109582 comm="/workspace/sarv-evidence/bin/sarv-M3-final" label="kernel")
+dbus-daemon[109401]: [session uid=1000 pid=109401 pidfd=5] Successfully activated service 'ca.desrt.dconf'
+X connection to :8 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "run": "/workspace/sarv-quote/artifacts/independent-m3/native/run-chag02yz",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "binary_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1",
+  "backend": "private X11 GTK4 / Xvfb / Openbox; widget financial workflow plus actual XTest keyboard entry separately",
+  "checks": [
+    {
+      "name": "native financial forms completed",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "one company, opening source and journal",
+      "passed": true
+    },
+    {
+      "name": "literal independent ledger balances1251 and supplied952equity",
+      "passed": true,
+      "expected": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 200,
+        "Inventory": 300,
+        "ChequesReceivable": 200,
+        "Payables": -149,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952
+      }
+    },
+    {
+      "name": "independent cash and statement",
+      "passed": true
+    },
+    {
+      "name": "AR200/AP149 independently sum",
+      "passed": true
+    },
+    {
+      "name": "stock300/30000 base thousandths and GRNI subset50",
+      "passed": true
+    },
+    {
+      "name": "dualparty roles separate; cheque states distinct",
+      "passed": true
+    },
+    {
+      "name": "fiscal1405 canonical dates and frozen policy timezone",
+      "passed": true
+    },
+    {
+      "name": "backup/freshrestore/original restart",
+      "passed": true
+    },
+    {
+      "name": "opening-rial.pdf real PDF",
+      "passed": true
+    },
+    {
+      "name": "opening-toman.pdf real PDF",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches party name",
+      "passed": true
+    },
+    {
+      "name": "real Enter adds staged party",
+      "passed": true
+    },
+    {
+      "name": "real keyboard edits retained staged record",
+      "passed": true
+    },
+    {
+      "name": "real keyboard deletes staged record",
+      "passed": true
+    },
+    {
+      "name": "staged keyboard operations never write balances",
+      "passed": true
+    },
+    {
+      "name": "real Escape cancels opening unchanged",
+      "passed": true
+    },
+    {
+      "name": "discarded staged opening absent after restart",
+      "passed": true
+    },
+    {
+      "name": "zero CSV exactly13 supplied balances",
+      "passed": true
+    },
+    {
+      "name": "zero actual chooser Open widget invoked",
+      "passed": true
+    },
+    {
+      "name": "zero import pure before posting",
+      "passed": true
+    },
+    {
+      "name": "zero CSV no fabricated ordinary balances or references",
+      "passed": true
+    },
+    {
+      "name": "actual native zero has marker and no financial journal/request",
+      "passed": true
+    },
+    {
+      "name": "zero initialization persisted exact restart",
+      "passed": true
+    },
+    {
+      "name": "nonzero CSV exactly13 supplied balances",
+      "passed": true
+    },
+    {
+      "name": "nonzero actual chooser Open widget invoked",
+      "passed": true
+    },
+    {
+      "name": "nonzero import pure before posting",
+      "passed": true
+    },
+    {
+      "name": "nonzero CSV no fabricated ordinary balances or references",
+      "passed": true
+    },
+    {
+      "name": "actual native nonzero literal1251 supplied952capital one9linejournal",
+      "passed": true
+    },
+    {
+      "name": "actual native imported stock and GRNI lineage",
+      "passed": true
+    },
+    {
+      "name": "nonzero initialization persisted exact restart",
+      "passed": true
+    },
+    {
+      "name": "actual light 1280 native layout",
+      "passed": true
+    },
+    {
+      "name": "actual light 650 native layout",
+      "passed": true
+    },
+    {
+      "name": "actual dark 1280 native layout",
+      "passed": true
+    },
+    {
+      "name": "actual dark 650 native layout",
+      "passed": true
+    },
+    {
+      "name": "read-only layout/restart keeps exact saved aggregate",
+      "passed": true
+    },
+    {
+      "name": "immutable binary hash preserved",
+      "passed": true
+    },
+    {
+      "name": "observer X11 errors only expected retired-window races",
+      "passed": true,
+      "events": [
+        {
+          "code": 3,
+          "request": 20,
+          "resource": 8388612
+        },
+        {
+          "code": 3,
+          "request": 20,
+          "resource": 8388612
+        }
+      ]
+    }
+  ],
+  "baseline_binary_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d"
+}

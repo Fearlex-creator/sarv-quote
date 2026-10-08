@@ -1,0 +1,18 @@
+{
+  "result": "passed",
+  "binary_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1",
+  "theme": "dark",
+  "widths": [
+    1280,
+    650
+  ],
+  "views": [
+    "details",
+    "reconciled preview"
+  ],
+  "source": "actual staged native forms, no opening committed",
+  "limits": "visual inspection required",
+  "actual_rendered_dark": true,
+  "visual_inspection": "1280 and650 details/reconciled preview inspected; source fields, wrapped text, scroll body and fixed cancel/post actions visible",
+  "no_opening_committed": true
+}

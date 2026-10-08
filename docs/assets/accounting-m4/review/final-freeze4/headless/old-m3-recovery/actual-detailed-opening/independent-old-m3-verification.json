@@ -1,0 +1,14 @@
+{
+  "fresh_old_store_restore_reopen": true,
+  "full_state_exact": true,
+  "journals": 1,
+  "old_implementation_commit": "bdc304cb139e3d258b107b9ce18c7f4682ec5a89",
+  "openings": 1,
+  "quotation_csv_byte_exact": true,
+  "quotes": 0,
+  "recovery": "/workspace/sarv-quote/artifacts/independent-m4/final-freeze4/migration/actual-detailed-opening/before-schema5-19dfd8c6-fdba-4c1e-b33c-109f6a3d5234.json",
+  "restored_schema": 4,
+  "result": "passed",
+  "sqlite_integrity": "ok",
+  "zero_aliases": 0
+}

@@ -1,0 +1,11 @@
+{
+  "raw_receipt_preserved_byte_identical": true,
+  "corrected_field": "concurrency",
+  "original_incorrect_value": "Root preserved-native/identity diagnostic runs authorized concurrently; shared scheduling uncontrolled.",
+  "corrected_attribution": "Candidate6 root seven-command gates and read-only review/document work were authorized concurrently. Preserved-native and identity diagnostic runs named by the copied candidate5 template were not the candidate6 concurrency attribution.",
+  "pilot_start_utc": "2026-10-08T03:32:36Z",
+  "exact_end_utc_recorded": false,
+  "overlap_limits": "No instrumented end timestamp or per-process overlap accounting is present; shared scheduling remained uncontrolled.",
+  "timings": "functional qualification only; not accepted performance measurement",
+  "C2_historical_strict_misses_unchanged": true
+}

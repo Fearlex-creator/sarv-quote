@@ -1,0 +1,35 @@
+{
+  "result": "PASS bounded cached-v3 functional qualification only",
+  "report_sha256": "9956dba97e56cae918f86c424016c7b6e93ab79810903dfbf7d7b63174e6503d",
+  "source_sha256": "efd4fdda06b2aa492239aac3dde74741b1a439c4d54afb11fa34ae0699244c72",
+  "binary_sha256": "c8ff9dd27b9e5a0d1946978de13c231e0c12ca1d6c30496636a00f00e01b0aad",
+  "helper_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "actual_before_after_source_binary_helper_guards_equal": true,
+  "development_pilot": true,
+  "samples": "6 datasets n1 functional startup; alternating queries n2; all3 filtered pages/all40 native long pages",
+  "cache_checks": {
+    "posted": {
+      "identity_receipts": 3,
+      "cached_nodes_stable": true,
+      "positive_current_membership_all_edges": true,
+      "exact_current_caption_query_page": true,
+      "zero_hide_reveal_checked": true
+    },
+    "paged": {
+      "identity_receipts": 5,
+      "cached_nodes_stable": true,
+      "positive_current_membership_all_edges": true,
+      "exact_current_caption_query_page": true,
+      "zero_hide_reveal_checked": true
+    },
+    "long": {
+      "identity_receipts": 40,
+      "cached_nodes_stable": true,
+      "positive_current_membership_all_edges": true,
+      "exact_current_caption_query_page": true,
+      "zero_hide_reveal_checked": false
+    }
+  },
+  "focus_scope": "execution source exact helper requires own visible/sensitive positivegeometry focused target through component-first/realTabfallback; no exclusivepureTab or paintedframe claim",
+  "limits": "no final timing acceptance/no causal product-only C2 comparison/no immutable displayedlineUUID/everyrowamount proof; originalfailedv2 retained"
+}

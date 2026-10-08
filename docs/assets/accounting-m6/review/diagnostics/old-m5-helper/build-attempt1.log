@@ -1,0 +1,1017 @@
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/opening.rs:6:271
+    |
+  4 | ... fixture() -> Result<(AccountingState,OpeningCommand)> {
+    |                  ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+  5 | ...e=AccountingState::default();
+  6 | ...te.setup_core_company(NewCoreCompany{name:"F2 independent reviewer".into(),fiscal_name:"1405".into(),start_date:"2026-03-21".into(),end_date:"2027-03-20".into(),timezone:CompanyTimezone::AsiaTehran,chart:default_chart(),actor:"Independent reviewer".into()})?;
+    |       --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |       |
+    |       this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/opening.rs:10:46
+    |
+  4 | pub(crate) fn fixture() -> Result<(AccountingState,OpeningCommand)> {
+    |                            ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 10 |   let a=state.core.setups[0].account_id(role)?;
+    |                              ----------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                              |
+    |                              this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: the trait bound `sarv_quote::core::OpeningCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/opening.rs:25:12
+     |
+  25 |  Ok((state,serde_json::from_value(raw)?))
+     |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::core::OpeningCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::core::OpeningCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: the trait bound `sarv_quote::procurement::ProcurementCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:5:107
+     |
+   5 | ...Ok(serde_json::from_value(json!({"Order":{"cont...ument_discount":0,"supplied_total":total}}))?)}
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::procurement::ProcurementCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::procurement::ProcurementCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: the trait bound `sarv_quote::procurement::ProcurementCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:6:122
+     |
+   6 | ...Ok(serde_json::from_value(json!({"Receive":{"co..._thousandths":q}],"supplied_total":total}}))?)}
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::procurement::ProcurementCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::procurement::ProcurementCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: the trait bound `sarv_quote::procurement::ProcurementCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:7:118
+     |
+   7 | ...Ok(serde_json::from_value(json!({"Bill":{"conte...llect::<Vec<_>>(),"supplied_total":total}}))?)}
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::procurement::ProcurementCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::procurement::ProcurementCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: the trait bound `sarv_quote::procurement::ProcurementCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:8:134
+     |
+   8 | ...Ok(serde_json::from_value(json!({"Return":{"con...,"supplied_value":v}],"supplied_total":v}}))?)}
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::procurement::ProcurementCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::procurement::ProcurementCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: the trait bound `sarv_quote::sales::SalesCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:9:95
+     |
+   9 | ...Ok(serde_json::from_value(json!({"Fulfill":{"co...ousandths":5000}],"supplied_total":total}}))?)}
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::sales::SalesCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::sales::SalesCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: the trait bound `sarv_quote::sales::SalesCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:10:121
+     |
+  10 | ...Ok(serde_json::from_value(json!({"Return":{"con...lied_credit":credit,"supplied_cost":cost}}))?)}
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::sales::SalesCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::sales::SalesCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:12:67
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+ 12 |  let(mut s,o)=super::opening::fixture()?;s.post_opening(o.clone())?;
+    |                                            -----------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                                            |
+    |                                            this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:13:84
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+ 12 |  let(mut s,o)=super::opening::fixture()?;s.post_opening(o.clone())?;
+ 13 |  let p=s.post_procurement_command(buy(&o,"purchase180","2026-03-22",12000,15,180)?)?.record_id;
+    |          --------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |          |
+    |          this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:14:97
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 14 |  s.post_procurement_command(receive(&o,"receipt75","2026-03-23",&p,"purchase180-line",5000,75)?)?;
+    |    ---------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:15:99
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 15 |  s.post_procurement_command(receive(&o,"receipt105","2026-03-24",&p,"purchase180-line",7000,105)?)?;
+    |    -----------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:16:97
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 16 |  s.post_procurement_command(bill(&o,"bill30","2026-03-25",vec![("receipt75-line",2000,30)],30)?)?;
+    |    ---------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:17:128
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 17 |  s.post_procurement_command(bill(&o,"bill150","2026-03-26",vec![("receipt75-line",3000,45),("receipt105-line",7000,105)],150)?)?;
+    |    ----------------------------------------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: the trait bound `sarv_quote::procurement::ProcurementCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:18:29
+     |
+  18 | ...nd(serde_json::from_value(json!({"Transfer":{"context":cx(&o,"transfer70","2026-03-27"),"item_id":"item-a","source_warehouse_id":"w1","target_warehouse_id":"w2","unit_id":"piece","quantity_thousandths":6000}}))?)?;
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::procurement::ProcurementCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::procurement::ProcurementCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:18:238
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 18 |  s.post_procurement_command(serde_json::from_value(json!({"Transfer":{"context":cx(&o,"transfer70","2026-03-27"),"item_id":"item-a","source_warehouse_id":"w1","target_warehouse_id":"w2","unit_id":"piece","quantity_thousandths":6000}}))?)?;
+    |    ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: the trait bound `sarv_quote::sales::SalesCommand: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/common.rs:19:24
+     |
+  19 | ...nd=serde_json::from_value(json!({"Order":{"cont...:1,"supplied_total":199,"quotation":null}}))?;
+     |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^...^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `sarv_quote::sales::SalesCommand`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `sarv_quote::sales::SalesCommand` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:20:38
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 20 |  let order=s.post_sales_command(sale)?.record_id;
+    |              ------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |              |
+    |              this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:21:83
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 21 |  let first=s.post_sales_command(fulfill(&o,"fulfill100","2026-03-28",&order,100)?)?.record_id;
+    |              ---------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |              |
+    |              this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:22:88
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 22 |  s.post_sales_command(sale_return(&o,"sales-return40","2026-03-29",&first,2000,40,23)?)?;
+    |    ------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:23:88
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 23 |  s.post_sales_command(sale_return(&o,"sales-return60","2026-03-30",&first,3000,60,35)?)?;
+    |    ------------------------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:24:71
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 24 |  s.post_sales_command(fulfill(&o,"fulfill99","2026-03-31",&order,99)?)?;
+    |    -------------------------------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:25:14
+    |
+ 11 | pub fn baseline()->Result<(AccountingState,OpeningCommand)>{
+    |                    ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 25 |  s.validate()?;Ok((s,o))
+    |    ----------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:28:90
+    |
+ 27 | pub fn check(s:&AccountingState,o:&OpeningCommand,row:&Value)->Result<Value>{
+    |                                                                ------------- required `anyhow::Error: std::error::Error` because of this
+ 28 |  let date=row["date"].as_str().unwrap();let p=s.procurement_reconcile(&o.company_id,date)?;
+    |                                                 -----------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                                                 |
+    |                                                 this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:34:49
+    |
+ 27 | pub fn check(s:&AccountingState,o:&OpeningCommand,row:&Value)->Result<Value>{
+    |                                                                ------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 34 |  let sales=s.sales_reconcile(&o.company_id,date)?;ensure!(sales.reconciled&&sales.controls.len()==14&&sales.controls.iter().all(|c|...
+    |              -----------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |              |
+    |              this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:35:14
+    |
+ 27 | pub fn check(s:&AccountingState,o:&OpeningCommand,row:&Value)->Result<Value>{
+    |                                                                ------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 35 |  s.validate()?;Ok(json!({"date":date,"procurement":p,"sales":sales}))
+    |    ----------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: the trait bound `ProcurementReconciliation: serde::Serialize` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:35:19
+    |
+ 35 |  s.validate()?;Ok(json!({"date":date,"procurement":p,"sales":sales}))
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                   |
+    |                   the trait `serde_core::ser::Serialize` is not implemented for `ProcurementReconciliation`
+    |                   required by a bound introduced by this call
+    |
+    = note: for local types consider adding `#[derive(serde::Serialize)]` to your `ProcurementReconciliation` type
+    = note: for types from other crates check whether the crate offers a `serde` feature flag
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/mod.rs:234:1
+    |
+234 | pub trait Serialize {
+    | ------------------- this is the found trait
+    |
+   ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/mod.rs:234:1
+    |
+234 | pub trait Serialize {
+    | ^^^^^^^^^^^^^^^^^^^ this is the expected trait
+    = help: you can use `cargo tree` to explore your dependency tree
+    = help: the following other types implement trait `serde_core::ser::Serialize`:
+              &'a T
+              &'a mut T
+              ()
+              (T,)
+              (T0, T1)
+              (T0, T1, T2)
+              (T0, T1, T2, T3)
+              (T0, T1, T2, T3, T4)
+            and 129 others
+    = note: required for `&ProcurementReconciliation` to implement `serde_core::ser::Serialize`
+note: required by a bound in `to_value`
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:997:8
+    |
+995 | pub fn to_value<T>(value: T) -> Result<Value, Error>
+    |        -------- required by a bound in this function
+996 | where
+997 |     T: Serialize,
+    |        ^^^^^^^^^ required by this bound in `to_value`
+    = note: this error originates in the macro `$crate::json_internal` which comes from the expansion of the macro `json` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: the trait bound `SalesReconciliation: serde::Serialize` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:35:19
+    |
+ 35 |  s.validate()?;Ok(json!({"date":date,"procurement":p,"sales":sales}))
+    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |                   |
+    |                   the trait `serde_core::ser::Serialize` is not implemented for `SalesReconciliation`
+    |                   required by a bound introduced by this call
+    |
+    = note: for local types consider adding `#[derive(serde::Serialize)]` to your `SalesReconciliation` type
+    = note: for types from other crates check whether the crate offers a `serde` feature flag
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/mod.rs:234:1
+    |
+234 | pub trait Serialize {
+    | ------------------- this is the found trait
+    |
+   ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/mod.rs:234:1
+    |
+234 | pub trait Serialize {
+    | ^^^^^^^^^^^^^^^^^^^ this is the expected trait
+    = help: you can use `cargo tree` to explore your dependency tree
+    = help: the following other types implement trait `serde_core::ser::Serialize`:
+              &'a T
+              &'a mut T
+              ()
+              (T,)
+              (T0, T1)
+              (T0, T1, T2)
+              (T0, T1, T2, T3)
+              (T0, T1, T2, T3, T4)
+            and 129 others
+    = note: required for `&SalesReconciliation` to implement `serde_core::ser::Serialize`
+note: required by a bound in `to_value`
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:997:8
+    |
+995 | pub fn to_value<T>(value: T) -> Result<Value, Error>
+    |        -------- required by a bound in this function
+996 | where
+997 |     T: Serialize,
+    |        ^^^^^^^^^ required by this bound in `to_value`
+    = note: this error originates in the macro `$crate::json_internal` which comes from the expansion of the macro `json` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:42:27
+    |
+ 38 | pub fn empty_pool()->Result<(AccountingState,OpeningCommand)>{
+    |                      ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 42 |  s.post_opening(o.clone())?;s.validate()?;Ok((s,o))
+    |    -----------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |    |
+    |    this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/common.rs:42:41
+    |
+ 38 | pub fn empty_pool()->Result<(AccountingState,OpeningCommand)>{
+    |                      ---------------------------------------- required `anyhow::Error: std::error::Error` because of this
+...
+ 42 |  s.post_opening(o.clone())?;s.validate()?;Ok((s,o))
+    |                               ----------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                               |
+    |                               this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:11:31
+    |
+  7 | fn main()->Result<()> {
+    |            ---------- required `anyhow::Error: std::error::Error` because of this
+...
+ 11 |  let mut st=Store::open(&path)?;ensure!(st.state.schema==6,"genuine oldM5 State default schema6");
+    |             ------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |             |
+    |             this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: the trait bound `State: serde::de::DeserializeOwned` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:14:42
+     |
+  14 |   let original:sarv_quote::domain::State=serde_json::from_value(raw.get("state").unwrap_or(&raw).clone())?;
+     |                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'de> serde_core::de::Deserialize<'de>` is not implemented for `State`
+     |
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | --------------------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/de/mod.rs:554:1
+     |
+ 554 | pub trait Deserialize<'de>: Sized {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::de::Deserialize<'de>`:
+               &'a Path
+               &'a [u8]
+               &'a str
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+             and 141 others
+     = note: required for `State` to implement `serde_core::de::DeserializeOwned`
+note: required by a bound in `from_value`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/value/mod.rs:1039:8
+     |
+1037 | pub fn from_value<T>(value: Value) -> Result<T, Error>
+     |        ---------- required by a bound in this function
+1038 | where
+1039 |     T: DeserializeOwned,
+     |        ^^^^^^^^^^^^^^^^ required by this bound in `from_value`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:16:22
+    |
+  7 | fn main()->Result<()> {
+    |            ---------- required `anyhow::Error: std::error::Error` because of this
+...
+ 16 |   original.validate()?;st.change(|s|{*s=original;Ok(())})?;
+    |            ----------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |            |
+    |            this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:16:58
+    |
+  7 | fn main()->Result<()> {
+    |            ---------- required `anyhow::Error: std::error::Error` because of this
+...
+ 16 |   original.validate()?;st.change(|s|{*s=original;Ok(())})?;
+    |                           -------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                           |
+    |                           this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:17:76
+    |
+  7 | fn main()->Result<()> {
+    |            ---------- required `anyhow::Error: std::error::Error` because of this
+...
+ 17 |  } else {let(a,_)=common::baseline()?;st.change(|s|{s.accounting=a;Ok(())})?;}
+    |                                          ----------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                                          |
+    |                                          this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:19:48
+    |
+  7 | fn main()->Result<()> {
+    |            ---------- required `anyhow::Error: std::error::Error` because of this
+...
+ 19 |  st.backup(&path.join("actual-old-M5-v6.json"))?;
+    |     -------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |     |
+    |     this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error[E0277]: the trait bound `State: serde::Serialize` is not satisfied
+    --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:20:76
+     |
+  20 |  fs::write(path.join("actual-old-M5-state.json"),serde_json::to_vec_pretty(&st.state)?)?;
+     |                                                  ------------------------- ^^^^^^^^^ the trait `serde_core::ser::Serialize` is not implemented for `State`
+     |                                                  |
+     |                                                  required by a bound introduced by this call
+     |
+     = note: for local types consider adding `#[derive(serde::Serialize)]` to your `State` type
+     = note: for types from other crates check whether the crate offers a `serde` feature flag
+note: there are multiple different versions of crate `serde_core` in the dependency graph
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/mod.rs:234:1
+     |
+ 234 | pub trait Serialize {
+     | ------------------- this is the found trait
+     |
+    ::: /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_core-1.0.229/src/ser/mod.rs:234:1
+     |
+ 234 | pub trait Serialize {
+     | ^^^^^^^^^^^^^^^^^^^ this is the expected trait
+     = help: you can use `cargo tree` to explore your dependency tree
+     = help: the following other types implement trait `serde_core::ser::Serialize`:
+               &'a T
+               &'a mut T
+               ()
+               (T,)
+               (T0, T1)
+               (T0, T1, T2)
+               (T0, T1, T2, T3)
+               (T0, T1, T2, T3, T4)
+             and 129 others
+note: required by a bound in `to_vec_pretty`
+    --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde_json-1.0.151/src/ser.rs:2231:17
+     |
+2229 | pub fn to_vec_pretty<T>(value: &T) -> Result<Vec<u8>>
+     |        ------------- required by a bound in this function
+2230 | where
+2231 |     T: ?Sized + Serialize,
+     |                 ^^^^^^^^^ required by this bound in `to_vec_pretty`
+
+error[E0277]: `?` couldn't convert the error: `anyhow::Error: std::error::Error` is not satisfied
+   --> docs/assets/accounting-m6/review/probe/src/old_m5.rs:21:71
+    |
+  7 | fn main()->Result<()> {
+    |            ---------- required `anyhow::Error: std::error::Error` because of this
+...
+ 21 |  let r=st.state.accounting.sales_reconcile(&o.company_id,"2026-03-31")?;ensure!(r.reconciled&&r.profit.rials()==41&&r.stock.iter()....
+    |                            -------------------------------------------^ the trait `std::error::Error` is not implemented for `anyhow::Error`
+    |                            |
+    |                            this has type `Result<_, anyhow::Error>`
+    |
+    = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait
+help: item with same name found
+   --> /workspace/sarv-environment/cargo/registry/src/index.crates.io-1949cf8c6b5b557f/anyhow-1.0.104/src/lib.rs:390:1
+    |
+390 | pub struct Error {
+    | ^^^^^^^^^^^^^^^^
+    = note: there are multiple different versions of crate `anyhow` in the dependency graph
+    = note: required for `anyhow::Error` to implement `From<anyhow::Error>`
+
+error: aborting due to 39 previous errors
+
+For more information about this error, try `rustc --explain E0277`.

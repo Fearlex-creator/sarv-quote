@@ -1,0 +1,902 @@
+[
+  {
+    "name": "sarv-M4-freeze2",
+    "role": "application"
+  },
+  {
+    "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+    "role": "frame"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ثبت سند معکوس",
+    "role": "dialog"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌ها",
+    "role": "grouping"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "خواندن منابع و کنترل پایان روز…",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "پیشنهاد قیمت · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "بخش‌های دفتر حسابداری",
+    "role": "page tab list"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سند اصلی 35f52024-99ee-45ae-88fa-8829eda4a39f حفظ می‌شود. همهٔ بدهکار و بستانکارها در سند تازه معکوس می‌شوند. دورهٔ اصلی و مقصد باید باز باشند.",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "دفتر کل و کنترل مانده‌ها • ریال پایه • تک‌کاربر محلی",
+    "role": "label"
+  },
+  {
+    "name": "Independent synthetic valid preM4 event-prefix manual book",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "table cell"
+  },
+  {
+    "name": "کدینگ",
+    "role": "table cell"
+  },
+  {
+    "name": "اسناد",
+    "role": "table cell"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "table cell"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "table cell"
+  },
+  {
+    "name": "کدینگ",
+    "role": "panel"
+  },
+  {
+    "name": "اسناد",
+    "role": "panel"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "panel"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "دورهٔ مقصد",
+    "role": "label"
+  },
+  {
+    "name": "دورهٔ مقصد",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ مالی",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ مالی",
+    "role": "text"
+  },
+  {
+    "name": "سال، ماه و روز را در تقویم انتخاب‌شده وارد کنید؛ ارقام فارسی، عربی و لاتین پذیرفته می‌شوند.",
+    "role": "label"
+  },
+  {
+    "name": "دلیل ضروری",
+    "role": "label"
+  },
+  {
+    "name": "دلیل ضروری",
+    "role": "text"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ثبت سند معکوس",
+    "role": "button"
+  },
+  {
+    "name": "انصراف",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "Independent synthetic valid preM4 event-prefix manual book",
+    "role": "combo box"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "button"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "page tab"
+  },
+  {
+    "name": "کدینگ",
+    "role": "page tab"
+  },
+  {
+    "name": "اسناد",
+    "role": "page tab"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "page tab"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "page tab"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "دورهٔ مقصد",
+    "role": "toggle button"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "toggle button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ثبت سند معکوس",
+    "role": "label"
+  },
+  {
+    "name": "انصراف",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "name": "Independent synthetic valid preM4 event-prefix manual book",
+    "role": "toggle button"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "label"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "label"
+  },
+  {
+    "name": "کدینگ",
+    "role": "label"
+  },
+  {
+    "name": "اسناد",
+    "role": "label"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "label"
+  },
+  {
+    "name": "جست‌وجوی اسناد حسابداری",
+    "role": "entry"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ثبت سند معکوس",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سند دستی / افتتاحیهٔ دفتر کل",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سند دستی / افتتاحیهٔ دفتر کل",
+    "role": "label"
+  },
+  {
+    "name": "۱ سند • صفحهٔ ۱ از ۱",
+    "role": "table cell"
+  },
+  {
+    "name": "قبلی",
+    "role": "table cell"
+  },
+  {
+    "name": "بعدی",
+    "role": "table cell"
+  },
+  {
+    "name": "سند دستی • ⁨۲۰۲۶-۰۳-۲۲⁩ میلادی • ثبت‌شده",
+    "role": "label"
+  },
+  {
+    "name": "شناسه: ⁨35f52024-99ee-45ae-88fa-8829eda4a39f⁩\nمنبع: ⁨preM4-valid-manual-source⁩ • نسخه ۱ • رویداد: procurement.receive\n100 ریال • ۲ ردیف • Valid original generic manual event under actual M3 rules",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۱ سند • صفحهٔ ۱ از ۱",
+    "role": "label"
+  },
+  {
+    "name": "قبلی",
+    "role": "button"
+  },
+  {
+    "name": "بعدی",
+    "role": "button"
+  },
+  {
+    "name": "ردیف‌ها و پیوندها",
+    "role": "table cell"
+  },
+  {
+    "name": "سند معکوس با دلیل",
+    "role": "table cell"
+  },
+  {
+    "name": "2026 • ⁨۲۰۲۶-۰۱-۰۱⁩ میلادی تا ⁨۲۰۲۶-۱۲-۳۱⁩ میلادی",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "Independent synthetic valid preM4 event-prefix manual book",
+    "role": "label"
+  },
+  {
+    "name": "قبلی",
+    "role": "label"
+  },
+  {
+    "name": "بعدی",
+    "role": "label"
+  },
+  {
+    "name": "ردیف‌ها و پیوندها",
+    "role": "button"
+  },
+  {
+    "name": "سند معکوس با دلیل",
+    "role": "button"
+  },
+  {
+    "name": "ردیف‌ها و پیوندها",
+    "role": "label"
+  },
+  {
+    "name": "سند معکوس با دلیل",
+    "role": "label"
+  }
+]

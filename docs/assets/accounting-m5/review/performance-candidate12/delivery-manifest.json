@@ -1,0 +1,17 @@
+{
+  "scope": "Read-only independent final C12 recomputation and bounded local workflow checkpoint review; strict performance failure remains partial/open. No application or new measurement execution.",
+  "files": {
+    "inspection.log": {
+      "sha256": "2e74d18ba4d0ead2796744565df2854ed581e756b88860b1f757d03ae81548fe",
+      "bytes": 1246
+    },
+    "inspect-final.py": {
+      "sha256": "6e78b20d9a9edb27588b08ff48a59193da0e4a4122b3e1dd806cad2d15aaf98e",
+      "bytes": 15937
+    },
+    "independent-analysis.json": {
+      "sha256": "580a3eb4548ba57026264814e5ed4e53d26b53ed0cce49f44a67096b737fc862",
+      "bytes": 47897
+    }
+  }
+}

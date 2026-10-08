@@ -1,0 +1,317 @@
+{
+  "result": "passed",
+  "binary_sha256": "62ad6b15d24b24591c6e9bf57c0de1aae11e35a61be47553dc7a2388795e0cd4",
+  "source": "/workspace/sarv-quote/artifacts/m4-preserved/quote-mcjjhntx",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-h5uoht31",
+  "checks": [
+    {
+      "name": "Native customer Enter preserves all five independently typed fields",
+      "passed": true
+    },
+    {
+      "name": "Customer creation leaves approved history unchanged",
+      "passed": true
+    },
+    {
+      "name": "Conflicting duplicate native customer submission remains unchanged",
+      "passed": true
+    },
+    {
+      "name": "Conflicting duplicate shows explicit edit guidance",
+      "passed": true
+    },
+    {
+      "name": "Native CSV import presents row/column diagnostics for both invalid records",
+      "passed": true
+    },
+    {
+      "name": "Native rejected multi-error import preserves exact whole persisted state",
+      "passed": true
+    },
+    {
+      "name": "In-app CSV template is actually copied and natively pasteable",
+      "passed": true
+    },
+    {
+      "name": "Composer staging does not persist a partial catalog",
+      "passed": true
+    },
+    {
+      "name": "Duplicate native product is rejected without partial persistence",
+      "passed": true
+    },
+    {
+      "name": "Duplicate product displays a validation reason",
+      "passed": true
+    },
+    {
+      "name": "Native approved catalog persists exact source, aliases and rial amount",
+      "passed": true,
+      "product": {
+        "code": "QA-NATIVE-1",
+        "name": "کالای ساختگی مستقل با شرح بلند",
+        "measure": "عدد",
+        "price_rial": 1251,
+        "source_unit": "Rial",
+        "source_at": "2020-01-01T00:00:00Z",
+        "aliases": [
+          "alias independent",
+          "نام ساختگی"
+        ]
+      }
+    },
+    {
+      "name": "In-document customer picker loads identity/contact/email/address snapshot",
+      "passed": true
+    },
+    {
+      "name": "Customer picker Escape preserves exact saved draft",
+      "passed": true
+    },
+    {
+      "name": "Product alias picker → quantity Enter adds exact explicit source",
+      "passed": true
+    },
+    {
+      "name": "Native approval retains exact integer totals and contact snapshot",
+      "passed": true,
+      "expected_subtotal_rial": 2971,
+      "expected_tax_rial": 99,
+      "expected_total_rial": 2070
+    },
+    {
+      "name": "Native preview CSV saves the shown contact/address and exact total",
+      "passed": true
+    },
+    {
+      "name": "Native preview CSV export leaves approved history unchanged",
+      "passed": true
+    },
+    {
+      "name": "Native preview PDF contains the selected code and contact email",
+      "passed": true
+    },
+    {
+      "name": "Native preview PDF export leaves approved history unchanged",
+      "passed": true
+    },
+    {
+      "name": "Native revision preserves original offer and exact revised quantity",
+      "passed": true
+    },
+    {
+      "name": "Customer-linked native history exposes the approved quote number",
+      "passed": true
+    },
+    {
+      "name": "Native customer archive preserves approved offer snapshots",
+      "passed": true
+    },
+    {
+      "name": "Native customer unarchive restores identity without touching history",
+      "passed": true
+    },
+    {
+      "name": "Native customer contact edit preserves immutable quote contact/address",
+      "passed": true
+    },
+    {
+      "name": "Native appearance selection saves Dark",
+      "passed": true
+    },
+    {
+      "name": "Native appearance selection saves Light",
+      "passed": true
+    },
+    {
+      "name": "Fresh process preserves composed catalog, customer, exact draft and approved offer",
+      "passed": true
+    },
+    {
+      "name": "Release hash is unchanged throughout independent run",
+      "passed": true
+    }
+  ],
+  "resumed_debug": false,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "captures": {
+    "customer-dialog.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "import-diagnostics.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-composer.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-confirm.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customer-picker.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "product-picker.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "editor-approved.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "document-preview.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "archive-expanded-probe.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customer-linked-history.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-light.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customers-light.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "quotes-light.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "backup-light.png": {
+      "page": "backup",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "settings-light.png": {
+      "page": "settings",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "editor-dark.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "catalog-dark.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "customers-dark.png": {
+      "page": "customers",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "quotes-dark.png": {
+      "page": "quotes",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "backup-dark.png": {
+      "page": "backup",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "settings-dark.png": {
+      "page": "settings",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "document-preview-dark.png": {
+      "page": "order",
+      "geometry": [
+        1400,
+        940
+      ]
+    },
+    "editor-900x560-input.png": {
+      "page": "order",
+      "geometry": [
+        900,
+        560
+      ]
+    },
+    "editor-900x560-total.png": {
+      "page": "order",
+      "geometry": [
+        900,
+        560
+      ]
+    }
+  },
+  "archive_expander_bounds": {
+    "x": 0,
+    "y": 0,
+    "width": 1076,
+    "height": 60
+  },
+  "window_origin": [
+    25,
+    55
+  ]
+}

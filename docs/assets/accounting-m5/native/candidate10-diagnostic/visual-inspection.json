@@ -1,0 +1,27 @@
+{
+  "candidate": "candidate10-diagnostic",
+  "acceptance": "rejected; one quotation stage19 GtkText warning remains",
+  "inspector": "native-diagnostics-fix agent",
+  "images": [
+    {
+      "path": "main/full/M5-sales-light-650x550-focused-source.png",
+      "sha256": "146b3109a2c48b7dfbf0522ce6c1ffb3d70695091deca15fcac1b30d4fb0e01e",
+      "personally_viewed": true,
+      "finding": "Light650×550 current source action fully visible with blue focus ring; whole Sales page scrolls while global header remains visible."
+    },
+    {
+      "path": "main/full/M5-sales-dark-650x550-zero.png",
+      "sha256": "95cdbd952d1ca56fb932088ac4ba4cb25d484c266b8d484f533303f7ade10011",
+      "personally_viewed": true,
+      "finding": "Dark650×550 three actions, focused search, exact Persian zero-result count and empty state readable within native viewport."
+    },
+    {
+      "path": "main/detail-pages/M5-real-detail-last-page.png",
+      "sha256": "3fb2b3fe55081100b07d04a2652fc08d2cb88354705b86aed786460e5c9fc845",
+      "personally_viewed": true,
+      "finding": "Actual final source line029 visible; Previous holds blue focus ring, Next is insensitive and Persian summary shows26–32 of32."
+    }
+  ],
+  "native_detail_focus_evidence": "main/detail-pages/sales-detail-pager-focus.jsonl",
+  "scope": "Only these three actual images were personally viewed; no inspection claim for other copied media."
+}

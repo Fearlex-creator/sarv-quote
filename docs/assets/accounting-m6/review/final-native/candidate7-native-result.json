@@ -1,0 +1,63 @@
+{
+  "reviewer": "m6_final_native_review",
+  "source_sha256": "064dfa71df0ed07ccee3e1ae717405d4a824e68a221d86697b46151207b7fefb",
+  "binary_sha256": "eb8e99f89da0700ec1dc7125aae1db7791999df042f0f46d52eed719844f1992",
+  "fresh_return_native78_closed_pass": true,
+  "literal_assertions": 129,
+  "literal_result_sha256": "6365300054a9dea8f4eed8cebaacc42b60e7d08aa64efe4450a01a0a6e1a16d9",
+  "literal_checker_sha256": "5a98116947a60c6f28e153af4951948ce05f543032cdb4f49cf0a9292250b498",
+  "return_receipt_sha256": "7bd10e3f34179a684639f9fe144e3ae4b29bc27c1cb3dfe12b15949d5104885f",
+  "all48_return_portable_hashes_exact": true,
+  "fresh_sidebar34_closed_pass": true,
+  "sidebar_receipt_sha256": "73bd548c16994f5fd7e797e6f84ec0eac59800e944a2efad97ce1b8e1b348fbd",
+  "all20_sidebar_portable_hashes_exact": true,
+  "current_36production_35test_19compile_inputs_exact": true,
+  "personally_viewed_sidebar_images": {
+    "sidebar-standard-light.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-standard-dark.png": "edba6c5ec304793a226af3a418fcaf448ca907d85998638e68bcfdd3f597e015",
+    "shell-wide-sidebar-hidden.png": "0774e8952f4db9e3e1d0aafe00c8269e019447e62f027a7d0683064b83fbebf5",
+    "shell-wide-sidebar-restored.png": "5ad25f9fa0fa8971f4abf45182d25039e41bd5465f54452a57f34760c39d23b3",
+    "shell-wide-hidden-page-change.png": "9d1425877878a629cd36a6b71bce060ca199ce6ae3b15e99eb6fefa11d7f450c",
+    "sidebar-narrow-light-focus.png": "d4d3528e10ec2cfc7b518fb2e96a652baa960128a4ba897d66507fa5e69dca34",
+    "sidebar-narrow-dark-focus.png": "7083a110e52fbebd573abfe4dce67b7198191cd318b2aea7eecde240fe1422e1",
+    "shell-narrow-close-restored-focus.png": "4a19983d92518f5358e2dccd7719bbe2c1a76e14553822b280d2fa2cb8ff5fb2"
+  },
+  "personally_viewed_return_images": {
+    "M6-actual-physical-return.png": "1aff11a6e4fc1385a8c68fea3e55a23ba81bf842e8d4f28adbd26d91ed2436eb",
+    "M6-actual-supplier-credit.png": "f6b8322db78e59b43cef6845b2e48fe42393f07f4156d3fd84de0bb2b67af81f",
+    "M6-overreturn-retained.png": "a651c3d6031a3786768cf32f0eb6d03c711d2445edba127d4e53129641ddef97",
+    "M6-light-1280x900.png": "e3857b3f3b9df6bed071f2f376d3b0c2671040edc03aab123ff9164f6c4cc8bf",
+    "M6-dark-1280x900.png": "235ef208cdb68ee028430b1c74976adab4c655b2cd505b523b70d28317976e71",
+    "M6-light-650x550.png": "41b62a2c2d81576d7bcd893bed145cd4e083a46e3d917aeccacd5d84d763f057",
+    "M6-dark-650x550.png": "3c14168595e04d8ec98c8d71bb2a97d67ce895057a6a1ad1bbff9c7220f62101",
+    "M6-light-1280x900-remaining-source.png": "b9008c7648d95092235abc099944dcdc77879098102f06f19d5a7c111ea4d444",
+    "M6-dark-1280x900-remaining-source.png": "8db0895be9ea2dd303a9260f55984f64d7fb09ab7bd78b74fbb467a53fe5de7a",
+    "M6-light-650x550-remaining-source.png": "305f56cb957237633a9ac41b5c559f687adbdabefbb682035720f312984024ad",
+    "M6-dark-650x550-remaining-source.png": "c72307b0bf1e73a32d9da15c2bb5a86ec95918bafd9748823852cdcb971671b2"
+  },
+  "physical_page2_personally_viewed_sha256": "a1eaeed4129f1e84c2d00665b088143be72aa43b476f8e78949483b6cebb8aa9",
+  "actual_exports": {
+    "M6-actual-physical-return.pdf": "6b8ab11a073c2b4cab6fb99065394ab3a96552d879ca36fd78b68124b3f7d80d",
+    "M6-actual-physical-return.csv": "8fe376282ea79b70b45f9e0098010a935844d1218139c0d5d06ec2497ede8013",
+    "M6-actual-supplier-credit.pdf": "5ebe6cdd720601ebc8bff5dec1a5e3716d06c335775c3f6014cb33aafc11bf41",
+    "M6-actual-supplier-credit.csv": "81e96fd495746434d85bbcc14a547bb3a786cc4d6a66a88cdf7101a5eff515f6"
+  },
+  "invalid_two_line_entry_native_visible": true,
+  "invalid_200_line_entry_visibility_accepted": false,
+  "quiet_final_performance_accepted": false,
+  "existing_bounded_findings": [
+    {
+      "id": "C7-R03",
+      "priority": "P3",
+      "source": "src/ui/sales.rs:1474",
+      "impact": "Unconditional shared status message from async sales refresh can display sales-ready on active Purchases; actual light/dark wide Return run shows it",
+      "unchanged_from_candidate6": true
+    }
+  ],
+  "limits": [
+    "Private X11 only; no Wayland, speech, enlarged text or high contrast",
+    "Fresh actual3PDFpages and all exposedrawASCII IDs/ref checks; no broad financial production gates",
+    "200hidden invalid entry/focus-user-wins proof pending separate affected native run",
+    "All12runtime6 diagnostic timing misses preserved; revisedobservermethod notqualified"
+  ]
+}

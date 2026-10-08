@@ -1,0 +1,9 @@
+# Candidate5 M5 functional qualification
+
+**Functional PASS only.** This fresh `--pilot` run uses n1 repeated startup and n2 search per stream, with authorized root preserved-native/identity diagnostics running concurrently. Raw timings and misses are diagnostic; no final performance acceptance or percentile claim follows.
+
+Candidate5 release SHA256 `45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e`; source aggregate `07d0edcee2f5a13d4a708faff3e444016829f15ea6149d4d182b23037860822c`. [Raw observer report](performance.json) declares `development_pilot:true` and unchanged source/binary/observer hashes. It completed core/procurement and full/external/draft Sales workflows, exact financial proof, current visible/focused real-key queries, all3 filtered120-draft pages, all40 long-editor pages and six startup cohorts. Component-first focus remains its historical method; separate native pure-Tab evidence belongs to root/native QA.
+
+Filtered-page diagnostic209.055/158.682ms150ms misses and every raw sample remain retained. Shared contention, traversal and layout are confounds, not budget waivers. The [read-only BFS audit](../m5-observer-traversal-audit.md) changes no endpoint. Source/observer hashes remained stable and no final epoch was rerun.
+
+Portable evidence includes raw JSON/phase records, all native/observer logs and PNGs, small synthetic CSV inputs and root freeze manifest; [file hashes/bytes](evidence-files.json) identify every file. SQLite profiles, executables, runtime caches and large source CSV are excluded. Complete original output is preserved at `artifacts/performance-m5/candidate5-functional-pilot/`. The sequential [M2/additive qualification failed](../scale-pilot-candidate5-failed/README.md) on an ASCII/Persian observer predicate, so this M5 pass does not qualify all quotation scopes or permit final timing.

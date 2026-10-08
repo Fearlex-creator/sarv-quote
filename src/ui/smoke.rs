@@ -51,11 +51,13 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
         .next()
         .context("ambiguous review missing")?;
     ambiguous.set_selected(2);
+    wait_background(ui)?;
     let unmatched = descendants::<gtk::DropDown>(&ui.review)
         .into_iter()
         .next()
         .context("unmatched review missing")?;
     unmatched.set_selected(4);
+    wait_background(ui)?;
     ui.stale.set_active(false);
     approve.emit_clicked();
     ensure!(
@@ -106,13 +108,18 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
     );
     qty_entry.set_text("۲");
     ui.commit_table();
+    wait_background(ui)?;
     ui.delete_line(0);
+    wait_background(ui)?;
     ui.row_editors.borrow()[0].quantity.set_text("۱۳");
     ui.commit_table();
+    wait_background(ui)?;
     ui.new_item.set_text("P-101");
     ui.new_quantity.set_text("۱");
     ui.add_line();
+    wait_background(ui)?;
     ui.undo_delete();
+    wait_background(ui)?;
     ensure!(
         ui.store.borrow().state.draft.lines.len() == 5
             && ui.store.borrow().state.draft.lines[1].quantity_milli == 13000,
@@ -151,6 +158,7 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
     ui.order.buffer().set_text(&csv_order(&lines));
     ui.stale.set_active(true);
     ui.commit_table();
+    wait_background(ui)?;
     approve.emit_clicked();
     approve.emit_clicked();
     let state = ui.store.borrow().state.clone();
@@ -185,6 +193,7 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
     let restored = Store::restore_preview(&dir.join("backup.json"))?;
     ensure!(restored.quotes.len() == 2, "backup validation failed");
     ui.delete_line(0);
+    wait_background(ui)?;
     ensure!(
         ui.deleted_lines.borrow().is_some() && ui.undo_button.is_sensitive(),
         "deleted-line restore setup failed"
@@ -209,6 +218,7 @@ fn native_flow(ui: &Rc<Ui>, approve: &gtk::Button) -> Result<()> {
     );
     let restored_lines = ui.store.borrow().state.draft.lines.clone();
     ui.undo_delete();
+    wait_background(ui)?;
     ensure!(
         serde_json::to_value(&ui.store.borrow().state.draft.lines)?
             == serde_json::to_value(&restored_lines)?,
@@ -365,6 +375,7 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
         ui.new_item.set_text(code);
         ui.new_quantity.set_text(qty);
         ui.add_line();
+        wait_background(ui)?;
     }
     ui.stale.set_active(true);
     ui.approve();
@@ -461,7 +472,11 @@ fn settings_flow(ui: &Rc<Ui>) -> Result<()> {
 
 fn wait_background(ui: &Ui) -> Result<()> {
     let deadline = std::time::Instant::now() + std::time::Duration::from_secs(10);
-    while ui.background_busy.get() {
+    while ui.background_busy.get()
+        || ui.persistence_busy.get()
+        || ui.pending_save_action.borrow().is_some()
+        || ui.review_requested.get().is_some()
+    {
         anyhow::ensure!(
             std::time::Instant::now() < deadline,
             "background operation timed out"
@@ -519,6 +534,7 @@ fn polish_flow(ui: &Rc<Ui>) -> Result<()> {
         original.lines[0].quantity_milli % 1000
     ));
     ui.commit_table();
+    wait_background(ui)?;
     let before = ui.store.borrow().state.draft.clone();
     ui.import_order(&imported);
     wait_background(ui)?;
@@ -676,7 +692,18 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
         if let Some(ui) = weak.upgrade() {
             let key = key.name().map(|s| s.to_string()).unwrap_or_default();
             glib::idle_add_local_once(move || {
-                let focus = gtk::prelude::GtkWindowExt::focus(&ui.window);
+                // A modal Dialog owns its focus independently of GtkWindow.
+                // Report that focus rather than an underlying header control.
+                let dialog = ui.visible_dialog();
+                let dialog_focus = dialog.as_ref().and_then(|dialog| dialog.focus());
+                let focus_scope = if dialog_focus.is_some() {
+                    "dialog"
+                } else if dialog.is_some() {
+                    "window-fallback"
+                } else {
+                    "window"
+                };
+                let focus = dialog_focus.or_else(|| gtk::prelude::GtkWindowExt::focus(&ui.window));
                 let contains = |widget: &gtk::Widget| focus.as_ref().is_some_and(|w| w == widget || w.is_ancestor(widget));
                 let mut target = "other".to_string();
                 for row in ui.row_editors.borrow().iter() {
@@ -709,7 +736,7 @@ pub(super) fn schedule(ui: &Rc<Ui>, approve: &gtk::Button) {
                 let focus_bounds = focus.as_ref().and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
                 let focus_clip_bounds = focus.as_ref().and_then(|widget| widget.ancestor(gtk::ScrolledWindow::static_type()))
                     .and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
-                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some()});
+                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some(),"focus_scope":focus_scope,"dialog_title":dialog.as_ref().map(|dialog|dialog.title().to_string())});
                 use std::io::Write;
                 if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(directory(&ui).join("keyboard-events.jsonl")) {
                     let _ = writeln!(file, "{event}");

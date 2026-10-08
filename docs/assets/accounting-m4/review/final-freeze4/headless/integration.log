@@ -1,0 +1,4 @@
+PASS detached reservation/commit/adoption: owner old until durable receipt, exact candidate after adoption
+PASS both change/detached commits reject internally valid history rollback with exact unchanged persisted owner
+PASS crossprofile adoption rejects; lost owner receipt reopens complete inventory375/GRNI125
+PASS candidate preparation rejects forged derived sequence; typed source actor/audit mismatch rejects

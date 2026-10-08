@@ -1,0 +1,30 @@
+{
+  "result": "failed",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "fixture": "/workspace/sarv-quote/artifacts/procurement-native/run-9hnft601/full",
+  "original_generation": 14,
+  "original_payload_sha256": "33fccf6ba62b71f7e2233716d0bd11965236a08a3863c1f5dde1dc36cb5b45ee",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/picker-persistence-final6-rpoui3o8",
+  "checks": [],
+  "scope": "Real owned native picker keyboard + SQLite writer lock/CAS race; exact full non-draft State/history; explicit accessibility newer-input injection, not performance",
+  "setup": {
+    "method": "observer-owned prelaunch single unmatched line plus50k synthetic catalog and labelled synthetic QA customer; no financial/schema/history changes",
+    "catalog_fixture": "/workspace/sarv-quote/artifacts/performance-m4/freeze5-repeated/quote-scale",
+    "catalog_payload_sha256": "d00596beb4fb69c941c5db12724e44bf424f422d22757dc20b2fc8ff5b23911d",
+    "catalog_id": "198e7b1d-03ed-4727-8939-8e73b4e809e7",
+    "catalog_products": 50000,
+    "customer": {
+      "id": "INDEPENDENT-QA-CUSTOMER",
+      "name": "QA CUSTOMER",
+      "phone": "02100000000",
+      "contact_name": "QA CONTACT",
+      "email": "qa@example.invalid",
+      "address": "SYNTHETIC QA ADDRESS"
+    },
+    "code": "SCALE-50000",
+    "price_rial": 150000,
+    "generation": 14
+  },
+  "error": "RuntimeError('Timed out waiting for owned window')"
+}

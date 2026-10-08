@@ -1,0 +1,72 @@
+dbus-daemon[201874]: [session uid=1000 pid=201874 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=201883 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze5" label="kernel")
+dbus-daemon[201874]: [session uid=1000 pid=201874 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[201909]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=201875 comm="/usr/bin/python3 docs/assets/accounting-m4/native/" label="kernel")
+dbus-daemon[201909]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :11 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze5",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "run": "/workspace/sarv-quote/artifacts/procurement-completion/run-v7mvmur9",
+  "checks": [
+    {
+      "name": "uninstrumented source ready global footer",
+      "passed": true
+    },
+    {
+      "name": "ready source full serialized state and generation unchanged",
+      "passed": true
+    },
+    {
+      "name": "controlled actual Escape closes held source and global status completes",
+      "passed": true,
+      "worker_trace": "start tid=202275 at_ms=29716816.180\nend tid=202275 held_ms=1770.145 timeout=0\n"
+    },
+    {
+      "name": "controlled source cancellation full serialized state and generation unchanged",
+      "passed": true
+    },
+    {
+      "name": "controlled delay terminated before bounded timeout",
+      "passed": true
+    },
+    {
+      "name": "uninstrumented worker rejected preview clears global working footer",
+      "passed": true,
+      "global_error_labels": [
+        "سال مالی قفل یا تاریخ خارج از دوره است",
+        "سال مالی قفل یا تاریخ خارج از دوره است",
+        "سال مالی قفل یا تاریخ خارج از دوره است"
+      ]
+    },
+    {
+      "name": "rejected preview full serialized state and generation unchanged",
+      "passed": true
+    },
+    {
+      "name": "uninstrumented valid preview global ready explicitly unposted",
+      "passed": true
+    },
+    {
+      "name": "valid preview full serialized state and generation unchanged",
+      "passed": true
+    },
+    {
+      "name": "preview cancellation keeps full serialized state and generation",
+      "passed": true
+    }
+  ],
+  "synthetic_delay": {
+    "scope": "Source cancellation branch only. Actual pthread_setname_np forwards unchanged; holds owned sarv-export worker behind private flag, maximum5000ms. No GTK/main thread delay and no financial writes. Uninstrumented ready and rejected preview observations are separate.",
+    "c_sha256": "7856d1ef3871d81450b75f81f4cc72c1d656e73788611f6007cb37bd992b3eb0",
+    "so_sha256": "144603a45b956a0359d61f2d9757eb669f845abf12e407da924637e9eb5efc79",
+    "trace": "start tid=202275 at_ms=29716816.180\nend tid=202275 held_ms=1770.145 timeout=0\n"
+  },
+  "focus_events": [],
+  "gtk_diagnostics": {
+    "ready-native.log": "",
+    "cancel-native.log": "",
+    "preview-native.log": ""
+  }
+}

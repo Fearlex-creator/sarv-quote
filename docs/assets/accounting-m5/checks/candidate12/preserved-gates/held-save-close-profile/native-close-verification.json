@@ -1,0 +1,14 @@
+{
+  "result": "passed",
+  "synthetic_only": true,
+  "native_input": "X11 XTest text followed by Alt+F4",
+  "checks": [
+    "Window remains open while detached save waits for actual SQLite write lock",
+    "Close exits successfully only after durable commit",
+    "Reopened SQLite retains exact typed customer and one generation"
+  ],
+  "limits": [
+    "Process restart proof; hardware power loss untested",
+    "No Wayland coverage"
+  ]
+}

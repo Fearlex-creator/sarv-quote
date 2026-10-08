@@ -1,0 +1,18 @@
+{
+  "result": "passed",
+  "native_profile": "/workspace/sarv-quote/artifacts/accounting-native/run-dy8ivtxi",
+  "independent_expected_journal_debit_totals_irr": [
+    1251,
+    349,
+    349
+  ],
+  "independent_expected_final_account_net_irr": {
+    "1001": 1251,
+    "3001": -1251
+  },
+  "linked_reversal_preserves_original": true,
+  "integrity_check": "ok",
+  "pdf_before_total_rial": "1600",
+  "pdf_final_total_toman": "125.1",
+  "csv_base_and_display_match": true
+}

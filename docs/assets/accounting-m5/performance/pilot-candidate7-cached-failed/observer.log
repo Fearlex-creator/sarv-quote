@@ -1,0 +1,26 @@
+dbus-daemon[283543]: [session uid=1000 pid=283543 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=283544 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[283543]: [session uid=1000 pid=283543 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[283578]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=283544 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[283578]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"core_search": {"n": 2, "p50": 117.72644000302535, "p95": 118.12576500233263, "p99": 118.12576500233263, "worst": 118.12576500233263, "method": "nearest rank"}, "preview_ms": 64.23585199809168, "post_ms": 6.1402950013871305}
+{"procurement_searches": {"document": {"n": 2, "p50": 92.04925799713237, "p95": 101.06157200061716, "p99": 101.06157200061716, "worst": 101.06157200061716, "method": "nearest rank"}, "party": {"n": 2, "p50": 79.24816199374618, "p95": 88.52331199886976, "p99": 88.52331199886976, "worst": 88.52331199886976, "method": "nearest rank"}, "item": {"n": 2, "p50": 78.32930700533325, "p95": 79.67152999481186, "p99": 79.67152999481186, "worst": 79.67152999481186, "method": "nearest rank"}, "mixed_master": {"n": 2, "p50": 79.63486499647843, "p95": 81.16331900237128, "p99": 81.16331900237128, "worst": 81.16331900237128, "method": "nearest rank"}}}
+
+(process:283544): dbind-WARNING **: 03:53:38.941: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+X connection to :10 broken (explicit kill or server shutdown).
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1516, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1427, in main
+    sales, sales_profile, sales_large = measure_sales(output, procurement_profile, binary, env, start, x11, capture, args.search_samples, args.pilot, report)
+                                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1005, in measure_sales
+    result['posted_search'] = posted_sales_search(Access(app.pid), x11, profile, search_samples, result)
+                              ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 942, in posted_sales_search
+    observe(cache.zero_hidden, 'owned cached slot0 insensitive/not-showing at exact zero results')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 241, in observe
+    raise RuntimeError(f'Timed out waiting for {label}')
+RuntimeError: Timed out waiting for owned cached slot0 insensitive/not-showing at exact zero results

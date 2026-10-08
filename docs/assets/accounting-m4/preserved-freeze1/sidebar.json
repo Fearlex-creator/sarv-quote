@@ -1,0 +1,120 @@
+{
+  "result": "passed",
+  "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-ws0ekkfi",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze1",
+  "binary_sha256": "cd14d26374c19ed04de32a2c3a4849304a3718511c2d2cc9ec4b56fe465e7668",
+  "backend": "private X11/Xvfb/Openbox; real XTest keys; AT-SPI observation",
+  "synthetic_only": true,
+  "checks": [
+    {
+      "name": "Alt+1 opens order",
+      "passed": true
+    },
+    {
+      "name": "Alt+2 opens catalog",
+      "passed": true
+    },
+    {
+      "name": "Alt+3 opens customers",
+      "passed": true
+    },
+    {
+      "name": "Alt+4 opens quotes",
+      "passed": true
+    },
+    {
+      "name": "Alt+5 opens backup",
+      "passed": true
+    },
+    {
+      "name": "Alt+6 opens settings",
+      "passed": true
+    },
+    {
+      "name": "Alt+7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "Alt+8 opens procurement",
+      "passed": true
+    },
+    {
+      "name": "Alt+9 opens inventory",
+      "passed": true
+    },
+    {
+      "name": "Navigation preserves entire saved payload",
+      "passed": true
+    },
+    {
+      "name": "Native hierarchy exposes all three work groups",
+      "passed": true
+    },
+    {
+      "name": "Tab reaches selected Inventory sidebar row",
+      "passed": true
+    },
+    {
+      "name": "Standard sidebar Up/Enter opens Purchases",
+      "passed": true
+    },
+    {
+      "name": "Standard sidebar Up/Enter opens Accounting",
+      "passed": true
+    },
+    {
+      "name": "Narrow history tab is fully inside native window",
+      "passed": true,
+      "native_focus_bounds": [
+        21.0,
+        186.0,
+        105.0,
+        34.0
+      ],
+      "native_viewport": [
+        640,
+        750
+      ]
+    },
+    {
+      "name": "Narrow keyboard activates history tab",
+      "passed": true
+    },
+    {
+      "name": "History navigation preserves saved payload",
+      "passed": true
+    },
+    {
+      "name": "Opening narrow sidebar focuses current page",
+      "passed": true
+    },
+    {
+      "name": "Escape closes menu and restores toggle focus",
+      "passed": true
+    },
+    {
+      "name": "Narrow arrow/Enter route opens catalog",
+      "passed": true
+    },
+    {
+      "name": "Narrow keyboard route preserves saved payload",
+      "passed": true
+    },
+    {
+      "name": "Native appearance selection saves dark",
+      "passed": true
+    },
+    {
+      "name": "Restart preserves full payload and appearance",
+      "passed": true
+    },
+    {
+      "name": "Test binary remained immutable throughout run",
+      "passed": true
+    }
+  ],
+  "limits": [
+    "Wayland and screen reader speech untested",
+    "High contrast and enlarged text untested"
+  ]
+}

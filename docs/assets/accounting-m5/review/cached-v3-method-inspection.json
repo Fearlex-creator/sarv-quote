@@ -1,0 +1,16 @@
+{
+  "result": "conditional source review; zero-summary exposure contradiction sent owners",
+  "external_protocol": "m5-cached-v3",
+  "reviewed_sha256": "deb6d95c31c937d655f77d171fda14b152f1079d936a4f15319b30e7a8c18ca4",
+  "positive_membership": "each cached path includes every direct parent-child edge androot\u2192parent; fresh child enumeration memo lifetime only onecheck; require_exposed defaulttrue rejects transient absent paths; exacthistoricalnames/count/query/page/ready/ownfocus maintained",
+  "zero_membership": "exactzeroquery/count+statusready with live search/statuspaths; actioninsensitive; title/actionpaths absent; staleleafSHOWING recorded rather than treatedaseffectivevisibility",
+  "source_blocker": "paged summary_count(0) default require_exposed=True contradicts required absenttitle/actionpaths and timesout beforezero_hidden; must usezero-safe status/searchpathor directlyzero_hidden",
+  "compiled_v1_2": "production pickers.rs closes explicit chosen row with Quantityfocus; source observerchanges onlychoicefalse\u2192true/readmeprotocol; fresh new frozenqualification required",
+  "no_claims": [
+    "no timed full BFS fallback",
+    "no visible lineUUID proof",
+    "no causal product-only speed comparison",
+    "no changed budgets or paint readiness",
+    "no runtime qualification yet"
+  ]
+}

@@ -1,0 +1,74 @@
+dbus-daemon[201710]: [session uid=1000 pid=201710 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=201719 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze4" label="kernel")
+dbus-daemon[201710]: [session uid=1000 pid=201710 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[201745]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=201719 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze4" label="kernel")
+dbus-daemon[201745]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+CHECK startup retains exact original payload and generation True
+CHECK actual scoped AT-SPI native header Close activation closes copied dialog with exact State and generation False
+import: no window with specified ID exists '6291460': Resource temporarily unavailable @ error/xwindow.c/XImportImage/4950.
+X connection to :10 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary_sha256": "499c2607747f00f5c9ada4c3e94d3e59e174a918f4df467a8f3cfedf47a14001",
+  "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+  "source_snapshot": "/workspace/sarv-quote/artifacts/independent-m4/freeze4-source-snapshot",
+  "repository_epoch_may_advance": "Authorized root source edits outside pinned executable; source assertion is exact immutable snapshot and executable, not concurrent repository stability",
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/final-scale/synthetic-profile",
+  "fixture_generation": 11,
+  "fixture_payload_sha256": "d4fccf7bda73efbb82eddef1b6432e6d7aa7a4ff7bbfd845fe20fc3d3cbf7fe4",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/catalog-worker-final4-g993fgw3",
+  "scope": "Actual owned GTK controls/XTest keys; disposable SQLite backup; worker-caption-triggered native Close/reopen/indexed last product; transient loading sampling reported separately and exact persisted bytes/generation. Not performance measurement or forced worker-error injection.",
+  "checks": [
+    {
+      "name": "startup retains exact original payload and generation",
+      "passed": true
+    },
+    {
+      "name": "actual scoped AT-SPI native header Close activation closes copied dialog with exact State and generation",
+      "passed": false,
+      "worker_start_observed": true,
+      "weak_discard_callback_observed": false
+    }
+  ],
+  "private_gtk_animation_policy": "Animations disabled in disposable XDG_CONFIG_HOME to make close lifetime independent of transition duration. Retained default-animation attempts are distinct.",
+  "manager_setup": "Existing SARV_EXPAND capture hook opens original manager expander; Composer opening and cancellation use actual keyboard controls.",
+  "native_close_input": "Owned Composer header Close via actual AT-SPI action; no keyboard activation/focus claim for nonfocusable native window-control button.",
+  "worker_start_caption_observed": true,
+  "weak_discard_callback_observed": false,
+  "transient_loading_sampling_limit": "Previous default-motion full/scoped AT-SPI walks returned after Ready; neither loading visibility nor weak-discard branch is inferred if not directly observed.",
+  "error": "actual scoped AT-SPI native header Close activation closes copied dialog with exact State and generation"
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 142, in <module>
+    check('late worker completion after cancellation cannot mutate source or generation',exact())
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 46, in check
+    assert condition, name
+           ^^^^^^^^^
+AssertionError: actual scoped AT-SPI native header Close activation closes copied dialog with exact State and generation
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 172, in <module>
+    raise
+    
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 115, in shot
+    (run/name).write_text(json.dumps([{k:v for k,v in r.items() if k!='node'} for r in iter_scope()],ensure_ascii=False,indent=2))
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+                     ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 1214, in communicate
+    self.wait()
+    ~~~~~~~~~^^
+  File "/usr/lib/python3.13/subprocess.py", line 1280, in wait
+    return self._wait(timeout=timeout)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2066, in _wait
+    (pid, sts) = self._try_wait(0)
+                 ~~~~~~~~~~~~~~^^^
+  File "/usr/lib/python3.13/subprocess.py", line 2024, in _try_wait
+    (pid, sts) = os.waitpid(self.pid, wait_flags)
+                 ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt

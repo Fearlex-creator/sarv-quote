@@ -1,0 +1,662 @@
+[
+  {
+    "name": "sarv-M6-candidate6",
+    "role": "application"
+  },
+  {
+    "name": "سرو | دفتر حسابداری",
+    "role": "frame"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll bar"
+  },
+  {
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "بخش‌های دفتر حسابداری",
+    "role": "page tab list"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "بازیابی پس از اجرای مجدد تأیید شد",
+    "role": "label"
+  },
+  {
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "دفتر کل و کنترل مانده‌ها • ریال پایه • تک‌کاربر محلی",
+    "role": "label"
+  },
+  {
+    "name": "شرکتی ساخته نشده است",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "table cell"
+  },
+  {
+    "name": "کدینگ",
+    "role": "table cell"
+  },
+  {
+    "name": "اسناد",
+    "role": "table cell"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "table cell"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "table cell"
+  },
+  {
+    "name": "کدینگ",
+    "role": "panel"
+  },
+  {
+    "name": "اسناد",
+    "role": "panel"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "panel"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "شرکتی ساخته نشده است",
+    "role": "combo box"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "button"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "page tab"
+  },
+  {
+    "name": "کدینگ",
+    "role": "page tab"
+  },
+  {
+    "name": "اسناد",
+    "role": "page tab"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "page tab"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "page tab"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "شرکتی ساخته نشده است",
+    "role": "toggle button"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "label"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "label"
+  },
+  {
+    "name": "کدینگ",
+    "role": "label"
+  },
+  {
+    "name": "اسناد",
+    "role": "label"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "تاریخچه",
+    "role": "label"
+  },
+  {
+    "name": "جست‌وجوی تاریخچه حسابداری",
+    "role": "entry"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، تحویل و صورتحساب، برگشت",
+    "role": "label"
+  },
+  {
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "فهرست صفحه‌ها",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "بستن فهرست صفحه‌ها",
+    "role": "button"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "پیشنهاد قیمت · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "شرکتی ساخته نشده است",
+    "role": "label"
+  }
+]

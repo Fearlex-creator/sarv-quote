@@ -1,0 +1,24 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/purchase-returns-native/run-a7_xix6z",
+  "portable": "/workspace/sarv-quote/docs/assets/accounting-m6/native/run-a7_xix6z",
+  "files": {
+    "M5-actual-before-purchases.png": "4942cfa0db5a9bf00258cff824b39c077ae18c87a91f804f47f1ce866bf374ee",
+    "M5-actual-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-Jalali-toman-1.png": "f64cbfe41f20b2f75687a1883d82a9cc7aac3c307fdbec98f91d91439b569d5d",
+    "M6-failure.png": "344693d09cb081131b7e88bffc8123df933cde2c556f2865723d8c9aca71c658",
+    "M6-main-after-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-main-before-state.json": "44e92be3ab033be21f4ee4a3e99f8695ec4b7eebc4530f8836638c7d9644da6b",
+    "M6-main.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-original-bill-links-1.png": "69e4eacc604d4d0e7958f2bc45a5a12eca73c358bea38357f66e127a8d5de402",
+    "M6-overreturn-retained.png": "fa029f8b9a15c41f49cc1fe629a37198180aac0785380cb9abd52e49c926c777",
+    "M6-posted-detail-1.png": "f3ba30afd2d1837ef23e6bb66719ed2dee2c4841518e281c290d49e1393a44e4",
+    "M6-preview-1.png": "dc1f88133a8300ce66d88225389294b761dbdaa284059b46e379148d75a041cd",
+    "failed-access-tree.json": "507321cd20a8652bdce6557a1ddc28a30a5bdea17a1ebe8f4190a24ed5157040",
+    "frozen-source-manifest.json": "39cbf89ce2368c42045c3975c265da991e89e165aa44321741a62ee6c12ac090",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "progress.jsonl": "95c26982f8bfe7061007f916a15cc2a1bf2ff3a09770c68644d5757e0f749368",
+    "purchase-returns-independent-native.json": "240fc5a034a7227fd1655ea02ec6aea06bf395f84b2a6a1ce630183abaf38faa",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "result": "failed"
+}

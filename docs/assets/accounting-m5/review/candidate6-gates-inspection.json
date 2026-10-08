@@ -1,0 +1,44 @@
+{
+  "result": "passed",
+  "scope": "candidate6 actual compiled gate epoch, not current changing tree",
+  "source_sha256": "4f14b3f0c29e74bb686611779d2e916db9edb2c62174ff5630e9c7db483f6857",
+  "binary_sha256": "3259e1e4b94fe8471a2b0d3cfc9446a515a50247fc2856769519dc0caf5fd18e",
+  "commands": [
+    {
+      "label": "fmt",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    },
+    {
+      "label": "clippy",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    },
+    {
+      "label": "all-targets",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    },
+    {
+      "label": "font-opt-in",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    },
+    {
+      "label": "actual-m3-refusal",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    },
+    {
+      "label": "actual-m4-refusal",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    },
+    {
+      "label": "gtk-lifecycle",
+      "exit_code": 0,
+      "actual_source_binary_verification_dict_equal": true
+    }
+  ],
+  "performance": "functional additive pilot incomplete/failure separately retained; no final timing acceptance"
+}

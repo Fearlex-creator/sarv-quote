@@ -1,0 +1,3719 @@
+{
+  "expected": {
+    "ap": 2129,
+    "ar": 299,
+    "cogs": 58,
+    "earnings": 41,
+    "grni": 50,
+    "inventory": 2222,
+    "reconciliation": {
+      "as_of": "2026-04-03",
+      "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+      "controls": [
+        {
+          "account_id": "cd74b336-de34-4af4-b77b-8aec7fff838b",
+          "detail": 251,
+          "difference": 0,
+          "ledger": 251,
+          "role": "Cash"
+        },
+        {
+          "account_id": "47b27ee6-844f-4474-b0f7-f0bdaebb1ded",
+          "detail": 300,
+          "difference": 0,
+          "ledger": 300,
+          "role": "Bank"
+        },
+        {
+          "account_id": "16cf2fbc-9189-4800-9fb1-13cf4ae96451",
+          "detail": 299,
+          "difference": 0,
+          "ledger": 299,
+          "role": "Receivables"
+        },
+        {
+          "account_id": "90f0411c-199a-4d69-aed7-bf4dcaa209cd",
+          "detail": 200,
+          "difference": 0,
+          "ledger": 200,
+          "role": "ChequesReceivable"
+        },
+        {
+          "account_id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410",
+          "detail": 2222,
+          "difference": 0,
+          "ledger": 2222,
+          "role": "Inventory"
+        },
+        {
+          "account_id": "1b3243eb-30e6-4c53-a773-6df75ea39800",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "SupplierAdvances"
+        },
+        {
+          "account_id": "1cc84f6d-1574-463c-b7ab-80a970276f6a",
+          "detail": 2129,
+          "difference": 0,
+          "ledger": 2129,
+          "role": "Payables"
+        },
+        {
+          "account_id": "cd7505ed-64cb-4eba-917b-ebac9d067b6f",
+          "detail": 100,
+          "difference": 0,
+          "ledger": 100,
+          "role": "ChequesPayable"
+        },
+        {
+          "account_id": "cac0dcee-4a73-4e43-a8af-59fc4af9e0fc",
+          "detail": 50,
+          "difference": 0,
+          "ledger": 50,
+          "role": "Grni"
+        },
+        {
+          "account_id": "faa4c392-3cc0-4ffb-a705-3114f4e10715",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "CustomerAdvances"
+        },
+        {
+          "account_id": "5cd9bec6-5628-4d8e-ba72-1edb638b4bd4",
+          "detail": 58,
+          "difference": 0,
+          "ledger": 58,
+          "role": "Cogs"
+        },
+        {
+          "account_id": "2458b496-a74e-4980-be83-ce105fd881f1",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "InventoryLoss"
+        }
+      ],
+      "payables": [
+        {
+          "document_date": "2026-03-21",
+          "due_date": "2026-03-21",
+          "id": "AP-100",
+          "party_id": "SU-A",
+          "reference": "DOC-AP-100",
+          "remaining": 100,
+          "source_id": "OPEN-F2-2026"
+        },
+        {
+          "document_date": "2026-03-21",
+          "due_date": "2026-03-21",
+          "id": "AP-49",
+          "party_id": "SU-B",
+          "reference": "DOC-AP-49",
+          "remaining": 49,
+          "source_id": "OPEN-F2-2026"
+        },
+        {
+          "document_date": "2026-03-25",
+          "due_date": "2026-04-01",
+          "id": "163c42fc-7dcd-48c7-95a9-4e7e6acb8f06",
+          "party_id": "SU-A",
+          "reference": "BILL-A",
+          "remaining": 30,
+          "source_id": "f51d6425-0d10-4897-af46-7faaf72197aa"
+        },
+        {
+          "document_date": "2026-03-26",
+          "due_date": "2026-04-02",
+          "id": "f47b4602-6f1b-4afa-a45d-bdca0e54af48",
+          "party_id": "SU-A",
+          "reference": "BILL-B",
+          "remaining": 150,
+          "source_id": "5ab266ac-4b08-4493-aa1e-4a07cdb228ae"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "df22a891-babe-413d-b726-c475be82fe73",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-001-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-001-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "a75bf9ec-1484-49c3-bba2-d45ca8fc3dca",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-002-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-002-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "380a9df4-8148-4311-850d-f29164484aed",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-003-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-003-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "a020a22e-6462-46a3-b5d4-8f0836579e44",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-004-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-004-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "79f4f252-1c0e-4ecc-bf2d-56bf584888ea",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-005-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-005-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "c352da86-601f-461d-8f51-a4354cc83645",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-006-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-006-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "26b8542b-abc2-4f97-84dc-96b411a47d82",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-007-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-007-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "6fd278cf-fcf7-453f-940f-d7bb6cc32394",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-008-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-008-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "ff41bd3b-5a6c-4218-86f8-c431156dc762",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-009-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-009-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "364c79bf-c218-4375-b166-764d529ab2ec",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-010-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-010-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "b7aaaf0c-42f4-405f-8f99-d7a703600da0",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-011-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-011-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "5dae4d39-1daf-468e-81ef-a8627e7a3452",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-012-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-012-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "999e1c06-2d40-4520-ab0a-eb07be98f6c6",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-013-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-013-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "1c9ba02e-2314-4efd-bbf8-cadedbd0cca3",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-014-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-014-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "94fc3861-82c3-46b5-84d6-8bf1450f18ec",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-015-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-015-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "cf7525d2-40c5-486c-a200-f8699d481c7b",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-016-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-016-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "894e87e5-0b78-474c-a80f-1d3a8ed73972",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-017-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-017-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7a717f08-f55b-4066-b622-73666d3bc14d",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-018-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-018-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "907d0f7e-c537-4a42-ab4d-6613261b381e",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-019-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-019-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "14c28c03-e824-4ce0-8688-8211fe9e33c4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-020-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-020-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "992cf4ae-1289-4b9e-ae28-f745fa95ecab",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-021-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-021-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e14686a7-f3af-4bde-9f5f-39f9f1d06d52",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-022-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-022-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e93703e5-4de4-4f00-a2f3-74b27a5d6a9a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-023-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-023-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "6a2eff50-6ed3-4aed-a4aa-3b2010ce4714",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-024-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-024-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "4a411632-34b9-4850-9c09-e855210b53ea",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-025-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-025-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7129678b-e39f-4b0d-9f03-ba50d561607d",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-026-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-026-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "47e4b53b-a3e0-49fb-8368-bdd1d5d05766",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-027-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-027-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "3b0f96ae-7b1d-44ef-8de1-e827f8828aaa",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-028-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-028-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7a95f106-4463-4d14-bed5-8a10422e8d85",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-029-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-029-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "f5688897-0374-4c25-a64e-9b6a501fc598",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-030-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-030-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "bf599dbe-3e05-4a07-8263-0bc0f95959da",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-031-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-031-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "3fbafd34-29d1-49cc-9224-5532215279af",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-032-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-032-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "c713ac1f-5f07-486e-aa65-3411079c4f98",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-033-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-033-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "f1b9aee3-bbbb-402c-815b-3dd573e8bdcf",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-034-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-034-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "5618780c-fa32-4374-bedc-b641761d4938",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-035-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-035-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "b26c27a0-a55a-48e9-a7b7-fecf36051c2f",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-036-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-036-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "81a4d30a-993e-4e95-8bc8-21fcf687b5d7",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-037-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-037-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "f1842d07-d4c3-4d8b-9926-5befed15c60d",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-038-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-038-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "6f219909-1b52-4f43-b91e-64d5337e82c9",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-039-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-039-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "a55295a6-0796-4ba8-b0e8-475853bbcb06",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-040-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-040-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "b15257db-ad5f-427c-a609-ea42534c3857",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-041-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-041-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "f51f8ea4-fa92-4eb5-ba5d-9e197f2579a8",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-042-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-042-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "463470e9-8236-47aa-bc8e-3c7e66221162",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-043-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-043-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e5187ff2-e904-4b7e-8887-44767ef117a4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-044-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-044-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "5cb17f85-9592-4d37-be48-df6cc136ce7a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-045-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-045-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "39281987-2ab5-4f40-98e2-7932e3e7e08e",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-046-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-046-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "fb21f416-4c7e-42bd-a3f2-c8e9db9546a6",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-047-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-047-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "d97f9df2-70e2-484c-816c-8aeb938e8c4f",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-048-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-048-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e6a0b0eb-4839-4f71-a0c7-740dd15e4dd4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-049-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-049-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "61b5c210-6ff3-4c19-a6ba-ec240a29cd53",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-050-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-050-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e5f57071-3e83-4465-9160-31e23d1aab5d",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-051-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-051-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "5543eb62-6d3b-44be-a5d0-0e3b3d436940",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-052-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-052-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "2b8da519-06b4-45e5-bf91-e4503d70f284",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-053-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-053-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "42fb7ad1-1f99-47e2-989f-9e0d83d93916",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-054-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-054-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "eb297f65-379e-4b27-a71b-55e222f98934",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-055-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-055-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "a432c2a6-062c-4553-900f-7e0f95984e78",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-056-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-056-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "2d9a7cf4-76eb-45f3-9151-8f9b7c4a1c02",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-057-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-057-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7bda4f40-221a-4a19-80d8-c60abd3223dc",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-058-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-058-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "477fa2b5-af03-490f-b818-e6a1859eb0d7",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-059-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-059-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "14288558-7ba4-412d-8bcc-e7018d3eb2ac",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "c5000053-e861-4430-b708-916f67893598",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-001-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-001-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "1140ddfc-0afb-4218-931c-e5af52a0fed2",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-002-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-002-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "70a187ce-567c-468f-8a50-719c837a978c",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-003-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-003-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "83d0b026-fd07-4159-9f67-07b7dc93c744",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-004-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-004-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "940683ca-fc99-4a0b-bb14-e5e0bd4cb406",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-005-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-005-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "20ccb919-4af4-4060-ad90-f2fea68b15d2",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-006-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-006-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "c33518c6-ba0a-4b71-b2a1-c6dfae5d2409",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-007-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-007-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "98765500-48f6-4d17-84bc-0ee7d5a75184",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-008-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-008-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "cec2815c-346d-40a9-a456-81b0ad0259cb",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-009-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-009-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "b0d06ca7-92a0-44d2-ba16-4a951fd88f1a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-010-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-010-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "c3662c8b-4826-4941-9902-2c3e805d54a5",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-011-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-011-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "68cc4e46-ca1c-4636-b6e5-c8e193800b26",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-012-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-012-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "ec400518-ec65-4370-b748-f007ad1caee5",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-013-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-013-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "6f32ec42-37ee-4d77-a38f-84084208a0c4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-014-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-014-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "a104b377-4794-47dd-ac8d-8870aa33ff85",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-015-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-015-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "a43f46c2-b2d8-4a5b-b1d9-fdb5391c8f3b",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-016-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-016-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "37c34c34-3840-4c5e-af60-6936640dc38f",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-017-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-017-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "05225d4f-5a55-49e4-831c-1a8dea849f3d",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-018-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-018-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "3f3e9218-cb17-47c9-a4a3-4e695cd5198a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-019-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-019-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "99468f8c-4ce1-4564-8049-bbc781f85a30",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-020-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-020-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "dceea733-380e-4f75-9771-acf69c8b6232",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-021-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-021-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "8c3a55a4-34c4-41e3-8dbc-d458697c9f2c",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-022-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-022-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "845ae7ad-8dad-4f36-8e61-8e3600390c48",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-023-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-023-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "df00ec11-32c7-4ae8-b96c-c2e912c0a0db",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-024-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-024-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "1fe0e95f-950b-4291-8833-dbaca0166acc",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-025-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-025-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "bddb34f1-08d4-448f-8122-1eb2eae2ac59",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-026-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-026-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "25b95238-e92f-43ef-b8c9-e9da80c852d8",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-027-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-027-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "81efd3eb-75cd-4fd7-a6fd-0a620fcbac92",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-028-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-028-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7f9a3f0e-155a-479b-9aa5-98df6afb6d28",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-029-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-029-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "9e8807f8-b61c-4b6e-8f80-ed2313e4772f",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-030-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-030-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e9bd236f-e134-4cd4-b2f9-1859086d0140",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-031-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-031-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "08d60a7e-afc0-41f5-b61a-3a3ec90bed18",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-032-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-032-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "1b658e23-6c00-4e16-8850-4f9dd03431a6",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-033-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-033-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "24d9e220-d1bc-4606-afe7-d70a5d75a67a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-034-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-034-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "75d3cbb5-62b5-4d3e-84b7-b8633046cb79",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-035-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-035-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "2774c011-c934-4ce3-86af-a662d2b560e5",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-036-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-036-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "29fcbacd-c9d2-448e-b358-c2d0a7b0f3f0",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-037-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-037-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7e2f3746-15b8-44d7-a512-56f4f3c16037",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-038-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-038-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "798a916f-e6cd-4b1d-bced-9ea307b692cc",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-039-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-039-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "f9f24ac6-e16f-4a78-98db-b18013613acc",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-040-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-040-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "7532ee71-31b3-40d5-945c-98ae792135a4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-041-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-041-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "c2cbb3f3-d0bf-431d-a283-05307ecbd6a0",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-042-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-042-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "6aec7046-f57f-4130-8a4b-915e8addf23f",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-043-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-043-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "5dbbbcd9-8926-4849-9255-9fd45ed3cfab",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-044-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-044-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "e132279d-b80c-4196-b7aa-ce8529af3ea8",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-045-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-045-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "79fedb2c-6af6-4403-86a6-20472c0db88b",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-046-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-046-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "02918ea3-53c7-4638-88b0-67295419fbe1",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-047-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-047-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "6382c883-0311-46f0-aa76-90c7ef484fe4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-048-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-048-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "9ff05808-2b06-444e-b0d8-1dd915456e2a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-049-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-049-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "770e0ea9-301a-4c5e-97da-f7952987bc73",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-050-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-050-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "f5446c5a-6976-47a4-a495-c6037f7a86de",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-051-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-051-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "d69415b7-85d6-4b98-b893-8cb7cf521673",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-052-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-052-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "cc65484c-a5eb-485b-af21-c61f610d5ef4",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-053-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-053-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "16b9bc4e-fb62-449d-b75a-ebd0ae89e396",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-054-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-054-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "aa2a1ab6-4e1d-463b-9692-9850cbb6caf6",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-055-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-055-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "ae18c566-eaee-4605-a458-ca30c85d5247",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-056-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-056-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "37034a80-b13e-4d83-8055-aa55d069380a",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-057-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-057-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "82c5d77c-0ca8-473f-a886-62c2c8b039b2",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-058-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-058-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "cda2db6b-b54c-4c01-ac2c-c50d7604ab48",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-059-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-059-BILL"
+        },
+        {
+          "document_date": "2026-04-02",
+          "due_date": "2026-05-01",
+          "id": "cccbfc71-f251-4868-9f86-a40c83f156af",
+          "party_id": "SU-A",
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL",
+          "remaining": 15,
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL"
+        }
+      ],
+      "receipts": [
+        {
+          "date": "2026-03-23",
+          "id": "4f680d89-f18a-4022-b41c-d486da2da783",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 5000,
+          "original_value": 75,
+          "quantity_thousandths": 0,
+          "reference": "REC-A",
+          "source_id": "fc528d36-7465-4d88-85f1-d21f56e14f2b",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-001-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-001-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-001-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-002-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-002-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-002-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-003-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-003-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-003-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-004-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-004-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-004-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-005-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-005-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-005-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-006-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-006-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-006-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-007-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-007-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-007-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-008-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-008-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-008-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-009-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-009-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-009-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-010-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-010-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-010-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-011-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-011-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-011-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-012-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-012-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-012-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-013-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-013-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-013-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-014-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-014-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-014-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-015-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-015-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-015-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-016-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-016-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-016-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-017-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-017-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-017-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-018-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-018-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-018-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-019-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-019-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-019-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-020-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-020-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-020-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-021-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-021-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-021-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-022-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-022-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-022-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-023-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-023-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-023-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-024-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-024-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-024-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-025-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-025-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-025-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-026-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-026-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-026-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-027-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-027-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-027-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-028-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-028-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-028-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-029-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-029-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-029-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-030-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-030-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-030-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-031-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-031-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-031-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-032-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-032-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-032-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-033-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-033-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-033-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-034-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-034-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-034-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-035-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-035-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-035-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-036-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-036-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-036-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-037-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-037-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-037-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-038-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-038-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-038-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-039-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-039-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-039-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-040-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-040-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-040-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-041-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-041-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-041-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-042-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-042-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-042-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-043-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-043-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-043-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-044-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-044-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-044-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-045-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-045-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-045-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-046-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-046-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-046-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-047-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-047-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-047-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-048-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-048-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-048-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-049-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-049-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-049-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-050-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-050-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-050-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-051-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-051-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-051-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-052-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-052-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-052-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-053-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-053-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-053-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-054-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-054-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-054-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-055-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-055-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-055-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-056-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-056-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-056-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-057-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-057-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-057-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-058-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-058-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-058-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-059-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-059-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-059-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-A-060-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-A-060-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-A-060-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-001-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-001-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-001-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-002-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-002-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-002-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-003-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-003-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-003-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-004-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-004-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-004-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-005-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-005-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-005-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-006-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-006-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-006-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-007-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-007-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-007-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-008-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-008-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-008-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-009-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-009-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-009-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-010-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-010-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-010-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-011-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-011-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-011-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-012-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-012-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-012-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-013-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-013-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-013-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-014-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-014-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-014-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-015-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-015-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-015-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-016-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-016-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-016-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-017-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-017-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-017-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-018-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-018-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-018-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-019-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-019-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-019-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-020-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-020-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-020-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-021-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-021-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-021-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-022-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-022-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-022-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-023-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-023-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-023-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-024-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-024-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-024-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-025-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-025-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-025-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-026-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-026-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-026-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-027-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-027-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-027-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-028-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-028-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-028-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-029-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-029-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-029-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-030-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-030-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-030-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-031-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-031-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-031-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-032-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-032-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-032-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-033-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-033-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-033-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-034-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-034-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-034-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-035-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-035-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-035-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-036-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-036-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-036-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-037-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-037-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-037-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-038-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-038-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-038-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-039-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-039-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-039-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-040-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-040-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-040-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-041-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-041-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-041-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-042-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-042-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-042-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-043-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-043-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-043-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-044-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-044-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-044-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-045-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-045-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-045-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-046-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-046-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-046-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-047-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-047-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-047-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-048-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-048-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-048-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-049-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-049-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-049-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-050-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-050-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-050-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-051-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-051-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-051-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-052-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-052-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-052-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-053-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-053-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-053-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-054-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-054-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-054-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-055-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-055-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-055-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-056-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-056-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-056-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-057-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-057-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-057-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-058-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-058-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-058-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-059-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-059-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-059-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-SOURCES-BILLED-PERF-B-060-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 0,
+          "reference": "M6-PERF-SOURCES-BILLED-PERF-B-060-GR",
+          "source_id": "M6-PERF-SOURCES-BILLED-PERF-B-060-GR",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-03-21",
+          "id": "R1",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 5000,
+          "original_value": 50,
+          "quantity_thousandths": 5000,
+          "reference": "RECEIPT-R1",
+          "source_id": "OPEN-F2-2026",
+          "supplier_id": "SU-A",
+          "value": 50,
+          "warehouse_id": "W2"
+        },
+        {
+          "date": "2026-03-24",
+          "id": "ea16af10-b102-4265-8d4b-9c326ca14862",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 7000,
+          "original_value": 105,
+          "quantity_thousandths": 0,
+          "reference": "REC-B",
+          "source_id": "53e308f0-0012-44e8-9e93-b0bd2bf94334",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        }
+      ],
+      "reconciled": true,
+      "stock": [
+        {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 145000,
+          "value": 2092,
+          "warehouse_id": "W1"
+        },
+        {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 12000,
+          "value": 130,
+          "warehouse_id": "W2"
+        }
+      ],
+      "total_credit": 3430,
+      "total_debit": 3430
+    },
+    "sales": 199,
+    "sales_returns": 100,
+    "tb_credit": 3430,
+    "tb_debit": 3430,
+    "w1_quantity_thousandths": 145000,
+    "w1_value": 2092,
+    "w2_quantity_thousandths": 12000,
+    "w2_value": 130
+  },
+  "generator": "sarv-m6-performance-dataset-v1",
+  "old_prefix_preserved": true,
+  "quotation_count": 1,
+  "recipe": {
+    "expected_filter_first_references": [
+      {
+        "pages": [
+          "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL",
+          "M6-PERF-SOURCES-BILLED-PERF-A-035-BILL",
+          "M6-PERF-SOURCES-BILLED-PERF-A-010-BILL"
+        ],
+        "query": "PERF-A"
+      },
+      {
+        "pages": [
+          "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL",
+          "M6-PERF-SOURCES-BILLED-PERF-B-035-BILL",
+          "M6-PERF-SOURCES-BILLED-PERF-B-010-BILL"
+        ],
+        "query": "PERF-B"
+      }
+    ],
+    "filtered_pages": 3,
+    "group_count": 60,
+    "kind": "billed",
+    "page_size": 25,
+    "quantity_per_source_thousandths": 1000,
+    "source_count": 120,
+    "sources_in_posting_order": [
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-001-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-001-GR-L001",
+        "record_id": "df22a891-babe-413d-b726-c475be82fe73",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-001-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-002-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-002-GR-L001",
+        "record_id": "a75bf9ec-1484-49c3-bba2-d45ca8fc3dca",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-002-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-003-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-003-GR-L001",
+        "record_id": "380a9df4-8148-4311-850d-f29164484aed",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-003-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-004-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-004-GR-L001",
+        "record_id": "a020a22e-6462-46a3-b5d4-8f0836579e44",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-004-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-005-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-005-GR-L001",
+        "record_id": "79f4f252-1c0e-4ecc-bf2d-56bf584888ea",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-005-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-006-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-006-GR-L001",
+        "record_id": "c352da86-601f-461d-8f51-a4354cc83645",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-006-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-007-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-007-GR-L001",
+        "record_id": "26b8542b-abc2-4f97-84dc-96b411a47d82",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-007-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-008-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-008-GR-L001",
+        "record_id": "6fd278cf-fcf7-453f-940f-d7bb6cc32394",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-008-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-009-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-009-GR-L001",
+        "record_id": "ff41bd3b-5a6c-4218-86f8-c431156dc762",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-009-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-010-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-010-GR-L001",
+        "record_id": "364c79bf-c218-4375-b166-764d529ab2ec",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-010-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-011-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-011-GR-L001",
+        "record_id": "b7aaaf0c-42f4-405f-8f99-d7a703600da0",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-011-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-012-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-012-GR-L001",
+        "record_id": "5dae4d39-1daf-468e-81ef-a8627e7a3452",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-012-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-013-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-013-GR-L001",
+        "record_id": "999e1c06-2d40-4520-ab0a-eb07be98f6c6",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-013-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-014-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-014-GR-L001",
+        "record_id": "1c9ba02e-2314-4efd-bbf8-cadedbd0cca3",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-014-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-015-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-015-GR-L001",
+        "record_id": "94fc3861-82c3-46b5-84d6-8bf1450f18ec",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-015-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-016-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-016-GR-L001",
+        "record_id": "cf7525d2-40c5-486c-a200-f8699d481c7b",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-016-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-017-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-017-GR-L001",
+        "record_id": "894e87e5-0b78-474c-a80f-1d3a8ed73972",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-017-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-018-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-018-GR-L001",
+        "record_id": "7a717f08-f55b-4066-b622-73666d3bc14d",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-018-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-019-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-019-GR-L001",
+        "record_id": "907d0f7e-c537-4a42-ab4d-6613261b381e",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-019-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-020-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-020-GR-L001",
+        "record_id": "14c28c03-e824-4ce0-8688-8211fe9e33c4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-020-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-021-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-021-GR-L001",
+        "record_id": "992cf4ae-1289-4b9e-ae28-f745fa95ecab",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-021-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-022-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-022-GR-L001",
+        "record_id": "e14686a7-f3af-4bde-9f5f-39f9f1d06d52",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-022-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-023-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-023-GR-L001",
+        "record_id": "e93703e5-4de4-4f00-a2f3-74b27a5d6a9a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-023-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-024-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-024-GR-L001",
+        "record_id": "6a2eff50-6ed3-4aed-a4aa-3b2010ce4714",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-024-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-025-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-025-GR-L001",
+        "record_id": "4a411632-34b9-4850-9c09-e855210b53ea",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-025-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-026-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-026-GR-L001",
+        "record_id": "7129678b-e39f-4b0d-9f03-ba50d561607d",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-026-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-027-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-027-GR-L001",
+        "record_id": "47e4b53b-a3e0-49fb-8368-bdd1d5d05766",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-027-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-028-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-028-GR-L001",
+        "record_id": "3b0f96ae-7b1d-44ef-8de1-e827f8828aaa",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-028-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-029-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-029-GR-L001",
+        "record_id": "7a95f106-4463-4d14-bed5-8a10422e8d85",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-029-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-030-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-030-GR-L001",
+        "record_id": "f5688897-0374-4c25-a64e-9b6a501fc598",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-030-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-031-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-031-GR-L001",
+        "record_id": "bf599dbe-3e05-4a07-8263-0bc0f95959da",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-031-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-032-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-032-GR-L001",
+        "record_id": "3fbafd34-29d1-49cc-9224-5532215279af",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-032-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-033-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-033-GR-L001",
+        "record_id": "c713ac1f-5f07-486e-aa65-3411079c4f98",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-033-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-034-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-034-GR-L001",
+        "record_id": "f1b9aee3-bbbb-402c-815b-3dd573e8bdcf",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-034-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-035-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-035-GR-L001",
+        "record_id": "5618780c-fa32-4374-bedc-b641761d4938",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-035-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-036-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-036-GR-L001",
+        "record_id": "b26c27a0-a55a-48e9-a7b7-fecf36051c2f",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-036-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-037-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-037-GR-L001",
+        "record_id": "81a4d30a-993e-4e95-8bc8-21fcf687b5d7",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-037-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-038-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-038-GR-L001",
+        "record_id": "f1842d07-d4c3-4d8b-9926-5befed15c60d",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-038-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-039-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-039-GR-L001",
+        "record_id": "6f219909-1b52-4f43-b91e-64d5337e82c9",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-039-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-040-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-040-GR-L001",
+        "record_id": "a55295a6-0796-4ba8-b0e8-475853bbcb06",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-040-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-041-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-041-GR-L001",
+        "record_id": "b15257db-ad5f-427c-a609-ea42534c3857",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-041-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-042-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-042-GR-L001",
+        "record_id": "f51f8ea4-fa92-4eb5-ba5d-9e197f2579a8",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-042-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-043-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-043-GR-L001",
+        "record_id": "463470e9-8236-47aa-bc8e-3c7e66221162",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-043-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-044-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-044-GR-L001",
+        "record_id": "e5187ff2-e904-4b7e-8887-44767ef117a4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-044-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-045-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-045-GR-L001",
+        "record_id": "5cb17f85-9592-4d37-be48-df6cc136ce7a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-045-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-046-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-046-GR-L001",
+        "record_id": "39281987-2ab5-4f40-98e2-7932e3e7e08e",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-046-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-047-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-047-GR-L001",
+        "record_id": "fb21f416-4c7e-42bd-a3f2-c8e9db9546a6",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-047-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-048-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-048-GR-L001",
+        "record_id": "d97f9df2-70e2-484c-816c-8aeb938e8c4f",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-048-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-049-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-049-GR-L001",
+        "record_id": "e6a0b0eb-4839-4f71-a0c7-740dd15e4dd4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-049-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-050-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-050-GR-L001",
+        "record_id": "61b5c210-6ff3-4c19-a6ba-ec240a29cd53",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-050-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-051-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-051-GR-L001",
+        "record_id": "e5f57071-3e83-4465-9160-31e23d1aab5d",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-051-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-052-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-052-GR-L001",
+        "record_id": "5543eb62-6d3b-44be-a5d0-0e3b3d436940",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-052-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-053-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-053-GR-L001",
+        "record_id": "2b8da519-06b4-45e5-bf91-e4503d70f284",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-053-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-054-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-054-GR-L001",
+        "record_id": "42fb7ad1-1f99-47e2-989f-9e0d83d93916",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-054-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-055-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-055-GR-L001",
+        "record_id": "eb297f65-379e-4b27-a71b-55e222f98934",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-055-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-056-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-056-GR-L001",
+        "record_id": "a432c2a6-062c-4553-900f-7e0f95984e78",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-056-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-057-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-057-GR-L001",
+        "record_id": "2d9a7cf4-76eb-45f3-9151-8f9b7c4a1c02",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-057-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-058-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-058-GR-L001",
+        "record_id": "7bda4f40-221a-4a19-80d8-c60abd3223dc",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-058-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-059-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-059-GR-L001",
+        "record_id": "477fa2b5-af03-490f-b818-e6a1859eb0d7",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-059-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL-L001",
+        "query_group": "PERF-A",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-A-060-GR-L001",
+        "record_id": "14288558-7ba4-412d-8bcc-e7018d3eb2ac",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-A-060-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-001-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-001-GR-L001",
+        "record_id": "c5000053-e861-4430-b708-916f67893598",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-001-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-002-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-002-GR-L001",
+        "record_id": "1140ddfc-0afb-4218-931c-e5af52a0fed2",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-002-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-003-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-003-GR-L001",
+        "record_id": "70a187ce-567c-468f-8a50-719c837a978c",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-003-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-004-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-004-GR-L001",
+        "record_id": "83d0b026-fd07-4159-9f67-07b7dc93c744",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-004-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-005-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-005-GR-L001",
+        "record_id": "940683ca-fc99-4a0b-bb14-e5e0bd4cb406",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-005-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-006-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-006-GR-L001",
+        "record_id": "20ccb919-4af4-4060-ad90-f2fea68b15d2",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-006-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-007-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-007-GR-L001",
+        "record_id": "c33518c6-ba0a-4b71-b2a1-c6dfae5d2409",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-007-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-008-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-008-GR-L001",
+        "record_id": "98765500-48f6-4d17-84bc-0ee7d5a75184",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-008-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-009-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-009-GR-L001",
+        "record_id": "cec2815c-346d-40a9-a456-81b0ad0259cb",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-009-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-010-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-010-GR-L001",
+        "record_id": "b0d06ca7-92a0-44d2-ba16-4a951fd88f1a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-010-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-011-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-011-GR-L001",
+        "record_id": "c3662c8b-4826-4941-9902-2c3e805d54a5",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-011-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-012-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-012-GR-L001",
+        "record_id": "68cc4e46-ca1c-4636-b6e5-c8e193800b26",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-012-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-013-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-013-GR-L001",
+        "record_id": "ec400518-ec65-4370-b748-f007ad1caee5",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-013-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-014-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-014-GR-L001",
+        "record_id": "6f32ec42-37ee-4d77-a38f-84084208a0c4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-014-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-015-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-015-GR-L001",
+        "record_id": "a104b377-4794-47dd-ac8d-8870aa33ff85",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-015-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-016-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-016-GR-L001",
+        "record_id": "a43f46c2-b2d8-4a5b-b1d9-fdb5391c8f3b",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-016-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-017-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-017-GR-L001",
+        "record_id": "37c34c34-3840-4c5e-af60-6936640dc38f",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-017-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-018-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-018-GR-L001",
+        "record_id": "05225d4f-5a55-49e4-831c-1a8dea849f3d",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-018-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-019-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-019-GR-L001",
+        "record_id": "3f3e9218-cb17-47c9-a4a3-4e695cd5198a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-019-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-020-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-020-GR-L001",
+        "record_id": "99468f8c-4ce1-4564-8049-bbc781f85a30",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-020-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-021-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-021-GR-L001",
+        "record_id": "dceea733-380e-4f75-9771-acf69c8b6232",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-021-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-022-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-022-GR-L001",
+        "record_id": "8c3a55a4-34c4-41e3-8dbc-d458697c9f2c",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-022-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-023-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-023-GR-L001",
+        "record_id": "845ae7ad-8dad-4f36-8e61-8e3600390c48",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-023-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-024-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-024-GR-L001",
+        "record_id": "df00ec11-32c7-4ae8-b96c-c2e912c0a0db",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-024-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-025-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-025-GR-L001",
+        "record_id": "1fe0e95f-950b-4291-8833-dbaca0166acc",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-025-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-026-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-026-GR-L001",
+        "record_id": "bddb34f1-08d4-448f-8122-1eb2eae2ac59",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-026-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-027-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-027-GR-L001",
+        "record_id": "25b95238-e92f-43ef-b8c9-e9da80c852d8",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-027-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-028-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-028-GR-L001",
+        "record_id": "81efd3eb-75cd-4fd7-a6fd-0a620fcbac92",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-028-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-029-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-029-GR-L001",
+        "record_id": "7f9a3f0e-155a-479b-9aa5-98df6afb6d28",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-029-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-030-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-030-GR-L001",
+        "record_id": "9e8807f8-b61c-4b6e-8f80-ed2313e4772f",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-030-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-031-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-031-GR-L001",
+        "record_id": "e9bd236f-e134-4cd4-b2f9-1859086d0140",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-031-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-032-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-032-GR-L001",
+        "record_id": "08d60a7e-afc0-41f5-b61a-3a3ec90bed18",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-032-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-033-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-033-GR-L001",
+        "record_id": "1b658e23-6c00-4e16-8850-4f9dd03431a6",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-033-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-034-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-034-GR-L001",
+        "record_id": "24d9e220-d1bc-4606-afe7-d70a5d75a67a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-034-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-035-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-035-GR-L001",
+        "record_id": "75d3cbb5-62b5-4d3e-84b7-b8633046cb79",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-035-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-036-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-036-GR-L001",
+        "record_id": "2774c011-c934-4ce3-86af-a662d2b560e5",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-036-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-037-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-037-GR-L001",
+        "record_id": "29fcbacd-c9d2-448e-b358-c2d0a7b0f3f0",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-037-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-038-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-038-GR-L001",
+        "record_id": "7e2f3746-15b8-44d7-a512-56f4f3c16037",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-038-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-039-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-039-GR-L001",
+        "record_id": "798a916f-e6cd-4b1d-bced-9ea307b692cc",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-039-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-040-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-040-GR-L001",
+        "record_id": "f9f24ac6-e16f-4a78-98db-b18013613acc",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-040-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-041-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-041-GR-L001",
+        "record_id": "7532ee71-31b3-40d5-945c-98ae792135a4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-041-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-042-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-042-GR-L001",
+        "record_id": "c2cbb3f3-d0bf-431d-a283-05307ecbd6a0",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-042-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-043-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-043-GR-L001",
+        "record_id": "6aec7046-f57f-4130-8a4b-915e8addf23f",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-043-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-044-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-044-GR-L001",
+        "record_id": "5dbbbcd9-8926-4849-9255-9fd45ed3cfab",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-044-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-045-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-045-GR-L001",
+        "record_id": "e132279d-b80c-4196-b7aa-ce8529af3ea8",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-045-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-046-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-046-GR-L001",
+        "record_id": "79fedb2c-6af6-4403-86a6-20472c0db88b",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-046-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-047-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-047-GR-L001",
+        "record_id": "02918ea3-53c7-4638-88b0-67295419fbe1",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-047-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-048-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-048-GR-L001",
+        "record_id": "6382c883-0311-46f0-aa76-90c7ef484fe4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-048-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-049-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-049-GR-L001",
+        "record_id": "9ff05808-2b06-444e-b0d8-1dd915456e2a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-049-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-050-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-050-GR-L001",
+        "record_id": "770e0ea9-301a-4c5e-97da-f7952987bc73",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-050-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-051-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-051-GR-L001",
+        "record_id": "f5446c5a-6976-47a4-a495-c6037f7a86de",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-051-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-052-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-052-GR-L001",
+        "record_id": "d69415b7-85d6-4b98-b893-8cb7cf521673",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-052-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-053-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-053-GR-L001",
+        "record_id": "cc65484c-a5eb-485b-af21-c61f610d5ef4",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-053-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-054-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-054-GR-L001",
+        "record_id": "16b9bc4e-fb62-449d-b75a-ebd0ae89e396",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-054-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-055-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-055-GR-L001",
+        "record_id": "aa2a1ab6-4e1d-463b-9692-9850cbb6caf6",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-055-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-056-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-056-GR-L001",
+        "record_id": "ae18c566-eaee-4605-a458-ca30c85d5247",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-056-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-057-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-057-GR-L001",
+        "record_id": "37034a80-b13e-4d83-8055-aa55d069380a",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-057-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-058-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-058-GR-L001",
+        "record_id": "82c5d77c-0ca8-473f-a886-62c2c8b039b2",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-058-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-059-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-059-GR-L001",
+        "record_id": "cda2db6b-b54c-4c01-ac2c-c50d7604ab48",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-059-BILL"
+      },
+      {
+        "bill_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL-L001",
+        "query_group": "PERF-B",
+        "receipt_line_id": "M6-PERF-SOURCES-BILLED-PERF-B-060-GR-L001",
+        "record_id": "cccbfc71-f251-4868-9f86-a40c83f156af",
+        "reference": "M6-PERF-SOURCES-BILLED-PERF-B-060-BILL"
+      }
+    ],
+    "unfiltered_synthetic_pages": 5,
+    "value_per_source_irr": 15
+  },
+  "seed": "M5-C12-authentic-quote-main199",
+  "synthetic_only": true
+}

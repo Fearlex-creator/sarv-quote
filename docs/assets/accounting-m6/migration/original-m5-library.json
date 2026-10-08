@@ -1,0 +1,23 @@
+{
+  "scope": "Existing release libraries preserved before any M6 release compilation; debug cargo check does not touch release artifacts. Initial capture expected one library but found two and stopped before copying; both are now retained. Original schema/version must be confirmed by actual helper, never inferred from filenames.",
+  "baseline_commit": "eb8f8c29648fd4a206a26d65ae4eaca5cf945a1b",
+  "libraries": [
+    {
+      "source": "/workspace/sarv-quote/target/release/deps/libsarv_quote-68450ce97b0ef1cf.rlib",
+      "immutable": "/workspace/sarv-evidence/m5-immutable-library/libsarv_quote-68450ce97b0ef1cf.rlib",
+      "sha256": "1ceec2f3087dc8ef6926f69a2ce08992adbf4ae552c08ed95695a75c3d93cb93",
+      "size": 28199464,
+      "source_mtime_ns": 1791422893553062077
+    },
+    {
+      "source": "/workspace/sarv-quote/target/release/deps/libsarv_quote-18b4fcee3594c17a.rlib",
+      "immutable": "/workspace/sarv-evidence/m5-immutable-library/libsarv_quote-18b4fcee3594c17a.rlib",
+      "sha256": "542167ccc8f4aefbeefb26afcc37e954e911dabcb607bc3efc735c03cd5d36a5",
+      "size": 6393854,
+      "source_mtime_ns": 1791389512016138299
+    }
+  ],
+  "dependency_search_path": "/workspace/sarv-quote/target/release/deps",
+  "m5_binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate12",
+  "m5_binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e"
+}

@@ -1,0 +1,131 @@
+--- held-observer-v2-930730.py
++++ proposed-observer-v2.1.py
+@@ -29,7 +29,7 @@
+ legacy = module_from_spec(SPEC)
+ SPEC.loader.exec_module(legacy)
+ helper, native = legacy.helper, legacy.native
+-PROTOCOL = 'm6-scoped-v2'
++PROTOCOL = 'm6-scoped-v2.1'
+ QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
+ PREVIEW = 'بازبینی مقدار و اثر سند'
+ POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
+@@ -531,28 +531,55 @@
+         return None
+ 
+     def source_action_shape(self, access, action):
+-        """Bounded fresh button child topology; nested actions never disappear."""
+-        parent = action.get('parent')
+-        if parent is None:
+-            initial = current_node(access, action['node'])
+-            if not initial:
++        """Observed fixed button→same-name childless label; all edges current."""
++        button = current_node(access, action['node'])
++        if not button or button['role'] not in ('button', 'push button') or button['parent'] != action.get('parent', button['parent']):
++            return None
++        access.a.atspi_accessible_clear_cache(button['node'])
++        children = tuple(access.children(button['node']))
++        if len(children) != 1:
++            return None
++        label = current_node(access, children[0])
++        if not label or label['role'] != 'label' or label['parent'] != button['node'] or label['name'] != button['name']:
++            return None
++        access.a.atspi_accessible_clear_cache(label['node'])
++        label_children = tuple(access.children(label['node']))
++        if label_children:
++            return None
++        return {'records': [{**button, 'path': ()}, {**label, 'path': (0,)}],
++                'children': [(button['node'], children), (label['node'], label_children)]}
++
++    def source_pager_shape(self, access, bar, paths):
++        """Actual qualified GTK FlowBox table→cell→button factory, no shortcuts."""
++        if bar['role'] != paths.bar_role or bar['role'] != 'table' or bar['name'] != '':
++            return None
++        access.a.atspi_accessible_clear_cache(bar['node'])
++        cells = tuple(access.children(bar['node']))
++        if len(cells) > 2:
++            return None
++        wrappers, cell_children, buttons, names = [], [], [], []
++        for node in cells:
++            cell = current_node(access, node)
++            if not cell or cell['role'] != 'table cell' or cell['parent'] != bar['node']:
+                 return None
+-            parent = initial['parent']
+-        queue, records, children, seen = deque([(action['node'], (), parent)]), [], [], set()
+-        while queue:
+-            node, path, parent = queue.popleft()
+-            if not node or node in seen or len(seen) >= 12:
++            access.a.atspi_accessible_clear_cache(node)
++            children = tuple(access.children(node))
++            if len(children) != 1:
+                 return None
+-            seen.add(node)
+-            row = current_node(access, node)
+-            if not row or row['parent'] != parent or (path and self.source_kind(row)):
++            button = current_node(access, children[0])
++            if not button or button['role'] not in ('button', 'push button') or button['parent'] != node:
+                 return None
+-            records.append({**row, 'path': path})
+-            access.a.atspi_accessible_clear_cache(node)
+-            direct = tuple(access.children(node))
+-            children.append((node, direct))
+-            queue.extend((child, (*path, index), node) for index, child in enumerate(direct))
+-        return {'records': records, 'children': children}
++            name = normalize(button['name'])
++            if name not in ('منابع پیشین', 'منابع بعد') or cell['name'] != button['name']:
++                return None
++            shape = self.source_action_shape(access, button)
++            if shape is None or tuple((item['path'], item['role']) for item in shape['records']) not in paths.action_shapes:
++                return None
++            wrappers.append(cell);cell_children.append((node, children));buttons.append(shape);names.append(name)
++        if names not in ([], ['منابع پیشین'], ['منابع بعد'], ['منابع پیشین', 'منابع بعد']):
++            return None
++        return {'bar': bar, 'children': cells, 'wrappers': wrappers,
++                'wrapper_children': cell_children, 'button_shapes': buttons, 'pager_names': names}
+ 
+     def reject_source(self, event, rows, root, reason):
+         self.report['rejected_source_observations'].append({
+@@ -572,14 +599,13 @@
+         # Unknown nesting cannot silently hide a source action from this inventory.
+         if len(records) < 2 or self.source_kind(records[0]) != 'status' or any(self.source_kind(row) != 'action' for row in records[1:-1]) or self.source_kind(records[-1]):
+             return self.reject_source(event, rows, root, 'Direct source hierarchy changed')
++        access.a.atspi_accessible_clear_cache(records[0]['node'])
++        if access.children(records[0]['node']):
++            return self.reject_source(event, rows, root, 'Unknown nested children under status label')
+         bar = records[-1]
+-        if bar['role'] != paths.bar_role:
+-            return self.reject_source(event, rows, root, 'Pager-bar role differs from qualified hierarchy')
+-        access.a.atspi_accessible_clear_cache(bar['node'])
+-        pagers = tuple(access.children(bar['node']))
+-        pager_rows = [current_node(access, node) for node in pagers]
+-        if len(pagers) > 2 or any(not row or row['parent'] != bar['node'] or row['role'] not in ('button', 'push button') or normalize(row['name']) not in ('منابع پیشین', 'منابع بعد') for row in pager_rows):
+-            return self.reject_source(event, rows, root, 'Unknown nested source/pager hierarchy')
++        pager_shape = self.source_pager_shape(access, bar, paths)
++        if pager_shape is None:
++            return self.reject_source(event, rows, root, 'Unknown/retired FlowBox table-cell-button pager hierarchy')
+         actions = records[1:-1]
+         assert len(actions) <= 25
+         shapes = [self.source_action_shape(access, row) for row in actions]
+@@ -587,19 +613,16 @@
+             return self.reject_source(event, rows, root, 'Unknown/retired source-action child topology or nested source action')
+         if validate is not None and not validate([records[0]], actions):
+             return None
+-        pager_names = [normalize(row['name']) for row in pager_rows]
+-        if pager_names not in ([], ['منابع پیشین'], ['منابع بعد'], ['منابع پیشین', 'منابع بعد']):
+-            return self.reject_source(event, rows, root, 'Pager ordering differs from qualified hierarchy')
+         # Re-read every name/role/parent and both child lists after readiness.
+         final_records = [current_node(access, node) for node in direct]
+-        final_pagers = [current_node(access, node) for node in pagers]
++        final_pager_shape = self.source_pager_shape(access, bar, paths)
+         final_shapes = [self.source_action_shape(access, row) for row in actions]
++        access.a.atspi_accessible_clear_cache(records[0]['node'])
++        final_status_children = tuple(access.children(records[0]['node']))
+         access.a.atspi_accessible_clear_cache(rows)
+         final_direct = tuple(access.children(rows))
+-        access.a.atspi_accessible_clear_cache(bar['node'])
+-        final_bar_children = tuple(access.children(bar['node']))
+         after = paths.snapshot(access)
+-        if shapes != final_shapes or direct != final_direct or records != final_records or pagers != final_bar_children or pager_rows != final_pagers or not paths.coherent(before, after):
++        if final_status_children or shapes != final_shapes or direct != final_direct or records != final_records or pager_shape != final_pager_shape or not paths.coherent(before, after):
+             return self.reject_source(event, rows, root, 'Source/query/status/children changed during observation')
+         actions = records[1:-1]
+         assert len(actions) <= 25

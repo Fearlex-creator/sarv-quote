@@ -1,0 +1,3 @@
+usage: product-qa.py [-h] --profile PROFILE [--expect-sha EXPECT_SHA]
+                     [--after-approval]
+product-qa.py: error: the following arguments are required: --profile

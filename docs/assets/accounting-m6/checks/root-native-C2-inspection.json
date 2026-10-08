@@ -1,0 +1,25 @@
+{
+  "reviewer": "root integration lead",
+  "candidate": "candidate2",
+  "scope": "Actual tool-rendered visual inspection of these five native PNGs; other 16 images not claimed here",
+  "images": {
+    "docs/assets/accounting-m6/native/run-a3sofstz/M6-posted-detail-1.png": "6d6c4b7d74b6d89ae58bf6d5f07251ef806618cd3acea4b89a620eba55ea185b",
+    "docs/assets/accounting-m6/native/run-a3sofstz/M6-unbilled-preview.png": "1cecf655439e4006022d196804349e81a1ee13717f3f54649fe1cf29343445dc",
+    "docs/assets/accounting-m6/native/run-a3sofstz/M6-dark-650x550.png": "428d77f123c4543c5dfc635a2795e422135f07af939f655a0418b583f399cf64",
+    "docs/assets/accounting-m6/native/run-a3sofstz/M6-light-1280x900-remaining-source.png": "6c26cb9e066ea993fe004ffa9ae7524e9f832bdfe46b8a4a9fd3b8ec2b6c1a7d",
+    "docs/assets/accounting-m6/native/run-a3sofstz/M5-actual-before-purchases.png": "4942cfa0db5a9bf00258cff824b39c077ae18c87a91f804f47f1ce866bf374ee"
+  },
+  "findings": [
+    "Vazirmatn Persian text readable with explicit rial, frozen original source values, correct AP/GRNI journal preview and source buttons.",
+    "650x550 layout uses whole-page vertical scrolling; narrow form remains reachable.",
+    "Posted return detail exposes physical export actions but lacks separate supplier-credit native export actions; repair in candidate3 pending.",
+    "Window-wide header leaves a strip above sidebar and sidebar brand adds more top padding; user explicitly requests continuous sidebar. Root is moving toolbars inside split pages for candidate3."
+  ],
+  "financial_attribution": "Native C2 63-check raw literal receipt; visual appearance is separate from financial correctness.",
+  "limits": [
+    "No screen-reader speech",
+    "No Wayland",
+    "No physical print",
+    "Not final candidate3 acceptance"
+  ]
+}

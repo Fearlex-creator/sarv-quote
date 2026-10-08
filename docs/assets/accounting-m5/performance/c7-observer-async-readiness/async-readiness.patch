@@ -1,0 +1,59 @@
+--- candidate6/src/ui/responsiveness.rs
++++ candidate7/src/ui/responsiveness.rs
+@@ -153,6 +153,7 @@
+         "focus_widget": gtk::prelude::GtkWindowExt::focus(&ui.window)
+             .map(|focus| focus.widget_name().to_string()),
+         "persistence_busy": ui.persistence_busy.get(),
++        "queued_save_action": ui.pending_save_action.borrow().is_some(),
+         "review_pending": ui.review_requested.get().is_some(),
+         "visual_pending": ui.visual_pending.get(),
+         "active_dialog": ui.active_dialog.borrow().is_some(),
+@@ -205,6 +206,7 @@
+ // a readiness poll. Full economic/on-disk verification remains outside scope.
+ fn action_review_ready(ui: &Ui, page: usize, quantity_focus: bool) -> Result<bool> {
+     if ui.persistence_busy.get()
++        || ui.pending_save_action.borrow().is_some()
+         || ui.review_requested.get().is_some()
+         || ui.visual_pending.get()
+         || ui.active_dialog.borrow().is_some()
+@@ -472,7 +474,7 @@
+         let report = serde_json::json!({
+             "result": if passed {"passed"} else {"failed"},
+             "synthetic_only": true,
+-            "additive_action_protocol": "m5-action-v1",
++            "additive_action_protocol": "m5-action-v1.1",
+             "additive_action_phases": self.action_records,
+             "additive_scope_limits": ["New scopes do not replace original broad strict budgets", "Two rendered readiness frames and observer polling are included", "PDF is a second separately declared internal-helper export, not native PDF file-picker action", "Original global includes extra PDF/probe work; changed observer protocol forbids identical-endpoint causal comparison", "Legacy page duration is latched on original busy-release/page/adopted-generation condition before stronger focus/frame wait; disk verification moves after scope closure", "Legacy choice duration is latched at original pending-review/busy-release boundary before stronger exact row/focus wait", "Changed Save recovery uses actual native Save button; original recovery workflow duration now includes stronger final readiness"],
+             "products": 50_000, "quote_lines": 1_000,
+@@ -1017,6 +1019,16 @@
+             p.advance(112, 0);
+         }
+         112 => {
++            // Delete now completes through a production Save/mutation worker
++            // and a later native review. Wait for that definite completion;
++            // retain the exact resulting identity/length assertions below.
++            if ui.persistence_busy.get()
++                || ui.pending_save_action.borrow().is_some()
++                || ui.review_requested.get().is_some()
++                || ui.visual_pending.get()
++            {
++                return Ok(());
++            }
+             ensure!(
+                 ui.store.borrow().state.draft.lines.len() == 999,
+                 "reused remove callback did not remove global row1000"
+@@ -1035,6 +1047,14 @@
+             p.advance(113, 0);
+         }
+         113 => {
++            // Undo has the same asynchronous structural-command lifecycle.
++            if ui.persistence_busy.get()
++                || ui.pending_save_action.borrow().is_some()
++                || ui.review_requested.get().is_some()
++                || ui.visual_pending.get()
++            {
++                return Ok(());
++            }
+             let store = ui.store.borrow();
+             ensure!(
+                 store.state.draft.lines.len() == 1000

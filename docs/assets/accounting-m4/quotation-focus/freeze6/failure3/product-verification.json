@@ -1,0 +1,22 @@
+{
+  "result": "passed",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-h4yc8bxg",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-s5bov03a",
+  "checks": [
+    {
+      "name": "Async invalid catalog validation retains empty name and exact saved state",
+      "passed": true
+    },
+    {
+      "name": "Validation failure reenables keyboard editing of name and EntryRow",
+      "passed": true
+    },
+    {
+      "name": "Cancel after validation error preserves full saved state and main focus",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions"
+}

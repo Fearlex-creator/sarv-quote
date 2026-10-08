@@ -1,0 +1,15 @@
+    Finished `test` profile [unoptimized] target(s) in 0.08s
+     Running tests/sales_exports.rs (target/debug/deps/sales_exports-7415ffcbb2c340b2)
+
+running 8 tests
+test ordinary_sales_adjustments_have_journal_lineage_separate_from_typed_invoice_totals ... ok
+test literal_controls_asof_receivables_and_original_cost_returns ... ok
+test divisible_partial_allocations_disclose_derived_gross_and_original_price ... ok
+test paired_identities_exact_allocations_formula_guards_and_immutable_snapshots ... ok
+test authentic_approved_quote_provenance_exports_full_hash_and_line_mapping ... ok
+test zero_price_and_zero_cost_keep_operational_quantity_without_invented_financial_effect ... ok
+test restored_exports_are_identical_foreign_missing_and_early_books_fail ... ok
+test real_persian_pdf_embeds_licensed_font_repeated_headings_and_exact_lineage ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.62s
+

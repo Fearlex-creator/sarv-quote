@@ -1,0 +1,21 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze3",
+  "binary_sha256": "6eed73ccede51feadd3353393315667329f8136205ad46c973c9e9ece6da44b4",
+  "production_source_sha256": "ec50e593693bff141271b490cf2cce74005c3b3117324d7285fa9e6f631b56b9",
+  "source_files_all_match": true,
+  "full_harness_sha256": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+  "short_observer_sha256": "7b5643e907dac016f531bbef9fdc2b8cb4a7c40b6558f063ca363122ebd991b8",
+  "g_debug": "fatal-criticals",
+  "source_files_all_match_after": true,
+  "binary_matches_after": true,
+  "full_harness_unchanged": true,
+  "short_observer_unchanged": true,
+  "full_run": "/workspace/sarv-quote/artifacts/procurement-native/run-cytwzvdu",
+  "short_run": "/workspace/sarv-quote/artifacts/procurement-short-native/run-u2y1ke7v",
+  "ordinary_native_checks": 30,
+  "short_layout_cases": 8,
+  "actual_short_gtk_focus_bounds_observations": 16,
+  "actual_refresh_activations_and_completed_global_footer_checks": 8,
+  "all_final_m4_app_logs_empty": true,
+  "accepted_short_geometry_method": "250 ms settle after actual Tab focus; harmless Shift captures GTK compute_bounds against root/nearest scroll viewport; page/focus label verified; X screenshot and GTK client dimensions recorded separately"
+}

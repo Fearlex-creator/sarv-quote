@@ -1,0 +1,136 @@
+dbus-daemon[210543]: [session uid=1000 pid=210543 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=210554 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze6" label="kernel")
+dbus-daemon[210543]: [session uid=1000 pid=210543 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[210578]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=210544 comm="python3 artifacts/independent-m4/picker-persistenc" label="kernel")
+dbus-daemon[210578]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+(process:210544): dbind-WARNING **: 00:10:34.131: AT-SPI: Error in GetItems, sender=:1.0, error=Object does not exist at path “/org/a11y/atspi/cache”
+CHECK startup synthetic one-line fixture and all books/history exact True
+CHECK Escape before accepted choice performs no write True
+CHECK changed underlying query rejects stale choice without a separate form write True
+CHECK accepted real writer-lock choice keeps dialog open and old full state exact True
+CHECK busy error re-enables retained indexed search without partial draft write True
+CHECK retry commits form plus explicit product exactly once with original price and financial history True
+CHECK real quantity receives focus after successful chooser True
+
+(process:210544): dbind-WARNING **: 00:10:45.331: AT-SPI: Error in GetItems, sender=:1.3, error=Object does not exist at path “/org/a11y/atspi/cache”
+CHECK accessibility injection sets newer invalid underlying widget while atomic choice waits True
+CHECK older atomic receipt preserves newer invalid widget and exactly one old valid choice True
+
+(process:210544): dbind-WARNING **: 00:10:48.490: AT-SPI: Error in GetItems, sender=:1.4, error=Object does not exist at path “/org/a11y/atspi/cache”
+CHECK restart recovers accepted valid choice and unchanged whole financial history True
+CHECK unrelated newer invalid widget arrives during accepted customer transaction True
+CHECK customer receipt selectively retains full snapshot while preserving newer invalid quantity True
+
+(process:210544): dbind-WARNING **: 00:10:51.054: AT-SPI: Error in GetItems, sender=:1.5, error=Object does not exist at path “/org/a11y/atspi/cache”
+CHECK external generation race rejects old accepted choice without overwriting payload or history True
+CHECK error-state actual Escape leaves newer external generation and exact payload untouched True
+
+(process:210544): dbind-WARNING **: 00:10:52.963: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+CHECK restart uses current generation and permits one exact retry without rewriting books True
+CHECK all actual owned app logs clean True
+CHECK read-only source fixtures production source and binary unchanged True
+X connection to :10 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "fixture": "/workspace/sarv-quote/artifacts/procurement-native/run-9hnft601/full",
+  "original_generation": 14,
+  "original_payload_sha256": "33fccf6ba62b71f7e2233716d0bd11965236a08a3863c1f5dde1dc36cb5b45ee",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/picker-persistence-final6-3d75d1cv",
+  "checks": [
+    {
+      "name": "startup synthetic one-line fixture and all books/history exact",
+      "passed": true
+    },
+    {
+      "name": "Escape before accepted choice performs no write",
+      "passed": true
+    },
+    {
+      "name": "changed underlying query rejects stale choice without a separate form write",
+      "passed": true,
+      "input_scope": "owned EditableText before real Return"
+    },
+    {
+      "name": "accepted real writer-lock choice keeps dialog open and old full state exact",
+      "passed": true
+    },
+    {
+      "name": "busy error re-enables retained indexed search without partial draft write",
+      "passed": true
+    },
+    {
+      "name": "retry commits form plus explicit product exactly once with original price and financial history",
+      "passed": true,
+      "source_price_rial": 150000
+    },
+    {
+      "name": "real quantity receives focus after successful chooser",
+      "passed": true
+    },
+    {
+      "name": "accessibility injection sets newer invalid underlying widget while atomic choice waits",
+      "passed": true,
+      "input_scope": "AT-SPI EditableText on own underlying widget, not ordinary focus route"
+    },
+    {
+      "name": "older atomic receipt preserves newer invalid widget and exactly one old valid choice",
+      "passed": true
+    },
+    {
+      "name": "restart recovers accepted valid choice and unchanged whole financial history",
+      "passed": true
+    },
+    {
+      "name": "unrelated newer invalid widget arrives during accepted customer transaction",
+      "passed": true,
+      "input_scope": "owned AT-SPI EditableText"
+    },
+    {
+      "name": "customer receipt selectively retains full snapshot while preserving newer invalid quantity",
+      "passed": true
+    },
+    {
+      "name": "external generation race rejects old accepted choice without overwriting payload or history",
+      "passed": true
+    },
+    {
+      "name": "error-state actual Escape leaves newer external generation and exact payload untouched",
+      "passed": true
+    },
+    {
+      "name": "restart uses current generation and permits one exact retry without rewriting books",
+      "passed": true
+    },
+    {
+      "name": "all actual owned app logs clean",
+      "passed": true,
+      "diagnostics": []
+    },
+    {
+      "name": "read-only source fixtures production source and binary unchanged",
+      "passed": true
+    }
+  ],
+  "scope": "Real owned native picker keyboard + SQLite writer lock/CAS race; exact full non-draft State/history; explicit accessibility newer-input injection, not performance",
+  "setup": {
+    "method": "observer-owned prelaunch single unmatched line plus50k synthetic catalog and labelled synthetic QA customer; no financial/schema/history changes",
+    "catalog_fixture": "/workspace/sarv-quote/artifacts/performance-m4/freeze5-repeated/quote-scale",
+    "catalog_payload_sha256": "d00596beb4fb69c941c5db12724e44bf424f422d22757dc20b2fc8ff5b23911d",
+    "catalog_id": "198e7b1d-03ed-4727-8939-8e73b4e809e7",
+    "catalog_products": 50000,
+    "customer": {
+      "id": "bda5e019-f536-4806-ab16-34e42d974a6e",
+      "name": "QA CUSTOMER",
+      "phone": "02100000000",
+      "contact_name": "QA CONTACT",
+      "email": "qa@example.invalid",
+      "address": "SYNTHETIC QA ADDRESS"
+    },
+    "code": "SCALE-50000",
+    "price_rial": 150000,
+    "generation": 14
+  }
+}

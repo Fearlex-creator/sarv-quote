@@ -1,0 +1,47 @@
+{
+  "coordinator_sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+  "source_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate6/manifest.json",
+    "sha256": "f2f6cf45ac7ebca7bd806c16045b02fc8eb3ec37fe2c5cdc120de2a8aaecaa93"
+  },
+  "verification_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate6/runtime-verification4.json",
+    "sha256": "bd13107baf91622667abb21eae1f365d6913229674f30bc99ce395959f7e28fc"
+  },
+  "dataset_manifest": {
+    "path": "docs/assets/accounting-m6/performance/dataset-candidate2/dataset-manifest.json",
+    "sha256": "23099547410ef1215d25d5cab9aa935b4f1c1d77cb48fa461873bc20d75e6e72"
+  },
+  "production_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate6",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "candidate": "candidate6",
+  "synthetic_only": true,
+  "purpose": "One functional pilot then one separately authorized quiet final epoch; no timing acceptance from stamping",
+  "superseded_qualified_candidates": [
+    "docs/assets/accounting-m6/checks/candidate4/manifest.json",
+    "docs/assets/accounting-m6/checks/candidate5/manifest.json"
+  ],
+  "epoch": "candidate6-runtime4",
+  "superseded_receipts": [
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-coordinator-receipt.json",
+      "sha256": "6686215533ceadc24b501a4a21d06ad56556c03e6a4a82afc828e53f1d716352",
+      "reason": "Root separately corrected sidebar pointer observer after preserved Overlay AT-SPI geometry diagnostic; production/binary and performance observer unchanged"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime2-coordinator-receipt.json",
+      "sha256": "6265becd18b6181d77b4162cfd99affb208cff0df6e3400363ce1488a4407866",
+      "reason": "Root separately corrected Return QA orchestration to require both fixture paths before GUI and guard both original States; previous64-check main native run remains incomplete after missing UNBILLED_PROFILE KeyError"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime3-coordinator-receipt.json",
+      "sha256": "0462e53d209fd27c02fcc8b5ef065585b4ba03628b2a48c820463b6c1844a3eb",
+      "reason": "Preserved runtime3 pilot1 failed at zero warmup current-row membership assertion. Authorized bounded observer-only correction rejects stale observations and retries fresh current subtree with exact predicates/per-event diagnostics; product/binary unchanged",
+      "failed_pilot": "docs/assets/accounting-m6/performance/candidate6-runtime3-pilot1-failed/README.md",
+      "correction": "docs/assets/accounting-m6/performance/runtime4-observer-membership-correction/README.md"
+    }
+  ],
+  "protocol": "m6-scoped-v1.1",
+  "performance_observer_sha256": "38063e556740904a129b659f57b49a4cdd010a02385063c469ac0407d4bac6a1"
+}

@@ -1,0 +1,58 @@
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransSocketUNIXCreateListener: ...SocketCreateListener() failed
+_XSERVTransMakeAllCOTSServerListeners: server already running
+_XSERVTransmkdir: Owner of /tmp/.X11-unix should be set to root
+dbus-daemon[169779]: [session uid=1000 pid=169779 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=169786 comm="/workspace/sarv-quote/target/debug/sarv-quote" label="kernel")
+dbus-daemon[169779]: [session uid=1000 pid=169779 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[169815]: Activating service name='org.a11y.atspi.Registry' requested by ':1.1' (uid=1000 pid=169780 comm="python3 /tmp/m4-readonly-focus-parented.py" label="kernel")
+dbus-daemon[169815]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+DISCLOSURE states [('enabled', False), ('focusable', True), ('focused', False), ('sensitive', True), ('showing', True), ('visible', True)] rect {'x': 0, 'y': 0, 'width': 640, 'height': 34}
+GRABFOCUS False
+0 [('', 'scroll pane')]
+1 [('انصراف', 'button')]
+2 []
+3 []
+4 []
+5 []
+6 []
+7 []
+8 []
+9 []
+10 []
+11 []
+12 []
+13 []
+14 []
+15 []
+16 []
+17 []
+18 []
+19 []
+20 []
+21 []
+22 []
+23 []
+24 []
+25 []
+26 []
+27 []
+28 []
+29 []
+/tmp/m4-keyboard-ut8ivm2a
+X connection to :9 broken (explicit kill or server shutdown).

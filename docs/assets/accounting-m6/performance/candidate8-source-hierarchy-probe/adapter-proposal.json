@@ -1,0 +1,13 @@
+{
+  "canonical_observer_unchanged_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+  "proposed_observer_sha256": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408",
+  "diff_sha256": "99d358a93c11ac81a6a7a06720590a93e0b148603b2647f05d729e59a90633e1",
+  "isolated_static_receipt_sha256": "e20d825b3f9fb015aa8fa91a5ff610e383307d5b5873f23c7cb5aa644e155f41",
+  "isolated_static_check_sha256": "e811cc4cd242517d7b5f578193777be7cec0c0f109c3c04e492610ca60c98935",
+  "isolated_AST_cases": 63,
+  "protocol": "m6-scoped-v2.1-proposal-only",
+  "canonical_edit_authorized": false,
+  "GUI_or_native_import_during_static_checks": false,
+  "actual_readonly_probe_sha256": "7b6890bb83b12063e3bf8bcf8fa220d7188ad0d9493223afbfed8a226c34be5c",
+  "actual_probe_sidecar_sha256": "85f860d41ec6e84b34300a6eac95c6496699dfc267e0010c941e4d790d91c9df"
+}

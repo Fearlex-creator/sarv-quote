@@ -1,0 +1,1 @@
+Copy diagnostic only: copying SQLite main file alone omitted its WAL and produced no state table. No data-integrity or restore acceptance is claimed for this failed copy. Original synthetic profile and passed native callback report remain intact; accepted portable evidence uses SQLite backup from that original profile.

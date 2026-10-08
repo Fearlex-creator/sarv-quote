@@ -1,0 +1,4 @@
+code,name,measure,price,currency,source_at,aliases
+GOOD,صحیح,عدد,125.1,toman,2020-01-01T00:00:00Z,
+BAD,نامعتبر,عدد,0,toman,2020-01-01T00:00:00Z,
+GOOD,تکرار,عدد,2,rial,2020-01-01T00:00:00Z,

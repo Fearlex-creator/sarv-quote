@@ -1,0 +1,5560 @@
+{
+  "result": "measured",
+  "synthetic_only": true,
+  "development_pilot": false,
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate2",
+  "binary_sha256": "9b32342c5dd966fb0f1a3f43f55529990221090e7a27d7aa7ddf7b96b4bf9537",
+  "utc": "2026-10-08T02:00:03Z",
+  "root_freeze_manifest": "/workspace/sarv-quote/docs/assets/accounting-m5/checks/candidate2/manifest.json",
+  "root_freeze_manifest_sha256": "c7ddeda0ea4ad839e34000f3251b9ad2bb7f66960479ecae26a419becbb3fc2d",
+  "source_head": "24ae57bc179336ad21d7d1d52501f49e80f3330b",
+  "source_status": "M README.md\n M decisions.md\n M migrations.md\n M requirements/evidence.md\n M requirements/roadmap.md\n M scripts/native-sidebar-qa.py\n M src/accounting.rs\n M src/core.rs\n M src/domain.rs\n M src/lib.rs\n M src/procurement.rs\n M src/store.rs\n M src/ui.rs\n M src/ui/accounting.rs\n M tests/accounting_migration.rs\n M tests/core_migration.rs\n M tests/core_store.rs\n M tests/procurement.rs\n M tests/procurement_migration.rs\n M tests/qa_invariants.rs\n M tests/workflow.rs\n?? docs/assets/accounting-m5/\n?? docs/sales-api.md\n?? docs/sales-exports.md\n?? requirements/fixtures-M5.md\n?? requirements/independent-review-M5.md\n?? requirements/milestone-M5.md\n?? requirements/performance-M5.md\n?? scripts/native-performance-M5.py\n?? scripts/sales-qa.py\n?? src/sales.rs\n?? src/sales_draft.rs\n?? src/sales_export.rs\n?? src/ui/sales.rs\n?? tests/sales.rs\n?? tests/sales_drafts.rs\n?? tests/sales_exports.rs\n?? tests/sales_migration.rs",
+  "source_code_sha256": "c9ffa4559429ff67154fb067dbec667c7c1787cffe49e61b1d56cbe336978a36",
+  "frozen_source_provenance_before": {
+    "sha256": "30dc57763c904f740a42df7f863276b2c2f08e2c4c8510901603d6b6571fda5b",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+      "src/ui/accounting.rs": "76faf44f705bac44e6e1413e2d78e696af83238962cc03a4877a3627ec6a348f",
+      "src/ui/background.rs": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+      "src/ui/sales.rs": "816c0069fdf8f89b3534b3b95eadc11282bd38aeaafe17a1e813d690207ff696",
+      "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+      "src/ui/smoke.rs": "947cc2399837002fa159dedb7013cb764eb55a76021443efec45718f6a793b7b",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "observer_provenance_before": {
+    "native-performance-M5.py": "58cf88fdd660cf8b8a64b3ff25f90fb93f9c2cf56f93daf4d82ea8cc85879103",
+    "native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+    "native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+    "accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+  },
+  "source_hash_algorithm": "Sorted pathlib.Path components; relative UTF-8 path, NUL, raw bytes, NUL",
+  "matched_core_baseline": "docs/assets/accounting-m3/performance/performance.json",
+  "procurement_measurement": {
+    "result": "measured",
+    "source": "native forms; actual two-row catalogue import and explicit picker",
+    "stage_manifest": {
+      "catalog_count": 1,
+      "note": "no smoke changes after ready; external observer owns preview/post",
+      "opening_journals": 1,
+      "phase": "unposted-order-native-forms",
+      "post_name": "procurement-order-save",
+      "preview_name": "procurement-preview",
+      "ready": true,
+      "resource_records": 4,
+      "search_name": "procurement-search",
+      "source_snapshot": "catalog ID/name/fingerprint/product/unit/date/IRR frozen through native picker"
+    },
+    "order_preview_observed_ms": 55.12747100146953,
+    "order_post_durable_observed_ms": 12.371529002848547,
+    "external_order_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.831835,
+        "gaps_ms": [
+          16.082943,
+          16.072819,
+          16.012117,
+          2.6639559999999998
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.082943,
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 39.863291000000004,
+        "gaps_ms": [
+          20.496848,
+          19.366183,
+          0.00026
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 20.496848,
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "external_order_durable_proof": {
+      "record_id": "6cefe32e-8dcb-41a2-840a-c2f9be68a9d8",
+      "command_sha256": "b93862d1c95c504e2310cced416425a9dea98c35baa15eb786c345a945c9cace",
+      "total_irr": 180,
+      "journal_id": null,
+      "records": 5,
+      "journals": 1
+    },
+    "memory_kib_after_external_order": {
+      "VmRSS": 133268,
+      "VmHWM": 133268
+    },
+    "full_manifest": {
+      "checks": [
+        "fractional IRR rejected and retained in native line form",
+        "Rial15↔Toman1.5 exact; invalidIRR0.1 retained and unit switch refused",
+        "catalog15/piece cannot silently become15/carton; requires override reason",
+        "quantity-only edit preserves original catalog15, overridden30 and required reason",
+        "PO12pieces at15, immutable source, no financial journal",
+        "partial receipt independent74 mismatches75; retained and no post",
+        "two partial receipts75/105, two matched bills30/150 and paired nonfinancial transfer70"
+      ],
+      "item_queries": [
+        "SKU-A",
+        "SKU-B"
+      ],
+      "journal_count": 5,
+      "movement_count": 4,
+      "note": "160ms smoke observation polling is not worker latency; process remains alive for independent keyboard/RSS",
+      "party_queries": [
+        "CU-A",
+        "CU-B"
+      ],
+      "phase": "posted-literal-M4",
+      "queries": [
+        "REC-A",
+        "REC-B"
+      ],
+      "ready": true,
+      "record_count": 10,
+      "reports": [
+        "M4-controls.csv",
+        "M4-controls.pdf",
+        "M4-order.pdf"
+      ],
+      "search_name": "procurement-search",
+      "source": "native forms; real catalog import and explicit price picker; root worker preview/post"
+    },
+    "independent_raw_proof": {
+      "record_count": 10,
+      "journal_count": 5,
+      "records_by_kind": {
+        "Resources": 4,
+        "Order": 1,
+        "Receive": 2,
+        "Bill": 2,
+        "Transfer": 1
+      },
+      "movement_count": 4,
+      "frozen_price_source": "فهرست M4-synthetic-prices | catalog=0b56a22d-0e36-44cc-bf9f-f40b494a36ca | SHA256=c4263e9adcc3a46128ad4aecc34d58bdf90b9823ca0cbb53b742662d5502555d | SKU=SKU-A | نام=کالای الف خرید | اندازه=عدد | واحدمنبع=ریال | قیمت‌ریال=15 | تاریخ‌منبع=2026-03-22T09:00:00Z | نگاشت‌کالا=SKU-A | نگاشت‌واحد=PIECE",
+      "signed_controls_irr": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 200,
+        "Inventory": 480,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952,
+        "SupplierAdvances": 0,
+        "CustomerAdvances": 0,
+        "Cogs": 0,
+        "InventoryLoss": 0,
+        "Sales": 0,
+        "SalesReturns": 0,
+        "OperatingExpense": 0,
+        "BankFees": 0
+      },
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "transfer_pools": {
+        "W1": {
+          "item_id": "ITEM-A",
+          "warehouse_id": "W1",
+          "quantity_thousandths": 30000,
+          "value": 350
+        },
+        "W2": {
+          "item_id": "ITEM-A",
+          "warehouse_id": "W2",
+          "quantity_thousandths": 12000,
+          "value": 130
+        }
+      },
+      "latest_operational_stock_date": "2026-03-27",
+      "immutable_opening_equal": true
+    },
+    "catalog_csv_sha256": "c316f4c17a6f71823d6d96093ec9ddfbbf872ad92b163183690a22541d734eca",
+    "catalog_csv_data_rows": 2,
+    "full_workflow_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 69.786998,
+        "gaps_ms": [
+          23.983713,
+          16.073459,
+          29.348822,
+          0.381004
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 29.348822,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 53.093323999999996,
+        "gaps_ms": [
+          35.183386,
+          17.909097,
+          0.000841
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 35.183386,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 60.790247,
+        "gaps_ms": [
+          16.094762,
+          16.073499,
+          28.088772000000002,
+          0.533214
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 28.088772000000002,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 53.401088,
+        "gaps_ms": [
+          34.918387,
+          18.48222,
+          0.00048100000000000004
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 34.918387,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 57.340226,
+        "gaps_ms": [
+          16.090625,
+          16.085879000000002,
+          24.747825000000002,
+          0.41589699999999996
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 24.747825000000002,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 55.539742000000004,
+        "gaps_ms": [
+          37.351755,
+          18.187496,
+          0.000491
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 37.351755,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 56.975626,
+        "gaps_ms": [
+          16.091216,
+          16.089794,
+          24.244847,
+          0.549769
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 24.244847,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 51.095822,
+        "gaps_ms": [
+          33.579428,
+          17.516024,
+          0.00037
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 33.579428,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 51.013699,
+        "gaps_ms": [
+          16.087881,
+          16.11332,
+          16.087820999999998,
+          2.724677
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.11332,
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 37.327589,
+        "gaps_ms": [
+          16.083965,
+          21.243023,
+          0.0006010000000000001
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 21.243023,
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 58.012939,
+        "gaps_ms": [
+          16.089443,
+          16.084286,
+          25.612548,
+          0.226662
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 25.612548,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "rejected",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.68398,
+        "gaps_ms": [
+          16.082292000000002,
+          16.101471,
+          16.079097,
+          2.42112
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.101471,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 42.181644999999996,
+        "gaps_ms": [
+          24.613472,
+          17.567722,
+          0.000451
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 24.613472,
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 57.957243,
+        "gaps_ms": [
+          16.094671,
+          16.079968,
+          25.137692,
+          0.6449119999999999
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 25.137692,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 58.348552999999995,
+        "gaps_ms": [
+          39.146479,
+          19.201193,
+          0.0008810000000000001
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 39.146479,
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 62.965073,
+        "gaps_ms": [
+          16.09404,
+          16.052647999999998,
+          30.378813,
+          0.439572
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 30.378813,
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 65.354454,
+        "gaps_ms": [
+          40.405166,
+          24.948707,
+          0.000581
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 40.405166,
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 58.717439000000006,
+        "gaps_ms": [
+          16.099777999999997,
+          16.156363,
+          25.735083,
+          0.7262149999999999
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 25.735083,
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 39.283269000000004,
+        "gaps_ms": [
+          17.241099,
+          22.04174,
+          0.00043
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 22.04174,
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 64.73572,
+        "gaps_ms": [
+          37.134185,
+          27.140881,
+          0.460654
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 37.134185,
+        "operation": "transfer",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 36.677696000000005,
+        "gaps_ms": [
+          16.648906,
+          20.02837,
+          0.00042
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 20.02837,
+        "operation": "transfer",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "strict_phase_heartbeat_checks": [
+      {
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.082943,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 20.496848,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 29.348822,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 35.183386,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 28.088772000000002,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 34.918387,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 24.747825000000002,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 37.351755,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 24.244847,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 33.579428,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.11332,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 21.243023,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "rejected",
+        "ticks": 3,
+        "actual_ms": 25.612548,
+        "budget_ms": 50,
+        "measurable": false,
+        "passes": false
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.101471,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 24.613472,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 25.137692,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 39.146479,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 30.378813,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 40.405166,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 25.735083,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 22.04174,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "transfer",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2,
+        "actual_ms": 37.134185,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "transfer",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 20.02837,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      }
+    ],
+    "memory_kib_after_full_workflow": {
+      "VmRSS": 141928,
+      "VmHWM": 142624
+    },
+    "searches": {
+      "document": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.09875799878500402,
+            "correct_visible_ms": 99.58530600124504,
+            "focused_usable_ms": 117.95809100294719
+          },
+          {
+            "index": 1,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.06800300616305321,
+            "correct_visible_ms": 101.38796400133288,
+            "focused_usable_ms": 117.24176800635178
+          },
+          {
+            "index": 2,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.12063200119882822,
+            "correct_visible_ms": 92.09489599743392,
+            "focused_usable_ms": 108.24468999635428
+          },
+          {
+            "index": 3,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.09335999493487179,
+            "correct_visible_ms": 101.86229999817442,
+            "focused_usable_ms": 113.79567800031509
+          },
+          {
+            "index": 4,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.0701749959262088,
+            "correct_visible_ms": 97.43787999468623,
+            "focused_usable_ms": 112.70261000026949
+          },
+          {
+            "index": 5,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.07074599852785468,
+            "correct_visible_ms": 99.54522699990775,
+            "focused_usable_ms": 112.28585200296948
+          },
+          {
+            "index": 6,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.07851899863453582,
+            "correct_visible_ms": 98.55145899928175,
+            "focused_usable_ms": 113.28107299777912
+          },
+          {
+            "index": 7,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.07152799662435427,
+            "correct_visible_ms": 105.12458699668059,
+            "focused_usable_ms": 117.36783299420495
+          },
+          {
+            "index": 8,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.06958500307518989,
+            "correct_visible_ms": 101.8779980004183,
+            "focused_usable_ms": 113.74600799899781
+          },
+          {
+            "index": 9,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.06891399971209466,
+            "correct_visible_ms": 100.71735399833415,
+            "focused_usable_ms": 112.77997800061712
+          },
+          {
+            "index": 10,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.07646500307600945,
+            "correct_visible_ms": 106.46771600295324,
+            "focused_usable_ms": 118.8248839971493
+          },
+          {
+            "index": 11,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.10612000187393278,
+            "correct_visible_ms": 119.33336700167274,
+            "focused_usable_ms": 131.34085699857678
+          },
+          {
+            "index": 12,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.0699459997122176,
+            "correct_visible_ms": 99.76815799745964,
+            "focused_usable_ms": 113.29886499879649
+          },
+          {
+            "index": 13,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.0895750054041855,
+            "correct_visible_ms": 103.4173530060798,
+            "focused_usable_ms": 115.48931100696791
+          },
+          {
+            "index": 14,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.10140300582861528,
+            "correct_visible_ms": 112.5853100020322,
+            "focused_usable_ms": 125.76618900493486
+          },
+          {
+            "index": 15,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.07311999797821045,
+            "correct_visible_ms": 112.80363299738383,
+            "focused_usable_ms": 132.4052509953617
+          },
+          {
+            "index": 16,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.07674600055906922,
+            "correct_visible_ms": 98.40260499913711,
+            "focused_usable_ms": 110.3502749974723
+          },
+          {
+            "index": 17,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.09671600128058344,
+            "correct_visible_ms": 103.62758499832125,
+            "focused_usable_ms": 115.48135399789317
+          },
+          {
+            "index": 18,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.07070699939504266,
+            "correct_visible_ms": 104.95630800141953,
+            "focused_usable_ms": 116.94631199497962
+          },
+          {
+            "index": 19,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.0642769955447875,
+            "correct_visible_ms": 125.18686299881665,
+            "focused_usable_ms": 142.62520799820777
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 20,
+          "p50": 101.86229999817442,
+          "p95": 119.33336700167274,
+          "p99": 125.18686299881665,
+          "worst": 125.18686299881665,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 20,
+          "p50": 115.48135399789317,
+          "p95": 132.4052509953617,
+          "p99": 142.62520799820777,
+          "worst": 142.62520799820777,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current document Detail action, then real Tab to focused action",
+        "actionable_result": true
+      },
+      "party": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.07919999916339293,
+            "correct_visible_ms": 84.22839400009252,
+            "focused_usable_ms": 84.23042700451333
+          },
+          {
+            "index": 1,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.07087700214469805,
+            "correct_visible_ms": 81.68664100230671,
+            "focused_usable_ms": 81.68924500205321
+          },
+          {
+            "index": 2,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.07968000136315823,
+            "correct_visible_ms": 77.63153000269085,
+            "focused_usable_ms": 77.6331820015912
+          },
+          {
+            "index": 3,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.08485800208291039,
+            "correct_visible_ms": 77.64499000040814,
+            "focused_usable_ms": 77.64676200167742
+          },
+          {
+            "index": 4,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.13246999878901988,
+            "correct_visible_ms": 80.7742059987504,
+            "focused_usable_ms": 80.77606900042156
+          },
+          {
+            "index": 5,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.08272500417660922,
+            "correct_visible_ms": 79.01983200281393,
+            "focused_usable_ms": 79.02172500325833
+          },
+          {
+            "index": 6,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.08940500265453011,
+            "correct_visible_ms": 73.9635299978545,
+            "focused_usable_ms": 73.9665849978337
+          },
+          {
+            "index": 7,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.07993100007297471,
+            "correct_visible_ms": 73.78135600447422,
+            "focused_usable_ms": 73.78358900314197
+          },
+          {
+            "index": 8,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.06295499770203605,
+            "correct_visible_ms": 84.79849199648015,
+            "focused_usable_ms": 84.80120600142982
+          },
+          {
+            "index": 9,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.08541800343664363,
+            "correct_visible_ms": 75.19058000616496,
+            "focused_usable_ms": 75.1942950009834
+          },
+          {
+            "index": 10,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.08657100261189044,
+            "correct_visible_ms": 72.80780800647335,
+            "focused_usable_ms": 72.81014200270874
+          },
+          {
+            "index": 11,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.06346600275719538,
+            "correct_visible_ms": 78.98714899783954,
+            "focused_usable_ms": 78.9890820014989
+          },
+          {
+            "index": 12,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.06307500007096678,
+            "correct_visible_ms": 84.48108899756335,
+            "focused_usable_ms": 84.48385300289374
+          },
+          {
+            "index": 13,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.078858996857889,
+            "correct_visible_ms": 82.46704899647739,
+            "focused_usable_ms": 82.4689520013635
+          },
+          {
+            "index": 14,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.05858800432179123,
+            "correct_visible_ms": 79.79309700021986,
+            "focused_usable_ms": 79.79541000531754
+          },
+          {
+            "index": 15,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.08874399645719677,
+            "correct_visible_ms": 87.33777499583084,
+            "focused_usable_ms": 87.3404589947313
+          },
+          {
+            "index": 16,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.08221399912144989,
+            "correct_visible_ms": 96.86427399719832,
+            "focused_usable_ms": 96.86718900047708
+          },
+          {
+            "index": 17,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.0883230022736825,
+            "correct_visible_ms": 74.6131490013795,
+            "focused_usable_ms": 74.61554200563114
+          },
+          {
+            "index": 18,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.0873909957590513,
+            "correct_visible_ms": 80.72966899635503,
+            "focused_usable_ms": 80.73121099732816
+          },
+          {
+            "index": 19,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.05526300083147362,
+            "correct_visible_ms": 75.64735900086816,
+            "focused_usable_ms": 75.6490109997685
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 20,
+          "p50": 79.01983200281393,
+          "p95": 87.33777499583084,
+          "p99": 96.86427399719832,
+          "worst": 96.86427399719832,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 20,
+          "p50": 79.02172500325833,
+          "p95": 87.3404589947313,
+          "p99": 96.86718900047708,
+          "worst": 96.86718900047708,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      },
+      "item": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.06779199611628428,
+            "correct_visible_ms": 79.75153900042642,
+            "focused_usable_ms": 79.75340199482162
+          },
+          {
+            "index": 1,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.0651179943815805,
+            "correct_visible_ms": 82.55645299504977,
+            "focused_usable_ms": 82.58261299488368
+          },
+          {
+            "index": 2,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.06386699533322826,
+            "correct_visible_ms": 81.28459699946688,
+            "focused_usable_ms": 81.2863289975212
+          },
+          {
+            "index": 3,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06241400114959106,
+            "correct_visible_ms": 81.6416739980923,
+            "focused_usable_ms": 81.64361699891742
+          },
+          {
+            "index": 4,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.0707059953128919,
+            "correct_visible_ms": 76.43136000115192,
+            "focused_usable_ms": 76.4342239999678
+          },
+          {
+            "index": 5,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.09160899935523048,
+            "correct_visible_ms": 78.88850400195224,
+            "focused_usable_ms": 78.89026699558599
+          },
+          {
+            "index": 6,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.0714880006853491,
+            "correct_visible_ms": 81.08675699622836,
+            "focused_usable_ms": 81.0896920011146
+          },
+          {
+            "index": 7,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.09120799950323999,
+            "correct_visible_ms": 87.1997329959413,
+            "focused_usable_ms": 87.20243699644925
+          },
+          {
+            "index": 8,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.07609399472130463,
+            "correct_visible_ms": 82.6554019949981,
+            "focused_usable_ms": 82.65741499781143
+          },
+          {
+            "index": 9,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07450300472555682,
+            "correct_visible_ms": 79.604427999584,
+            "focused_usable_ms": 79.60619100049371
+          },
+          {
+            "index": 10,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.1593609995325096,
+            "correct_visible_ms": 79.44805800070753,
+            "focused_usable_ms": 79.45038100297097
+          },
+          {
+            "index": 11,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06964500062167645,
+            "correct_visible_ms": 78.07190799940145,
+            "focused_usable_ms": 78.07378099823836
+          },
+          {
+            "index": 12,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.07120700320228934,
+            "correct_visible_ms": 76.7787139993743,
+            "focused_usable_ms": 76.7804960050853
+          },
+          {
+            "index": 13,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07636500231456012,
+            "correct_visible_ms": 83.9083760001813,
+            "focused_usable_ms": 83.91080000001239
+          },
+          {
+            "index": 14,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.102605001302436,
+            "correct_visible_ms": 83.48787800059654,
+            "focused_usable_ms": 83.49064199865097
+          },
+          {
+            "index": 15,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.09275999764213338,
+            "correct_visible_ms": 76.21482399554225,
+            "focused_usable_ms": 76.2177679935121
+          },
+          {
+            "index": 16,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.09700700320536271,
+            "correct_visible_ms": 79.2281969988835,
+            "focused_usable_ms": 79.22993900137953
+          },
+          {
+            "index": 17,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07136799831641838,
+            "correct_visible_ms": 84.79728100064676,
+            "focused_usable_ms": 84.80049599893391
+          },
+          {
+            "index": 18,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.07460300548700616,
+            "correct_visible_ms": 81.38033500290476,
+            "focused_usable_ms": 81.38226799928816
+          },
+          {
+            "index": 19,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.0770760016166605,
+            "correct_visible_ms": 81.35924299858743,
+            "focused_usable_ms": 81.36145600292366
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 20,
+          "p50": 81.08675699622836,
+          "p95": 84.79728100064676,
+          "p99": 87.1997329959413,
+          "worst": 87.1997329959413,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 20,
+          "p50": 81.0896920011146,
+          "p95": 84.80049599893391,
+          "p99": 87.20243699644925,
+          "worst": 87.20243699644925,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      },
+      "mixed_master": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.07630499749211594,
+            "correct_visible_ms": 80.31934299651766,
+            "focused_usable_ms": 80.32148599886568
+          },
+          {
+            "index": 1,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07528399873990566,
+            "correct_visible_ms": 84.27463699626969,
+            "focused_usable_ms": 84.27636000124039
+          },
+          {
+            "index": 2,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.06449699867516756,
+            "correct_visible_ms": 75.03850899956888,
+            "focused_usable_ms": 75.04083200183231
+          },
+          {
+            "index": 3,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07158699736464769,
+            "correct_visible_ms": 82.90347499860218,
+            "focused_usable_ms": 82.90556800056947
+          },
+          {
+            "index": 4,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.06426699837902561,
+            "correct_visible_ms": 74.48139900225215,
+            "focused_usable_ms": 74.48365200252738
+          },
+          {
+            "index": 5,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07243899744935334,
+            "correct_visible_ms": 81.79042299889261,
+            "focused_usable_ms": 81.7928460019175
+          },
+          {
+            "index": 6,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.05991099897073582,
+            "correct_visible_ms": 80.83776100102114,
+            "focused_usable_ms": 80.8396940046805
+          },
+          {
+            "index": 7,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06524800119223073,
+            "correct_visible_ms": 83.63373099564342,
+            "focused_usable_ms": 83.63602399913361
+          },
+          {
+            "index": 8,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.05826800042996183,
+            "correct_visible_ms": 79.50618900213158,
+            "focused_usable_ms": 79.50801200058777
+          },
+          {
+            "index": 9,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06482799653895199,
+            "correct_visible_ms": 78.50550599687267,
+            "focused_usable_ms": 78.50731799408095
+          },
+          {
+            "index": 10,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.06806300370953977,
+            "correct_visible_ms": 81.60521800164133,
+            "focused_usable_ms": 81.60714100085897
+          },
+          {
+            "index": 11,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.079420002293773,
+            "correct_visible_ms": 81.9995280035073,
+            "focused_usable_ms": 82.0012609983678
+          },
+          {
+            "index": 12,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.05996099935146049,
+            "correct_visible_ms": 83.12103899515932,
+            "focused_usable_ms": 83.1226809968939
+          },
+          {
+            "index": 13,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07520399958593771,
+            "correct_visible_ms": 80.74600800318876,
+            "focused_usable_ms": 80.74790100363316
+          },
+          {
+            "index": 14,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.057427001593168825,
+            "correct_visible_ms": 78.15318500070134,
+            "focused_usable_ms": 78.15516800474143
+          },
+          {
+            "index": 15,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06462800229201093,
+            "correct_visible_ms": 81.07053199637448,
+            "focused_usable_ms": 81.07222500257194
+          },
+          {
+            "index": 16,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.059048994444310665,
+            "correct_visible_ms": 77.2429629942053,
+            "focused_usable_ms": 77.24479599710321
+          },
+          {
+            "index": 17,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06407699402188882,
+            "correct_visible_ms": 78.36092799698235,
+            "focused_usable_ms": 78.36331099679228
+          },
+          {
+            "index": 18,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.05712600250262767,
+            "correct_visible_ms": 75.3266280007665,
+            "focused_usable_ms": 75.32838100451045
+          },
+          {
+            "index": 19,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.0652879971312359,
+            "correct_visible_ms": 76.55155999964336,
+            "focused_usable_ms": 76.55336300376803
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 20,
+          "p50": 80.31934299651766,
+          "p95": 83.63373099564342,
+          "p99": 84.27463699626969,
+          "worst": 84.27463699626969,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 20,
+          "p50": 80.32148599886568,
+          "p95": 83.63602399913361,
+          "p99": 84.27636000124039,
+          "worst": 84.27636000124039,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      }
+    },
+    "memory_kib_after_searches": {
+      "VmRSS": 135716,
+      "VmHWM": 144132
+    }
+  },
+  "datasets": {
+    "core-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-workflow",
+      "source_shape": {
+        "schema": 6,
+        "generation": 2,
+        "payload_sha256": "ca675ab5fc4d5608303efc40df149ab89ebbc5c552b3e774f6aa6017ad901228",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "procurement": {},
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 834.7051079981611,
+          "interactive_before_png_ms": 723.248545997194,
+          "steady_rss_kib": 96000,
+          "kernel_peak_rss_kib": 101256,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 881.2555900003645,
+          "interactive_before_png_ms": 770.6108309939737,
+          "steady_rss_kib": 95964,
+          "kernel_peak_rss_kib": 100980,
+          "rss_observer_samples": 135,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 844.3968270003097,
+          "interactive_before_png_ms": 741.4054010005202,
+          "steady_rss_kib": 95724,
+          "kernel_peak_rss_kib": 100992,
+          "rss_observer_samples": 132,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 829.1473509962088,
+          "interactive_before_png_ms": 725.2637790006702,
+          "steady_rss_kib": 95692,
+          "kernel_peak_rss_kib": 100976,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 891.7310710021411,
+          "interactive_before_png_ms": 782.4660760015831,
+          "steady_rss_kib": 95960,
+          "kernel_peak_rss_kib": 100940,
+          "rss_observer_samples": 136,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 864.3731870033662,
+          "interactive_before_png_ms": 753.8985389983281,
+          "steady_rss_kib": 95372,
+          "kernel_peak_rss_kib": 100340,
+          "rss_observer_samples": 133,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 834.5191699991119,
+          "interactive_before_png_ms": 720.3041020038654,
+          "steady_rss_kib": 96100,
+          "kernel_peak_rss_kib": 101164,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 826.7209429977811,
+          "interactive_before_png_ms": 726.9332560026669,
+          "steady_rss_kib": 96356,
+          "kernel_peak_rss_kib": 101340,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 780.460022004263,
+          "interactive_before_png_ms": 673.7812159990426,
+          "steady_rss_kib": 95820,
+          "kernel_peak_rss_kib": 101052,
+          "rss_observer_samples": 125,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 797.4149970032158,
+          "interactive_before_png_ms": 688.0076070010546,
+          "steady_rss_kib": 96032,
+          "kernel_peak_rss_kib": 101344,
+          "rss_observer_samples": 127,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 792.6133990040398,
+          "interactive_before_png_ms": 689.9002120044315,
+          "steady_rss_kib": 96040,
+          "kernel_peak_rss_kib": 100972,
+          "rss_observer_samples": 127,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 2,
+        "payload_sha256": "ca675ab5fc4d5608303efc40df149ab89ebbc5c552b3e774f6aa6017ad901228",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "procurement": {},
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 829.1473509962088,
+        "p95": 891.7310710021411,
+        "p99": 891.7310710021411,
+        "worst": 891.7310710021411,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 95960,
+        "p95": 96356,
+        "p99": 96356,
+        "worst": 96356,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 100980,
+        "p95": 101344,
+        "p99": 101344,
+        "worst": 101344,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 891.7310710021411,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 98668544,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 2,
+        "payload_sha256": "ca675ab5fc4d5608303efc40df149ab89ebbc5c552b3e774f6aa6017ad901228",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "procurement": {},
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "quote-scale": {
+      "source": "/workspace/sarv-evidence/native-before-current",
+      "source_shape": {
+        "schema": 1,
+        "generation": 7,
+        "payload_sha256": "3b75e786f3daef592d1521032470a08797d818f796e19eb28a40e79e07caf2f0",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "procurement": {},
+        "core": {}
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 1469.51107300265,
+          "interactive_before_png_ms": 1320.2006020001136,
+          "steady_rss_kib": 173456,
+          "kernel_peak_rss_kib": 173456,
+          "rss_observer_samples": 192,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1030.768235999858,
+          "interactive_before_png_ms": 903.336292001768,
+          "steady_rss_kib": 175600,
+          "kernel_peak_rss_kib": 175600,
+          "rss_observer_samples": 149,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 1058.5203399969032,
+          "interactive_before_png_ms": 947.7125880002859,
+          "steady_rss_kib": 175660,
+          "kernel_peak_rss_kib": 175660,
+          "rss_observer_samples": 153,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 1038.8082610006677,
+          "interactive_before_png_ms": 919.6842509991257,
+          "steady_rss_kib": 175440,
+          "kernel_peak_rss_kib": 175440,
+          "rss_observer_samples": 150,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 1127.8788630006602,
+          "interactive_before_png_ms": 1017.128416999185,
+          "steady_rss_kib": 173012,
+          "kernel_peak_rss_kib": 174812,
+          "rss_observer_samples": 158,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 1035.9579439973459,
+          "interactive_before_png_ms": 917.2313140006736,
+          "steady_rss_kib": 175360,
+          "kernel_peak_rss_kib": 175360,
+          "rss_observer_samples": 150,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 997.2674349992303,
+          "interactive_before_png_ms": 887.0318260014756,
+          "steady_rss_kib": 175716,
+          "kernel_peak_rss_kib": 175716,
+          "rss_observer_samples": 146,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 1068.3021570002893,
+          "interactive_before_png_ms": 951.2799649965018,
+          "steady_rss_kib": 175484,
+          "kernel_peak_rss_kib": 175484,
+          "rss_observer_samples": 153,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 1039.1010489984183,
+          "interactive_before_png_ms": 926.5083069985849,
+          "steady_rss_kib": 175540,
+          "kernel_peak_rss_kib": 175540,
+          "rss_observer_samples": 151,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 1005.9284989984008,
+          "interactive_before_png_ms": 888.1937929982087,
+          "steady_rss_kib": 176396,
+          "kernel_peak_rss_kib": 176396,
+          "rss_observer_samples": 147,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 1043.4267189993989,
+          "interactive_before_png_ms": 928.0364169972017,
+          "steady_rss_kib": 175664,
+          "kernel_peak_rss_kib": 175664,
+          "rss_observer_samples": 151,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 8,
+        "payload_sha256": "2b3d70cbccf3444217c53d4874fdd9d4295af62ab575b33ec3b1f471303a5080",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "procurement": {},
+        "core": {}
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 1038.8082610006677,
+        "p95": 1127.8788630006602,
+        "p99": 1127.8788630006602,
+        "worst": 1127.8788630006602,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 175540,
+        "p95": 176396,
+        "p99": 176396,
+        "worst": 176396,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 175540,
+        "p95": 176396,
+        "p99": 176396,
+        "worst": 176396,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1127.8788630006602,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 180629504,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 8,
+        "payload_sha256": "2b3d70cbccf3444217c53d4874fdd9d4295af62ab575b33ec3b1f471303a5080",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "procurement": {},
+        "core": {}
+      }
+    },
+    "procurement-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-posted-workflow",
+      "source_shape": {
+        "schema": 6,
+        "generation": 13,
+        "payload_sha256": "a032391a2d10e2361c8b1a1080e8c24e8fbde91e36d50172f03f7af477737269",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 833.7890510010766,
+          "interactive_before_png_ms": 727.4871900008293,
+          "steady_rss_kib": 96552,
+          "kernel_peak_rss_kib": 103448,
+          "rss_observer_samples": 131,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 841.1990429958678,
+          "interactive_before_png_ms": 731.3367429960635,
+          "steady_rss_kib": 96660,
+          "kernel_peak_rss_kib": 103516,
+          "rss_observer_samples": 131,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 864.8956089964486,
+          "interactive_before_png_ms": 765.1415959990118,
+          "steady_rss_kib": 99064,
+          "kernel_peak_rss_kib": 103244,
+          "rss_observer_samples": 134,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 908.3700339979259,
+          "interactive_before_png_ms": 804.3530139984796,
+          "steady_rss_kib": 96564,
+          "kernel_peak_rss_kib": 103344,
+          "rss_observer_samples": 138,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 833.0386860034196,
+          "interactive_before_png_ms": 725.7445100040059,
+          "steady_rss_kib": 96632,
+          "kernel_peak_rss_kib": 103236,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 816.1806650023209,
+          "interactive_before_png_ms": 709.0814990006038,
+          "steady_rss_kib": 96324,
+          "kernel_peak_rss_kib": 103400,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 829.7637240029871,
+          "interactive_before_png_ms": 724.1178969998145,
+          "steady_rss_kib": 96600,
+          "kernel_peak_rss_kib": 103568,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 825.4145750033786,
+          "interactive_before_png_ms": 723.9141600002768,
+          "steady_rss_kib": 97432,
+          "kernel_peak_rss_kib": 104040,
+          "rss_observer_samples": 129,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 876.5011979994597,
+          "interactive_before_png_ms": 775.7451610013959,
+          "steady_rss_kib": 99072,
+          "kernel_peak_rss_kib": 103388,
+          "rss_observer_samples": 135,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 805.107535001298,
+          "interactive_before_png_ms": 692.795066999679,
+          "steady_rss_kib": 96376,
+          "kernel_peak_rss_kib": 103188,
+          "rss_observer_samples": 127,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 848.8263610051945,
+          "interactive_before_png_ms": 741.6183820023434,
+          "steady_rss_kib": 96468,
+          "kernel_peak_rss_kib": 103280,
+          "rss_observer_samples": 132,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 13,
+        "payload_sha256": "a032391a2d10e2361c8b1a1080e8c24e8fbde91e36d50172f03f7af477737269",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 833.0386860034196,
+        "p95": 908.3700339979259,
+        "p99": 908.3700339979259,
+        "worst": 908.3700339979259,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 96600,
+        "p95": 99072,
+        "p99": 99072,
+        "worst": 99072,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 103344,
+        "p95": 104040,
+        "p99": 104040,
+        "worst": 104040,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 908.3700339979259,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 101449728,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 13,
+        "payload_sha256": "a032391a2d10e2361c8b1a1080e8c24e8fbde91e36d50172f03f7af477737269",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "sales-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-native-full",
+      "source_shape": {
+        "schema": 6,
+        "generation": 27,
+        "payload_sha256": "9658bb337aba78b2fa7de9e7a80bdbebbae9da5f6c2a13f20a38401fb8784308",
+        "customers": 1,
+        "quotes": 1,
+        "products": 4,
+        "draft_lines": 1,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 9,
+          "requests": 9,
+          "audit": 46
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 894.8681649999344,
+          "interactive_before_png_ms": 785.8120399978361,
+          "steady_rss_kib": 98296,
+          "kernel_peak_rss_kib": 104752,
+          "rss_observer_samples": 136,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 841.8347059996449,
+          "interactive_before_png_ms": 742.0443049995811,
+          "steady_rss_kib": 98152,
+          "kernel_peak_rss_kib": 104552,
+          "rss_observer_samples": 132,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 806.6542730011861,
+          "interactive_before_png_ms": 694.5001319982111,
+          "steady_rss_kib": 98260,
+          "kernel_peak_rss_kib": 104664,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 962.3977770024794,
+          "interactive_before_png_ms": 860.1338290027343,
+          "steady_rss_kib": 101152,
+          "kernel_peak_rss_kib": 104960,
+          "rss_observer_samples": 142,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 881.2419930036413,
+          "interactive_before_png_ms": 779.6001280003111,
+          "steady_rss_kib": 98056,
+          "kernel_peak_rss_kib": 104600,
+          "rss_observer_samples": 135,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 808.8817770039896,
+          "interactive_before_png_ms": 704.0200880001066,
+          "steady_rss_kib": 98216,
+          "kernel_peak_rss_kib": 104512,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 820.1295170001686,
+          "interactive_before_png_ms": 713.9236770017305,
+          "steady_rss_kib": 98092,
+          "kernel_peak_rss_kib": 104608,
+          "rss_observer_samples": 129,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 882.3467480033287,
+          "interactive_before_png_ms": 770.804299005249,
+          "steady_rss_kib": 97960,
+          "kernel_peak_rss_kib": 104468,
+          "rss_observer_samples": 135,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 936.1220640057581,
+          "interactive_before_png_ms": 821.1429000002681,
+          "steady_rss_kib": 98776,
+          "kernel_peak_rss_kib": 105096,
+          "rss_observer_samples": 139,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 894.8820590012474,
+          "interactive_before_png_ms": 794.0046500007156,
+          "steady_rss_kib": 97996,
+          "kernel_peak_rss_kib": 104660,
+          "rss_observer_samples": 136,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 889.2880860003061,
+          "interactive_before_png_ms": 787.5928339999518,
+          "steady_rss_kib": 98176,
+          "kernel_peak_rss_kib": 104636,
+          "rss_observer_samples": 136,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 27,
+        "payload_sha256": "9658bb337aba78b2fa7de9e7a80bdbebbae9da5f6c2a13f20a38401fb8784308",
+        "customers": 1,
+        "quotes": 1,
+        "products": 4,
+        "draft_lines": 1,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 9,
+          "requests": 9,
+          "audit": 46
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 881.2419930036413,
+        "p95": 962.3977770024794,
+        "p99": 962.3977770024794,
+        "worst": 962.3977770024794,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 98152,
+        "p95": 101152,
+        "p99": 101152,
+        "worst": 101152,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 104608,
+        "p95": 105096,
+        "p99": 105096,
+        "worst": 105096,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 962.3977770024794,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 103579648,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 27,
+        "payload_sha256": "9658bb337aba78b2fa7de9e7a80bdbebbae9da5f6c2a13f20a38401fb8784308",
+        "customers": 1,
+        "quotes": 1,
+        "products": 4,
+        "draft_lines": 1,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 9,
+          "requests": 9,
+          "audit": 46
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "sales-paged-drafts": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-search",
+      "source_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "0f24cd8c165953758e3dd9455a382b58754ce18b8fa35dfa509a3b1eea0d4cf5",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 819.4826039980398,
+          "interactive_before_png_ms": 711.6814260007231,
+          "steady_rss_kib": 97656,
+          "kernel_peak_rss_kib": 103612,
+          "rss_observer_samples": 129,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 814.1054190055002,
+          "interactive_before_png_ms": 702.3495489993365,
+          "steady_rss_kib": 97720,
+          "kernel_peak_rss_kib": 103660,
+          "rss_observer_samples": 129,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 862.1218460029922,
+          "interactive_before_png_ms": 760.5943309972645,
+          "steady_rss_kib": 97648,
+          "kernel_peak_rss_kib": 103480,
+          "rss_observer_samples": 134,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 809.650718998455,
+          "interactive_before_png_ms": 706.7171020025853,
+          "steady_rss_kib": 97924,
+          "kernel_peak_rss_kib": 103816,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 896.9529739988502,
+          "interactive_before_png_ms": 795.5902860048809,
+          "steady_rss_kib": 99856,
+          "kernel_peak_rss_kib": 103756,
+          "rss_observer_samples": 137,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 899.6467750039301,
+          "interactive_before_png_ms": 793.9825630019186,
+          "steady_rss_kib": 97940,
+          "kernel_peak_rss_kib": 103780,
+          "rss_observer_samples": 136,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 903.6938290009857,
+          "interactive_before_png_ms": 800.5823499988765,
+          "steady_rss_kib": 97556,
+          "kernel_peak_rss_kib": 103508,
+          "rss_observer_samples": 137,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 847.217169997748,
+          "interactive_before_png_ms": 745.9060189939919,
+          "steady_rss_kib": 97568,
+          "kernel_peak_rss_kib": 103676,
+          "rss_observer_samples": 132,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 899.6164190029958,
+          "interactive_before_png_ms": 797.5135140004568,
+          "steady_rss_kib": 97564,
+          "kernel_peak_rss_kib": 103440,
+          "rss_observer_samples": 137,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 937.6255770039279,
+          "interactive_before_png_ms": 835.2797750048921,
+          "steady_rss_kib": 97708,
+          "kernel_peak_rss_kib": 103496,
+          "rss_observer_samples": 140,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 811.653368997213,
+          "interactive_before_png_ms": 709.7867949996726,
+          "steady_rss_kib": 97792,
+          "kernel_peak_rss_kib": 103548,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "0f24cd8c165953758e3dd9455a382b58754ce18b8fa35dfa509a3b1eea0d4cf5",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 862.1218460029922,
+        "p95": 937.6255770039279,
+        "p99": 937.6255770039279,
+        "worst": 937.6255770039279,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 97708,
+        "p95": 99856,
+        "p99": 99856,
+        "worst": 99856,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 103548,
+        "p95": 103816,
+        "p99": 103816,
+        "worst": 103816,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 937.6255770039279,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 102252544,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "0f24cd8c165953758e3dd9455a382b58754ce18b8fa35dfa509a3b1eea0d4cf5",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "sales-long-draft": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-editor",
+      "source_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "3557eb7d72c93741aea4df941e424fd7d07610534920a4e84053bba04e2ecab7",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 887.0543430020916,
+          "interactive_before_png_ms": 776.6936190018896,
+          "steady_rss_kib": 97804,
+          "kernel_peak_rss_kib": 103920,
+          "rss_observer_samples": 136,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 939.9361159958062,
+          "interactive_before_png_ms": 819.7695189955994,
+          "steady_rss_kib": 97792,
+          "kernel_peak_rss_kib": 104016,
+          "rss_observer_samples": 141,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-1.png"
+        },
+        {
+          "index": 2,
+          "startup_ms": 945.1282110021566,
+          "interactive_before_png_ms": 817.1342159985215,
+          "steady_rss_kib": 99976,
+          "kernel_peak_rss_kib": 103752,
+          "rss_observer_samples": 140,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-2.png"
+        },
+        {
+          "index": 3,
+          "startup_ms": 890.8949710021261,
+          "interactive_before_png_ms": 788.4257039986551,
+          "steady_rss_kib": 97844,
+          "kernel_peak_rss_kib": 103896,
+          "rss_observer_samples": 135,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-3.png"
+        },
+        {
+          "index": 4,
+          "startup_ms": 825.6875189981656,
+          "interactive_before_png_ms": 719.322408993321,
+          "steady_rss_kib": 97712,
+          "kernel_peak_rss_kib": 103768,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-4.png"
+        },
+        {
+          "index": 5,
+          "startup_ms": 869.9019230043632,
+          "interactive_before_png_ms": 761.1249670007965,
+          "steady_rss_kib": 97900,
+          "kernel_peak_rss_kib": 103884,
+          "rss_observer_samples": 134,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-5.png"
+        },
+        {
+          "index": 6,
+          "startup_ms": 841.3802420036518,
+          "interactive_before_png_ms": 735.6822030051262,
+          "steady_rss_kib": 97584,
+          "kernel_peak_rss_kib": 103536,
+          "rss_observer_samples": 131,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-6.png"
+        },
+        {
+          "index": 7,
+          "startup_ms": 830.4578559982474,
+          "interactive_before_png_ms": 730.5229999983567,
+          "steady_rss_kib": 97664,
+          "kernel_peak_rss_kib": 103608,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-7.png"
+        },
+        {
+          "index": 8,
+          "startup_ms": 821.479325000837,
+          "interactive_before_png_ms": 711.4304909991915,
+          "steady_rss_kib": 97676,
+          "kernel_peak_rss_kib": 103920,
+          "rss_observer_samples": 130,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-8.png"
+        },
+        {
+          "index": 9,
+          "startup_ms": 802.4802159998217,
+          "interactive_before_png_ms": 689.2064909989131,
+          "steady_rss_kib": 100260,
+          "kernel_peak_rss_kib": 103824,
+          "rss_observer_samples": 128,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-9.png"
+        },
+        {
+          "index": 10,
+          "startup_ms": 938.9034539999557,
+          "interactive_before_png_ms": 835.792099001992,
+          "steady_rss_kib": 99004,
+          "kernel_peak_rss_kib": 105128,
+          "rss_observer_samples": 140,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-10.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "3557eb7d72c93741aea4df941e424fd7d07610534920a4e84053bba04e2ecab7",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 10,
+        "p50": 841.3802420036518,
+        "p95": 945.1282110021566,
+        "p99": 945.1282110021566,
+        "worst": 945.1282110021566,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 10,
+        "p50": 97792,
+        "p95": 100260,
+        "p99": 100260,
+        "worst": 100260,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 10,
+        "p50": 103824,
+        "p95": 105128,
+        "p99": 105128,
+        "worst": 105128,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 945.1282110021566,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 102666240,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "3557eb7d72c93741aea4df941e424fd7d07610534920a4e84053bba04e2ecab7",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    }
+  },
+  "hardware": {
+    "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "loadavg_before": "0.43 0.83 0.90 1/1712 263483",
+    "cgroup_cpu_stat_before": "usage_usec 15757507190\nuser_usec 12210252267\nsystem_usec 3547254923\nnice_usec 7929\nnr_periods 196398\nnr_throttled 895\nthrottled_usec 24781093\nnr_bursts 0\nburst_usec 0\n",
+    "filesystem": "Filesystem     Type    1K-blocks     Used Available Use% Mounted on\noverlay        overlay  32978704 12219664  19064936  40% /workspace",
+    "meminfo": "MemTotal:       18440136 kB\nMemFree:         2771716 kB\nMemAvailable:   15170600 kB\nBuffers:           41800 kB\nCached:         12980824 kB\nSwapCached:            0 kB\nActive:          5647332 kB\nInactive:        8897732 kB\nActive(anon):     611992 kB\nInactive(anon):  1655336 kB\nActive(file):    5035340 kB\nInactive(file):  7242396 kB\nUnevictable:       29920 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:               272 kB\nWriteback:             0 kB\nAnonPages:       1552584 kB\nMapped:           225216 kB\nShmem:            715096 kB\nKReclaimable:     567368 kB\nSlab:             691764 kB\nSReclaimable:     567368 kB\nSUnreclaim:       124396 kB\nKernelStack:        6092 kB\nPageTables:        17996 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     9220068 kB\nCommitted_AS:    5288940 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:        8364 kB\nVmallocChunk:          0 kB\nPercpu:             1368 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:    253952 kB\nFilePmdMapped:         0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:      276480 kB\nDirectMap2M:    18405376 kB\nDirectMap1G:    20971520 kB\n",
+    "cgroup_memory_max": "17179869184",
+    "cgroup_cpu_max": "400000 100000",
+    "screen": "1450x1050x24 private Xvfb/Openbox, X11, Cairo, scale 1",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "gtk_libadwaita": "4.22.5\n1.9.4",
+    "database_source_configuration": "SQLite WAL; synchronous=FULL; busy timeout3s (src/store.rs). Synthetic fixture injection uses FULL and SQLite consistent backup API.",
+    "loadavg_after": "0.59 0.70 0.84 2/1722 266244",
+    "cgroup_cpu_stat_after": "usage_usec 15943144492\nuser_usec 12358197708\nsystem_usec 3584946784\nnice_usec 7929\nnr_periods 198916\nnr_throttled 895\nthrottled_usec 24781093\nnr_bursts 0\nburst_usec 0\n"
+  },
+  "boundaries": {
+    "startup": "Popen to owned mapped window, usable visible editor Save, real XTest Tab focus roundtrip and completed PNG capture; includes AT-SPI polling and screenshot observer overhead.",
+    "first_start": "One new process on a fresh SQLite backup, initialization/migration may be included; OS cache uncontrolled.",
+    "repeated_startup": "n new processes on the same initialized backup; OS pages warm/uncontrolled, accessibility session initialized. Process-cold, not physical/cache-cold.",
+    "core_search": "Pre-discovery of search/list excluded. Real XTest Ctrl+A and ASCII keys to exact current ID label, then native Tab to focused, visible, sensitive Edit action. Includes debounce, rendering,5ms AT-SPI polling and result-focus navigation; no pure UI latency claim. Correct-visible-action boundary is recorded separately.",
+    "preview": "Real XTest Space on already-discovered focused preview button to enabled post button, after source reason mutation invalidates old verification. Includes accessibility polling; n=1.",
+    "post": "Real XTest Space on already-discovered focused post button to committed SQLite payload containing one opening and one journal; includes durable database observer polling; n=1.",
+    "rss": "Application-only /proc/PID/status KiB; startup sampled every10ms and steady after500ms idle. After-workflow separate point after posting. Helpers excluded."
+  },
+  "limits": [
+    "No OS cache flush, physical SSD evidence, dedicated reference hardware, Windows or Wayland claim.",
+    "Virtual shared executor scheduling and font/library cache state are uncontrolled; hashing and backup warm file pages.",
+    "Native forms fixture is distinct from the35-row CSV fixture. No CSV import claim when import_source is absent.",
+    "n10/n20 nearest-rank p99 equals worst; n1 preview/post and workflow memory are not tail estimates.",
+    "No five-year/100000-document/million-journal-line/10000-party or10000-row staged-import benchmark."
+  ],
+  "capture_samples": [
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-workflow/staged-search.png",
+      "elapsed_ms": 94.92355099791894
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-workflow/preview-ready.png",
+      "elapsed_ms": 106.4821949985344
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-workflow/after-post.png",
+      "elapsed_ms": 106.81223899882752
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-stage/external-order-preview.png",
+      "elapsed_ms": 109.88490399904549
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-posted-workflow/search-document.png",
+      "elapsed_ms": 115.53092899703188
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-posted-workflow/search-party.png",
+      "elapsed_ms": 100.80053300043801
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-posted-workflow/search-item.png",
+      "elapsed_ms": 110.16485899745021
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-posted-workflow/search-mixed_master.png",
+      "elapsed_ms": 119.24906400236068
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-external-stage/invalid-raw-saved.png",
+      "elapsed_ms": 103.55756699573249
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-external-stage/external-order-preview.png",
+      "elapsed_ms": 106.1711920046946
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-native-full/workflow-completed.png",
+      "elapsed_ms": 99.86677000415511
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-native-draft/workflow-completed.png",
+      "elapsed_ms": 107.86830999859376
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-search/search-last-filtered-page.png",
+      "elapsed_ms": 107.32839800039073
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-editor/1000-line-last-native-page.png",
+      "elapsed_ms": 113.09449099644553
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-0.png",
+      "elapsed_ms": 111.44698799762409
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-1.png",
+      "elapsed_ms": 110.6355740048457
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-2.png",
+      "elapsed_ms": 102.98633800266543
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-3.png",
+      "elapsed_ms": 103.86417299741879
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-4.png",
+      "elapsed_ms": 109.25969699746929
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-5.png",
+      "elapsed_ms": 110.46916999475798
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-6.png",
+      "elapsed_ms": 114.20956999791088
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-7.png",
+      "elapsed_ms": 99.78209900145885
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-8.png",
+      "elapsed_ms": 106.6735089989379
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-9.png",
+      "elapsed_ms": 109.40245199890342
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/core-small-posted/startup-10.png",
+      "elapsed_ms": 102.70516500168014
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-0.png",
+      "elapsed_ms": 149.3044219969306
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-1.png",
+      "elapsed_ms": 127.42594500014093
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-2.png",
+      "elapsed_ms": 110.80164199665887
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-3.png",
+      "elapsed_ms": 119.11833100020885
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-4.png",
+      "elapsed_ms": 110.74503800045932
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-5.png",
+      "elapsed_ms": 118.72073099948466
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-6.png",
+      "elapsed_ms": 110.22925900033442
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-7.png",
+      "elapsed_ms": 117.01593199541094
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-8.png",
+      "elapsed_ms": 112.58761399949435
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-9.png",
+      "elapsed_ms": 117.72826700325822
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/quote-scale/startup-10.png",
+      "elapsed_ms": 115.38497500441736
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-0.png",
+      "elapsed_ms": 106.29471999709494
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-1.png",
+      "elapsed_ms": 109.85538800014183
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-2.png",
+      "elapsed_ms": 99.74890499870526
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-3.png",
+      "elapsed_ms": 104.00929799652658
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-4.png",
+      "elapsed_ms": 107.28850700252224
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-5.png",
+      "elapsed_ms": 107.09408900584094
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-6.png",
+      "elapsed_ms": 105.63980800361605
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-7.png",
+      "elapsed_ms": 101.49395600456046
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-8.png",
+      "elapsed_ms": 100.75097999651916
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-9.png",
+      "elapsed_ms": 112.30637900007423
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/procurement-small-posted/startup-10.png",
+      "elapsed_ms": 107.2022599983029
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-0.png",
+      "elapsed_ms": 109.05108699807897
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-1.png",
+      "elapsed_ms": 99.78540299925953
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-2.png",
+      "elapsed_ms": 112.14911300339736
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-3.png",
+      "elapsed_ms": 102.25858999910997
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-4.png",
+      "elapsed_ms": 101.63569600263145
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-5.png",
+      "elapsed_ms": 104.85635099757928
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-6.png",
+      "elapsed_ms": 106.20062200177927
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-7.png",
+      "elapsed_ms": 111.5370509942295
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-8.png",
+      "elapsed_ms": 114.97373599559069
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-9.png",
+      "elapsed_ms": 100.87157000089064
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-small-posted/startup-10.png",
+      "elapsed_ms": 101.68896300456254
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-0.png",
+      "elapsed_ms": 107.79583900148282
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-1.png",
+      "elapsed_ms": 111.7508919996908
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-2.png",
+      "elapsed_ms": 101.52211700187763
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-3.png",
+      "elapsed_ms": 102.9289290017914
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-4.png",
+      "elapsed_ms": 101.35568799887551
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-5.png",
+      "elapsed_ms": 105.65881399816135
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-6.png",
+      "elapsed_ms": 103.10495900193928
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-7.png",
+      "elapsed_ms": 101.30604400183074
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-8.png",
+      "elapsed_ms": 102.09491199930198
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-9.png",
+      "elapsed_ms": 102.33881100430153
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-paged-drafts/startup-10.png",
+      "elapsed_ms": 101.8595040004584
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-0.png",
+      "elapsed_ms": 110.35536599956686
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-1.png",
+      "elapsed_ms": 120.16225999832386
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-2.png",
+      "elapsed_ms": 127.98662400018657
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-3.png",
+      "elapsed_ms": 102.46405900397804
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-4.png",
+      "elapsed_ms": 106.35985099361278
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-5.png",
+      "elapsed_ms": 108.77210800390458
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-6.png",
+      "elapsed_ms": 105.69048800243763
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-7.png",
+      "elapsed_ms": 99.924390000524
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-8.png",
+      "elapsed_ms": 110.04151200177148
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-9.png",
+      "elapsed_ms": 113.26826699951198
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-final-repeated/sales-long-draft/startup-10.png",
+      "elapsed_ms": 103.10679800022626
+    }
+  ],
+  "core_workflow": {
+    "stage_manifest": {
+      "company_id": "72b47a34-fdab-4a5a-9686-02ee44fad5e3",
+      "controls": 12,
+      "counts": {
+        "advances": 0,
+        "ap": 2,
+        "ar": 2,
+        "banks": 1,
+        "cash": 1,
+        "cheques": 2,
+        "grni": 1,
+        "items": 1,
+        "ledger_balances": 21,
+        "packs": 1,
+        "parties": 4,
+        "stock": 2,
+        "units": 2,
+        "warehouses": 2
+      },
+      "import_source": null,
+      "items": 1,
+      "opening_journals": 0,
+      "parties": 4,
+      "preview_ms_includes_poll": 275,
+      "preview_total_irr": 1251,
+      "result": "ready",
+      "source": "native editable forms",
+      "stock_rows": 2,
+      "units": 2,
+      "warehouses": 2
+    },
+    "search_samples": [
+      {
+        "index": 0,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.26101299590663984,
+        "correct_visible_action_ms": 95.43717999622459,
+        "focused_usable_action_ms": 123.58098999538925
+      },
+      {
+        "index": 1,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.08074099605437368,
+        "correct_visible_action_ms": 88.43735299888067,
+        "focused_usable_action_ms": 119.17908399482258
+      },
+      {
+        "index": 2,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.08053200144786388,
+        "correct_visible_action_ms": 87.81346199975815,
+        "focused_usable_action_ms": 110.58821399637964
+      },
+      {
+        "index": 3,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.0697759969625622,
+        "correct_visible_action_ms": 84.05353499983903,
+        "focused_usable_action_ms": 109.48178699618438
+      },
+      {
+        "index": 4,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.08208300278056413,
+        "correct_visible_action_ms": 89.45279399631545,
+        "focused_usable_action_ms": 117.82465699798195
+      },
+      {
+        "index": 5,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.1024450029945001,
+        "correct_visible_action_ms": 90.22013100184267,
+        "focused_usable_action_ms": 117.34826400061138
+      },
+      {
+        "index": 6,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.08741200144868344,
+        "correct_visible_action_ms": 90.69827599887503,
+        "focused_usable_action_ms": 114.85495100350818
+      },
+      {
+        "index": 7,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.07472199649782851,
+        "correct_visible_action_ms": 82.89791299466742,
+        "focused_usable_action_ms": 113.11147800006438
+      },
+      {
+        "index": 8,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.06954499986022711,
+        "correct_visible_action_ms": 83.87764500366757,
+        "focused_usable_action_ms": 109.76489300082903
+      },
+      {
+        "index": 9,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.08506800077157095,
+        "correct_visible_action_ms": 88.56031400500797,
+        "focused_usable_action_ms": 118.24500200600596
+      },
+      {
+        "index": 10,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.07585399725940078,
+        "correct_visible_action_ms": 78.51690799725475,
+        "focused_usable_action_ms": 113.33336599636823
+      },
+      {
+        "index": 11,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.07063600060064346,
+        "correct_visible_action_ms": 84.8283720042673,
+        "focused_usable_action_ms": 113.72600200411398
+      },
+      {
+        "index": 12,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.07242899300763384,
+        "correct_visible_action_ms": 83.2383149972884,
+        "focused_usable_action_ms": 106.19413899985375
+      },
+      {
+        "index": 13,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.08905499998945743,
+        "correct_visible_action_ms": 84.7404500018456,
+        "focused_usable_action_ms": 116.13651700463379
+      },
+      {
+        "index": 14,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.09212899749400094,
+        "correct_visible_action_ms": 81.935351001448,
+        "focused_usable_action_ms": 107.67453099833801
+      },
+      {
+        "index": 15,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.07051699503790587,
+        "correct_visible_action_ms": 83.8222370002768,
+        "focused_usable_action_ms": 113.63779699604493
+      },
+      {
+        "index": 16,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.081101999967359,
+        "correct_visible_action_ms": 88.64975899632555,
+        "focused_usable_action_ms": 112.56081299507059
+      },
+      {
+        "index": 17,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.09564399806549773,
+        "correct_visible_action_ms": 82.82574400072917,
+        "focused_usable_action_ms": 121.85530900023878
+      },
+      {
+        "index": 18,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.07060699863359332,
+        "correct_visible_action_ms": 92.74383100273553,
+        "focused_usable_action_ms": 124.50828399596503
+      },
+      {
+        "index": 19,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.0895549965207465,
+        "correct_visible_action_ms": 84.6861190002528,
+        "focused_usable_action_ms": 115.74529899371555
+      }
+    ],
+    "search_ms": {
+      "n": 20,
+      "p50": 113.72600200411398,
+      "p95": 123.58098999538925,
+      "p99": 124.50828399596503,
+      "worst": 124.50828399596503,
+      "method": "nearest rank"
+    },
+    "correct_visible_action_ms": {
+      "n": 20,
+      "p50": 84.7404500018456,
+      "p95": 92.74383100273553,
+      "p99": 95.43717999622459,
+      "worst": 95.43717999622459,
+      "method": "nearest rank"
+    },
+    "search_memory_kib": {
+      "VmRSS": 130784,
+      "VmHWM": 130784
+    },
+    "preview_observed_ms": 61.46686799911549,
+    "post_durable_observed_ms": 6.228158999874722,
+    "native_phase_records_before_observer": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.711424,
+        "gaps_ms": [
+          17.628113,
+          16.043335,
+          16.083374000000003,
+          0.956602
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 17.628113,
+        "phase": "preview",
+        "result": "differences",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.952117,
+        "gaps_ms": [
+          16.088983000000002,
+          16.116805000000003,
+          16.159329,
+          2.5869999999999997
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.159329,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      }
+    ],
+    "native_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 51.630028,
+        "gaps_ms": [
+          16.082973,
+          16.077986999999997,
+          16.081301999999997,
+          3.387766
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.082973,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 58.431743000000004,
+        "gaps_ms": [
+          17.455053000000003,
+          40.976219,
+          0.000471
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 40.976219,
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "strict_phase_heartbeat_budgets": {
+      "preview": {
+        "budget_ms": 50,
+        "actual_ms": 16.082973,
+        "passes": true,
+        "measurable": true,
+        "result": "verified"
+      },
+      "post": {
+        "budget_ms": 50,
+        "actual_ms": 40.976219,
+        "passes": true,
+        "measurable": true,
+        "result": "worker_finished"
+      }
+    },
+    "application_memory_kib_after_workflow": {
+      "VmRSS": 132040,
+      "VmHWM": 132040
+    },
+    "posted_shape": {
+      "schema": 6,
+      "generation": 2,
+      "payload_sha256": "ca675ab5fc4d5608303efc40df149ab89ebbc5c552b3e774f6aa6017ad901228",
+      "customers": 0,
+      "quotes": 0,
+      "products": 0,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 1,
+        "requests": 1,
+        "audit": 30
+      },
+      "procurement": {},
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    }
+  },
+  "sales_measurement": {
+    "result": "measured",
+    "workflows": {
+      "full": {
+        "manifest": {
+          "checks": [
+            "actual sales catalog price20/core SKU+unit mapping",
+            "older durable draft receipt retains newer GTK input",
+            "explicit raw draft saves durable revision and current header/lines",
+            "order199 nonfinancial and raw draft consumed atomically",
+            "partial paired delivery/invoice100 with separate IDs and original cost58",
+            "split original-cost return23+35 and exact credit40+60",
+            "final fulfillment original discount residual99 and cost58",
+            "authentic approved quotation converted through native selector/mapping without GL or original quote edits",
+            "cancelled pending native source read preserves books and clears global loading status"
+          ],
+          "first_pair_id": "330d8d15-a153-4082-a73a-be6bc89a43f0",
+          "mode": "full",
+          "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+          "order_id": "4605bdd9-6220-420e-98e1-de9335ffa39c",
+          "ready": true,
+          "record_count": 6,
+          "search_name": "sales-search",
+          "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+          "synthetic_only": true
+        },
+        "shape": {
+          "schema": 6,
+          "generation": 27,
+          "payload_sha256": "9658bb337aba78b2fa7de9e7a80bdbebbae9da5f6c2a13f20a38401fb8784308",
+          "customers": 1,
+          "quotes": 1,
+          "products": 4,
+          "draft_lines": 1,
+          "accounting": {
+            "companies": 1,
+            "periods": 1,
+            "accounts": 26,
+            "journals": 9,
+            "requests": 9,
+            "audit": 46
+          },
+          "procurement": {
+            "records": 10,
+            "requests": 10
+          },
+          "core": {
+            "setups": 1,
+            "openings": 1
+          },
+          "opening": {
+            "counts": {
+              "balances": 21,
+              "parties": 4,
+              "units": 2,
+              "items": 1,
+              "warehouses": 2,
+              "cash": 1,
+              "banks": 1,
+              "open_items": 4,
+              "advances": 0,
+              "cheques": 2,
+              "stock": 2,
+              "grni": 1
+            },
+            "packs": 1,
+            "import_source": null,
+            "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+            "source_id": "OPEN-F2-2026",
+            "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+            "as_of": "2026-03-21",
+            "ledger_debit_irr": 1251,
+            "ledger_credit_irr": 1251,
+            "stock_value_irr": 300,
+            "grni_value_irr": 50
+          }
+        },
+        "native_phase_records": [
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 34.180324,
+            "gaps_ms": [
+              16.164226,
+              18.015257,
+              0.000841
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 18.015257,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 36.772931,
+            "gaps_ms": [
+              16.150055,
+              20.621904999999998,
+              0.0009710000000000001
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 20.621904999999998,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 50.87531,
+            "gaps_ms": [
+              16.135263000000002,
+              16.104936,
+              16.125767999999997,
+              2.509343
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 16.135263000000002,
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 44.237184,
+            "gaps_ms": [
+              23.754517999999997,
+              20.482045,
+              0.0006209999999999999
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 23.754517999999997,
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 69.57008,
+            "gaps_ms": [
+              16.129123,
+              16.076143000000002,
+              36.30086,
+              1.063954
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 36.30086,
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 65.848741,
+            "gaps_ms": [
+              45.127465,
+              20.720665,
+              0.000611
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 45.127465,
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 62.96306,
+            "gaps_ms": [
+              16.086038000000002,
+              16.747315,
+              29.297162,
+              0.832545
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 29.297162,
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 66.56469399999999,
+            "gaps_ms": [
+              45.049137,
+              21.515187,
+              0.00037
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 45.049137,
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 56.77247,
+            "gaps_ms": [
+              16.081211000000003,
+              16.090455,
+              23.929612,
+              0.671192
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 23.929612,
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 63.357656,
+            "gaps_ms": [
+              41.141227,
+              22.216078,
+              0.000351
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 41.141227,
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 57.862693,
+            "gaps_ms": [
+              16.086949999999998,
+              16.090104,
+              24.585681,
+              1.099958
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 24.585681,
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 63.150974999999995,
+            "gaps_ms": [
+              40.253468,
+              22.896936,
+              0.000571
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 40.253468,
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 50.620104999999995,
+            "gaps_ms": [
+              16.084817,
+              16.084325,
+              16.10032,
+              2.350643
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 16.10032,
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 46.224169,
+            "gaps_ms": [
+              25.77258,
+              20.451198,
+              0.000391
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 25.77258,
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          }
+        ],
+        "strict_phase_checks": [
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 18.015257,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 20.621904999999998,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 16.135263000000002,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 23.754517999999997,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 36.30086,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 45.127465,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 29.297162,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 45.049137,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 23.929612,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 41.141227,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 24.585681,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 40.253468,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 16.10032,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 25.77258,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          }
+        ],
+        "memory_kib_after_workflow": {
+          "VmRSS": 145464,
+          "VmHWM": 145464
+        },
+        "independent_raw_proof": {
+          "records": 6,
+          "journals": 9,
+          "records_by_kind": {
+            "Order": 2,
+            "Fulfill": 2,
+            "Return": 2
+          },
+          "typed_sales_movements": 4,
+          "signed_controls_irr": {
+            "Cash": 251,
+            "Bank": 300,
+            "Receivables": 299,
+            "Inventory": 422,
+            "ChequesReceivable": 200,
+            "Payables": -329,
+            "ChequesPayable": -100,
+            "Grni": -50,
+            "OwnerCapital": -952,
+            "Sales": -199,
+            "SalesReturns": 100,
+            "Cogs": 58,
+            "SupplierAdvances": 0,
+            "CustomerAdvances": 0,
+            "InventoryLoss": 0,
+            "OperatingExpense": 0,
+            "BankFees": 0
+          },
+          "trial_debit_irr": 1630,
+          "trial_credit_irr": 1630,
+          "inventory_irr": 422,
+          "profit_irr": 41,
+          "W1_quantity_thousandths": 25000,
+          "W1_value_irr": 292,
+          "financial_dates": [
+            "2026-03-28",
+            "2026-03-29",
+            "2026-03-30",
+            "2026-03-31"
+          ],
+          "final_report_as_of": "2026-03-31",
+          "original_cost_returns_irr": [
+            23,
+            35
+          ],
+          "original_credit_returns_irr": [
+            40,
+            60
+          ],
+          "authentic_quote_link": {
+            "quote_id": "27fc71ab-56af-4e3f-96d0-c873865c6d90",
+            "quote_series": "0f56db1d-5cf1-4ad2-be91-a8fbb2cf2bab",
+            "quote_revision": 1,
+            "quote_number": "Q-1",
+            "quote_sha256": "28e43ab0c2de44aba22f01e75b076dad068b5c0bb8c284cdd65b4112ca958e88",
+            "source_line_indices": [
+              0
+            ]
+          },
+          "core_procurement_and_previous_journals_unchanged": true
+        }
+      },
+      "draft": {
+        "manifest": {
+          "checks": [
+            "actual sales catalog price20/core SKU+unit mapping",
+            "older durable draft receipt retains newer GTK input",
+            "explicit raw draft saves durable revision and current header/lines"
+          ],
+          "company_id": "72b47a34-fdab-4a5a-9686-02ee44fad5e3",
+          "draft_id": "b90296b3-d798-483d-b2d5-27faee3a2912",
+          "mode": "draft",
+          "note": "no further smoke edits; external observer owns preview/submit/keyboard",
+          "ready": true,
+          "reference": "DRAFT-INCOMPLETE-M5",
+          "revision": 2,
+          "stage": "saved-native-raw-draft",
+          "synthetic_only": true
+        },
+        "shape": {
+          "schema": 6,
+          "generation": 16,
+          "payload_sha256": "a84a70b4c66d486249cb6d539501c4c4a884f6fea61704949e4165b28f496164",
+          "customers": 0,
+          "quotes": 0,
+          "products": 4,
+          "draft_lines": 0,
+          "accounting": {
+            "companies": 1,
+            "periods": 1,
+            "accounts": 26,
+            "journals": 5,
+            "requests": 5,
+            "audit": 40
+          },
+          "procurement": {
+            "records": 10,
+            "requests": 10
+          },
+          "core": {
+            "setups": 1,
+            "openings": 1
+          },
+          "opening": {
+            "counts": {
+              "balances": 21,
+              "parties": 4,
+              "units": 2,
+              "items": 1,
+              "warehouses": 2,
+              "cash": 1,
+              "banks": 1,
+              "open_items": 4,
+              "advances": 0,
+              "cheques": 2,
+              "stock": 2,
+              "grni": 1
+            },
+            "packs": 1,
+            "import_source": null,
+            "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+            "source_id": "OPEN-F2-2026",
+            "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+            "as_of": "2026-03-21",
+            "ledger_debit_irr": 1251,
+            "ledger_credit_irr": 1251,
+            "stock_value_irr": 300,
+            "grni_value_irr": 50
+          }
+        },
+        "native_phase_records": [
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 36.634962,
+            "gaps_ms": [
+              16.081811000000002,
+              20.552591,
+              0.0005600000000000001
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 20.552591,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 35.583368,
+            "gaps_ms": [
+              16.095723,
+              19.486904,
+              0.000741
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 19.486904,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          }
+        ],
+        "strict_phase_checks": [
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 20.552591,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 19.486904,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          }
+        ],
+        "memory_kib_after_workflow": {
+          "VmRSS": 133776,
+          "VmHWM": 133776
+        }
+      }
+    },
+    "search_samples": [
+      {
+        "index": 0,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.09759699605638161,
+        "correct_visible_ms": 175.35467699781293,
+        "focused_usable_ms": 191.5034889971139
+      },
+      {
+        "index": 1,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.06954499986022711,
+        "correct_visible_ms": 238.57571600092342,
+        "focused_usable_ms": 250.28196100174682
+      },
+      {
+        "index": 2,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.14174299576552585,
+        "correct_visible_ms": 268.2699049983057,
+        "focused_usable_ms": 280.6884550009272
+      },
+      {
+        "index": 3,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.09554399730404839,
+        "correct_visible_ms": 248.72698699618923,
+        "focused_usable_ms": 260.8146369966562
+      },
+      {
+        "index": 4,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.10452700371388346,
+        "correct_visible_ms": 165.18411600554828,
+        "focused_usable_ms": 179.7926460058079
+      },
+      {
+        "index": 5,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.10169300367124379,
+        "correct_visible_ms": 271.84155900613405,
+        "focused_usable_ms": 283.8349270023173
+      },
+      {
+        "index": 6,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.07653600187040865,
+        "correct_visible_ms": 331.61632300470956,
+        "focused_usable_ms": 344.3873530050041
+      },
+      {
+        "index": 7,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.10446800297359005,
+        "correct_visible_ms": 329.70749599917326,
+        "focused_usable_ms": 345.2775859987014
+      },
+      {
+        "index": 8,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.0871319934958592,
+        "correct_visible_ms": 280.2665799972601,
+        "focused_usable_ms": 297.4376329948427
+      },
+      {
+        "index": 9,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.15804799477336928,
+        "correct_visible_ms": 300.2206069941167,
+        "focused_usable_ms": 315.325405994372
+      },
+      {
+        "index": 10,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.10007099626818672,
+        "correct_visible_ms": 280.4614729975583,
+        "focused_usable_ms": 293.750643999374
+      },
+      {
+        "index": 11,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.06788299651816487,
+        "correct_visible_ms": 264.63248200161615,
+        "focused_usable_ms": 280.63552499952493
+      },
+      {
+        "index": 12,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.06681100057903677,
+        "correct_visible_ms": 286.8051040059072,
+        "focused_usable_ms": 298.42054400069173
+      },
+      {
+        "index": 13,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.06500799645436928,
+        "correct_visible_ms": 207.9738569955225,
+        "focused_usable_ms": 219.81879200029653
+      },
+      {
+        "index": 14,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.07243900472531095,
+        "correct_visible_ms": 198.22773500345647,
+        "focused_usable_ms": 216.0946869989857
+      },
+      {
+        "index": 15,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.0639770005363971,
+        "correct_visible_ms": 292.0042619953165,
+        "focused_usable_ms": 303.98912799864775
+      },
+      {
+        "index": 16,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.09257000056095421,
+        "correct_visible_ms": 219.45453199441545,
+        "focused_usable_ms": 231.5972750002402
+      },
+      {
+        "index": 17,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.09387099999003112,
+        "correct_visible_ms": 261.96032400184777,
+        "focused_usable_ms": 274.1240699979244
+      },
+      {
+        "index": 18,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.12948500079801306,
+        "correct_visible_ms": 312.94282400631346,
+        "focused_usable_ms": 324.8738590045832
+      },
+      {
+        "index": 19,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.11978999827988446,
+        "correct_visible_ms": 343.34722100174986,
+        "focused_usable_ms": 355.35332900326466
+      }
+    ],
+    "external_stage": {
+      "stage_manifest": {
+        "checks": [
+          "actual sales catalog price20/core SKU+unit mapping",
+          "older durable draft receipt retains newer GTK input",
+          "explicit raw draft saves durable revision and current header/lines"
+        ],
+        "company_id": "72b47a34-fdab-4a5a-9686-02ee44fad5e3",
+        "draft_id": "4536b8ee-f016-4472-94e2-b146ab7ef3f6",
+        "mode": "stage",
+        "note": "no further smoke edits; external observer owns preview/submit/keyboard",
+        "ready": true,
+        "reference": "SO-M5",
+        "revision": 2,
+        "stage": "saved-native-raw-draft",
+        "synthetic_only": true
+      },
+      "n": 1,
+      "synthetic_only": true,
+      "boundary": "Pre-discovered native controls; real XTest Save/Space; SQLite durable payload then callback usability independently awaited. Polling/UI/layout included. Restart/correction distinct; no repeated-command percentile.",
+      "invalid_raw_save_durable_ms": 13.580901999375783,
+      "invalid_raw_save_callback_usable_ms": 42.11268100334564,
+      "invalid_raw_saved_revision": 3,
+      "invalid_raw_restart_preserved": true,
+      "clean_editor_cancel_preserved": true,
+      "corrected_raw_save_durable_ms": 32.1834329952253,
+      "order_preview_observed_ms": 52.232935995562,
+      "order_submit_durable_ms": 19.83705200109398,
+      "order_submit_callback_ready_ms": 164.82644899951993,
+      "nonfinancial_order_proof": {
+        "id": "f64fbd2f-34fa-46b3-945b-55a6370dd245",
+        "total_irr": 199,
+        "journal_id": null,
+        "source_revision": 4,
+        "raw_consumed": true,
+        "core_procurement_journals_unchanged": true
+      },
+      "native_phase_records_before_observer": [
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 39.978052,
+          "gaps_ms": [
+            16.081201,
+            23.896341000000003,
+            0.00051
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 23.896341000000003,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        },
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 34.253864,
+          "gaps_ms": [
+            16.089733,
+            18.16374,
+            0.000391
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 18.16374,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        }
+      ],
+      "native_phase_records": [
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 40.608844,
+          "gaps_ms": [
+            18.160685,
+            22.447468,
+            0.000691
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 22.447468,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        },
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 78.093613,
+          "gaps_ms": [
+            16.091086,
+            16.080714999999998,
+            45.921121,
+            0.000691
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 45.921121,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 3
+        },
+        {
+          "boundary": "dispatch through completed UI result rendering",
+          "elapsed_ms": 50.727216999999996,
+          "gaps_ms": [
+            16.076544000000002,
+            16.084156,
+            16.080088999999997,
+            2.486428
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 16.084156,
+          "operation": "order",
+          "phase": "preview",
+          "result": "verified",
+          "ticks": 3
+        },
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 34.871285,
+          "gaps_ms": [
+            16.087891,
+            18.782823,
+            0.000571
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 18.782823,
+          "operation": "order",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        }
+      ],
+      "strict_phase_checks": [
+        {
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2,
+          "actual_ms": 22.447468,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        },
+        {
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 3,
+          "actual_ms": 45.921121,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        },
+        {
+          "operation": "order",
+          "phase": "preview",
+          "result": "verified",
+          "ticks": 3,
+          "actual_ms": 16.084156,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        },
+        {
+          "operation": "order",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2,
+          "actual_ms": 18.782823,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        }
+      ],
+      "memory_kib_after_external_workflow": {
+        "VmRSS": 130684,
+        "VmHWM": 130684
+      }
+    },
+    "posted_search": {
+      "samples": [
+        {
+          "index": 0,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.12309500016272068,
+          "correct_visible_ms": 105.50579000118887,
+          "focused_usable_ms": 119.69127300108084
+        },
+        {
+          "index": 1,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.08462699770461768,
+          "correct_visible_ms": 111.74876100267284,
+          "focused_usable_ms": 126.99792700004764
+        },
+        {
+          "index": 2,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.08216400601668283,
+          "correct_visible_ms": 128.50389800587436,
+          "focused_usable_ms": 148.0962410059874
+        },
+        {
+          "index": 3,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.09947999933501706,
+          "correct_visible_ms": 109.81166100100381,
+          "focused_usable_ms": 128.73941299767466
+        },
+        {
+          "index": 4,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.08389700087718666,
+          "correct_visible_ms": 119.29288299870677,
+          "focused_usable_ms": 131.10094299918273
+        },
+        {
+          "index": 5,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.11883900151588023,
+          "correct_visible_ms": 116.29906999587547,
+          "focused_usable_ms": 128.33576399862068
+        },
+        {
+          "index": 6,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.12296599743422121,
+          "correct_visible_ms": 111.57005200220738,
+          "focused_usable_ms": 132.35989100212464
+        },
+        {
+          "index": 7,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.08516899833921343,
+          "correct_visible_ms": 115.47782299749088,
+          "focused_usable_ms": 128.7315209992812
+        },
+        {
+          "index": 8,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.07922900113044307,
+          "correct_visible_ms": 117.63499899825547,
+          "focused_usable_ms": 130.24961400515167
+        },
+        {
+          "index": 9,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.15992100088624284,
+          "correct_visible_ms": 112.9879889995209,
+          "focused_usable_ms": 129.2365730041638
+        },
+        {
+          "index": 10,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.08221399912144989,
+          "correct_visible_ms": 74.37023700185819,
+          "focused_usable_ms": 86.60032199986745
+        },
+        {
+          "index": 11,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.09541300096316263,
+          "correct_visible_ms": 119.40570799924899,
+          "focused_usable_ms": 131.51761499466375
+        },
+        {
+          "index": 12,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.14720100443810225,
+          "correct_visible_ms": 109.52345200348645,
+          "focused_usable_ms": 129.54109600104857
+        },
+        {
+          "index": 13,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.08077199890976772,
+          "correct_visible_ms": 115.5003960011527,
+          "focused_usable_ms": 130.6202480045613
+        },
+        {
+          "index": 14,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.08116200478980318,
+          "correct_visible_ms": 124.36984600208234,
+          "focused_usable_ms": 136.56638099928387
+        },
+        {
+          "index": 15,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.15141800395213068,
+          "correct_visible_ms": 115.36350000096718,
+          "focused_usable_ms": 132.36060100462055
+        },
+        {
+          "index": 16,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.08583000453654677,
+          "correct_visible_ms": 115.37224300263915,
+          "focused_usable_ms": 130.5954909985303
+        },
+        {
+          "index": 17,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.09273000614484772,
+          "correct_visible_ms": 125.68624000414275,
+          "focused_usable_ms": 137.81806800398044
+        },
+        {
+          "index": 18,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.10045099770650268,
+          "correct_visible_ms": 122.627108998131,
+          "focused_usable_ms": 139.17211900115944
+        },
+        {
+          "index": 19,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.08768199768383056,
+          "correct_visible_ms": 118.44638700131327,
+          "focused_usable_ms": 132.4635170021793
+        }
+      ],
+      "result": "measured",
+      "correct_visible_ms": {
+        "n": 20,
+        "p50": 115.47782299749088,
+        "p95": 125.68624000414275,
+        "p99": 128.50389800587436,
+        "worst": 128.50389800587436,
+        "method": "nearest rank"
+      },
+      "focused_usable_ms": {
+        "n": 20,
+        "p50": 130.5954909985303,
+        "p95": 139.17211900115944,
+        "p99": 148.0962410059874,
+        "worst": 148.0962410059874,
+        "method": "nearest rank"
+      },
+      "boundary": "Real alternating invoice-reference query to current exact one-row matched posted invoice and visible sensitive Detail, then focused usable Detail; six-record financial fixture, distinct from120 raw-draft paged search. Initial Ctrl+F reveal/exact Search focus occurs before each timer, matching M4 Purchases."
+    },
+    "correct_visible_ms": {
+      "n": 20,
+      "p50": 268.2699049983057,
+      "p95": 331.61632300470956,
+      "p99": 343.34722100174986,
+      "worst": 343.34722100174986,
+      "method": "nearest rank"
+    },
+    "focused_usable_ms": {
+      "n": 20,
+      "p50": 280.6884550009272,
+      "p95": 345.2775859987014,
+      "p99": 355.35332900326466,
+      "worst": 355.35332900326466,
+      "method": "nearest rank"
+    },
+    "search_budgets": {
+      "correct_visible_ms": {
+        "budget_ms": 200,
+        "p95_ms": 331.61632300470956,
+        "passes": false
+      },
+      "focused_usable_ms": {
+        "budget_ms": 200,
+        "p95_ms": 345.2775859987014,
+        "passes": false
+      }
+    },
+    "search_boundary": "Real XTest query to exact current first draft and 60-match summary with visible sensitive Continue action, then real Tab/component focus fallback to focused usable action; dispatch, debounce, AT-SPI/layout/result navigation included; initial discovery excluded.",
+    "filtered_page_samples": [
+      {
+        "page": 2,
+        "expected": "PERF-B-051",
+        "usable_visible_ms": 140.16396299848566,
+        "budget_ms": 150,
+        "passes": true
+      },
+      {
+        "page": 3,
+        "expected": "PERF-B-101",
+        "usable_visible_ms": 102.16436799964868,
+        "budget_ms": 150,
+        "passes": true
+      }
+    ],
+    "paged_search_shape": {
+      "schema": 6,
+      "generation": 14,
+      "payload_sha256": "0f24cd8c165953758e3dd9455a382b58754ce18b8fa35dfa509a3b1eea0d4cf5",
+      "customers": 0,
+      "quotes": 0,
+      "products": 2,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 5,
+        "requests": 5,
+        "audit": 40
+      },
+      "procurement": {
+        "records": 10,
+        "requests": 10
+      },
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    },
+    "paged_search_memory_kib": {
+      "VmRSS": 110996,
+      "VmHWM": 119224
+    },
+    "long_editor_open_to_first_page_ms": 822.0799699993222,
+    "long_editor_open_to_focused_action_ms": 1045.7730529960827,
+    "long_editor_pages": [
+      {
+        "page": 2,
+        "ready_ms": 320.8145419994253,
+        "focused_usable_ms": 550.7008219938143,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 3,
+        "ready_ms": 416.855958996166,
+        "focused_usable_ms": 649.7064939976553,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 4,
+        "ready_ms": 360.985947001609,
+        "focused_usable_ms": 642.5602939998498,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 5,
+        "ready_ms": 501.68125399795827,
+        "focused_usable_ms": 766.2040520008304,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 6,
+        "ready_ms": 371.4754789980361,
+        "focused_usable_ms": 635.7665039977292,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 7,
+        "ready_ms": 405.1550069998484,
+        "focused_usable_ms": 617.9984059999697,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 8,
+        "ready_ms": 371.2087059975602,
+        "focused_usable_ms": 598.8415190004162,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 9,
+        "ready_ms": 378.4915100040962,
+        "focused_usable_ms": 606.7305220058188,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 10,
+        "ready_ms": 410.9787389970734,
+        "focused_usable_ms": 681.8742070026929,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 11,
+        "ready_ms": 419.6224519982934,
+        "focused_usable_ms": 665.7492669983185,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 12,
+        "ready_ms": 347.73518899601186,
+        "focused_usable_ms": 568.2215319975512,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 13,
+        "ready_ms": 365.0654880038928,
+        "focused_usable_ms": 603.5639280016767,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 14,
+        "ready_ms": 363.15826999634737,
+        "focused_usable_ms": 630.8465519978199,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 15,
+        "ready_ms": 362.69721400458366,
+        "focused_usable_ms": 564.7789750000811,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 16,
+        "ready_ms": 319.98426600330276,
+        "focused_usable_ms": 516.8660290000844,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 17,
+        "ready_ms": 318.46149299963145,
+        "focused_usable_ms": 533.2022920047166,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 18,
+        "ready_ms": 295.62665100093,
+        "focused_usable_ms": 592.7580659990781,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 19,
+        "ready_ms": 280.76716599753127,
+        "focused_usable_ms": 519.0634449973004,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 20,
+        "ready_ms": 319.9740530035342,
+        "focused_usable_ms": 517.0596440002555,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 21,
+        "ready_ms": 314.55111499963095,
+        "focused_usable_ms": 526.8648720011697,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 22,
+        "ready_ms": 283.9440839961753,
+        "focused_usable_ms": 478.248886000074,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 23,
+        "ready_ms": 339.6811080019688,
+        "focused_usable_ms": 583.5876729979645,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 24,
+        "ready_ms": 325.413459999254,
+        "focused_usable_ms": 606.1246590033988,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 25,
+        "ready_ms": 312.1904470026493,
+        "focused_usable_ms": 578.9570990018547,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 26,
+        "ready_ms": 334.1669470028137,
+        "focused_usable_ms": 551.018901001953,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 27,
+        "ready_ms": 343.21248599735554,
+        "focused_usable_ms": 572.8637009960948,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 28,
+        "ready_ms": 319.5938170028967,
+        "focused_usable_ms": 520.608867998817,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 29,
+        "ready_ms": 310.2680779993534,
+        "focused_usable_ms": 519.3654859976959,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 30,
+        "ready_ms": 345.011646997591,
+        "focused_usable_ms": 554.3664020005963,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 31,
+        "ready_ms": 313.2581649988424,
+        "focused_usable_ms": 599.0447239964851,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 32,
+        "ready_ms": 302.3373839969281,
+        "focused_usable_ms": 513.8091409971821,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 33,
+        "ready_ms": 298.76299099851167,
+        "focused_usable_ms": 510.9013649998815,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 34,
+        "ready_ms": 314.64572600089014,
+        "focused_usable_ms": 587.2274000066682,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 35,
+        "ready_ms": 293.6044239977491,
+        "focused_usable_ms": 545.3855640007532,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 36,
+        "ready_ms": 297.89609399449546,
+        "focused_usable_ms": 535.6072789945756,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 37,
+        "ready_ms": 319.81037800142076,
+        "focused_usable_ms": 605.4849029969773,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 38,
+        "ready_ms": 401.1201460016309,
+        "focused_usable_ms": 690.3692990017589,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 39,
+        "ready_ms": 326.47304399870336,
+        "focused_usable_ms": 595.0648939979146,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 40,
+        "ready_ms": 335.75115900021046,
+        "focused_usable_ms": 563.8183120026952,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      }
+    ],
+    "long_editor_page_ms": {
+      "n": 39,
+      "p50": 326.47304399870336,
+      "p95": 419.6224519982934,
+      "p99": 501.68125399795827,
+      "worst": 501.68125399795827,
+      "method": "nearest rank"
+    },
+    "long_editor_focused_page_ms": {
+      "n": 39,
+      "p50": 578.9570990018547,
+      "p95": 690.3692990017589,
+      "p99": 766.2040520008304,
+      "worst": 766.2040520008304,
+      "method": "nearest rank"
+    },
+    "long_editor_memory_kib": {
+      "VmRSS": 130448,
+      "VmHWM": 130448
+    },
+    "long_editor_shape": {
+      "schema": 6,
+      "generation": 14,
+      "payload_sha256": "3557eb7d72c93741aea4df941e424fd7d07610534920a4e84053bba04e2ecab7",
+      "customers": 0,
+      "quotes": 0,
+      "products": 2,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 5,
+        "requests": 5,
+        "audit": 40
+      },
+      "procurement": {
+        "records": 10,
+        "requests": 10
+      },
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "441d4458b52788ed8f4f439d40a43e6d2863e4a27daf97c8d5ad6b1f81480a89",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "d336d989-79c6-47fb-8b62-05306d946e12",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    },
+    "long_editor_boundary": "Saved raw1000-line sales draft, first native25-row page and each next page through40; updated exact scoped page marker plus visible sensitive Edit, then focused usable Edit. Focus may scroll the current row into view and is included in its separate endpoint. Separate from posted invoices and unchanged1000-line quotation probe.",
+    "native_read_only_phases": {
+      "paged_search": [],
+      "long_editor": []
+    }
+  },
+  "source_code_sha256_after": "c9ffa4559429ff67154fb067dbec667c7c1787cffe49e61b1d56cbe336978a36",
+  "frozen_source_provenance_after": {
+    "sha256": "30dc57763c904f740a42df7f863276b2c2f08e2c4c8510901603d6b6571fda5b",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+      "src/ui/accounting.rs": "76faf44f705bac44e6e1413e2d78e696af83238962cc03a4877a3627ec6a348f",
+      "src/ui/background.rs": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+      "src/ui/sales.rs": "816c0069fdf8f89b3534b3b95eadc11282bd38aeaafe17a1e813d690207ff696",
+      "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+      "src/ui/smoke.rs": "947cc2399837002fa159dedb7013cb764eb55a76021443efec45718f6a793b7b",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "observer_provenance_after": {
+    "native-performance-M5.py": "58cf88fdd660cf8b8a64b3ff25f90fb93f9c2cf56f93daf4d82ea8cc85879103",
+    "native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+    "native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+    "accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+  },
+  "observer_stable": true,
+  "binary_sha256_after": "9b32342c5dd966fb0f1a3f43f55529990221090e7a27d7aa7ddf7b96b4bf9537",
+  "frozen_source_stable": true,
+  "binary_stable": true
+}

@@ -1,0 +1,23 @@
+{
+  "result": "passed",
+  "source_profile": "/workspace/sarv-quote/artifacts/m5-preserved/quote-w1hc4pqg",
+  "files": {
+    "backup.json": "1475b436910f4176ec0e0a5b0de460016230132e0fef1d69c37d377c64e88801",
+    "before-new-draft-272d6a4a-2f2e-4bc6-8f20-218bcb00c41e.json": "ec9e0635c2b577abef8b06fbfd60384785b3d94c3c3ac9cd4f1dde465aa085fb",
+    "before-new-draft-33f7c5ec-ad73-4c1c-ba13-abab76195c0d.json": "3da6e7852c739cb49c967cd41d77504bb6a68c87aed89a9e127f634f4817d814",
+    "before-restore-c6539d55-bd80-429b-9048-0b115dae0704.json": "e67244d25e83958e24ae4be19fd35d6632cd20ec5bfde04ffe69d18b1c95720f",
+    "before-revision-b1a3b86f-cde1-43e5-bc7f-9c5497c6a52e.json": "3b1b058708af35898e57b6f4e24fc9b5c14a0b1e11b255c9c57bdd9b253aae27",
+    "native-catalog-preview.png": "4fe4d9eec16f9058154c6128786572651017fa28a6623120d12be34f9bdbbd67",
+    "native-human-review.png": "3a59ef80825897780263d60f91408399e9f2f53bf0de2538e37e8491913b2b33",
+    "native-review.png": "099ba83e966184823f447db5803fc39af94b9694bb1029f04dc30194d9db4fb2",
+    "native-verification.json": "b768fe19189ac2092bea17ddee4b6569e06f794ad14523b5701bbf6a7237f4ab",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "quote.log": "8744a278959eff0a7090856cdbdd3d6e5ac363f0bdeb6b2732458da35270ff0e",
+    "root-execution-receipt.json": "2e5ed05dd2b6580f17cf961ddac2b2d5b40a8fa6b16e5c26252d772690b4ee2b",
+    "sample-quote.csv": "97cbb7d780f4334b2b0b63826df378c49c1973e661d418c88063b7ecf44c5783",
+    "sample-quote.pdf": "65650c1245c1b911d76c67c908a3a607458f6c54317156c14bfc2c15792c9044",
+    "xvfb.log": "9d7f7c165140805b72199571a0117abc61f16e88ed1e5993e590ef7121628d7b"
+  },
+  "runtime_scope": "Actual frozen C7 full native quotation workflow. Executor verifies binary SHA after execution, as recorded. It does not capture per-command source-before/after dictionaries; do not infer that guard from separate callback/preserved receipts. Source provenance is issued C7 immutable build archive.",
+  "distribution_scope": "Only top-level synthetic reports/recovery JSON/native screenshots/PDF/CSV/logs; runtime dconf and ignored profile files are local only."
+}

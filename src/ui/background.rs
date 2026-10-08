@@ -147,7 +147,503 @@ impl Drop for PreviewPages {
     }
 }
 
+/// A source-specific explicit selection for an existing draft line.
+/// The worker checks the exact source and target before its single atomic save.
+pub(super) struct LineProductChoice {
+    pub(super) catalog_id: String,
+    pub(super) fingerprint: String,
+    pub(super) product_index: usize,
+    pub(super) code: String,
+    pub(super) line_index: usize,
+    pub(super) original_query: String,
+}
+
+pub(super) enum DraftSelection {
+    Product(LineProductChoice),
+    Customer(Customer),
+}
+
 impl Ui {
+    fn restore_quote_origin_focus(
+        &self,
+        frozen: &Option<(gtk::Widget, bool, Option<glib::WeakRef<gtk::Widget>>)>,
+    ) {
+        let Some((workspace, _, Some(origin))) = frozen else {
+            return;
+        };
+        // Completion may have queued a row focus, opened a dialog, navigated,
+        // or begun another write. Never override that newer interaction.
+        if self.persistence_busy.get()
+            || self.background_busy.get()
+            || self.review_focus.borrow().is_some()
+            || self.visible_dialog().is_some()
+            || !self.window.is_visible()
+            || self.stack.visible_child_name().as_deref() != Some("order")
+            || self.stack.child_by_name("order").as_ref() != Some(workspace)
+            || gtk::prelude::GtkWindowExt::focus(&self.window).is_some()
+        {
+            return;
+        }
+        if let Some(origin) = origin.upgrade()
+            && origin.is_mapped()
+            && origin.is_sensitive()
+            && (origin == *workspace || origin.is_ancestor(workspace))
+        {
+            origin.grab_focus();
+        }
+    }
+
+    /// Structural quotation changes start only after the latest form save.
+    /// Freeze the quote workspace while its row indices change; closing waits
+    /// for the definite receipt through the shared persistence gate.
+    pub(super) fn mutate_quote_async<T: Send + 'static>(
+        self: &Rc<Self>,
+        work: impl FnOnce(&mut State) -> Result<T> + Send + 'static,
+        complete: impl FnOnce(&Rc<Self>, Result<T>) + 'static,
+    ) {
+        if self.persistence_busy.get() {
+            complete(
+                self,
+                Err(anyhow::anyhow!("ذخیره در حال انجام است؛ دوباره تلاش کنید")),
+            );
+            return;
+        }
+        let (_, unchanged) = match self.form_draft() {
+            Ok(value) => value,
+            Err(error) => {
+                complete(self, Err(error));
+                return;
+            }
+        };
+        if !unchanged {
+            complete(
+                self,
+                Err(anyhow::anyhow!("ورودی تغییر کرده؛ دوباره تلاش کنید")),
+            );
+            return;
+        }
+        let directory = self.store.borrow().directory.clone();
+        let (generation, mut candidate) = match self.store.borrow_mut().begin_detached() {
+            Ok(value) => value,
+            Err(error) => {
+                complete(self, Err(error));
+                return;
+            }
+        };
+        if let Some(pending) = self.pending.borrow_mut().take() {
+            pending.remove();
+        }
+        let frozen = self.stack.child_by_name("order").map(|widget| {
+            let sensitive = widget.is_sensitive();
+            super::sales::qa_focus_diagnostic("before quote workspace insensitive", Some(&widget));
+            let origin = gtk::prelude::GtkWindowExt::focus(&self.window)
+                .filter(|focus| focus == &widget || focus.is_ancestor(&widget));
+            if origin.is_some() {
+                gtk::prelude::GtkWindowExt::set_focus(&self.window, None::<&gtk::Widget>);
+            }
+            widget.set_sensitive(false);
+            super::sales::qa_focus_diagnostic("after quote workspace insensitive", Some(&widget));
+            (widget, sensitive, origin.map(|focus| focus.downgrade()))
+        });
+        self.persistence_busy.set(true);
+        self.message(Ok("در حال ذخیرهٔ تغییر ردیف‌ها…"));
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let spawned = thread::Builder::new()
+            .name("sarv-quote-mutation".into())
+            .spawn(move || {
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    let value = work(&mut candidate)?;
+                    let prepared = Store::prepare_candidate(generation, candidate)?;
+                    Ok((Store::commit_detached(directory, prepared)?, value))
+                }))
+                .unwrap_or_else(|_| Err(anyhow::anyhow!("ذخیره قطع شد؛ ورودی شما حفظ شده است")));
+                let _ = sender.send(result);
+            });
+        if let Err(error) = spawned {
+            let result = self.store.borrow_mut().finish_detached(Err(error.into()));
+            self.persistence_busy.set(false);
+            self.close_after_save.set(false);
+            if let Some((widget, sensitive, _)) = &frozen {
+                widget.set_sensitive(*sensitive);
+            }
+            complete(
+                self,
+                result.and_then(|()| Err(anyhow::anyhow!("ذخیره انجام نشد"))),
+            );
+            self.restore_quote_origin_focus(&frozen);
+            return;
+        }
+        let ui = self.clone();
+        let mut complete = Some(complete);
+        glib::timeout_add_local(Duration::from_millis(20), move || {
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Err(anyhow::anyhow!("ذخیره قطع شد؛ دوباره تلاش کنید"))
+                }
+            };
+            let (receipt, value) = match result {
+                Ok((receipt, value)) => (Ok(receipt), Some(value)),
+                Err(error) => (Err(error), None),
+            };
+            let result = ui.store.borrow_mut().finish_detached(receipt);
+            ui.persistence_busy.set(false);
+            if let Some((widget, sensitive, _)) = &frozen {
+                super::sales::qa_focus_diagnostic(
+                    "before quote workspace sensitive restore",
+                    Some(widget),
+                );
+                widget.set_sensitive(*sensitive);
+                super::sales::qa_focus_diagnostic(
+                    "after quote workspace sensitive restore",
+                    Some(widget),
+                );
+            }
+            let succeeded = result.is_ok();
+            let result = result
+                .and_then(|()| value.ok_or_else(|| anyhow::anyhow!("نتیجهٔ ذخیره موجود نیست")));
+            if !succeeded {
+                ui.close_after_save.set(false);
+                ui.pending_save_action.borrow_mut().take();
+            }
+            if let Some(complete) = complete.take() {
+                complete(&ui, result);
+            }
+            ui.restore_quote_origin_focus(&frozen);
+            if succeeded && !ui.persistence_busy.get() {
+                if ui.pending_save_action.borrow().is_some() {
+                    ui.save_form_async();
+                } else if ui.close_after_save.replace(false) {
+                    ui.window.close();
+                }
+            }
+            glib::ControlFlow::Break
+        });
+    }
+
+    pub(super) fn choose_draft_selection_async(
+        self: &Rc<Self>,
+        selection: DraftSelection,
+        complete: impl FnOnce(&Rc<Self>, Result<bool>) + 'static,
+    ) {
+        if self.persistence_busy.get() {
+            complete(
+                self,
+                Err(anyhow::anyhow!(
+                    "ذخیره در حال انجام است؛ پس از پایان دوباره انتخاب کنید"
+                )),
+            );
+            return;
+        }
+        let draft = match self.form_draft() {
+            Ok((draft, _)) => draft,
+            Err(error) => {
+                complete(self, Err(error));
+                return;
+            }
+        };
+        let directory = self.store.borrow().directory.clone();
+        let detached = self.store.borrow_mut().begin_detached();
+        let (generation, mut candidate) = match detached {
+            Ok(value) => value,
+            Err(error) => {
+                complete(self, Err(error));
+                return;
+            }
+        };
+        let previous_customer = matches!(&selection, DraftSelection::Customer(_)).then(|| {
+            (
+                self.customer.text().to_string(),
+                self.phone.text().to_string(),
+            )
+        });
+        candidate.draft = draft;
+        let revision = self.edit_revision.get();
+        if let Some(pending) = self.pending.borrow_mut().take() {
+            pending.remove();
+        }
+        self.persistence_busy.set(true);
+        self.message(Ok(match &selection {
+            DraftSelection::Product(_) => "در حال ذخیرهٔ انتخاب کالا و پیش‌نویس…",
+            DraftSelection::Customer(_) => "در حال ذخیرهٔ انتخاب مشتری و پیش‌نویس…",
+        }));
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let spawned = thread::Builder::new()
+            .name("sarv-persistence".into())
+            .spawn(move || {
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    match selection {
+                        DraftSelection::Product(choice) => {
+                            anyhow::ensure!(
+                                candidate.draft.catalog_id == choice.catalog_id,
+                                "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
+                            );
+                            let catalog = candidate.catalog()?;
+                            anyhow::ensure!(
+                                catalog.id == choice.catalog_id
+                                    && catalog.fingerprint == choice.fingerprint
+                                    && catalog
+                                        .products
+                                        .get(choice.product_index)
+                                        .is_some_and(|product| product.code == choice.code),
+                                "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
+                            );
+                            let line = candidate
+                                .draft
+                                .lines
+                                .get_mut(choice.line_index)
+                                .ok_or_else(|| {
+                                    anyhow::anyhow!("ردیف تغییر کرده؛ دوباره بررسی کنید")
+                                })?;
+                            anyhow::ensure!(
+                                line.query == choice.original_query,
+                                "درخواست ردیف تغییر کرده؛ دوباره بررسی کنید"
+                            );
+                            line.chosen_code = Some(choice.code);
+                            candidate.draft.stale_ack = false;
+                        }
+                        DraftSelection::Customer(customer) => {
+                            let current = candidate
+                                .customers
+                                .iter()
+                                .find(|record| record.id == customer.id)
+                                .ok_or_else(|| {
+                                    anyhow::anyhow!("مشتری تغییر کرده؛ دوباره انتخاب کنید")
+                                })?;
+                            anyhow::ensure!(
+                                !current.archived
+                                    && serde_json::to_vec(current)?
+                                        == serde_json::to_vec(&customer)?,
+                                "مشتری تغییر کرده یا بایگانی شده؛ دوباره انتخاب کنید"
+                            );
+                            candidate.select_customer(&customer.id)?;
+                        }
+                    }
+                    let prepared = Store::prepare_candidate(generation, candidate)?;
+                    Store::commit_detached(directory, prepared)
+                }))
+                .unwrap_or_else(|_| {
+                    Err(anyhow::anyhow!(
+                        "ذخیرهٔ انتخاب قطع شد؛ ورودی شما حفظ شده است"
+                    ))
+                });
+                let _ = sender.send(result);
+            });
+        if let Err(error) = spawned {
+            let result = self.store.borrow_mut().finish_detached(Err(error.into()));
+            self.persistence_busy.set(false);
+            self.close_after_save.set(false);
+            self.pending_save_action.borrow_mut().take();
+            complete(self, result.map(|()| false));
+            return;
+        }
+        let ui = self.clone();
+        let mut complete = Some(complete);
+        glib::timeout_add_local(Duration::from_millis(20), move || {
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Err(anyhow::anyhow!("ذخیرهٔ انتخاب قطع شد؛ دوباره تلاش کنید"))
+                }
+            };
+            let result = ui.store.borrow_mut().finish_detached(result);
+            ui.persistence_busy.set(false);
+            let same_revision = ui.edit_revision.get() == revision;
+            if result.is_ok() && same_revision {
+                ui.finish_form_save();
+                ui.refresh_totals();
+            } else if result.is_err() {
+                ui.pending_save_action.borrow_mut().take();
+                ui.close_after_save.set(false);
+            }
+            let succeeded = result.is_ok();
+            if succeeded
+                && !same_revision
+                && let Some((name, phone)) = &previous_customer
+                && ui.customer.text().as_str() == name
+                && ui.phone.text().as_str() == phone
+            {
+                // Unrelated newer edits must not undo the explicit customer.
+                // Update only untouched identity widgets; changed text wins.
+                let (customer, phone) = {
+                    let store = ui.store.borrow();
+                    (
+                        store.state.draft.customer.clone(),
+                        store.state.draft.phone.clone(),
+                    )
+                };
+                let loading = ui.loading.replace(true);
+                ui.customer.set_text(&customer);
+                ui.phone.set_text(&phone);
+                ui.loading.set(loading);
+            }
+            if let Some(complete) = complete.take() {
+                complete(&ui, result.map(|()| same_revision));
+            }
+            if succeeded {
+                if !same_revision {
+                    // Never replace newer GTK inputs, including invalid text,
+                    // with the old receipt. Validate and save them separately.
+                    ui.save_form_async();
+                } else {
+                    ui.run_saved_action();
+                    if ui.close_after_save.replace(false) {
+                        ui.window.close();
+                    }
+                }
+            }
+            glib::ControlFlow::Break
+        });
+    }
+
+    pub(super) fn save_form_async_then(
+        self: &Rc<Self>,
+        complete: impl FnOnce(&Rc<Self>) + 'static,
+    ) {
+        if self.pending_save_action.borrow().is_some() {
+            self.message(Ok("پس از ذخیره، جابه‌جایی انجام می‌شود…"));
+            return;
+        }
+        *self.pending_save_action.borrow_mut() = Some(Box::new(complete));
+        self.save_form_async();
+    }
+
+    fn run_saved_action(self: &Rc<Self>) -> bool {
+        let action = self.pending_save_action.borrow_mut().take();
+        if let Some(action) = action {
+            action(self);
+            true
+        } else {
+            false
+        }
+    }
+
+    /// One durable save at a time. Edits made during persistence remain in GTK
+    /// and are saved as a later revision; an old receipt never rewrites them.
+    pub(super) fn save_form_async(self: &Rc<Self>) {
+        if let Some(pending) = self.pending.borrow_mut().take() {
+            pending.remove();
+        }
+        if self.persistence_busy.get() {
+            // Other persistence workflows (including accounting) share this
+            // gate. Keep one bounded retry rather than losing a draft's timer.
+            let weak = Rc::downgrade(self);
+            *self.pending.borrow_mut() = Some(glib::timeout_add_local_once(
+                Duration::from_millis(100),
+                move || {
+                    if let Some(ui) = weak.upgrade() {
+                        ui.pending.borrow_mut().take();
+                        ui.save_form_async();
+                    }
+                },
+            ));
+            self.message(Ok(
+                "ذخیره در حال انجام است؛ تغییرات تازه پس از آن ذخیره می‌شوند…",
+            ));
+            return;
+        }
+        let (draft, unchanged) = match self.form_draft() {
+            Ok(value) => value,
+            Err(error) => {
+                self.pending_save_action.borrow_mut().take();
+                self.close_after_save.set(false);
+                self.message(Err::<String, _>(error));
+                return;
+            }
+        };
+        if unchanged {
+            let result = self.store.borrow().verify_current();
+            if result.is_ok() {
+                self.finish_form_save();
+                self.refresh_totals();
+                self.message(Ok("پیش‌نویس ذخیره شد • آفلاین"));
+                self.run_saved_action();
+                if self.close_after_save.replace(false) {
+                    self.window.close();
+                }
+            } else {
+                self.pending_save_action.borrow_mut().take();
+                self.close_after_save.set(false);
+                self.message(result.map(|()| ""));
+            }
+            return;
+        }
+        let directory = self.store.borrow().directory.clone();
+        let (generation, mut candidate) = match self.store.borrow_mut().begin_detached() {
+            Ok(value) => value,
+            Err(error) => {
+                self.pending_save_action.borrow_mut().take();
+                self.close_after_save.set(false);
+                self.message(Err::<String, _>(error));
+                return;
+            }
+        };
+        candidate.draft = draft;
+        let revision = self.edit_revision.get();
+        self.persistence_busy.set(true);
+        self.message(Ok("در حال ذخیرهٔ پیش‌نویس…"));
+        let (sender, receiver) = mpsc::sync_channel(1);
+        let spawned = thread::Builder::new()
+            .name("sarv-persistence".into())
+            .spawn(move || {
+                let result = catch_unwind(AssertUnwindSafe(|| {
+                    let prepared = Store::prepare_candidate(generation, candidate)?;
+                    Store::commit_detached(directory, prepared)
+                }))
+                .unwrap_or_else(|_| Err(anyhow::anyhow!("ذخیره قطع شد؛ ورودی شما حفظ شده است")));
+                let _ = sender.send(result);
+            });
+        if let Err(error) = spawned {
+            self.persistence_busy.set(false);
+            self.pending_save_action.borrow_mut().take();
+            self.close_after_save.set(false);
+            let result = self.store.borrow_mut().finish_detached(Err(error.into()));
+            self.message(result.map(|()| ""));
+            return;
+        }
+        // Keep the owner alive until its transaction has a definite outcome.
+        // Close requests defer until this receipt and any newer edit are saved.
+        let ui = self.clone();
+        glib::timeout_add_local(Duration::from_millis(20), move || {
+            let result = match receiver.try_recv() {
+                Ok(result) => result,
+                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
+                Err(mpsc::TryRecvError::Disconnected) => {
+                    Err(anyhow::anyhow!("ذخیره قطع شد؛ دوباره تلاش کنید"))
+                }
+            };
+            let result = ui.store.borrow_mut().finish_detached(result);
+            ui.persistence_busy.set(false);
+            match result {
+                Err(error) => {
+                    ui.pending_save_action.borrow_mut().take();
+                    ui.close_after_save.set(false);
+                    ui.message(Err::<String, _>(error));
+                }
+                Ok(()) if ui.edit_revision.get() != revision => {
+                    ui.message(Ok("نسخهٔ قبلی ذخیره شد؛ تغییرات تازه در حال ذخیره‌اند…"));
+                    // Validate the latest widgets again. Invalid newer input
+                    // remains visible and is never replaced by the old draft.
+                    ui.save_form_async();
+                }
+                Ok(()) => {
+                    ui.finish_form_save();
+                    ui.refresh_totals();
+                    if !ui.run_saved_action() && !ui.table_has_focus() {
+                        ui.refresh_review();
+                    }
+                    ui.message(Ok("پیش‌نویس ذخیره شد • آفلاین"));
+                    if ui.close_after_save.replace(false) {
+                        ui.window.close();
+                    }
+                }
+            }
+            glib::ControlFlow::Break
+        });
+    }
+
     pub(super) fn background_available(&self) -> bool {
         if self.background_busy.get() {
             self.message(Ok(

@@ -1,0 +1,324 @@
+{
+  "format": "sarv-accounting-backup-v4",
+  "checksum": "bfca3c7983268d1f83510f2c46653caa56cc5e1ca9172f0320902d9786e7fed5",
+  "state": {
+    "schema": 4,
+    "catalogs": [],
+    "customers": [],
+    "quotes": [],
+    "draft": {
+      "series": "c41c92e7-c2ab-4ec1-a95f-0967f0db0dee",
+      "catalog_id": "",
+      "customer": "",
+      "phone": "",
+      "lines": [],
+      "discount_rial": 0,
+      "display_unit": "Toman",
+      "stale_ack": false,
+      "quote_date": "2026-10-07"
+    },
+    "accounting": {
+      "companies": [
+        {
+          "id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "name": "Independent synthetic valid preM4 event-prefix manual book"
+        }
+      ],
+      "periods": [
+        {
+          "id": "9464b565-1212-489e-aba2-eb7d515d8734",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "name": "2026",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "locked": false
+        }
+      ],
+      "accounts": [
+        {
+          "id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "parent_id": null,
+          "code": "1001",
+          "name": "Synthetic ordinary asset",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        },
+        {
+          "id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "parent_id": null,
+          "code": "3001",
+          "name": "Explicit synthetic equity",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        }
+      ],
+      "journals": [
+        {
+          "id": "eb781a01-bbd3-4168-af28-e78c7381fb20",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "period_id": "9464b565-1212-489e-aba2-eb7d515d8734",
+          "date": "2026-03-22",
+          "source_id": "preM4-valid-manual-source",
+          "source_revision": 1,
+          "event": "procurement.receive",
+          "actor": "independent reviewer",
+          "reason": "Valid original generic manual event under actual M3 rules",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+                "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+                "parent_id": null,
+                "code": "1001",
+                "name": "Synthetic ordinary asset",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 100,
+              "credit": 0,
+              "description": "ordinary asset"
+            },
+            {
+              "account": {
+                "id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+                "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+                "parent_id": null,
+                "code": "3001",
+                "name": "Explicit synthetic equity",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 100,
+              "description": "explicit supplied capital"
+            }
+          ],
+          "recorded_at": "2026-10-07T22:59:26.184561129+00:00"
+        },
+        {
+          "id": "99bd8b30-f1cb-4956-82ed-ec13cff99326",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "period_id": "9464b565-1212-489e-aba2-eb7d515d8734",
+          "date": "2026-03-23",
+          "source_id": "eb781a01-bbd3-4168-af28-e78c7381fb20",
+          "source_revision": 1,
+          "event": "reversal",
+          "actor": "independent reviewer",
+          "reason": "Ordinary linked exact reversal under actual M3 rules",
+          "kind": {
+            "Reversal": {
+              "journal_id": "eb781a01-bbd3-4168-af28-e78c7381fb20"
+            }
+          },
+          "lines": [
+            {
+              "account": {
+                "id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+                "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+                "parent_id": null,
+                "code": "1001",
+                "name": "Synthetic ordinary asset",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 100,
+              "description": "ordinary asset"
+            },
+            {
+              "account": {
+                "id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+                "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+                "parent_id": null,
+                "code": "3001",
+                "name": "Explicit synthetic equity",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 100,
+              "credit": 0,
+              "description": "explicit supplied capital"
+            }
+          ],
+          "recorded_at": "2026-10-07T22:59:26.191637106+00:00"
+        }
+      ],
+      "requests": [
+        {
+          "command": {
+            "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+            "period_id": "9464b565-1212-489e-aba2-eb7d515d8734",
+            "date": "2026-03-22",
+            "source_id": "preM4-valid-manual-source",
+            "source_revision": 1,
+            "event": "procurement.receive",
+            "request_key": "preM4-manual-key",
+            "actor": "independent reviewer",
+            "reason": "Valid original generic manual event under actual M3 rules",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+                "debit": 100,
+                "credit": 0,
+                "description": "ordinary asset"
+              },
+              {
+                "account_id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+                "debit": 0,
+                "credit": 100,
+                "description": "explicit supplied capital"
+              }
+            ]
+          },
+          "journal_id": "eb781a01-bbd3-4168-af28-e78c7381fb20"
+        },
+        {
+          "command": {
+            "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+            "period_id": "9464b565-1212-489e-aba2-eb7d515d8734",
+            "date": "2026-03-22",
+            "source_id": "preM4-valid-manual-source",
+            "source_revision": 1,
+            "event": "procurement.receive",
+            "request_key": "preM4-manual-alias",
+            "actor": "independent reviewer",
+            "reason": "Valid original generic manual event under actual M3 rules",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+                "debit": 100,
+                "credit": 0,
+                "description": "ordinary asset"
+              },
+              {
+                "account_id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+                "debit": 0,
+                "credit": 100,
+                "description": "explicit supplied capital"
+              }
+            ]
+          },
+          "journal_id": "eb781a01-bbd3-4168-af28-e78c7381fb20"
+        },
+        {
+          "command": {
+            "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+            "period_id": "9464b565-1212-489e-aba2-eb7d515d8734",
+            "date": "2026-03-23",
+            "source_id": "eb781a01-bbd3-4168-af28-e78c7381fb20",
+            "source_revision": 1,
+            "event": "reversal",
+            "request_key": "preM4-linked-reversal-key",
+            "actor": "independent reviewer",
+            "reason": "Ordinary linked exact reversal under actual M3 rules",
+            "kind": {
+              "Reversal": {
+                "journal_id": "eb781a01-bbd3-4168-af28-e78c7381fb20"
+              }
+            },
+            "lines": [
+              {
+                "account_id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+                "debit": 0,
+                "credit": 100,
+                "description": "ordinary asset"
+              },
+              {
+                "account_id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+                "debit": 100,
+                "credit": 0,
+                "description": "explicit supplied capital"
+              }
+            ]
+          },
+          "journal_id": "99bd8b30-f1cb-4956-82ed-ec13cff99326"
+        }
+      ],
+      "audit": [
+        {
+          "id": "e3291a91-975d-4a9a-b08b-283d1930948d",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "entity_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "operation": "CompanyCreated",
+          "actor": "independent reviewer",
+          "reason": "ایجاد کسب‌وکار",
+          "recorded_at": "2026-10-07T22:59:26.183583295+00:00"
+        },
+        {
+          "id": "f1f88b32-889a-4ddd-94ea-defcff2fa923",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "entity_id": "9464b565-1212-489e-aba2-eb7d515d8734",
+          "operation": "PeriodCreated",
+          "actor": "independent reviewer",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T22:59:26.183599920+00:00"
+        },
+        {
+          "id": "db86cb7c-136c-450e-8db4-99922d45ad65",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "entity_id": "e2d95194-0c6b-4ad4-9f4e-c6e1bcb503a1",
+          "operation": "AccountCreated",
+          "actor": "independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T22:59:26.183606921+00:00"
+        },
+        {
+          "id": "0bf7b552-470f-4d48-956e-eb02b1dfb367",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "entity_id": "5356cf24-5e8a-4afb-a133-7fdee4bb8ed4",
+          "operation": "AccountCreated",
+          "actor": "independent reviewer",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T22:59:26.183617988+00:00"
+        },
+        {
+          "id": "fad68c1e-994a-4d55-9e32-af4dd15294ab",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "entity_id": "eb781a01-bbd3-4168-af28-e78c7381fb20",
+          "operation": "JournalPosted",
+          "actor": "independent reviewer",
+          "reason": "Valid original generic manual event under actual M3 rules",
+          "recorded_at": "2026-10-07T22:59:26.184561129+00:00"
+        },
+        {
+          "id": "32acffb8-98dd-4c52-859c-9e09062f34f9",
+          "company_id": "b94738c0-71ac-4b14-8318-3e5b14347b6f",
+          "entity_id": "99bd8b30-f1cb-4956-82ed-ec13cff99326",
+          "operation": "JournalPosted",
+          "actor": "independent reviewer",
+          "reason": "Ordinary linked exact reversal under actual M3 rules",
+          "recorded_at": "2026-10-07T22:59:26.191637106+00:00"
+        }
+      ]
+    }
+  }
+}

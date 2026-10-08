@@ -1,0 +1,162 @@
+{
+  "status": "independently supplied fixture; authoritative API implemented; evolving kernel/recovery probes passed, final freeze/native acceptance pending",
+  "price_authority": "one12piece PO line at15IRR/piece=180, two cumulative receipt allocations75/105",
+  "policy": "core-policy-v1",
+  "cutoff": "EOD financial date; M3 opening report remains beginning-of-day original",
+  "main": [
+    {
+      "event": "opening",
+      "date": "2026-03-21",
+      "w1_quantity_thousandths": 24000,
+      "w1_value_irr": 240,
+      "w2_quantity_thousandths": 6000,
+      "w2_value_irr": 60,
+      "total_quantity_thousandths": 30000,
+      "inventory_irr": 300,
+      "ap_irr": 149,
+      "grni_irr": 50,
+      "trial_debit_irr": 1251,
+      "trial_credit_irr": 1251,
+      "pnl_irr": 0,
+      "equity_irr": 952
+    },
+    {
+      "event": "receive-A",
+      "date": "2026-03-22",
+      "w1_quantity_thousandths": 29000,
+      "w1_value_irr": 315,
+      "w2_quantity_thousandths": 6000,
+      "w2_value_irr": 60,
+      "total_quantity_thousandths": 35000,
+      "inventory_irr": 375,
+      "ap_irr": 149,
+      "grni_irr": 125,
+      "trial_debit_irr": 1326,
+      "trial_credit_irr": 1326,
+      "pnl_irr": 0,
+      "equity_irr": 952
+    },
+    {
+      "event": "receive-B",
+      "date": "2026-03-23",
+      "w1_quantity_thousandths": 36000,
+      "w1_value_irr": 420,
+      "w2_quantity_thousandths": 6000,
+      "w2_value_irr": 60,
+      "total_quantity_thousandths": 42000,
+      "inventory_irr": 480,
+      "ap_irr": 149,
+      "grni_irr": 230,
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "pnl_irr": 0,
+      "equity_irr": 952
+    },
+    {
+      "event": "bill-A-2pieces",
+      "date": "2026-03-24",
+      "w1_quantity_thousandths": 36000,
+      "w1_value_irr": 420,
+      "w2_quantity_thousandths": 6000,
+      "w2_value_irr": 60,
+      "total_quantity_thousandths": 42000,
+      "inventory_irr": 480,
+      "ap_irr": 179,
+      "grni_irr": 200,
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "pnl_irr": 0,
+      "equity_irr": 952
+    },
+    {
+      "event": "bill-B-final3plus7",
+      "date": "2026-03-25",
+      "w1_quantity_thousandths": 36000,
+      "w1_value_irr": 420,
+      "w2_quantity_thousandths": 6000,
+      "w2_value_irr": 60,
+      "total_quantity_thousandths": 42000,
+      "inventory_irr": 480,
+      "ap_irr": 329,
+      "grni_irr": 50,
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "pnl_irr": 0,
+      "equity_irr": 952
+    },
+    {
+      "event": "transfer-6pieces-cost70",
+      "date": "2026-03-26",
+      "w1_quantity_thousandths": 30000,
+      "w1_value_irr": 350,
+      "w2_quantity_thousandths": 12000,
+      "w2_value_irr": 130,
+      "total_quantity_thousandths": 42000,
+      "inventory_irr": 480,
+      "ap_irr": 329,
+      "grni_irr": 50,
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "pnl_irr": 0,
+      "equity_irr": 952
+    }
+  ],
+  "opening_grni_optional_final": {
+    "ap_irr": 379,
+    "grni_irr": 0,
+    "inventory_irr": 480,
+    "trial_debit_irr": 1431,
+    "trial_credit_irr": 1431
+  },
+  "rounding_branch": {
+    "po": "one12piece carton@1IRR",
+    "receipts": [
+      {
+        "selected_carton_thousandths": 500,
+        "base_piece_thousandths": 6000,
+        "allocated_value_irr": 1
+      },
+      {
+        "selected_carton_thousandths": 500,
+        "base_piece_thousandths": 6000,
+        "allocated_value_irr": 0
+      }
+    ],
+    "partial_bills_of_first_receipt": [
+      {
+        "base_piece_thousandths": 3000,
+        "value_irr": 1
+      },
+      {
+        "base_piece_thousandths": 3000,
+        "value_irr": 0
+      }
+    ],
+    "after_receipts": {
+      "inventory_irr": 301,
+      "grni_irr": 51,
+      "ap_irr": 149,
+      "w1_quantity_thousandths": 36000,
+      "w1_value_irr": 241
+    },
+    "after_partial_bills": {
+      "inventory_irr": 301,
+      "grni_irr": 50,
+      "ap_irr": 150,
+      "unbilled_opening_quantity_thousandths": 5000,
+      "unbilled_zero_receipt_quantity_thousandths": 6000
+    },
+    "transfer_costs_irr": [
+      40,
+      201
+    ],
+    "final_source_pool": [
+      0,
+      0
+    ],
+    "final_target_pool": [
+      42000,
+      301
+    ]
+  }
+}

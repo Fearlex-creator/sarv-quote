@@ -1,0 +1,478 @@
+[
+  {
+    "name": "ساخت نسخهٔ تازهٔ فهرست",
+    "role": "dialog"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "جست‌وجوی کالا در ویرایش فهرست تازه",
+    "role": "entry"
+  },
+  {
+    "name": "۵۰۰۰۰ کالا · ۱ نتیجه · نمایش ۱ تا ۱ · تا تأیید نهایی ذخیره نمی‌شود",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "بررسی و تأیید فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "نام فهرست",
+    "role": "label"
+  },
+  {
+    "name": "نام فهرست",
+    "role": "text"
+  },
+  {
+    "name": "مشخصات کالا",
+    "role": "table cell"
+  },
+  {
+    "name": "قیمت و منبع",
+    "role": "table cell"
+  },
+  {
+    "name": "افزودن کالا",
+    "role": "button"
+  },
+  {
+    "name": "پاک‌کردن فرم",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "کالاهای قبلی",
+    "role": "button"
+  },
+  {
+    "name": "کالاهای بعدی",
+    "role": "button"
+  },
+  {
+    "name": "بررسی و تأیید فهرست تازه",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "مشخصات کالا",
+    "role": "grouping"
+  },
+  {
+    "name": "قیمت و منبع",
+    "role": "grouping"
+  },
+  {
+    "name": "افزودن کالا",
+    "role": "label"
+  },
+  {
+    "name": "پاک‌کردن فرم",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "کالاهای قبلی",
+    "role": "label"
+  },
+  {
+    "name": "کالاهای بعدی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 50000 · ⁦SCALE-50000⁩",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ساخت نسخهٔ تازهٔ فهرست",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "مشخصات کالا",
+    "role": "label"
+  },
+  {
+    "name": "کد کالا کد کالا",
+    "role": "list item"
+  },
+  {
+    "name": "شرح کالا شرح کالا",
+    "role": "list item"
+  },
+  {
+    "name": "واحد شمارش واحد شمارش",
+    "role": "list item"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با | نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "list item"
+  },
+  {
+    "name": "قیمت و منبع",
+    "role": "label"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده قیمت در واحد منبع · بدون جداکننده",
+    "role": "list item"
+  },
+  {
+    "name": "واحد قیمت منبع",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD تاریخ منبع · YYYY-MM-DD",
+    "role": "list item"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 50000 · ⁦SCALE-50000⁩",
+    "role": "label"
+  },
+  {
+    "name": "۱۵۰٬۰۰۰ ریال / عدد · ⁦۲۰۲۶-۱۰-۰۷⁩",
+    "role": "label"
+  },
+  {
+    "name": "کالای ساختگی پاسخ‌گویی 50000 · ⁦SCALE-50000⁩",
+    "role": "button"
+  },
+  {
+    "name": "حذف کالای SCALE-50000 از فهرست تازه",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ویرایش",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "کد کالا",
+    "role": "label"
+  },
+  {
+    "name": "کد کالا",
+    "role": "label"
+  },
+  {
+    "name": "کد کالا",
+    "role": "text"
+  },
+  {
+    "name": "شرح کالا",
+    "role": "label"
+  },
+  {
+    "name": "شرح کالا",
+    "role": "label"
+  },
+  {
+    "name": "شرح کالا",
+    "role": "text"
+  },
+  {
+    "name": "واحد شمارش",
+    "role": "label"
+  },
+  {
+    "name": "واحد شمارش",
+    "role": "label"
+  },
+  {
+    "name": "واحد شمارش",
+    "role": "text"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "label"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "label"
+  },
+  {
+    "name": "نام‌های مستعار تأییدشده · جداشده با |",
+    "role": "text"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده",
+    "role": "label"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده",
+    "role": "label"
+  },
+  {
+    "name": "قیمت در واحد منبع · بدون جداکننده",
+    "role": "text"
+  },
+  {
+    "name": "واحد قیمت منبع",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "تاریخ منبع · YYYY-MM-DD",
+    "role": "text"
+  },
+  {
+    "name": "",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ریال",
+    "role": "label"
+  }
+]

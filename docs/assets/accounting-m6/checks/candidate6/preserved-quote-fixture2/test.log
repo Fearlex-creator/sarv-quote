@@ -1,0 +1,15 @@
+dbus-daemon[360800]: [session uid=1000 pid=360800 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=360809 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[360800]: [session uid=1000 pid=360800 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[360835]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=360809 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[360835]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :10 broken (explicit kill or server shutdown).
+{"result": "failed", "checks": 9, "profile": "/workspace/sarv-quote/artifacts/independent-native/run-ca8mvfpn"}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 569, in <module>
+    main()
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 313, in main
+    check('Repeat approval preserved existing quote count', snapshot(profile)['quotes'] == baseline['quotes'])
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 257, in check
+    raise AssertionError(name)
+AssertionError: Repeat approval preserved existing quote count

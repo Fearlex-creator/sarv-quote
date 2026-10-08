@@ -1,0 +1,27 @@
+dbus-daemon[184663]: [session uid=1000 pid=184663 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=184670 comm="/workspace/sarv-quote/artifacts/procurement-short-" label="kernel")
+dbus-daemon[184663]: [session uid=1000 pid=184663 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[184698]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=184670 comm="/workspace/sarv-quote/artifacts/procurement-short-" label="kernel")
+dbus-daemon[184698]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :9 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze2",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "checks": [],
+  "key_events": [],
+  "fixture_profile": "/workspace/sarv-quote/artifacts/procurement-native/run-oi4h0f5z/full",
+  "run": "/workspace/sarv-quote/artifacts/procurement-short-native/run-gys40zn6",
+  "scope": "Actual private XTest Tab navigation and auto-scroll in short native windows; synthetic10record5journal fixture copied read-only; no financial writes.",
+  "gtk_diagnostics": {
+    "light.log": ""
+  }
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/docs/assets/accounting-m4/native/final/short-layout-observer.py", line 48, in <module>
+    focus(primary);time.sleep(.15)
+    ~~~~~^^^^^^^^^
+  File "/workspace/sarv-quote/docs/assets/accounting-m4/native/final/short-layout-observer.py", line 35, in focus
+    assert event['page']==page and viewport==[width,height],event
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'dialog_open': False, 'focus': 'other', 'focus_bounds': [611.0, 489.0, 258.0, 34.0], 'focus_clip_bounds': [0.0, 46.0, 890.0, 477.0], 'focus_label': 'سفارش خرید تازه', 'focus_name': 'procurement-new-order', 'focus_type': 'GtkButton', 'key': 'Shift_L', 'page': 'procurement', 'quotes': 0, 'settings_dirty': False, 'window_size': [890, 550]}

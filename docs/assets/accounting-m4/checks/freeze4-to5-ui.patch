@@ -1,0 +1,157 @@
+--- a/src/ui/catalog_editor.rs
++++ b/src/ui/catalog_editor.rs
+@@ -695,6 +695,39 @@
+         lifetime.borrow_mut().take();
+     });
+     dialog.set_child(Some(&dialog_toolbar(&scroll(&root))));
++    // Native header button FlowBox focus may consume Escape. The current
++    // composer owns plain Escape; nested dialogs and open popovers retain it.
++    let escape = gtk::EventControllerKey::new();
++    escape.set_propagation_phase(gtk::PropagationPhase::Capture);
++    let weak_dialog = dialog.downgrade();
++    let weak_ui = Rc::downgrade(ui);
++    escape.connect_key_pressed(move |_, key, _, modifiers| {
++        let Some(dialog) = weak_dialog.upgrade() else {
++            return glib::Propagation::Proceed;
++        };
++        let Some(ui) = weak_ui.upgrade() else {
++            return glib::Propagation::Proceed;
++        };
++        let modified = gtk::gdk::ModifierType::SHIFT_MASK
++            | gtk::gdk::ModifierType::CONTROL_MASK
++            | gtk::gdk::ModifierType::ALT_MASK
++            | gtk::gdk::ModifierType::SUPER_MASK
++            | gtk::gdk::ModifierType::HYPER_MASK
++            | gtk::gdk::ModifierType::META_MASK;
++        if key != gtk::gdk::Key::Escape
++            || modifiers.intersects(modified)
++            || ui.visible_dialog().as_ref() != Some(&dialog)
++            || !dialog.can_close()
++            || dialog
++                .focus()
++                .is_some_and(|focus| focus.ancestor(gtk::Popover::static_type()).is_some())
++        {
++            return glib::Propagation::Proceed;
++        }
++        dialog.close();
++        glib::Propagation::Stop
++    });
++    dialog.add_controller(escape);
+     ui.present_dialog(&dialog);
+ }
+ 
+--- a/src/ui/procurement.rs
++++ b/src/ui/procurement.rs
+@@ -228,12 +228,16 @@
+         },
+         move |ui, result| {
+             if complete_cache.pending.borrow().as_ref() != Some(&key) {
++                ui.message(Ok(
++                    "آماده‌سازی قیمت قبلی پایان یافت؛ منبع انتخاب‌شده تغییر کرد.",
++                ));
+                 return;
+             }
+             complete_cache.pending.borrow_mut().take();
+             match result {
+                 Ok(snapshot) => {
+                     *complete_cache.ready.borrow_mut() = Some(snapshot.clone());
++                    ui.message(Ok("جست‌وجوی قیمت سفارش خرید آماده است."));
+                     let callbacks = complete_cache
+                         .callbacks
+                         .borrow_mut()
+@@ -693,10 +697,18 @@
+             move |ui, result| {
+                 let Some(review) = weak.upgrade() else {
+                     finish_monitor(&completion, "closed");
++                    ui.message(Ok(
++                        "بازبینی پایان یافت؛ پنجره بسته شد و در این بازبینی سندی ثبت نشد.",
++                    ));
+                     return;
+                 };
+                 if !review.dialog.is_visible() || review.revision.get() != revision {
+                     finish_monitor(&completion, "stale_or_closed");
++                    ui.message(Ok(if review.dialog.is_visible() {
++                        "بازبینی قبلی پایان یافت؛ ورودی تغییر کرده است و باید دوباره بازبینی شود."
++                    } else {
++                        "بازبینی پایان یافت؛ پنجره بسته شد و در این بازبینی سندی ثبت نشد."
++                    }));
+                     return;
+                 }
+                 let phase_result = if result.is_ok() {
+@@ -712,10 +724,12 @@
+                         *review.verified.borrow_mut() = Some(validated);
+                         review.save.set_sensitive(true);
+                         reveal_review(&review.output);
++                        ui.message(Ok("بازبینی سند آماده است؛ هنوز ثبت نشده است."));
+                     }
+                     Err(error) => {
+                         show_error(&review.error, &error);
+                         review.output.append(&label(&error.to_string()));
++                        ui.message(Err::<String, _>(error));
+                     }
+                 }
+                 finish_monitor(&completion, phase_result);
+@@ -1618,8 +1632,14 @@
+                 Ok((r, c, records, document_index, master_index, masters))
+             },
+             move |ui, result| {
+-                let Some(p) = weak.upgrade() else { return };
++                let Some(p) = weak.upgrade() else {
++                    ui.message(Ok("خواندن منابع پایان یافت؛ صفحه بسته شده است."));
++                    return;
++                };
+                 if p.revision.get() != revision {
++                    ui.message(Ok(
++                        "خواندن نسخهٔ قبلی منابع پایان یافت؛ گزارش جاری تغییر کرده است.",
++                    ));
+                     return;
+                 }
+                 match result {
+@@ -2277,12 +2297,12 @@
+         let unit = money_unit(&self.unit);
+         let weak_page = Rc::downgrade(self);
+         let document = id.clone();
+-        let _=ui.run_background("خواندن منبع ثبت‌شده…",move||{let concise=concise_document(&snapshot.accounting,&company,&id,unit,&snapshot.settings)?;let report=sarv_quote::procurement_export::document_preview(&snapshot.accounting,&company,&id,unit,snapshot.settings.date_display,snapshot.settings.display_digits)?;Ok((report,concise))},move|_,result|{
+-            if !weak_dialog.upgrade().is_some_and(|d|d.is_visible()){return;}clear(&body);
++        let _=ui.run_background("خواندن منبع ثبت‌شده…",move||{let concise=concise_document(&snapshot.accounting,&company,&id,unit,&snapshot.settings)?;let report=sarv_quote::procurement_export::document_preview(&snapshot.accounting,&company,&id,unit,snapshot.settings.date_display,snapshot.settings.display_digits)?;Ok((report,concise))},move|ui,result|{
++            if !weak_dialog.upgrade().is_some_and(|d|d.is_visible()){ui.message(Ok("نمایش منبع لغو شد؛ ثبت‌ها تغییر نکردند."));return;}clear(&body);
+             match result{Ok((report,concise))=>{body.append(&heading(&report.title));body.append(&label(&format!("{} • {} • {}",report.company,isolate(&report.as_of),report.status)));body.append(&label("نسخهٔ ثبت‌شده ثابت است؛ بازبینی مجدد یا ثبت دیگری از این پنجره انجام نمی‌شود."));
+                 report_rows(&body,concise);let trace=gtk::Box::new(gtk::Orientation::Vertical,8);report_rows(&trace,report.lines);body.append(&disclosure("جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده",&trace));
+-                let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}body.append(&bar);
+-            },Err(e)=>show_error(&error,e)}
++                let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}body.append(&bar);ui.message(Ok("منبع ثبت‌شده آماده است • فقط خواندنی"));
++            },Err(e)=>{show_error(&error,&e);ui.message(Err::<String,_>(e));}}
+         });
+     }
+     fn export(self: &Rc<Self>, document: Option<String>, pdf: bool) {
+--- a/src/ui/smoke.rs
++++ b/src/ui/smoke.rs
+@@ -676,7 +676,18 @@
+         if let Some(ui) = weak.upgrade() {
+             let key = key.name().map(|s| s.to_string()).unwrap_or_default();
+             glib::idle_add_local_once(move || {
+-                let focus = gtk::prelude::GtkWindowExt::focus(&ui.window);
++                // A modal Dialog owns its focus independently of GtkWindow.
++                // Report that focus rather than an underlying header control.
++                let dialog = ui.visible_dialog();
++                let dialog_focus = dialog.as_ref().and_then(|dialog| dialog.focus());
++                let focus_scope = if dialog_focus.is_some() {
++                    "dialog"
++                } else if dialog.is_some() {
++                    "window-fallback"
++                } else {
++                    "window"
++                };
++                let focus = dialog_focus.or_else(|| gtk::prelude::GtkWindowExt::focus(&ui.window));
+                 let contains = |widget: &gtk::Widget| focus.as_ref().is_some_and(|w| w == widget || w.is_ancestor(widget));
+                 let mut target = "other".to_string();
+                 for row in ui.row_editors.borrow().iter() {
+@@ -709,7 +720,7 @@
+                 let focus_bounds = focus.as_ref().and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
+                 let focus_clip_bounds = focus.as_ref().and_then(|widget| widget.ancestor(gtk::ScrolledWindow::static_type()))
+                     .and_then(|widget| widget.compute_bounds(&ui.window)).map(rect_values);
+-                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some()});
++                let event = serde_json::json!({"key":key,"focus":target,"focus_label":focus_label,"focus_type":focus.as_ref().map(|widget|widget.type_().name().to_string()),"focus_name":focus.as_ref().map(|widget|widget.widget_name().to_string()),"focus_bounds":focus_bounds,"focus_clip_bounds":focus_clip_bounds,"window_size":[ui.window.width(),ui.window.height()],"page":ui.stack.visible_child_name().map(|s|s.to_string()),"quotes":ui.store.borrow().state.quotes.len(),"settings_dirty":settings::has_unsaved(&ui),"dialog_open":ui.active_dialog.borrow().is_some(),"focus_scope":focus_scope,"dialog_title":dialog.as_ref().map(|dialog|dialog.title().to_string())});
+                 use std::io::Write;
+                 if let Ok(mut file) = std::fs::OpenOptions::new().create(true).append(true).open(directory(&ui).join("keyboard-events.jsonl")) {
+                     let _ = writeln!(file, "{event}");

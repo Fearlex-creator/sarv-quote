@@ -1,0 +1,274 @@
+{
+  "raw_source": "/workspace/sarv-quote/artifacts/performance-m6/candidate6-runtime6-pilot1",
+  "functional_qualification": "COMPLETE with exactguards; pilotonly nofinalacceptance",
+  "copied_raw_files": {
+    "coordinator-observer.log": {
+      "bytes": 9861,
+      "sha256": "16d6e15443ffba48c596473a245a5e75905b4edc2d96312336dd8e4d1b7ced9a"
+    },
+    "coordinator.json": {
+      "bytes": 48680,
+      "sha256": "c2ea8a8084c881c85d48dd890bc34eecbd67759f78530ce3835ce680a5722e43"
+    },
+    "observer/main-posted-startup/startup-0.png": {
+      "bytes": 133537,
+      "sha256": "271b324473074af1af7d3d7f6313a7002454a8d552ce85bfd3782c117bda347a"
+    },
+    "observer/main-posted-startup/startup-1.png": {
+      "bytes": 133469,
+      "sha256": "13dd26de65369bd46305fecbdbf0bdd0c256eae4458cdd7abd213a1337407eeb"
+    },
+    "observer/main-posted-startup-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/main-posted-startup-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/main-seed-startup/startup-0.png": {
+      "bytes": 133209,
+      "sha256": "5122f9f0cdc4f9a311b551746696f587add6e1cc0f4c82b177543e552a1b6e4b"
+    },
+    "observer/main-seed-startup/startup-1.png": {
+      "bytes": 133545,
+      "sha256": "6cd21a411a02263b1bdb4f6fa35c5dfa6ad6e49da16d5fac8ce24deb34cf365e"
+    },
+    "observer/main-seed-startup-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/main-seed-startup-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/openbox.log": {
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    "observer/performance.json": {
+      "bytes": 989866,
+      "sha256": "fd9852a207959176c7f4d83cddaf9064df75a6f6727804603822c2f10769dd82"
+    },
+    "observer/performance.partial.json": {
+      "bytes": 970366,
+      "sha256": "00c11c02af86dc8545c8b2f3e91847450166cbeea44fa1b800ae4a96c7b5656a"
+    },
+    "observer/return20-billed-restart.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return20-billed-workflow/after-state.json": {
+      "bytes": 357205,
+      "sha256": "434c0dff3fc8d43666d39febcce2105bc5befa826ba8fb2f5b50634470b7bf43"
+    },
+    "observer/return20-billed-workflow/before-state.json": {
+      "bytes": 317523,
+      "sha256": "761be58f325b048749b6a088975064a76fc9b4bf69aa11a4f86150962e2abfc9"
+    },
+    "observer/return20-billed-workflow/last-preview-page.png": {
+      "bytes": 257610,
+      "sha256": "e867305f3e642a6b463525f91d55e6ea91dc131bfe63da2ec12ebe94d166c6f2"
+    },
+    "observer/return20-billed-workflow/posted.png": {
+      "bytes": 157116,
+      "sha256": "dd83aef8a266e37033e9c57f8fb5e25e557b530476cbdf2636922e595870a545"
+    },
+    "observer/return20-billed-workflow/procurement-performance-phases.jsonl": {
+      "bytes": 548,
+      "sha256": "2add4ce25e9d7315ff97f3a4219a3efc3ab5148c150c5ed9582d47dfa1735a02"
+    },
+    "observer/return20-billed-workflow.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return20-unbilled-restart.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return20-unbilled-startup/startup-0.png": {
+      "bytes": 133500,
+      "sha256": "6793e75e317f1fe1723b19fbe9882e1be413d7d0dbc48b89a66175e699a66953"
+    },
+    "observer/return20-unbilled-startup/startup-1.png": {
+      "bytes": 133578,
+      "sha256": "eb05050664910280e14ebbe9caf666de22cbb7791118574699e31d360d2e9af1"
+    },
+    "observer/return20-unbilled-startup-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return20-unbilled-startup-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return20-unbilled-workflow/after-state.json": {
+      "bytes": 336629,
+      "sha256": "ba1b9219d509acdce9b12331363c1f660903bb0b9fb8318ac10c8d7797a772f1"
+    },
+    "observer/return20-unbilled-workflow/before-state.json": {
+      "bytes": 298161,
+      "sha256": "a9c48039fda3643b6c22dcbf555ba68816997b570ffc0e6f4a42564d69901314"
+    },
+    "observer/return20-unbilled-workflow/last-preview-page.png": {
+      "bytes": 259696,
+      "sha256": "b4668cabc913f13647ebed75afeba416226e811a2e87e4ccca4ba482f3ea8ba2"
+    },
+    "observer/return20-unbilled-workflow/posted.png": {
+      "bytes": 156091,
+      "sha256": "801bf2e1b10e8fedc0c3078c4a2e370420a268de43959c2a2ca66e95bb55187f"
+    },
+    "observer/return20-unbilled-workflow/procurement-performance-phases.jsonl": {
+      "bytes": 531,
+      "sha256": "f8e5ea8201cbb6f06d1fe72e906bbf8982dffcae4ff0ad01cfa710d7bb2bfb08"
+    },
+    "observer/return20-unbilled-workflow.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return200-billed-restart.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return200-billed-startup/startup-0.png": {
+      "bytes": 133583,
+      "sha256": "dc0209785a15faa2355a226695dcfe4955f2f3b3e0be339e135e957ff1960a60"
+    },
+    "observer/return200-billed-startup/startup-1.png": {
+      "bytes": 133484,
+      "sha256": "db35bfa9757f8814f6469dac99749c87c07bf043d9cbcb50c592e9b01669e326"
+    },
+    "observer/return200-billed-startup-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return200-billed-startup-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/return200-billed-workflow/after-state.json": {
+      "bytes": 1284953,
+      "sha256": "83dbf5d75fed97c79437f46df859af51df95157670107e91a719a66e21deece4"
+    },
+    "observer/return200-billed-workflow/before-state.json": {
+      "bytes": 975879,
+      "sha256": "e7f77198accf8ff1076f2b25436f005bc977297bc6c3b72e393c0e72dbe34f42"
+    },
+    "observer/return200-billed-workflow/invalid-last-row-focused.png": {
+      "bytes": 220019,
+      "sha256": "dfbbaa0636f5a0f98e9ca62245b509ea5bf5d2ca7719d7f7c891ecd3b1188265"
+    },
+    "observer/return200-billed-workflow/last-preview-page.png": {
+      "bytes": 258261,
+      "sha256": "734e8e37e9bec2aa995a7a17288df04305135730947208b0ac35b359474c5165"
+    },
+    "observer/return200-billed-workflow/posted.png": {
+      "bytes": 156980,
+      "sha256": "f883aae446f5ecfb42692474288ffbf35968c5422c01569d5036ede49c89033d"
+    },
+    "observer/return200-billed-workflow/procurement-performance-phases.jsonl": {
+      "bytes": 620,
+      "sha256": "e9914d0926cef107d540e246198e1d5259f27896963f74c6bea03eb2b07bf180"
+    },
+    "observer/return200-billed-workflow.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/runtime/dconf/user": {
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    "observer/source120-billed-search/selected-source-exact.png": {
+      "bytes": 186007,
+      "sha256": "f33d991b31610e770e8c89cccc41654c2b2833e153a0169d9ce3b13662edacc9"
+    },
+    "observer/source120-billed-search.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/source120-billed-startup/startup-0.png": {
+      "bytes": 133469,
+      "sha256": "13dd26de65369bd46305fecbdbf0bdd0c256eae4458cdd7abd213a1337407eeb"
+    },
+    "observer/source120-billed-startup/startup-1.png": {
+      "bytes": 133546,
+      "sha256": "27c666631a5796cde711766f04e1c76c7a5fee18244b5574f6d884ed17dcdaa9"
+    },
+    "observer/source120-billed-startup-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/source120-billed-startup-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/source120-unbilled-search/selected-source-exact.png": {
+      "bytes": 190021,
+      "sha256": "1d66251c8efa9c3b4dd75deafaf93b63e02d1a711fbd0ceacbc8010fd463e0f9"
+    },
+    "observer/source120-unbilled-search.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/source120-unbilled-startup/startup-0.png": {
+      "bytes": 133548,
+      "sha256": "d50982e8c8b49854744779593a300b8111b2a8753d2282974bd059e55e707e14"
+    },
+    "observer/source120-unbilled-startup/startup-1.png": {
+      "bytes": 133469,
+      "sha256": "13dd26de65369bd46305fecbdbf0bdd0c256eae4458cdd7abd213a1337407eeb"
+    },
+    "observer/source120-unbilled-startup-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/source120-unbilled-startup-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/xvfb.log": {
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    "owned-process-closure.json": {
+      "bytes": 3507,
+      "sha256": "f39a18394730f3782870671addab9968fd6c0c0565e826d5eef3281542f22ce7"
+    }
+  },
+  "excluded_SQLite_files": [
+    "observer/main-posted-startup/sarv.sqlite3",
+    "observer/main-posted-startup/sarv.sqlite3-shm",
+    "observer/main-posted-startup/sarv.sqlite3-wal",
+    "observer/main-seed-startup/sarv.sqlite3",
+    "observer/main-seed-startup/sarv.sqlite3-shm",
+    "observer/main-seed-startup/sarv.sqlite3-wal",
+    "observer/return20-billed-workflow/sarv.sqlite3",
+    "observer/return20-billed-workflow/sarv.sqlite3-shm",
+    "observer/return20-billed-workflow/sarv.sqlite3-wal",
+    "observer/return20-unbilled-startup/sarv.sqlite3",
+    "observer/return20-unbilled-startup/sarv.sqlite3-shm",
+    "observer/return20-unbilled-startup/sarv.sqlite3-wal",
+    "observer/return20-unbilled-workflow/sarv.sqlite3",
+    "observer/return20-unbilled-workflow/sarv.sqlite3-shm",
+    "observer/return20-unbilled-workflow/sarv.sqlite3-wal",
+    "observer/return200-billed-startup/sarv.sqlite3",
+    "observer/return200-billed-startup/sarv.sqlite3-shm",
+    "observer/return200-billed-startup/sarv.sqlite3-wal",
+    "observer/return200-billed-workflow/sarv.sqlite3",
+    "observer/return200-billed-workflow/sarv.sqlite3-shm",
+    "observer/return200-billed-workflow/sarv.sqlite3-wal",
+    "observer/source120-billed-search/sarv.sqlite3",
+    "observer/source120-billed-search/sarv.sqlite3-shm",
+    "observer/source120-billed-search/sarv.sqlite3-wal",
+    "observer/source120-billed-startup/sarv.sqlite3",
+    "observer/source120-billed-startup/sarv.sqlite3-shm",
+    "observer/source120-billed-startup/sarv.sqlite3-wal",
+    "observer/source120-unbilled-search/sarv.sqlite3",
+    "observer/source120-unbilled-search/sarv.sqlite3-shm",
+    "observer/source120-unbilled-search/sarv.sqlite3-wal",
+    "observer/source120-unbilled-startup/sarv.sqlite3",
+    "observer/source120-unbilled-startup/sarv.sqlite3-shm",
+    "observer/source120-unbilled-startup/sarv.sqlite3-wal"
+  ],
+  "full_raw_arrays_retained": true
+}

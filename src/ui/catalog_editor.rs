@@ -72,6 +72,11 @@ struct Composer {
 
 impl Composer {
     fn set_busy(&self, busy: bool) {
+        // Complete text focus-out before disabling its EntryRow. Otherwise
+        // GTK's cursor timer can outlive the lost focus during validation.
+        if busy {
+            self.dialog.set_focus(None::<&gtk::Widget>);
+        }
         for field in [
             &self.code,
             &self.description,
@@ -92,6 +97,66 @@ impl Composer {
         self.previous.set_sensitive(!busy);
         self.next.set_sensitive(!busy);
     }
+    /// Prepare a large copied catalogue without normalizing every product in GTK.
+    /// The worker owns only a disposable product snapshot; closing discards it.
+    fn prepare_index(self: &Rc<Self>) {
+        self.set_busy(true);
+        self.count.set_text("در حال آماده‌سازی کالاهای فهرست…");
+        let weak = Rc::downgrade(self);
+        glib::timeout_add_local(std::time::Duration::from_millis(20), move || {
+            let Some(state) = weak.upgrade() else {
+                return glib::ControlFlow::Break;
+            };
+            let Some(ui) = state.ui.upgrade() else {
+                return glib::ControlFlow::Break;
+            };
+            if !ui.window.is_visible() {
+                return glib::ControlFlow::Break;
+            }
+            if ui.background_busy.get() {
+                return glib::ControlFlow::Continue;
+            }
+            let products = state.products.borrow().clone();
+            let weak = Rc::downgrade(&state);
+            let started = ui.run_background(
+                "آماده‌سازی کالاهای فهرست…",
+                move || {
+                    Ok(SearchIndex::new(
+                        products.iter().map(super::managers::product_document),
+                    ))
+                },
+                move |ui, result| {
+                    let Some(state) = weak.upgrade() else {
+                        ui.message(Ok("آماده‌سازی فهرست لغو شد؛ فهرست اصلی تغییر نکرد."));
+                        return;
+                    };
+                    match result {
+                        Ok(index) => {
+                            *state.search_index.borrow_mut() = index;
+                            state.set_busy(false);
+                            state.render();
+                            ui.message(Ok("کالاهای فهرست برای ویرایش آماده‌اند."));
+                        }
+                        Err(error) => {
+                            state
+                                .error
+                                .set_text(&format!("{error:#}؛ فرم را ببندید و دوباره باز کنید."));
+                            state.count.set_text("آماده‌سازی کالاها انجام نشد.");
+                            ui.message(Err::<String, _>(error));
+                        }
+                    }
+                },
+            );
+            if !started {
+                state
+                    .error
+                    .set_text("آماده‌سازی کالاها شروع نشد؛ فرم را ببندید و دوباره باز کنید.");
+                state.count.set_text("آماده‌سازی کالاها انجام نشد.");
+            }
+            glib::ControlFlow::Break
+        });
+    }
+
     fn form_pending(&self) -> bool {
         self.editing.get().is_some()
             || [
@@ -521,6 +586,7 @@ pub(super) fn open(ui: &Rc<Ui>, existing: Option<&Catalog>) {
     root.append(&pages);
     let review = button("بررسی و تأیید فهرست تازه");
     root.append(&review);
+    let large_copy = existing.is_some_and(|catalog| catalog.products.len() > 1000);
     let state = Rc::new(Composer {
         ui: Rc::downgrade(ui),
         products: RefCell::new(
@@ -531,17 +597,21 @@ pub(super) fn open(ui: &Rc<Ui>, existing: Option<&Catalog>) {
         editing: Cell::new(None),
         page_start: Cell::new(0),
         search,
-        search_index: RefCell::new(SearchIndex::new(
-            existing
-                .map(|catalog| {
-                    catalog
-                        .products
-                        .iter()
-                        .map(super::managers::product_document)
-                        .collect::<Vec<_>>()
-                })
-                .unwrap_or_default(),
-        )),
+        search_index: RefCell::new(if large_copy {
+            SearchIndex::new(Vec::<String>::new())
+        } else {
+            SearchIndex::new(
+                existing
+                    .map(|catalog| {
+                        catalog
+                            .products
+                            .iter()
+                            .map(super::managers::product_document)
+                            .collect::<Vec<_>>()
+                    })
+                    .unwrap_or_default(),
+            )
+        }),
         previous,
         next,
         digits: ui.store.borrow().state.settings.display_digits,
@@ -563,7 +633,11 @@ pub(super) fn open(ui: &Rc<Ui>, existing: Option<&Catalog>) {
         dialog: dialog.clone(),
     });
     state.clear_form();
-    state.render();
+    if large_copy {
+        state.prepare_index();
+    } else {
+        state.render();
+    }
     let weak = Rc::downgrade(&state);
     state.search.connect_search_changed(move |_| {
         if let Some(state) = weak.upgrade() {
@@ -621,6 +695,39 @@ pub(super) fn open(ui: &Rc<Ui>, existing: Option<&Catalog>) {
         lifetime.borrow_mut().take();
     });
     dialog.set_child(Some(&dialog_toolbar(&scroll(&root))));
+    // Native header button FlowBox focus may consume Escape. The current
+    // composer owns plain Escape; nested dialogs and open popovers retain it.
+    let escape = gtk::EventControllerKey::new();
+    escape.set_propagation_phase(gtk::PropagationPhase::Capture);
+    let weak_dialog = dialog.downgrade();
+    let weak_ui = Rc::downgrade(ui);
+    escape.connect_key_pressed(move |_, key, _, modifiers| {
+        let Some(dialog) = weak_dialog.upgrade() else {
+            return glib::Propagation::Proceed;
+        };
+        let Some(ui) = weak_ui.upgrade() else {
+            return glib::Propagation::Proceed;
+        };
+        let modified = gtk::gdk::ModifierType::SHIFT_MASK
+            | gtk::gdk::ModifierType::CONTROL_MASK
+            | gtk::gdk::ModifierType::ALT_MASK
+            | gtk::gdk::ModifierType::SUPER_MASK
+            | gtk::gdk::ModifierType::HYPER_MASK
+            | gtk::gdk::ModifierType::META_MASK;
+        if key != gtk::gdk::Key::Escape
+            || modifiers.intersects(modified)
+            || ui.visible_dialog().as_ref() != Some(&dialog)
+            || !dialog.can_close()
+            || dialog
+                .focus()
+                .is_some_and(|focus| focus.ancestor(gtk::Popover::static_type()).is_some())
+        {
+            return glib::Propagation::Proceed;
+        }
+        dialog.close();
+        glib::Propagation::Stop
+    });
+    dialog.add_controller(escape);
     ui.present_dialog(&dialog);
 }
 

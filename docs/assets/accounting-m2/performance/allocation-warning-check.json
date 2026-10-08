@@ -1,0 +1,7 @@
+{
+  "binary_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d",
+  "application_process_logs": 22,
+  "warning_or_critical_logs": [],
+  "result": "passed",
+  "scope": "Repeated synthetic G1 and 50k-product/1k-line startup and lookup; helper accessibility warnings are separate"
+}

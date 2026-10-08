@@ -1,0 +1,124 @@
+{
+  "functional_qualification_only": true,
+  "accepted_final_measurement": false,
+  "production_source_sha256": "efd4fdda06b2aa492239aac3dde74741b1a439c4d54afb11fa34ae0699244c72",
+  "binary_sha256": "c8ff9dd27b9e5a0d1946978de13c231e0c12ca1d6c30496636a00f00e01b0aad",
+  "observer_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "initial_build_snapshot_observer_sha256": "deb6d95c31c937d655f77d171fda14b152f1079d936a4f15319b30e7a8c18ca4",
+  "M5": {
+    "result": "passed",
+    "n_startup": 1,
+    "n_search": 2,
+    "startup_cohorts": 6,
+    "filtered_pages": 3,
+    "long_pages": 40,
+    "long_page_samples": 39,
+    "cache_receipt_counts": {
+      "posted": 3,
+      "paged": 5,
+      "long": 40
+    },
+    "current_memberships_at_all_positive_receipts": true,
+    "exact_zero_exposure_qualified": true,
+    "zero_stale_leaf_showing_flags_retained": true,
+    "all_guards_passed": true,
+    "raw_report": "pilot-candidate8-passed/performance.json"
+  },
+  "M2": {
+    "result": "passed",
+    "protocol": "m5-action-v1.2",
+    "checks": 15,
+    "completed_additive_scopes": 22,
+    "strict_miss_scopes": [
+      {
+        "id": 3,
+        "operation": "quote_page_changed_save",
+        "max_gap_ms": 60.933649,
+        "strict_status": "miss"
+      },
+      {
+        "id": 4,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 51.620196,
+        "strict_status": "miss"
+      },
+      {
+        "id": 5,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 65.335713,
+        "strict_status": "miss"
+      },
+      {
+        "id": 6,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 60.973149,
+        "strict_status": "miss"
+      },
+      {
+        "id": 7,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 68.62531,
+        "strict_status": "miss"
+      },
+      {
+        "id": 8,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 60.221298,
+        "strict_status": "miss"
+      },
+      {
+        "id": 9,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 65.59224900000001,
+        "strict_status": "miss"
+      },
+      {
+        "id": 10,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 68.221777,
+        "strict_status": "miss"
+      },
+      {
+        "id": 11,
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 71.07243700000001,
+        "strict_status": "miss"
+      },
+      {
+        "id": 12,
+        "operation": "quote_page_unchanged_previous",
+        "max_gap_ms": 52.415954,
+        "strict_status": "miss"
+      },
+      {
+        "id": 15,
+        "operation": "quote_page_unchanged_previous",
+        "max_gap_ms": 56.224572,
+        "strict_status": "miss"
+      },
+      {
+        "id": 16,
+        "operation": "quote_page_unchanged_previous",
+        "max_gap_ms": 54.912585,
+        "strict_status": "miss"
+      },
+      {
+        "id": 17,
+        "operation": "quote_page_unchanged_previous",
+        "max_gap_ms": 58.620022,
+        "strict_status": "miss"
+      },
+      {
+        "id": 21,
+        "operation": "quote_product_choice",
+        "max_gap_ms": 67.848173,
+        "strict_status": "miss"
+      }
+    ],
+    "all_guards_passed": true,
+    "raw_report": "scale-pilot-candidate8-passed/synthetic-profile/native-responsiveness-verification.json"
+  },
+  "scheduling": "Root authorized diagnostic parallelism; actual per-process overlap was not instrumented. Root candidate8 seven-command gates are deferred until runtime qualification. Existing desktops/shared scheduling remain uncontrolled. Functional qualification only, not accepted timing.",
+  "C2_historical_strict_results_unchanged": true,
+  "final_quiet_GO_received": false
+}

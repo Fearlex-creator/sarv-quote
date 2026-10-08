@@ -244,7 +244,7 @@ fn restore_is_validated_and_retains_the_committed_safety_snapshot() {
         .unwrap();
     let before = bytes(&store.state);
     let invalid = State {
-        schema: 2,
+        schema: 99,
         ..State::default()
     };
     assert!(store.restore(invalid).is_err());
@@ -262,14 +262,21 @@ fn restore_is_validated_and_retains_the_committed_safety_snapshot() {
 #[test]
 fn backup_envelope_and_legacy_optional_fields_are_validated() {
     let dir = tempfile::tempdir().unwrap();
-    let mut legacy = State::default();
+    let mut legacy = State {
+        schema: 1,
+        ..State::default()
+    };
     legacy.draft.quote_date.clear();
     let payload = bytes(&legacy);
     assert!(!String::from_utf8_lossy(&payload).contains("quote_date"));
     let good = serde_json::json!({ "format": "sarv-quote-backup-v1", "checksum": hash(&payload), "state": legacy });
     let path = dir.path().join("legacy.json");
     fs::write(&path, serde_json::to_vec(&good).unwrap()).unwrap();
-    assert_eq!(bytes(&Store::restore_preview(&path).unwrap()), payload);
+    let upgraded = Store::restore_preview(&path).unwrap();
+    assert_eq!(upgraded.schema, sarv_quote::domain::CURRENT_SCHEMA);
+    let mut expected = legacy.clone();
+    expected.schema = sarv_quote::domain::CURRENT_SCHEMA;
+    assert_eq!(bytes(&upgraded), bytes(&expected));
     for kind in ["unknown", "checksum", "schema", "extra"] {
         let mut bad = good.clone();
         match kind {

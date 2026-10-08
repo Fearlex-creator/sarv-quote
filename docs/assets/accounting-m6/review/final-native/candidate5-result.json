@@ -1,0 +1,60 @@
+{
+  "reviewer": "m6_final_native_review",
+  "candidate": "candidate5",
+  "production_source_sha256": "9241e35e3f7a9a324ffaae9a670212e2d1fb1e4fa792fd6dd99af92812ab942a",
+  "binary_sha256": "355e975c473e22da3ca37ada1893de029279c4c167b4c7876a6e0d3f0b62a94d",
+  "sidebar_all19_hashes_match": true,
+  "sidebar_all31_checks_pass": true,
+  "visual_findings": [
+    {
+      "id": "C5-R02",
+      "priority": 3,
+      "finding": "Narrow close button displays missing image; sidebar-hide-symbolic absent from bundled theme",
+      "repair_planned": "candidate6 uses window-close-symbolic and real XTest pointer coverage"
+    }
+  ],
+  "native_return_run": "/workspace/sarv-quote/artifacts/purchase-returns-native/run-v0r7ryuy",
+  "native_receipt_sha256": "ab071a3b9a0c774c31b0e13aadd66812f5581814aa9149ef62a8075ebe574a22",
+  "native_checks_passed": 33,
+  "native_checks_failed": 1,
+  "raw_result": "failed",
+  "actual_exports": {
+    "physical-return": {
+      "visible_codes_exact_after_only_layout_normalization": {
+        "company": true,
+        "return": true,
+        "credit": true,
+        "journal": true,
+        "bill": true,
+        "receipt_line": true,
+        "bill_line": true,
+        "return_line": true,
+        "credit_reference": true,
+        "return_reference": true
+      },
+      "pdf_sha256": "dfeeb596470f415f082acd42a0a3dd1e6d5009331d2e53392644e81b6a408926",
+      "csv_sha256": "8334b9e28c99fc55ab8bd91b9fb2939b8a67f2b854c4d8158ca45075a3b49445",
+      "text_sha256": "5f69db7a12646781e30e4b0c9bea128f6080b8d503d858d115758ba4e6e6cba6"
+    },
+    "supplier-credit": {
+      "visible_codes_exact_after_only_layout_normalization": {
+        "company": true,
+        "return": true,
+        "credit": true,
+        "journal": true,
+        "bill": true,
+        "receipt_line": true,
+        "bill_line": true,
+        "return_line": true,
+        "credit_reference": true,
+        "return_reference": false
+      },
+      "pdf_sha256": "b8cf5e07d3ebe58578aee005086c2ae6bc912c1e4f2d7e9a8eda2112b9a8ab14",
+      "csv_sha256": "8d0846aae915cb8a23d14bb3c94c4afa86b988bd69d3e77d634ff171acae96ab",
+      "text_sha256": "c2841256440f72acc7ce65adf1e7d4eba8bf09005376da3bf6d514ac90b1d03c"
+    }
+  },
+  "independent_interpretation": "C3-R01 digit substitution repaired; C5 credit heading omits ZWNJ and wrapped return-reference extraction interleaves neighboring metadata bullet. No digit normalization or blanket punctuation removal accepted. Candidate6 puts references on separate lines and preserves raw exact-reference assertions. Failed C5 receipt retained.",
+  "acceptance": "bounded evidence only; final immutable candidate6 native/export execution still required",
+  "scoped_reconciliation_pdf_sha256": "5294a924150788734d45cad6331f433b0075262b25765c52658859ab5eb2ccc3"
+}

@@ -1,0 +1,36 @@
+{
+  "all_three_prepared_States_exact": true,
+  "no_durable_return_or_readonly_mutation": true,
+  "profiles": [
+    {
+      "dataset": "source120-billed",
+      "stopped_profile": "/workspace/sarv-quote/artifacts/performance-m6/candidate8-runtime2-pilot1/observer/source120-billed-search/sarv.sqlite3",
+      "generation": 1,
+      "payload_sha256": "69f0716aee2b654548ec99f2f9b93880ac01e71c67dcba1243b8f2410763cf2d",
+      "prepared_generation_payload_bytes_exact": true,
+      "source_integrity": "ok",
+      "stopped_integrity": "ok",
+      "portable_state": "source120-billed-search-stopped-state.json"
+    },
+    {
+      "dataset": "source120-unbilled",
+      "stopped_profile": "/workspace/sarv-quote/artifacts/performance-m6/candidate8-runtime2-pilot1/observer/source120-unbilled-search/sarv.sqlite3",
+      "generation": 1,
+      "payload_sha256": "bffe28c2f05d003139335edc0a2a66d9268c6b21f07804351a1fbe8392fcbf81",
+      "prepared_generation_payload_bytes_exact": true,
+      "source_integrity": "ok",
+      "stopped_integrity": "ok",
+      "portable_state": "source120-unbilled-search-stopped-state.json"
+    },
+    {
+      "dataset": "return20-billed",
+      "stopped_profile": "/workspace/sarv-quote/artifacts/performance-m6/candidate8-runtime2-pilot1/observer/return20-billed-workflow/sarv.sqlite3",
+      "generation": 1,
+      "payload_sha256": "ca9d513593bd7cddd224b16d59c5c677582a1f1e842cde9d70f7b19429fa26a1",
+      "prepared_generation_payload_bytes_exact": true,
+      "source_integrity": "ok",
+      "stopped_integrity": "ok",
+      "portable_state": "return20-billed-workflow-stopped-state.json"
+    }
+  ]
+}

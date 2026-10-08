@@ -1,0 +1,10 @@
+{
+  "exact_old_row_after_kill": true,
+  "generation_after": 30,
+  "generation_before": 29,
+  "integrity": "ok",
+  "result": "passed",
+  "schema_after": 7,
+  "schema_before": 6,
+  "scope": "owned child killed while startup waits behind owned writer, before migration; not hardware power loss"
+}

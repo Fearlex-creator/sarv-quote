@@ -1,0 +1,81 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 2173,
+      "sha256": "883d376c280b6c8e31b90f44fe57b43782b41bcc19ef756053d3fcec8ca6a7ad"
+    },
+    "diagnostic.py": {
+      "bytes": 10444,
+      "sha256": "19820694ad074b5fccf9abfef7c3be18276f8db1f7872a8cb1b43c83af79db96"
+    },
+    "result/diagnostic.py": {
+      "bytes": 10444,
+      "sha256": "19820694ad074b5fccf9abfef7c3be18276f8db1f7872a8cb1b43c83af79db96"
+    },
+    "result/openbox.log": {
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    "result/owned-process-closure.json": {
+      "bytes": 1025,
+      "sha256": "6b56291a299b8440d3cff58535e36717693b1dac48f0280d26d23601b4fe284c"
+    },
+    "result/performance.partial.json": {
+      "bytes": 39579,
+      "sha256": "a63960606049245702a220ffd649e1e5c11098e70df13cebcf660e6a1ea25474"
+    },
+    "result/portable-manifest.json": {
+      "bytes": 2365,
+      "sha256": "23933c7990157d25aa454fe47960a4d8d813c6efbc8df1d7b39914ce7fdfbd0d"
+    },
+    "result/runtime/dconf/user": {
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    "result/stopped-profile-check.json": {
+      "bytes": 457,
+      "sha256": "6aa0eb5278a932acf8b9567b273cc4a2685434e117982de89526b9ab866f9ecb"
+    },
+    "result/stopped-unposted-state.json": {
+      "bytes": 975879,
+      "sha256": "e7f77198accf8ff1076f2b25436f005bc977297bc6c3b72e393c0e72dbe34f42"
+    },
+    "result/visual-app.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "result/visual-diagnostic.json": {
+      "bytes": 61250,
+      "sha256": "f3e2e1153b37c1fecaf6321e8b23aa05450e1ed70d6d68157558662ac45345ad"
+    },
+    "result/visual-profile/invalid-immediate.png": {
+      "bytes": 222771,
+      "sha256": "3dbf99061a84a5802c29c09eb4e3f2831efb05d91eed04321e5de21aad8abcf2"
+    },
+    "result/visual-profile/invalid-settled-min0.5s.png": {
+      "bytes": 220019,
+      "sha256": "dfbbaa0636f5a0f98e9ca62245b509ea5bf5d2ca7719d7f7c891ecd3b1188265"
+    },
+    "result/visual-profile/invalid-settled-min1s.png": {
+      "bytes": 220019,
+      "sha256": "dfbbaa0636f5a0f98e9ca62245b509ea5bf5d2ca7719d7f7c891ecd3b1188265"
+    },
+    "result/visual-profile/invalid-settled-min2s.png": {
+      "bytes": 219973,
+      "sha256": "87c6573b9b1b1fc3ca47887dc9eed87a2e347a13a4314289ba2d1de2e74a6992"
+    },
+    "result/visual-profile/keyboard-events.jsonl": {
+      "bytes": 4856,
+      "sha256": "c16b1674bab52b88f0d4ceb327a275a893cbfdc8c29d0497ea3b0c8b4a1d668d"
+    },
+    "result/visual-profile/visual-initial.png": {
+      "bytes": 147930,
+      "sha256": "635956bb8808a8b4acbbc0a0cc686d4e3c7dab4d83eec39fa37ef5732c958208"
+    },
+    "result/xvfb.log": {
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    }
+  },
+  "contains_sqlite_or_executable": false
+}

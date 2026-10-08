@@ -1,0 +1,2129 @@
+{
+  "result": "Retained20-line exact States and raw native phases checkPASS; epoch remainsfailed/incomplete",
+  "states": {
+    "source120-billed": {
+      "exact_prepared_fixture": true,
+      "integrity": "ok",
+      "generation": 1
+    },
+    "source120-unbilled": {
+      "exact_prepared_fixture": true,
+      "integrity": "ok",
+      "generation": 1
+    },
+    "return20-billed": {
+      "exact_prepared_before": true,
+      "stopped_state_equals_after": true,
+      "integrity": "ok",
+      "generation": 2,
+      "literal_return": {
+        "controls_before": {
+          "Cash": 251,
+          "Bank": 300,
+          "Receivables": 299,
+          "ChequesReceivable": 200,
+          "Inventory": 722,
+          "SupplierAdvances": 0,
+          "FixedAssets": 0,
+          "Payables": -629,
+          "ChequesPayable": -100,
+          "Grni": -50,
+          "CustomerAdvances": 0,
+          "Loans": 0,
+          "OwnerCapital": -952,
+          "OwnerDrawings": 0,
+          "RetainedEarnings": 0,
+          "Sales": -199,
+          "SalesReturns": 100,
+          "Cogs": 58,
+          "OperatingExpense": 0,
+          "BankFees": 0,
+          "InventoryLoss": 0,
+          "TB_debit": 1930,
+          "TB_credit": 1930
+        },
+        "controls_after": {
+          "Cash": 251,
+          "Bank": 300,
+          "Receivables": 299,
+          "ChequesReceivable": 200,
+          "Inventory": 422,
+          "SupplierAdvances": 0,
+          "FixedAssets": 0,
+          "Payables": -329,
+          "ChequesPayable": -100,
+          "Grni": -50,
+          "CustomerAdvances": 0,
+          "Loans": 0,
+          "OwnerCapital": -952,
+          "OwnerDrawings": 0,
+          "RetainedEarnings": 0,
+          "Sales": -199,
+          "SalesReturns": 100,
+          "Cogs": 58,
+          "OperatingExpense": 0,
+          "BankFees": 0,
+          "InventoryLoss": 0,
+          "TB_debit": 1630,
+          "TB_credit": 1630
+        },
+        "record": {
+          "id": "7ca75425-a1be-4b88-b529-3a2225a38a71",
+          "command": {
+            "Return": {
+              "context": {
+                "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+                "period_id": "27cfbb83-1951-472b-85fc-cfb25bb44bb7",
+                "setup_id": "82d36237-24b9-4f1a-93d9-98f1679b50d6",
+                "source_id": "fd683beb-c766-48b2-b26f-bfa39d449434",
+                "source_revision": 1,
+                "date": "2026-04-03",
+                "request_key": "d5c7163d-7f8f-4b7e-a09b-15009e2e4ece",
+                "actor": "local-single-user",
+                "reason": "M6 performance exact original cost return20-billed"
+              },
+              "supplier_id": "SU-A",
+              "return_id": "3446e9fe-90bd-4d5b-936e-f98e4f18d407",
+              "return_reference": "M6-PERF-RETURN-return20-billed",
+              "credit_id": "e6ae7904-afe7-41ba-87b6-0fec45e289fd",
+              "credit_reference": "M6-PERF-CREDIT-return20-billed",
+              "document_date": "2026-04-03",
+              "lines": [
+                {
+                  "id": "43fc028d-4098-4af3-92a0-f23ad9e1f12c",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L001",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L001",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "3c844dfb-7461-4650-a6a9-70194fedb311",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L002",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L002",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "95a167cc-72a4-4865-ad29-12fff281c09c",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L003",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L003",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "5761bd30-9433-4190-8946-30c784383667",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L004",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L004",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "71601793-ab3d-433d-bd5a-bb82b3fffc22",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L005",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L005",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "f221de43-e63b-4929-840e-a35c9485e32e",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L006",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L006",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "a0efc867-cf23-46a2-9c60-cf7990131ac3",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L007",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L007",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "9e7fbc3b-ef19-4ab8-ac0f-089621c35344",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L008",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L008",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "2c42a64c-d49c-4b4c-8183-2a948f8dfa07",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L009",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L009",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "ecc83283-eb72-4876-bb22-65e3b45a7ac4",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L010",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L010",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "431d8976-420f-45ee-99c9-720bce3aed0b",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L011",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L011",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "b3181894-d52c-4df7-89b4-6fd93b8773d5",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L012",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L012",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "d34a4acc-63f8-42b3-aa81-3bfb65fbd1c1",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L013",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L013",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "a1fc824a-099a-4993-8219-61d93df9f39c",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L014",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L014",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "434154a2-218e-46f3-905d-2ed107d1ebda",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L015",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L015",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "4063950b-c06c-4ddf-920a-79cc0be16497",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L016",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L016",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "251c1e95-172a-4550-bed2-e6041422f591",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L017",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L017",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "45fd41ff-18f3-41be-8d57-17c13eb4421b",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L018",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L018",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "5973aea6-a0d5-42e7-888a-13dbbc247c5a",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L019",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L019",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "19c0e247-fad4-4958-a9cf-33aa87ca7e03",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L020",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L020",
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                }
+              ],
+              "supplied_total": 300
+            }
+          },
+          "command_sha256": "beb710d39367631c2b668541614a99180f020d7084381cc49804fb470ce81ef7",
+          "frozen_setup": {
+            "id": "82d36237-24b9-4f1a-93d9-98f1679b50d6",
+            "command": {
+              "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+              "period_id": "27cfbb83-1951-472b-85fc-cfb25bb44bb7",
+              "policy": {
+                "version": "core-policy-v1",
+                "effective_date": "2026-03-21",
+                "timezone": "AsiaTehran",
+                "recognition": "AccrualPerpetualCombinedDelivery",
+                "valuation": "MovingWeightedAveragePerItemWarehouse",
+                "rounding": "PositiveHalfUpWholeRial",
+                "returns": "OriginalAllocationCumulativeFinalResidual",
+                "currency": "IRR",
+                "quantity_scale": 1000,
+                "tax_enabled": false,
+                "allow_negative_stock": false,
+                "allow_stock_backdating": false
+              },
+              "mappings": [
+                {
+                  "role": "Cash",
+                  "account_id": "cd74b336-de34-4af4-b77b-8aec7fff838b"
+                },
+                {
+                  "role": "Bank",
+                  "account_id": "47b27ee6-844f-4474-b0f7-f0bdaebb1ded"
+                },
+                {
+                  "role": "Receivables",
+                  "account_id": "16cf2fbc-9189-4800-9fb1-13cf4ae96451"
+                },
+                {
+                  "role": "ChequesReceivable",
+                  "account_id": "90f0411c-199a-4d69-aed7-bf4dcaa209cd"
+                },
+                {
+                  "role": "Inventory",
+                  "account_id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410"
+                },
+                {
+                  "role": "SupplierAdvances",
+                  "account_id": "1b3243eb-30e6-4c53-a773-6df75ea39800"
+                },
+                {
+                  "role": "FixedAssets",
+                  "account_id": "412d33ce-9bee-47a7-a4ea-de6c736de639"
+                },
+                {
+                  "role": "Payables",
+                  "account_id": "1cc84f6d-1574-463c-b7ab-80a970276f6a"
+                },
+                {
+                  "role": "ChequesPayable",
+                  "account_id": "cd7505ed-64cb-4eba-917b-ebac9d067b6f"
+                },
+                {
+                  "role": "Grni",
+                  "account_id": "cac0dcee-4a73-4e43-a8af-59fc4af9e0fc"
+                },
+                {
+                  "role": "CustomerAdvances",
+                  "account_id": "faa4c392-3cc0-4ffb-a705-3114f4e10715"
+                },
+                {
+                  "role": "Loans",
+                  "account_id": "d3e7a00a-699e-4856-8bd4-1eea4953df5a"
+                },
+                {
+                  "role": "OwnerCapital",
+                  "account_id": "e6c0b03e-8076-439a-b3a0-8703267013b5"
+                },
+                {
+                  "role": "OwnerDrawings",
+                  "account_id": "83b4ca47-5c1e-4f9c-9e24-a1eb7d134a8a"
+                },
+                {
+                  "role": "RetainedEarnings",
+                  "account_id": "349a1f25-9e70-44c5-9951-3cbc846b0fb7"
+                },
+                {
+                  "role": "Sales",
+                  "account_id": "8c9f76fb-9674-4410-92ee-e498a83116e5"
+                },
+                {
+                  "role": "SalesReturns",
+                  "account_id": "1afa7f85-d8f4-4687-8e19-7421ab527166"
+                },
+                {
+                  "role": "Cogs",
+                  "account_id": "5cd9bec6-5628-4d8e-ba72-1edb638b4bd4"
+                },
+                {
+                  "role": "OperatingExpense",
+                  "account_id": "18de9705-e630-4495-b3f9-b6a654573e43"
+                },
+                {
+                  "role": "BankFees",
+                  "account_id": "835d52d3-2de4-41c9-9fd1-6455658caaec"
+                },
+                {
+                  "role": "InventoryLoss",
+                  "account_id": "2458b496-a74e-4980-be83-ce105fd881f1"
+                }
+              ],
+              "actor": "local-single-user",
+              "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+            },
+            "command_sha256": "aa27e45697447f0f4bb1fd99c91a8a64a4c6fe0c1afca5f7b8ea2371cd8f64b4"
+          },
+          "sequence": 21,
+          "journal_id": "8ec908d1-d513-4a8d-aa94-fc6a7d0fe892",
+          "data": {
+            "Return": {
+              "supplier_id": "SU-A",
+              "return_id": "3446e9fe-90bd-4d5b-936e-f98e4f18d407",
+              "return_state": "Returned",
+              "credit_id": "e6ae7904-afe7-41ba-87b6-0fec45e289fd",
+              "credit_state": "Posted",
+              "receipt_id": null,
+              "bill_id": "454fd80a-4cf9-4816-9b88-31d87419b0a3",
+              "lines": [
+                {
+                  "id": "43fc028d-4098-4af3-92a0-f23ad9e1f12c",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L001",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L001",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "3c844dfb-7461-4650-a6a9-70194fedb311",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L002",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L002",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "95a167cc-72a4-4865-ad29-12fff281c09c",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L003",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L003",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "5761bd30-9433-4190-8946-30c784383667",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L004",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L004",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "71601793-ab3d-433d-bd5a-bb82b3fffc22",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L005",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L005",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "f221de43-e63b-4929-840e-a35c9485e32e",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L006",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L006",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "a0efc867-cf23-46a2-9c60-cf7990131ac3",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L007",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L007",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "9e7fbc3b-ef19-4ab8-ac0f-089621c35344",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L008",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L008",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "2c42a64c-d49c-4b4c-8183-2a948f8dfa07",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L009",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L009",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "ecc83283-eb72-4876-bb22-65e3b45a7ac4",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L010",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L010",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "431d8976-420f-45ee-99c9-720bce3aed0b",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L011",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L011",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "b3181894-d52c-4df7-89b4-6fd93b8773d5",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L012",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L012",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "d34a4acc-63f8-42b3-aa81-3bfb65fbd1c1",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L013",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L013",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "a1fc824a-099a-4993-8219-61d93df9f39c",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L014",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L014",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "434154a2-218e-46f3-905d-2ed107d1ebda",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L015",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L015",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "4063950b-c06c-4ddf-920a-79cc0be16497",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L016",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L016",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "251c1e95-172a-4550-bed2-e6041422f591",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L017",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L017",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "45fd41ff-18f3-41be-8d57-17c13eb4421b",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L018",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L018",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "5973aea6-a0d5-42e7-888a-13dbbc247c5a",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L019",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L019",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "19c0e247-fad4-4958-a9cf-33aa87ca7e03",
+                  "receipt_line_id": "M6-PERF-return20-billed-GR-L020",
+                  "bill_line_id": "M6-PERF-return20-billed-BILL-L020",
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                }
+              ],
+              "total": 300
+            }
+          },
+          "movements": [
+            {
+              "id": "stock:296641f5958cc9d52c36e4bfd41d4941dcf6c43e9cd26f7a3229520f00e2e367",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "43fc028d-4098-4af3-92a0-f23ad9e1f12c",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 45000,
+                "value": 592
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 44000,
+                "value": 577
+              }
+            },
+            {
+              "id": "stock:1bf3a29864cd48a2d727787827cd71baddd068c53b7b6dba954af2c8b40a86b9",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "3c844dfb-7461-4650-a6a9-70194fedb311",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 44000,
+                "value": 577
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 43000,
+                "value": 562
+              }
+            },
+            {
+              "id": "stock:d103adc337160b7ed36caf1a8167e1fe0664345457b85febbcceb3e70154bd80",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "95a167cc-72a4-4865-ad29-12fff281c09c",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 43000,
+                "value": 562
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 42000,
+                "value": 547
+              }
+            },
+            {
+              "id": "stock:7c8545855ed0a2e30e1c3694cb62c11757411c885196a4522a9a700ec8e2e094",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "5761bd30-9433-4190-8946-30c784383667",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 42000,
+                "value": 547
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 41000,
+                "value": 532
+              }
+            },
+            {
+              "id": "stock:4ce61179b29cd30fe1b41a6746801f07ddfa8d88835391c18e747b9947d9eeb7",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "71601793-ab3d-433d-bd5a-bb82b3fffc22",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 41000,
+                "value": 532
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 40000,
+                "value": 517
+              }
+            },
+            {
+              "id": "stock:04eb8771a4984dd01c21c2a24e972f400a46affc23fbe0e66fc0533cecade509",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "f221de43-e63b-4929-840e-a35c9485e32e",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 40000,
+                "value": 517
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 39000,
+                "value": 502
+              }
+            },
+            {
+              "id": "stock:664ebb19e0128e3560f3dd473f3567ca4ab40ab65067f055cfda693952e1e46f",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "a0efc867-cf23-46a2-9c60-cf7990131ac3",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 39000,
+                "value": 502
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 38000,
+                "value": 487
+              }
+            },
+            {
+              "id": "stock:c6e5f512742e2556e05b7517e181236516bbd80b45b12565810164053b91749e",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "9e7fbc3b-ef19-4ab8-ac0f-089621c35344",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 38000,
+                "value": 487
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 37000,
+                "value": 472
+              }
+            },
+            {
+              "id": "stock:1718f3e16d92f3cfa9f7837d1f26035b673c0fd9c676aa427e7d3fadc7ad647f",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "2c42a64c-d49c-4b4c-8183-2a948f8dfa07",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 37000,
+                "value": 472
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 36000,
+                "value": 457
+              }
+            },
+            {
+              "id": "stock:770675d195d34d6b33717b3888c8f32245cfcd9d773c10ea68e72d9c291e2c1d",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "ecc83283-eb72-4876-bb22-65e3b45a7ac4",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 36000,
+                "value": 457
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 35000,
+                "value": 442
+              }
+            },
+            {
+              "id": "stock:62e4d9f898f8d3870997f40129f6d0e09ca76110dfad5c10a04e4c65b9c261f9",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "431d8976-420f-45ee-99c9-720bce3aed0b",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 35000,
+                "value": 442
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 34000,
+                "value": 427
+              }
+            },
+            {
+              "id": "stock:4e3ac5f85fa59ccacb49b2f04e8c335bd57a5fe47846b3ccf210020ec6d2f263",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "b3181894-d52c-4df7-89b4-6fd93b8773d5",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 34000,
+                "value": 427
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 33000,
+                "value": 412
+              }
+            },
+            {
+              "id": "stock:cd4acc3316fc0706c5fbac6c82190b26e2d55ca733541b21634f212eedc50724",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "d34a4acc-63f8-42b3-aa81-3bfb65fbd1c1",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 33000,
+                "value": 412
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 32000,
+                "value": 397
+              }
+            },
+            {
+              "id": "stock:403790aaa4621f7dcb0a47d0378a5eb4346f30d10db469404203bfe95c39dd74",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "a1fc824a-099a-4993-8219-61d93df9f39c",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 32000,
+                "value": 397
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 31000,
+                "value": 382
+              }
+            },
+            {
+              "id": "stock:4375fdbb6378a3c5fdd8ee38ebd51849861a03b36b7663fd1226167c570cee11",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "434154a2-218e-46f3-905d-2ed107d1ebda",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 31000,
+                "value": 382
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 30000,
+                "value": 367
+              }
+            },
+            {
+              "id": "stock:13c9c05d366186e46a22272479c3794cbe5995492a31ae6ef9516d373674e02e",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "4063950b-c06c-4ddf-920a-79cc0be16497",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 30000,
+                "value": 367
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 29000,
+                "value": 352
+              }
+            },
+            {
+              "id": "stock:26c823b5f61661d36af0f8a2f5f25106baecff9fae7496c9ea5b77b022d24b4c",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "251c1e95-172a-4550-bed2-e6041422f591",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 29000,
+                "value": 352
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 28000,
+                "value": 337
+              }
+            },
+            {
+              "id": "stock:57f060bce84f215c59bf72e4f3d1b8ecc781845d3ec0f2017b477836fd659b12",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "45fd41ff-18f3-41be-8d57-17c13eb4421b",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 28000,
+                "value": 337
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 27000,
+                "value": 322
+              }
+            },
+            {
+              "id": "stock:00b1b155bd8746960762ec285d8dc2c69221ab9dc66b29a61fcab7aaba97f09a",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "5973aea6-a0d5-42e7-888a-13dbbc247c5a",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 27000,
+                "value": 322
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 26000,
+                "value": 307
+              }
+            },
+            {
+              "id": "stock:d04de1650265489381ff79177a2a0c9a05b9a307603ff81d9711830e86673c83",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "19c0e247-fad4-4958-a9cf-33aa87ca7e03",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 26000,
+                "value": 307
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 25000,
+                "value": 292
+              }
+            }
+          ]
+        },
+        "exact_new_journal": {
+          "id": "8ec908d1-d513-4a8d-aa94-fc6a7d0fe892",
+          "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+          "period_id": "27cfbb83-1951-472b-85fc-cfb25bb44bb7",
+          "date": "2026-04-03",
+          "source_id": "fd683beb-c766-48b2-b26f-bfa39d449434",
+          "source_revision": 1,
+          "event": "procurement.return.v1",
+          "actor": "local-single-user",
+          "reason": "M6 performance exact original cost return20-billed",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "1cc84f6d-1574-463c-b7ab-80a970276f6a",
+                "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+                "parent_id": "7c04fb6a-a063-481f-b2ab-010a167368f1",
+                "code": "2101",
+                "name": "حساب‌های پرداختنی",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 300,
+              "credit": 0,
+              "description": "M6-PERF-RETURN-return20-billed"
+            },
+            {
+              "account": {
+                "id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410",
+                "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+                "parent_id": "2470e67d-79d2-4a63-87b8-0edc1aa3a523",
+                "code": "1301",
+                "name": "موجودی کالا",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 300,
+              "description": "M6-PERF-RETURN-return20-billed"
+            }
+          ],
+          "recorded_at": "2026-10-08T12:57:14.028484362+00:00"
+        },
+        "all_lines_exact": true,
+        "original_whole_state_prefix_exact": true
+      }
+    },
+    "return20-unbilled": {
+      "exact_prepared_before": true,
+      "stopped_state_equals_after": true,
+      "integrity": "ok",
+      "generation": 2,
+      "literal_return": {
+        "controls_before": {
+          "Cash": 251,
+          "Bank": 300,
+          "Receivables": 299,
+          "ChequesReceivable": 200,
+          "Inventory": 722,
+          "SupplierAdvances": 0,
+          "FixedAssets": 0,
+          "Payables": -329,
+          "ChequesPayable": -100,
+          "Grni": -350,
+          "CustomerAdvances": 0,
+          "Loans": 0,
+          "OwnerCapital": -952,
+          "OwnerDrawings": 0,
+          "RetainedEarnings": 0,
+          "Sales": -199,
+          "SalesReturns": 100,
+          "Cogs": 58,
+          "OperatingExpense": 0,
+          "BankFees": 0,
+          "InventoryLoss": 0,
+          "TB_debit": 1930,
+          "TB_credit": 1930
+        },
+        "controls_after": {
+          "Cash": 251,
+          "Bank": 300,
+          "Receivables": 299,
+          "ChequesReceivable": 200,
+          "Inventory": 422,
+          "SupplierAdvances": 0,
+          "FixedAssets": 0,
+          "Payables": -329,
+          "ChequesPayable": -100,
+          "Grni": -50,
+          "CustomerAdvances": 0,
+          "Loans": 0,
+          "OwnerCapital": -952,
+          "OwnerDrawings": 0,
+          "RetainedEarnings": 0,
+          "Sales": -199,
+          "SalesReturns": 100,
+          "Cogs": 58,
+          "OperatingExpense": 0,
+          "BankFees": 0,
+          "InventoryLoss": 0,
+          "TB_debit": 1630,
+          "TB_credit": 1630
+        },
+        "record": {
+          "id": "beebe9d4-9df3-40db-9c34-2a98235530e8",
+          "command": {
+            "Return": {
+              "context": {
+                "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+                "period_id": "27cfbb83-1951-472b-85fc-cfb25bb44bb7",
+                "setup_id": "82d36237-24b9-4f1a-93d9-98f1679b50d6",
+                "source_id": "d8e0b241-6f3a-4472-9e80-4d76b82dea25",
+                "source_revision": 1,
+                "date": "2026-04-03",
+                "request_key": "5d16c4dc-d18d-474b-b4b0-032b9f88d69c",
+                "actor": "local-single-user",
+                "reason": "M6 performance exact original cost return20-unbilled"
+              },
+              "supplier_id": "SU-A",
+              "return_id": "946bd228-d9ea-4b18-a2de-e255171f5f9a",
+              "return_reference": "M6-PERF-RETURN-return20-unbilled",
+              "credit_id": null,
+              "credit_reference": null,
+              "document_date": "2026-04-03",
+              "lines": [
+                {
+                  "id": "809cd9b8-2e11-40cc-9fc9-c841fb5dbed5",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L001",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "2fab22d8-202e-4b08-9a7c-2d41f7827e90",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L002",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "240e7ef3-9da4-4959-b6d5-146cb20e155e",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L003",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "07f91be3-5668-4ae3-af8c-1c4cf0a4f1f2",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L004",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "386c29fb-f828-4362-af0b-447ebcf343c0",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L005",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "e84ef61e-8af7-41b5-b6ee-8a57436b6577",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L006",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "4907f0e0-02b9-4707-b8d2-a0e53f0c5d7f",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L007",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "f90f73ff-6600-4ef4-988b-66e8bc174d34",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L008",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "1d81f327-6b38-49d5-9c60-c05bc380dc66",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L009",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "3a7f0162-bb31-40fb-9920-f5c91a5f848b",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L010",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "5889361f-1a52-4add-8f2c-e032fc380c52",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L011",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "604f509b-fffa-43b7-a13c-ce672f867a4c",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L012",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "fbd5f4a1-e944-4e0e-b250-b4bd5aa09b32",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L013",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "08b4f2aa-309e-4a52-b2e4-08d64e2b9e8e",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L014",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "91d57807-112c-48b0-bfe3-0a2b791da979",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L015",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "e13abefb-8f71-4040-a199-2da4ff899318",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L016",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "2fd79204-fa00-4780-a865-3469003b0d8d",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L017",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "63afd393-77df-4053-b4e6-f246ade267cf",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L018",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "634343a0-5362-4991-aa1a-9f4176c1d014",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L019",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                },
+                {
+                  "id": "6ccf5681-0671-460a-b0fb-3e600a71cb9e",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L020",
+                  "bill_line_id": null,
+                  "quantity_thousandths": 1000,
+                  "supplied_value": 15
+                }
+              ],
+              "supplied_total": 300
+            }
+          },
+          "command_sha256": "5334744e975a799d8e93a6b6f8919873a0aa7c6be22411f60f4caade27246239",
+          "frozen_setup": {
+            "id": "82d36237-24b9-4f1a-93d9-98f1679b50d6",
+            "command": {
+              "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+              "period_id": "27cfbb83-1951-472b-85fc-cfb25bb44bb7",
+              "policy": {
+                "version": "core-policy-v1",
+                "effective_date": "2026-03-21",
+                "timezone": "AsiaTehran",
+                "recognition": "AccrualPerpetualCombinedDelivery",
+                "valuation": "MovingWeightedAveragePerItemWarehouse",
+                "rounding": "PositiveHalfUpWholeRial",
+                "returns": "OriginalAllocationCumulativeFinalResidual",
+                "currency": "IRR",
+                "quantity_scale": 1000,
+                "tax_enabled": false,
+                "allow_negative_stock": false,
+                "allow_stock_backdating": false
+              },
+              "mappings": [
+                {
+                  "role": "Cash",
+                  "account_id": "cd74b336-de34-4af4-b77b-8aec7fff838b"
+                },
+                {
+                  "role": "Bank",
+                  "account_id": "47b27ee6-844f-4474-b0f7-f0bdaebb1ded"
+                },
+                {
+                  "role": "Receivables",
+                  "account_id": "16cf2fbc-9189-4800-9fb1-13cf4ae96451"
+                },
+                {
+                  "role": "ChequesReceivable",
+                  "account_id": "90f0411c-199a-4d69-aed7-bf4dcaa209cd"
+                },
+                {
+                  "role": "Inventory",
+                  "account_id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410"
+                },
+                {
+                  "role": "SupplierAdvances",
+                  "account_id": "1b3243eb-30e6-4c53-a773-6df75ea39800"
+                },
+                {
+                  "role": "FixedAssets",
+                  "account_id": "412d33ce-9bee-47a7-a4ea-de6c736de639"
+                },
+                {
+                  "role": "Payables",
+                  "account_id": "1cc84f6d-1574-463c-b7ab-80a970276f6a"
+                },
+                {
+                  "role": "ChequesPayable",
+                  "account_id": "cd7505ed-64cb-4eba-917b-ebac9d067b6f"
+                },
+                {
+                  "role": "Grni",
+                  "account_id": "cac0dcee-4a73-4e43-a8af-59fc4af9e0fc"
+                },
+                {
+                  "role": "CustomerAdvances",
+                  "account_id": "faa4c392-3cc0-4ffb-a705-3114f4e10715"
+                },
+                {
+                  "role": "Loans",
+                  "account_id": "d3e7a00a-699e-4856-8bd4-1eea4953df5a"
+                },
+                {
+                  "role": "OwnerCapital",
+                  "account_id": "e6c0b03e-8076-439a-b3a0-8703267013b5"
+                },
+                {
+                  "role": "OwnerDrawings",
+                  "account_id": "83b4ca47-5c1e-4f9c-9e24-a1eb7d134a8a"
+                },
+                {
+                  "role": "RetainedEarnings",
+                  "account_id": "349a1f25-9e70-44c5-9951-3cbc846b0fb7"
+                },
+                {
+                  "role": "Sales",
+                  "account_id": "8c9f76fb-9674-4410-92ee-e498a83116e5"
+                },
+                {
+                  "role": "SalesReturns",
+                  "account_id": "1afa7f85-d8f4-4687-8e19-7421ab527166"
+                },
+                {
+                  "role": "Cogs",
+                  "account_id": "5cd9bec6-5628-4d8e-ba72-1edb638b4bd4"
+                },
+                {
+                  "role": "OperatingExpense",
+                  "account_id": "18de9705-e630-4495-b3f9-b6a654573e43"
+                },
+                {
+                  "role": "BankFees",
+                  "account_id": "835d52d3-2de4-41c9-9fd1-6455658caaec"
+                },
+                {
+                  "role": "InventoryLoss",
+                  "account_id": "2458b496-a74e-4980-be83-ce105fd881f1"
+                }
+              ],
+              "actor": "local-single-user",
+              "reason": "راه‌اندازی هدایت‌شدهٔ هستهٔ بازرگانی"
+            },
+            "command_sha256": "aa27e45697447f0f4bb1fd99c91a8a64a4c6fe0c1afca5f7b8ea2371cd8f64b4"
+          },
+          "sequence": 20,
+          "journal_id": "32438d97-f1fd-4125-b71b-9691dc28c4f1",
+          "data": {
+            "Return": {
+              "supplier_id": "SU-A",
+              "return_id": "946bd228-d9ea-4b18-a2de-e255171f5f9a",
+              "return_state": "Returned",
+              "credit_id": null,
+              "credit_state": null,
+              "receipt_id": "6d7d4772-b2ad-4aa9-b9ad-150daa0c4d3b",
+              "bill_id": null,
+              "lines": [
+                {
+                  "id": "809cd9b8-2e11-40cc-9fc9-c841fb5dbed5",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L001",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "2fab22d8-202e-4b08-9a7c-2d41f7827e90",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L002",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "240e7ef3-9da4-4959-b6d5-146cb20e155e",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L003",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "07f91be3-5668-4ae3-af8c-1c4cf0a4f1f2",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L004",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "386c29fb-f828-4362-af0b-447ebcf343c0",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L005",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "e84ef61e-8af7-41b5-b6ee-8a57436b6577",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L006",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "4907f0e0-02b9-4707-b8d2-a0e53f0c5d7f",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L007",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "f90f73ff-6600-4ef4-988b-66e8bc174d34",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L008",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "1d81f327-6b38-49d5-9c60-c05bc380dc66",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L009",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "3a7f0162-bb31-40fb-9920-f5c91a5f848b",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L010",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "5889361f-1a52-4add-8f2c-e032fc380c52",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L011",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "604f509b-fffa-43b7-a13c-ce672f867a4c",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L012",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "fbd5f4a1-e944-4e0e-b250-b4bd5aa09b32",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L013",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "08b4f2aa-309e-4a52-b2e4-08d64e2b9e8e",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L014",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "91d57807-112c-48b0-bfe3-0a2b791da979",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L015",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "e13abefb-8f71-4040-a199-2da4ff899318",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L016",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "2fd79204-fa00-4780-a865-3469003b0d8d",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L017",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "63afd393-77df-4053-b4e6-f246ade267cf",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L018",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "634343a0-5362-4991-aa1a-9f4176c1d014",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L019",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                },
+                {
+                  "id": "6ccf5681-0671-460a-b0fb-3e600a71cb9e",
+                  "receipt_line_id": "M6-PERF-return20-unbilled-GR-L020",
+                  "bill_line_id": null,
+                  "item_id": "ITEM-A",
+                  "warehouse_id": "W1",
+                  "quantity_thousandths": 1000,
+                  "value": 15
+                }
+              ],
+              "total": 300
+            }
+          },
+          "movements": [
+            {
+              "id": "stock:b72ea7b8dd5f846084ee1ca3881b3aff4df1f9ef11e403c48acc5740f5bba3bc",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "809cd9b8-2e11-40cc-9fc9-c841fb5dbed5",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 45000,
+                "value": 592
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 44000,
+                "value": 577
+              }
+            },
+            {
+              "id": "stock:04750144ebca08306b0f9ee72f596200668e7c0b8f03f4007e353ac570a56a4a",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "2fab22d8-202e-4b08-9a7c-2d41f7827e90",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 44000,
+                "value": 577
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 43000,
+                "value": 562
+              }
+            },
+            {
+              "id": "stock:f67229b518e17b6a869c327146bbdf8d59d0fdceb1005ae56e8ee6bd205cea6a",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "240e7ef3-9da4-4959-b6d5-146cb20e155e",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 43000,
+                "value": 562
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 42000,
+                "value": 547
+              }
+            },
+            {
+              "id": "stock:17a3a0d16fa01efc38ca03982b26c1a176b5af12334decb130218aa17f5941b0",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "07f91be3-5668-4ae3-af8c-1c4cf0a4f1f2",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 42000,
+                "value": 547
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 41000,
+                "value": 532
+              }
+            },
+            {
+              "id": "stock:4efa75d9d55fabef7bb54fa0d486e82326edd07759a5aeec587918d95c9c9781",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "386c29fb-f828-4362-af0b-447ebcf343c0",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 41000,
+                "value": 532
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 40000,
+                "value": 517
+              }
+            },
+            {
+              "id": "stock:28fbb31948f9468a504dd51bc1048bec87e52add2a3a8d08f0d16ef3eeedc122",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "e84ef61e-8af7-41b5-b6ee-8a57436b6577",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 40000,
+                "value": 517
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 39000,
+                "value": 502
+              }
+            },
+            {
+              "id": "stock:d447fef4d3405164bec6a60710ec8ce96414a9e3333b42801602003d1762074b",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "4907f0e0-02b9-4707-b8d2-a0e53f0c5d7f",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 39000,
+                "value": 502
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 38000,
+                "value": 487
+              }
+            },
+            {
+              "id": "stock:0abcaa24f953584538cc49a06a9c7c628b5ef0445876b89609ba59bc63d7fccb",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "f90f73ff-6600-4ef4-988b-66e8bc174d34",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 38000,
+                "value": 487
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 37000,
+                "value": 472
+              }
+            },
+            {
+              "id": "stock:7373cb78e179a6ba19c9870fb7dc00365402d2873d3698f73752fb09a80331b7",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "1d81f327-6b38-49d5-9c60-c05bc380dc66",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 37000,
+                "value": 472
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 36000,
+                "value": 457
+              }
+            },
+            {
+              "id": "stock:824dfb09b3bc3a9767e1c444ec93937cf82c49b5e64cf1c1a5b3f6747af57411",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "3a7f0162-bb31-40fb-9920-f5c91a5f848b",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 36000,
+                "value": 457
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 35000,
+                "value": 442
+              }
+            },
+            {
+              "id": "stock:77932adb6d1014e55decfa3462a881ac58298251623df1e39cb56eaa7498415a",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "5889361f-1a52-4add-8f2c-e032fc380c52",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 35000,
+                "value": 442
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 34000,
+                "value": 427
+              }
+            },
+            {
+              "id": "stock:5943faa38d7948a2ee43b35bca47519513079dda4cab25c0c2e1ffaa9ef62d27",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "604f509b-fffa-43b7-a13c-ce672f867a4c",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 34000,
+                "value": 427
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 33000,
+                "value": 412
+              }
+            },
+            {
+              "id": "stock:18d468d3730bec070d8cff2e372d7abd2d721aa292e43c76d75a0da318f82292",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "fbd5f4a1-e944-4e0e-b250-b4bd5aa09b32",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 33000,
+                "value": 412
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 32000,
+                "value": 397
+              }
+            },
+            {
+              "id": "stock:778a9f68929c2ee18b04720898113e2b26f4b0b5b47208d0816dd546098b1081",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "08b4f2aa-309e-4a52-b2e4-08d64e2b9e8e",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 32000,
+                "value": 397
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 31000,
+                "value": 382
+              }
+            },
+            {
+              "id": "stock:04c91cc9e7259b5484a715fa0fd35aae046cc86ec26f4e077da6a5da731eacaa",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "91d57807-112c-48b0-bfe3-0a2b791da979",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 31000,
+                "value": 382
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 30000,
+                "value": 367
+              }
+            },
+            {
+              "id": "stock:a8651e7c7208e57fc35110d3760ceec12daded8283fcca4310b77ea1fe5046ab",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "e13abefb-8f71-4040-a199-2da4ff899318",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 30000,
+                "value": 367
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 29000,
+                "value": 352
+              }
+            },
+            {
+              "id": "stock:ab70d99afff51d02893bf21c7c0437af9f65ce3c403804308d4aba247338a48b",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "2fd79204-fa00-4780-a865-3469003b0d8d",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 29000,
+                "value": 352
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 28000,
+                "value": 337
+              }
+            },
+            {
+              "id": "stock:175b1633232f00487576dd4e48d88f234e1c286cbb9eaf704746fabe439a8374",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "63afd393-77df-4053-b4e6-f246ade267cf",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 28000,
+                "value": 337
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 27000,
+                "value": 322
+              }
+            },
+            {
+              "id": "stock:99fe404c72a9cd171081ac57c5d1c90a09a7576af6948fb3b2a9040975645819",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "634343a0-5362-4991-aa1a-9f4176c1d014",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 27000,
+                "value": 322
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 26000,
+                "value": 307
+              }
+            },
+            {
+              "id": "stock:f45df07269fa5639d1df120ca1f5b2688d1a59141c5a095a321ecadaa1a53403",
+              "item_id": "ITEM-A",
+              "warehouse_id": "W1",
+              "direction": "Out",
+              "quantity_thousandths": 1000,
+              "value": 15,
+              "source_line_id": "6ccf5681-0671-460a-b0fb-3e600a71cb9e",
+              "before": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 26000,
+                "value": 307
+              },
+              "after": {
+                "item_id": "ITEM-A",
+                "warehouse_id": "W1",
+                "quantity_thousandths": 25000,
+                "value": 292
+              }
+            }
+          ]
+        },
+        "exact_new_journal": {
+          "id": "32438d97-f1fd-4125-b71b-9691dc28c4f1",
+          "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+          "period_id": "27cfbb83-1951-472b-85fc-cfb25bb44bb7",
+          "date": "2026-04-03",
+          "source_id": "d8e0b241-6f3a-4472-9e80-4d76b82dea25",
+          "source_revision": 1,
+          "event": "procurement.return.v1",
+          "actor": "local-single-user",
+          "reason": "M6 performance exact original cost return20-unbilled",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "cac0dcee-4a73-4e43-a8af-59fc4af9e0fc",
+                "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+                "parent_id": "7c04fb6a-a063-481f-b2ab-010a167368f1",
+                "code": "2201",
+                "name": "کالای دریافت‌شده، صورتحساب‌نشده",
+                "classification": "Liability",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 300,
+              "credit": 0,
+              "description": "M6-PERF-RETURN-return20-unbilled"
+            },
+            {
+              "account": {
+                "id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410",
+                "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+                "parent_id": "2470e67d-79d2-4a63-87b8-0edc1aa3a523",
+                "code": "1301",
+                "name": "موجودی کالا",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": true,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 300,
+              "description": "M6-PERF-RETURN-return20-unbilled"
+            }
+          ],
+          "recorded_at": "2026-10-08T12:57:29.713186154+00:00"
+        },
+        "all_lines_exact": true,
+        "original_whole_state_prefix_exact": true
+      }
+    }
+  },
+  "phases": {
+    "return20-billed": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 53.667438,
+        "gaps_ms": [
+          16.138484000000002,
+          16.023701000000003,
+          16.150843000000002,
+          5.354410000000001
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.150843000000002,
+        "operation": "return",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "terminal_gap_ms": 5.354410000000001,
+        "max_gap_recomputed_ms": 16.150843000000002,
+        "pilot_only": true,
+        "limit_ms": 50,
+        "status": "PASS bounded pilot gap"
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 73.678008,
+        "gaps_ms": [
+          29.599102,
+          16.166827,
+          27.911478,
+          0.0006010000000000001
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 29.599102,
+        "operation": "return",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 3,
+        "terminal_gap_ms": 0.0006010000000000001,
+        "max_gap_recomputed_ms": 29.599102,
+        "pilot_only": true,
+        "limit_ms": 50,
+        "status": "PASS bounded pilot gap"
+      }
+    ],
+    "return20-unbilled": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 52.69753600000001,
+        "gaps_ms": [
+          16.105625,
+          16.091433,
+          16.084612,
+          4.415866
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.105625,
+        "operation": "return",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "terminal_gap_ms": 4.415866,
+        "max_gap_recomputed_ms": 16.105625,
+        "pilot_only": true,
+        "limit_ms": 50,
+        "status": "PASS bounded pilot gap"
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 58.014951,
+        "gaps_ms": [
+          18.684451000000003,
+          16.039405,
+          23.290585,
+          0.00051
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 23.290585,
+        "operation": "return",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 3,
+        "terminal_gap_ms": 0.00051,
+        "max_gap_recomputed_ms": 23.290585,
+        "pilot_only": true,
+        "limit_ms": 50,
+        "status": "PASS bounded pilot gap"
+      }
+    ]
+  },
+  "performance_json_missing": true,
+  "lost_in_memory_arrays": "Startup/search/filtered-page/input/preview-page/raw rejection arrays were not checkpointed by runtime5; no reconstruction or fabricated quantiles",
+  "search_stdout_descriptive_only": {
+    "billed_focused_p95_ms": 1101.3573719974374,
+    "unbilled_focused_p95_ms": 1199.9215699906927,
+    "sample_count_per_mode": 2,
+    "visible_ms": "lost/not recoverable",
+    "limit_ms": 200,
+    "strict_observer_end_to_end": "MISS, pilot only; not isolated product latency"
+  }
+}

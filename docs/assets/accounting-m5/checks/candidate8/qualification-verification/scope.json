@@ -1,0 +1,13 @@
+{
+  "scope": "Separate external verification epoch captured after C8 build and reviewed zero-warmup correction; original immutable build verification bytes/provenance retained",
+  "build_verification_manifest": "docs/assets/accounting-m5/checks/candidate8/verification-source-before.json",
+  "changed_since_build": [
+    "scripts/native-performance-M5.py"
+  ],
+  "files": 52,
+  "external_observer_protocol": "m5-cached-v3",
+  "external_observer_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "compiled_observer_protocol": "m5-action-v1.2",
+  "gate_executor": "/tmp/sarv-M5-frozen-gates-v2.py",
+  "gate_executor_sha256": "1da911b818802e990db68974a9fa9e8d3a2f933992d6f7ee9248c9e77f3d06f5"
+}

@@ -1,0 +1,8 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+   Compiling sarv-independent-m3-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m3/probe)
+    Finished `dev` profile [unoptimized] target(s) in 1.95s
+     Running `target/debug/sarv-independent-m3-migration artifacts/independent-m3/final4-migration docs/assets/accounting-m2/review/backup.json`
+PASS independent actualschema3→4, generation27→28; all3quotes/3journals and CSV byte-exact; original recovery v3 exact; v4 backup; fresh restore/reopen exact; SQLite integrityok

@@ -1,0 +1,289 @@
+{
+  "result": "PASS full static coordinator guards; no observer invocation",
+  "receipt_path": "docs/assets/accounting-m6/performance/candidate6-runtime6-coordinator-receipt.json",
+  "receipt_sha256": "bb670b463efc208723e18f3e915e089e0a4774d092be294202d868fbf8146104",
+  "GUI_started": false,
+  "build_started": false,
+  "prior_receipt_exact_and_preserved": true,
+  "guard": {
+    "coordinator_sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+    "receipt_sha256": "bb670b463efc208723e18f3e915e089e0a4774d092be294202d868fbf8146104",
+    "source_manifest_sha256": "f2f6cf45ac7ebca7bd806c16045b02fc8eb3ec37fe2c5cdc120de2a8aaecaa93",
+    "verification_manifest_sha256": "9bdc714fbf0d5f0cd838389c2106344430deee4dd753e94d6543de33dab0c8ad",
+    "dataset_manifest_sha256": "23099547410ef1215d25d5cab9aa935b4f1c1d77cb48fa461873bc20d75e6e72",
+    "production_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+    "production_files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "c2da573ee4fd4228be93a90640bfbd484bf5e1930fbacf8e4ebffe4676aeff19",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "c92cb4c6fb8cd63a22a6405cd76a968f6d2febbc1a160cbfe13e77b9bc367bac",
+      "src/procurement_export.rs": "975a34c4c82ab4ed2555b05e68d9cdc869c3369d3fcfe338eff35da3f9a7a5e1",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "0eaed6878ff5ea9014776edcff0a66347186186f7715b1bcf6d968606f6e76a6",
+      "src/style.css": "717e18a97b7b8b34f0931684ef8ed8d12e0c9376925adfca83a542dc0cd199b7",
+      "src/ui.rs": "6ac2b231b7c3ca04905b322a7707425b6a0280562cdfd35afcf7e4b52d61abc9",
+      "src/ui/accounting.rs": "2d02443e543c82b67d96ed83000e205ddbb49043158ff783a93482be34066a45",
+      "src/ui/background.rs": "f6475be8c633b8104ba9a6eafedc903fae5a16eb6873a9c1d0332545061590c6",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "ca44d726740d6d31e89b74a702841d95af87a3b6ad612956fb630ac33b88daa1",
+      "src/ui/editor.rs": "4e73d7954725109b50514a6d601c768a78873188decf4d902770c23ddeb8791d",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "db7724bec34021eb5db7ea4129a7b09c28d27a623a5858b5aac19b876a8fe4f0",
+      "src/ui/responsiveness.rs": "847bb7959c2aa8804aad6d67ea96f856fc9e72c89f954efe0bbd03a2ec005fba",
+      "src/ui/sales.rs": "c1a89186c47f3f2d877e804d5c77aa54a1e2b0a8a4791e69184ba92ef0763e8d",
+      "src/ui/settings.rs": "5a0793749b19913290110e4237e0c2a71d8e28030c0acc252f042bdea70a716a",
+      "src/ui/smoke.rs": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "verification_files": {
+      "docs/assets/accounting-m6/performance/analyze.py": "fa2d1a891df12900f26e2af337587197b6dd987e8c6dcfaa3f4beef510a45a26",
+      "docs/assets/accounting-m6/performance/coordinator.py": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+      "docs/assets/accounting-m6/performance/dataset-generator/Cargo.lock": "8831947aa0b521a3dc92ee714bacebeb4e976761dad490da05aec1007a7f2613",
+      "docs/assets/accounting-m6/performance/dataset-generator/Cargo.toml": "d5369ec0403ec90c740b8e98e97e3e33a7adf3328db8188f0a96fbd6d7419bb7",
+      "docs/assets/accounting-m6/performance/dataset-generator/src/main.rs": "6e66032bda951f5b2d94fdac2d119d22521a06c0e2b88f555e753adaed364a9c",
+      "docs/assets/accounting-m6/review/check-exports.py": "1d06169b51df2f8f6edfac612c22d370302a75b2c45fcc2246e14d1bba1ce80b",
+      "docs/assets/accounting-m6/review/check-fault-raw.py": "4358a858292c0d3061c25f62c548fabeaf78ed84ab7c3577cadbf27dc94e3609",
+      "docs/assets/accounting-m6/review/check-literals.py": "e89a12f97127c22d6ba620088c662eed204d68867a1009c6d90aef72e4c01e71",
+      "docs/assets/accounting-m6/review/check-performance-datasets.py": "f46f7f0efca1a64753c62e0a2e113d598d7d8ba3d39fc0c4bcb2ea2c36d5e5fa",
+      "docs/assets/accounting-m6/review/check-raw-state.py": "163bd1474837dc4ad353816996b9dc55ed009246aaa5561287ab6165a44a1822",
+      "docs/assets/accounting-m6/review/literal-expected.json": "723d9407ee56f68e390676fccf177be2aa35dc7f6b30bd6ea5e3485e41ac0c6c",
+      "docs/assets/accounting-m6/review/probe/Cargo.lock": "87b35a7e6a27a81fb910a6765383a65fac4f8bd31bbdb1e57456ba4620d4e195",
+      "docs/assets/accounting-m6/review/probe/Cargo.toml": "dafbdd7b1b4d53b5c9ee32067db675424605ce48e182ac27419486cad87e21fb",
+      "docs/assets/accounting-m6/review/probe/src/common.rs": "41552f641d8e5ea0f3974ed21724c80e6a1f7e3be171ad4e617223320993f303",
+      "docs/assets/accounting-m6/review/probe/src/guards.rs": "92f450eb97b412840b64ff93c0415899bd882421821fe419f2b134f444e2988e",
+      "docs/assets/accounting-m6/review/probe/src/main.rs": "b0fe6dd16904ece5d372a01beb928d9a4374f9cf90ce68232e89786fbba5bfb7",
+      "docs/assets/accounting-m6/review/probe/src/migration.rs": "a196c9441fe4cf5cb3e7b09186df1c6c97dd0a856b296e06915961e15f329612",
+      "docs/assets/accounting-m6/review/probe/src/old_m5.rs": "c8c5623d8a88d80faa8375fcc46f0fc0602b8f29fcd576c1726b790a841cd803",
+      "docs/assets/accounting-m6/review/probe/src/opening.rs": "975776d3c32f21459239bf82302831262dd1ab068fabb2f946ae98922f25c56e",
+      "docs/assets/accounting-m6/review/probe/src/store_faults.rs": "a7e34970d0d65248165334e90022e0a7d0afe5349a80b919f08a07e87699f4d5",
+      "docs/assets/accounting-m6/review/run-probes.py": "d69d3c003e97d077f8d8214254a4792de1e411c61dfa0c3fc890254bfb5c475a",
+      "scripts/a11y_audit.py": "7c97a7f703a3793c219edcbe85031365345b0faa4463936c2dceb13e05bc9815",
+      "scripts/accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+      "scripts/accounting-qa.py": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+      "scripts/core-qa.py": "d117f430f7e31267cc595a11a7e2c9619ea8ba13ceb4716e5e7eb900ce78b1dd",
+      "scripts/jalali-qa.py": "c88b58cdda1b989d3d84d5c30c85c695c410d697870231d9f658771c85269bfb",
+      "scripts/native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+      "scripts/native-performance-M3.py": "9e7439e7b96f3ba866ea7c49e6980e2e4af040a65aad6f9b5d5aac6b901fe733",
+      "scripts/native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+      "scripts/native-performance-M5.py": "c4d1ec092211000c7b39708fef4e94495b064d0b57d1af6d450126e5db10b200",
+      "scripts/native-performance-M6.py": "39409332a7caae630d45cf94858df7dc4baf9c0f56b377f47fbbe757b505fc0c",
+      "scripts/native-save-close.py": "4bf70626a7c82e7d2054809c717391fcaa6c1d586194ba8018307c40ede554d9",
+      "scripts/native-sidebar-qa.py": "d271ba2d603ba05addf424cd6006ee34e7ba08871e230804a000edc9635182e7",
+      "scripts/procurement-qa.py": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+      "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+      "scripts/purchase-returns-qa.py": "608e2f24f5a939e3ee4d8214704fccacb0e56afc6e0658ca3dafcdc2963a05fa",
+      "scripts/qa-native.py": "a4ba1500f756b81810a40386b8d37782cdb010a0b22d0eee6062216bf23c6fb4",
+      "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+      "scripts/sales-qa.py": "742ee492da5e9d2fac6d47f56a88e50bdea9f60c87a0a0f817045cb7c8c55d01",
+      "tests/accounting_exports.rs": "438aebadbe260ddbeeb6caad9eb6637150233f0fc2881c64cc02f3116b75f5a7",
+      "tests/accounting_kernel.rs": "b79c640344534f60faab61bbf8f9f90ed35eee63b8864c491f8eef1e35e65ea2",
+      "tests/accounting_migration.rs": "ec5df67dc0f81eabe001e630213e05a1f2b08ce8cdca2ba82ceb25102efd19b4",
+      "tests/calendar.rs": "32ffb154925bdea5636a98871e3b1440bf3ddf4262274f6a09e357a69f6636a8",
+      "tests/calendar_workflow.rs": "34022f88edf0735d960a416835ed497ece2a0eb652b1c7a3e27dcaf15c9ed4e4",
+      "tests/core_exports.rs": "ff13e45b3c1d46b12845141a7fd5f7a471e4086fed24ac21411b3846a04fd213",
+      "tests/core_import.rs": "fa766fbb259db4a1593a1d6a1ac42afaba0e50d22979dc00bbeeab346ff3dabc",
+      "tests/core_migration.rs": "70e73dbecea6fc7f3803495be0d5da4af2a75950574642477b6bcb791a0ffc49",
+      "tests/core_opening.rs": "2f240061a583f02f02ae13aae682048d1fc7616adc1bc8b8f57fe7347f567508",
+      "tests/core_store.rs": "30d2f850a8c5c73cc9749b0ab1a8784102feda28fc2d4317c1b553bc2c156383",
+      "tests/customer_details.rs": "26c44034a3e6e730a6d40d04d2523f30df53c9798d25bedfacad0b23121fae82",
+      "tests/detached_save.rs": "27d2c15ae839a1387d75dc2adb263940b58b1d95f568406ba61752d9d207c939",
+      "tests/domain_hardening.rs": "cc35893e503401a31a9cb219c06e25f5371446217bd4cef857a9bd7214985e5f",
+      "tests/export_hardening.rs": "98aec1a21b9e0085fe105e5646a694af47212c375a1ec708985358da2af25a02",
+      "tests/import_diagnostics.rs": "c5df1e8afafe67bdcb470eddde18af82ca175d30957d39ada281557ec794148a",
+      "tests/index_matching.rs": "beb0d49b0c929a77b4af0b02e0ba03434a241b45ea8227e80c6904cde7aa3759",
+      "tests/manager_workflow.rs": "1c5436f45309428f5b747f0efe189e65b212c7fa1b02da369f3679ddd47ce502",
+      "tests/process_recovery.rs": "a7bb793bcc971f425125e7f82fe01ca1f9ebe228c113ede043fcc04862456cf2",
+      "tests/procurement.rs": "7d16174e652007388db25029e04d470091bf2ed3c1d321cfa0bd0343a129dce6",
+      "tests/procurement_exports.rs": "bc64e65d0a0203ece4c15839cc845b0926eed7eaf80b916c944c4a459fac3894",
+      "tests/procurement_migration.rs": "c83aba60bbc74c86a9aa82e2078fa78f953f7ec460bae7b0ecdc8895a9b65649",
+      "tests/procurement_store.rs": "bf384a2e763bfc47fa443aaea9478ed38ebdcf81aa4f24346bf8eb8e57f20e74",
+      "tests/product_qa.rs": "121a6bd028f931cae92d87cc8940feca949a5f96cf7bec65324550e479dc8925",
+      "tests/purchase_return_exports.rs": "ddc3bba62c7e24b768118e42d80dfa35784517acef6631b9b0e0b07348b93d39",
+      "tests/purchase_return_migration.rs": "114bea6b7712bf351237a89f2de4211238fdaed4506a305064a3513d7b40162a",
+      "tests/purchase_returns.rs": "0fca6ea1ac09d2644ab99882383c5451a1a36e423fadc9f09bd6d64805af173b",
+      "tests/qa_invariants.rs": "3f8b0b359d50356ca41c957c7443aed0792a8bcbc01bbe72aea778fb87e34d21",
+      "tests/sales.rs": "73da48a10b4a6f40235c591f9acf6ff560dd303df671320acf7ecb3683d5ba6b",
+      "tests/sales_drafts.rs": "3a508dc1fd5697a184712bb2c5fbbfe3383b4fa64d477f84fad771b7c66da772",
+      "tests/sales_exports.rs": "4f8a04feac14cea64f84161477104d44dabc1bf184199607bd3cd6f02666c56e",
+      "tests/sales_migration.rs": "d120db5c10817d5b8428f72aed493037abd80dcfc3f8d9f51b67ec4bd2e7077e",
+      "tests/settings.rs": "8df043e7d0b28eba019b19577d171c8b812e93c21ac13cf8d1015cf135816094",
+      "tests/storage_financial_guards.rs": "5b14e26fbc677a268ca236843d33c445c4701ebb75e1c181173c15847036c184",
+      "tests/storage_hardening.rs": "a85c628d8aa64904a6d745f1448a2f07e1de58a0dc6a47ebfcbfc26db55d525c",
+      "tests/workflow.rs": "121611e377c6e4f80303eb9b97da36d28da3739b829805011a7a966fc86dc225"
+    },
+    "dataset_files": {
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/original-schema6-state.json": {
+        "bytes": 218807,
+        "sha256": "44e92be3ab033be21f4ee4a3e99f8695ec4b7eebc4530f8836638c7d9644da6b"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/initialized-schema7-state.json": {
+        "bytes": 218807,
+        "sha256": "b5e757f8c8cb7a68d116c7e60fa7afa51b90621bc19b41945fbce8f1b96b61fd"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/preparation.json": {
+        "bytes": 610,
+        "sha256": "c345d9bef990c7a5d707656a3834274949972eae1148efc3b19ae88cb831d5ed"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-seed/backup.json": {
+        "bytes": 230295,
+        "sha256": "461137607a95ca3f77a394dd4ae37d03207bd225e6469690727023bc8f6b677d"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-seed/recipe.json": {
+        "bytes": 5895,
+        "sha256": "e5c7d21a22e59ddee39258ccec259b44c53785c34331e9ee4e7a5de7689895d7"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-seed/state.json": {
+        "bytes": 218807,
+        "sha256": "b5e757f8c8cb7a68d116c7e60fa7afa51b90621bc19b41945fbce8f1b96b61fd"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return200-billed/backup.json": {
+        "bytes": 1025872,
+        "sha256": "807897ec3ec9e021d7adf07c0a269fbc15f502a81e1056b8506a199881d045f6"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return200-billed/recipe.json": {
+        "bytes": 113665,
+        "sha256": "bb050e55eff795bb2776144c8bedf6605ef90ce0fb02bc2f42842a69b5410b0f"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return200-billed/state.json": {
+        "bytes": 975878,
+        "sha256": "106cf4946239f6c7626158be81443767ff7c7120556f35f18fef11976c6d32d7"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-unbilled/backup.json": {
+        "bytes": 313710,
+        "sha256": "08d34bdb493c6c5e46db42af2a990125abe15e9ecea759e0500939a9eda89b11"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-unbilled/recipe.json": {
+        "bytes": 16455,
+        "sha256": "0db4f6a5c710705b3b94e666ead6e4f560d90c02980b2c97634b3db829214208"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-unbilled/state.json": {
+        "bytes": 298160,
+        "sha256": "ab38074c96b3e3be8552500cac043eea9be0282cf385a8f101ec1d74614d94fd"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/backup.json": {
+        "bytes": 3150952,
+        "sha256": "ec2fe0c4a49c2e95af489eff94ceada757c3305516bfe854d83571f11e072b80"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/recipe.json": {
+        "bytes": 142328,
+        "sha256": "e0738ee8952c8310475430d50a69d12ab0d121d698bee47fa87a21381b260971"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/state.json": {
+        "bytes": 3000408,
+        "sha256": "324f11f832cfece56647e77d4643940a6242a73d7f6fbdf5f09c0e4338a68dda"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-unbilled/backup.json": {
+        "bytes": 1867686,
+        "sha256": "950958cffd92fe50b7abf6102f8bc439297efa38ccf8e14c4da6329dc6f4cae0"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-unbilled/recipe.json": {
+        "bytes": 98053,
+        "sha256": "f4ea659fb5e2d09305d1ed79b5b5b6911c69664981fddbae907f9085bc1224a7"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-unbilled/state.json": {
+        "bytes": 1778102,
+        "sha256": "ac036bd0afadd4fabf54d04823e2c0ea86a0e2610488ab56662d3f4fa3c6285b"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-posted/backup.json": {
+        "bytes": 254071,
+        "sha256": "52d6f97175fd413ff707c3622e66f00cccbf5a2bd0dcd23cb96d0234aaa21c78"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-posted/recipe.json": {
+        "bytes": 5985,
+        "sha256": "472d8734b7670a17da0db6a1703f636f73bd9ad1b1935e5904e3c46ad2dc5b7f"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-posted/state.json": {
+        "bytes": 241431,
+        "sha256": "fc31ad14033b3beaaa9bd3b69ad70f32656ce44033c8d8a90112dd26c6cd5198"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-billed/backup.json": {
+        "bytes": 334036,
+        "sha256": "557e09e8938aaa3f12311e587f4f028447a807d372959693a9fbd55a9b2f77b5"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-billed/recipe.json": {
+        "bytes": 17429,
+        "sha256": "07194ccbc2f4d8ee8aecba113dab78cab806af9eaa791bda1632ce17483d4b22"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-billed/state.json": {
+        "bytes": 317522,
+        "sha256": "1c969a4cf38ae1c0d9bcc0d1c53bf7e32c1d9e77fde86b48963a79dc3c4b4c17"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-seed/profile/sarv.sqlite3": {
+        "bytes": 139264,
+        "sha256": "9b36b32d8a41ad0bdbfd26f243cbdc3e63b783b4a8357277263356a8c17a4f68"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-seed/profile/before-restore-904f41af-ce4c-4c28-8265-28baba7726c5.json": {
+        "bytes": 496,
+        "sha256": "0d3b735ad19faac304b39b7d66d4dbf548b116136c052291f5990266571e0435"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return200-billed/profile/before-restore-8d094ef1-74ae-4804-bd52-3c680c87c658.json": {
+        "bytes": 496,
+        "sha256": "f4c70e71ec843ab31ce035bf83dbdaab0c87ad437d10578d54077edfa7fe49f4"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return200-billed/profile/sarv.sqlite3": {
+        "bytes": 524288,
+        "sha256": "636c8b453762dd2be255fa27ff80c43cbd4dc9c6bb02df8634f660446c60506d"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-unbilled/profile/before-restore-eb95bcf7-1f23-45c8-ad1d-dc4aaf48ce4a.json": {
+        "bytes": 496,
+        "sha256": "acd5d8dec371d0daaf320c9b3029fd3acff3989fd40f64ede948b74960d8998d"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-unbilled/profile/sarv.sqlite3": {
+        "bytes": 180224,
+        "sha256": "5b0a1ca4de53d997b577b69b5187775a9b0c96b129ff56d3ec55bc943b65b380"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/profile/sarv.sqlite3": {
+        "bytes": 1810432,
+        "sha256": "18590350bc8e8712a30bb49139791d1430d77cab99743208f13c149b48a58b21"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/profile/before-restore-20aa2b06-e0a4-41eb-9960-7dbff9a5b66b.json": {
+        "bytes": 496,
+        "sha256": "3c31d4b8f9370bc51b4cd480e8212c04452dc04b4b18938ad066ed5edac5fd9f"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-unbilled/profile/sarv.sqlite3": {
+        "bytes": 1060864,
+        "sha256": "0fccdbd3217ec5041a0be8fefd05969abc1ff27baf59c3e219911e5cc6f5f81b"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-unbilled/profile/before-restore-3a3782fb-f3e1-4293-93fb-2de1b7813566.json": {
+        "bytes": 496,
+        "sha256": "fe1a0e0e44a714ee52897ad882e6d75505256b25ddf4f17f11f05a91bdb68f3d"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-posted/profile/sarv.sqlite3": {
+        "bytes": 151552,
+        "sha256": "d547889adbc8e62a369f7aa0c4d881d2caeea65931a667774edcbf9d3e4c8bca"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/main-posted/profile/before-restore-5903fa93-48f2-4bf5-be87-e8ff1be115f2.json": {
+        "bytes": 496,
+        "sha256": "257abcf551be69b9a047c2fa71e7f58b6be20acff51a251055390099c03dc869"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-billed/profile/sarv.sqlite3": {
+        "bytes": 192512,
+        "sha256": "742a30bed32af4a9331b733ce6062316761953301959e7c5c5c8db3cadd2596d"
+      },
+      "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/return20-billed/profile/before-restore-556c75f1-d478-487b-935b-8889f9277d66.json": {
+        "bytes": 496,
+        "sha256": "65b49d07e4da038cfd644cb9a89be1ec7fba9c6e05fbed8c1286307fbb3d2fba"
+      }
+    },
+    "seed_files": {
+      "seed_state": "44e92be3ab033be21f4ee4a3e99f8695ec4b7eebc4530f8836638c7d9644da6b",
+      "seed_backup": "f8f6408027d559a0f6d28cb8972e1975de8785a4d2c462a1898e532bd208b9d8"
+    },
+    "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2"
+  }
+}

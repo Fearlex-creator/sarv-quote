@@ -1,0 +1,49 @@
+{
+  "synthetic_only": true,
+  "generator": "scripts/native-performance-M5.py --prepare-only",
+  "seed": "fixed integer index 0..119; no random state",
+  "files": {
+    "M5-synthetic-prices.csv": {
+      "sha256": "4b88b4c5cf28b9fd2d774b3375aa8cfeefb1bdbf58dd28066e43e54b4256edb6",
+      "bytes": 217
+    },
+    "long-sales-draft.json": {
+      "sha256": "c6258544ec4c5ea3e1e2b223da91dea905c51a699f495c87b490b678d6dcdc97",
+      "bytes": 369492
+    },
+    "paged-sales-drafts.json": {
+      "sha256": "26e2dddeab6c1c0698022c57a1e4d17a9b204e0417135f4cf14967230c8a4e71",
+      "bytes": 109563
+    }
+  },
+  "paged_sales": {
+    "raw_drafts": 120,
+    "groups": {
+      "PERF-A": 60,
+      "PERF-B": 60
+    },
+    "native_page_size": 25,
+    "filtered_pages_per_group": 3,
+    "financial_effects": 0,
+    "catalog_rows": 2
+  },
+  "long_sales": {
+    "raw_drafts": 1,
+    "canonical_raw_lines": 1000,
+    "native_page_size": 25,
+    "pages": 40,
+    "expected_net_irr": 20000,
+    "financial_effects": 0
+  },
+  "quotation_scale": {
+    "source": "/workspace/sarv-evidence/native-before-current",
+    "products": 50000,
+    "draft_lines": 1000,
+    "observer": "unchanged scripts/native-performance-M2.py"
+  },
+  "context_resolution": "Use exact company/period/setup from the completed synthetic procurement profile and latest operational financial date. Seed only stopped fresh SQLite backups; preserve all accounting payload fields.",
+  "limits": [
+    "No five-year / 100000-document / million-journal-line / 10000-party claim.",
+    "Raw drafts are separate from posted sales; a 120-draft list does not certify a large posted financial ledger."
+  ]
+}

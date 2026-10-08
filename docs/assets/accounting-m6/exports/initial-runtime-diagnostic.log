@@ -1,0 +1,31 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+    Finished `test` profile [unoptimized] target(s) in 0.59s
+     Running tests/purchase_return_exports.rs (target/debug/deps/purchase_return_exports-df2cd442749b2237)
+
+running 3 tests
+
+thread 'billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historical_snapshot' (313049) panicked at tests/purchase_return_exports.rs:340:43:
+called `Result::unwrap()` on an `Err` value: شناسهٔ منبع/ردیف تکراری یا متعلق به سابقه است
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historical_snapshot ... FAILED
+test unbilled_interleaving_tiny_zero_credit_and_final_residual_remain_operational_and_exact ... ok
+
+thread 'physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_on_every_page' (313050) panicked at tests/purchase_return_exports.rs:858:9:
+name                                 type              encoding         emb sub uni object ID
+------------------------------------ ----------------- ---------------- --- --- --- ---------
+KQRFOB+NotoSans-Regular              TrueType          WinAnsi          yes yes yes      7  0
+QCPUGD+NotoSansArabic-Regular        TrueType          WinAnsi          yes yes yes      8  0
+FTBZHC+NotoSansArabic-Regular        CID TrueType      Identity-H       yes yes yes      9  0
+LLYIGR+NotoSans-Regular              CID TrueType      Identity-H       yes yes yes     10  0
+
+test physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_on_every_page ... FAILED
+
+failures:
+
+failures:
+    billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historical_snapshot
+    physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_on_every_page
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.13s
+
+error: test failed, to rerun pass `--test purchase_return_exports`

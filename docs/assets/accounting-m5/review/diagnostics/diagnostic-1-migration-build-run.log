@@ -1,0 +1,14 @@
+    Blocking waiting for file lock on build directory
+   Compiling sarv-independent-m5-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m5/probe)
+warning: unused import: `accounting::*`
+ --> src/migration.rs:2:18
+  |
+2 | use sarv_quote::{accounting::*, core::CoreRole, sales::*, store::Store};
+  |                  ^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: `sarv-independent-m5-probe` (bin "sarv-independent-m5-migration") generated 1 warning (run `cargo fix --bin "sarv-independent-m5-migration" -p sarv-independent-m5-probe` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized] target(s) in 2.03s
+     Running `target/debug/sarv-independent-m5-migration artifacts/independent-m5/diagnostic-1/migration`
+PASS actual M4 schema5 migration/recovery, reserved sales namespace compatibility/retries, exact fresh restore, retained ordinary Sales17/Returns3 reconciliation and new goods order.

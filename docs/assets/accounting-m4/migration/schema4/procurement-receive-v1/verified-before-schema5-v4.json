@@ -1,0 +1,770 @@
+{
+  "format": "sarv-accounting-backup-v4",
+  "checksum": "83d04616d93572f74a39811530bcfd1fd57605dbaae1658ff18371e7937d2b70",
+  "state": {
+    "schema": 4,
+    "catalogs": [
+      {
+        "id": "249c8c1a-3cbd-4202-b2ac-8caaeba1aec3",
+        "name": "prices",
+        "imported_at": "2026-10-07T16:04:29.481083905+00:00",
+        "fingerprint": "e7d85b48be2559f946658527c5e89b4205b9f17a18abe7afd06e1df93d698d58",
+        "products": [
+          {
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "price_rial": 1250000,
+            "source_unit": "Toman",
+            "source_at": "2026-10-01T08:00:00Z",
+            "aliases": [
+              "کاغذ آ4",
+              "کاغذ سفید"
+            ]
+          },
+          {
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "price_rial": 85000,
+            "source_unit": "Rial",
+            "source_at": "2026-10-01T08:00:00Z",
+            "aliases": [
+              "خودکار",
+              "قلم آبی"
+            ]
+          },
+          {
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "price_rial": 95000,
+            "source_unit": "Rial",
+            "source_at": "2026-09-01T08:00:00Z",
+            "aliases": [
+              "خودکار",
+              "قلم مشکی"
+            ]
+          },
+          {
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "price_rial": 200000,
+            "source_unit": "Toman",
+            "source_at": "2026-10-01T08:00:00Z",
+            "aliases": [
+              "پوشه"
+            ]
+          }
+        ]
+      }
+    ],
+    "customers": [
+      {
+        "id": "cd45db47-d3e4-47e4-b08d-f87b98b25487",
+        "name": "فروشگاه نمونهٔ پارس",
+        "phone": "۰۹۱۲۰۰۰۰۰۰۰"
+      },
+      {
+        "id": "cc5b6877-1a4c-4b25-960e-d3847d2bd833",
+        "name": "فروشگاه نمونهٔ پارس",
+        "phone": ""
+      },
+      {
+        "id": "20da1283-8325-4245-a21c-bbb47a3e75b4",
+        "name": "مشتری نمایشی دوم",
+        "phone": "09120000001"
+      }
+    ],
+    "quotes": [
+      {
+        "id": "e57efa2e-71df-4818-96e9-c95f9f47a4fc",
+        "series": "44f5bff5-4302-44f0-a2a5-0b5fffa7b0fd",
+        "version": 1,
+        "customer": "فروشگاه نمونهٔ پارس",
+        "phone": "۰۹۱۲۰۰۰۰۰۰۰",
+        "approved_at": "2026-10-07T16:04:35.522604263+00:00",
+        "catalog_id": "249c8c1a-3cbd-4202-b2ac-8caaeba1aec3",
+        "catalog_name": "prices",
+        "lines": [
+          {
+            "query": "P-101",
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "quantity_milli": 2000,
+            "price_rial": 1250000,
+            "total_rial": 2500000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          },
+          {
+            "query": "قلم آبی",
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 12000,
+            "price_rial": 85000,
+            "total_rial": 1020000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "خودکار",
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 3000,
+            "price_rial": 95000,
+            "total_rial": 285000,
+            "source_at": "2026-09-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "کد نامشخص",
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 200000,
+            "total_rial": 200000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          }
+        ],
+        "discount_rial": 10000,
+        "total_rial": 3995000,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2026-10-07",
+        "number": "Q-1",
+        "customer_id": "cd45db47-d3e4-47e4-b08d-f87b98b25487"
+      },
+      {
+        "id": "42ee1e0e-9d78-46c7-afb9-6af2e62dec7d",
+        "series": "44f5bff5-4302-44f0-a2a5-0b5fffa7b0fd",
+        "version": 2,
+        "customer": "فروشگاه نمونهٔ پارس",
+        "phone": "۰۹۱۲۰۰۰۰۰۰۰",
+        "approved_at": "2026-10-07T16:04:35.640167578+00:00",
+        "catalog_id": "249c8c1a-3cbd-4202-b2ac-8caaeba1aec3",
+        "catalog_name": "prices",
+        "lines": [
+          {
+            "query": "P-101",
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "quantity_milli": 3000,
+            "price_rial": 1250000,
+            "total_rial": 3750000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          },
+          {
+            "query": "قلم آبی",
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 12000,
+            "price_rial": 85000,
+            "total_rial": 1020000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "خودکار",
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 3000,
+            "price_rial": 95000,
+            "total_rial": 285000,
+            "source_at": "2026-09-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "کد نامشخص",
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 200000,
+            "total_rial": 200000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          }
+        ],
+        "discount_rial": 10000,
+        "total_rial": 5245000,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2026-10-07",
+        "number": "Q-1",
+        "customer_id": "cd45db47-d3e4-47e4-b08d-f87b98b25487"
+      },
+      {
+        "id": "8bc34247-64cd-4fd5-bea1-4cda94511cfc",
+        "series": "98aaa244-9300-461e-ae1d-79c7e45db14d",
+        "version": 1,
+        "customer": "فروشگاه نمونهٔ پارس",
+        "phone": "",
+        "approved_at": "2026-10-07T16:04:35.995483206+00:00",
+        "catalog_id": "249c8c1a-3cbd-4202-b2ac-8caaeba1aec3",
+        "catalog_name": "prices",
+        "lines": [
+          {
+            "query": "P-101",
+            "code": "P-101",
+            "name": "کاغذ A4 نمایشی",
+            "measure": "بسته",
+            "quantity_milli": 3000,
+            "price_rial": 1250000,
+            "total_rial": 3750000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          },
+          {
+            "query": "P-102",
+            "code": "P-102",
+            "name": "خودکار آبی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 12000,
+            "price_rial": 85000,
+            "total_rial": 1020000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "P-103",
+            "code": "P-103",
+            "name": "خودکار مشکی نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 3000,
+            "price_rial": 95000,
+            "total_rial": 285000,
+            "source_at": "2026-09-01T08:00:00Z",
+            "source_unit": "Rial"
+          },
+          {
+            "query": "P-104",
+            "code": "P-104",
+            "name": "پوشهٔ نمایشی",
+            "measure": "عدد",
+            "quantity_milli": 1000,
+            "price_rial": 200000,
+            "total_rial": 200000,
+            "source_at": "2026-10-01T08:00:00Z",
+            "source_unit": "Toman"
+          }
+        ],
+        "discount_rial": 1000,
+        "total_rial": 5516700,
+        "display_unit": "Toman",
+        "stale_ack": true,
+        "quote_date": "2026-10-07",
+        "valid_until": "2026-10-21",
+        "issuer_name": "پخش نمونهٔ سرو",
+        "issuer_phone": "۰۲۱۰۰۰۰۰۰۰۰",
+        "issuer_address": "تهران • نشانی نمایشی",
+        "header": "سربرگ نمایشی • فقط پیشنهاد قیمت",
+        "footer": "قیمت‌ها نیازمند تأیید منبع هستند.",
+        "terms": "اعتبار قراردادی چهارده روز؛ بدون رزرو موجودی.",
+        "tax_basis_points": 500,
+        "display_digits": "Latin",
+        "date_display": "DayMonthYear",
+        "number": "DEMO-42",
+        "tax_rial": 262700,
+        "customer_id": "cc5b6877-1a4c-4b25-960e-d3847d2bd833"
+      }
+    ],
+    "draft": {
+      "series": "98aaa244-9300-461e-ae1d-79c7e45db14d",
+      "catalog_id": "249c8c1a-3cbd-4202-b2ac-8caaeba1aec3",
+      "customer": "فروشگاه نمونهٔ پارس",
+      "phone": "",
+      "lines": [
+        {
+          "query": "P-101",
+          "quantity_milli": 3000,
+          "chosen_code": null
+        },
+        {
+          "query": "P-102",
+          "quantity_milli": 12000,
+          "chosen_code": null
+        },
+        {
+          "query": "P-103",
+          "quantity_milli": 3000,
+          "chosen_code": null
+        },
+        {
+          "query": "P-104",
+          "quantity_milli": 1000,
+          "chosen_code": null
+        }
+      ],
+      "discount_rial": 1000,
+      "display_unit": "Toman",
+      "stale_ack": true,
+      "quote_date": "2026-10-07",
+      "valid_until": "2026-10-21",
+      "issuer_name": "پخش نمونهٔ سرو",
+      "issuer_phone": "۰۲۱۰۰۰۰۰۰۰۰",
+      "issuer_address": "تهران • نشانی نمایشی",
+      "header": "سربرگ نمایشی • فقط پیشنهاد قیمت",
+      "footer": "قیمت‌ها نیازمند تأیید منبع هستند.",
+      "terms": "اعتبار قراردادی چهارده روز؛ بدون رزرو موجودی.",
+      "tax_basis_points": 500,
+      "display_digits": "Latin",
+      "date_display": "DayMonthYear"
+    },
+    "settings": {
+      "business_name": "پخش نمونهٔ سرو",
+      "business_phone": "۰۲۱۰۰۰۰۰۰۰۰",
+      "business_address": "تهران • نشانی نمایشی",
+      "header": "سربرگ نمایشی • فقط پیشنهاد قیمت",
+      "footer": "قیمت‌ها نیازمند تأیید منبع هستند.",
+      "default_terms": "اعتبار قراردادی چهارده روز؛ بدون رزرو موجودی.",
+      "default_currency": "Toman",
+      "quote_prefix": "DEMO-",
+      "next_number": 43,
+      "default_validity_days": 14,
+      "default_discount_rial": 1000,
+      "tax_basis_points": 500,
+      "appearance": "Light",
+      "density": "Compact",
+      "display_digits": "Persian",
+      "date_display": "Jalali"
+    },
+    "accounting": {
+      "companies": [
+        {
+          "id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "name": "شرکت مصنوعی بازبین"
+        }
+      ],
+      "periods": [
+        {
+          "id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "name": "2026",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "locked": true
+        },
+        {
+          "id": "67a96bcc-acc8-48a0-9f19-c30fe41a88ca",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "name": "2027",
+          "start_date": "2027-01-01",
+          "end_date": "2027-12-31",
+          "locked": false
+        }
+      ],
+      "accounts": [
+        {
+          "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "parent_id": null,
+          "code": "1001",
+          "name": "دارایی آزمایشی",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": true,
+          "version": 2
+        },
+        {
+          "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "parent_id": null,
+          "code": "3001",
+          "name": "سرمایه آزمایشی",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        }
+      ],
+      "journals": [
+        {
+          "id": "80ca767b-8857-4a69-8f79-0e69f5d14912",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "date": "2026-01-01",
+          "source_id": "opening",
+          "source_revision": 1,
+          "event": "manual-independent",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "kind": "Opening",
+          "lines": [
+            {
+              "account": {
+                "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1251,
+              "credit": 0,
+              "description": "independent fixture"
+            },
+            {
+              "account": {
+                "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1251,
+              "description": "independent fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T15:39:24.541356512+00:00"
+        },
+        {
+          "id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "date": "2026-03-01",
+          "source_id": "adjustment",
+          "source_revision": 1,
+          "event": "procurement.receive.v1",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": "independent fixture"
+            },
+            {
+              "account": {
+                "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": "independent fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T15:39:24.544639892+00:00"
+        },
+        {
+          "id": "caf7f664-cefd-4e00-960f-8375c7d4220f",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "date": "2026-03-02",
+          "source_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+          "source_revision": 1,
+          "event": "reversal",
+          "actor": "independent-review",
+          "reason": "exact linked correction",
+          "kind": {
+            "Reversal": {
+              "journal_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67"
+            }
+          },
+          "lines": [
+            {
+              "account": {
+                "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": "independent fixture"
+            },
+            {
+              "account": {
+                "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": "independent fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T15:39:24.548561683+00:00"
+        }
+      ],
+      "requests": [
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-01-01",
+            "source_id": "opening",
+            "source_revision": 1,
+            "event": "manual-independent",
+            "request_key": "request-1",
+            "actor": "independent-review",
+            "reason": "synthetic technical review; not approved policy",
+            "kind": "Opening",
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 1251,
+                "credit": 0,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 0,
+                "credit": 1251,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "80ca767b-8857-4a69-8f79-0e69f5d14912"
+        },
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-01-01",
+            "source_id": "opening",
+            "source_revision": 1,
+            "event": "manual-independent",
+            "request_key": "different-retry",
+            "actor": "independent-review",
+            "reason": "synthetic technical review; not approved policy",
+            "kind": "Opening",
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 1251,
+                "credit": 0,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 0,
+                "credit": 1251,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "80ca767b-8857-4a69-8f79-0e69f5d14912"
+        },
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-03-01",
+            "source_id": "adjustment",
+            "source_revision": 1,
+            "event": "procurement.receive.v1",
+            "request_key": "adjust-key",
+            "actor": "independent-review",
+            "reason": "synthetic technical review; not approved policy",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 349,
+                "credit": 0,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 0,
+                "credit": 349,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67"
+        },
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-03-02",
+            "source_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+            "source_revision": 1,
+            "event": "reversal",
+            "request_key": "reverse-key",
+            "actor": "independent-review",
+            "reason": "exact linked correction",
+            "kind": {
+              "Reversal": {
+                "journal_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67"
+              }
+            },
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 0,
+                "credit": 349,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 349,
+                "credit": 0,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "caf7f664-cefd-4e00-960f-8375c7d4220f"
+        }
+      ],
+      "audit": [
+        {
+          "id": "c761031c-5184-40a5-932e-630ab5d41161",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "operation": "CompanyCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد کسب‌وکار",
+          "recorded_at": "2026-10-07T15:39:24.539749570+00:00"
+        },
+        {
+          "id": "ba59fb79-a78a-4531-a95a-4f4eae79eaa3",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "operation": "PeriodCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T15:39:24.539835580+00:00"
+        },
+        {
+          "id": "59a721ee-a6ce-4d26-9796-c2970bd1bd1f",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+          "operation": "AccountCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T15:39:24.539843852+00:00"
+        },
+        {
+          "id": "ef3ce72e-95d8-4cf2-88fd-3e7513d333a0",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+          "operation": "AccountCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T15:39:24.539854849+00:00"
+        },
+        {
+          "id": "87fe493b-2bdd-4415-8b53-0dd3eadb091f",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "80ca767b-8857-4a69-8f79-0e69f5d14912",
+          "operation": "JournalPosted",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "recorded_at": "2026-10-07T15:39:24.541356512+00:00"
+        },
+        {
+          "id": "fd91bcbf-9fec-457f-bd39-f061e40e28d8",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+          "operation": "JournalPosted",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "recorded_at": "2026-10-07T15:39:24.544639892+00:00"
+        },
+        {
+          "id": "8425e3d6-cc97-47b1-bf3a-02c933e078c0",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+          "operation": "AccountArchived",
+          "actor": "independent-review",
+          "reason": "archive referenced account",
+          "recorded_at": "2026-10-07T15:39:24.546565454+00:00"
+        },
+        {
+          "id": "0cd053cc-31a8-48ff-86f6-d7402b933188",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "caf7f664-cefd-4e00-960f-8375c7d4220f",
+          "operation": "JournalPosted",
+          "actor": "independent-review",
+          "reason": "exact linked correction",
+          "recorded_at": "2026-10-07T15:39:24.548561683+00:00"
+        },
+        {
+          "id": "7fbedcd9-1a7a-4f4e-b95d-80611ff8b729",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "operation": "PeriodLocked",
+          "actor": "independent-review",
+          "reason": "lock test",
+          "recorded_at": "2026-10-07T15:39:24.550875221+00:00"
+        },
+        {
+          "id": "9a0b5e32-2203-4e12-a0b3-21505fc6499b",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "67a96bcc-acc8-48a0-9f19-c30fe41a88ca",
+          "operation": "PeriodCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T15:39:24.554095525+00:00"
+        }
+      ]
+    }
+  }
+}

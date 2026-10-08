@@ -1,0 +1,9 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+    Finished `test` profile [unoptimized] target(s) in 2.18s
+     Running tests/calendar_workflow.rs (target/debug/deps/calendar_workflow-e85b1cebe1e8cabe)
+
+running 2 tests
+test jalali_preference_survives_recovery_and_preserves_approved_document_dates_and_output ... ok
+test jalali_trial_exports_name_both_dates_and_preserve_exact_money ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s

@@ -1,0 +1,31 @@
+{
+  "company_id": "2f12f51c-4114-4b4a-97c4-4fc0075e4793",
+  "controls": 12,
+  "counts": {
+    "advances": 0,
+    "ap": 2,
+    "ar": 2,
+    "banks": 1,
+    "cash": 1,
+    "cheques": 2,
+    "grni": 1,
+    "items": 1,
+    "ledger_balances": 21,
+    "packs": 1,
+    "parties": 4,
+    "stock": 2,
+    "units": 2,
+    "warehouses": 2
+  },
+  "import_source": null,
+  "items": 1,
+  "opening_journals": 0,
+  "parties": 4,
+  "preview_ms_includes_poll": 266,
+  "preview_total_irr": 1251,
+  "result": "ready",
+  "source": "native editable forms",
+  "stock_rows": 2,
+  "units": 2,
+  "warehouses": 2
+}

@@ -1,0 +1,66 @@
+{
+  "source-provenance.json": {
+    "sha256": "e3f25144d0e365d168293f4672b551dd5f44ccb27ed3ee59c485ba7b7ce18c2b",
+    "bytes": 9143
+  },
+  "xvfb.log": {
+    "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "bytes": 1384
+  },
+  "attribution-note.json": {
+    "sha256": "f73d4af0a9503bf95212e9b233cd14c8d7f83ba18d49f7267b002ef48e67a021",
+    "bytes": 843
+  },
+  "native.log": {
+    "sha256": "92398a5450f651b6edcd6baf2fa34c88f26ee38a1ff7005552e2b8a84f1a9a63",
+    "bytes": 24262
+  },
+  "openbox.log": {
+    "sha256": "84b9b2c90bfcf84324830930ea65df98bdb566b9877cbe697f603efbc0cb355a",
+    "bytes": 141
+  },
+  "observer.log": {
+    "sha256": "971be20f1fc8b6d1ff5dbadc21a51c2a5f41035f202a5c05db255b45feb63bd0",
+    "bytes": 1834
+  },
+  "root-freeze-manifest.json": {
+    "sha256": "b756df825d8eee74f0eb48261ab316387a00c046a41785ad6113bdc1df4a9815",
+    "bytes": 7564
+  },
+  "performance.json": {
+    "sha256": "79eb6449d577f5e882417473ca6c6e548a35cb830977434e7152d41ade3047e9",
+    "bytes": 2772
+  },
+  "README.md": {
+    "sha256": "2c35d499f095b3bd6efd6fd4ad6ad838c3b8f5d80d6e773a77b2b49afe9870b4",
+    "bytes": 2696
+  },
+  "synthetic-profile/native-save-after.png": {
+    "sha256": "bd5d45b916717743fd68a5f233fcda6c49a0b263c48007fa958a9a956e393791",
+    "bytes": 208463
+  },
+  "synthetic-profile/native-save-before.png": {
+    "sha256": "396a9998daf466cc91300e2acec5006aaa6aff7fe54d8fbf9c44b38111ea3f07",
+    "bytes": 208324
+  },
+  "synthetic-profile/native-scale-catalog-last.png": {
+    "sha256": "d47c8634132e7868b82e8f557e8f29a1cd3f8aa2fc2703c1c95e56bc0d0200e7",
+    "bytes": 194425
+  },
+  "synthetic-profile/native-scale-editor-last-page.png": {
+    "sha256": "e0e4b92d24ba90f5f047f501ea5a457318e91fcf29077265395a61c25d532c77",
+    "bytes": 212281
+  },
+  "synthetic-profile/native-scale-catalog-first.png": {
+    "sha256": "169d2d343fba8009312ea76ed0668303d45ad8451c94b90294e588ec3fce057e",
+    "bytes": 192118
+  },
+  "synthetic-profile/native-scale-catalog-next.png": {
+    "sha256": "3057ff4aa8408142669f7b14950c5b0f079c4a5eec53bee74d7b6f7abf824b20",
+    "bytes": 191383
+  },
+  "synthetic-profile/native-responsiveness-verification.json": {
+    "sha256": "72efa357c7ed5fa338fc8080f92e1554dd7ca36625f2654983d241bb16306ccd",
+    "bytes": 34997
+  }
+}

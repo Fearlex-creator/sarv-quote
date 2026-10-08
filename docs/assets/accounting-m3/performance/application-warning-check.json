@@ -1,0 +1,30 @@
+{
+  "application_log_count": 24,
+  "matches": {
+    "artifacts/performance-m3/final-repeated/core-stage.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-2.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-7.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-10.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-1.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-4.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-9.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-5.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-8.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-0.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-3.log": [],
+    "artifacts/performance-m3/final-repeated/core-small-posted-6.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-5.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-1.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-2.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-10.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-6.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-4.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-3.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-9.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-7.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-8.log": [],
+    "artifacts/performance-m3/final-repeated/quote-scale-0.log": [],
+    "artifacts/performance-m3/final-scale/native.log": []
+  },
+  "scope": "Owned application logs only; external AT-SPI teardown warnings are separate observer output."
+}

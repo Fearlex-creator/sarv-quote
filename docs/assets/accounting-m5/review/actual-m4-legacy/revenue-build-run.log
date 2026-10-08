@@ -1,0 +1,5 @@
+   Compiling sarv-independent-m4-sales-namespace-fixture v0.0.0 (/workspace/sarv-quote/artifacts/independent-m5/m4-legacy-probe)
+    Finished `dev` profile [unoptimized] target(s) in 0.71s
+     Running `target/debug/sarv-independent-m4-sales-namespace-fixture artifacts/independent-m5/actual-m4-legacy-revenue`
+PASS actual tagged M4 schema5 sales.invoice.v1 manual100+alias; independent revision200; original linked reversal100; lock; three checksummed backups. No M5 acceptance claimed.
+PASS actual tagged M4 F2 core permits mapped ordinary Sales17 and SalesReturns3 with asset14, TB1268, no typed invoice. Future module-reconciliation compatibility input only.

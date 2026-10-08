@@ -1,0 +1,18 @@
+{
+  "all_prior_state_exact_except_schema": true,
+  "fresh_restore_and_reopen": true,
+  "generation_after": 72,
+  "generation_before": 71,
+  "journals": 0,
+  "opening_records": 1,
+  "original_v4_recovery_exact": true,
+  "procurement_default_empty": true,
+  "quote_csv_byte_exact": true,
+  "quotes": 0,
+  "result": "passed",
+  "schema_after": 5,
+  "schema_before": 4,
+  "source": "docs/assets/accounting-m3/review/final4-main/zero-backup.json",
+  "sqlite_integrity": "ok",
+  "zero_aliases": 2
+}

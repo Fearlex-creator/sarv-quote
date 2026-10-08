@@ -1,0 +1,26 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/purchase-returns-native/run-i41jh8ii",
+  "portable": "/workspace/sarv-quote/docs/assets/accounting-m6/native/run-i41jh8ii",
+  "files": {
+    "M5-actual-before-purchases.png": "4942cfa0db5a9bf00258cff824b39c077ae18c87a91f804f47f1ce866bf374ee",
+    "M5-actual-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-Jalali-toman-1.png": "d6d31dc1832bb0ee81eb79c2eaba085780e9aec2864fe34cbae5eaf6ab38bd20",
+    "M6-actual-physical-return.csv": "9a9e4e5cbb82a5a5c12c64cf2a8e641122911f78e91a1efaae24b54e6a2c821d",
+    "M6-actual-physical-return.pdf": "675785d5e79842c51e0d872e7397db1e6a387553d179622ce84fbecb2e98c1ac",
+    "M6-actual-physical-return.txt": "9694dcf581a2ead082df18a068c92dfcb2cec02954beee87e0479c5545bc38a7",
+    "M6-failure.png": "e3398e381bb7ab8925f77e13a7502f14ffcec90e5a1a6a00b951efd020fbbe3d",
+    "M6-main-after-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-main-before-state.json": "44e92be3ab033be21f4ee4a3e99f8695ec4b7eebc4530f8836638c7d9644da6b",
+    "M6-main.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-overreturn-retained.png": "21ea1217e76e7f9edef82e493d67f38095076ef4f436469bca93646d09e12ba5",
+    "M6-posted-detail-1.png": "0d51e4a10a4982f1ef6a49b8e8f3d128c84e5bffd021cd00af635dd05a4a8369",
+    "M6-preview-1.png": "ab272fa6e681f0ff4990accf57eeb0c7daea7eddb839a6272b021c0398c74fdf",
+    "failed-access-tree.json": "771aada243bbbb867d9e5ce38027e7812dc2d48b65f36c7b3743a42de83313fe",
+    "frozen-source-manifest.json": "865d36785342d5ef493ff3df12156be39538c94b5d4528017214e3c797926e4f",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "progress.jsonl": "16fdcd2c2ac56839762b1888b7aad6ed054326f686a0b6d44d15b21a84c41d32",
+    "purchase-returns-independent-native.json": "f0e2e914ebd38259f1427c8aa8b30b380e9f1e1ee042651d7f02c6fff99345b5",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "result": "failed"
+}

@@ -1,0 +1,2566 @@
+{
+  "measurement_complete": true,
+  "performance_acceptance": "partial; strict gate FAILED and M5 performance remains open",
+  "final_C12_epoch_count": 1,
+  "unchanged_M2_invocations": 1,
+  "protocols": {
+    "external": "m5-cached-v3",
+    "compiled": "m5-action-v1.2"
+  },
+  "binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e",
+  "production_source_sha256": "a065b023e0d83fb4c41991382b990a9a746afb3f8bcbdf0ca23e2d00b45e8bed",
+  "external_observer_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "initial_build_observer_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "full53_and_wrapper_provenance_guards": true,
+  "all_provenance_guards_passed": true,
+  "startup": {
+    "core-small-posted": {
+      "first_process_ms": 845.5845649950788,
+      "startup": {
+        "n": 10,
+        "p50": 855.929297998955,
+        "p95": 906.3512319989968,
+        "p99": 906.3512319989968,
+        "worst": 906.3512319989968,
+        "method": "nearest rank"
+      },
+      "rss_kib": {
+        "n": 10,
+        "p50": 96104,
+        "p95": 97048,
+        "p99": 97048,
+        "worst": 97048,
+        "method": "nearest rank"
+      },
+      "hwm_kib": {
+        "n": 10,
+        "p50": 101172,
+        "p95": 102308,
+        "p99": 102308,
+        "worst": 102308,
+        "method": "nearest rank"
+      },
+      "startup_budget": {
+        "actual_ms": 906.3512319989968,
+        "budget_ms": 3000,
+        "passes": true
+      },
+      "rss_budget": {
+        "actual_bytes": 99377152,
+        "budget_bytes": 250000000,
+        "passes": true
+      }
+    },
+    "quote-scale": {
+      "first_process_ms": 1446.1085610018927,
+      "startup": {
+        "n": 10,
+        "p50": 1034.5982889994048,
+        "p95": 1089.9371650011744,
+        "p99": 1089.9371650011744,
+        "worst": 1089.9371650011744,
+        "method": "nearest rank"
+      },
+      "rss_kib": {
+        "n": 10,
+        "p50": 175796,
+        "p95": 176940,
+        "p99": 176940,
+        "worst": 176940,
+        "method": "nearest rank"
+      },
+      "hwm_kib": {
+        "n": 10,
+        "p50": 175796,
+        "p95": 176940,
+        "p99": 176940,
+        "worst": 176940,
+        "method": "nearest rank"
+      },
+      "startup_budget": {
+        "actual_ms": 1089.9371650011744,
+        "budget_ms": 3000,
+        "passes": true
+      },
+      "rss_budget": {
+        "actual_bytes": 181186560,
+        "budget_bytes": 250000000,
+        "passes": true
+      }
+    },
+    "procurement-small-posted": {
+      "first_process_ms": 800.8522370000719,
+      "startup": {
+        "n": 10,
+        "p50": 829.642769000202,
+        "p95": 901.4434679993428,
+        "p99": 901.4434679993428,
+        "worst": 901.4434679993428,
+        "method": "nearest rank"
+      },
+      "rss_kib": {
+        "n": 10,
+        "p50": 97136,
+        "p95": 100660,
+        "p99": 100660,
+        "worst": 100660,
+        "method": "nearest rank"
+      },
+      "hwm_kib": {
+        "n": 10,
+        "p50": 103652,
+        "p95": 104780,
+        "p99": 104780,
+        "worst": 104780,
+        "method": "nearest rank"
+      },
+      "startup_budget": {
+        "actual_ms": 901.4434679993428,
+        "budget_ms": 3000,
+        "passes": true
+      },
+      "rss_budget": {
+        "actual_bytes": 103075840,
+        "budget_bytes": 250000000,
+        "passes": true
+      }
+    },
+    "sales-small-posted": {
+      "first_process_ms": 847.0269050012575,
+      "startup": {
+        "n": 10,
+        "p50": 872.7732940023998,
+        "p95": 950.2411560024484,
+        "p99": 950.2411560024484,
+        "worst": 950.2411560024484,
+        "method": "nearest rank"
+      },
+      "rss_kib": {
+        "n": 10,
+        "p50": 98464,
+        "p95": 98716,
+        "p99": 98716,
+        "worst": 98716,
+        "method": "nearest rank"
+      },
+      "hwm_kib": {
+        "n": 10,
+        "p50": 104888,
+        "p95": 105416,
+        "p99": 105416,
+        "worst": 105416,
+        "method": "nearest rank"
+      },
+      "startup_budget": {
+        "actual_ms": 950.2411560024484,
+        "budget_ms": 3000,
+        "passes": true
+      },
+      "rss_budget": {
+        "actual_bytes": 101085184,
+        "budget_bytes": 250000000,
+        "passes": true
+      }
+    },
+    "sales-paged-drafts": {
+      "first_process_ms": 865.028626001731,
+      "startup": {
+        "n": 10,
+        "p50": 939.9331390013685,
+        "p95": 953.0676960057463,
+        "p99": 953.0676960057463,
+        "worst": 953.0676960057463,
+        "method": "nearest rank"
+      },
+      "rss_kib": {
+        "n": 10,
+        "p50": 97888,
+        "p95": 99908,
+        "p99": 99908,
+        "worst": 99908,
+        "method": "nearest rank"
+      },
+      "hwm_kib": {
+        "n": 10,
+        "p50": 104232,
+        "p95": 104440,
+        "p99": 104440,
+        "worst": 104440,
+        "method": "nearest rank"
+      },
+      "startup_budget": {
+        "actual_ms": 953.0676960057463,
+        "budget_ms": 3000,
+        "passes": true
+      },
+      "rss_budget": {
+        "actual_bytes": 102305792,
+        "budget_bytes": 250000000,
+        "passes": true
+      }
+    },
+    "sales-long-draft": {
+      "first_process_ms": 874.0571110029123,
+      "startup": {
+        "n": 10,
+        "p50": 922.2441590027302,
+        "p95": 1024.2868160057697,
+        "p99": 1024.2868160057697,
+        "worst": 1024.2868160057697,
+        "method": "nearest rank"
+      },
+      "rss_kib": {
+        "n": 10,
+        "p50": 98252,
+        "p95": 98340,
+        "p99": 98340,
+        "worst": 98340,
+        "method": "nearest rank"
+      },
+      "hwm_kib": {
+        "n": 10,
+        "p50": 104340,
+        "p95": 104588,
+        "p99": 104588,
+        "worst": 104588,
+        "method": "nearest rank"
+      },
+      "startup_budget": {
+        "actual_ms": 1024.2868160057697,
+        "budget_ms": 3000,
+        "passes": true
+      },
+      "rss_budget": {
+        "actual_bytes": 100700160,
+        "budget_bytes": 250000000,
+        "passes": true
+      }
+    }
+  },
+  "search": {
+    "core": {
+      "visible": {
+        "n": 20,
+        "p50": 89.42810599546647,
+        "p95": 103.66350100230193,
+        "p99": 106.00902899750508,
+        "worst": 106.00902899750508,
+        "method": "nearest rank"
+      },
+      "focused": {
+        "n": 20,
+        "p50": 118.04844599828357,
+        "p95": 135.13518100080546,
+        "p99": 135.73272900248412,
+        "worst": 135.73272900248412,
+        "method": "nearest rank"
+      },
+      "visible_budget": {
+        "actual_ms": 103.66350100230193,
+        "budget_ms": 200,
+        "passes": true
+      },
+      "focused_budget": {
+        "actual_ms": 135.13518100080546,
+        "budget_ms": 200,
+        "passes": true
+      }
+    },
+    "procurement": {
+      "visible": {
+        "n": 20,
+        "p50": 100.75611800129991,
+        "p95": 113.40058899804717,
+        "p99": 131.41520800127182,
+        "worst": 131.41520800127182,
+        "method": "nearest rank"
+      },
+      "focused": {
+        "n": 20,
+        "p50": 113.56542700377759,
+        "p95": 127.21456700091949,
+        "p99": 147.54765100224176,
+        "worst": 147.54765100224176,
+        "method": "nearest rank"
+      },
+      "visible_budget": {
+        "actual_ms": 113.40058899804717,
+        "budget_ms": 200,
+        "passes": true
+      },
+      "focused_budget": {
+        "actual_ms": 127.21456700091949,
+        "budget_ms": 200,
+        "passes": true
+      }
+    },
+    "posted_sales": {
+      "visible": {
+        "n": 20,
+        "p50": 60.702010996465106,
+        "p95": 74.92840199847706,
+        "p99": 75.33878099638969,
+        "worst": 75.33878099638969,
+        "method": "nearest rank"
+      },
+      "focused": {
+        "n": 20,
+        "p50": 80.56164300069213,
+        "p95": 100.70680100034224,
+        "p99": 101.93827199691441,
+        "worst": 101.93827199691441,
+        "method": "nearest rank"
+      },
+      "visible_budget": {
+        "actual_ms": 74.92840199847706,
+        "budget_ms": 200,
+        "passes": true
+      },
+      "focused_budget": {
+        "actual_ms": 100.70680100034224,
+        "budget_ms": 200,
+        "passes": true
+      }
+    },
+    "paged_sales": {
+      "visible": {
+        "n": 20,
+        "p50": 77.64508899708744,
+        "p95": 89.60425300028874,
+        "p99": 113.75247999967542,
+        "worst": 113.75247999967542,
+        "method": "nearest rank"
+      },
+      "focused": {
+        "n": 20,
+        "p50": 95.27813499880722,
+        "p95": 103.27029500331264,
+        "p99": 130.7631020026747,
+        "worst": 130.7631020026747,
+        "method": "nearest rank"
+      },
+      "visible_budget": {
+        "actual_ms": 89.60425300028874,
+        "budget_ms": 200,
+        "passes": true
+      },
+      "focused_budget": {
+        "actual_ms": 103.27029500331264,
+        "budget_ms": 200,
+        "passes": true
+      }
+    }
+  },
+  "long_navigation": {
+    "visible": {
+      "n": 39,
+      "p50": 64.60928400338162,
+      "p95": 97.96401199855609,
+      "p99": 118.88617899967358,
+      "worst": 118.88617899967358,
+      "method": "nearest rank"
+    },
+    "focused": {
+      "n": 39,
+      "p50": 65.85331799578853,
+      "p95": 99.68465499696322,
+      "p99": 119.9239720008336,
+      "worst": 119.9239720008336,
+      "method": "nearest rank"
+    },
+    "focus_after_visible_delta": {
+      "n": 39,
+      "p50": 1.2154110008850694,
+      "p95": 4.835494000872131,
+      "p99": 5.609890999039635,
+      "worst": 5.609890999039635,
+      "method": "nearest rank"
+    },
+    "phase_limits": "Raw focus delta combines component focus attempt, real Tab fallback, polling, scrolling/layout and scheduler work; per-phase/Tab counts absent. Delta p95 is computed from paired deltas, not by subtracting marginal p95s. No pure product/observer attribution.",
+    "visible_budget": {
+      "actual_ms": 97.96401199855609,
+      "budget_ms": 150,
+      "passes": true
+    },
+    "focused_budget": {
+      "actual_ms": 99.68465499696322,
+      "budget_ms": 150,
+      "passes": true
+    }
+  },
+  "long_open_visible_ms": 902.8917530013132,
+  "long_open_focused_ms": 1209.0143940004054,
+  "native_timer_phases": {
+    "core": {
+      "measured_accepted": 2,
+      "accepted_misses": [],
+      "excluded_or_unmeasured": []
+    },
+    "procurement": {
+      "measured_accepted": 22,
+      "accepted_misses": [],
+      "excluded_or_unmeasured": [
+        {
+          "operation": "receipt",
+          "phase": "preview",
+          "result": "rejected",
+          "ticks": 3,
+          "actual_ms": 29.638865,
+          "budget_ms": 50,
+          "measurable": false,
+          "passes": false
+        }
+      ]
+    },
+    "external_sales": {
+      "measured_accepted": 4,
+      "accepted_misses": [],
+      "excluded_or_unmeasured": []
+    },
+    "sales_full": {
+      "measured_accepted": 14,
+      "accepted_misses": [],
+      "excluded_or_unmeasured": []
+    },
+    "sales_draft": {
+      "measured_accepted": 2,
+      "accepted_misses": [],
+      "excluded_or_unmeasured": []
+    }
+  },
+  "all_raw_command_phase_recomputation": [
+    {
+      "path": "repeated/core-workflow/core-performance-phases.jsonl",
+      "line": 1,
+      "phase": "preview",
+      "result": "differences",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.090964,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.083443,
+        16.090964,
+        16.089332000000002,
+        2.531826
+      ]
+    },
+    {
+      "path": "repeated/core-workflow/core-performance-phases.jsonl",
+      "line": 2,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.108511,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.084554,
+        16.108511,
+        16.091966,
+        2.580489
+      ]
+    },
+    {
+      "path": "repeated/core-workflow/core-performance-phases.jsonl",
+      "line": 3,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.090763000000003,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.090763000000003,
+        16.079286000000003,
+        16.083813,
+        4.007751000000001
+      ]
+    },
+    {
+      "path": "repeated/core-workflow/core-performance-phases.jsonl",
+      "line": 4,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 39.962314,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        19.96906,
+        39.962314,
+        0.0006010000000000001
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 1,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 25.88105,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        25.88105,
+        21.968985,
+        23.153028,
+        0.24416800000000002
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 2,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 35.308620999999995,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        33.064528,
+        35.308620999999995,
+        0.000611
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 3,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 30.64429,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        19.256516,
+        30.64429,
+        17.689874,
+        0.37499499999999997
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 4,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 27.046968,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        27.046968,
+        18.516931,
+        0.000551
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 5,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 30.005627999999998,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        18.176758,
+        30.005627999999998,
+        22.336778000000002,
+        0.452993
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 6,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 39.591376,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        35.341741000000006,
+        39.591376,
+        0.0007109999999999999
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 7,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 27.481012999999997,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.083963999999998,
+        16.07517,
+        27.481012999999997,
+        0.359361
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 8,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 45.084626,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        35.757236999999996,
+        45.084626,
+        0.000871
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 9,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.106046999999997,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.085015000000002,
+        16.102842,
+        16.106046999999997,
+        2.7076510000000003
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 10,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 47.757135,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.083362,
+        47.757135,
+        0.000721
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 11,
+      "phase": "preview",
+      "result": "rejected",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 29.638865,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.089102,
+        16.082801,
+        29.638865,
+        0.20286600000000002
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 12,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.119393,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.08508,
+        16.119393,
+        16.076418,
+        2.581577
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 13,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 25.564235,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        25.564235,
+        19.079029000000002,
+        0.000561
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 14,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 28.267107,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.088819,
+        16.081389,
+        28.267107,
+        0.470038
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 15,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 43.443913,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        42.127559000000005,
+        43.443913,
+        0.000521
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 16,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 28.647470000000002,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.083733,
+        16.079335,
+        28.647470000000002,
+        0.434765
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 17,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 38.844139,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        37.667136,
+        38.844139,
+        0.00046100000000000004
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 18,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 23.175362,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.089712,
+        16.083282,
+        23.175362,
+        0.5137050000000001
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 19,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 19.384129,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        19.384129,
+        16.545178,
+        0.000261
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 20,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 40.545524,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        40.545524,
+        16.192617,
+        0.612924
+      ]
+    },
+    {
+      "path": "repeated/procurement-posted-workflow/procurement-performance-phases.jsonl",
+      "line": 21,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 21.417332000000002,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        21.128547,
+        21.417332000000002,
+        0.000802
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 1,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 33.690071,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        24.238152999999997,
+        33.690071,
+        0.381425
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 2,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 33.400183,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        33.400183,
+        20.235611000000002,
+        0.00042100000000000004
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 3,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 27.828887,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.128401,
+        16.084463,
+        27.828887,
+        0.40961699999999995
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 4,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 42.302322000000004,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        33.749309999999994,
+        42.302322000000004,
+        0.000641
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 5,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 31.675545,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.288241,
+        16.044193000000003,
+        31.675545,
+        0.380894
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 6,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 42.74202,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        42.74202,
+        42.157344,
+        0.0005700000000000001
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 7,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 22.60297,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.099587,
+        16.102631,
+        22.60297,
+        0.505872
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 8,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 43.313656,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        34.301342,
+        43.313656,
+        0.000721
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 9,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.089252,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.089252,
+        16.088350000000002,
+        16.081970000000002,
+        3.4429
+      ]
+    },
+    {
+      "path": "repeated/procurement-stage/procurement-performance-phases.jsonl",
+      "line": 10,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 23.672622,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        23.672622,
+        20.407655000000002,
+        0.00042100000000000004
+      ]
+    },
+    {
+      "path": "repeated/sales-external-stage/sales-performance-phases.jsonl",
+      "line": 1,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 18.286638,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.087673,
+        18.286638,
+        0.000521
+      ]
+    },
+    {
+      "path": "repeated/sales-external-stage/sales-performance-phases.jsonl",
+      "line": 2,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 19.532164,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.096587999999997,
+        19.532164,
+        0.000531
+      ]
+    },
+    {
+      "path": "repeated/sales-external-stage/sales-performance-phases.jsonl",
+      "line": 3,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 20.353623000000002,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.075716,
+        20.353623000000002,
+        0.000501
+      ]
+    },
+    {
+      "path": "repeated/sales-external-stage/sales-performance-phases.jsonl",
+      "line": 4,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 20.639179000000002,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.068248999999998,
+        20.639179000000002,
+        0.000871
+      ]
+    },
+    {
+      "path": "repeated/sales-external-stage/sales-performance-phases.jsonl",
+      "line": 5,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.775595,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.775595,
+        16.040807,
+        16.083641999999998,
+        1.8379699999999999
+      ]
+    },
+    {
+      "path": "repeated/sales-external-stage/sales-performance-phases.jsonl",
+      "line": 6,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 19.628895,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.077182999999998,
+        19.628895,
+        0.000351
+      ]
+    },
+    {
+      "path": "repeated/sales-native-draft/sales-performance-phases.jsonl",
+      "line": 1,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 19.829317999999997,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.105034,
+        19.829317999999997,
+        0.00043099999999999996
+      ]
+    },
+    {
+      "path": "repeated/sales-native-draft/sales-performance-phases.jsonl",
+      "line": 2,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 22.269415000000002,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.09852,
+        22.269415000000002,
+        0.000591
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 1,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 20.725824,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.186597,
+        20.725824,
+        0.00033999999999999997
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 2,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 20.377114000000002,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.092695,
+        20.377114000000002,
+        0.00055
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 3,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.102,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.096361,
+        16.08209,
+        16.102,
+        2.433087
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 4,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 18.562368,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        18.562368,
+        18.158229000000002,
+        0.000401
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 5,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 27.893963,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.101509,
+        16.089391000000003,
+        27.893963,
+        0.92878
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 6,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 39.658966,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        39.658966,
+        17.125122,
+        0.00029
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 7,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 31.390553,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.084213,
+        16.077683,
+        31.390553,
+        0.8337060000000001
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 8,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 43.482891,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        43.482891,
+        20.321706,
+        0.000511
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 9,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 34.213386,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.081708,
+        34.213386,
+        0.96231
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 10,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 43.808040999999996,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        43.808040999999996,
+        17.78828,
+        0.00037
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 11,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 24.714755,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        17.226873,
+        16.044934,
+        24.714755,
+        0.853336
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 12,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 2,
+      "max_gap_ms_recomputed": 46.020885,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        46.020885,
+        18.645161,
+        0.00027
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 13,
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 16.093977,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        16.092135,
+        16.093977,
+        16.085845000000003,
+        2.499866
+      ]
+    },
+    {
+      "path": "repeated/sales-native-full/sales-performance-phases.jsonl",
+      "line": 14,
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 3,
+      "max_gap_ms_recomputed": 23.617231999999998,
+      "terminal_gap_in_array": true,
+      "measurable_timer": true,
+      "passes_if_accepted": true,
+      "raw_gaps_ms": [
+        22.116350999999998,
+        16.062544000000003,
+        23.617231999999998,
+        0.00047
+      ]
+    }
+  ],
+  "legacy_broad_strict_budgets": {
+    "global": {
+      "actual_ms": 289.749728,
+      "budget_ms": 50,
+      "passes": false
+    },
+    "PDF_busy": {
+      "actual_ms": 107.151621,
+      "budget_ms": 50,
+      "passes": false
+    },
+    "persistence_busy": {
+      "actual_ms": 96.58612,
+      "budget_ms": 50,
+      "passes": false
+    },
+    "unchanged_quote_pages": {
+      "actual_ms": 118.810132,
+      "budget_ms": 150,
+      "passes": true
+    }
+  },
+  "additive_action_scopes": [
+    {
+      "id": 1,
+      "operation": "quote_changed_save_recovery",
+      "origin": "native_save_button_after_lock_released",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 322.271746,
+      "ticks": 14,
+      "max_gap_ms": 33.799917,
+      "terminal_gap_ms": 0.406162,
+      "ready_observed_ms": 292.234828,
+      "started_since_probe_ms": 27633.001171,
+      "ended_since_probe_ms": 27955.272917
+    },
+    {
+      "id": 2,
+      "operation": "quote_unchanged_save_refresh",
+      "origin": "native_save_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 270.226119,
+      "ticks": 13,
+      "max_gap_ms": 20.120267000000002,
+      "terminal_gap_ms": 15.995727,
+      "ready_observed_ms": 240.46456,
+      "started_since_probe_ms": 28258.641719,
+      "ended_since_probe_ms": 28528.867838
+    },
+    {
+      "id": 3,
+      "operation": "quote_page_changed_save",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 343.84418300000004,
+      "ticks": 15,
+      "max_gap_ms": 49.841195,
+      "terminal_gap_ms": 0.293582,
+      "ready_observed_ms": 312.428875,
+      "started_since_probe_ms": 28897.613627,
+      "ended_since_probe_ms": 29241.45781
+    },
+    {
+      "id": 4,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 138.64038100000002,
+      "ticks": 4,
+      "max_gap_ms": 42.134197,
+      "terminal_gap_ms": 19.324517999999998,
+      "ready_observed_ms": 108.58304100000001,
+      "started_since_probe_ms": 29274.874452,
+      "ended_since_probe_ms": 29413.514833
+    },
+    {
+      "id": 5,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 136.1693,
+      "ticks": 4,
+      "max_gap_ms": 40.675298999999995,
+      "terminal_gap_ms": 19.764561,
+      "ready_observed_ms": 106.16200500000001,
+      "started_since_probe_ms": 29443.759771,
+      "ended_since_probe_ms": 29579.929071
+    },
+    {
+      "id": 6,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 132.95187,
+      "ticks": 4,
+      "max_gap_ms": 41.209454,
+      "terminal_gap_ms": 19.531935999999998,
+      "ready_observed_ms": 102.92082900000001,
+      "started_since_probe_ms": 29610.119932,
+      "ended_since_probe_ms": 29743.071802
+    },
+    {
+      "id": 7,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 133.910952,
+      "ticks": 5,
+      "max_gap_ms": 41.419736,
+      "terminal_gap_ms": 0.324319,
+      "ready_observed_ms": 102.527052,
+      "started_since_probe_ms": 29773.66546,
+      "ended_since_probe_ms": 29907.576412000002
+    },
+    {
+      "id": 8,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "miss",
+      "elapsed_ms": 150.684741,
+      "ticks": 5,
+      "max_gap_ms": 51.488974,
+      "terminal_gap_ms": 5.1504,
+      "ready_observed_ms": 119.390067,
+      "started_since_probe_ms": 29940.819021,
+      "ended_since_probe_ms": 30091.503762
+    },
+    {
+      "id": 9,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "miss",
+      "elapsed_ms": 149.892047,
+      "ticks": 5,
+      "max_gap_ms": 51.002871,
+      "terminal_gap_ms": 0.412562,
+      "ready_observed_ms": 116.643538,
+      "started_since_probe_ms": 30124.733222,
+      "ended_since_probe_ms": 30274.625269
+    },
+    {
+      "id": 10,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 140.003086,
+      "ticks": 4,
+      "max_gap_ms": 49.101947,
+      "terminal_gap_ms": 19.429796,
+      "ready_observed_ms": 109.843972,
+      "started_since_probe_ms": 30307.16542,
+      "ended_since_probe_ms": 30447.168506
+    },
+    {
+      "id": 11,
+      "operation": "quote_page_unchanged_next",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 147.30919500000002,
+      "ticks": 5,
+      "max_gap_ms": 45.445527999999996,
+      "terminal_gap_ms": 6.897332,
+      "ready_observed_ms": 114.23011199999999,
+      "started_since_probe_ms": 30477.202891,
+      "ended_since_probe_ms": 30624.512086
+    },
+    {
+      "id": 12,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 140.546586,
+      "ticks": 4,
+      "max_gap_ms": 42.765259,
+      "terminal_gap_ms": 20.286969,
+      "ready_observed_ms": 110.528114,
+      "started_since_probe_ms": 32358.292078,
+      "ended_since_probe_ms": 32498.838664
+    },
+    {
+      "id": 13,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 135.371897,
+      "ticks": 4,
+      "max_gap_ms": 43.149107,
+      "terminal_gap_ms": 20.21542,
+      "ready_observed_ms": 105.371063,
+      "started_since_probe_ms": 32529.138238000003,
+      "ended_since_probe_ms": 32664.510135
+    },
+    {
+      "id": 14,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 146.404006,
+      "ticks": 5,
+      "max_gap_ms": 49.536811,
+      "terminal_gap_ms": 0.35266200000000003,
+      "ready_observed_ms": 114.73703400000001,
+      "started_since_probe_ms": 32694.894449000003,
+      "ended_since_probe_ms": 32841.298455000004
+    },
+    {
+      "id": 15,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 141.773899,
+      "ticks": 5,
+      "max_gap_ms": 44.757085000000004,
+      "terminal_gap_ms": 0.5258529999999999,
+      "ready_observed_ms": 111.63561700000001,
+      "started_since_probe_ms": 32874.92315,
+      "ended_since_probe_ms": 33016.697049
+    },
+    {
+      "id": 16,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "miss",
+      "elapsed_ms": 144.34128299999998,
+      "ticks": 4,
+      "max_gap_ms": 51.9046,
+      "terminal_gap_ms": 17.101919,
+      "ready_observed_ms": 114.341394,
+      "started_since_probe_ms": 33046.849697,
+      "ended_since_probe_ms": 33191.19098
+    },
+    {
+      "id": 17,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 134.461595,
+      "ticks": 4,
+      "max_gap_ms": 41.832993,
+      "terminal_gap_ms": 17.981965,
+      "ready_observed_ms": 104.54989400000001,
+      "started_since_probe_ms": 33224.218406,
+      "ended_since_probe_ms": 33358.680001
+    },
+    {
+      "id": 18,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 138.282118,
+      "ticks": 5,
+      "max_gap_ms": 44.704296,
+      "terminal_gap_ms": 0.376297,
+      "ready_observed_ms": 108.26535,
+      "started_since_probe_ms": 33392.363595,
+      "ended_since_probe_ms": 33530.645713
+    },
+    {
+      "id": 19,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 146.927825,
+      "ticks": 5,
+      "max_gap_ms": 42.424749999999996,
+      "terminal_gap_ms": 7.615505,
+      "ready_observed_ms": 113.249169,
+      "started_since_probe_ms": 33560.933961,
+      "ended_since_probe_ms": 33707.861786
+    },
+    {
+      "id": 20,
+      "operation": "quote_page_unchanged_previous",
+      "origin": "native_pager_button",
+      "result": "accepted",
+      "strict_status": "pass",
+      "elapsed_ms": 136.718626,
+      "ticks": 4,
+      "max_gap_ms": 41.818511,
+      "terminal_gap_ms": 16.154802,
+      "ready_observed_ms": 106.704471,
+      "started_since_probe_ms": 33741.412359999995,
+      "ended_since_probe_ms": 33878.130986000004
+    },
+    {
+      "id": 21,
+      "operation": "quote_product_choice",
+      "origin": "native_product_choose_button",
+      "result": "accepted",
+      "strict_status": "miss",
+      "elapsed_ms": 585.784412,
+      "ticks": 21,
+      "max_gap_ms": 73.664108,
+      "terminal_gap_ms": 14.509955999999999,
+      "ready_observed_ms": 556.190065,
+      "started_since_probe_ms": 36647.866200000004,
+      "ended_since_probe_ms": 37233.650612
+    },
+    {
+      "id": 22,
+      "operation": "quote_pdf_preview_and_export",
+      "origin": "internal_probe_preview_then_background_pdf",
+      "result": "accepted",
+      "strict_status": "miss",
+      "elapsed_ms": 1894.181847,
+      "ticks": 90,
+      "max_gap_ms": 80.439368,
+      "terminal_gap_ms": 9.634193,
+      "ready_observed_ms": 1864.377359,
+      "started_since_probe_ms": 41248.042202000004,
+      "ended_since_probe_ms": 43142.224049
+    }
+  ],
+  "additive_miss_count": 5,
+  "additive_page_miss_count": 3,
+  "source_trace_spans_correlated_with_active_scopes": {
+    "1": [
+      {
+        "name": "review_snapshot_clone",
+        "ms": 4.231
+      },
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.853
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 0.748
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 8.491
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.008
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 8.527
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.177
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 13.181
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.0
+      }
+    ],
+    "2": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.827
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 0.481
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 7.089
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.006
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.005
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 7.119
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 0.826
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 10.692
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.0
+      }
+    ],
+    "3": [
+      {
+        "name": "review_snapshot_clone",
+        "ms": 3.186
+      },
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.625
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 25.685
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 9.198
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.03
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 9.309
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.097
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 38.339
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.852
+      }
+    ],
+    "4": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.484
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 26.276
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.57
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.009
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.027
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.639
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.306
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 40.08
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.124
+      }
+    ],
+    "5": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.563
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 26.086
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 9.394
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.021
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 9.446
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.232
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 38.712
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.126
+      }
+    ],
+    "6": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.422
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 26.978
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 8.97
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.022
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 9.027
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.392
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 39.221
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.149
+      }
+    ],
+    "7": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.428
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 27.372
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 9.004
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.008
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.025
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 9.062
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.257
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 39.494
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.148
+      }
+    ],
+    "8": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.458
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 36.23
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 9.634
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.008
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.024
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 9.692
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.27
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 49.089
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.197
+      }
+    ],
+    "9": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.482
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 36.671
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 8.891
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.008
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.022
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 8.944
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.279
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 48.773
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.178
+      }
+    ],
+    "10": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.404
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 35.225
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 8.668
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.019
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 8.715
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.21
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 46.943
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.179
+      }
+    ],
+    "11": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.626
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 30.221
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 9.704
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.031
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 9.766
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.175
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 43.236
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.12
+      }
+    ],
+    "12": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.778
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 25.296
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.941
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.006
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.031
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 11.003
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.547
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 40.061
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.3
+      }
+    ],
+    "13": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.677
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 27.149
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.495
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.022
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.56
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.271
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 41.068
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.129
+      }
+    ],
+    "14": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.911
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 32.506
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.899
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.026
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.959
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.389
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 47.244
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.229
+      }
+    ],
+    "15": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.796
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 26.769
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 11.08
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.008
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.028
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 11.147
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.454
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 41.592
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.264
+      }
+    ],
+    "16": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.705
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 35.154
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.754
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.006
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.025
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.81
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.349
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 49.478
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.197
+      }
+    ],
+    "17": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.695
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 25.29
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.815
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.027
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.878
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.498
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 39.744
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.135
+      }
+    ],
+    "18": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 2.018
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 28.325
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.665
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.006
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.023
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.723
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.211
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 42.725
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.152
+      }
+    ],
+    "19": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.641
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 26.364
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.625
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.006
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.023
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.681
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.254
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 40.347
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.129
+      }
+    ],
+    "20": [
+      {
+        "name": "review_reuse_hide",
+        "ms": 1.783
+      },
+      {
+        "name": "review_reuse_setters",
+        "ms": 25.57
+      },
+      {
+        "name": "review_reuse_show",
+        "ms": 10.813
+      },
+      {
+        "name": "review_reuse_collect",
+        "ms": 0.007
+      },
+      {
+        "name": "review_reuse_chrome_setters",
+        "ms": 0.036
+      },
+      {
+        "name": "review_reuse_chrome",
+        "ms": 10.879
+      },
+      {
+        "name": "review_reuse_preserved_focus",
+        "ms": 1.211
+      },
+      {
+        "name": "review_100_row_widget_reuse",
+        "ms": 39.879
+      },
+      {
+        "name": "review_reuse_requested_focus",
+        "ms": 0.136
+      }
+    ],
+    "21": [
+      {
+        "name": "review_snapshot_clone",
+        "ms": 5.751
+      },
+      {
+        "name": "review_batched_snapshot_clone",
+        "ms": 6.354
+      },
+      {
+        "name": "review_construct_20_rows",
+        "ms": 25.224
+      },
+      {
+        "name": "review_construct_20_rows",
+        "ms": 14.966
+      },
+      {
+        "name": "review_construct_20_rows",
+        "ms": 14.103
+      },
+      {
+        "name": "review_construct_20_rows",
+        "ms": 14.319
+      },
+      {
+        "name": "review_construct_20_rows",
+        "ms": 14.413
+      },
+      {
+        "name": "review_atomic_install",
+        "ms": 31.577
+      },
+      {
+        "name": "review_retire_20_rows",
+        "ms": 3.964
+      },
+      {
+        "name": "review_retire_20_rows",
+        "ms": 3.673
+      },
+      {
+        "name": "review_retire_20_rows",
+        "ms": 3.389
+      },
+      {
+        "name": "review_retire_20_rows",
+        "ms": 3.203
+      },
+      {
+        "name": "review_retire_20_rows",
+        "ms": 3.562
+      },
+      {
+        "name": "review_retire_20_rows",
+        "ms": 0.301
+      }
+    ],
+    "22": []
+  },
+  "source_span_limits": "Nested wall-clock source spans are not summed, not isolated CPU and not proof of which observer/product/scheduling work caused a timer gap. No fixture/capture/disk verification inside additive scopes; readiness/tracing remains.",
+  "cache_identity_receipt_counts": {
+    "posted": 21,
+    "paged": 23,
+    "long": 40
+  },
+  "read_only_Sales_heartbeat": "unmeasured; no phase acceptance inferred",
+  "full_quote_workflow_memory_kib": {
+    "VmHWM": 384676,
+    "VmRSS": 338848
+  },
+  "C2_strict_results_retained_unchanged": {
+    "paged_visible_p95_ms": 331.616323,
+    "paged_focused_p95_ms": 345.277586,
+    "long_visible_p95_ms": 419.622452,
+    "long_focused_p95_ms": 690.369299,
+    "global_ms": 320.116878,
+    "PDF_busy_ms": 117.240539,
+    "persistence_busy_ms": 100.135268,
+    "unchanged_quote_page_ms": 138.524176
+  },
+  "historical_M4_misses_retained": {
+    "global_ms": 280.552,
+    "unchanged_page_ms": 161.263,
+    "PDF_busy_ms": 127.266,
+    "persistence_busy_ms": 98.725
+  },
+  "causal_product_speed_or_competitor_parity_claim": false,
+  "limits": [
+    "C12 changes production; observation protocols remain C8 m5-cached-v3/m5-action-v1.2; differences from C2 are not identical controlled causal endpoints.",
+    "All misses retained; timers are responsiveness proxies, not continuous CPU traces.",
+    "n10/n20 p99 equals worst; n39 sequential pages are descriptive, not independent launches.",
+    "No dedicated4core8GBSSD/physical-cache-cold/fiveyear100kdocs1Mjournals10kparties/WindowsWayland/physicalprinting/powerloss/leak acceptance."
+  ]
+}

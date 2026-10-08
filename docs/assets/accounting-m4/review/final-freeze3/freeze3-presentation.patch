@@ -1,0 +1,40 @@
+--- a/src/ui/procurement.rs
++++ b/src/ui/procurement.rs
+@@ -1568,7 +1568,7 @@
+                     SearchIndex::new(masters.iter().map(|(id, name)| format!("{id} {name}")));
+                 Ok((r, c, records, document_index, master_index, masters))
+             },
+-            move |_, result| {
++            move |ui, result| {
+                 let Some(p) = weak.upgrade() else { return };
+                 if p.revision.get() != revision {
+                     return;
+@@ -1583,6 +1583,7 @@
+                         *p.records.borrow_mut() = records;
+                         p.status.set_text("منابع و گزارش پایان روز آماده است.");
+                         p.render();
++                        ui.message(Ok("منابع و گزارش پایان روز آماده است."));
+                     }
+                     Err(e) => {
+                         p.resources.borrow_mut().take();
+@@ -1595,6 +1596,7 @@
+                         clear(&p.documents);
+                         clear(&p.controls);
+                         clear(&p.masters);
++                        ui.message(Err::<String, _>(e));
+                     }
+                 }
+             },
+--- a/src/procurement_export.rs
++++ b/src/procurement_export.rs
+@@ -685,7 +685,9 @@
+                 let mut row = source_row(record, "party", &p.id);
+                 row.label = format!(
+                     "شخص {} • مشتری {} • تأمین‌کننده {}",
+-                    p.name, p.customer, p.supplier
++                    p.name,
++                    if p.customer { "بله" } else { "خیر" },
++                    if p.supplier { "بله" } else { "خیر" }
+                 );
+                 row.snapshot = serde_json::to_string(p)?;
+                 field(&mut row, "party_id", &p.id);

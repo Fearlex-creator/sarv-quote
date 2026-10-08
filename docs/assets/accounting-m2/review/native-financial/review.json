@@ -1,0 +1,108 @@
+{
+  "binary_sha256": "8522389842bab5492af1578d3c8da6ced0161b535fdca9ec0dacbb04caa897c6",
+  "checks": [
+    {
+      "name": "actual M1 restores verified full pre-M2 v2 books",
+      "passed": true,
+      "quotes": 3,
+      "journals": 3
+    },
+    {
+      "name": "actual M1 rejects schema3 without state alteration",
+      "passed": true,
+      "stderr": "Error: دادهٔ محلی نامعتبر؛ فایل را نگه دارید\n\nCaused by:\n    unknown variant `Jalali`, expected `Iso` or `DayMonthYear` at line 1 column 2693\n"
+    },
+    {
+      "name": "Light actual width 1280",
+      "passed": true
+    },
+    {
+      "name": "Light actual width 650",
+      "passed": true
+    },
+    {
+      "name": "Light narrow nav reachable",
+      "passed": true
+    },
+    {
+      "name": "Light sidebar active destination keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Light journals tab keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Light journal action keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Light invalid common-year mode switch retains literal",
+      "passed": true
+    },
+    {
+      "name": "Light mode rejection preserves raw books",
+      "passed": true
+    },
+    {
+      "name": "Light actual leap conversion",
+      "passed": true,
+      "actual": "۲۰۲۵-۰۳-۲۰"
+    },
+    {
+      "name": "Light exact Gregorian to Jalali",
+      "passed": true
+    },
+    {
+      "name": "Light Escape no state loss",
+      "passed": true
+    },
+    {
+      "name": "Dark actual width 1280",
+      "passed": true
+    },
+    {
+      "name": "Dark actual width 650",
+      "passed": true
+    },
+    {
+      "name": "Dark narrow nav reachable",
+      "passed": true
+    },
+    {
+      "name": "Dark sidebar active destination keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Dark journals tab keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Dark journal action keyboard focus",
+      "passed": true
+    },
+    {
+      "name": "Dark invalid common-year mode switch retains literal",
+      "passed": true
+    },
+    {
+      "name": "Dark mode rejection preserves raw books",
+      "passed": true
+    },
+    {
+      "name": "Dark actual leap conversion",
+      "passed": true,
+      "actual": "۲۰۲۵-۰۳-۲۰"
+    },
+    {
+      "name": "Dark exact Gregorian to Jalali",
+      "passed": true
+    },
+    {
+      "name": "Dark Escape no state loss",
+      "passed": true
+    }
+  ],
+  "profile": "/workspace/sarv-quote/artifacts/independent-m2/native-qvyob3lv",
+  "result": "passed"
+}

@@ -1,0 +1,34 @@
+{
+  "result": "passed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze5",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "run": "/workspace/sarv-quote/artifacts/procurement-completion/run-m3fq21sb",
+  "checks": [
+    {
+      "name": "actual Tab focuses the modal disclosure control",
+      "passed": true,
+      "actual_focused_semantic_controls": [
+        {
+          "name": "جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده",
+          "role": "button"
+        }
+      ]
+    },
+    {
+      "name": "actual modal focus/read-only expansion/cancel preserves full payload and generation",
+      "passed": true
+    }
+  ],
+  "synthetic_delay": {
+    "scope": "Source cancellation branch only. Actual pthread_setname_np forwards unchanged; holds owned sarv-export worker behind private flag, maximum5000ms. No GTK/main thread delay and no financial writes. Uninstrumented ready and rejected preview observations are separate.",
+    "c_sha256": "7856d1ef3871d81450b75f81f4cc72c1d656e73788611f6007cb37bd992b3eb0",
+    "so_sha256": "144603a45b956a0359d61f2d9757eb669f845abf12e407da924637e9eb5efc79"
+  },
+  "focus_events": [],
+  "modal_numeric_geometry_measured": false,
+  "native_mainwindow_controller_receives_modal_modifier": false,
+  "method": "Actual XTest Tab until the disclosure itself is AT-SPI focused, then harmless Shift while focus remains. Native window events retained if delivered; absent events and null bounds cannot establish modal numeric geometry.",
+  "gtk_diagnostics": {
+    "ready-native.log": ""
+  }
+}

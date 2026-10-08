@@ -1,0 +1,12 @@
+{
+  "result": "failed",
+  "binary": "/tmp/sarv-M4-picker-async-debug",
+  "binary_sha256": "976b8e8a227e4e368dc5c85b51e03051aaaf2095ba02fba5b588c8b8eb3c101e",
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/freeze5-repeated/quote-scale",
+  "run": "/workspace/sarv-quote/artifacts/picker-async/run-rowyx9t7",
+  "scope": "Synthetic one-line quote and50k catalog; real XTest picker activation/selection and owned SQLite writer lock. Not a performance benchmark.",
+  "checks": [],
+  "gtk_diagnostics": {
+    "app-native.log": ""
+  }
+}

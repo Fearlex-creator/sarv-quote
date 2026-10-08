@@ -157,6 +157,44 @@ fn recovery_worker_entry() {
 }
 fn run_worker(mode: &str, directory: &Path) -> Result<()> {
     match mode {
+        "accounting_before_commit" | "accounting_after_commit" => {
+            use sarv_quote::accounting::*;
+            let mut store = Store::open(directory)?;
+            let (generation, mut candidate) = store.begin_detached()?;
+            let book = &mut candidate.accounting;
+            book.post(PostCommand {
+                company_id: book.companies[0].id.clone(),
+                period_id: book.periods[0].id.clone(),
+                date: "2026-01-01".into(),
+                source_id: "synthetic-kill-journal".into(),
+                source_revision: 1,
+                event: "opening".into(),
+                request_key: "kill-key".into(),
+                actor: "آزمایشگر".into(),
+                reason: "ماندهٔ مصنوعی".into(),
+                kind: JournalKind::Opening,
+                lines: vec![
+                    JournalLineInput {
+                        account_id: book.accounts[0].id.clone(),
+                        debit: Money::from_rials(1251),
+                        credit: Money::ZERO,
+                        description: "دارایی".into(),
+                    },
+                    JournalLineInput {
+                        account_id: book.accounts[1].id.clone(),
+                        debit: Money::ZERO,
+                        credit: Money::from_rials(1251),
+                        description: "سرمایه".into(),
+                    },
+                ],
+            })?;
+            let prepared = Store::prepare_candidate(generation, candidate)?;
+            if mode == "accounting_before_commit" {
+                worker_ready("validated complete journal before detached commit")?;
+            }
+            let _receipt = Store::commit_detached(directory.to_path_buf(), prepared)?;
+            worker_ready("durable detached journal commit before owner adoption")?;
+        }
         "store_candidate" => {
             let mut store = Store::open(directory)?;
             store.change(|state| {
@@ -240,6 +278,82 @@ fn run_worker(mode: &str, directory: &Path) -> Result<()> {
         _ => anyhow::bail!("unknown worker mode"),
     }
     Ok(())
+}
+
+#[test]
+fn interrupted_detached_journal_before_commit_or_before_receipt_has_exact_complete_books() {
+    use sarv_quote::accounting::*;
+    for mode in ["accounting_before_commit", "accounting_after_commit"] {
+        let dir = tempfile::tempdir().unwrap();
+        let mut store = Store::open(dir.path()).unwrap();
+        store
+            .change(|state| {
+                let book = &mut state.accounting;
+                let company = book.add_company("شرکت مصنوعی قطع پردازش", "آزمایشگر")?;
+                book.add_period(
+                    &company,
+                    "سال مصنوعی",
+                    "2026-01-01",
+                    "2026-12-31",
+                    "آزمایشگر",
+                )?;
+                for (code, classification, normal_balance) in [
+                    ("1101", AccountClass::Asset, BalanceSide::Debit),
+                    ("3101", AccountClass::Equity, BalanceSide::Credit),
+                ] {
+                    book.add_account(
+                        NewAccount {
+                            company_id: company.clone(),
+                            parent_id: None,
+                            code: code.into(),
+                            name: format!("حساب {code}"),
+                            classification,
+                            normal_balance,
+                            postable: true,
+                            control: false,
+                        },
+                        "آزمایشگر",
+                    )?;
+                }
+                Ok(())
+            })
+            .unwrap();
+        let original = encoded(&store.state);
+        let mut worker = OwnedWorker::spawn(mode, dir.path());
+        worker.ready();
+        worker.kill();
+        let reopened = Store::open(dir.path()).unwrap();
+        let committed = mode == "accounting_after_commit";
+        assert_eq!(
+            reopened.state.accounting.journals.len(),
+            usize::from(committed)
+        );
+        if committed {
+            let company = &reopened.state.accounting.companies[0].id;
+            let trial = reopened
+                .state
+                .accounting
+                .trial_balance(company, "2026-12-31")
+                .unwrap();
+            assert_eq!(trial.total_debit.rials(), 1251);
+            assert_eq!(trial.total_credit.rials(), 1251);
+            let backup = dir.path().join("committed-journal.json");
+            reopened.backup(&backup).unwrap();
+            let restored_dir = tempfile::tempdir().unwrap();
+            let mut restored = Store::open(restored_dir.path()).unwrap();
+            restored
+                .restore(Store::restore_preview(&backup).unwrap())
+                .unwrap();
+            assert_eq!(encoded(&restored.state), encoded(&reopened.state));
+        } else {
+            assert_eq!(encoded(&reopened.state), original);
+        }
+        integrity(dir.path());
+        evidence(
+            mode,
+            json!({"scope":"actual balanced accounting command, prepared validation and detached SQLite commit; SIGKILL before commit or before owner receipt", "sigkill":true,"journals":usize::from(committed),"trial_balance_irr":if committed {1251}else{0},"integrity_check":"ok"}),
+        );
+    }
 }
 
 #[test]

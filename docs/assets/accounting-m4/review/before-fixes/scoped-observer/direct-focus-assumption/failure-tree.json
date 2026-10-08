@@ -1,0 +1,454 @@
+[
+  {
+    "name": "sarv-M4-freeze2",
+    "role": "application"
+  },
+  {
+    "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+    "role": "frame"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌ها",
+    "role": "grouping"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "بازیابی پس از اجرای مجدد تأیید شد",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "پیشنهاد قیمت · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود.",
+    "role": "label"
+  },
+  {
+    "name": "ساخت پشتیبان JSON",
+    "role": "button"
+  },
+  {
+    "name": "انتخاب پشتیبان و بررسی بازیابی",
+    "role": "button"
+  },
+  {
+    "name": "مسیر داده: /workspace/sarv-quote/artifacts/independent-m4/native/legacy-corrected-spmlxea7/fresh\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش عملیاتی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ساخت پشتیبان JSON",
+    "role": "label"
+  },
+  {
+    "name": "انتخاب پشتیبان و بررسی بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  }
+]

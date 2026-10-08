@@ -1,0 +1,94 @@
+{
+  "company_id": "b7b34882-404a-4b31-ab71-18b5f19d53e7",
+  "as_of": "2026-03-21",
+  "controls": [
+    {
+      "role": "Cash",
+      "account_id": "9ccc5c39-4b41-420b-b316-a47cd6cf6ae0",
+      "ledger": 251,
+      "detail": 251,
+      "difference": 0
+    },
+    {
+      "role": "Bank",
+      "account_id": "ba6f78b6-4c11-4319-928f-98152d9b4fdb",
+      "ledger": 300,
+      "detail": 300,
+      "difference": 0
+    },
+    {
+      "role": "Receivables",
+      "account_id": "a505d90e-51f3-47e6-b62c-ba606654a39b",
+      "ledger": 200,
+      "detail": 200,
+      "difference": 0
+    },
+    {
+      "role": "ChequesReceivable",
+      "account_id": "d96c5842-551e-4a67-8153-caf3d1bae28b",
+      "ledger": 200,
+      "detail": 200,
+      "difference": 0
+    },
+    {
+      "role": "Inventory",
+      "account_id": "5a3ec714-028f-421c-99d5-36520ca9b685",
+      "ledger": 300,
+      "detail": 300,
+      "difference": 0
+    },
+    {
+      "role": "SupplierAdvances",
+      "account_id": "b260d8d2-1499-459e-9d9e-30f08f845a4d",
+      "ledger": 0,
+      "detail": 0,
+      "difference": 0
+    },
+    {
+      "role": "Payables",
+      "account_id": "a08e27d4-7004-4040-90b3-5e3a142dfeab",
+      "ledger": 149,
+      "detail": 149,
+      "difference": 0
+    },
+    {
+      "role": "ChequesPayable",
+      "account_id": "2e6a5cc6-b3dd-43a2-bf3c-ddff8ec03748",
+      "ledger": 100,
+      "detail": 100,
+      "difference": 0
+    },
+    {
+      "role": "Grni",
+      "account_id": "5da37c4d-fddb-4325-a82a-00122d261409",
+      "ledger": 50,
+      "detail": 50,
+      "difference": 0
+    },
+    {
+      "role": "CustomerAdvances",
+      "account_id": "f5ee1638-fa2e-405d-be19-d28ef4f7948b",
+      "ledger": 0,
+      "detail": 0,
+      "difference": 0
+    },
+    {
+      "role": "Cogs",
+      "account_id": "34e01531-d351-4f5f-8fe7-17d2914c1e53",
+      "ledger": 0,
+      "detail": 0,
+      "difference": 0
+    },
+    {
+      "role": "InventoryLoss",
+      "account_id": "e06da461-0ff2-4770-97b4-a118f307d4fa",
+      "ledger": 0,
+      "detail": 0,
+      "difference": 0
+    }
+  ],
+  "total_debit": 1251,
+  "total_credit": 1251,
+  "balanced": true,
+  "reconciled": true
+}

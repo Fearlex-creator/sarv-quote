@@ -1,0 +1,994 @@
+{
+  "development_pilot": true,
+  "performance_acceptance": "qualification only",
+  "strict_measured_gate": "FAILED",
+  "epoch_complete_and_guarded": true,
+  "checks": [
+    {
+      "scope": "main-seed:initial-backup-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1120.769556000596,
+      "quantiles": {
+        "n": 1,
+        "p50": 1120.769556000596,
+        "p95": 1120.769556000596,
+        "p99": 1120.769556000596,
+        "worst": 1120.769556000596,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "main-seed:repeated-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1106.9358500099042,
+      "quantiles": {
+        "n": 1,
+        "p50": 1106.9358500099042,
+        "p95": 1106.9358500099042,
+        "p99": 1106.9358500099042,
+        "worst": 1106.9358500099042,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "main-seed:initial-steady-RSS",
+      "limit": 250000000,
+      "unit": "bytes",
+      "metric": "worst",
+      "observed": 103079936,
+      "quantiles": {
+        "n": 2,
+        "p50": 103067648,
+        "p95": 103079936,
+        "p99": 103079936,
+        "worst": 103079936,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "main-posted:initial-backup-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1063.9663180045318,
+      "quantiles": {
+        "n": 1,
+        "p50": 1063.9663180045318,
+        "p95": 1063.9663180045318,
+        "p99": 1063.9663180045318,
+        "worst": 1063.9663180045318,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "main-posted:repeated-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1008.7234600068768,
+      "quantiles": {
+        "n": 1,
+        "p50": 1008.7234600068768,
+        "p95": 1008.7234600068768,
+        "p99": 1008.7234600068768,
+        "worst": 1008.7234600068768,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "main-posted:initial-steady-RSS",
+      "limit": 250000000,
+      "unit": "bytes",
+      "metric": "worst",
+      "observed": 102002688,
+      "quantiles": {
+        "n": 2,
+        "p50": 101654528,
+        "p95": 102002688,
+        "p99": 102002688,
+        "worst": 102002688,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-billed:initial-backup-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1996.8521050031995,
+      "quantiles": {
+        "n": 1,
+        "p50": 1996.8521050031995,
+        "p95": 1996.8521050031995,
+        "p99": 1996.8521050031995,
+        "worst": 1996.8521050031995,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-billed:repeated-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 2000.219269990339,
+      "quantiles": {
+        "n": 1,
+        "p50": 2000.219269990339,
+        "p95": 2000.219269990339,
+        "p99": 2000.219269990339,
+        "worst": 2000.219269990339,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-billed:initial-steady-RSS",
+      "limit": 250000000,
+      "unit": "bytes",
+      "metric": "worst",
+      "observed": 130437120,
+      "quantiles": {
+        "n": 2,
+        "p50": 130031616,
+        "p95": 130437120,
+        "p99": 130437120,
+        "worst": 130437120,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-unbilled:initial-backup-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1434.3043019907782,
+      "quantiles": {
+        "n": 1,
+        "p50": 1434.3043019907782,
+        "p95": 1434.3043019907782,
+        "p99": 1434.3043019907782,
+        "worst": 1434.3043019907782,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-unbilled:repeated-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1394.6306139987428,
+      "quantiles": {
+        "n": 1,
+        "p50": 1394.6306139987428,
+        "p95": 1394.6306139987428,
+        "p99": 1394.6306139987428,
+        "worst": 1394.6306139987428,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-unbilled:initial-steady-RSS",
+      "limit": 250000000,
+      "unit": "bytes",
+      "metric": "worst",
+      "observed": 125476864,
+      "quantiles": {
+        "n": 2,
+        "p50": 125472768,
+        "p95": 125476864,
+        "p99": 125476864,
+        "worst": 125476864,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return20-unbilled:initial-backup-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 940.7027640118031,
+      "quantiles": {
+        "n": 1,
+        "p50": 940.7027640118031,
+        "p95": 940.7027640118031,
+        "p99": 940.7027640118031,
+        "worst": 940.7027640118031,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return20-unbilled:repeated-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 907.8784640005324,
+      "quantiles": {
+        "n": 1,
+        "p50": 907.8784640005324,
+        "p95": 907.8784640005324,
+        "p99": 907.8784640005324,
+        "worst": 907.8784640005324,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return20-unbilled:initial-steady-RSS",
+      "limit": 250000000,
+      "unit": "bytes",
+      "metric": "worst",
+      "observed": 102838272,
+      "quantiles": {
+        "n": 2,
+        "p50": 102633472,
+        "p95": 102838272,
+        "p99": 102838272,
+        "worst": 102838272,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return200-billed:initial-backup-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 975.1248259999556,
+      "quantiles": {
+        "n": 1,
+        "p50": 975.1248259999556,
+        "p95": 975.1248259999556,
+        "p99": 975.1248259999556,
+        "worst": 975.1248259999556,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return200-billed:repeated-process-startup",
+      "limit": 3000,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 1059.1564499918604,
+      "quantiles": {
+        "n": 1,
+        "p50": 1059.1564499918604,
+        "p95": 1059.1564499918604,
+        "p99": 1059.1564499918604,
+        "worst": 1059.1564499918604,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return200-billed:initial-steady-RSS",
+      "limit": 250000000,
+      "unit": "bytes",
+      "metric": "worst",
+      "observed": 107511808,
+      "quantiles": {
+        "n": 2,
+        "p50": 105951232,
+        "p95": 107511808,
+        "p99": 107511808,
+        "worst": 107511808,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "source120-billed:query:correct_visible_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 927.4765220034169,
+      "quantiles": {
+        "n": 2,
+        "p50": 872.0895790029317,
+        "p95": 927.4765220034169,
+        "p99": 927.4765220034169,
+        "worst": 927.4765220034169,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:filtered-page:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 874.93539499701,
+      "quantiles": {
+        "n": 2,
+        "p50": 296.05066700605676,
+        "p95": 874.93539499701,
+        "p99": 874.93539499701,
+        "worst": 874.93539499701,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:query:focused_usable_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 988.1215670029633,
+      "quantiles": {
+        "n": 2,
+        "p50": 933.3302099985303,
+        "p95": 988.1215670029633,
+        "p99": 988.1215670029633,
+        "worst": 988.1215670029633,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:filtered-page:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 960.1530770014506,
+      "quantiles": {
+        "n": 2,
+        "p50": 371.9732730096439,
+        "p95": 960.1530770014506,
+        "p99": 960.1530770014506,
+        "worst": 960.1530770014506,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:query:correct_visible_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 977.9788169980748,
+      "quantiles": {
+        "n": 2,
+        "p50": 894.0317419910571,
+        "p95": 977.9788169980748,
+        "p99": 977.9788169980748,
+        "worst": 977.9788169980748,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1007.1118199994089,
+      "quantiles": {
+        "n": 2,
+        "p50": 407.07192999252584,
+        "p95": 1007.1118199994089,
+        "p99": 1007.1118199994089,
+        "worst": 1007.1118199994089,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:query:focused_usable_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1037.8474019962596,
+      "quantiles": {
+        "n": 2,
+        "p50": 944.0003729978343,
+        "p95": 1037.8474019962596,
+        "p99": 1037.8474019962596,
+        "worst": 1037.8474019962596,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1100.7686679949984,
+      "quantiles": {
+        "n": 2,
+        "p50": 492.0773490011925,
+        "p95": 1100.7686679949984,
+        "p99": 1100.7686679949984,
+        "worst": 1100.7686679949984,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return20-billed:native-preview-maximum-gap",
+      "limit": 50,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 16.103054,
+      "quantiles": {
+        "n": 4,
+        "p50": 16.087681,
+        "p95": 16.103054,
+        "p99": 16.103054,
+        "worst": 16.103054,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return20-billed:native-post-maximum-gap",
+      "limit": 50,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 22.382303,
+      "quantiles": {
+        "n": 4,
+        "p50": 16.065271,
+        "p95": 22.382303,
+        "p99": 22.382303,
+        "worst": 22.382303,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return20-unbilled:native-preview-maximum-gap",
+      "limit": 50,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 22.286212,
+      "quantiles": {
+        "n": 3,
+        "p50": 20.3212,
+        "p95": 22.286212,
+        "p99": 22.286212,
+        "worst": 22.286212,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return20-unbilled:native-post-maximum-gap",
+      "limit": 50,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 25.873401,
+      "quantiles": {
+        "n": 4,
+        "p50": 16.069174,
+        "p95": 25.873401,
+        "p99": 25.873401,
+        "worst": 25.873401,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return200-billed:editor:next:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1398.0829860083759,
+      "quantiles": {
+        "n": 7,
+        "p50": 1190.3670449974015,
+        "p95": 1398.0829860083759,
+        "p99": 1398.0829860083759,
+        "worst": 1398.0829860083759,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:next:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1733.4033060033107,
+      "quantiles": {
+        "n": 7,
+        "p50": 1466.3473049877211,
+        "p95": 1733.4033060033107,
+        "p99": 1733.4033060033107,
+        "worst": 1733.4033060033107,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:previous:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1413.3353950019227,
+      "quantiles": {
+        "n": 7,
+        "p50": 1323.2953889964847,
+        "p95": 1413.3353950019227,
+        "p99": 1413.3353950019227,
+        "worst": 1413.3353950019227,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:previous:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1704.8551340121776,
+      "quantiles": {
+        "n": 7,
+        "p50": 1621.9258839992108,
+        "p95": 1704.8551340121776,
+        "p99": 1704.8551340121776,
+        "worst": 1704.8551340121776,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:native-preview-maximum-gap",
+      "limit": 50,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 16.084768999999998,
+      "quantiles": {
+        "n": 4,
+        "p50": 16.066912,
+        "p95": 16.084768999999998,
+        "p99": 16.084768999999998,
+        "worst": 16.084768999999998,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    },
+    {
+      "scope": "return200-billed:native-post-maximum-gap",
+      "limit": 50,
+      "unit": "ms",
+      "metric": "worst",
+      "observed": 27.093449,
+      "quantiles": {
+        "n": 9,
+        "p50": 16.090989,
+        "p95": 27.093449,
+        "p99": 27.093449,
+        "worst": 27.093449,
+        "method": "nearest rank"
+      },
+      "status": "PASS"
+    }
+  ],
+  "misses": [
+    {
+      "scope": "source120-billed:query:correct_visible_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 927.4765220034169,
+      "quantiles": {
+        "n": 2,
+        "p50": 872.0895790029317,
+        "p95": 927.4765220034169,
+        "p99": 927.4765220034169,
+        "worst": 927.4765220034169,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:filtered-page:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 874.93539499701,
+      "quantiles": {
+        "n": 2,
+        "p50": 296.05066700605676,
+        "p95": 874.93539499701,
+        "p99": 874.93539499701,
+        "worst": 874.93539499701,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:query:focused_usable_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 988.1215670029633,
+      "quantiles": {
+        "n": 2,
+        "p50": 933.3302099985303,
+        "p95": 988.1215670029633,
+        "p99": 988.1215670029633,
+        "worst": 988.1215670029633,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:filtered-page:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 960.1530770014506,
+      "quantiles": {
+        "n": 2,
+        "p50": 371.9732730096439,
+        "p95": 960.1530770014506,
+        "p99": 960.1530770014506,
+        "worst": 960.1530770014506,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:query:correct_visible_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 977.9788169980748,
+      "quantiles": {
+        "n": 2,
+        "p50": 894.0317419910571,
+        "p95": 977.9788169980748,
+        "p99": 977.9788169980748,
+        "worst": 977.9788169980748,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1007.1118199994089,
+      "quantiles": {
+        "n": 2,
+        "p50": 407.07192999252584,
+        "p95": 1007.1118199994089,
+        "p99": 1007.1118199994089,
+        "worst": 1007.1118199994089,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:query:focused_usable_ms",
+      "limit": 200,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1037.8474019962596,
+      "quantiles": {
+        "n": 2,
+        "p50": 944.0003729978343,
+        "p95": 1037.8474019962596,
+        "p99": 1037.8474019962596,
+        "worst": 1037.8474019962596,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1100.7686679949984,
+      "quantiles": {
+        "n": 2,
+        "p50": 492.0773490011925,
+        "p95": 1100.7686679949984,
+        "p99": 1100.7686679949984,
+        "worst": 1100.7686679949984,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:next:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1398.0829860083759,
+      "quantiles": {
+        "n": 7,
+        "p50": 1190.3670449974015,
+        "p95": 1398.0829860083759,
+        "p99": 1398.0829860083759,
+        "worst": 1398.0829860083759,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:next:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1733.4033060033107,
+      "quantiles": {
+        "n": 7,
+        "p50": 1466.3473049877211,
+        "p95": 1733.4033060033107,
+        "p99": 1733.4033060033107,
+        "worst": 1733.4033060033107,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:previous:correct_visible_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1413.3353950019227,
+      "quantiles": {
+        "n": 7,
+        "p50": 1323.2953889964847,
+        "p95": 1413.3353950019227,
+        "p99": 1413.3353950019227,
+        "worst": 1413.3353950019227,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:previous:focused_usable_ms",
+      "limit": 150,
+      "unit": "ms",
+      "metric": "p95",
+      "observed": 1704.8551340121776,
+      "quantiles": {
+        "n": 7,
+        "p50": 1621.9258839992108,
+        "p95": 1704.8551340121776,
+        "p99": 1704.8551340121776,
+        "worst": 1704.8551340121776,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    }
+  ],
+  "unmeasured_or_incomplete_required_scopes": [],
+  "all_native_phase_records_with_terminal_gaps": [
+    {
+      "workflow": "return20-billed",
+      "boundary": "dispatch through completed UI result rendering",
+      "elapsed_ms": 53.032644,
+      "gaps_ms": [
+        16.103054,
+        16.090639,
+        16.087681,
+        4.75127
+      ],
+      "interval_ms": 16,
+      "max_gap_ms": 16.103054,
+      "operation": "return",
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_recomputed_ms": 16.103054,
+      "terminal_gap_ms": 4.75127,
+      "budget_ms": 50,
+      "measurable_accepted": true,
+      "strict_status": "pass",
+      "gap_quantiles": {
+        "n": 4,
+        "p50": 16.087681,
+        "p95": 16.103054,
+        "p99": 16.103054,
+        "worst": 16.103054,
+        "method": "nearest rank"
+      }
+    },
+    {
+      "workflow": "return20-billed",
+      "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+      "elapsed_ms": 56.656195,
+      "gaps_ms": [
+        18.208141,
+        16.065271,
+        22.382303,
+        0.00047999999999999996
+      ],
+      "interval_ms": 16,
+      "max_gap_ms": 22.382303,
+      "operation": "return",
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 3,
+      "max_gap_recomputed_ms": 22.382303,
+      "terminal_gap_ms": 0.00047999999999999996,
+      "budget_ms": 50,
+      "measurable_accepted": true,
+      "strict_status": "pass",
+      "gap_quantiles": {
+        "n": 4,
+        "p50": 16.065271,
+        "p95": 22.382303,
+        "p99": 22.382303,
+        "worst": 22.382303,
+        "method": "nearest rank"
+      }
+    },
+    {
+      "workflow": "return20-unbilled",
+      "boundary": "dispatch through completed UI result rendering",
+      "elapsed_ms": 52.61452,
+      "gaps_ms": [
+        22.286212,
+        20.3212,
+        10.007108
+      ],
+      "interval_ms": 16,
+      "max_gap_ms": 22.286212,
+      "operation": "return",
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 2,
+      "max_gap_recomputed_ms": 22.286212,
+      "terminal_gap_ms": 10.007108,
+      "budget_ms": 50,
+      "measurable_accepted": true,
+      "strict_status": "pass",
+      "gap_quantiles": {
+        "n": 3,
+        "p50": 20.3212,
+        "p95": 22.286212,
+        "p99": 22.286212,
+        "worst": 22.286212,
+        "method": "nearest rank"
+      }
+    },
+    {
+      "workflow": "return20-unbilled",
+      "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+      "elapsed_ms": 66.46178499999999,
+      "gaps_ms": [
+        24.518689,
+        16.069174,
+        25.873401,
+        0.000521
+      ],
+      "interval_ms": 16,
+      "max_gap_ms": 25.873401,
+      "operation": "return",
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 3,
+      "max_gap_recomputed_ms": 25.873401,
+      "terminal_gap_ms": 0.000521,
+      "budget_ms": 50,
+      "measurable_accepted": true,
+      "strict_status": "pass",
+      "gap_quantiles": {
+        "n": 4,
+        "p50": 16.069174,
+        "p95": 25.873401,
+        "p99": 25.873401,
+        "worst": 25.873401,
+        "method": "nearest rank"
+      }
+    },
+    {
+      "workflow": "return200-billed",
+      "boundary": "dispatch through completed UI result rendering",
+      "elapsed_ms": 56.996987,
+      "gaps_ms": [
+        16.084768999999998,
+        16.081414,
+        16.066912,
+        8.763892
+      ],
+      "interval_ms": 16,
+      "max_gap_ms": 16.084768999999998,
+      "operation": "return",
+      "phase": "preview",
+      "result": "verified",
+      "ticks": 3,
+      "max_gap_recomputed_ms": 16.084768999999998,
+      "terminal_gap_ms": 8.763892,
+      "budget_ms": 50,
+      "measurable_accepted": true,
+      "strict_status": "pass",
+      "gap_quantiles": {
+        "n": 4,
+        "p50": 16.066912,
+        "p95": 16.084768999999998,
+        "p99": 16.084768999999998,
+        "worst": 16.084768999999998,
+        "method": "nearest rank"
+      }
+    },
+    {
+      "workflow": "return200-billed",
+      "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+      "elapsed_ms": 150.58923399999998,
+      "gaps_ms": [
+        16.090989,
+        25.515271,
+        16.04555,
+        16.075515,
+        16.002295,
+        17.517097999999997,
+        16.248175,
+        27.093449,
+        0.000892
+      ],
+      "interval_ms": 16,
+      "max_gap_ms": 27.093449,
+      "operation": "return",
+      "phase": "post",
+      "result": "worker_finished",
+      "ticks": 8,
+      "max_gap_recomputed_ms": 27.093449,
+      "terminal_gap_ms": 0.000892,
+      "budget_ms": 50,
+      "measurable_accepted": true,
+      "strict_status": "pass",
+      "gap_quantiles": {
+        "n": 9,
+        "p50": 16.090989,
+        "p95": 27.093449,
+        "p99": 27.093449,
+        "worst": 27.093449,
+        "method": "nearest rank"
+      }
+    }
+  ],
+  "application_warnings": [],
+  "warning_count": 0,
+  "historical_M5_strict_misses_retained": {
+    "pages_ms": [
+      51.488974,
+      51.002871,
+      51.9046
+    ],
+    "choice_ms": 73.664108,
+    "internal_PDF_ms": 80.439368,
+    "global_ms": 289.749728,
+    "PDF_busy_ms": 107.151621,
+    "persistence_busy_ms": 96.58612
+  },
+  "always_unmeasured": [
+    "Read-only page/edit continuous GTK heartbeat",
+    "Dedicated reference hardware and real OS-cold",
+    "Full reference five-year dataset",
+    "Typical invoice/annual report/import budgets",
+    "Production, tax/statutory and competitor acceptance"
+  ],
+  "limits": [
+    "Shared virtual hardware: no dedicated4core8GBSSD, genuine physical-cache-cold or causal Rust-speed/competitor/production/statutory claim.",
+    "No full five-year100k-doc/million-journal/50k-item/10k-party reference profile;200line returns do not establish1000line or posted-ledger capacity.",
+    "n10/n20 p99 equals worst; sequential page samples and n1 commands/memory are descriptive, not independent tail estimates.",
+    "Read-only page/edit GTK heartbeat unmeasured; latency and accessibility readiness do not prove pixels or isolated CPU.",
+    "Observer XSync contributes to lifecycle discovery; per-completed-observation atomic checkpoint I/O occurs between actions and may affect subsequent caches/work. Search still includes full25-action descendant/ancestry RPC and50ms debounce; no isolated product/causal speed inference.",
+    "Typical20line INVOICE, annual reports/import, Windows/Wayland/physical print/screen readers/hardware loss/leaks/professional review remain unmeasured."
+  ]
+}

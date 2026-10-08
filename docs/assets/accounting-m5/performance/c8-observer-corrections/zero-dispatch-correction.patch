@@ -1,0 +1,21 @@
+--- scripts/native-performance-M5.py
++++ scripts/native-performance-M5.py
+@@ -1050,6 +1050,10 @@
+     def caption(row):
+         return access.string(access.a.atspi_accessible_get_name, row['node'], None)
+     def summary_count(count):
++        if count == 0:
++            # Zero requires exposed search/status and absent row ancestry;
++            # positive counts retain every cached ancestry membership.
++            return page_cache.zero_hidden()
+         return page_cache.predicate('paged_summary', lambda:
+             normalize_digits(page_cache.read('status')).startswith(f'{count} نتیجه •')
+             and ready(access, page_cache.nodes['status']))
+@@ -1064,7 +1068,6 @@
+     x11.key('a', 'Control_L')
+     x11.type_ascii('NO-MATCH-PERFORMANCE')
+     observe(lambda: summary_count(0), 'zero-row Sales search warmup')
+-    observe(page_cache.zero_hidden, 'owned cached paged slot0 insensitive/current-tree absent at exact zero results')
+     page_cache.receipt('zero-result hide', {'matches': 0, 'cached_hide_qualified': True})
+     for index in range(search_samples):
+         group = 'A' if index % 2 == 0 else 'B'

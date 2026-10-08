@@ -1,0 +1,241 @@
+{
+  "result": "passed",
+  "profile": "/workspace/sarv-quote/artifacts/jalali-native/run-do70biop",
+  "binary_sha256": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "backend": "private X11 Xvfb/Openbox GTK4; signal financial workflow and actual XTest date input/navigation separately",
+  "checks": [
+    {
+      "name": "native financial form workflow passed",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "native workflow normal exit",
+      "passed": true
+    },
+    {
+      "name": "fresh-profile restore and both database restarts match",
+      "passed": true
+    },
+    {
+      "name": "independent counts after financial workflow",
+      "passed": true
+    },
+    {
+      "name": "Jalali presentation preference persisted",
+      "passed": true
+    },
+    {
+      "name": "fiscal1405 has independently expected canonical Gregorian bounds",
+      "passed": true
+    },
+    {
+      "name": "all financial dates stored canonical ISO Gregorian",
+      "passed": true
+    },
+    {
+      "name": "opening, manual and linked reversal retained",
+      "passed": true
+    },
+    {
+      "name": "exact native opening/manual money",
+      "passed": true
+    },
+    {
+      "name": "native dates retain UTC provenance timestamps",
+      "passed": true
+    },
+    {
+      "name": "fresh restored profile matches complete saved aggregate and preferences",
+      "passed": true
+    },
+    {
+      "name": "backup retains complete canonical ledger and presentation preference",
+      "passed": true
+    },
+    {
+      "name": "trial-before-reversal-rial.pdf exists",
+      "passed": true
+    },
+    {
+      "name": "trial-final-toman.pdf exists",
+      "passed": true
+    },
+    {
+      "name": "Jalali CSV discloses calendar and preserves canonical cutoff",
+      "passed": true
+    },
+    {
+      "name": "exact final exported trial balance1251 IRR",
+      "passed": true
+    },
+    {
+      "name": "real Alt7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches company action",
+      "passed": true,
+      "focused_names": [
+        "اسناد",
+        "تاریخچه",
+        "تراز آزمایشی",
+        "تعریف دورهٔ مالی",
+        "تنظیمات",
+        "خریدها",
+        "دفتر حسابداری",
+        "شرکت تازه",
+        "شرکت تازه با راهنمای هسته",
+        "شرکت ساختگی سرو • آزمون دفتر",
+        "شرکت و دوره",
+        "فروش‌ها",
+        "قفل دوره با دلیل",
+        "موجودی و انتقال",
+        "پشتیبان و بازیابی",
+        "کدینگ"
+      ]
+    },
+    {
+      "name": "real Tab reaches journal tab",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches journal action",
+      "passed": true
+    },
+    {
+      "name": "real Enter opens journal dialog",
+      "passed": true
+    },
+    {
+      "name": "date input and explicit calendar both accessible",
+      "passed": true
+    },
+    {
+      "name": "real native date field starts blank",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches financial date entry",
+      "passed": true
+    },
+    {
+      "name": "nonleap Esfand30 rejected without losing Persian input",
+      "passed": true,
+      "actual": "۱۴۰۵/۱۲/۳۰",
+      "state_equal": true
+    },
+    {
+      "name": "invalid date calendar switch retains input and books",
+      "passed": true,
+      "actual": "۱۴۰۵/۱۲/۳۰",
+      "state_equal": true
+    },
+    {
+      "name": "valid Jalali-to-Gregorian switch preserves actual day",
+      "passed": true,
+      "actual": "۲۰۲۶-۰۳-۲۱"
+    },
+    {
+      "name": "Gregorian-to-Jalali switch roundtrips actual day",
+      "passed": true,
+      "actual": "۱۴۰۵/۰۱/۰۱"
+    },
+    {
+      "name": "real Escape closes unsaved journal",
+      "passed": true
+    },
+    {
+      "name": "Escape preserves complete saved state",
+      "passed": true
+    },
+    {
+      "name": "accounting accepts 1280x900",
+      "passed": true
+    },
+    {
+      "name": "accounting accepts 650x760",
+      "passed": true
+    },
+    {
+      "name": "all five native accounting tabs fit narrow layout",
+      "passed": true,
+      "bounds": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 133,
+          "height": 34
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 97,
+          "height": 34
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 90,
+          "height": 34
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 125,
+          "height": 34
+        },
+        {
+          "x": 0,
+          "y": 0,
+          "width": 105,
+          "height": 34
+        }
+      ]
+    },
+    {
+      "name": "real Tab reaches history at650px",
+      "passed": true
+    },
+    {
+      "name": "real Space activates narrow history",
+      "passed": true
+    },
+    {
+      "name": "keyboard and narrow layouts preserve accounting state",
+      "passed": true
+    },
+    {
+      "name": "native quote details expand",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches quote document date",
+      "passed": true
+    },
+    {
+      "name": "invalid Jalali quote date keeps typed input and saved state",
+      "passed": true
+    },
+    {
+      "name": "real Tab reaches quote due date",
+      "passed": true
+    },
+    {
+      "name": "real CtrlS persists separate quote/due canonical ISO dates",
+      "passed": true
+    },
+    {
+      "name": "quote date entry retains exact ledger and prior UTC provenance",
+      "passed": true
+    },
+    {
+      "name": "native backup preserves quote dates, complete ledger and presentation preference",
+      "passed": true
+    },
+    {
+      "name": "fresh native restart preserves canonical quote dates and complete state",
+      "passed": true
+    }
+  ]
+}

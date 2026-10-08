@@ -1,0 +1,22 @@
+{
+  "result": "pass",
+  "canonical_actual_AST_cases": 88,
+  "author_canonical_actual_AST_cases": 63,
+  "runtime2_manifest_sha256": "bfa90418996771f2ecd1d0040c7a24729e32367ed0266eeb397a2b9abdeb117e",
+  "74_current_files_exact": true,
+  "runtime1_other73_exact": true,
+  "exact_changes": {
+    "scripts/native-performance-M6.py": {
+      "before": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+      "after": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408"
+    }
+  },
+  "coordinator_receipt_sha256": "98ffd3f333f439ee4beb70ba82d28ae425848eef0e325cfb0cdd7acb4a88dd03",
+  "no_GUI_build_network": true,
+  "measurement_acceptance": false,
+  "production_current_files_exact": 36,
+  "dataset_current_files_exact": 38,
+  "protected_seed_hashes_exact": 2,
+  "binary_exact": true,
+  "receipt_exact": true
+}

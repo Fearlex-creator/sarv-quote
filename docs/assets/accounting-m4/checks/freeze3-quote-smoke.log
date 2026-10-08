@@ -1,0 +1,7 @@
+dbus-daemon[190785]: [session uid=1000 pid=190785 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=190792 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze3" label="kernel")
+dbus-daemon[190785]: [session uid=1000 pid=190785 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[190818]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=190792 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze3" label="kernel")
+dbus-daemon[190818]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+/workspace/sarv-quote/artifacts/m4-preserved/quote-1l6d12ix
+X connection to :10 broken (explicit kill or server shutdown).

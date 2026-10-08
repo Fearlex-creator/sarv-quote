@@ -124,20 +124,24 @@ fn result_row(title: &str, subtitle: &str) -> adw::ActionRow {
 fn product_details(product: &Product, unit: Unit, settings: &Settings) -> String {
     format!(
         "{} • {} • {}\nمنبع {} • واحد منبع {}",
-        product.code,
+        ltr(&product.code),
         product.measure,
         settings
             .display_digits
             .format(unit.display(product.price_rial)),
-        settings.date_display.format(&product.source_at),
+        ltr(&settings.date_display.format(&product.source_at)),
         product.source_unit.label()
     )
 }
-fn picker_shell(
-    title: &str,
-    placeholder: &str,
-    name: &str,
-) -> (adw::Dialog, gtk::SearchEntry, gtk::ListBox, gtk::Label) {
+struct PickerShell {
+    dialog: adw::Dialog,
+    search: gtk::SearchEntry,
+    list: gtk::ListBox,
+    hint: gtk::Label,
+    choose: gtk::Button,
+    back: gtk::Button,
+}
+fn picker_shell(title: &str, placeholder: &str, name: &str) -> PickerShell {
     let dialog = adw::Dialog::builder()
         .title(title)
         .content_width(620)
@@ -149,6 +153,9 @@ fn picker_shell(
     root.set_margin_start(12);
     root.set_margin_end(12);
     let search = gtk::SearchEntry::new();
+    // Search is indexed and results are bounded to 30 rows. Keep a short
+    // debounce for Persian typing without spending the lookup budget waiting.
+    search.set_search_delay(80);
     search.set_widget_name(name);
     search.set_placeholder_text(Some(placeholder));
     accessible_name(&search, placeholder);
@@ -207,7 +214,14 @@ fn picker_shell(
         glib::Propagation::Stop
     });
     search.add_controller(keys);
-    (dialog, search, list, hint)
+    PickerShell {
+        dialog,
+        search,
+        list,
+        hint,
+        choose,
+        back: cancel,
+    }
 }
 impl Ui {
     fn choose_new_product(self: &Rc<Self>, snapshot: &ProductSnapshot, code: &str) -> bool {
@@ -238,11 +252,17 @@ impl Ui {
         self.product_picker(Some((index, original_query)));
     }
     fn product_picker(self: &Rc<Self>, target: Option<(usize, String)>) {
-        if let Err(error) = self.save_form() {
-            self.message(Err::<String, _>(error));
-            return;
-        }
-        let (dialog, search, list, hint) = picker_shell(
+        self.save_form_async_then(move |ui| ui.product_picker_saved(target));
+    }
+    fn product_picker_saved(self: &Rc<Self>, target: Option<(usize, String)>) {
+        let PickerShell {
+            dialog,
+            search,
+            list,
+            hint,
+            choose,
+            back,
+        } = picker_shell(
             "انتخاب کالا از فهرست قیمت",
             "جست‌وجوی نام، کد یا نام مستعار کالا",
             "product-picker-search",
@@ -276,7 +296,13 @@ impl Ui {
         let weak_dialog = dialog.downgrade();
         let ids = result_ids.clone();
         let snapshot = loaded.clone();
-        list.connect_row_activated(move |_, row| {
+        let search_choice = search.clone();
+        let hint_choice = hint.clone();
+        let choosing = Rc::new(Cell::new(false));
+        list.connect_row_activated(move |list, row| {
+            if choosing.get() {
+                return;
+            }
             let Some(ui) = weak.upgrade() else {
                 return;
             };
@@ -287,38 +313,72 @@ impl Ui {
             let Some(id) = ids.borrow().get(row.index() as usize).copied() else {
                 return;
             };
-            let code = snapshot.catalog.products[id].code.clone();
-            let success = if let Some((index, original_query)) = &target {
-                let result = ui.save_form().and_then(|()| {
-                    ui.store.borrow_mut().change(|state| {
-                        anyhow::ensure!(
-                            state.draft.catalog_id == snapshot.catalog.id
-                                && state.catalog()?.fingerprint == snapshot.catalog.fingerprint,
-                            "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
-                        );
-                        let line =
-                            state.draft.lines.get_mut(*index).ok_or_else(|| {
-                                anyhow::anyhow!("ردیف تغییر کرده؛ دوباره بررسی کنید")
-                            })?;
-                        anyhow::ensure!(
-                            &line.query == original_query,
-                            "درخواست ردیف تغییر کرده؛ دوباره بررسی کنید"
-                        );
-                        line.chosen_code = Some(code.clone());
-                        state.draft.stale_ack = false;
-                        Ok(())
-                    })
-                });
-                let success = result.is_ok();
-                ui.message(result.map(|()| "کالای ردیف صریحاً انتخاب شد؛ منبع قیمت را بررسی کنید"));
-                if success {
-                    ui.refresh_review();
-                }
-                success
-            } else {
-                ui.choose_new_product(snapshot, &code)
+            let Some(product) = snapshot.catalog.products.get(id) else {
+                return;
             };
-            if success {
+            let code = product.code.clone();
+            if let Some((index, original_query)) = &target {
+                let Some(dialog) = weak_dialog.upgrade() else {
+                    return;
+                };
+                let choice = background::LineProductChoice {
+                    catalog_id: snapshot.catalog.id.clone(),
+                    fingerprint: snapshot.catalog.fingerprint.clone(),
+                    product_index: id,
+                    code,
+                    line_index: *index,
+                    original_query: original_query.clone(),
+                };
+                // Clearing the Dialog's actual text focus before disabling it
+                // avoids GTK's focus-out warning and keeps input ownership clear.
+                dialog.set_focus(None::<&gtk::Widget>);
+                dialog.set_can_close(false);
+                search_choice.set_sensitive(false);
+                list.set_sensitive(false);
+                choose.set_sensitive(false);
+                back.set_sensitive(false);
+                choosing.set(true);
+                hint_choice.set_text("در حال ذخیرهٔ انتخاب صریح و پیش‌نویس…");
+                let search = search_choice.clone();
+                let list = list.clone();
+                let hint = hint_choice.clone();
+                let choosing = choosing.clone();
+                let chosen = chosen.clone();
+                let choose = choose.clone();
+                let back = back.clone();
+                ui.choose_draft_selection_async(
+                    background::DraftSelection::Product(choice),
+                    move |ui, result| {
+                        choosing.set(false);
+                        dialog.set_can_close(true);
+                        search.set_sensitive(true);
+                        list.set_sensitive(true);
+                        choose.set_sensitive(true);
+                        back.set_sensitive(true);
+                        match result {
+                            Ok(same_revision) => {
+                                chosen.set(true);
+                                dialog.close();
+                                if same_revision {
+                                    ui.refresh_review();
+                                }
+                                ui.message(Ok(
+                                    "کالای ردیف صریحاً انتخاب شد؛ منبع قیمت را بررسی کنید",
+                                ));
+                            }
+                            Err(error) => {
+                                hint.set_text(&format!(
+                                    "{error:#}؛ ورودی حفظ شد؛ دوباره انتخاب کنید."
+                                ));
+                                ui.message(Err::<String, _>(error));
+                                if dialog.is_visible() {
+                                    search.grab_focus();
+                                }
+                            }
+                        }
+                    },
+                );
+            } else if ui.choose_new_product(snapshot, &code) {
                 chosen.set(true);
                 if let Some(dialog) = weak_dialog.upgrade() {
                     dialog.close();
@@ -381,11 +441,17 @@ impl Ui {
         });
     }
     pub(super) fn open_customer_picker(self: &Rc<Self>) {
-        if let Err(error) = self.save_form() {
-            self.message(Err::<String, _>(error));
-            return;
-        }
-        let (dialog, search, list, hint) = picker_shell(
+        self.save_form_async_then(|ui| ui.customer_picker_saved());
+    }
+    fn customer_picker_saved(self: &Rc<Self>) {
+        let PickerShell {
+            dialog,
+            search,
+            list,
+            hint,
+            choose,
+            back,
+        } = picker_shell(
             "انتخاب مشتری",
             "جست‌وجوی مشتری، تلفن، رابط، ایمیل یا نشانی",
             "customer-picker-search",
@@ -426,26 +492,67 @@ impl Ui {
         let selected = ids.clone();
         let records = customers.clone();
         let weak_dialog = dialog.downgrade();
-        list.connect_row_activated(move |_, row| {
-            if let Some(ui) = weak.upgrade()
-                && let Some(index) = selected.borrow().get(row.index() as usize).copied()
-            {
-                let result = ui.save_form().and_then(|()| {
-                    ui.store
-                        .borrow_mut()
-                        .change(|state| state.select_customer(&records[index].id))
-                });
-                let success = result.is_ok();
-                ui.message(result.map(|()| "مشتری و اطلاعات تماس در پیش‌نویس انتخاب شدند"));
-                if success {
-                    chosen.set(true);
-                    ui.fill_form();
-                    ui.refresh_review();
-                    if let Some(dialog) = weak_dialog.upgrade() {
+        let search_choice = search.clone();
+        let hint_choice = hint.clone();
+        let choosing = Rc::new(Cell::new(false));
+        list.connect_row_activated(move |list, row| {
+            if choosing.get() {
+                return;
+            }
+            let Some(ui) = weak.upgrade() else {
+                return;
+            };
+            let Some(index) = selected.borrow().get(row.index() as usize).copied() else {
+                return;
+            };
+            let Some(customer) = records.get(index) else {
+                return;
+            };
+            let Some(dialog) = weak_dialog.upgrade() else {
+                return;
+            };
+            let selection = background::DraftSelection::Customer(customer.clone());
+            dialog.set_focus(None::<&gtk::Widget>);
+            dialog.set_can_close(false);
+            search_choice.set_sensitive(false);
+            list.set_sensitive(false);
+            choose.set_sensitive(false);
+            back.set_sensitive(false);
+            choosing.set(true);
+            hint_choice.set_text("در حال ذخیرهٔ انتخاب مشتری و پیش‌نویس…");
+            let search = search_choice.clone();
+            let list = list.clone();
+            let hint = hint_choice.clone();
+            let choosing = choosing.clone();
+            let chosen = chosen.clone();
+            let choose = choose.clone();
+            let back = back.clone();
+            ui.choose_draft_selection_async(selection, move |ui, result| {
+                choosing.set(false);
+                dialog.set_can_close(true);
+                search.set_sensitive(true);
+                list.set_sensitive(true);
+                choose.set_sensitive(true);
+                back.set_sensitive(true);
+                match result {
+                    Ok(same_revision) => {
+                        chosen.set(true);
                         dialog.close();
+                        if same_revision {
+                            ui.fill_form();
+                            ui.refresh_review();
+                        }
+                        ui.message(Ok("مشتری و اطلاعات تماس در پیش‌نویس انتخاب شدند"));
+                    }
+                    Err(error) => {
+                        hint.set_text(&format!("{error:#}؛ ورودی حفظ شد؛ دوباره انتخاب کنید."));
+                        ui.message(Err::<String, _>(error));
+                        if dialog.is_visible() {
+                            search.grab_focus();
+                        }
                     }
                 }
-            }
+            });
         });
         let refresh: Rc<dyn Fn()> = {
             let search = search.clone();

@@ -1,0 +1,11 @@
+    Finished `test` profile [unoptimized] target(s) in 0.05s
+     Running tests/core_migration.rs (target/debug/deps/core_migration-006bfac9e339286c)
+
+running 4 tests
+test mismatched_backup_versions_and_future_schema_never_replace_state ... ok
+test core_migration_child ... ok
+test schema_three_upgrade_preserves_jalali_and_exact_history_with_v3_recovery_and_v4_restore ... ok
+test interrupted_upgrade_waiting_for_startup_write_retains_exact_legacy_row ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+

@@ -1,0 +1,44 @@
+{
+  "result": "PASS frozen C12 build, root gates and callback receipts; checkpoint approval pending",
+  "source_files": 36,
+  "verification_files": 53,
+  "ordinary_tests": {
+    "summaries": 35,
+    "passed": 220,
+    "failed": 0,
+    "ignored": 4
+  },
+  "source_comparisons": {
+    "candidate5": {
+      "identical_files": 30,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/background.rs",
+        "src/ui/editor.rs",
+        "src/ui/responsiveness.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    },
+    "candidate9": {
+      "identical_files": 34,
+      "changed_files": [
+        "src/ui/background.rs",
+        "src/ui/sales.rs"
+      ]
+    },
+    "candidate11-diagnostic": {
+      "identical_files": 35,
+      "changed_files": [
+        "src/ui/background.rs"
+      ]
+    }
+  },
+  "callback": {
+    "checks": 13,
+    "generation": 12,
+    "quantity_milli": 213000,
+    "literal_total_rial": 266463,
+    "portable_files_hashed": 9
+  }
+}

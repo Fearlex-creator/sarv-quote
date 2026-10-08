@@ -1,0 +1,10 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+    Finished `test` profile [unoptimized] target(s) in 0.44s
+     Running tests/accounting_migration.rs (target/debug/deps/accounting_migration-48114e80131a5aad)
+
+running 3 tests
+test unsupported_or_corrupt_upgrade_never_rewrites_legacy_row ... ok
+test schema_one_upgrade_preserves_quotation_bytes_and_verifies_recovery_before_upgrade ... ok
+test schema_two_upgrade_verifies_m1_recovery_and_preserves_full_ledger_and_quote_history ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s

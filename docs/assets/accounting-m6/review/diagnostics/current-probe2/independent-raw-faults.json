@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "cases": [
+    {
+      "phase": "prepared",
+      "unchanged_complete_m5_prefix": true,
+      "one_coupled_return_credit_journal_movement_audit": true,
+      "raw_inventory": 377,
+      "raw_ap": 284,
+      "raw_tb": 1585,
+      "full_sqlite_and_restored_state_equality": true
+    },
+    {
+      "phase": "committed",
+      "unchanged_complete_m5_prefix": true,
+      "one_coupled_return_credit_journal_movement_audit": true,
+      "raw_inventory": 377,
+      "raw_ap": 284,
+      "raw_tb": 1585,
+      "full_sqlite_and_restored_state_equality": true
+    },
+    {
+      "phase": "race-identical-keys",
+      "unchanged_complete_m5_prefix": true,
+      "one_coupled_return_credit_journal_movement_audit": true,
+      "raw_inventory": 377,
+      "raw_ap": 284,
+      "raw_tb": 1585,
+      "full_sqlite_and_restored_state_equality": true
+    },
+    {
+      "phase": "race-different-keys",
+      "unchanged_complete_m5_prefix": true,
+      "one_coupled_return_credit_journal_movement_audit": true,
+      "raw_inventory": 377,
+      "raw_ap": 284,
+      "raw_tb": 1585,
+      "full_sqlite_and_restored_state_equality": true
+    }
+  ],
+  "sarv_reports_used": false
+}

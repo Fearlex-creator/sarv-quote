@@ -1,0 +1,56 @@
+{
+  "passed": true,
+  "command": "source /workspace/sarv-environment/activate.sh\nSARV_QA_BINARY=/workspace/sarv-evidence/bin/sarv-M6-candidate8 dbus-run-session -- python3 scripts/native-sidebar-qa.py",
+  "exit_code": 0,
+  "summary": {
+    "result": "passed",
+    "checks": 34,
+    "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-oglc43vk",
+    "error": null
+  },
+  "guard_before": {
+    "manifest": "565aaf9bed82fffac305c7eb5fd430a48033a55cde6840bfc84f31bf3be74f81",
+    "binary": "4c552b8812c48630778e185ed52616ed0b5356d9beef91837adccefc01ba4e9d",
+    "helpers": {
+      "scripts/native-sidebar-qa.py": "d271ba2d603ba05addf424cd6006ee34e7ba08871e230804a000edc9635182e7",
+      "scripts/qa-native.py": "a4ba1500f756b81810a40386b8d37782cdb010a0b22d0eee6062216bf23c6fb4",
+      "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+    },
+    "wrapper": "a67f43dcdc1e2604cfea27ea4f1d545aea7e1d821e9f4603437994743c7cf262"
+  },
+  "guard_after": {
+    "manifest": "565aaf9bed82fffac305c7eb5fd430a48033a55cde6840bfc84f31bf3be74f81",
+    "binary": "4c552b8812c48630778e185ed52616ed0b5356d9beef91837adccefc01ba4e9d",
+    "helpers": {
+      "scripts/native-sidebar-qa.py": "d271ba2d603ba05addf424cd6006ee34e7ba08871e230804a000edc9635182e7",
+      "scripts/qa-native.py": "a4ba1500f756b81810a40386b8d37782cdb010a0b22d0eee6062216bf23c6fb4",
+      "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+    },
+    "wrapper": "a67f43dcdc1e2604cfea27ea4f1d545aea7e1d821e9f4603437994743c7cf262"
+  },
+  "guard_stable": true,
+  "portable_files": {
+    "accounting-narrow-dark.png": "57bb362b434ef527b0358787f23efb864d1ab8e02512d1186363027b9d8f6511",
+    "accounting-narrow-history-light.png": "32b81c1baff70c0a00f07e777da3a093b3abf55b413bf56e124397ab285bb60d",
+    "accounting-narrow-light.png": "8f5beb93b95b582d92e8030e89ebb379e2c1b1ba620e61c90bc0e30669af747f",
+    "initial.png": "35428a3b2055114c27ef8e0bcd723e4ca2fb9eea1ae19cd1d8a4b5b13bbdf039",
+    "keyboard-events.jsonl": "49bb8129099f4bf95da99a5a65cc4586a3bcfa6e83d7f6c9f261334430e769d8",
+    "native-sidebar-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-sidebar.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "restart.png": "5854a4e8f9796004d89626a5fcb85b320b1c13b354d33f1e240d835452b71709",
+    "shell-narrow-close-restored-focus.png": "4a19983d92518f5358e2dccd7719bbe2c1a76e14553822b280d2fa2cb8ff5fb2",
+    "shell-wide-hidden-page-change.png": "9d1425877878a629cd36a6b71bce060ca199ce6ae3b15e99eb6fefa11d7f450c",
+    "shell-wide-sidebar-hidden.png": "0774e8952f4db9e3e1d0aafe00c8269e019447e62f027a7d0683064b83fbebf5",
+    "shell-wide-sidebar-restored.png": "5ad25f9fa0fa8971f4abf45182d25039e41bd5465f54452a57f34760c39d23b3",
+    "sidebar-narrow-dark-focus.png": "7083a110e52fbebd573abfe4dce67b7198191cd318b2aea7eecde240fe1422e1",
+    "sidebar-narrow-light-focus.png": "d4d3528e10ec2cfc7b518fb2e96a652baa960128a4ba897d66507fa5e69dca34",
+    "sidebar-standard-dark.png": "edba6c5ec304793a226af3a418fcaf448ca907d85998638e68bcfdd3f597e015",
+    "sidebar-standard-light-focus.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-standard-light.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-verification.json": "a45934f56ccca24ab8d430dfde1f16ac6b22e0ccbc66d1d195070314d9ffbcb7",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "raw_profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-oglc43vk",
+  "scope": "One fresh C7 native shell run; actual focus/navigation/pointer/settings/restart and full synthetic State equality. Private X11; no Wayland/screen-reader claim."
+}

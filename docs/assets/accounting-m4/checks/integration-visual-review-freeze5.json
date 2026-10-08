@@ -1,0 +1,16 @@
+{
+  "reviewer": "Integration lead",
+  "method": "Personally viewed actual final5 native image via view_image",
+  "file": "docs/assets/accounting-m4/native/freeze5/focused-REC-B-650.png",
+  "sha256": "de77ecc3ef68ac23ac55755d1a8ac6d162d47aa896dbe42bd97003fef3a46ff8",
+  "production_source_sha256": "6b1996a41ed86807a91a18820f7fce4bb167e99399403b3fd25cf1b14e4aa36c",
+  "observations": [
+    "650x550 actual Purchases native view: one REC-B result, stable LTR source code, Persian text, explicit rial unit, retained query and readable dates.",
+    "Filtered Detail button has a visible blue focus ring and is completely visible above fixed footer.",
+    "Global footer shows ready completion, no stale reading status."
+  ],
+  "limits": [
+    "Actual one-Tab reachability and amount correctness are established by separate frozen native/data observers.",
+    "No modal numeric geometry is inferred from unavailable window events."
+  ]
+}

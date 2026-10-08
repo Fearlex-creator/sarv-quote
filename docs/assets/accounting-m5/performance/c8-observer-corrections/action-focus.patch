@@ -1,0 +1,25 @@
+--- src/ui/responsiveness.rs
++++ src/ui/responsiveness.rs
+@@ -474,9 +474,9 @@
+         let report = serde_json::json!({
+             "result": if passed {"passed"} else {"failed"},
+             "synthetic_only": true,
+-            "additive_action_protocol": "m5-action-v1.1",
++            "additive_action_protocol": "m5-action-v1.2",
+             "additive_action_phases": self.action_records,
+-            "additive_scope_limits": ["New scopes do not replace original broad strict budgets", "Two rendered readiness frames and observer polling are included", "PDF is a second separately declared internal-helper export, not native PDF file-picker action", "Original global includes extra PDF/probe work; changed observer protocol forbids identical-endpoint causal comparison", "Legacy page duration is latched on original busy-release/page/adopted-generation condition before stronger focus/frame wait; disk verification moves after scope closure", "Legacy choice duration is latched at original pending-review/busy-release boundary before stronger exact row/focus wait", "Changed Save recovery uses actual native Save button; original recovery workflow duration now includes stronger final readiness"],
++            "additive_scope_limits": ["v1.2 corrects product-choice readiness to actual production Quantity-return focus; prior v1.1 Query-focus failure retained, no identical causal endpoint comparison", "New scopes do not replace original broad strict budgets", "Two rendered readiness frames and observer polling are included", "PDF is a second separately declared internal-helper export, not native PDF file-picker action", "Original global includes extra PDF/probe work; changed observer protocol forbids identical-endpoint causal comparison", "Legacy page duration is latched on original busy-release/page/adopted-generation condition before stronger focus/frame wait; disk verification moves after scope closure", "Legacy choice duration is latched at original pending-review/busy-release boundary before stronger exact row/focus wait", "Changed Save recovery uses actual native Save button; original recovery workflow duration now includes stronger final readiness"],
+             "products": 50_000, "quote_lines": 1_000,
+             "catalog_preview_pages_visited": self.page + 1,
+             "maximum_native_preview_rows": self.max_rows,
+@@ -1368,7 +1368,9 @@
+                     && store.state.draft.lines[0].query == "SYNTHETIC-UNMATCHED-REQUEST"
+                     && store.state.draft.lines[0].chosen_code.as_deref() == Some("SCALE-00001")
+             };
+-            let exact_ready = exact_choice && action_review_ready(ui, 0, false)?;
++            // Product choice returns to Quantity in Ui::product_picker_saved in pickers.rs
++            // dialog.connect_closed; observe that exact production focus target.
++            let exact_ready = exact_choice && action_review_ready(ui, 0, true)?;
+             if !p.action_ready(exact_ready) {
+                 return Ok(());
+             }

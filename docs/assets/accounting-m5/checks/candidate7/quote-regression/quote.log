@@ -1,0 +1,15 @@
+
+(sarv-M5-candidate7:284103): Gtk-WARNING **: 03:54:02.299: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well
+
+(sarv-M5-candidate7:284103): Gtk-WARNING **: 03:54:02.416: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well
+
+(sarv-M5-candidate7:284103): Gtk-WARNING **: 03:54:02.563: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well

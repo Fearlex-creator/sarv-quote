@@ -1,0 +1,47 @@
+{
+  "reviewer": "m6_final_native_review",
+  "source_sha256": "11b48de2e85b9465a22f4a618e4675801b1db08a5a2c35b35cb892e8ea381cf3",
+  "binary_sha256": "4c552b8812c48630778e185ed52616ed0b5356d9beef91837adccefc01ba4e9d",
+  "closed78native_checks_pass": true,
+  "independent_literal_assertions": 129,
+  "literal_result_sha256": "1cbacd49f0d57c731e5f78ce24154b16f9d6d89d6806e9580105a2a08317aaf7",
+  "checker_sha256": "732eee8e68e45b1503c97b233995b69a5f4b865f82615945c2137f1bbb012396",
+  "return_receipt_sha256": "de5afbdb3385c85232289459c6895e0d9cb013b727b96a081dbd66bdb8048b49",
+  "all48portable_hashes_exact": true,
+  "current36production35verification19compile_inputs_exact": true,
+  "personally_viewed_images": {
+    "M6-actual-physical-return.png": "9c3e91b37f0b8d68d5a6e1298fc112e9f9964ed32bc441afbfd05e2494ce8f9a",
+    "M6-actual-supplier-credit.png": "3b90dd8d7fa26d125e00fecacc696a21990d642b6c1c83a13bb9c36a07365555",
+    "M6-overreturn-retained.png": "a651c3d6031a3786768cf32f0eb6d03c711d2445edba127d4e53129641ddef97",
+    "M6-light-1280x900.png": "43f04075d0f1a895e6e5b6e339cee08c681d0c01046548a2544093a864d1ea6b",
+    "M6-dark-1280x900.png": "be18df2db43569ee9918b0e6d9168f3792cd0e7df98407714775eac410651f43",
+    "M6-light-650x550.png": "41b62a2c2d81576d7bcd893bed145cd4e083a46e3d917aeccacd5d84d763f057",
+    "M6-dark-650x550.png": "3c14168595e04d8ec98c8d71bb2a97d67ce895057a6a1ad1bbff9c7220f62101",
+    "M6-light-1280x900-remaining-source.png": "b9008c7648d95092235abc099944dcdc77879098102f06f19d5a7c111ea4d444",
+    "M6-dark-1280x900-remaining-source.png": "8db0895be9ea2dd303a9260f55984f64d7fb09ab7bd78b74fbb467a53fe5de7a",
+    "M6-light-650x550-remaining-source.png": "305f56cb957237633a9ac41b5c559f687adbdabefbb682035720f312984024ad",
+    "M6-dark-650x550-remaining-source.png": "c72307b0bf1e73a32d9da15c2bb5a86ec95918bafd9748823852cdcb971671b2"
+  },
+  "physical_page2_personally_viewed_sha256": "757b314a1503d2cf8e4e3cddb6f6b1e2bf9af3c879f901aea2e369c681af74e0",
+  "actual_exports": {
+    "M6-actual-physical-return.csv": "a934194946c93b95ce575685cd03d7ddefc2feaf5dbc11e9af894a2d515fd7c6",
+    "M6-actual-physical-return.pdf": "a048f17a99929b9528d97318b0f53a50d5923aa69a8e158f619a9a46c1ec898a",
+    "M6-actual-supplier-credit.csv": "ce9fb2ce60f072028efae8b610f48d8ce706302051a40bc16ac61ff88626ecd9",
+    "M6-actual-supplier-credit.pdf": "2823798983dba3ee032e6b0293c7c4b37b5cbb9b7b1c17de9b17713730dceee8"
+  },
+  "status_R03": {
+    "bounded_observed_purchase_case_fixed": true,
+    "all_completion_interleavings_accepted": false,
+    "c7_wide_light_sha256": "e3857b3f3b9df6bed071f2f376d3b0c2671040edc03aab123ff9164f6c4cc8bf",
+    "c8_wide_light_sha256": "43f04075d0f1a895e6e5b6e339cee08c681d0c01046548a2544093a864d1ea6b",
+    "before": "اسناد فروش آماده‌اند.",
+    "after": "آماده • فضای کار محلی",
+    "local_page_controls_status_still_ready": true
+  },
+  "two_line_invalid8_fully_visible": true,
+  "200L200_visibility_accepted": false,
+  "newSales85_review_complete": false,
+  "newShell34_review_complete": false,
+  "quiet_final_performance_accepted": false,
+  "fullPUR_INV_G4_production_accepted": false
+}

@@ -1,0 +1,22 @@
+warning: function `returned` is never used
+ --> docs/assets/accounting-m6/review/probe/src/common.rs:8:8
+  |
+8 | pub fn returned(o:&OpeningCommand,id:&str,date:&str,receipt:&str,bill_line:Option<&str>,q:i64,v:i64)->Result<ProcurementCommand> {Ok(...
+  |        ^^^^^^^^
+  |
+  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `check` is never used
+  --> docs/assets/accounting-m6/review/probe/src/common.rs:27:8
+   |
+27 | pub fn check(s:&AccountingState,o:&OpeningCommand,row:&Value)->Result<Value>{
+   |        ^^^^^
+
+warning: function `empty_pool` is never used
+  --> docs/assets/accounting-m6/review/probe/src/common.rs:38:8
+   |
+38 | pub fn empty_pool()->Result<(AccountingState,OpeningCommand)>{
+   |        ^^^^^^^^^^
+
+warning: 3 warnings emitted
+

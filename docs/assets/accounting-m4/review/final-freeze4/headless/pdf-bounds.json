@@ -1,0 +1,116 @@
+{
+  "result": "passed",
+  "scope": "pdftotext bounding boxes within A4 margin; requires separate actual rendered page inspection",
+  "pdfs": 9,
+  "pages": 14,
+  "files": [
+    {
+      "file": "bill-a.pdf",
+      "sha256": "dd29c31eba63a43481fb013400508d9c946fdbea46dd2bcc11a0ee900fba3b0e",
+      "pages": 1,
+      "words": 671,
+      "observed_bounds": {
+        "xMin": 41.002008,
+        "xMax": 559.419,
+        "yMin": 32.000352,
+        "yMax": 576.016022
+      }
+    },
+    {
+      "file": "bill-b.pdf",
+      "sha256": "91a95ae171186588f030cdd6df45c9d5c0c493a899415328f2ede10b4e0ab3a6",
+      "pages": 1,
+      "words": 781,
+      "observed_bounds": {
+        "xMin": 41.002008,
+        "xMax": 559.417002,
+        "yMin": 32.000352,
+        "yMax": 668.016022
+      }
+    },
+    {
+      "file": "bill-opening.pdf",
+      "sha256": "c963590a446ebedb5489ab667f1c0c1cb0f122abf529b38dd9d6ef25e689d24b",
+      "pages": 1,
+      "words": 671,
+      "observed_bounds": {
+        "xMin": 41.002008,
+        "xMax": 559.417002,
+        "yMin": 32.000352,
+        "yMax": 576.016022
+      }
+    },
+    {
+      "file": "control-final.pdf",
+      "sha256": "b27b2c965025f23ac3b8a11274c24482aa326420f596e7745a6e3a7f0e95809a",
+      "pages": 6,
+      "words": 4916,
+      "observed_bounds": {
+        "xMin": 41.001999,
+        "xMax": 559.484995,
+        "yMin": 32.000352,
+        "yMax": 744.016022
+      }
+    },
+    {
+      "file": "masters.pdf",
+      "sha256": "23880396a2c6a468d6230c505b9e8b87334297cacbacdeb41cbd522e1b7e1c2f",
+      "pages": 1,
+      "words": 457,
+      "observed_bounds": {
+        "xMin": 41.002008,
+        "xMax": 559.49,
+        "yMin": 32.000352,
+        "yMax": 442.258094
+      }
+    },
+    {
+      "file": "po-main.pdf",
+      "sha256": "3149c0e614d483d4e040a70696ddceda931d6e5293d4ad0e2eafbb8a68021597",
+      "pages": 1,
+      "words": 630,
+      "observed_bounds": {
+        "xMin": 40.0,
+        "xMax": 559.421007,
+        "yMin": 32.000352,
+        "yMax": 576.016022
+      }
+    },
+    {
+      "file": "receipt-a.pdf",
+      "sha256": "cb727d6a158e4a2cc960abf0ec44a5e43d03c221d5efcaed580c6bcccce89a43",
+      "pages": 1,
+      "words": 711,
+      "observed_bounds": {
+        "xMin": 41.002008,
+        "xMax": 559.419,
+        "yMin": 32.000352,
+        "yMax": 685.039455
+      }
+    },
+    {
+      "file": "receipt-b.pdf",
+      "sha256": "d1152de67c83f0715e302a6210eec42a780bfd6f5a173a6eea9574d2b4b4bc38",
+      "pages": 1,
+      "words": 711,
+      "observed_bounds": {
+        "xMin": 41.002008,
+        "xMax": 559.417002,
+        "yMin": 32.000352,
+        "yMax": 685.039455
+      }
+    },
+    {
+      "file": "transfer-main.pdf",
+      "sha256": "443140a183b1ad07e0ef552e9fba5b14bb5898889a6908ef44a3a4d95252d32c",
+      "pages": 1,
+      "words": 740,
+      "observed_bounds": {
+        "xMin": 41.001999,
+        "xMax": 559.419,
+        "yMin": 32.000352,
+        "yMax": 645.039455
+      }
+    }
+  ]
+}

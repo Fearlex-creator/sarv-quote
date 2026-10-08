@@ -1,0 +1,43 @@
+dbus-daemon[199658]: [session uid=1000 pid=199658 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=199667 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze4" label="kernel")
+dbus-daemon[199658]: [session uid=1000 pid=199658 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[199693]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=199667 comm="/workspace/sarv-evidence/bin/sarv-M4-freeze4" label="kernel")
+dbus-daemon[199693]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+CHECK startup retains exact original payload and generation True
+X connection to :9 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary_sha256": "499c2607747f00f5c9ada4c3e94d3e59e174a918f4df467a8f3cfedf47a14001",
+  "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+  "fixture": "/workspace/sarv-quote/artifacts/performance-m4/final-scale/synthetic-profile",
+  "fixture_generation": 11,
+  "fixture_payload_sha256": "d4fccf7bda73efbb82eddef1b6432e6d7aa7a4ff7bbfd845fe20fc3d3cbf7fe4",
+  "run": "/workspace/sarv-quote/artifacts/independent-m4/native/catalog-worker-final4-ge30pui8",
+  "scope": "Actual owned GTK controls/XTest keys; disposable SQLite backup; worker-caption-triggered native Close/reopen/indexed last product; transient loading sampling reported separately and exact persisted bytes/generation. Not performance measurement or forced worker-error injection.",
+  "checks": [
+    {
+      "name": "startup retains exact original payload and generation",
+      "passed": true
+    }
+  ],
+  "private_gtk_animation_policy": "Animations disabled in disposable XDG_CONFIG_HOME to make close lifetime independent of transition duration. Retained default-animation attempts are distinct.",
+  "manager_setup": "Existing SARV_EXPAND capture hook opens original manager expander; Composer opening and cancellation use actual keyboard controls."
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 121, in <module>
+    press('Close')
+    ~~~~~^^^^^^^^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 101, in press
+    focus(name,['button','push button']);x11.key('space')
+    ~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 96, in focus
+    row=find(name,roles)
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 90, in find
+    return next((r for r in scoped_tree() if r['name']==name and (not roles or r['role'] in roles) and (not showing or state(r,25))),None)
+                            ~~~~~~~~~~~^^
+  File "/workspace/sarv-quote/artifacts/independent-m4/catalog-worker-native.py", line 86, in scoped_tree
+    rows.append({'node':node,'name':access.string(access.a.atspi_accessible_get_name,node,None),'role':access.string(access.a.atspi_accessible_get_role_name,node,None)})
+                                    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/qa_access.py", line 65, in string
+    value = function(*args)
+KeyboardInterrupt

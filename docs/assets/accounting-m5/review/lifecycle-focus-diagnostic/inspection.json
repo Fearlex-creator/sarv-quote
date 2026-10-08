@@ -1,0 +1,141 @@
+{
+  "scope": "Intermediate diagnostic actual GtkWindow focus traces; no final frozen native/performance acceptance",
+  "finding": "Old lifecycle stage91/93/94 focus is unmapped hidden sales-as-of GtkText with no active/visible dialog. After narrow source repair stage93/94 live mapped sales-search focus is observed. These debug diagnostic traces require fresh frozen same-process keyboard qualification.",
+  "runs": [
+    {
+      "run": "c3-focus-7tvr01k0",
+      "sha256": "e0fb46ec0f7d3c94a1a92514ae19b47f37e82cc6290aa36a53cf32bef90f90cf",
+      "stages": [
+        {
+          "stage": 91,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": [
+            {
+              "name": "GtkText",
+              "type": "GtkText",
+              "mapped": false,
+              "visible": false,
+              "sensitive": true
+            },
+            {
+              "name": "sales-as-of",
+              "type": "GtkEntry",
+              "mapped": false,
+              "visible": false,
+              "sensitive": true
+            }
+          ]
+        },
+        {
+          "stage": 92,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": []
+        },
+        {
+          "stage": 93,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": [
+            {
+              "name": "GtkText",
+              "type": "GtkText",
+              "mapped": false,
+              "visible": false,
+              "sensitive": true
+            },
+            {
+              "name": "sales-as-of",
+              "type": "GtkEntry",
+              "mapped": false,
+              "visible": false,
+              "sensitive": true
+            }
+          ]
+        },
+        {
+          "stage": 94,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": [
+            {
+              "name": "GtkText",
+              "type": "GtkText",
+              "mapped": false,
+              "visible": false,
+              "sensitive": true
+            },
+            {
+              "name": "sales-as-of",
+              "type": "GtkEntry",
+              "mapped": false,
+              "visible": false,
+              "sensitive": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "run": "c3-focus-cza69pfv",
+      "sha256": "77f7c7e952b29509fe650f10d05d465e5a09e6e585deca58462e7a870e016028",
+      "stages": [
+        {
+          "stage": 91,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": []
+        },
+        {
+          "stage": 92,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": []
+        },
+        {
+          "stage": 93,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": [
+            {
+              "name": "GtkText",
+              "type": "GtkText",
+              "mapped": true,
+              "visible": true,
+              "sensitive": true
+            },
+            {
+              "name": "sales-search",
+              "type": "GtkSearchEntry",
+              "mapped": true,
+              "visible": true,
+              "sensitive": true
+            }
+          ]
+        },
+        {
+          "stage": 94,
+          "active_dialog": false,
+          "visible_dialog": false,
+          "focused_chain": [
+            {
+              "name": "GtkText",
+              "type": "GtkText",
+              "mapped": true,
+              "visible": true,
+              "sensitive": true
+            },
+            {
+              "name": "sales-search",
+              "type": "GtkSearchEntry",
+              "mapped": true,
+              "visible": true,
+              "sensitive": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

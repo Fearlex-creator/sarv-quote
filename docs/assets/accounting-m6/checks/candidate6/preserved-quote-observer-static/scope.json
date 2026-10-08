@@ -1,0 +1,7 @@
+{
+  "observer_sha256": "a4ba1500f756b81810a40386b8d37782cdb010a0b22d0eee6062216bf23c6fb4",
+  "syntax_pass": true,
+  "change": "Fallback current-parent membership hardening requested by independent reviewer: clear each parent, reject DEFUNCT edges, recheck exact field name/FOCUSED before recording. No budgets/timeouts/state assertions changed.",
+  "preceding_native50_scope": "Passed on observer398998, all original key events satisfied focus; fallback unused. New fallback needs isolated static logic verification; native fallback remains unexercised unless a later receipt demonstrates it.",
+  "production_unchanged": true
+}

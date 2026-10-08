@@ -1,0 +1,14 @@
+{
+  "reviewer": "m6_final_native_review",
+  "static_pass": true,
+  "changed_files": {
+    "src/ui.rs": "e0710b9f005e8059790e5b572caea2713768cccd1574f4a9615844fb3ccf3ea9",
+    "src/ui/procurement.rs": "c215efcc86165f13d92fc76d12cf3d1865b856849342506c64f9dd6aecf3faf6",
+    "src/ui/sales.rs": "691fcc19294c1a7843369cd1312264f13ca5e0b943eb73b67035b2175382f278"
+  },
+  "baseline_source_sha256": "064dfa71df0ed07ccee3e1ae717405d4a824e68a221d86697b46151207b7fefb",
+  "diff_sha256": "cfec84a56b5968a23b14baa937f514fcff266fbc58860d3363d3d14a94ea2654",
+  "actionable_findings": [],
+  "actual_wrong_page_status_fix_accepted": false,
+  "limits": "Only read-only refresh completion success/retired paths changed; actual cross-page status and active-page completion proof pending. Errors remain global. Financial commands/persistence/background semantics unchanged."
+}

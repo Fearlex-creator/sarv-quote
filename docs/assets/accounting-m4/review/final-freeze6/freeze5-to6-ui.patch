@@ -1,0 +1,581 @@
+--- src/ui/background.rs (freeze5)
++++ src/ui/background.rs (candidate6)
+@@ -147,7 +147,199 @@
+     }
+ }
+ 
++/// A source-specific explicit selection for an existing draft line.
++/// The worker checks the exact source and target before its single atomic save.
++pub(super) struct LineProductChoice {
++    pub(super) catalog_id: String,
++    pub(super) fingerprint: String,
++    pub(super) product_index: usize,
++    pub(super) code: String,
++    pub(super) line_index: usize,
++    pub(super) original_query: String,
++}
++
++pub(super) enum DraftSelection {
++    Product(LineProductChoice),
++    Customer(Customer),
++}
++
+ impl Ui {
++    pub(super) fn choose_draft_selection_async(
++        self: &Rc<Self>,
++        selection: DraftSelection,
++        complete: impl FnOnce(&Rc<Self>, Result<bool>) + 'static,
++    ) {
++        if self.persistence_busy.get() {
++            complete(
++                self,
++                Err(anyhow::anyhow!(
++                    "ذخیره در حال انجام است؛ پس از پایان دوباره انتخاب کنید"
++                )),
++            );
++            return;
++        }
++        let draft = match self.form_draft() {
++            Ok((draft, _)) => draft,
++            Err(error) => {
++                complete(self, Err(error));
++                return;
++            }
++        };
++        let directory = self.store.borrow().directory.clone();
++        let detached = self.store.borrow_mut().begin_detached();
++        let (generation, mut candidate) = match detached {
++            Ok(value) => value,
++            Err(error) => {
++                complete(self, Err(error));
++                return;
++            }
++        };
++        let previous_customer = matches!(&selection, DraftSelection::Customer(_)).then(|| {
++            (
++                self.customer.text().to_string(),
++                self.phone.text().to_string(),
++            )
++        });
++        candidate.draft = draft;
++        let revision = self.edit_revision.get();
++        if let Some(pending) = self.pending.borrow_mut().take() {
++            pending.remove();
++        }
++        self.persistence_busy.set(true);
++        self.message(Ok(match &selection {
++            DraftSelection::Product(_) => "در حال ذخیرهٔ انتخاب کالا و پیش‌نویس…",
++            DraftSelection::Customer(_) => "در حال ذخیرهٔ انتخاب مشتری و پیش‌نویس…",
++        }));
++        let (sender, receiver) = mpsc::sync_channel(1);
++        let spawned = thread::Builder::new()
++            .name("sarv-persistence".into())
++            .spawn(move || {
++                let result = catch_unwind(AssertUnwindSafe(|| {
++                    match selection {
++                        DraftSelection::Product(choice) => {
++                            anyhow::ensure!(
++                                candidate.draft.catalog_id == choice.catalog_id,
++                                "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
++                            );
++                            let catalog = candidate.catalog()?;
++                            anyhow::ensure!(
++                                catalog.id == choice.catalog_id
++                                    && catalog.fingerprint == choice.fingerprint
++                                    && catalog
++                                        .products
++                                        .get(choice.product_index)
++                                        .is_some_and(|product| product.code == choice.code),
++                                "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
++                            );
++                            let line = candidate
++                                .draft
++                                .lines
++                                .get_mut(choice.line_index)
++                                .ok_or_else(|| {
++                                    anyhow::anyhow!("ردیف تغییر کرده؛ دوباره بررسی کنید")
++                                })?;
++                            anyhow::ensure!(
++                                line.query == choice.original_query,
++                                "درخواست ردیف تغییر کرده؛ دوباره بررسی کنید"
++                            );
++                            line.chosen_code = Some(choice.code);
++                            candidate.draft.stale_ack = false;
++                        }
++                        DraftSelection::Customer(customer) => {
++                            let current = candidate
++                                .customers
++                                .iter()
++                                .find(|record| record.id == customer.id)
++                                .ok_or_else(|| {
++                                    anyhow::anyhow!("مشتری تغییر کرده؛ دوباره انتخاب کنید")
++                                })?;
++                            anyhow::ensure!(
++                                !current.archived
++                                    && serde_json::to_vec(current)?
++                                        == serde_json::to_vec(&customer)?,
++                                "مشتری تغییر کرده یا بایگانی شده؛ دوباره انتخاب کنید"
++                            );
++                            candidate.select_customer(&customer.id)?;
++                        }
++                    }
++                    let prepared = Store::prepare_candidate(generation, candidate)?;
++                    Store::commit_detached(directory, prepared)
++                }))
++                .unwrap_or_else(|_| {
++                    Err(anyhow::anyhow!(
++                        "ذخیرهٔ انتخاب قطع شد؛ ورودی شما حفظ شده است"
++                    ))
++                });
++                let _ = sender.send(result);
++            });
++        if let Err(error) = spawned {
++            let result = self.store.borrow_mut().finish_detached(Err(error.into()));
++            self.persistence_busy.set(false);
++            self.close_after_save.set(false);
++            self.pending_save_action.borrow_mut().take();
++            complete(self, result.map(|()| false));
++            return;
++        }
++        let ui = self.clone();
++        let mut complete = Some(complete);
++        glib::timeout_add_local(Duration::from_millis(20), move || {
++            let result = match receiver.try_recv() {
++                Ok(result) => result,
++                Err(mpsc::TryRecvError::Empty) => return glib::ControlFlow::Continue,
++                Err(mpsc::TryRecvError::Disconnected) => {
++                    Err(anyhow::anyhow!("ذخیرهٔ انتخاب قطع شد؛ دوباره تلاش کنید"))
++                }
++            };
++            let result = ui.store.borrow_mut().finish_detached(result);
++            ui.persistence_busy.set(false);
++            let same_revision = ui.edit_revision.get() == revision;
++            if result.is_ok() && same_revision {
++                ui.finish_form_save();
++                ui.refresh_totals();
++            } else if result.is_err() {
++                ui.pending_save_action.borrow_mut().take();
++                ui.close_after_save.set(false);
++            }
++            let succeeded = result.is_ok();
++            if succeeded
++                && !same_revision
++                && let Some((name, phone)) = &previous_customer
++                && ui.customer.text().as_str() == name
++                && ui.phone.text().as_str() == phone
++            {
++                // Unrelated newer edits must not undo the explicit customer.
++                // Update only untouched identity widgets; changed text wins.
++                let (customer, phone) = {
++                    let store = ui.store.borrow();
++                    (
++                        store.state.draft.customer.clone(),
++                        store.state.draft.phone.clone(),
++                    )
++                };
++                let loading = ui.loading.replace(true);
++                ui.customer.set_text(&customer);
++                ui.phone.set_text(&phone);
++                ui.loading.set(loading);
++            }
++            if let Some(complete) = complete.take() {
++                complete(&ui, result.map(|()| same_revision));
++            }
++            if succeeded {
++                if !same_revision {
++                    // Never replace newer GTK inputs, including invalid text,
++                    // with the old receipt. Validate and save them separately.
++                    ui.save_form_async();
++                } else {
++                    ui.run_saved_action();
++                    if ui.close_after_save.replace(false) {
++                        ui.window.close();
++                    }
++                }
++            }
++            glib::ControlFlow::Break
++        });
++    }
++
+     pub(super) fn save_form_async_then(
+         self: &Rc<Self>,
+         complete: impl FnOnce(&Rc<Self>) + 'static,
+--- src/ui/pickers.rs (freeze5)
++++ src/ui/pickers.rs (candidate6)
+@@ -133,11 +133,15 @@
+         product.source_unit.label()
+     )
+ }
+-fn picker_shell(
+-    title: &str,
+-    placeholder: &str,
+-    name: &str,
+-) -> (adw::Dialog, gtk::SearchEntry, gtk::ListBox, gtk::Label) {
++struct PickerShell {
++    dialog: adw::Dialog,
++    search: gtk::SearchEntry,
++    list: gtk::ListBox,
++    hint: gtk::Label,
++    choose: gtk::Button,
++    back: gtk::Button,
++}
++fn picker_shell(title: &str, placeholder: &str, name: &str) -> PickerShell {
+     let dialog = adw::Dialog::builder()
+         .title(title)
+         .content_width(620)
+@@ -210,7 +214,14 @@
+         glib::Propagation::Stop
+     });
+     search.add_controller(keys);
+-    (dialog, search, list, hint)
++    PickerShell {
++        dialog,
++        search,
++        list,
++        hint,
++        choose,
++        back: cancel,
++    }
+ }
+ impl Ui {
+     fn choose_new_product(self: &Rc<Self>, snapshot: &ProductSnapshot, code: &str) -> bool {
+@@ -241,11 +252,17 @@
+         self.product_picker(Some((index, original_query)));
+     }
+     fn product_picker(self: &Rc<Self>, target: Option<(usize, String)>) {
+-        if let Err(error) = self.save_form() {
+-            self.message(Err::<String, _>(error));
+-            return;
+-        }
+-        let (dialog, search, list, hint) = picker_shell(
++        self.save_form_async_then(move |ui| ui.product_picker_saved(target));
++    }
++    fn product_picker_saved(self: &Rc<Self>, target: Option<(usize, String)>) {
++        let PickerShell {
++            dialog,
++            search,
++            list,
++            hint,
++            choose,
++            back,
++        } = picker_shell(
+             "انتخاب کالا از فهرست قیمت",
+             "جست‌وجوی نام، کد یا نام مستعار کالا",
+             "product-picker-search",
+@@ -279,7 +296,13 @@
+         let weak_dialog = dialog.downgrade();
+         let ids = result_ids.clone();
+         let snapshot = loaded.clone();
+-        list.connect_row_activated(move |_, row| {
++        let search_choice = search.clone();
++        let hint_choice = hint.clone();
++        let choosing = Rc::new(Cell::new(false));
++        list.connect_row_activated(move |list, row| {
++            if choosing.get() {
++                return;
++            }
+             let Some(ui) = weak.upgrade() else {
+                 return;
+             };
+@@ -290,38 +313,72 @@
+             let Some(id) = ids.borrow().get(row.index() as usize).copied() else {
+                 return;
+             };
+-            let code = snapshot.catalog.products[id].code.clone();
+-            let success = if let Some((index, original_query)) = &target {
+-                let result = ui.save_form().and_then(|()| {
+-                    ui.store.borrow_mut().change(|state| {
+-                        anyhow::ensure!(
+-                            state.draft.catalog_id == snapshot.catalog.id
+-                                && state.catalog()?.fingerprint == snapshot.catalog.fingerprint,
+-                            "فهرست قیمت تغییر کرده؛ دوباره انتخاب کنید"
+-                        );
+-                        let line =
+-                            state.draft.lines.get_mut(*index).ok_or_else(|| {
+-                                anyhow::anyhow!("ردیف تغییر کرده؛ دوباره بررسی کنید")
+-                            })?;
+-                        anyhow::ensure!(
+-                            &line.query == original_query,
+-                            "درخواست ردیف تغییر کرده؛ دوباره بررسی کنید"
+-                        );
+-                        line.chosen_code = Some(code.clone());
+-                        state.draft.stale_ack = false;
+-                        Ok(())
+-                    })
+-                });
+-                let success = result.is_ok();
+-                ui.message(result.map(|()| "کالای ردیف صریحاً انتخاب شد؛ منبع قیمت را بررسی کنید"));
+-                if success {
+-                    ui.refresh_review();
+-                }
+-                success
+-            } else {
+-                ui.choose_new_product(snapshot, &code)
+-            };
+-            if success {
++            let Some(product) = snapshot.catalog.products.get(id) else {
++                return;
++            };
++            let code = product.code.clone();
++            if let Some((index, original_query)) = &target {
++                let Some(dialog) = weak_dialog.upgrade() else {
++                    return;
++                };
++                let choice = background::LineProductChoice {
++                    catalog_id: snapshot.catalog.id.clone(),
++                    fingerprint: snapshot.catalog.fingerprint.clone(),
++                    product_index: id,
++                    code,
++                    line_index: *index,
++                    original_query: original_query.clone(),
++                };
++                // Clearing the Dialog's actual text focus before disabling it
++                // avoids GTK's focus-out warning and keeps input ownership clear.
++                dialog.set_focus(None::<&gtk::Widget>);
++                dialog.set_can_close(false);
++                search_choice.set_sensitive(false);
++                list.set_sensitive(false);
++                choose.set_sensitive(false);
++                back.set_sensitive(false);
++                choosing.set(true);
++                hint_choice.set_text("در حال ذخیرهٔ انتخاب صریح و پیش‌نویس…");
++                let search = search_choice.clone();
++                let list = list.clone();
++                let hint = hint_choice.clone();
++                let choosing = choosing.clone();
++                let chosen = chosen.clone();
++                let choose = choose.clone();
++                let back = back.clone();
++                ui.choose_draft_selection_async(
++                    background::DraftSelection::Product(choice),
++                    move |ui, result| {
++                        choosing.set(false);
++                        dialog.set_can_close(true);
++                        search.set_sensitive(true);
++                        list.set_sensitive(true);
++                        choose.set_sensitive(true);
++                        back.set_sensitive(true);
++                        match result {
++                            Ok(same_revision) => {
++                                chosen.set(true);
++                                dialog.close();
++                                if same_revision {
++                                    ui.refresh_review();
++                                }
++                                ui.message(Ok(
++                                    "کالای ردیف صریحاً انتخاب شد؛ منبع قیمت را بررسی کنید",
++                                ));
++                            }
++                            Err(error) => {
++                                hint.set_text(&format!(
++                                    "{error:#}؛ ورودی حفظ شد؛ دوباره انتخاب کنید."
++                                ));
++                                ui.message(Err::<String, _>(error));
++                                if dialog.is_visible() {
++                                    search.grab_focus();
++                                }
++                            }
++                        }
++                    },
++                );
++            } else if ui.choose_new_product(snapshot, &code) {
+                 chosen.set(true);
+                 if let Some(dialog) = weak_dialog.upgrade() {
+                     dialog.close();
+@@ -384,11 +441,17 @@
+         });
+     }
+     pub(super) fn open_customer_picker(self: &Rc<Self>) {
+-        if let Err(error) = self.save_form() {
+-            self.message(Err::<String, _>(error));
+-            return;
+-        }
+-        let (dialog, search, list, hint) = picker_shell(
++        self.save_form_async_then(|ui| ui.customer_picker_saved());
++    }
++    fn customer_picker_saved(self: &Rc<Self>) {
++        let PickerShell {
++            dialog,
++            search,
++            list,
++            hint,
++            choose,
++            back,
++        } = picker_shell(
+             "انتخاب مشتری",
+             "جست‌وجوی مشتری، تلفن، رابط، ایمیل یا نشانی",
+             "customer-picker-search",
+@@ -429,26 +492,67 @@
+         let selected = ids.clone();
+         let records = customers.clone();
+         let weak_dialog = dialog.downgrade();
+-        list.connect_row_activated(move |_, row| {
+-            if let Some(ui) = weak.upgrade()
+-                && let Some(index) = selected.borrow().get(row.index() as usize).copied()
+-            {
+-                let result = ui.save_form().and_then(|()| {
+-                    ui.store
+-                        .borrow_mut()
+-                        .change(|state| state.select_customer(&records[index].id))
+-                });
+-                let success = result.is_ok();
+-                ui.message(result.map(|()| "مشتری و اطلاعات تماس در پیش‌نویس انتخاب شدند"));
+-                if success {
+-                    chosen.set(true);
+-                    ui.fill_form();
+-                    ui.refresh_review();
+-                    if let Some(dialog) = weak_dialog.upgrade() {
++        let search_choice = search.clone();
++        let hint_choice = hint.clone();
++        let choosing = Rc::new(Cell::new(false));
++        list.connect_row_activated(move |list, row| {
++            if choosing.get() {
++                return;
++            }
++            let Some(ui) = weak.upgrade() else {
++                return;
++            };
++            let Some(index) = selected.borrow().get(row.index() as usize).copied() else {
++                return;
++            };
++            let Some(customer) = records.get(index) else {
++                return;
++            };
++            let Some(dialog) = weak_dialog.upgrade() else {
++                return;
++            };
++            let selection = background::DraftSelection::Customer(customer.clone());
++            dialog.set_focus(None::<&gtk::Widget>);
++            dialog.set_can_close(false);
++            search_choice.set_sensitive(false);
++            list.set_sensitive(false);
++            choose.set_sensitive(false);
++            back.set_sensitive(false);
++            choosing.set(true);
++            hint_choice.set_text("در حال ذخیرهٔ انتخاب مشتری و پیش‌نویس…");
++            let search = search_choice.clone();
++            let list = list.clone();
++            let hint = hint_choice.clone();
++            let choosing = choosing.clone();
++            let chosen = chosen.clone();
++            let choose = choose.clone();
++            let back = back.clone();
++            ui.choose_draft_selection_async(selection, move |ui, result| {
++                choosing.set(false);
++                dialog.set_can_close(true);
++                search.set_sensitive(true);
++                list.set_sensitive(true);
++                choose.set_sensitive(true);
++                back.set_sensitive(true);
++                match result {
++                    Ok(same_revision) => {
++                        chosen.set(true);
+                         dialog.close();
++                        if same_revision {
++                            ui.fill_form();
++                            ui.refresh_review();
++                        }
++                        ui.message(Ok("مشتری و اطلاعات تماس در پیش‌نویس انتخاب شدند"));
+                     }
+-                }
+-            }
++                    Err(error) => {
++                        hint.set_text(&format!("{error:#}؛ ورودی حفظ شد؛ دوباره انتخاب کنید."));
++                        ui.message(Err::<String, _>(error));
++                        if dialog.is_visible() {
++                            search.grab_focus();
++                        }
++                    }
++                }
++            });
+         });
+         let refresh: Rc<dyn Fn()> = {
+             let search = search.clone();
+--- src/ui/responsiveness.rs (freeze5)
++++ src/ui/responsiveness.rs (candidate6)
+@@ -798,6 +798,9 @@
+             p.advance(21, 0);
+         }
+         21 => {
++            if ui.persistence_busy.get() {
++                return Ok(());
++            }
+             let list = picker_results(ui)?;
+             if list.row_at_index(29).is_none() {
+                 return Ok(());
+@@ -860,13 +863,26 @@
+             p.advance(25, 200);
+         }
+         25 => {
+-            let started = Instant::now();
++            p.phase_started = Instant::now();
+             ui.open_product_picker();
++            let started = p.phase_started;
++            p.elapsed("50000_warm_cached_picker_open_dispatch", started);
++            p.advance(125, 0);
++        }
++        125 => {
++            if ui.persistence_busy.get() {
++                return Ok(());
++            }
++            let list = picker_results(ui)?;
++            if page_rows(&list).len() != 30 {
++                return Ok(());
++            }
++            ensure!(
++                list.row_at_index(30).is_none(),
++                "warm picker cache exceeded30 rows"
++            );
++            let started = p.phase_started;
+             p.elapsed("50000_warm_cached_picker_open_and_native_results", started);
+-            ensure!(
+-                page_rows(&picker_results(ui)?).len() == 30,
+-                "warm picker cache did not supply bounded results"
+-            );
+             p.advance(26, 200);
+         }
+         26 => {
+@@ -937,8 +953,15 @@
+             p.advance(27, 200);
+         }
+         27 => {
+-            ensure!(
+-                page_rows(&picker_results(ui)?).len() == 30,
++            if ui.persistence_busy.get() {
++                return Ok(());
++            }
++            let list = picker_results(ui)?;
++            if page_rows(&list).len() != 30 {
++                return Ok(());
++            }
++            ensure!(
++                list.row_at_index(30).is_none(),
+                 "unknown-line selector exceeded bounded picker"
+             );
+             p.phase_started = Instant::now();
+@@ -963,8 +986,25 @@
+                 &ui.window,
+                 &directory.join("native-scale-unknown-selector.png"),
+             )?;
++            let started = Instant::now();
+             named::<gtk::Button>(&active_dialog(ui)?, "product-picker-search-choose")?
+                 .emit_clicked();
++            p.elapsed("50000_unknown_line_choice_dispatch_main_thread", started);
++            p.phase_started = started;
++            p.advance(131, 0);
++        }
++        131 => {
++            // Validate the actual committed choice, not merely an emitted click.
++            // Keep the original search endpoint and report choice dispatch and
++            // durable/native readiness separately without changing budgets.
++            if ui.persistence_busy.get() {
++                return Ok(());
++            }
++            let started = p.phase_started;
++            p.elapsed(
++                "50000_unknown_line_choice_durable_and_native_review_ready",
++                started,
++            );
+             {
+                 let store = ui.store.borrow();
+                 ensure!(

@@ -1,0 +1,39 @@
+{
+  "raw_source": "/workspace/sarv-quote/artifacts/performance-m6/candidate6-runtime3-pilot1",
+  "result": "FAILED functional pilot, incomplete before zero warmup completes",
+  "excluded_sqlite_files": [
+    "observer/source120-billed-search/sarv.sqlite3",
+    "observer/source120-billed-search/sarv.sqlite3-shm",
+    "observer/source120-billed-search/sarv.sqlite3-wal"
+  ],
+  "portable_copy_raw_files": {
+    "coordinator-observer.log": {
+      "bytes": 2114,
+      "sha256": "6d0e893ab675abf499911582088d55548046242e8a25da14a9a1323ce4730c82"
+    },
+    "coordinator.json": {
+      "bytes": 46420,
+      "sha256": "1a606e7fec600c3de4395433bfceed332773d0bb796eb1488c8c22110265ae8a"
+    },
+    "observer/openbox.log": {
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    "observer/performance.json": {
+      "bytes": 47369,
+      "sha256": "57d6b29e5920b1c38fe35861aef68b4301ba8c57f3f538d1d46f3364f3b92470"
+    },
+    "observer/runtime/dconf/user": {
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    "observer/source120-billed-search.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/xvfb.log": {
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    }
+  }
+}

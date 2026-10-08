@@ -1,0 +1,76 @@
+{
+  "reviewer": "m6_final_native_review",
+  "scope": "Independent isolated actual AST reexecution; retained checker output-writing statement excluded; no native imports/GUI/keys/focus action",
+  "current_observer_sha256": "a4ba1500f756b81810a40386b8d37782cdb010a0b22d0eee6062216bf23c6fb4",
+  "retained_logic_sha256": "8d74d6e534c3850a52a77c9e7e535f64c56fe88edad558a8ae49c1408f814a19",
+  "checker_sha256": "c65df4e5c0aaee3b51b99e71b1e99bbfba937e77f99becefd07a2ca4c4be63b9",
+  "all8_cases_pass": true,
+  "cases": [
+    {
+      "case": "live",
+      "accepted": true,
+      "correct": true,
+      "observation": {
+        "scope": "read-only current AT-SPI field after asynchronous callback",
+        "requested_focus": "row99-quantity",
+        "name": "تعداد ردیف ۱۰۰",
+        "role": "text",
+        "focused": true,
+        "text": "2.375",
+        "ancestry": [
+          "0x1",
+          "0x2"
+        ],
+        "original_key_event": {
+          "key": "Up",
+          "focus": "row100-quantity"
+        }
+      }
+    },
+    {
+      "case": "retired",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "field-defunct",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "parent-defunct",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "focus-lost",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "renamed",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "duplicate",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "foreign-app",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    }
+  ],
+  "bounded_static_finding_closed": true,
+  "native_fallback_exercised": false,
+  "stress50_actual_observer_sha256": "3989989f0063ad1df02b6f5db23fce64b4ff4ac511dbc4943ebcd1f5021cc558"
+}

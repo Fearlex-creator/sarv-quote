@@ -1,0 +1,42 @@
+dbus-daemon[285247]: [session uid=1000 pid=285247 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=285248 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[285247]: [session uid=1000 pid=285247 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[285283]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=285248 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[285283]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"core_search": {"n": 2, "p50": 111.37263900309335, "p95": 115.7792009980767, "p99": 115.7792009980767, "worst": 115.7792009980767, "method": "nearest rank"}, "preview_ms": 61.961375999089796, "post_ms": 6.13836199772777}
+{"procurement_searches": {"document": {"n": 2, "p50": 97.81187999760732, "p95": 99.43247999763116, "p99": 99.43247999763116, "worst": 99.43247999763116, "method": "nearest rank"}, "party": {"n": 2, "p50": 80.37415199942188, "p95": 84.27111800119746, "p99": 84.27111800119746, "worst": 84.27111800119746, "method": "nearest rank"}, "item": {"n": 2, "p50": 87.45058299973607, "p95": 92.48565299640177, "p99": 92.48565299640177, "worst": 92.48565299640177, "method": "nearest rank"}, "mixed_master": {"n": 2, "p50": 79.13837200612761, "p95": 80.02995400602231, "p99": 80.02995400602231, "worst": 80.02995400602231, "method": "nearest rank"}}}
+
+(process:285248): dbind-WARNING **: 04:15:46.117: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:15:59.997: AT-SPI: Error in GetItems, sender=:1.9, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:16:02.191: AT-SPI: Error in GetItems, sender=:1.10, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:17:19.161: AT-SPI: Error in GetItems, sender=:1.11, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:17:20.582: AT-SPI: Error in GetItems, sender=:1.12, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"dataset": "core-small-posted", "startup": {"n": 1, "p50": 869.2635109982803, "p95": 869.2635109982803, "p99": 869.2635109982803, "worst": 869.2635109982803, "method": "nearest rank"}, "rss": {"n": 1, "p50": 93832, "p95": 93832, "p99": 93832, "worst": 93832, "method": "nearest rank"}}
+
+(process:285248): dbind-WARNING **: 04:17:22.613: AT-SPI: Error in GetItems, sender=:1.13, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"dataset": "quote-scale", "startup": {"n": 1, "p50": 1130.4411769961007, "p95": 1130.4411769961007, "p99": 1130.4411769961007, "worst": 1130.4411769961007, "method": "nearest rank"}, "rss": {"n": 1, "p50": 173492, "p95": 173492, "p99": 173492, "worst": 173492, "method": "nearest rank"}}
+
+(process:285248): dbind-WARNING **: 04:17:26.160: AT-SPI: Error in GetItems, sender=:1.15, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:17:27.592: AT-SPI: Error in GetItems, sender=:1.16, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"dataset": "procurement-small-posted", "startup": {"n": 1, "p50": 859.8710740043316, "p95": 859.8710740043316, "p99": 859.8710740043316, "worst": 859.8710740043316, "method": "nearest rank"}, "rss": {"n": 1, "p50": 96608, "p95": 96608, "p99": 96608, "worst": 96608, "method": "nearest rank"}}
+
+(process:285248): dbind-WARNING **: 04:17:28.981: AT-SPI: Error in GetItems, sender=:1.17, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:17:30.609: AT-SPI: Error in GetItems, sender=:1.18, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"dataset": "sales-small-posted", "startup": {"n": 1, "p50": 922.6788759988267, "p95": 922.6788759988267, "p99": 922.6788759988267, "worst": 922.6788759988267, "method": "nearest rank"}, "rss": {"n": 1, "p50": 98616, "p95": 98616, "p99": 98616, "worst": 98616, "method": "nearest rank"}}
+
+(process:285248): dbind-WARNING **: 04:17:32.062: AT-SPI: Error in GetItems, sender=:1.19, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:17:33.431: AT-SPI: Error in GetItems, sender=:1.20, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"dataset": "sales-paged-drafts", "startup": {"n": 1, "p50": 916.4894240020658, "p95": 916.4894240020658, "p99": 916.4894240020658, "worst": 916.4894240020658, "method": "nearest rank"}, "rss": {"n": 1, "p50": 97712, "p95": 97712, "p99": 97712, "worst": 97712, "method": "nearest rank"}}
+
+(process:285248): dbind-WARNING **: 04:17:34.883: AT-SPI: Error in GetItems, sender=:1.21, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:285248): dbind-WARNING **: 04:17:36.227: AT-SPI: Error in GetItems, sender=:1.22, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"dataset": "sales-long-draft", "startup": {"n": 1, "p50": 891.027108002163, "p95": 891.027108002163, "p99": 891.027108002163, "worst": 891.027108002163, "method": "nearest rank"}, "rss": {"n": 1, "p50": 98312, "p95": 98312, "p99": 98312, "worst": 98312, "method": "nearest rank"}}
+X connection to :10 broken (explicit kill or server shutdown).

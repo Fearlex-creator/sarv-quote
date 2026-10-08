@@ -1,0 +1,34 @@
+{"name": "120 synthetic raw-draft list retained", "passed": true}
+{"name": "reused first card opens current PERF-A-000", "passed": true}
+{"name": "reused first card opens current PERF-B-001", "passed": true}
+{"name": "reused first card opens current PERF-A-000", "passed": true}
+{"name": "zero-result persistent cards are absent or all insensitive and not showing", "passed": true, "accessible_action_count": 0}
+{"name": "filter activation/cancellation preserves source and copied payload", "passed": true}
+{"name": "reused page2 Edit resolves immutable line025 quantity26", "passed": true}
+{"name": "real CtrlS accepts distinct-quantity raw fixture through Store", "passed": true}
+{"name": "exact current ID edited with all others retained", "passed": true}
+{"name": "delete current page2 row saves without books", "passed": true}
+{"name": "current line025 deleted and next line026 retained", "passed": true}
+{"name": "move current reused row across page boundary", "passed": true}
+{"name": "current immutable line026 moved above024 across page boundary", "passed": true}
+{"name": "reused slot after reorder opens current line024 quantity25", "passed": true}
+{"name": "delete reordered current ID without books", "passed": true}
+{"name": "reordered line024 deleted, current line027 remains", "passed": true}
+{"name": "move last first-page row down across boundary", "passed": true}
+{"name": "line026 moved down with current line027 moved up", "passed": true}
+{"name": "cross-page Down then Edit resolves current line026 quantity27", "passed": true}
+{"name": "delete tail raw row to count27", "passed": true}
+{"name": "tail count current 27", "passed": true}
+{"name": "delete tail raw row to count26", "passed": true}
+{"name": "tail count current 26", "passed": true}
+{"name": "delete tail raw row to count25", "passed": true}
+{"name": "tail count current 25", "passed": true}
+{"name": "deletion clamps persistent page and disables Next", "passed": true}
+{"name": "clamped reused first Edit resolves line000 quantity1", "passed": true}
+{"name": "review uses current rows and rejects stale independently supplied total", "passed": true}
+{"name": "immutable synthetic sources unchanged", "passed": true}
+{"name": "synthetic input State and raw fixture files unchanged", "passed": true}
+{"name": "no unexpected X11 observer error", "passed": true}
+{"name": "frozen production source exact before/after", "passed": true}
+{"name": "frozen binary and observer unchanged", "passed": true}
+{"name": "observer helpers and synthetic fixture file unchanged", "passed": true}

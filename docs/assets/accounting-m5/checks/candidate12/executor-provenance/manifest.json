@@ -1,0 +1,12 @@
+{
+  "scope": "Actual executor helper bytes used for completed C12 build/root7/callback13/preserved7. Copying itself is not execution or acceptance. Each completed run owns its separate receipt and exact source/binary guard.",
+  "files": {
+    "sarv-M5-build-freeze.py": "b326fdc9a290f1f44ff5f5b9763766b68f1a9f54d8bb33a503cb09c5e5ade574",
+    "sarv-M5-frozen-gates-v2.py": "1da911b818802e990db68974a9fa9e8d3a2f933992d6f7ee9248c9e77f3d06f5",
+    "sarv-M5-gtk-gate.py": "1c6087f078e36869553cb427d45691666c9dd42027b24cca959eca5ca1794066",
+    "sarv-M5-quote-callback-runner.py": "a691bf4828ee3e7901f5563cd42d47c09fd78ceb9c576c6ac1f84a1e7657fd50",
+    "sarv-M5-curate-callback.py": "f3f0d8ca9dace482c1dff54757040d3e7a6a90ef613e881ddfd51ac7828c5122",
+    "sarv-M5-preserved-runner.py": "698e8bd8023258e305f6ec253de9ab01e6a3a62a1ea40fff73fb751655258730",
+    "sarv-M5-final-quote-smoke.py": "44a26c5b9399ad2b6acac6be7016275d84d15a4425e8c283c5516d2bfd600ff1"
+  }
+}

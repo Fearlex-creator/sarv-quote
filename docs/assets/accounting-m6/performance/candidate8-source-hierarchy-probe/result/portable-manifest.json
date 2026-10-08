@@ -1,0 +1,32 @@
+{
+  "raw_root": "/workspace/sarv-quote/artifacts/performance-m6/candidate8-source-hierarchy-probe1",
+  "raw_files": {
+    "actual-source-picker-hierarchy.png": {
+      "bytes": 253499,
+      "sha256": "18aa7bed2e6d8b04755e8751b28166af69e8be031f53ccb9cfa4ee788b2866b7"
+    },
+    "hierarchy-probe.json": {
+      "bytes": 131201,
+      "sha256": "7b6890bb83b12063e3bf8bcf8fa220d7188ad0d9493223afbfed8a226c34be5c"
+    },
+    "openbox.log": {
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    "readonly-source-app.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "runtime/dconf/user": {
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    "xvfb.log": {
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    }
+  },
+  "raw_file_count": 6,
+  "no_SQLite_or_executable_copied": true,
+  "probe_sha256": "85f860d41ec6e84b34300a6eac95c6496699dfc267e0010c941e4d790d91c9df"
+}

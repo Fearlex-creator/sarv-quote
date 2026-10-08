@@ -1,0 +1,79 @@
+{
+  "result": "passed",
+  "reviewer": "/root/m4_final_review",
+  "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+  "method": "Actual view_image inspection of all9 final-freeze4 PDFs/14 separately rendered1100-pixel pages; bounds, exact integer/CSV and role localization proof separate",
+  "observations": [
+    "Persian shaping and mixed-script references readable; no observed edge clipping",
+    "PO180 no financial or on-hand effect, receipt75/105, bills30/150 and original R1 bill50, transfer70 nonfinancial all labelled",
+    "Exact integer IRR appears beside precise toman amounts; quantities use declared base thousandths",
+    "Final controls twelve roles plus stock W1=30/350 W2=12/130, AP379/GRNI0 after original R1 bill, TB1431/1431",
+    "Original R1 paper date2026-03-01 and availability2026-03-21 are separate; original quantity/value and remaining0 retained",
+    "Six-page control export preserves continued titles/page numbering and full sequence/source movement trace",
+    "Resource-only role labels now read مشتری خیر / تأمین‌کننده بله while canonical false/true booleans are preserved independently"
+  ],
+  "limits": [
+    "Physical printing and native reader/accountant user studies untested",
+    "Visual pass does not prove financial correctness; raw state/CSV oracle and replay/CAS/recovery probes are separate"
+  ],
+  "pages": [
+    {
+      "file": "export/render/bill-a-1.png",
+      "sha256": "c410013fa432bb6d1c21cb3e4a2fd3338a3b090c2ec610f7fa103a1228432bc7"
+    },
+    {
+      "file": "export/render/bill-b-1.png",
+      "sha256": "d1dc87e55e99f2ce571eff400a4f2b30e7c9240415e2e3fb9e032a0808669944"
+    },
+    {
+      "file": "export/render/bill-opening-1.png",
+      "sha256": "4c23b58e2e087de1a9dd24713b79e10846bcec4b4736e3d5266eb0e7d1187ea6"
+    },
+    {
+      "file": "export/render/control-final-1.png",
+      "sha256": "fd92362a71b5a8c5d63bc39eb5a4bd59080c7c4b95734a78e4875c2327a83dd6"
+    },
+    {
+      "file": "export/render/control-final-2.png",
+      "sha256": "17ca4ea1ad1bba9ed60a0630a10fd6d44a90f872af077334bc6f46f5a6c75de5"
+    },
+    {
+      "file": "export/render/control-final-3.png",
+      "sha256": "29052fc59d9d4a2f66bfb804f4d4e3be50fc3c16395431d84622dfd301a31d13"
+    },
+    {
+      "file": "export/render/control-final-4.png",
+      "sha256": "a62071e89264df9e84479e4515a9e42931393458b919e0f24288aa5804d17588"
+    },
+    {
+      "file": "export/render/control-final-5.png",
+      "sha256": "bdfd4690e8714ac160108304654552b68c2d22aee36ca9b019ffa0ed79f2af48"
+    },
+    {
+      "file": "export/render/control-final-6.png",
+      "sha256": "8bf6c1fa345bde4da95b41f2d98f37ec383f003ae0dc9ff1eec37c321cf87d39"
+    },
+    {
+      "file": "export/render/masters-1.png",
+      "sha256": "03dd4d2bcad5afd4a366510423a2d79f140d4d887f5f3c9d0f7e9a9ce552bc27"
+    },
+    {
+      "file": "export/render/po-main-1.png",
+      "sha256": "603f27d363cb4cd3a0b3f3bdf8d1ef6c08023dfb04567a2c68bd39c77196b26d"
+    },
+    {
+      "file": "export/render/receipt-a-1.png",
+      "sha256": "62cddf2163cfe859cf8919ae6d163f9f3bc74e82c290450a14838e9b02e1cdc3"
+    },
+    {
+      "file": "export/render/receipt-b-1.png",
+      "sha256": "282c898636cc21227e0e4dae45da277835a085900eb838efa94af14f9039d15c"
+    },
+    {
+      "file": "export/render/transfer-main-1.png",
+      "sha256": "e8f0ec705e25197bf96a1625a82f135b28e7453d7146dc07d7098b8ae2938945"
+    }
+  ],
+  "binary_sha256": "499c2607747f00f5c9ada4c3e94d3e59e174a918f4df467a8f3cfedf47a14001",
+  "scope": "All14 final-freeze4 rendered pages personally inspected at1100-pixel height using view_image; this actual visual inspection is separate from independent integer/CSV correctness and9PDF14page margin bounds."
+}

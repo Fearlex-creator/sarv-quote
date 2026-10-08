@@ -1,0 +1,143 @@
+{
+  "scope": "Closed current preserved epochs plus explicitly retained failed extra keyboard fixture attempts; curated top-level verification JSON/logs and failed initial renders only. No SQLite/executables copied; raw local profiles remain separate.",
+  "runs": {
+    "core": {
+      "raw_run": "/workspace/sarv-quote/artifacts/core-native/run-36g4cqft",
+      "files": {
+        "m2-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "keyboard-stage.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "full-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "zero-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "keyboard-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "layout-light.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "layout-dark.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "core-independent-native.json": "c1b2f41886e3807bd2e84eb5b5fc30aab8ccdcd4c8750f28f715202e83784dd6"
+      }
+    },
+    "jalali": {
+      "raw_run": "/workspace/sarv-quote/artifacts/jalali-native/run-743o0pn_",
+      "files": {
+        "keyboard-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "financial-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "accounting-native-verification.json": "b9b38efb94529d61f15f4f2d64245c7decc33f23ffac60deb6a1add891cb9547",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "accounting-recovery-verification.json": "d492402763ec7901954edafd3798bb9999cb05451bf3563c86885558ebda5db6",
+        "quote-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "jalali-independent-native.json": "f61fe831a80e6ef098372c09959693a7e9e9de201dbf3d3ee4bf5bad331a966c"
+      }
+    },
+    "ledger": {
+      "raw_run": "/workspace/sarv-quote/artifacts/accounting-native/run-312xuma_",
+      "files": {
+        "keyboard-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "financial-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "accounting-native-verification.json": "1802fa04e4c1d222e144aed9dc7ea0b5717213c2cc018b822e4cf76f2e880405",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "accounting-recovery-verification.json": "d492402763ec7901954edafd3798bb9999cb05451bf3563c86885558ebda5db6",
+        "accounting-independent-native.json": "b46a8b477e66bd76bcdf9d47dee31c9fbad3008597f0ea8cc21f8cc247f139da"
+      }
+    },
+    "procurement": {
+      "raw_run": "/workspace/sarv-quote/artifacts/procurement-native/run-5hjp0h37",
+      "files": {
+        "M3-before-layout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "M4-full-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "M3-seed.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "layout-light.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "layout-dark.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "procurement-independent-native.json": "55972d81cd33ab880dc23bfe7d938c02f5075602b7321cdde76e151898757fe1"
+      }
+    },
+    "sales": {
+      "raw_run": "/workspace/sarv-quote/artifacts/sales-native/run-5qdmk6g6",
+      "files": {
+        "frozen-source-manifest.json": "f2f6cf45ac7ebca7bd806c16045b02fc8eb3ec37fe2c5cdc120de2a8aaecaa93",
+        "M5-draft.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M5-layout-light.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M5-draft-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "M5-full.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "M4-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M3-seed.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M5-stage-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M4-seed.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M5-detail-pages.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M5-layout-dark.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "M5-stage.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sales-independent-native.json": "d1ff77bcf02f3273abe76550733a394add3953b883dd1a5cdd4001026d840b89"
+      }
+    },
+    "quote-empty-draft-failed": {
+      "raw_run": "/workspace/sarv-quote/artifacts/independent-native/run-o5kjxvkv",
+      "files": {
+        "independent-verification.json": "6da1bee054e609f07cdd178ce2ea38c3088ef783f2415fefc943999f2ef0cd7d",
+        "app.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "keyboard-events.jsonl": "4daafd3184d80a54c0f7eeec0c26938154d5c1195a7f69888e10688779e82a24",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "initial.png": "2b5d4ea8154317c4a111af26050c0baa1882fd8cb057ef2627eef581ab465d70"
+      }
+    },
+    "quote-metadata-draft-failed": {
+      "raw_run": "/workspace/sarv-quote/artifacts/independent-native/run-ca8mvfpn",
+      "files": {
+        "independent-verification.json": "141f1cea8d7f1e86fe8e8110a20b87234ac73dbf7f422f4a9c2db00842736cf5",
+        "app.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "keyboard-events.jsonl": "a93592fb8e9f3b2fc4d07e9a003cc37a46790eafdac544d584d50d3f16f05b32",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "initial.png": "6b497896c894b3ecf925aea60697542125928ab7b826d1d675a6bdc51aa78667"
+      }
+    },
+    "quote-async-event-failed": {
+      "raw_run": "/workspace/sarv-quote/artifacts/independent-native/run-c9etwonp",
+      "files": {
+        "settings-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "independent-verification.json": "c1c57e10e742ae04ac4e1f06f17eafca90861fcbd333e7c9af1b65d67f7a6bcb",
+        "app.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "keyboard-events.jsonl": "522cd2f93767dc7f24bd6eb8d7fd628b007fe69d8baf7b40873f7d481f369d1b",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pagination-fixture.json": "675919accb4faa9a209468794730f2f843654408de0fbb3b83dfd6fb3f60ad0c",
+        "pagination.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pagination-start.png": "67a0890d3b0edcb7660a4ea088bb31d1906322a3c0423e8bc6b3f46102f39237",
+        "initial.png": "9239ea83c1f15fb93ce478967a9b4b6646d18fd47067d6cde1f424deff16c6d1"
+      },
+      "scope": "46 completed checks followed by key-idle-log row99 focus timeout; actual row100 saved3125. Subsequent live-focus qualification separate, no product innocence inferred here."
+    },
+    "quote-stress50": {
+      "raw_run": "/workspace/sarv-quote/artifacts/independent-native/run-2lrwyt1a",
+      "files": {
+        "settings-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "window-900x560.png": "66c8f8965e22ca4d7395fac75f8a72ef454b5e828c4462d5a8aa39ba46392c95",
+        "keyboard-settings-restart.png": "2813f50b9ef5b7a25746fe9beaec7fa96cb91f66eb13fc48c889938ce8df9821",
+        "independent-verification.json": "729bfcfe6bc5497430a4d1e6d598ce4b7fa6b02064b5243c6e14d73419b3c836",
+        "app.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+        "pagination-real-key-boundary.png": "e4ecdb413ec6bc8fecef170c5a99cda32f404c515d6956e67413e7f113b62306",
+        "keyboard-events.jsonl": "e13d16eb8386c7631676864da440ff87daca402bfbdf846f38dc7430e928e418",
+        "restart.png": "9239ea83c1f15fb93ce478967a9b4b6646d18fd47067d6cde1f424deff16c6d1",
+        "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+        "window-900x560-lower-controls.png": "81615e69d99778fb22043e284f19bd8d09b6d3c64ad46f1977c28c2519328473",
+        "window-900x940.png": "43e7c7aeea65bfb4b5d6722f15ac6801fedcd2412dce0d21208cac76d5c759b0",
+        "restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "pagination-fixture.json": "675919accb4faa9a209468794730f2f843654408de0fbb3b83dfd6fb3f60ad0c",
+        "pagination.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "window-700x560.png": "c318ec36b6ef880a23696a0649d661a4599edb44fd42a6cb622430c071994826",
+        "pagination-start.png": "67a0890d3b0edcb7660a4ea088bb31d1906322a3c0423e8bc6b3f46102f39237",
+        "initial.png": "9239ea83c1f15fb93ce478967a9b4b6646d18fd47067d6cde1f424deff16c6d1",
+        "product-search.png": "0cc281c24a91700655b7a04a532e3ae96255ec7855cfc32d08794687bc07c6c6"
+      },
+      "observer_sha256": "3989989f0063ad1df02b6f5db23fce64b4ff4ac511dbc4943ebcd1f5021cc558",
+      "scope": "50 original-key-event checks passed; live focus fallback unused. Subsequent fallback hardening has isolated static proof, not native fallback exercise."
+    }
+  }
+}

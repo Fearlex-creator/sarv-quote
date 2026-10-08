@@ -1,0 +1,65 @@
+{
+  "synthetic_only": true,
+  "fixture_injection_outside_timings": true,
+  "accounting_payload_unchanged": true,
+  "source_payload_sha256": "c7dd5f7459a130e561481272ad7e90f3cd438bd9a26988fce6ce138ea70ef0ba",
+  "drafts": 1,
+  "lines": 1000,
+  "resolved_context": {
+    "@company": "ee64e40a-8493-4d52-811e-61ff77941595",
+    "@period": "8afd098d-7f50-47ce-8fc4-ecaafdb6ea93",
+    "@setup": "fcad226f-23b0-4f7c-ae2f-4244cec4f35c",
+    "@date": "2026-03-27"
+  },
+  "seed_shape": {
+    "schema": 6,
+    "generation": 14,
+    "payload_sha256": "57a82a99aebe541e74e37aff38c31eef8a9ad063cc11b64590c75e0fa69705a9",
+    "customers": 0,
+    "quotes": 0,
+    "products": 2,
+    "draft_lines": 0,
+    "accounting": {
+      "companies": 1,
+      "periods": 1,
+      "accounts": 26,
+      "journals": 5,
+      "requests": 5,
+      "audit": 40
+    },
+    "procurement": {
+      "records": 10,
+      "requests": 10
+    },
+    "core": {
+      "setups": 1,
+      "openings": 1
+    },
+    "opening": {
+      "counts": {
+        "balances": 21,
+        "parties": 4,
+        "units": 2,
+        "items": 1,
+        "warehouses": 2,
+        "cash": 1,
+        "banks": 1,
+        "open_items": 4,
+        "advances": 0,
+        "cheques": 2,
+        "stock": 2,
+        "grni": 1
+      },
+      "packs": 1,
+      "import_source": null,
+      "command_sha256": "bc51529477a7d9a4ea8d217a76fe9289c76033ab8709e2dfa5e1acfa98e2fcef",
+      "source_id": "OPEN-F2-2026",
+      "journal_id": "dd22a098-a4ac-49b3-9657-261efe10f1fb",
+      "as_of": "2026-03-21",
+      "ledger_debit_irr": 1251,
+      "ledger_credit_irr": 1251,
+      "stock_value_irr": 300,
+      "grni_value_irr": 50
+    }
+  }
+}

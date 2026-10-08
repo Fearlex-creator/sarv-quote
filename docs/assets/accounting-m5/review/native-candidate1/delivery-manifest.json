@@ -1,0 +1,76 @@
+{
+  "files": {
+    "draft/M5-invalid-raw-line-reopened.png": {
+      "sha256": "05d031a51c5bc1a3c929592efc029c0d71cba6715f795b7346cbddf93f18147e",
+      "bytes": 107624
+    },
+    "draft/keyboard-events.jsonl": {
+      "sha256": "2ad1091f3632e2d966db1d9dce05e3abb8559c2d16aef7842a4188e2a7b9628c",
+      "bytes": 2765
+    },
+    "draft-state.json": {
+      "sha256": "fc58ec88a75ef28bbd32a566b8f7ad9ee5a960720bcb5ff69a9174e5d7323da7",
+      "bytes": 146678
+    },
+    "frozen-source-manifest.json": {
+      "sha256": "ac04027449721a4dbd432e47483f9697ead5aeb437bff95dd6a58910aec45d41",
+      "bytes": 7563
+    },
+    "full/M5-real-filtered-search.png": {
+      "sha256": "88045f17d209530a661a855043a0fcbacb6ea86ab077a3854a430b89b064b788",
+      "bytes": 100510
+    },
+    "full/M5-real-order-detail.png": {
+      "sha256": "44d24c9c97ba234f1f9182379f01db070c12085b199a1c45d7d9e2ad93b90a45",
+      "bytes": 148772
+    },
+    "full/M5-real-retained-overreturn.png": {
+      "sha256": "e4078909acab03ae76506584db462e0611747c195209593618fdca600528e4dc",
+      "bytes": 123309
+    },
+    "full/M5-sales-dark-650x550.png": {
+      "sha256": "99a86ece84ed15c50c7d7846c1f42442344b7884f8dde2351cc036c37c68d4f6",
+      "bytes": 57397
+    },
+    "full/M5-sales-light-650x550.png": {
+      "sha256": "9f65556d16658edc3b8d4df7ebc2c641f5276ec7dace556368cff2cce36e69f1",
+      "bytes": 56877
+    },
+    "posted-return-inspection/M5-real-keyboard-completed-return-detail.png": {
+      "sha256": "f34cf9797d52c068086e04c9a81c867c0aab99d83d7b0143eb0c80acba9a7994",
+      "bytes": 143077
+    },
+    "posted-return-inspection/completed-return-access-tree.json": {
+      "sha256": "21772ceaf4037343070b4cbd8b8e5115bd92fa4f2e318987c6d89cdef3f8e28d",
+      "bytes": 13529
+    },
+    "posted-return-inspection/completed-return-inspection.json": {
+      "sha256": "c477006fe4bee984e8a3df8d9faa9d51915db3826bf4987eb01f682e18bee8af",
+      "bytes": 7456
+    },
+    "review-result.json": {
+      "sha256": "1b2389d29a563b453ea574ff7bfd84454060fa46ecc4d59c7dcb8743c834bd98",
+      "bytes": 1644
+    },
+    "sales-check-progress.jsonl": {
+      "sha256": "05d7339deeccfb55557e94b362998388981bd98ae148ddc16317318aa02561e4",
+      "bytes": 4185
+    },
+    "sales-independent-native.json": {
+      "sha256": "e86521b337cc4419e7bf371831bb56641db61b20c44690109f7095882a683443",
+      "bytes": 15390
+    },
+    "stage/M5-stage-narrow-editor.png": {
+      "sha256": "670fd005b72db5dd3c8e9c109c2e349ef137187560cae94a04c58dead0e76ff3",
+      "bytes": 42364
+    },
+    "stage/keyboard-events.jsonl": {
+      "sha256": "717fca6f53f1884535dcebc0b0f814a0fbc6ea50883ad42afccf0e055ffba9cc",
+      "bytes": 10963
+    },
+    "stage-state.json": {
+      "sha256": "d851f4ab36cfe413b12c871368af6595e3093c0567d707976ba38e39f0c39853",
+      "bytes": 180948
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "root_manifest": "docs/assets/accounting-m5/checks/candidate1/manifest.json",
+  "root_manifest_sha256": "ac04027449721a4dbd432e47483f9697ead5aeb437bff95dd6a58910aec45d41",
+  "source": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+  "binary": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "checks": [
+    {
+      "label": "fmt",
+      "command": "cargo fmt --all -- --check",
+      "exit_code": 0,
+      "elapsed_seconds": 0.7353659520013025,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "clippy",
+      "command": "cargo clippy --offline --locked --all-targets -- -D warnings",
+      "exit_code": 0,
+      "elapsed_seconds": 0.15505784699780634,
+      "log_sha256": "3fe980a0f9709b0a2d093ea2a65202e1e589d4893ac71be4272c165923b9e527"
+    },
+    {
+      "label": "all-targets",
+      "command": "cargo test --offline --locked --all-targets",
+      "exit_code": 0,
+      "elapsed_seconds": 19.742845510001644,
+      "log_sha256": "b77453d1ac1f0d703f77f6f536474f7f0a930a7c2caf6f6b603e5daf3b7779bb"
+    },
+    {
+      "label": "font-opt-in",
+      "command": "cargo test --offline --locked --bin sarv-quote ui::background::tests::four_row_business_quote_with_native_fonts_fits_one_a4_page -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 0.274838991004799,
+      "log_sha256": "0a82813bc648af6980965cbbbbf93f159cc57fbfdc7a4d1f71b3c90a73fa8671"
+    },
+    {
+      "label": "actual-m3-refusal",
+      "command": "SARV_M3_COMPAT_BINARY=/workspace/sarv-evidence/bin/sarv-M3-final cargo test --offline --locked --test procurement_migration actual_m3_binary_rejects_current_schema_without_modifying_committed_row -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 1.1388379070049268,
+      "log_sha256": "71960f33e0ce9177126cfb6599b99786e65eacdbc73a14c3ab64790e8ef1058c"
+    },
+    {
+      "label": "actual-m4-refusal",
+      "command": "SARV_M4_COMPAT_BINARY=/workspace/sarv-evidence/bin/sarv-M4-final cargo test --offline --locked --test sales_migration actual_m4_binary_refuses_schema6_without_changing_row -- --ignored --exact",
+      "exit_code": 0,
+      "elapsed_seconds": 0.29266552600165596,
+      "log_sha256": "37df84075241abbbc751011c0a93d816ab4dec7a314b43593b1f1c61c52b4971"
+    },
+    {
+      "label": "gtk-lifecycle",
+      "command": "python3 /tmp/sarv-M5-gtk-gate.py docs/assets/accounting-m5/checks/candidate1/gates/gtk-lifecycle-owned.log",
+      "exit_code": 0,
+      "elapsed_seconds": 0.39642882599582663,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "passed": true
+}

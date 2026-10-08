@@ -1,0 +1,106 @@
+{
+  "status": "PASS",
+  "raw_literal_cutoffs": 11,
+  "sarv_reports_used_for_expected_values": false,
+  "observations": [
+    {
+      "branch": "billed",
+      "date": "2026-03-31",
+      "inventory": 422,
+      "ap": 329,
+      "grni": 50,
+      "tb": 1630,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "billed",
+      "date": "2026-04-01",
+      "inventory": 377,
+      "ap": 284,
+      "grni": 50,
+      "tb": 1585,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "billed",
+      "date": "2026-04-02",
+      "inventory": 317,
+      "ap": 224,
+      "grni": 50,
+      "tb": 1525,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-03-31",
+      "inventory": 422,
+      "ap": 329,
+      "grni": 50,
+      "tb": 1630,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-01",
+      "inventory": 512,
+      "ap": 329,
+      "grni": 140,
+      "tb": 1720,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-02",
+      "inventory": 512,
+      "ap": 359,
+      "grni": 110,
+      "tb": 1720,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-03",
+      "inventory": 497,
+      "ap": 359,
+      "grni": 95,
+      "tb": 1705,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-04",
+      "inventory": 497,
+      "ap": 404,
+      "grni": 50,
+      "tb": 1705,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-05",
+      "inventory": 482,
+      "ap": 389,
+      "grni": 50,
+      "tb": 1690,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-06",
+      "inventory": 467,
+      "ap": 374,
+      "grni": 50,
+      "tb": 1675,
+      "raw_movements_and_open_item_detail": true
+    },
+    {
+      "branch": "unbilled",
+      "date": "2026-04-07",
+      "inventory": 422,
+      "ap": 329,
+      "grni": 50,
+      "tb": 1630,
+      "raw_movements_and_open_item_detail": true
+    }
+  ]
+}

@@ -1,0 +1,109 @@
+{
+  "result": "passed",
+  "epoch": "candidate5",
+  "production_source_sha256": "07d0edcee2f5a13d4a708faff3e444016829f15ea6149d4d182b23037860822c",
+  "binary_sha256": "45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e",
+  "main_checks": 66,
+  "identity_checks": 34,
+  "curated_files_hashed": 20,
+  "identity_helpers_checkpoint": "all3 exact; guard before/after unchanged",
+  "identity_seed_files": "both exact SHA; guard before/after unchanged",
+  "main_raw_sqlite": [
+    {
+      "branch": "full",
+      "integrity": "ok",
+      "generation": 29,
+      "journals": 9,
+      "raw_drafts": 0,
+      "balanced_all_journals": true,
+      "full_controls_1630": true
+    },
+    {
+      "branch": "stage",
+      "integrity": "ok",
+      "generation": 21,
+      "journals": 7,
+      "raw_drafts": 0,
+      "balanced_all_journals": true,
+      "full_controls_1630": false
+    },
+    {
+      "branch": "draft",
+      "integrity": "ok",
+      "generation": 17,
+      "journals": 5,
+      "raw_drafts": 1,
+      "balanced_all_journals": true,
+      "full_controls_1630": false
+    },
+    {
+      "branch": "detail-pages",
+      "integrity": "ok",
+      "generation": 20,
+      "journals": 5,
+      "raw_drafts": 0,
+      "balanced_all_journals": true,
+      "full_controls_1630": false
+    }
+  ],
+  "identity_final_raw_sqlite": {
+    "integrity": "ok",
+    "generation": 26,
+    "line_count": 25,
+    "literal_final_ids": "000..023 plus027; original quantities1..24 and28",
+    "accounting_exact_seed_equal": true
+  },
+  "preserved_commands": [
+    {
+      "label": "core",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    },
+    {
+      "label": "jalali",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    },
+    {
+      "label": "sidebar",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    },
+    {
+      "label": "ledger",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    },
+    {
+      "label": "procurement",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    },
+    {
+      "label": "quote",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    },
+    {
+      "label": "held-save-close",
+      "exit_code": 0,
+      "observer_guard_files": 16
+    }
+  ],
+  "preserved_guard_scope": "all36 production hashes, binary/release target, selected16 scripts; not all52 build verification files",
+  "callback_distribution_C3_C4_C5": "each all8 portable hashes and1 ignored local SQLite hash verified",
+  "scope": "actual candidate5 runtime only; normal UI source35 same in candidate6, candidate6 binary execution claims separate",
+  "performance_acceptance": "pending",
+  "reviewer_personally_viewed": [
+    {
+      "file": "../native/candidate5/full/M5-real-restored-new-order.png",
+      "sha256": "42170473d8315052584281f3f35382f46994526c37a24965c7e00a46d567086e",
+      "observation": "Both dates2026-04-01, reference entry blue focus ring, unsaved/unreviewed order disabled post."
+    },
+    {
+      "file": "../native/candidate5/identity/M5-reused-lines-current-review-error.png",
+      "sha256": "aaf470efb531619be6d499ba48f87abb8f37ee6bab51a4d0c3d12bb268296f51",
+      "observation": "KBD-REUSE-30 retained; current stale-total error visible in red footer and post disabled."
+    }
+  ]
+}

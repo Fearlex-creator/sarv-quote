@@ -13,6 +13,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import signal
 import sqlite3
 import subprocess
@@ -289,13 +290,57 @@ def main():
             if page:
                 target = wait_for(lambda: next((e for e in events(profile)[count:]
                                   if e['page'] == page), None), label=f'{key} switched page')
+            settled_focus = None
             if focus:
-                target = wait_for(lambda: next((e for e in events(profile)[count:]
-                                  if e['focus'] == focus), None), label=f'{key} moved focus')
+                def current_focus():
+                    nonlocal settled_focus
+                    found = next((e for e in events(profile)[count:] if e['focus'] == focus), None)
+                    if found:
+                        return found
+                    # Page crossing saves asynchronously; the key's idle log can
+                    # precede its callback. Read the live owned field without
+                    # sending another key or changing the interaction epoch.
+                    match = re.fullmatch(r'row(\d+)-quantity', focus)
+                    if not match:
+                        return None
+                    probe = Access(app.pid)
+                    name = 'تعداد ردیف ' + str(int(match[1]) + 1).translate(str.maketrans('0123456789', '۰۱۲۳۴۵۶۷۸۹'))
+                    fields = [row for row in probe.tree() if row['name'] == name
+                              and row['role'] in ('entry', 'text') and probe.focused(row)]
+                    if len(fields) != 1:
+                        return None
+                    field = fields[0]
+                    node = field['node']
+                    ancestry = []
+                    for _ in range(40):
+                        probe.a.atspi_accessible_clear_cache(node)
+                        states = probe.a.atspi_accessible_get_state_set(node)
+                        if not states or probe.a.atspi_state_set_contains(states, 6):  # DEFUNCT
+                            return None
+                        parent = probe.a.atspi_accessible_get_parent(node, None)
+                        if not parent:
+                            return None
+                        probe.a.atspi_accessible_clear_cache(parent)
+                        if node not in probe.children(parent):
+                            return None
+                        ancestry.append(hex(node))
+                        if parent == probe.app():
+                            if (probe.string(probe.a.atspi_accessible_get_name, field['node'], None) != name
+                                    or not probe.focused(field)):
+                                return None
+                            settled_focus = {'scope': 'read-only current AT-SPI field after asynchronous callback',
+                                             'requested_focus': focus, 'name': name, 'role': field['role'],
+                                             'focused': True, 'text': probe.text(field), 'ancestry': ancestry,
+                                             'original_key_event': seen[-1]}
+                            return seen[-1]
+                        node = parent
+                    raise RuntimeError('Owned quotation field ancestry exceeded bound')
+                target = wait_for(current_focus, label=f'{key} moved focus')
             if page:
                 # Crossfade completes after the shortcut; capture its settled allocation.
                 time.sleep(.4)
-            return {'event': target, 'latency_seconds': round(time.monotonic()-begin, 3)}
+            return {'event': target, 'settled_focus_observation': settled_focus,
+                    'latency_seconds': round(time.monotonic()-begin, 3)}
         check('Tab enters first row quantity', True, **press('Tab', focus='row0-quantity'))
         check('Shift+Tab returns to first row query', True,
               **press('Tab', 'Shift_L', focus='row0-query'))

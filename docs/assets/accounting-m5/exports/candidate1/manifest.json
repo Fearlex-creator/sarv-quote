@@ -1,0 +1,184 @@
+{
+  "source_manifest": "../../checks/candidate1/manifest.json",
+  "source_manifest_sha256": "ac04027449721a4dbd432e47483f9697ead5aeb437bff95dd6a58910aec45d41",
+  "test_log": "../../checks/candidate1/export-sample-generation.log",
+  "test_log_sha256": "e7200d6884a0a8114251ea50b23d3feca31735c2d6eddd3fbd87c9f9b3081270",
+  "tests": "8 passed / 0 failed / 0 ignored; artifact regeneration on frozen source",
+  "pdfs": [
+    {
+      "pdf": "credit-final.pdf",
+      "sha256": "da8c7226f9dca9aecf8881248146079099e77aaf6bcfba53ad8f99d010f6aaad",
+      "page_images": [
+        "rendered/credit-final-1.png"
+      ]
+    },
+    {
+      "pdf": "credit.pdf",
+      "sha256": "ede2c72697f1481fd1ecb9e8914d52e6f4f25867700f667d338700271f142f41",
+      "page_images": [
+        "rendered/credit-1.png"
+      ]
+    },
+    {
+      "pdf": "delivery.pdf",
+      "sha256": "caf4d40e76eff47754386e0841a91ca6e597a87e2eab3b1e421d9052463f5087",
+      "page_images": [
+        "rendered/delivery-1.png"
+      ]
+    },
+    {
+      "pdf": "divisible-partial-0.pdf",
+      "sha256": "4e941bd9d92c3f7cae65c4940a18606a4262598fb8d18d310bb18ecb535caf90",
+      "page_images": [
+        "rendered/divisible-partial-0-1.png"
+      ]
+    },
+    {
+      "pdf": "divisible-partial-1.pdf",
+      "sha256": "b96e255b3384a5015b22ab7df37a72698052ff08b5ffa1befc97d11bb1632629",
+      "page_images": [
+        "rendered/divisible-partial-1-1.png"
+      ]
+    },
+    {
+      "pdf": "divisible-partial-2.pdf",
+      "sha256": "b66b3e27438bb222c9c3ed636b0a3c2daa046824663790ddb7214ce96fd5bd54",
+      "page_images": [
+        "rendered/divisible-partial-2-1.png"
+      ]
+    },
+    {
+      "pdf": "invoice-final.pdf",
+      "sha256": "95c3b48342e3a056840db35255e3db55673de3cee4dc8e1778b5e7d482a983da",
+      "page_images": [
+        "rendered/invoice-final-1.png"
+      ]
+    },
+    {
+      "pdf": "invoice.pdf",
+      "sha256": "14106fb7caa6107d22dd9e97527ae985a7f94cf5be92efb30ecfba7c56491f4b",
+      "page_images": [
+        "rendered/invoice-1.png"
+      ]
+    },
+    {
+      "pdf": "quote-linked-order.pdf",
+      "sha256": "d043c3d19f8f1a8f985fcc90cf4db5b30dfed1cadec8b0fe7d76855cb5fc7e22",
+      "page_images": [
+        "rendered/quote-linked-order-1.png"
+      ]
+    },
+    {
+      "pdf": "return.pdf",
+      "sha256": "e904c0ffc7d9fdfcf3188981c62c66be7619bca969570f7c9bf09ff439e3e190",
+      "page_images": [
+        "rendered/return-1.png"
+      ]
+    },
+    {
+      "pdf": "sales-order.pdf",
+      "sha256": "680757a747f3c4bed4726f267bf70abfb192ff29be1e6f3020904dbfe197529e",
+      "page_images": [
+        "rendered/sales-order-1.png"
+      ]
+    },
+    {
+      "pdf": "sales-reconciliation.pdf",
+      "sha256": "2ec16d7b5c214d6f3719b260d1e5c79ac5999468dae7de8d6a21f3d63b09cc68",
+      "page_images": [
+        "rendered/sales-reconciliation-1.png",
+        "rendered/sales-reconciliation-2.png",
+        "rendered/sales-reconciliation-3.png",
+        "rendered/sales-reconciliation-4.png"
+      ]
+    }
+  ],
+  "visual_inspection": {
+    "status": "passed bounded internal accounting layout",
+    "reviewer": "root",
+    "pdfs": 12,
+    "pages": 15,
+    "method": "Each full-page raster personally inspected at1600pixel longest side; text/font extraction retained; exact-money/linkage assertions in8exporttests and independent financial fixtures are separate.",
+    "observations": "Readable shaped Persian RTL and mixed-script IDs; repeated company/date/unit/policy/page headings; original versus allocated price/components and exact IRR labeled; reconciliation spans4pages with all controls, invoice details, totals and event links; no clipped rows observed. Dense internal audit documents, not professionally approved customer statutory invoices. Physical printing untested."
+  },
+  "files": {
+    "credit-final.csv": "5675733bd740d22164f99c03df6e3500719dbeff620da72fecc9e979aa32a862",
+    "credit-final.pdf": "da8c7226f9dca9aecf8881248146079099e77aaf6bcfba53ad8f99d010f6aaad",
+    "credit.csv": "a3ac011b74445cdb05b39aad18f1c2356d3beadec666c6c7c58918714b9ecfa2",
+    "credit.pdf": "ede2c72697f1481fd1ecb9e8914d52e6f4f25867700f667d338700271f142f41",
+    "delivery.csv": "bbe459a53417440f794ee3d3226eda3a573a69803a3b975dbf311a0e5b7baccb",
+    "delivery.pdf": "caf4d40e76eff47754386e0841a91ca6e597a87e2eab3b1e421d9052463f5087",
+    "divisible-partial-0.csv": "e9c2fe4ee4526b59c9fcd82c66f69cd7e7037c2f9873839becb353aebb23fb50",
+    "divisible-partial-0.pdf": "4e941bd9d92c3f7cae65c4940a18606a4262598fb8d18d310bb18ecb535caf90",
+    "divisible-partial-1.csv": "a75e498bb6197a0ba65a4079aae6ea4a56f0eb110f1f597cf2eac90bcfcd913d",
+    "divisible-partial-1.pdf": "b96e255b3384a5015b22ab7df37a72698052ff08b5ffa1befc97d11bb1632629",
+    "divisible-partial-2.csv": "bf86be34835ba1a27cf4191cb36c7cf60fae35c1f4d491fa22a5ecc30ae168e3",
+    "divisible-partial-2.pdf": "b66b3e27438bb222c9c3ed636b0a3c2daa046824663790ddb7214ce96fd5bd54",
+    "invoice-final.csv": "e39f883e5dff94cf88ac378c766ed6e0cd1a76bd63fe36e7dcfc3978aaf92e7d",
+    "invoice-final.pdf": "95c3b48342e3a056840db35255e3db55673de3cee4dc8e1778b5e7d482a983da",
+    "invoice.csv": "9c33344d06ca2a0f375f6c986a886f84825c2811a65ba45749cba17ed050e66f",
+    "invoice.pdf": "14106fb7caa6107d22dd9e97527ae985a7f94cf5be92efb30ecfba7c56491f4b",
+    "quote-linked-approved-source.json": "3d7946dca0e4802a9257ebca97e4c3478033479b73678323511ec2ceee41c011",
+    "quote-linked-order.csv": "7318dcb980a912bbcadbac51424f23b3c64a1bd0b442f11bd967ee5206654b43",
+    "quote-linked-order.pdf": "d043c3d19f8f1a8f985fcc90cf4db5b30dfed1cadec8b0fe7d76855cb5fc7e22",
+    "rendered/credit-1.png": "b26cb9c3fa9af7867ad8505b4758e6085b2a582eb6f6f5025edf12a9c8ba5e33",
+    "rendered/credit-final-1.png": "2f543850de802c0c29d33944a22a0656cd0267f3beada77db24f7258e9a7f4ed",
+    "rendered/credit-final.fonts.txt": "2ada9ef1f1c2c5116ab4bf44d285d08074a17bac25b7f55a41b66280c212eb8b",
+    "rendered/credit-final.info.txt": "b1d413b3481b127ede097011cb45b00334b441b26dda5a5d9af8af531ccf2ef8",
+    "rendered/credit-final.text.txt": "00b7dbce6694a198121ec2f97fb6e1645a98cbe6f98194184c73e750fb63d30b",
+    "rendered/credit.fonts.txt": "445e856cfab84d4cc45d48ec262222dee9e9a9a5dc55876c71ebbc574b57bcab",
+    "rendered/credit.info.txt": "f317cc830d687cea2470a77abf26ba120489687c8d1d0259161af835c7537747",
+    "rendered/credit.text.txt": "49fe349e47e07ccb850cba88e6e02a3f8379eb3bf2406cf6ad613d96b2cf0b49",
+    "rendered/delivery-1.png": "e00e082a318e2d272440e610f88fa8ae1fe194f4aabb3a02cce4d0afeb6bfd3a",
+    "rendered/delivery.fonts.txt": "56ed47064bc7d4b1cea608760bcca20c48592f0294c1fd8265a76517788a1f70",
+    "rendered/delivery.info.txt": "4713d72ab02654799a2daf4fa4f6fa23ef3994bd58c82c9b06ae26716fbb29ec",
+    "rendered/delivery.text.txt": "a5f3bcc14e3ab82071387e3933088d52c058f064de615ae82bda1fbd9fe54446",
+    "rendered/divisible-partial-0-1.png": "6a2b9ea79c9dd7f18a70c1963de5cf2eb2e642c5d9ac986c8b7c7466449cabba",
+    "rendered/divisible-partial-0.fonts.txt": "e386c76f1d1ab76e9333af61c097221c86b9c394c7bf9fd68229e63c015513bb",
+    "rendered/divisible-partial-0.info.txt": "6fc5446ea66e59c1e7c01954504fa76b799a6b43d8b3f93aa90ed218a0552eac",
+    "rendered/divisible-partial-0.text.txt": "aad74f8724b4da5235c595b2fae5f007f9acbebc9ffa0321a52569a92b508aea",
+    "rendered/divisible-partial-1-1.png": "82b152172813e72495f4ca0aaba6971c6d206de1163032675b5f01c1579c78ba",
+    "rendered/divisible-partial-1.fonts.txt": "91ff86f9405993b35cd8107c755c242cbf6c3e168f4126d2f0a0256dfadc2dd2",
+    "rendered/divisible-partial-1.info.txt": "a826fd6d569624d46fd889f9fcf7626ee74f46961dff9580643b57c337177d78",
+    "rendered/divisible-partial-1.text.txt": "8ba9bcf35b3407638ba94f980bb5c3934296d1136d6030fa4becb98e00962f4f",
+    "rendered/divisible-partial-2-1.png": "746698a04329dab404c822a18d423d48f68de3fc4bbcd7b1a6abad280124575e",
+    "rendered/divisible-partial-2.fonts.txt": "e386c76f1d1ab76e9333af61c097221c86b9c394c7bf9fd68229e63c015513bb",
+    "rendered/divisible-partial-2.info.txt": "b8e7c6f73c301f41ba48d1af8a3f81214d729c25df91de61cf523e93318df929",
+    "rendered/divisible-partial-2.text.txt": "89839dedd2ed67995fd7b4737359055c626601b9068c9adc10901f41680305c4",
+    "rendered/invoice-1.png": "83fc2a3ca25d9d826258a8b12362d653428e7b508afeac39c53c17a55b655d3d",
+    "rendered/invoice-final-1.png": "2ab1adbf6e387e22a740acba4868c6f32c4ecdaca4a63ca931964028bfa723a1",
+    "rendered/invoice-final.fonts.txt": "fc439b20b1a0e22469cd782f03f07eaff7d6d9503cce4d345c24c84f726af935",
+    "rendered/invoice-final.info.txt": "d64708d4c8996dd6df0ef9e6e17845271bd248a577069bccbf802491a2373bb7",
+    "rendered/invoice-final.text.txt": "d4c853b0836226ea0ce078d509be0e38b9fa28d5d124f4a5daa3cba5db557e7e",
+    "rendered/invoice.fonts.txt": "6fc2bdce54402b10e905f98593f33259a23b7297b6be380422b24dce94a40b85",
+    "rendered/invoice.info.txt": "b53bad6e68b3f5f173b1eeb6db476dc87f3ea52caa434f1e8a1c883e389c9edc",
+    "rendered/invoice.text.txt": "7a0fbc030230615c770e520bc7daacab93129657704a10ee1d9a4fc75848077e",
+    "rendered/quote-linked-order-1.png": "c544524b642df0c66cc3258ba802067da81fc31d24c80873cb630fc43b3c5cec",
+    "rendered/quote-linked-order.fonts.txt": "56a684190918136ea204cba8efa2633ec84dba9f831335dfbead3fafebcf438e",
+    "rendered/quote-linked-order.info.txt": "29d890933b69846dff578b8604b07ba7220b7b736b72a78a4c28605e6f3af112",
+    "rendered/quote-linked-order.text.txt": "cb1f7079599157451878dfbf6473b6907cdb31ed4ab08e40113191b0c92c94fd",
+    "rendered/return-1.png": "2a9c63fdb9420e75699f522473efaf641bcc90de21dc357c8f7ba42f78400c53",
+    "rendered/return.fonts.txt": "b89c5fea90e0e5b0dd4e7a92c281712682385630f9957ba17eac27efa1cfa24b",
+    "rendered/return.info.txt": "55b9a9d0b506f0af3344094d13272d00b8e34a08828029c4e9f5a75725847b38",
+    "rendered/return.text.txt": "c68be6e4b79bf80c9583067e6c67361ebdf0d002fd504cc24a71d39b00e16eff",
+    "rendered/sales-order-1.png": "6e3cbefa54d31865c986f1d4b5db509b158d774eddb0ec9b270a535d97009e22",
+    "rendered/sales-order.fonts.txt": "cd0592be4c26d85a21aac1e2092645a78e67540d5cf09ee35e1f5d5129751278",
+    "rendered/sales-order.info.txt": "15673604b949016ae9abd26a4c7724f0499a61756acf7083a3eff0d1c2d69d43",
+    "rendered/sales-order.text.txt": "c4e87f756c650e49ff2d9a7dbdc4164f2b9b3b3cd35b4dd26b7b49faeb3d5a4a",
+    "rendered/sales-reconciliation-1.png": "72ba304277b5fc2e1af65a45facb22a956c36adfa47583b24a1d086483748a04",
+    "rendered/sales-reconciliation-2.png": "4ff704f046308e29ec9488f2fd83a625342373d11f7f92a8e21665b2696a07dc",
+    "rendered/sales-reconciliation-3.png": "124b6e4252423ff977ba8fd75afa7fecbc8aa86f3ee29998239b6b27a67ab88a",
+    "rendered/sales-reconciliation-4.png": "5ca4d62a7ee77c777c461f286def2561251c4b38dd027505c72668b2e9eb72e8",
+    "rendered/sales-reconciliation.fonts.txt": "50995f1377a3de9863389c8af074819eac8929f220795a61c2254507db8f2c15",
+    "rendered/sales-reconciliation.info.txt": "b9e1981a192641f655efc83f05fdb2db056da1fdb85e020c5930d4c16eb011ab",
+    "rendered/sales-reconciliation.text.txt": "4c1bee69d7cfa1f41e957e6a43674e8e926a42d4d6985933399d41e0d54dcd55",
+    "return.csv": "0da0009f26cddf0c1eefa9424072f7ed1a5924333f8eea2be2ecbc84d3e206c7",
+    "return.pdf": "e904c0ffc7d9fdfcf3188981c62c66be7619bca969570f7c9bf09ff439e3e190",
+    "sales-order.csv": "45c7e65568e5c5066a685f512b6e5b69accfdb5635cc7e84d1114d1a534073b7",
+    "sales-order.pdf": "680757a747f3c4bed4726f267bf70abfb192ff29be1e6f3020904dbfe197529e",
+    "sales-reconciliation-fonts.txt": "50995f1377a3de9863389c8af074819eac8929f220795a61c2254507db8f2c15",
+    "sales-reconciliation-text.txt": "81c0e52e0588109049610e7c0929df96c6f12fe8d314b31de86e7a6b19da0fc0",
+    "sales-reconciliation.csv": "0adee7b89b80b9ad4b67e34d35629bf5344dc7cf72b53549b304617bdd28740b",
+    "sales-reconciliation.pdf": "2ec16d7b5c214d6f3719b260d1e5c79ac5999468dae7de8d6a21f3d63b09cc68"
+  }
+}

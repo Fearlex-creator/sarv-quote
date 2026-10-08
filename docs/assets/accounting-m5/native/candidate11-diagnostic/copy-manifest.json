@@ -1,0 +1,141 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/sales-native/focus-boundary-u3e0apqd",
+  "scope": "disposable native full-smoke focus diagnosis only; no external keyboard/release qualification",
+  "result": "diagnosis-complete",
+  "acceptance": "unqualified diagnosis only; material focus warning remains",
+  "binary_sha256": "cc0205c25f1c32aa1392a7bacc4980aa1faaa16561c273bca3fc87dd57b5021f",
+  "production_source_sha256": "1ab6eeca193b8fcd79278f232b2ff32cd02443248592a76e8fc63e46cbdfa064",
+  "observer_sha256": "2f3c676330356b380cb01ac0f89cc4b78a3bd86f8a2ba9f63901806646be9c63",
+  "files": [
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/M5-full.log",
+      "target": "single-full-smoke/M5-full.log",
+      "sha256": "e1305b4b89b6934ce50c818fe1f152187e4f99b140ee3b7a46aa5bf71f0f44fc"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/focus-boundary-diagnostic.json",
+      "target": "single-full-smoke/focus-boundary-diagnostic.json",
+      "sha256": "6ae20f7ff7d8dac25d0a622a87882810e08adfcb8e51f3fd6424350a0066e74d"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/frozen-source-manifest.json",
+      "target": "single-full-smoke/frozen-source-manifest.json",
+      "sha256": "304b6e1df6c09b20e629594f212a642d59aded337abc135f5e3b64c65e1f0fce"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-authentic-quotation.png",
+      "target": "single-full-smoke/full/M5-authentic-quotation.png",
+      "sha256": "0d66e1b2e3df43b5605af641234039269da9d5b94c1e9f229409fcbb4814d119"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-catalog-picker.png",
+      "target": "single-full-smoke/full/M5-catalog-picker.png",
+      "sha256": "ff732c434a68db5d45abebf6af113865e80087138c977b4c2738cb465f6e4813"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-controls.csv",
+      "target": "single-full-smoke/full/M5-controls.csv",
+      "sha256": "648c2c05d6e7d37338fcffb4eed4752263db41ccb864bb5074eb83c1408f6ead"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-controls.pdf",
+      "target": "single-full-smoke/full/M5-controls.pdf",
+      "sha256": "6cdda069fe492a79a0a6f046c925fae2a10a590088d4c24b106a8acdd2553ab5"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-converted-quotation-preview.png",
+      "target": "single-full-smoke/full/M5-converted-quotation-preview.png",
+      "sha256": "211f8b2d8c899a8bb9702ff9587fe8c8824fb26b19e533d5e00131f7d944a580"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-final-controls.png",
+      "target": "single-full-smoke/full/M5-final-controls.png",
+      "sha256": "8accfa1baa3369bcb5e104d73d4a6edeec940dd47db3ea37583c86212b2c8426"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-final-pair-preview.png",
+      "target": "single-full-smoke/full/M5-final-pair-preview.png",
+      "sha256": "1ef8207bfd014328a6adb941e1478347d47f96490f7bce8ecc225ca07ce7e139"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-final-return-preview.png",
+      "target": "single-full-smoke/full/M5-final-return-preview.png",
+      "sha256": "f335907eb612fd35ab19e42013ac198ccd4d5ac249a678b6821324f5acaa0069"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-first-pair-preview.png",
+      "target": "single-full-smoke/full/M5-first-pair-preview.png",
+      "sha256": "894427b0f880e2c59a10dae9aaa6afd61d4dbeefcee7f0215fba27a1f35145a1"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-first-return-preview.png",
+      "target": "single-full-smoke/full/M5-first-return-preview.png",
+      "sha256": "07fafbfd3d18f82ed8277063d79c85cfadec10b81baeec4d88af385e983471cf"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-frozen-catalog-line.png",
+      "target": "single-full-smoke/full/M5-frozen-catalog-line.png",
+      "sha256": "2e459aa6fa84f91c4b39924f734504b1db76b2b0fffc28c38fa4c55efed1bed7"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-lifecycle-unchanged-backup.json",
+      "target": "single-full-smoke/full/M5-lifecycle-unchanged-backup.json",
+      "sha256": "f34e3bc060e44c767b1330487dc8e15a41ee2ab76339f57a84a1b45daf7d5c56"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-order-preview.png",
+      "target": "single-full-smoke/full/M5-order-preview.png",
+      "sha256": "8c1ce029ba77be021586d86162d76e916e442f91ee00693c6b8483e7b545a40b"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/M5-synthetic-prices.csv",
+      "target": "single-full-smoke/full/M5-synthetic-prices.csv",
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/before-restore-8bdabd18-8e2d-406f-a4a8-e0a5924c6741.json",
+      "target": "single-full-smoke/full/before-restore-8bdabd18-8e2d-406f-a4a8-e0a5924c6741.json",
+      "sha256": "f34e3bc060e44c767b1330487dc8e15a41ee2ab76339f57a84a1b45daf7d5c56"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/before-schema6-28789b98-dc5a-46cc-91e5-c0d5cd167791.json",
+      "target": "single-full-smoke/full/before-schema6-28789b98-dc5a-46cc-91e5-c0d5cd167791.json",
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/sales-focus-diagnostic.jsonl",
+      "target": "single-full-smoke/full/sales-focus-diagnostic.jsonl",
+      "sha256": "6de15a7db538c5486664a3ed5ced39c6878317be25914371672e238b878f3186"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/full/sales-native-verification.json",
+      "target": "single-full-smoke/full/sales-native-verification.json",
+      "sha256": "6fe5b5ca5d395a523e0872b26ed653f4ac1311e6f4e870701d4b804731f063e0"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/observer.py",
+      "target": "single-full-smoke/observer.py",
+      "sha256": "2f3c676330356b380cb01ac0f89cc4b78a3bd86f8a2ba9f63901806646be9c63"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/openbox.log",
+      "target": "single-full-smoke/openbox.log",
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    {
+      "source": "artifacts/sales-native/focus-boundary-u3e0apqd/xvfb.log",
+      "target": "single-full-smoke/xvfb.log",
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    {
+      "source": "artifacts/sales-native/candidate11-focus-boundary-observer.log",
+      "target": "observer.log",
+      "sha256": "097decbbb549d80eb0ee2e879eae2e7ea0be2387993bb1d59d131d8640cc6be2"
+    },
+    {
+      "source": "artifacts/sales-native/candidate11-focus-boundary-observer-import-setup-failure.log",
+      "target": "import-setup-failure.log",
+      "sha256": "2104e9fa12e47ef716197d2c27280d8705d34403f37e28c6bd0b373318ace2d5"
+    }
+  ]
+}

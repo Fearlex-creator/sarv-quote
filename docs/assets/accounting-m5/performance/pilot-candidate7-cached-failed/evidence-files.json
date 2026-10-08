@@ -1,0 +1,226 @@
+{
+  "procurement-stage.log": {
+    "sha256": "99a0bf112dce429654ecfe92832f801518ac1c633fbd137d65005077cb3ed5dc",
+    "bytes": 201
+  },
+  "xvfb.log": {
+    "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "bytes": 1384
+  },
+  "sales-native-full.log": {
+    "sha256": "df8b3d7899d176e114860e7d805923b1e41f3780e500448e19d47b2c9821e37f",
+    "bytes": 1211
+  },
+  "openbox.log": {
+    "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "bytes": 207
+  },
+  "core-stage.log": {
+    "sha256": "707eb8257bd2da09d05d6587c0b8353ea566ee507a729935c7a8e5ebe2d61f47",
+    "bytes": 47
+  },
+  "sales-external-stage.log": {
+    "sha256": "83b283508f18431e463607769c022a3f69ed9323eb36f2cf1621d6004a1077bd",
+    "bytes": 308
+  },
+  "sales-external-restart.log": {
+    "sha256": "52920456b53b97c6c48856a13e20211dbd514b4b7a300a64fc5f729c6085219d",
+    "bytes": 154
+  },
+  "observer.log": {
+    "sha256": "8065b69140357839ecd3c4627af54ad16c1c70dfbd57a157f895d5a79c37130a",
+    "bytes": 3133
+  },
+  "root-freeze-manifest.json": {
+    "sha256": "b6d9ca36e641462aba54557ad0a1882ca3a30f813019dc2b6ae255a26c38923a",
+    "bytes": 7563
+  },
+  "performance.json": {
+    "sha256": "7222c9f6ad02ccafa4547adab2ee6de5bb1103a76841f22b15ee3299be24f104",
+    "bytes": 78037
+  },
+  "procurement-full.log": {
+    "sha256": "1302d5f08b5443982c0e7fa293734c67b99016b0b25378e4437f76eae48cc3b7",
+    "bytes": 201
+  },
+  "README.md": {
+    "sha256": "260b46fbe86edb102b2406e8d60d74402e11ac96a5afb5b22040ee239d60f3bc",
+    "bytes": 1970
+  },
+  "sales-external-stage/M5-synthetic-prices.csv": {
+    "sha256": "4b88b4c5cf28b9fd2d774b3375aa8cfeefb1bdbf58dd28066e43e54b4256edb6",
+    "bytes": 217
+  },
+  "sales-external-stage/invalid-raw-saved.png": {
+    "sha256": "b8f9d76765639e91c1b6965c16fcf9c697b583a9bad131e567842c9faba71451",
+    "bytes": 119193
+  },
+  "sales-external-stage/sales-native-verification.json": {
+    "sha256": "252bae6c99604dd11e7af6868743c6244fb1cdaf5b0abf9f16aebae22c03b09e",
+    "bytes": 545
+  },
+  "sales-external-stage/sales-stage-ready.json": {
+    "sha256": "252bae6c99604dd11e7af6868743c6244fb1cdaf5b0abf9f16aebae22c03b09e",
+    "bytes": 545
+  },
+  "sales-external-stage/external-order-preview.png": {
+    "sha256": "b9b575305dc1317a5bcdc12af6bba0f52c119815c6f35ca987fee02390f73296",
+    "bytes": 123940
+  },
+  "sales-external-stage/sales-performance-phases.jsonl": {
+    "sha256": "0e5d761c98da261014af7d01c3b3b5f0ef05ef9d401df65874150f1d15e7ccc5",
+    "bytes": 1698
+  },
+  "procurement-stage/procurement-stage-ready.json": {
+    "sha256": "7a5fe0c75b4ae2587e62c658a39ef08f27bf6583bc9c15c8c7bbc1ce2827b4f5",
+    "bytes": 436
+  },
+  "procurement-stage/procurement-performance-phases.jsonl": {
+    "sha256": "04e12881d50c425088836886a57313d539fef2623a83b0709a50a66f4445ef86",
+    "bytes": 2825
+  },
+  "procurement-stage/M4-synthetic-prices.csv": {
+    "sha256": "c316f4c17a6f71823d6d96093ec9ddfbbf872ad92b163183690a22541d734eca",
+    "bytes": 217
+  },
+  "procurement-stage/procurement-staged-order.png": {
+    "sha256": "6c5f7ed641556e15087b2ccf18ae2c3fca4e9251259984414fb3b0ca57eb1c4c",
+    "bytes": 168445
+  },
+  "procurement-stage/external-order-preview.png": {
+    "sha256": "4467e3e1a5009339594f5ccea18aa8135543770c23b5c80c1bcf424221957f47",
+    "bytes": 169783
+  },
+  "procurement-stage/procurement-retained-price.png": {
+    "sha256": "351cd66416aa039180395b46a9fd02ab7d3a533d86ee6501b6a45d377dfd5e16",
+    "bytes": 165972
+  },
+  "sales-native-full/M5-controls.csv": {
+    "sha256": "2f28bd74ab4e811ff2bb8225b5ceaad7570bcabfe52d8f6320919a9dfd8a7031",
+    "bytes": 147928
+  },
+  "sales-native-full/M5-lifecycle-unchanged-backup.json": {
+    "sha256": "c39b21fbdbc114f45b73a036c41112206e2688d83d0f48d4a8f65bc1b2fab051",
+    "bytes": 230609
+  },
+  "sales-native-full/M5-synthetic-prices.csv": {
+    "sha256": "4b88b4c5cf28b9fd2d774b3375aa8cfeefb1bdbf58dd28066e43e54b4256edb6",
+    "bytes": 217
+  },
+  "sales-native-full/sales-native-verification.json": {
+    "sha256": "8d9ce2404f0e5c40b0d4afa3947d5e82c78690ccb81daacf72296f1e33f297b9",
+    "bytes": 1695
+  },
+  "sales-native-full/before-restore-e21fc24b-3671-40f7-8e76-a05863efaebb.json": {
+    "sha256": "c39b21fbdbc114f45b73a036c41112206e2688d83d0f48d4a8f65bc1b2fab051",
+    "bytes": 230609
+  },
+  "sales-native-full/sales-performance-phases.jsonl": {
+    "sha256": "ced1a57acb8e86fcd2543b1ddc90b4374d0dce6be27e7bd43f404ac188c04877",
+    "bytes": 3947
+  },
+  "procurement-posted-workflow/procurement-transfer-preview.png": {
+    "sha256": "eb47e32a905c01f91c176875cbfab231da49fb23d16a93aadf848a1bb06b1274",
+    "bytes": 170444
+  },
+  "procurement-posted-workflow/search-document.png": {
+    "sha256": "84705891142636327ee115a39346e43c45c3d18c0a342e8133f9a7336db88232",
+    "bytes": 113969
+  },
+  "procurement-posted-workflow/procurement-receipt-cost-error.png": {
+    "sha256": "ff594908c2dcaccef2ac0f16eaf23c3622d8bd03addebb0de5dbf07134ad4307",
+    "bytes": 163020
+  },
+  "procurement-posted-workflow/procurement-final-controls.png": {
+    "sha256": "04f708a42cc91762688338c2407fb428eb5ce494af7eea1eb371c1fe8b7d97fa",
+    "bytes": 162794
+  },
+  "procurement-posted-workflow/procurement-native-verification.json": {
+    "sha256": "8689b44dff6d9a96b570e42749f807818470b7250b0f878e5e1ac74b81e1de51",
+    "bytes": 1166
+  },
+  "procurement-posted-workflow/procurement-bill-preview.png": {
+    "sha256": "4f8ec5cb6d7efed5dfe4a814a2a5784cacd2b215b236893d5bc2f0c874b7102c",
+    "bytes": 189030
+  },
+  "procurement-posted-workflow/search-party.png": {
+    "sha256": "f41f5821b5669d4c389cd3259bb82ed38c76b57887d02f63fedeb0f1783883b5",
+    "bytes": 104557
+  },
+  "procurement-posted-workflow/procurement-order-preview.png": {
+    "sha256": "07539d194ce9584f2a50ec3f0253eb65cddc44230da3abff0c3559c641e1413a",
+    "bytes": 178654
+  },
+  "procurement-posted-workflow/search-item.png": {
+    "sha256": "e9618c865cc4dac46f08b0634508fe3f8c6a5f6dd70c8fb0e0ff0d8f2dba1374",
+    "bytes": 104278
+  },
+  "procurement-posted-workflow/procurement-performance-phases.jsonl": {
+    "sha256": "58e167f9c778f98bff7ceba8957c92e3fc89d206ef75c43e77197b745b20cc41",
+    "bytes": 5731
+  },
+  "procurement-posted-workflow/M4-controls.csv": {
+    "sha256": "beae3487d5f2a38fb4693306fa1bcc07646a3515b6f5a7346734faa36bf60617",
+    "bytes": 133524
+  },
+  "procurement-posted-workflow/M4-synthetic-prices.csv": {
+    "sha256": "c316f4c17a6f71823d6d96093ec9ddfbbf872ad92b163183690a22541d734eca",
+    "bytes": 217
+  },
+  "procurement-posted-workflow/procurement-staged-order.png": {
+    "sha256": "6c5f7ed641556e15087b2ccf18ae2c3fca4e9251259984414fb3b0ca57eb1c4c",
+    "bytes": 168445
+  },
+  "procurement-posted-workflow/procurement-retained-price.png": {
+    "sha256": "351cd66416aa039180395b46a9fd02ab7d3a533d86ee6501b6a45d377dfd5e16",
+    "bytes": 165972
+  },
+  "procurement-posted-workflow/search-mixed_master.png": {
+    "sha256": "a2e24d68c216371e54f8a6c09649dfdaab00feaa9b18ce7da1a1d25c2f76a160",
+    "bytes": 104280
+  },
+  "core-workflow/core-mismatch-preview.png": {
+    "sha256": "17f51d8ae1d4aa97a1e3a5dc9224d0d1b7d743d7501b6c0752e6392792b33d05",
+    "bytes": 188667
+  },
+  "core-workflow/staged-accessibility.json": {
+    "sha256": "0759d4476dea9036dd4df6c7da4d4d88f64da1909008c219e2e5265eac2c5a8d",
+    "bytes": 19439
+  },
+  "core-workflow/core-stage-ready.json": {
+    "sha256": "5329d26d4360be35a05fc9e47a1cb5dac53093eb814d6f2164a4cc4c627cd668",
+    "bytes": 587
+  },
+  "core-workflow/core-retained-input.png": {
+    "sha256": "15e61db50060d8d51b8b7c88a29ba312fbc2ed74c7c3a5a2a3e2eb9dd9fb0a18",
+    "bytes": 160577
+  },
+  "core-workflow/core-guided-setup.png": {
+    "sha256": "74c0642e200008130fbb86595aed481739e3e5253e0650b60c78054d14853eb9",
+    "bytes": 153112
+  },
+  "core-workflow/core-before.png": {
+    "sha256": "7a2e5f42e3a2364e3d87f9731ff862a1c2ae2bc525f58026f86f5f2fbe414e68",
+    "bytes": 113372
+  },
+  "core-workflow/after-post.png": {
+    "sha256": "b68154b144a709d2327d978a1f73711d5584b6a14f0ffb5cc300df8918c53aca",
+    "bytes": 146463
+  },
+  "core-workflow/staged-search.png": {
+    "sha256": "ec6a784ac5dbae81f65587902c0f8c15d2b6d848a3a6421e37de56f726ecff47",
+    "bytes": 107515
+  },
+  "core-workflow/core-performance-phases.jsonl": {
+    "sha256": "bad5ad4a85adf458eb49a081a7b5285e7d6b94fd0dab70f8695a1b8198020ead",
+    "bytes": 964
+  },
+  "core-workflow/core-ready-preview.png": {
+    "sha256": "4ea562a567c8cae46e0692c23cac3101fa0ea7933e060ace0c77359a8a9ea870",
+    "bytes": 162964
+  },
+  "core-workflow/preview-ready.png": {
+    "sha256": "9a0f51eadb4d03a67f43758184ed3b37f7a15f7c5611f6950616d7a9eab73359",
+    "bytes": 143835
+  }
+}

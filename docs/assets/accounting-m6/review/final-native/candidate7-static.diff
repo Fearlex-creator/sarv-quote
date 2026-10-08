@@ -1,0 +1,109 @@
+--- candidate6/src/ui/procurement.rs
++++ candidate7/src/ui/procurement.rs
+@@ -3410,7 +3410,7 @@
+         }
+         self.render_total();
+     }
+-    fn collect(&self) -> Result<(String, Vec<PurchaseReturnLine>, Money)> {
++    fn collect(&self, dialog: &adw::Dialog) -> Result<(String, Vec<PurchaseReturnLine>, Money)> {
+         let invalid = self
+             .draft
+             .borrow()
+@@ -3419,7 +3419,10 @@
+             .find_map(|(i, l)| l.error.as_ref().map(|e| (i, e.clone())));
+         if let Some((index, error)) = invalid {
+             self.bind(index / PAGE_SIZE);
+-            self.rows[index % PAGE_SIZE].quantity.grab_focus();
++            let quantity = &self.rows[index % PAGE_SIZE].quantity;
++            if quantity.grab_focus() {
++                reveal_dialog_field(quantity, dialog);
++            }
+             anyhow::bail!("{error}");
+         }
+         let draft = self.draft.borrow();
+@@ -3508,8 +3511,12 @@
+     let credit_field = credit.clone();
+     let return_id = Uuid::new_v4().to_string();
+     let credit_id = billed.then(|| Uuid::new_v4().to_string());
++    let weak_dialog = dialog.downgrade();
+     let collect = Rc::new(move || {
+-        let (supplier_id, lines, total) = collected_rows.collect()?;
++        let dialog = weak_dialog
++            .upgrade()
++            .ok_or_else(|| anyhow::anyhow!("پنجرهٔ برگشت بسته شده است"))?;
++        let (supplier_id, lines, total) = collected_rows.collect(&dialog)?;
+         Ok(ProcurementCommand::Return(ReturnPurchase {
+             context: c.collect()?,
+             supplier_id,
+@@ -3534,6 +3541,71 @@
+     rows.connect_review(&review);
+     // Display-unit changes change no canonical values or verified command.
+     Ok(())
++}
++// Rebinding a paged form changes its allocation after focus has already moved.
++// Reveal the whole invalid field after layout; later user focus or a new binding
++// owns the scroll position immediately. A modal Dialog owns its own focus.
++fn reveal_dialog_field(widget: &impl IsA<gtk::Widget>, dialog: &adw::Dialog) {
++    let weak_dialog = dialog.downgrade();
++    let name = widget.as_ref().widget_name();
++    let frames = Cell::new(0);
++    widget.as_ref().add_tick_callback(move |widget, _| {
++        let Some(dialog) = weak_dialog.upgrade().filter(|dialog| dialog.is_visible()) else {
++            return glib::ControlFlow::Break;
++        };
++        let Some(focus) = dialog.focus() else {
++            return glib::ControlFlow::Break;
++        };
++        if !widget.is_mapped()
++            || widget.widget_name() != name
++            || (focus != *widget && !focus.is_ancestor(widget))
++        {
++            return glib::ControlFlow::Break;
++        }
++        frames.set(frames.get() + 1);
++        if frames.get() == 1 {
++            return glib::ControlFlow::Continue;
++        }
++        let mut parent = widget.parent();
++        while let Some(ancestor) = parent {
++            parent = ancestor.parent();
++            if let Some(scroller) = ancestor.downcast_ref::<gtk::ScrolledWindow>()
++                && let Some(viewport) = scroller.child()
++                && let Some(bounds) = widget.compute_bounds(&viewport)
++            {
++                for (adjustment, start, extent) in [
++                    (scroller.vadjustment(), bounds.y(), bounds.height()),
++                    (scroller.hadjustment(), bounds.x(), bounds.width()),
++                ] {
++                    let size = adjustment.page_size();
++                    if size <= 0.0 {
++                        continue;
++                    }
++                    let start = f64::from(start);
++                    let end = start + f64::from(extent);
++                    let delta = if start < 4.0 {
++                        start - 4.0
++                    } else if end > size - 4.0 {
++                        end - size + 4.0
++                    } else {
++                        0.0
++                    };
++                    let value = (adjustment.value() + delta).clamp(
++                        adjustment.lower(),
++                        (adjustment.upper() - size).max(adjustment.lower()),
++                    );
++                    if (value - adjustment.value()).abs() > 0.5 {
++                        adjustment.set_value(value);
++                    }
++                }
++            }
++        }
++        if frames.get() < 5 {
++            glib::ControlFlow::Continue
++        } else {
++            glib::ControlFlow::Break
++        }
++    });
+ }
+ // Clear focus before replacing a live result/pager subtree. A newer focus or
+ // dialog always wins; only a surviving mapped control may regain focus.

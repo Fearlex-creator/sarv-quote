@@ -1,0 +1,416 @@
+{
+  "result": "passed",
+  "run": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku",
+  "binary_source": "/workspace/sarv-evidence/bin/sarv-M5-candidate9",
+  "binary_sha256": "4892cc991bc933fc6621a10847ee4f1a25c7cc45e19f39fde90a973884fecf6b",
+  "scope": "native GTK signal workflow, independent raw SQLite, real XTest keyboard, private X11",
+  "checks": [
+    {
+      "name": "frozen binary exact before native proof",
+      "passed": true
+    },
+    {
+      "name": "frozen source files and aggregate exact before native proof",
+      "passed": true
+    },
+    {
+      "name": "M4 seed immutable opening/stock without sales",
+      "passed": true
+    },
+    {
+      "name": "actual M4 baseline rendering preserves source",
+      "passed": true
+    },
+    {
+      "name": "native sale/draft/pair/returns/quote conversion complete",
+      "passed": true,
+      "failure": null,
+      "returncode": null
+    },
+    {
+      "name": "opening and procurement exact preserved",
+      "passed": true
+    },
+    {
+      "name": "two orders/two paired sales/two credits",
+      "passed": true
+    },
+    {
+      "name": "direct order199 nonfinancial catalog20 frozen",
+      "passed": true
+    },
+    {
+      "name": "authentic retained quote and zero-tax linked order",
+      "passed": true
+    },
+    {
+      "name": "partial nets100/99 and exact issue costs58/58",
+      "passed": true
+    },
+    {
+      "name": "original return allocations40/23 then60/35",
+      "passed": true
+    },
+    {
+      "name": "distinct stable paired identities",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "independent final inventory/AR/AP/sales/COGS controls",
+      "passed": true,
+      "expected": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "Inventory": 422,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58
+      }
+    },
+    {
+      "name": "independent final trial1630/1630",
+      "passed": true
+    },
+    {
+      "name": "returns never reopen original order",
+      "passed": true
+    },
+    {
+      "name": "actual accountant reports generated",
+      "passed": true
+    },
+    {
+      "name": "completed Sales load clears global loading status",
+      "passed": true
+    },
+    {
+      "name": "real Tab exact Sales top action سفارش فروش تازه",
+      "passed": true
+    },
+    {
+      "name": "real Tab exact Sales top action از پیشنهاد تأییدشده",
+      "passed": true
+    },
+    {
+      "name": "real Tab exact Sales top action به‌روزرسانی",
+      "passed": true
+    },
+    {
+      "name": "real CtrlN after confirmed restore uses current cutoff and preserves posted books",
+      "passed": true
+    },
+    {
+      "name": "restored CtrlN cancellation creates no raw draft or financial write",
+      "passed": true
+    },
+    {
+      "name": "real CtrlF directs typed text to Sales search",
+      "passed": true
+    },
+    {
+      "name": "real Alt0/CtrlF typed normalized Sales source search",
+      "passed": true
+    },
+    {
+      "name": "real source detail shows complete fulfillment and linked pairs",
+      "passed": true
+    },
+    {
+      "name": "completed source detail clears global loading status",
+      "passed": true
+    },
+    {
+      "name": "real Tab exact source export action خروجی سند CSV",
+      "passed": true
+    },
+    {
+      "name": "real Tab exact source export action خروجی سند PDF",
+      "passed": true
+    },
+    {
+      "name": "real keyboard overreturn retains quantity/source and does not commit",
+      "passed": true
+    },
+    {
+      "name": "real Escape cancellation preserves financial aggregate",
+      "passed": true
+    },
+    {
+      "name": "native Sales light 1280x900 rendered",
+      "passed": true
+    },
+    {
+      "name": "native Sales light 650x550 rendered",
+      "passed": true
+    },
+    {
+      "name": "native Sales dark 1280x900 rendered",
+      "passed": true
+    },
+    {
+      "name": "native Sales dark 650x550 rendered",
+      "passed": true
+    },
+    {
+      "name": "financial and quote source exact across restart",
+      "passed": true
+    },
+    {
+      "name": "native stage durable draft and newer edit receipt",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "stage draft exists without GL",
+      "passed": true
+    },
+    {
+      "name": "stage saved raw header exact after restart",
+      "passed": true
+    },
+    {
+      "name": "real Tab/Enter opens exact existing line action",
+      "passed": true
+    },
+    {
+      "name": "nested price picker owns Escape and suppresses workspace CtrlN",
+      "passed": true
+    },
+    {
+      "name": "real modal CtrlS saves sales draft and preserves quote editor",
+      "passed": true
+    },
+    {
+      "name": "real keyboard order acceptance consumes draft without GL",
+      "passed": true
+    },
+    {
+      "name": "real keyboard paired sale exact100/58",
+      "passed": true
+    },
+    {
+      "name": "real keyboard original cost credit exact40/23",
+      "passed": true
+    },
+    {
+      "name": "native draft durable draft and newer edit receipt",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "draft draft exists without GL",
+      "passed": true
+    },
+    {
+      "name": "draft saved raw header exact after restart",
+      "passed": true
+    },
+    {
+      "name": "incomplete invalid raw quantity/price exact across restart",
+      "passed": true
+    },
+    {
+      "name": "reopened incomplete line shown with exact raw input",
+      "passed": true
+    },
+    {
+      "name": "synthetic 30-line raw fixture preserves authentic M4 books",
+      "passed": true
+    },
+    {
+      "name": "30-line raw fixture accepted through real CtrlS Store boundary",
+      "passed": true
+    },
+    {
+      "name": "real 30-line order posts599 without financial effects",
+      "passed": true
+    },
+    {
+      "name": "real Tab Enter detail Next shows final source line and removes first",
+      "passed": true
+    },
+    {
+      "name": "real Tab Enter detail Previous returns first source line without write",
+      "passed": true
+    },
+    {
+      "name": "frozen source files and aggregate unchanged after native proof",
+      "passed": true
+    },
+    {
+      "name": "frozen binary unchanged after native proof",
+      "passed": true
+    },
+    {
+      "name": "observer source unchanged during native proof",
+      "passed": true
+    }
+  ],
+  "observer_sha256": "69e1c22101230e0a277cb52381bafd357821d987d482786ef6cc44a66d092811",
+  "frozen_source_manifest": "/workspace/sarv-quote/docs/assets/accounting-m5/checks/candidate9/manifest.json",
+  "frozen_source_provenance_before": {
+    "sha256": "73269aaf5cca587c681e6db7c90aefba9907599a3212a5b1a909fcd51702da89",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "aca20fc5c6b93613d988401740e01c17f072cb0b6be9a64df03afb9ca74c732a",
+      "src/ui/accounting.rs": "91511389f4d2a333b00a196afd3d6b5f21035411a7d6be2ba26eaeb855a9bccc",
+      "src/ui/background.rs": "4f5981720274e44994c58230486470e34362808b4dcce55a5e805f17a8474189",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "4e73d7954725109b50514a6d601c768a78873188decf4d902770c23ddeb8791d",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "847bb7959c2aa8804aad6d67ea96f856fc9e72c89f954efe0bbd03a2ec005fba",
+      "src/ui/sales.rs": "d753acea4f317ed5a5eccebb985b462f30edafa4fc34cc5c0d16d8df614cc84f",
+      "src/ui/settings.rs": "c1e2fcffbd0783e7303234c7ca46eaac7ceaf17d23e845a18436330e67839f5e",
+      "src/ui/smoke.rs": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    }
+  },
+  "declared_production_source_sha256": "73269aaf5cca587c681e6db7c90aefba9907599a3212a5b1a909fcd51702da89",
+  "seed_source": "/workspace/sarv-quote/artifacts/performance-m4/freeze6-repeated/procurement-posted-workflow",
+  "seed_state_sha256": "df4b1f364046ac944e2ae4e1c0cb3ad474c0be9cfee95df8dbfc123984b65a75",
+  "source_manifest": {
+    "src/ui.rs": "aca20fc5c6b93613d988401740e01c17f072cb0b6be9a64df03afb9ca74c732a",
+    "src/ui/sales.rs": "d753acea4f317ed5a5eccebb985b462f30edafa4fc34cc5c0d16d8df614cc84f",
+    "scripts/sales-qa.py": "69e1c22101230e0a277cb52381bafd357821d987d482786ef6cc44a66d092811",
+    "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4"
+  },
+  "m4_binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "native_manifest": {
+    "checks": [
+      "actual sales catalog price20/core SKU+unit mapping",
+      "actual sales catalog price20/core SKU+unit mapping",
+      "actual sales catalog price20/core SKU+unit mapping",
+      "actual sales catalog price20/core SKU+unit mapping",
+      "older durable draft receipt retains newer GTK input",
+      "explicit raw draft saves durable revision and current header/lines",
+      "order199 nonfinancial and raw draft consumed atomically",
+      "partial paired delivery/invoice100 with separate IDs and original cost58",
+      "split original-cost return23+35 and exact credit40+60",
+      "final fulfillment original discount residual99 and cost58",
+      "authentic approved quotation converted through native selector/mapping without GL or original quote edits",
+      "cancelled pending native source read preserves books and clears global loading status",
+      "actual window focus on a persistent card moves to live Sales search before row invalidation hides and disables that card",
+      "invalid cutoff requested while actual page reader is pending rejects older completion and clears all usable slot identities without writes",
+      "actual backup preview and confirmed restore rebuild Sales, retire the old Weak page, and route a new native draft to the attached current company and changed 2026-04-01 cutoff with posted books unchanged"
+    ],
+    "first_pair_id": "a82792fa-6277-4dac-b2f2-c669cb0f121d",
+    "mode": "full",
+    "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+    "order_id": "2900cab3-fab8-4658-892a-d3cdc9b8953b",
+    "ready": true,
+    "record_count": 6,
+    "restored_company": "b52c6683-f12c-4c6d-8833-556a93a40541",
+    "restored_cutoff": "2026-04-01",
+    "search_name": "sales-search",
+    "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+    "synthetic_only": true
+  },
+  "x11_errors": [],
+  "frozen_source_provenance_after": {
+    "sha256": "73269aaf5cca587c681e6db7c90aefba9907599a3212a5b1a909fcd51702da89",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "aca20fc5c6b93613d988401740e01c17f072cb0b6be9a64df03afb9ca74c732a",
+      "src/ui/accounting.rs": "91511389f4d2a333b00a196afd3d6b5f21035411a7d6be2ba26eaeb855a9bccc",
+      "src/ui/background.rs": "4f5981720274e44994c58230486470e34362808b4dcce55a5e805f17a8474189",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "4e73d7954725109b50514a6d601c768a78873188decf4d902770c23ddeb8791d",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "847bb7959c2aa8804aad6d67ea96f856fc9e72c89f954efe0bbd03a2ec005fba",
+      "src/ui/sales.rs": "d753acea4f317ed5a5eccebb985b462f30edafa4fc34cc5c0d16d8df614cc84f",
+      "src/ui/settings.rs": "c1e2fcffbd0783e7303234c7ca46eaac7ceaf17d23e845a18436330e67839f5e",
+      "src/ui/smoke.rs": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    }
+  }
+}

@@ -1,0 +1,1 @@
+These diagnostic failures are retained separately and do not establish M5 acceptance. They exposed stale quotation acknowledgment timing, global CtrlF propagation, owned X11 stale-window handling, incorrect cross-profile draft comparison in the observer, and below-viewport native order-review reachability. The passing frozen-build report must be used for final evidence.

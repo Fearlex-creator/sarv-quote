@@ -1,0 +1,19 @@
+{
+  "result": "passed",
+  "scope": "Human resource-role label localization only; canonical typed snapshot booleans remain unchanged",
+  "checks": [
+    "exact human CSV role label",
+    "typed party false/true booleans retained",
+    "full immutable command resource snapshot equals party snapshot",
+    "PDF extracted human roles Persian خیر/بله, no literal true/false"
+  ],
+  "csv_sha256": "259061664cdda6dfe308a400b42501a045fee1646f9917a688c9a342108c85cb",
+  "pdf_sha256": "b143824c34a8b21a9ea1e2168db3a4226d2bcdd6fe08c1b4e2b52c456b0db241",
+  "party_snapshot": {
+    "id": "supplier-new",
+    "company_id": "e431dd22-ae0d-41c4-8cfd-a487cd44d2a2",
+    "name": "New supplier after opening",
+    "customer": false,
+    "supplier": true
+  }
+}

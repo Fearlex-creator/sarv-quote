@@ -1,0 +1,22 @@
+{
+  "reviewer": "m6_final_native_review",
+  "review_scope": "source-only C7 invalid quantity reveal versus exact C6 archive",
+  "production_changed_files": [
+    "src/ui/procurement.rs"
+  ],
+  "source_ui_procurement_sha256": "d52d7b3da219e832ad99bf963519fb5b43cf98b9f6930d80a9ad93ca09b17a97",
+  "baseline_source_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "static_actionable_findings": [],
+  "static_pass": true,
+  "native_visibility_accepted": false,
+  "user_focus_wins_native_accepted": false,
+  "financial_export_shell_component_attribution": "unchanged component implementations only; affected Return UI and binary need new qualification",
+  "candidate6_settled_clipping": {
+    "personally_viewed_png": "artifacts/performance-m6/candidate6-hidden-invalid-visual1/visual-profile/invalid-settled-min2s.png",
+    "png_sha256": "87c6573b9b1b1fc3ca47887dc9eed87a2e347a13a4314289ba2d1de2e74a6992",
+    "receipt_sha256": "f3e2e1153b37c1fecaf6321e8b23aa05450e1ed70d6d68157558662ac45345ad",
+    "receipt_complete": false,
+    "missing": "neutral Shift native geometry event timed out; cancellation not reached",
+    "passive_observations": "exact L200 raw2/FOCUSED/member, no intervening keys/focus/scroll, payload unchanged, captures after0.935/1.505/2.494seconds"
+  }
+}

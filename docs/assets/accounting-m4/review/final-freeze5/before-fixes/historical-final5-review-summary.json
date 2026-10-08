@@ -1,0 +1,233 @@
+{
+  "result": "passed-bounded-independent-correctness-native-review",
+  "reviewer": "/root/m4_final_review",
+  "scope": "Resources/immutable PO/partial receipts/exact-cost partial bills/nonfinancial transfer/EOD AP-GRNI-inventory/recovery; no full roadmap, professional production, tax, platform or performance-budget acceptance",
+  "final_production_source_sha256": "6b1996a41ed86807a91a18820f7fce4bb167e99399403b3fd25cf1b14e4aa36c",
+  "final_binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "source_binary_unchanged_after_targeted_native": true,
+  "evidence_boundaries": {
+    "final3_headless": {
+      "phases": 14,
+      "main_pass_lines": 43,
+      "actual_atomic_pass_lines": 5,
+      "Store_pass_lines": 4,
+      "migration_pass_lines": 3,
+      "date_pass_lines": 1,
+      "manual_revision_pass_lines": 1,
+      "archived_M3_recovery_pass_lines": 3,
+      "documents_csv": 8,
+      "cutoffs_csv": 7,
+      "pdfs": 9,
+      "pdf_pages": 14,
+      "report": "final-freeze3/headless/independent-frozen.json"
+    },
+    "freeze2_native_main": {
+      "actual_passing_assertions": 48,
+      "original_report_result": "failed after48 at wrong legacy reason selector",
+      "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+      "report": "native/independent-native.json"
+    },
+    "freeze2_affected_legacy_rerun": {
+      "checks_passed": 9,
+      "report": "native/legacy-corrected/legacy-corrected.json"
+    },
+    "final3_footer_live": {
+      "actual_passing_assertions": 4,
+      "original_report_result": "failed at auxiliary control text comparison due asymmetric ZWNJ normalization",
+      "report": "final-freeze3/native/refresh-targeted.json"
+    },
+    "final3_captured_tree_supplement": {
+      "controls": 12,
+      "other_checks": [
+        "actual app log no warnings/criticals",
+        "source/binary unchanged after owned process cleanup"
+      ],
+      "method": "Static parsing of actual retained native tree; no new GUI run",
+      "report": "final-freeze3/native/refresh-captured-controls.json"
+    },
+    "final3_role_labels": {
+      "checks_passed": 4,
+      "typed_booleans_unchanged": true,
+      "report": "final-freeze3/headless/resource-label-check.json"
+    },
+    "final3_pdf_visual": {
+      "actual_pages_inspected": 14,
+      "report": "final-freeze3/headless/visual-pdf-review.json"
+    },
+    "final4_headless": {
+      "phases": 14,
+      "main_pass_lines": 43,
+      "actual_atomic_pass_lines": 5,
+      "Store_pass_lines": 4,
+      "migration_pass_lines": 3,
+      "date_pass_lines": 1,
+      "manual_revision_pass_lines": 1,
+      "archived_M3_recovery_pass_lines": 3,
+      "documents_csv": 8,
+      "cutoffs_csv": 7,
+      "pdfs": 9,
+      "pdf_pages": 14,
+      "report": "final-freeze4/headless/independent-frozen.json",
+      "production_source_sha256": "70e10ebf60b48d9cec0c4400f4a19e7d47180df6e737cc61e4e0e4c15c36d79c",
+      "applies_to5": "Financial/schema/export files byteidentical4; only3UI paths differ per exact4to5patch. No14-phase5rerun claim."
+    },
+    "final4_role_labels": {
+      "checks_passed": 4,
+      "typed_booleans_unchanged": true,
+      "report": "final-freeze4/headless/resource-label-check.json"
+    },
+    "final4_pdf_visual": {
+      "actual_pages_inspected": 14,
+      "report": "final-freeze4/headless/visual-pdf-review.json",
+      "pdfs": 9,
+      "margin_bounds_are_separate": true
+    },
+    "final5_independent_catalog": {
+      "actual_passing_assertions": 9,
+      "report": "final-freeze5/native/catalog-worker-native.json",
+      "fixture_generation": 11,
+      "worker_start_caption_observed": true,
+      "weak_discard_callback_observed": true,
+      "copied_products": 50000,
+      "off_page_code": "SCALE-50000",
+      "price_irr": 150000,
+      "original_full_State_payload_and_generation_unchanged": true,
+      "private_gtk_animations": false,
+      "LD_PRELOAD": false,
+      "actual_GUI_log_empty": true,
+      "transient_loading_frame_visual_acceptance": false
+    },
+    "final5_owner_completion_independently_reviewed": {
+      "owner_passing_assertions": 10,
+      "owner_modal_passing_assertions": 2,
+      "report": "../native/completion-diagnostics/completion-observer.json",
+      "independent_method": "Read-only patch/observer/shim review and actual Ready/held/cancel/rejected/valid screenshots; no second independent GUI run claimed",
+      "ready_valid_rejected": "uninstrumented",
+      "source_cancel": "owned worker held1770.145ms via forwarding pthread_setname_np shim, bounded5000ms, timeout0; excluded from performance",
+      "full_payload_generation_unchanged": true
+    },
+    "final5_owner_native": {
+      "full": 30,
+      "short": 8,
+      "refresh_footer": 8,
+      "tab_guards": 17,
+      "attribution": "Owner actual frozen5, separate from independent9; see native/freeze5 evidence"
+    },
+    "final5_root_gates": {
+      "ordinary_passed": 194,
+      "failed": 0,
+      "ignored": 3,
+      "each_optin_separately_passed": true,
+      "fmt_strict_alltargets_clippy_release_passed": true,
+      "attribution": "Root-owned frozen5 gates, separate from independent phases"
+    },
+    "final5_performance_owner_review": {
+      "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+      "raw_repeated": "artifacts/performance-m4/freeze5-repeated/performance.json",
+      "raw_scale": "artifacts/performance-m4/freeze5-scale/performance.json",
+      "bounded_procurement_passes": true,
+      "document_visible_p95_ms": 101.989,
+      "document_focused_p95_ms": 114.922,
+      "search_n": 20,
+      "accepted_worker_phase_count": 22,
+      "all_accepted_worker_gaps_at_most_50ms": true,
+      "repeated_startup_p95_ms": 870.6,
+      "startup_n": 10,
+      "initial_rss_at_most_250MB": true,
+      "large_scale_functional_checks": 15,
+      "strict_scale_misses": {
+        "global_ms": [
+          469.552,
+          50
+        ],
+        "unchanged_page_ms": [
+          161.505,
+          150
+        ],
+        "pdf_busy_ms": [
+          122.511,
+          50
+        ]
+      },
+      "save_dispatch_ms": 5.5,
+      "save_busy_max_gap_ms": 46.677,
+      "catalog_open_dispatch_ms": 16.888,
+      "catalog_initial_100_ready_ms": 177.251,
+      "scope": "Owner measurements read independently; no reviewer measurement rerun. Global gaps include screenshot/setup/scheduling; physical/cache-cold unmeasured; full PERF partial."
+    }
+  },
+  "native_fixture_variants": {
+    "retained_restored_fixture": {
+      "records": 10,
+      "journals": 5,
+      "AP_irr": 329,
+      "GRNI_irr": 50,
+      "stock_quantity_thousandths": 42000,
+      "stock_irr": 480,
+      "trial_debit_credit_irr": 1431,
+      "report": "native/native-persisted-final.json"
+    },
+    "fresh_owner_freeze2_fixture": {
+      "same_literal_financial_results": true,
+      "IDs_timestamps_full_State_not_asserted_equal": true,
+      "report": "native-owner-freeze2/raw-persisted.json"
+    },
+    "scratch_final3_fixture": {
+      "records": 8,
+      "journals": 6,
+      "optional_original_R1_bill": true,
+      "AP_irr": 379,
+      "GRNI_irr": 0,
+      "stock_irr": 480,
+      "report": "final-freeze3/headless/raw-state.json"
+    },
+    "scratch_final4_fixture": {
+      "records": 8,
+      "journals": 6,
+      "optional_original_R1_bill": true,
+      "AP_irr": 379,
+      "GRNI_irr": 0,
+      "stock_irr": 480,
+      "report": "final-freeze4/headless/raw-state.json"
+    }
+  },
+  "fixed_findings": [
+    "actual pre-M4 arbitrary reserved-text history compatibility and ordinary classification",
+    "source paper versus availability date and long PDF headers",
+    "GTK ActionRow parent criticals and disabled one-page pager keyboard trap",
+    "daily operational-first source summaries retaining resource history/full canonical trace",
+    "completed refresh global footer success/error and human resource-role Persian labels",
+    "Filtered document plain Tab reaches current first usable detail; guarded normal/default/backward/master/modifier routes retain GTK behavior",
+    "Large catalog copy opens with bounded shared background SearchIndex normalization; weak result discarded on closed dialog without writes",
+    "Current top catalog Composer plain Escape capture; correct scoped modal focus diagnostics",
+    "Source/preview/price/cache and stale/closed worker completions clear global work status without modifying financial state"
+  ],
+  "remaining_boundaries": [
+    "Final5 bounded procurement performance passes: focused document p95 114.922ms n20, all22 accepted phases ≤50ms, repeated startup p95 870.600ms n10 and initial RSS ≤250MB. Full-app strict global469.552/50ms, page161.505/150ms, PDF122.511/50ms MISS; Save5.500ms/savebusy46.677ms pass. Composerdispatch16.888ms versus workerready177.251ms are distinct endpoints; no physical/cache-cold or universal performance acceptance.",
+    "Durable editable unposted purchase drafts absent; staged rows are memory only",
+    "Payments/direct expenses-assets/returns/cost variance/posted corrections and full PUR-INV-G3 outside this bounded slice",
+    "Professional accountant production acceptance, legal/tax/platform/accessibility/native-user/physical printing gates remain open",
+    "No hardware power-loss/disk-full or whole reference-dataset/normalized-storage proof",
+    "Transient catalog Loading/disabled frame not independently captured; state/label paths reviewed statically and actual worker-start/cancel callbacks observed",
+    "Large copied catalog edit/delete still rebuild indexes synchronously; open-index fix alone does not accept every large-catalog operation",
+    "Dialog numeric focus bounds not measured; old window diagnostic cannot establish modal focus, no oldzeroAT-SPIcoordinate placement claim"
+  ],
+  "preserved_observer_failures": [
+    "before-fixes/freeze2-selector",
+    "before-fixes/scoped-observer",
+    "final-freeze3/before-fixes/observer-startup-message",
+    "final-freeze3/before-fixes/observer-label-normalization",
+    "final-freeze5/before-fixes/catalog-worker-final4-*",
+    "final-freeze5/before-fixes/catalog-worker-final5-*"
+  ],
+  "verified_challenges": [
+    "Changed derived/source history rejected under valid recomputed outer checksum; early scratch sha256-field observer mistake is not called a production bug"
+  ],
+  "acceptance_reopened": {
+    "reason": "Existing quotation product picker still executes synchronous form save and draft-choice Store change on GTK; root authorized bounded picker/background async atomic correction.",
+    "status": "freeze6 pending",
+    "preserved_source5": "artifacts/independent-m4/freeze5-source-snapshot",
+    "manifest_paths_verified": 32,
+    "final6_claim": false
+  }
+}

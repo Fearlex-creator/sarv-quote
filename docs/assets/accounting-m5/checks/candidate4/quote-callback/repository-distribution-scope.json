@@ -1,0 +1,18 @@
+{
+  "scope": "Addition to original immutable delivery receipt; no original receipt overwritten",
+  "portable_repository_files": {
+    "after.json": "e3384196cfa1b6cd2e1ec9e546d4649566c4734b1096dda55054a543b817d024",
+    "application.log": "2870e3bdeaf3189f3bbecd968c4b412e188926dd367febd1a88ecb4a0be0e983",
+    "before.json": "e3384196cfa1b6cd2e1ec9e546d4649566c4734b1096dda55054a543b817d024",
+    "manifest.json": "97254503a6dc715966bdfe461bee9469c2f21019234c455f6d82c5c56127b2fb",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "profile/final-state.json": "4acc05f72c03472412870274c2e189bffb42bd3deed4c438b4158a2eb7271624",
+    "profile/quote-callback-verification.json": "08df4153a5edeef267aa654aa9f8a5130c370af100f290fd088fc9cdad9cac4b",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "local_only_ignored_files": {
+    "profile/sarv.sqlite3": "74850d49af4c2b1a80456cc3600dee6586ec1b69741ed191db09199af8058bca"
+  },
+  "local_profile": "Synthetic SQLite online backup remains in this workspace and is intentionally ignored by Git. Its exact logical State and generation are included in profile/final-state.json. Original delivery-manifest describes local evidence and is not a promise of repository-distributed database bytes.",
+  "raw_execution_profiles": "Ignored artifacts/ profiles and executables stay local; committed reports carry provenance and exact outcomes."
+}

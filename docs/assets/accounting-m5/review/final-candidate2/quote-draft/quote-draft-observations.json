@@ -1,0 +1,85 @@
+[
+  {
+    "check": "authentic quote metadata notes",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata terms",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata issuer_name",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata issuer_phone",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata issuer_address",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata header",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata footer",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata customer_contact",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata customer_email",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata customer_address",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata phone",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata display_unit",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata quote_date",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "authentic quote metadata valid_until",
+    "result": "full_snapshot_rejected"
+  },
+  {
+    "check": "wrong source line index",
+    "result": "source_conversion_rejected"
+  },
+  {
+    "check": "changed price source reference",
+    "result": "source_conversion_rejected"
+  },
+  {
+    "check": "changed amount one rial",
+    "result": "source_conversion_rejected"
+  },
+  {
+    "check": "changed unit mapping",
+    "result": "source_conversion_rejected"
+  },
+  {
+    "check": "fabricated approved hash",
+    "result": "source_conversion_rejected"
+  },
+  {
+    "check": "raw invalid save/restart/failure + authentic49IRR conversion + postsubmit identical/alias retry after lock/restart + original version/metadata + preserved taxed54IRR quote",
+    "result": "passed",
+    "source_quote_total": 49,
+    "taxed_quote_tax": 5,
+    "taxed_quote_total": 54
+  }
+]

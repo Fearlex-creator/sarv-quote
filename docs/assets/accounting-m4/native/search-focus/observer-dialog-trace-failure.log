@@ -1,0 +1,312 @@
+dbus-daemon[194310]: [session uid=1000 pid=194310 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=194317 comm="/workspace/sarv-quote/artifacts/procurement-search" label="kernel")
+dbus-daemon[194310]: [session uid=1000 pid=194310 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[194345]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=194317 comm="/workspace/sarv-quote/artifacts/procurement-search" label="kernel")
+dbus-daemon[194345]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :9 broken (explicit kill or server shutdown).
+{
+  "result": "failed",
+  "binary": "/tmp/sarv-M4-document-focus-debug",
+  "binary_sha256": "e9ff96c3cb4daec9f320f3956371a2f5e9b50c930b8ec765e361e8745cf26a2a",
+  "checks": [
+    {
+      "name": "REC-A one Tab 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-A revealed focus 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-B one Tab 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-B revealed focus 1280",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          609.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          1016.0,
+          817.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          1270,
+          890
+        ]
+      }
+    },
+    {
+      "name": "REC-A one Tab 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          586.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "REC-A revealed focus 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "REC-B one Tab 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "REC-B revealed focus 650",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Shift_L",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    },
+    {
+      "name": "multi-match one Tab",
+      "passed": true,
+      "native_event": {
+        "dialog_open": false,
+        "focus": "other",
+        "focus_bounds": [
+          32.0,
+          457.0,
+          127.0,
+          56.0
+        ],
+        "focus_clip_bounds": [
+          0.0,
+          46.0,
+          640.0,
+          467.0
+        ],
+        "focus_label": "جزئیات و خروجی",
+        "focus_name": "procurement-document-detail",
+        "focus_type": "GtkButton",
+        "key": "Tab",
+        "page": "procurement",
+        "quotes": 0,
+        "settings_dirty": false,
+        "window_size": [
+          640,
+          540
+        ]
+      }
+    }
+  ],
+  "key_events": [],
+  "refresh_completion_checks": [],
+  "fixture_profile": "/workspace/sarv-quote/artifacts/procurement-native/run-cytwzvdu/full",
+  "run": "/workspace/sarv-quote/artifacts/procurement-search-focus/run-f5wb36pn",
+  "scope": "Read-only native keyboard acceptance for filtered document lookup, default/backward navigation, exact source opening and toolbar reachability; synthetic data only; no performance-budget claim.",
+  "diagnostic_only": true,
+  "route_cases": [],
+  "gtk_diagnostics": {
+    "light.log": ""
+  }
+}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/artifacts/procurement-search-focus/focus-acceptance.py", line 54, in <module>
+    event('Tab')
+    ~~~~~^^^^^^^
+  File "/workspace/sarv-quote/artifacts/procurement-search-focus/focus-acceptance.py", line 29, in event
+    return n.wait_for(lambda:next((e for e in reversed(n.events(profile)[before:])if e.get('key')in([key,'ISO_Left_Tab']if key=='Tab'else[key])),None),label='actual '+key+' event')
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 34, in wait_for
+    raise RuntimeError(f'Timed out waiting for {label}')
+RuntimeError: Timed out waiting for actual Tab event

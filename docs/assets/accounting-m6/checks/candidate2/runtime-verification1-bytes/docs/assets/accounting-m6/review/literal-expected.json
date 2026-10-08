@@ -1,0 +1,21 @@
+{
+  "provenance": {"prepared_before_implementation": true, "baseline_head": "eb8f8c29648fd4a206a26d65ae4eaca5cf945a1b", "unit": "IRR", "quantity_unit": "pieces"},
+  "constants": {"cash":251,"bank":300,"ar":299,"cr":200,"cp":100,"capital":952,"sales":199,"sales_returns":100,"cogs":58,"earnings":41,"w2_q":12,"w2_v":130},
+  "billed_branch": [
+    {"date":"2026-03-31","event":"baseline","w1_q":25,"w1_v":292,"inventory":422,"ap":329,"grni":50,"tb":1630,"invoice150_remaining":150},
+    {"date":"2026-04-01","event":"return_R-B_3_original_45","w1_q":22,"w1_v":247,"inventory":377,"ap":284,"grni":50,"tb":1585,"invoice150_remaining":105},
+    {"date":"2026-04-02","event":"return_R-B_final_4_residual_60","w1_q":18,"w1_v":187,"inventory":317,"ap":224,"grni":50,"tb":1525,"invoice150_remaining":45}
+  ],
+  "unbilled_interleaved_branch": [
+    {"date":"2026-03-31","event":"baseline","w1_q":25,"w1_v":292,"inventory":422,"ap":329,"grni":50,"tb":1630,"receipt_unbilled_q":0,"receipt_unbilled_v":0},
+    {"date":"2026-04-01","event":"receipt_6_value90","w1_q":31,"w1_v":382,"inventory":512,"ap":329,"grni":140,"tb":1720,"receipt_unbilled_q":6,"receipt_unbilled_v":90},
+    {"date":"2026-04-02","event":"bill_2_value30","w1_q":31,"w1_v":382,"inventory":512,"ap":359,"grni":110,"tb":1720,"receipt_unbilled_q":4,"receipt_unbilled_v":60},
+    {"date":"2026-04-03","event":"unbilled_return_1_value15","w1_q":30,"w1_v":367,"inventory":497,"ap":359,"grni":95,"tb":1705,"receipt_unbilled_q":3,"receipt_unbilled_v":45},
+    {"date":"2026-04-04","event":"bill_final_3_value45","w1_q":30,"w1_v":367,"inventory":497,"ap":404,"grni":50,"tb":1705,"receipt_unbilled_q":0,"receipt_unbilled_v":0},
+    {"date":"2026-04-05","event":"first_bill_return_1_value15","w1_q":29,"w1_v":352,"inventory":482,"ap":389,"grni":50,"tb":1690,"receipt_unbilled_q":0,"receipt_unbilled_v":0},
+    {"date":"2026-04-06","event":"first_bill_return_final_1_value15","w1_q":28,"w1_v":337,"inventory":467,"ap":374,"grni":50,"tb":1675,"receipt_unbilled_q":0,"receipt_unbilled_v":0},
+    {"date":"2026-04-07","event":"second_bill_return_final_3_value45","w1_q":25,"w1_v":292,"inventory":422,"ap":329,"grni":50,"tb":1630,"receipt_unbilled_q":0,"receipt_unbilled_v":0}
+  ],
+  "tiny_receipt_consumption": {"original_q_thousandths":3000,"original_value":1,"events":[{"kind":"bill","q":1000,"v":0},{"kind":"unbilled_return","q":1000,"v":1},{"kind":"bill","q":1000,"v":0}]},
+  "tiny_billed_returns": {"original_q_thousandths":3000,"original_value":1,"events":[{"q":1000,"v":0},{"q":1000,"v":1},{"q":1000,"v":0}]}
+}

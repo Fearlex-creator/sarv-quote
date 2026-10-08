@@ -1,0 +1,33 @@
+{
+  "files": {
+    "after.json": "ee0fca83048156500deff458f7c3e80e78354a3756f1caa0c941c61981dd6fa5",
+    "application.log": "5ec3218e8c9bb606771125face094fd338c4b7ee6850f6ee6bd2128469f92829",
+    "before.json": "ee0fca83048156500deff458f7c3e80e78354a3756f1caa0c941c61981dd6fa5",
+    "manifest.json": "152a7592f136ea702b459ac027b19a1eb40f0d2c86a12019311e7a81ef44e194",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "profile/final-state.json": "03fe13970b27c197427ee011620e4ad19ebe335a158aee791d43d5d4036f72e2",
+    "profile/quote-callback-verification.json": "3db8cf4c000b4b36542363d2cfe9662f8fade6eb038e8f5976cebbad864e37fc",
+    "profile/sarv.sqlite3": "2edf6be56bd7daba74f06e5c187c88873bdd0866b7e3b3426eb34560dcad20e9",
+    "xvfb.log": "9d7f7c165140805b72199571a0117abc61f16e88ed1e5993e590ef7121628d7b"
+  },
+  "sqlite_integrity": "ok",
+  "generation": 12,
+  "sqlite_export_method": "SQLite online backup including WAL from original stopped synthetic profile; original before/destination/after generation and payload exact; delivery copy consolidated to DELETE journal mode with unchanged logical state",
+  "checks": [
+    "held-lock commit returns with GTK ticks; newer valid quantity wins",
+    "held-lock add freezes topology; repeated activation has one effect",
+    "delete token appears after commit; identical adjacent rows are not deleted twice",
+    "SQLite lock timeout retains undo token, rows and focused usable Undo",
+    "held Undo failure after Settings navigation retains mapped usable Settings focus, exact draft/token and releases Order sensitivity; returning to Order permits retry",
+    "explicit header focus cancels delayed row focus",
+    "cancelled old page-1 build preserves later page 0, rows 0..99 and explicit header focus",
+    "page request during reused-slot frame barrier renders latest page 2, rows 200..210 and preserves header focus",
+    "newer invalid quantity stays visible and cancels deferred review",
+    "newer changed target rejects deferred delete",
+    "held-lock human choice preserves query/exact code; restart exact; independent total 266463 IRR; zero GL",
+    "newer invalid visible-row edit cancels page build, retains row/page/input and leaves committed quantity unchanged",
+    "after invalid-edit recovery, final exact draft restart and 266463 IRR total remain intact with zero GL"
+  ],
+  "performance_scope": "diagnostic qualification, not quiet final performance measurement",
+  "accounting_scope": "synthetic quotation only, no ledger effects"
+}

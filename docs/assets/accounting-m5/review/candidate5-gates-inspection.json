@@ -1,0 +1,74 @@
+{
+  "epoch": "candidate5",
+  "checks": [
+    {
+      "label": "fmt",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    },
+    {
+      "label": "clippy",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    },
+    {
+      "label": "all-targets",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    },
+    {
+      "label": "font-opt-in",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    },
+    {
+      "label": "actual-m3-refusal",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    },
+    {
+      "label": "actual-m4-refusal",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    },
+    {
+      "label": "gtk-lifecycle",
+      "exit_code": 0,
+      "actual_before_after_dicts_equal": true,
+      "source_dict_matches_root_freeze": true,
+      "binary_matches_root_freeze": true,
+      "verification_dict_matches_captured_build_sources": true,
+      "log_hash_matches": true
+    }
+  ],
+  "all_target_suites": 35,
+  "passed_tests": 220,
+  "failed_tests": 0,
+  "ignored_tests": 4,
+  "scope": "Root seven gates and actual per-command source/binary/verification dictionaries only; native/performance separate",
+  "root_manifest_hash_verified": true
+}

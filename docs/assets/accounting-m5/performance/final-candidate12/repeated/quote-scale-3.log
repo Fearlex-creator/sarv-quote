@@ -1,0 +1,17 @@
+SARV_MAIN_THREAD settings_global_digits 0.003ms
+SARV_MAIN_THREAD settings_global_apply 0.070ms
+SARV_MAIN_THREAD review_snapshot_clone 7.769ms
+SARV_MAIN_THREAD refresh_managers 11.126ms
+SARV_MAIN_THREAD settings_catalog_digits 0.013ms
+SARV_MAIN_THREAD settings_customer_digits 0.008ms
+SARV_MAIN_THREAD settings_quote_digits 0.006ms
+SARV_MAIN_THREAD settings_global_digits 0.002ms
+SARV_MAIN_THREAD settings_global_apply 0.007ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 3.150ms
+SARV_MAIN_THREAD review_construct_20_rows 15.384ms
+SARV_MAIN_THREAD review_construct_20_rows 15.643ms
+SARV_MAIN_THREAD review_construct_20_rows 14.917ms
+SARV_MAIN_THREAD review_construct_20_rows 14.778ms
+SARV_MAIN_THREAD review_construct_20_rows 14.806ms
+SARV_MAIN_THREAD review_atomic_install 15.651ms
+SARV_MAIN_THREAD review_retire_20_rows 0.003ms

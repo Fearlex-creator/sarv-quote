@@ -1,0 +1,56 @@
+{
+  "result": "PASS bounded frozen candidate1 Sales native and raw stored controls",
+  "source_sha256": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+  "binary_sha256": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "observer_sha256": "8b61b8e68e457bc72a8fabcdadab27bb066090ee98444a67ba5083d9b77bf0fd",
+  "check_count": 54,
+  "independent_raw_inspection": {
+    "stage": {
+      "integrity": "ok",
+      "generation": 21,
+      "journal_count": 7,
+      "sales": [
+        {
+          "Order": {
+            "total": 199,
+            "cost": null
+          }
+        },
+        {
+          "Fulfill": {
+            "total": 100,
+            "cost": 58
+          }
+        },
+        {
+          "Return": {
+            "total": 40,
+            "cost": 23
+          }
+        }
+      ],
+      "draft_count": 0
+    },
+    "draft": {
+      "integrity": "ok",
+      "generation": 17,
+      "journal_count": 5,
+      "sales": [],
+      "draft_count": 1
+    }
+  },
+  "personally_viewed": [
+    "filtered typed SO-M5 one result and ready footer",
+    "order complete fulfillment10 with linked pairs and original allocation note",
+    "completed return detail40/cost23 and idle footer",
+    "incomplete raw -۱/0.1 line exact focus after restart",
+    "narrow editor direct four footer actions",
+    "narrow dark Sales ready list"
+  ],
+  "focus_oracle": "qa_access.focused checks requested control AT-SPI state12; no ancestor substitute",
+  "limitations": [
+    "private X11 synthetic profile only",
+    "no accountant/physical printing/screen reader/Windows/Wayland claim",
+    "performance pending"
+  ]
+}

@@ -1,11 +1,15 @@
+mod accounting;
 mod background;
 mod catalog_editor;
 mod catalog_preview;
 mod components;
+mod core;
 mod editor;
 mod managers;
 mod pickers;
+mod procurement;
 mod responsiveness;
+mod sales;
 mod settings;
 mod smoke;
 mod workspace;
@@ -24,11 +28,13 @@ use std::{
     rc::Rc,
 };
 
+type SaveAction = Box<dyn FnOnce(&Rc<Ui>)>;
+
 struct Ui {
     store: RefCell<Store>,
     window: gtk::ApplicationWindow,
     stack: gtk::Stack,
-    split: adw::NavigationSplitView,
+    split: adw::OverlaySplitView,
     status: gtk::Label,
     customer: gtk::Entry,
     phone: gtk::Entry,
@@ -38,6 +44,10 @@ struct Ui {
     stale: gtk::CheckButton,
     catalog_choice: gtk::DropDown,
     review: gtk::Box,
+    review_cache: RefCell<Option<Rc<editor::PreparedReview>>>,
+    review_requested: Cell<Option<i64>>,
+    review_request_serial: Cell<u64>,
+    review_focus: RefCell<Option<editor::PendingReviewFocus>>,
     total: gtk::Label,
     subtotal: gtk::Label,
     tax: gtk::Label,
@@ -46,8 +56,8 @@ struct Ui {
     preview_control: gtk::Button,
     source_hint: gtk::Label,
     reference: gtk::Entry,
-    quote_date: gtk::Entry,
-    valid_until: gtk::Entry,
+    quote_date: accounting::DateField,
+    valid_until: accounting::DateField,
     notes: gtk::TextView,
     new_item: gtk::Entry,
     new_quantity: gtk::Entry,
@@ -58,7 +68,7 @@ struct Ui {
     table_page: Cell<usize>,
     table_dirty: Cell<bool>,
     visual_pending: Cell<bool>,
-    deleted_lines: RefCell<Option<(usize, OrderLine)>>,
+    deleted_lines: RefCell<Option<(String, usize, OrderLine)>>,
     catalog_list: gtk::Box,
     customer_list: gtk::Box,
     quote_list: gtk::Box,
@@ -69,7 +79,12 @@ struct Ui {
     displayed_unit: Cell<Unit>,
     pending: RefCell<Option<glib::SourceId>>,
     active_dialog: RefCell<Option<adw::Dialog>>,
+    dialog_return_focus: RefCell<Option<glib::WeakRef<gtk::Widget>>>,
     background_busy: Cell<bool>,
+    persistence_busy: Cell<bool>,
+    edit_revision: Cell<u64>,
+    close_after_save: Cell<bool>,
+    pending_save_action: RefCell<Option<SaveAction>>,
     nav_counts: Vec<(&'static str, gtk::Label)>,
 }
 fn csv_order(lines: &[OrderLine]) -> String {
@@ -137,6 +152,24 @@ fn activate_named_button(widget: &impl IsA<gtk::Widget>, name: &str) -> bool {
     }
     false
 }
+fn focus_page_search(widget: &impl IsA<gtk::Widget>) -> bool {
+    let widget = widget.as_ref();
+    if widget.is::<gtk::SearchEntry>()
+        && widget.is_mapped()
+        && widget.is_sensitive()
+        && widget.grab_focus()
+    {
+        return true;
+    }
+    let mut child = widget.first_child();
+    while let Some(w) = child {
+        child = w.next_sibling();
+        if focus_page_search(&w) {
+            return true;
+        }
+    }
+    false
+}
 fn quote_same_content(a: &Quote, b: &Quote) -> bool {
     let (Ok(mut a), Ok(mut b)) = (serde_json::to_value(a), serde_json::to_value(b)) else {
         return false;
@@ -151,7 +184,71 @@ fn quote_same_content(a: &Quote, b: &Quote) -> bool {
     }
     a == b
 }
+
+/// Native list rows provide one keyboard stop per destination. Selected state
+/// follows the visible workspace, independently of pointer or keyboard focus.
+fn sidebar_destination(
+    name: &str,
+    caption: &str,
+    icon_name: &str,
+    shortcut: &str,
+    description: Option<&str>,
+) -> (gtk::ListBoxRow, gtk::Label) {
+    let item = gtk::ListBoxRow::new();
+    item.set_widget_name(&format!("navigation-{name}"));
+    item.add_css_class("sarv-navigation-row");
+    item.set_tooltip_text(Some(&format!("{caption} · {shortcut}")));
+    accessible_name(&item, caption);
+    item.update_property(&[gtk::accessible::Property::KeyShortcuts(shortcut)]);
+    let content = row();
+    content.set_spacing(12);
+    let icon = gtk::Image::from_icon_name(icon_name);
+    icon.set_pixel_size(18);
+    icon.add_css_class("navigation-icon");
+    content.append(&icon);
+    let text = column();
+    text.set_spacing(2);
+    text.set_hexpand(true);
+    let title = label(caption);
+    title.add_css_class("navigation-label");
+    title.set_wrap(false);
+    title.set_ellipsize(gtk::pango::EllipsizeMode::End);
+    text.append(&title);
+    if let Some(description) = description {
+        let description = label(description);
+        description.add_css_class("navigation-description");
+        description.set_wrap(false);
+        description.set_ellipsize(gtk::pango::EllipsizeMode::End);
+        text.append(&description);
+    }
+    content.append(&text);
+    let count = label("");
+    count.add_css_class("navigation-count");
+    count.add_css_class("numeric");
+    count.set_wrap(false);
+    count.set_visible(false);
+    content.append(&count);
+    item.set_child(Some(&content));
+    (item, count)
+}
+
 impl Ui {
+    fn show_workspace_content(&self) {
+        if self.split.is_collapsed() {
+            self.split.set_show_sidebar(false);
+        }
+    }
+    fn set_quote_date(&self, field: &accounting::DateField, canonical: &str) {
+        if field.set_canonical(canonical).is_err() {
+            // A legacy date outside the Jalali range stays visible and editable
+            // in its explicitly labelled Gregorian mode. Never drop saved data.
+            field.entry.set_text("");
+            field.calendar.set_selected(0);
+            if let Err(error) = field.set_canonical(canonical) {
+                self.message(Err::<String, _>(error));
+            }
+        }
+    }
     fn message(&self, r: Result<impl ToString>) {
         match r {
             Ok(s) => {
@@ -164,7 +261,17 @@ impl Ui {
             }
         }
     }
-    fn save_form(&self) -> Result<()> {
+    // A read-only page load may finish after navigation. Keep its result in the
+    // page, and clear only the loading message that this worker still owns.
+    // Errors and financial/persistence completion messages remain global.
+    fn page_load_message(&self, page: &str, working: &str, r: Result<impl ToString>) {
+        if r.is_err() || self.stack.visible_child_name().as_deref() == Some(page) {
+            self.message(r);
+        } else if self.status.text() == working {
+            self.message(Ok("آماده • فضای کار محلی"));
+        }
+    }
+    fn form_draft(&self) -> Result<(Draft, bool)> {
         let text = self.order.buffer().text(
             &self.order.buffer().start_iter(),
             &self.order.buffer().end_iter(),
@@ -183,7 +290,9 @@ impl Ui {
                     line.chosen_code = None;
                 }
                 line.query = query;
-                line.quantity_milli = quantity(&row.quantity.text())?;
+                line.quantity_milli = quantity(&row.quantity.text()).inspect_err(|_| {
+                    row.quantity.grab_focus();
+                })?;
             }
             lines
         } else if text.trim() == "item,quantity" || text.trim().is_empty() {
@@ -207,8 +316,16 @@ impl Ui {
         let ack = self.stale.is_active();
         let index = self.catalog_choice.selected() as usize;
         let reference = self.reference.text().to_string();
-        let quote_date = self.quote_date.text().to_string();
-        let valid_until = self.valid_until.text().to_string();
+        let quote_date = if self.quote_date.entry.text().trim().is_empty() {
+            String::new()
+        } else {
+            accounting::date_value(&self.quote_date)?
+        };
+        let valid_until = if self.valid_until.entry.text().trim().is_empty() {
+            String::new()
+        } else {
+            accounting::date_value(&self.valid_until)?
+        };
         let notes = self
             .notes
             .buffer()
@@ -265,9 +382,15 @@ impl Ui {
             let unchanged = serde_json::to_vec(&draft)? == serde_json::to_vec(original)?;
             (draft, unchanged)
         };
+        Ok((draft, unchanged))
+    }
+    fn save_form(&self) -> Result<()> {
+        anyhow::ensure!(
+            !self.persistence_busy.get(),
+            "ذخیره در حال انجام است؛ پس از پایان دوباره درخواست کنید"
+        );
+        let (draft, unchanged) = self.form_draft()?;
         if unchanged {
-            // Paging or saving an unchanged form must not clone and revalidate
-            // every historical catalog. A stale window still cannot claim Save.
             self.store.borrow().verify_current()?;
         } else {
             self.store.borrow_mut().change(|state| {
@@ -275,6 +398,10 @@ impl Ui {
                 Ok(())
             })?;
         }
+        self.finish_form_save();
+        Ok(())
+    }
+    fn finish_form_save(&self) {
         {
             let store = self.store.borrow();
             let d = &store.state.draft;
@@ -284,23 +411,31 @@ impl Ui {
                 .map(String::as_str)
                 .collect::<Vec<_>>()
                 .join(" • ");
-            self.customer_details.set_text(&details);
+            self.customer_details
+                .set_text(&store.state.settings.display_digits.format(&details));
             self.customer_details.set_visible(!details.is_empty());
         }
         self.loading.set(true);
-        self.order
-            .buffer()
-            .set_text(&csv_order(&self.store.borrow().state.draft.lines));
+        let csv = csv_order(&self.store.borrow().state.draft.lines);
+        let buffer = self.order.buffer();
+        if buffer
+            .text(&buffer.start_iter(), &buffer.end_iter(), true)
+            .as_str()
+            != csv
+        {
+            buffer.set_text(&csv);
+        }
         self.stale
             .set_active(self.store.borrow().state.draft.stale_ack);
         self.loading.set(false);
         self.table_dirty.set(false);
-        Ok(())
     }
     fn schedule(self: &Rc<Self>) {
         if self.loading.get() {
             return;
         }
+        self.edit_revision
+            .set(self.edit_revision.get().wrapping_add(1));
         self.status.set_text("تغییرات ذخیره‌نشده…");
         self.document_state.set_text("در حال ویرایش");
         self.approve_control.add_css_class("suggested-action");
@@ -314,16 +449,7 @@ impl Ui {
             move || {
                 if let Some(ui) = weak.upgrade() {
                     ui.pending.borrow_mut().take();
-                    let r = ui.save_form();
-                    if r.is_ok() {
-                        ui.refresh_totals();
-                        if !ui.table_has_focus() {
-                            ui.refresh_review();
-                        }
-                        ui.message(Ok("پیش‌نویس ذخیره شد • آفلاین"));
-                    } else {
-                        ui.message(r.map(|()| ""));
-                    }
+                    ui.save_form_async();
                 }
             },
         ));
@@ -333,19 +459,27 @@ impl Ui {
         let store = self.store.borrow();
         let s = &store.state;
         let d = &s.draft;
-        let names = s
+        let mut names = s
             .catalogs
             .iter()
             .map(|c| c.name.as_str())
             .collect::<Vec<_>>();
+        if names.is_empty() {
+            names.push("فهرست قیمتی ساخته نشده است");
+        }
         self.catalog_choice
             .set_model(Some(&gtk::StringList::new(&names)));
+        self.catalog_choice.set_sensitive(!s.catalogs.is_empty());
         self.catalog_choice.set_selected(
             s.catalogs
                 .iter()
                 .position(|c| c.id == d.catalog_id)
                 .map(|i| i as u32)
-                .unwrap_or(gtk::INVALID_LIST_POSITION),
+                .unwrap_or(if s.catalogs.is_empty() {
+                    0
+                } else {
+                    gtk::INVALID_LIST_POSITION
+                }),
         );
         self.customer.set_text(&d.customer);
         self.phone.set_text(&d.phone);
@@ -355,7 +489,8 @@ impl Ui {
             .map(String::as_str)
             .collect::<Vec<_>>()
             .join(" • ");
-        self.customer_details.set_text(&details);
+        self.customer_details
+            .set_text(&s.settings.display_digits.format(&details));
         self.customer_details.set_visible(!details.is_empty());
         self.order.buffer().set_text(&csv_order(&d.lines));
         self.unit
@@ -365,22 +500,28 @@ impl Ui {
             .set_text(&d.display_unit.number(d.discount_rial));
         self.stale.set_active(d.stale_ack);
         self.reference.set_text(&d.reference);
-        self.quote_date.set_text(&d.quote_date);
-        self.valid_until.set_text(&d.valid_until);
+        self.set_quote_date(&self.quote_date, &d.quote_date);
+        self.set_quote_date(&self.valid_until, &d.valid_until);
         self.notes.buffer().set_text(&d.notes);
         self.table_dirty.set(false);
         drop(store);
         self.loading.set(false);
     }
     fn refresh_lists(self: &Rc<Self>) {
+        let started = std::time::Instant::now();
         self.refresh_managers();
-        settings::apply(self);
+        editor::performance_trace("refresh_managers", started);
+        settings::apply_manager_digits(self);
         let store = self.store.borrow();
+        settings::apply_digits(&self.status, store.state.settings.display_digits);
         for (name, count) in &self.nav_counts {
             let value = match *name {
                 "catalog" => store.state.catalogs.iter().map(|c| c.products.len()).sum(),
                 "customers" => store.state.customers.iter().filter(|c| !c.archived).count(),
                 "quotes" => store.state.quotes.len(),
+                "sales" => {
+                    store.state.accounting.sales.records.len() + store.state.sales_drafts.len()
+                }
                 _ => 0,
             };
             count.set_text(&store.state.settings.display_digits.format(value));
@@ -429,17 +570,73 @@ impl Ui {
         }
         Ok(())
     }
+    fn visible_dialog(&self) -> Option<adw::Dialog> {
+        self.window
+            .downcast_ref::<adw::ApplicationWindow>()
+            .and_then(|window| window.visible_dialog())
+    }
     fn present_dialog(self: &Rc<Self>, dialog: &adw::Dialog) {
+        // Let the focused text receive focus-out before libadwaita shadows its
+        // parent. Otherwise its cursor timer can survive the lost focus.
+        let parent = self.visible_dialog();
+        let parent_focus = parent
+            .as_ref()
+            .and_then(|dialog| dialog.focus())
+            .map(|widget| widget.downgrade());
+        let parent = parent.map(|dialog| {
+            dialog.set_focus(None::<&gtk::Widget>);
+            dialog.downgrade()
+        });
+        if parent.is_none() {
+            *self.dialog_return_focus.borrow_mut() =
+                gtk::prelude::GtkWindowExt::focus(&self.window).map(|widget| widget.downgrade());
+        }
+        gtk::prelude::GtkWindowExt::set_focus(&self.window, None::<&gtk::Widget>);
         *self.active_dialog.borrow_mut() = Some(dialog.clone());
         let weak = Rc::downgrade(self);
         dialog.connect_closed(move |d| {
-            d.set_child(None::<&gtk::Widget>);
-            if let Some(ui) = weak.upgrade() {
-                let current = ui.active_dialog.borrow().as_ref() == Some(d);
-                if current {
-                    ui.active_dialog.borrow_mut().take();
-                }
+            let Some(ui) = weak.upgrade() else {
+                d.set_child(None::<&gtk::Widget>);
+                return;
+            };
+            if gtk::prelude::GtkWindowExt::focus(&ui.window)
+                .is_some_and(|widget| widget.is_ancestor(d))
+            {
+                gtk::prelude::GtkWindowExt::set_focus(&ui.window, None::<&gtk::Widget>);
             }
+            d.set_child(None::<&gtk::Widget>);
+            let current = ui.active_dialog.borrow().as_ref() == Some(d);
+            if current {
+                *ui.active_dialog.borrow_mut() = ui.visible_dialog().filter(|next| next != d);
+            }
+            let weak = Rc::downgrade(&ui);
+            let parent = parent.clone();
+            let parent_focus = parent_focus.clone();
+            glib::idle_add_local_once(move || {
+                let Some(ui) = weak.upgrade() else { return };
+                if !ui.window.is_visible() {
+                    return;
+                }
+                if let Some(visible) = ui.visible_dialog() {
+                    if parent.and_then(|dialog| dialog.upgrade()).as_ref() == Some(&visible)
+                        && visible.focus().is_none()
+                        && let Some(widget) = parent_focus.and_then(|widget| widget.upgrade())
+                        && widget.is_mapped()
+                        && widget.is_sensitive()
+                    {
+                        widget.grab_focus();
+                    }
+                    return;
+                }
+                let return_focus = ui.dialog_return_focus.borrow_mut().take();
+                if gtk::prelude::GtkWindowExt::focus(&ui.window).is_none()
+                    && let Some(widget) = return_focus.and_then(|widget| widget.upgrade())
+                    && widget.is_mapped()
+                    && widget.is_sensitive()
+                {
+                    widget.grab_focus();
+                }
+            });
         });
         dialog.present(Some(&self.window));
     }
@@ -456,10 +653,19 @@ impl Ui {
         self.deleted_lines.borrow_mut().take();
         self.undo_button.set_sensitive(false);
         self.table_page.set(0);
+        // A new document takes the current presentation default. Changing the
+        // entry calendar does not alter any issued document's saved snapshot.
+        self.loading.set(true);
+        let calendar =
+            u32::from(self.store.borrow().state.draft.date_display == DateDisplay::Jalali);
+        for date in [&self.quote_date, &self.valid_until] {
+            date.entry.set_text("");
+            date.calendar.set_selected(calendar);
+        }
         self.fill_form();
         self.refresh_review();
         self.stack.set_visible_child_name("order");
-        self.split.set_show_content(true);
+        self.show_workspace_content();
         self.customer.grab_focus();
     }
     fn import_catalog(self: &Rc<Self>, path: &Path) {
@@ -666,12 +872,16 @@ impl Ui {
         let dialog = adw::Dialog::builder()
             .title("بررسی بازیابی")
             .content_width(550)
-            .content_height(320)
+            .content_height(430)
             .build();
         let content = card();
         content.append(&heading("بازیابی دادهٔ تأییدشده"));
         content.append(&label(&format!("{} فهرست • {} مشتری • {} پیشنهاد\nدادهٔ جاری جایگزین می‌شود؛ پیش از آن نسخهٔ ایمنی ساخته خواهد شد.",
             fa(candidate.catalogs.len()), fa(candidate.customers.len()), fa(candidate.quotes.len()))));
+        content.append(&label(&format!("دفترهای پشتیبان: {} شرکت • {} دوره • {} حساب • {} سند ثبت‌شده\nدفتر جاری: {} سند ثبت‌شده\nاین عمل همهٔ دفترها و تاریخچهٔ جاری را با پشتیبان جایگزین می‌کند. نسخهٔ ایمنیِ تأییدشده پیش از جایگزینی نگه داشته می‌شود.",
+            fa(candidate.accounting.companies.len()), fa(candidate.accounting.periods.len()), fa(candidate.accounting.accounts.len()), fa(candidate.accounting.journals.len()), fa(self.store.borrow().state.accounting.journals.len()))));
+        content.append(&label(&format!("جزئیات پشتیبان: {} افتتاحیهٔ تطبیق‌شده • {} رویداد خرید و انبار\nتمام منبع‌ها، مقادیر، بهاها، درخواست‌ها و تاریخچهٔ این رویدادها نیز جایگزین می‌شوند.",
+            fa(candidate.accounting.core.openings.len()), fa(candidate.accounting.procurement.records.len()))));
         let confirm = button("بازیابی و ذخیرهٔ نسخهٔ ایمنی");
         confirm.add_css_class("destructive-action");
         let cancel = button("انصراف");
@@ -703,6 +913,30 @@ impl Ui {
                             ui.fill_form();
                             ui.refresh_review();
                             ui.refresh_lists();
+                            // Restoration can replace every company/period ID.
+                            // Rebuild the workspace from the restored snapshot.
+                            if let Some(page) = ui.stack.child_by_name("accounting") {
+                                ui.stack.remove(&page);
+                            }
+                            ui.stack
+                                .add_named(&accounting::build(ui), Some("accounting"));
+                            if let Some(page) = ui.stack.child_by_name("sales") {
+                                ui.stack.remove(&page);
+                            }
+                            ui.stack.add_named(&sales::build(ui), Some("sales"));
+                            for (name, kind) in [
+                                ("procurement", procurement::PageKind::Purchases),
+                                ("inventory", procurement::PageKind::Inventory),
+                            ] {
+                                if let Some(page) = ui.stack.child_by_name(name) {
+                                    ui.stack.remove(&page);
+                                }
+                                ui.stack.add_named(
+                                    &procurement::build(ui, kind, accounting::command_runner(ui)),
+                                    Some(name),
+                                );
+                            }
+                            settings::apply(ui);
                         }
                     },
                 );
@@ -747,7 +981,9 @@ impl Ui {
             "در حال آماده‌سازی داده و پشتیبان ایمنی…",
             move || {
                 sarv_quote::store::backup_state(&original, &safety)?;
-                let prepared = Store::prepare_candidate(generation, candidate(original)?)?;
+                let replacement = candidate(original.clone())?;
+                let prepared =
+                    Store::prepare_replacement(generation, &original, replacement, &safety)?;
                 Ok((prepared, safety))
             },
             move |ui, result| {
@@ -855,7 +1091,7 @@ fn build(app: &gtk::Application, store: Store) {
     );
     let adw_window = adw::ApplicationWindow::builder()
         .application(app)
-        .title("سرو | آماده‌سازی پیشنهاد قیمت")
+        .title("سرو | پیشنهاد قیمت")
         .default_width(1400)
         .default_height(940)
         .build();
@@ -863,40 +1099,71 @@ fn build(app: &gtk::Application, store: Store) {
     window.add_css_class("sarv-app");
     let root = adw::ToolbarView::new();
     let header = adw::HeaderBar::new();
-    header.set_title_widget(Some(&adw::WindowTitle::new("سرو", "پیشنهاد قیمت • آفلاین")));
-    let navigation = gtk::Button::with_label("فهرست");
-    navigation.set_tooltip_text(Some("میز کار"));
+    // Each split page owns its toolbar. A window-wide toolbar leaves an empty
+    // strip above the sidebar and prevents its native surface reaching the top.
+    header.set_show_back_button(false);
+    let window_title = adw::WindowTitle::new("پیشنهاد قیمت", "سرو · فضای کار محلی");
+    header.set_title_widget(Some(&window_title));
+    let navigation = gtk::Button::from_icon_name("sidebar-show-symbolic");
+    navigation.set_widget_name("show-workspace-navigation");
+    navigation.set_tooltip_text(Some("نمایش یا پنهان کردن فهرست صفحه‌ها • F9"));
+    accessible_name(&navigation, "فهرست صفحه‌ها");
     header.pack_start(&navigation);
     root.add_top_bar(&header);
-    let body = adw::NavigationSplitView::new();
+    let body = adw::OverlaySplitView::new();
     body.set_min_sidebar_width(240.0);
-    body.set_max_sidebar_width(270.0);
-    body.set_sidebar_width_fraction(0.19);
-    body.set_show_content(true);
-    let split = body.clone();
-    navigation.connect_clicked(move |_| split.set_show_content(!split.shows_content()));
-    navigation.set_visible(body.is_collapsed());
+    body.set_max_sidebar_width(280.0);
+    body.set_sidebar_width_fraction(0.20);
+    body.set_show_sidebar(true);
+    navigation.update_state(&[gtk::accessible::State::Expanded(Some(true))]);
     let nav_toggle = navigation.clone();
-    body.connect_collapsed_notify(move |split| nav_toggle.set_visible(split.is_collapsed()));
+    body.connect_show_sidebar_notify(move |split| {
+        nav_toggle.update_state(&[gtk::accessible::State::Expanded(Some(
+            split.shows_sidebar(),
+        ))]);
+        if split.is_collapsed() && !split.shows_sidebar() {
+            nav_toggle.grab_focus();
+        }
+    });
     let breakpoint = adw::Breakpoint::new(
         adw::BreakpointCondition::parse("max-width: 1050px").expect("constant breakpoint"),
     );
     breakpoint.add_setter(&body, "collapsed", Some(&true.to_value()));
+    breakpoint.add_setter(&body, "show-sidebar", Some(&false.to_value()));
     adw_window.add_breakpoint(breakpoint);
     let nav = column();
+    nav.set_spacing(0);
     nav.add_css_class("sidebar");
-    nav.set_width_request(166);
-    nav.append(&workspace::sidebar_header(
+    let sidebar_toolbar = adw::ToolbarView::new();
+    let sidebar_header = adw::HeaderBar::new();
+    sidebar_header.set_title_widget(Some(&workspace::sidebar_header(
         &store.state.settings.business_name,
-    ));
+    )));
+    let sidebar_close = gtk::Button::from_icon_name("window-close-symbolic");
+    accessible_name(&sidebar_close, "بستن فهرست صفحه‌ها");
+    sidebar_close.set_tooltip_text(Some("بستن فهرست صفحه‌ها"));
+    sidebar_close.set_visible(body.is_collapsed());
+    let close_button = sidebar_close.clone();
+    body.connect_collapsed_notify(move |split| close_button.set_visible(split.is_collapsed()));
+    let split = body.downgrade();
+    sidebar_close.connect_clicked(move |_| {
+        if let Some(split) = split.upgrade() {
+            split.set_show_sidebar(false);
+        }
+    });
+    sidebar_header.pack_start(&sidebar_close);
+    sidebar_toolbar.add_top_bar(&sidebar_header);
+    sidebar_toolbar.set_content(Some(&nav));
     let stack = gtk::Stack::new();
+    // Hidden workspaces must not impose their minimum height on this page.
+    stack.set_vhomogeneous(false);
     stack.set_hexpand(true);
     stack.set_vexpand(true);
     stack.set_transition_type(gtk::StackTransitionType::Crossfade);
-    body.set_sidebar(Some(&adw::NavigationPage::new(&nav, "میز کار")));
-    body.set_content(Some(&adw::NavigationPage::new(&stack, "پیشنهاد قیمت")));
-    root.set_content(Some(&body));
-    let status = label("آماده • قیمت‌ها تنها از فهرست تأییدشده می‌آیند");
+    body.set_sidebar(Some(&sidebar_toolbar));
+    root.set_content(Some(&stack));
+    body.set_content(Some(&root));
+    let status = label("آماده • فضای کار محلی");
     status.add_css_class("status");
     root.add_bottom_bar(&status);
     let order_shell = column();
@@ -950,10 +1217,20 @@ fn build(app: &gtk::Application, store: Store) {
     catalog_choice.set_enable_search(true);
     let unit = gtk::DropDown::from_strings(&["تومان", "ریال"]);
     let reference = entry("شمارهٔ سفارش مشتری (اختیاری)");
-    let quote_date = entry("YYYY-MM-DD");
-    quote_date.set_direction(gtk::TextDirection::Ltr);
-    let valid_until = entry("YYYY-MM-DD • اختیاری");
-    valid_until.set_direction(gtk::TextDirection::Ltr);
+    let quote_date = accounting::date_field_with_preferences(
+        store.state.settings.date_display,
+        store.state.settings.display_digits,
+        "تاریخ پیشنهاد",
+        "quote-date",
+        &store.state.draft.quote_date,
+    );
+    let valid_until = accounting::date_field_with_preferences(
+        store.state.settings.date_display,
+        store.state.settings.display_digits,
+        "اعتبار تا • اختیاری",
+        "quote-valid-until",
+        &store.state.draft.valid_until,
+    );
     let customer_save = button("ذخیرهٔ مشتری");
     let metadata_fields: Vec<gtk::Widget> = vec![
         field("مشتری", &customer_control).upcast(),
@@ -983,8 +1260,8 @@ fn build(app: &gtk::Application, store: Store) {
     optional.set_column_homogeneous(true);
     let optional_fields: Vec<gtk::Widget> = vec![
         field("مرجع مشتری", &reference).upcast(),
-        field("تاریخ پیشنهاد • میلادی", &quote_date).upcast(),
-        field("اعتبار تا • میلادی", &valid_until).upcast(),
+        quote_date.widget.clone().upcast(),
+        valid_until.widget.clone().upcast(),
         customer_save.clone().upcast(),
     ];
     for (i, widget) in optional_fields.iter().enumerate() {
@@ -1000,9 +1277,8 @@ fn build(app: &gtk::Application, store: Store) {
             adaptive_optional.attach(widget, (i % columns) as i32, (i / columns) as i32, 1, 1);
         }
     });
-    let details = gtk::Expander::new(Some("جزئیات پیشنهاد • تاریخ، اعتبار و مرجع"));
+    let details = expander_with_child("جزئیات پیشنهاد • تاریخ، اعتبار و مرجع", &optional);
     details.set_widget_name("quote-details");
-    details.set_child(Some(&optional));
     order_page.append(&details);
     let source_hint = label("");
     source_hint.add_css_class("muted");
@@ -1067,8 +1343,7 @@ fn build(app: &gtk::Application, store: Store) {
     let note_scroll = scroll(&notes);
     note_scroll.set_height_request(55);
     note_scroll.set_vexpand(false);
-    let note_expander = gtk::Expander::new(Some("یادداشت برای مشتری"));
-    note_expander.set_child(Some(&note_scroll));
+    let note_expander = expander_with_child("یادداشت برای مشتری", &note_scroll);
     remarks.append(&note_expander);
     let order = gtk::TextView::new();
     accessible_name(&order, "متن CSV سفارش • item,quantity");
@@ -1078,8 +1353,7 @@ fn build(app: &gtk::Application, store: Store) {
     let order_scroll = scroll(&order);
     order_scroll.set_height_request(95);
     order_scroll.set_vexpand(false);
-    let advanced = gtk::Expander::new(Some("ویرایش متن CSV سفارش"));
-    advanced.set_child(Some(&order_scroll));
+    let advanced = expander_with_child("ویرایش متن CSV سفارش", &order_scroll);
     remarks.append(&advanced);
     remarks.append(&label(
         "قیمت فقط از فهرست تأییدشده • این پیشنهاد سند حسابداری نیست",
@@ -1157,21 +1431,48 @@ fn build(app: &gtk::Application, store: Store) {
     let backup_page = column();
     backup_page.add_css_class("page");
     backup_page.append(&heading("پشتیبان و بازیابی"));
-    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادهای تأییدشده و پیش‌نویس است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
+    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای فروش، خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
     let backup = button("ساخت پشتیبان JSON");
     let restore = button("انتخاب پشتیبان و بررسی بازیابی");
     backup_page.append(&backup);
     backup_page.append(&restore);
-    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…6 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nاین محصول پیشنهاد قیمت v1 است. موجودی، پرداخت، مالیات و سند حسابداری ثبت نمی‌کند.",store.directory.display())));
+    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+0 فروش • Alt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش با تحویل/صورتحساب هم‌زمان و برگشت با بهای اصلی فراهم است؛ تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
+    let destinations = gtk::ListBox::new();
+    destinations.set_widget_name("workspace-destinations");
+    destinations.add_css_class("navigation-sidebar");
+    destinations.set_selection_mode(gtk::SelectionMode::Single);
+    accessible_name(&destinations, "صفحه‌های فضای کار");
+    destinations.set_header_func(|item, _| {
+        let group = match item.widget_name().as_str() {
+            "navigation-order" => Some("پیشنهادها"),
+            "navigation-customers" => Some("کالا و مشتری"),
+            "navigation-accounting" => Some("حسابداری"),
+            _ => None,
+        };
+        if let Some(group) = group {
+            let caption = label(group);
+            caption.add_css_class("navigation-group");
+            item.set_header(Some(&caption));
+        } else {
+            item.set_header(None::<&gtk::Widget>);
+        }
+    });
+    let utilities = gtk::ListBox::new();
+    utilities.add_css_class("navigation-sidebar");
+    utilities.set_selection_mode(gtk::SelectionMode::Single);
+    accessible_name(&utilities, "تنظیمات و نگهداری داده");
     let mut nav_counts = vec![];
-    for (i, name, caption, icon, group) in [
+    let mut nav_rows = vec![];
+    for (i, name, caption, icon, _group, description, utility) in [
         (
             1,
             "order",
             "پیشنهاد قیمت",
             "document-edit-symbolic",
-            Some("میز کار"),
+            Some("پیشنهادها"),
+            None,
+            false,
         ),
         (
             4,
@@ -1179,21 +1480,71 @@ fn build(app: &gtk::Application, store: Store) {
             "بایگانی پیشنهادها",
             "document-open-recent-symbolic",
             None,
+            None,
+            false,
         ),
         (
             3,
             "customers",
             "مشتری‌ها",
             "system-users-symbolic",
-            Some("دفترها"),
+            Some("کالا و مشتری"),
+            None,
+            false,
         ),
-        (2, "catalog", "کالاها و قیمت‌ها", "view-list-symbolic", None),
+        (
+            2,
+            "catalog",
+            "کالاها و قیمت‌ها",
+            "view-list-symbolic",
+            None,
+            None,
+            false,
+        ),
+        (
+            7,
+            "accounting",
+            "دفتر حسابداری",
+            "accessories-calculator-symbolic",
+            Some("حسابداری"),
+            Some("شرکت، اسناد و تراز آزمایشی"),
+            false,
+        ),
+        (
+            0,
+            "sales",
+            "فروش‌ها",
+            "document-send-symbolic",
+            None,
+            Some("سفارش، تحویل و صورتحساب، برگشت"),
+            false,
+        ),
+        (
+            8,
+            "procurement",
+            "خریدها",
+            "view-list-symbolic",
+            None,
+            Some("سفارش، دریافت کالا و صورتحساب"),
+            false,
+        ),
+        (
+            9,
+            "inventory",
+            "موجودی و انتقال",
+            "folder-symbolic",
+            None,
+            Some("مقدار، ارزش و گردش انبار"),
+            false,
+        ),
         (
             5,
             "backup",
             "پشتیبان و بازیابی",
             "document-save-symbolic",
-            Some("برنامه"),
+            None,
+            None,
+            true,
         ),
         (
             6,
@@ -1201,41 +1552,94 @@ fn build(app: &gtk::Application, store: Store) {
             "تنظیمات",
             "preferences-system-symbolic",
             None,
+            None,
+            true,
         ),
     ] {
-        if let Some(group) = group {
-            nav.append(&workspace::navigation_group(group));
-        }
-        let item = workspace::navigation_row(caption, icon, &format!("Alt+{i}"));
-        item.set_count(None);
-        let b = item.button;
-        nav_counts.push((name, item.count));
+        let list = if utility { &utilities } else { &destinations };
+        let (item, count) =
+            sidebar_destination(name, caption, icon, &format!("Alt+{i}"), description);
+        nav_counts.push((name, count));
+        list.append(&item);
+        nav_rows.push((name, caption, item, list.clone()));
+    }
+    for list in [&destinations, &utilities] {
         let st = stack.clone();
-        let split = body.clone();
-        b.connect_clicked(move |b| {
-            b.set_active(true);
-            st.set_visible_child_name(name);
-            split.set_show_content(true);
-        });
-        let nav_button = b.clone();
-        stack.connect_visible_child_name_notify(move |st| {
-            if st.visible_child_name().as_deref() == Some(name) {
-                nav_button.set_active(true);
-            } else {
-                nav_button.set_active(false);
+        let split = body.downgrade();
+        list.connect_row_activated(move |_, item| {
+            let Some(split) = split.upgrade() else { return };
+            if let Some(name) = item.widget_name().strip_prefix("navigation-") {
+                st.set_visible_child_name(name);
+                if split.is_collapsed() {
+                    split.set_show_sidebar(false);
+                    st.child_focus(gtk::DirectionType::TabForward);
+                }
             }
         });
-        if name == "order" {
-            b.set_active(true);
-        }
-        nav.append(&b);
     }
-    let space = column();
-    space.set_vexpand(true);
-    nav.append(&space);
-    let local = label("ذخیرهٔ محلی");
-    local.add_css_class("muted");
-    nav.append(&local);
+    let rows = nav_rows.clone();
+    let primary = destinations.clone();
+    let secondary = utilities.clone();
+    let title = window_title.clone();
+    let shell_window = window.downgrade();
+    stack.connect_visible_child_name_notify(move |st| {
+        let Some(name) = st.visible_child_name() else {
+            return;
+        };
+        primary.unselect_all();
+        secondary.unselect_all();
+        for (page, caption, item, list) in &rows {
+            let current = *page == name.as_str();
+            item.update_property(&[gtk::accessible::Property::Description(if current {
+                "صفحهٔ کنونی"
+            } else {
+                "باز کردن صفحه با Enter"
+            })]);
+            if current {
+                item.add_css_class("current-page");
+                list.select_row(Some(item));
+                title.set_title(caption);
+                if let Some(window) = shell_window.upgrade() {
+                    window.set_title(Some(&format!("سرو | {caption}")));
+                }
+            } else {
+                item.remove_css_class("current-page");
+            }
+        }
+    });
+    nav_rows[0].2.add_css_class("current-page");
+    destinations.select_row(Some(&nav_rows[0].2));
+    nav.append(&scroll(&destinations));
+    let footer = column();
+    footer.set_spacing(8);
+    footer.add_css_class("navigation-footer");
+    footer.append(&utilities);
+    let local = row();
+    local.set_spacing(6);
+    local.add_css_class("navigation-local");
+    let local_icon = gtk::Image::from_icon_name("computer-symbolic");
+    local_icon.set_pixel_size(14);
+    local.append(&local_icon);
+    local.append(&label("داده‌ها روی این رایانه"));
+    footer.append(&local);
+    nav.append(&footer);
+    let split = body.downgrade();
+    let rows = nav_rows.clone();
+    let st = stack.clone();
+    navigation.connect_clicked(move |_| {
+        let Some(split) = split.upgrade() else { return };
+        split.set_show_sidebar(!split.shows_sidebar());
+        if split.shows_sidebar() {
+            if let Some((_, _, item, _)) = rows
+                .iter()
+                .find(|(name, _, _, _)| Some(*name) == st.visible_child_name().as_deref())
+            {
+                item.grab_focus();
+            }
+        } else {
+            st.child_focus(gtk::DirectionType::TabForward);
+        }
+    });
     let ui = Rc::new(Ui {
         store: RefCell::new(store),
         window: window.clone(),
@@ -1250,6 +1654,10 @@ fn build(app: &gtk::Application, store: Store) {
         stale,
         catalog_choice,
         review,
+        review_cache: RefCell::new(None),
+        review_requested: Cell::new(None),
+        review_request_serial: Cell::new(0),
+        review_focus: RefCell::new(None),
         total,
         subtotal,
         tax,
@@ -1281,13 +1689,49 @@ fn build(app: &gtk::Application, store: Store) {
         displayed_unit: Cell::new(Unit::Toman),
         pending: RefCell::new(None),
         active_dialog: RefCell::new(None),
+        dialog_return_focus: RefCell::new(None),
         background_busy: Cell::new(false),
+        persistence_busy: Cell::new(false),
+        edit_revision: Cell::new(0),
+        close_after_save: Cell::new(false),
+        pending_save_action: RefCell::new(None),
         nav_counts,
     });
+    editor::install_review_focus_guard(&ui);
     ui.refresh_settings();
+    ui.stack
+        .add_named(&accounting::build(&ui), Some("accounting"));
+    ui.stack.add_named(
+        &procurement::build(
+            &ui,
+            procurement::PageKind::Purchases,
+            accounting::command_runner(&ui),
+        ),
+        Some("procurement"),
+    );
+    ui.stack.add_named(
+        &procurement::build(
+            &ui,
+            procurement::PageKind::Inventory,
+            accounting::command_runner(&ui),
+        ),
+        Some("inventory"),
+    );
+    ui.stack.add_named(&sales::build(&ui), Some("sales"));
+    let weak_sales = Rc::downgrade(&ui);
+    ui.stack.connect_visible_child_name_notify(move |stack| {
+        if stack.visible_child_name().as_deref() == Some("sales")
+            && let Some(ui) = weak_sales.upgrade()
+        {
+            sales::refresh_all(&ui);
+        }
+    });
     ui.fill_form();
     ui.refresh_review();
     ui.refresh_lists();
+    // All workspace pages now exist; apply persisted appearance and digits to
+    // their initial labels once. Later list updates format only rebuilt lists.
+    settings::apply(&ui);
     ui.wire_product_picker();
     let weak = Rc::downgrade(&ui);
     select_customer.connect_clicked(move |_| {
@@ -1306,8 +1750,8 @@ fn build(app: &gtk::Application, store: Store) {
         &ui.phone,
         &ui.discount,
         &ui.reference,
-        &ui.quote_date,
-        &ui.valid_until,
+        &ui.quote_date.entry,
+        &ui.valid_until.entry,
     ] {
         let weak = Rc::downgrade(&ui);
         e.connect_changed(move |_| {
@@ -1388,12 +1832,7 @@ fn build(app: &gtk::Application, store: Store) {
     }
     let u = ui.clone();
     save.connect_clicked(move |_| {
-        let r = u.save_form();
-        let success = r.is_ok();
-        u.message(r.map(|()| "پیش‌نویس ذخیره شد"));
-        if success {
-            u.refresh_review();
-        }
+        u.save_form_async_then(|ui| ui.refresh_review());
     });
     let u = ui.clone();
     approve.connect_clicked(move |_| u.approve());
@@ -1468,12 +1907,25 @@ fn build(app: &gtk::Application, store: Store) {
         }
     });
     let keys = gtk::EventControllerKey::new();
+    // Workspace shortcuts must run before focused composite controls consume
+    // their own key bindings. Modal editors still keep their local shortcuts.
+    keys.set_propagation_phase(gtk::PropagationPhase::Capture);
     let u = ui.clone();
+    let navigation_toggle = navigation.clone();
     keys.connect_key_pressed(move |_, key, _, mods| {
         // Modal editors own their shortcuts; window commands must not replace
         // the underlying draft or navigate away while a dialog is open.
         if u.active_dialog.borrow().is_some() {
             return glib::Propagation::Proceed;
+        }
+        if key == gtk::gdk::Key::F9 {
+            navigation_toggle.emit_clicked();
+            return glib::Propagation::Stop;
+        }
+        if key == gtk::gdk::Key::Escape && u.split.is_collapsed() && u.split.shows_sidebar() {
+            u.split.set_show_sidebar(false);
+            navigation_toggle.grab_focus();
+            return glib::Propagation::Stop;
         }
         if mods.contains(gtk::gdk::ModifierType::CONTROL_MASK) {
             match key {
@@ -1493,12 +1945,7 @@ fn build(app: &gtk::Application, store: Store) {
                         }
                         return glib::Propagation::Stop;
                     }
-                    let r = u.save_form();
-                    let success = r.is_ok();
-                    u.message(r.map(|()| "ذخیره شد"));
-                    if success {
-                        u.refresh_review();
-                    }
+                    u.save_form_async_then(|ui| ui.refresh_review());
                 }
                 gtk::gdk::Key::k | gtk::gdk::Key::K => {
                     if u.stack.visible_child_name().as_deref() == Some("order") {
@@ -1519,26 +1966,45 @@ fn build(app: &gtk::Application, store: Store) {
                             u.search_quote.grab_focus();
                         }
                         Some("order") => u.open_customer_picker(),
+                        Some("accounting" | "procurement" | "inventory" | "sales") => {
+                            if !u
+                                .stack
+                                .visible_child()
+                                .is_some_and(|page| focus_page_search(&page))
+                            {
+                                return glib::Propagation::Proceed;
+                            }
+                        }
                         _ => return glib::Propagation::Proceed,
                     }
                 }
-                gtk::gdk::Key::n | gtk::gdk::Key::N => u.new_draft(),
+                gtk::gdk::Key::n | gtk::gdk::Key::N => {
+                    if u.stack.visible_child_name().as_deref() == Some("sales") {
+                        sales::new_order(&u);
+                    } else {
+                        u.new_draft();
+                    }
+                }
                 _ => return glib::Propagation::Proceed,
             }
             return glib::Propagation::Stop;
         }
         if mods.contains(gtk::gdk::ModifierType::ALT_MASK) {
             let page = match key {
+                gtk::gdk::Key::_0 => "sales",
                 gtk::gdk::Key::_1 => "order",
                 gtk::gdk::Key::_2 => "catalog",
                 gtk::gdk::Key::_3 => "customers",
                 gtk::gdk::Key::_4 => "quotes",
                 gtk::gdk::Key::_5 => "backup",
                 gtk::gdk::Key::_6 => "settings",
+                gtk::gdk::Key::_7 => "accounting",
+                gtk::gdk::Key::_8 => "procurement",
+                gtk::gdk::Key::_9 => "inventory",
                 _ => return glib::Propagation::Proceed,
             };
             u.stack.set_visible_child_name(page);
-            u.split.set_show_content(true);
+            u.show_workspace_content();
             return glib::Propagation::Stop;
         }
         glib::Propagation::Proceed
@@ -1546,8 +2012,29 @@ fn build(app: &gtk::Application, store: Store) {
     window.add_controller(keys);
     let u = ui.clone();
     window.connect_close_request(move |_| {
+        if sales::has_unsaved(&u) {
+            sales::explain_unsaved(&u);
+            return glib::Propagation::Stop;
+        }
         if let Some(p) = u.pending.borrow_mut().take() {
             p.remove();
+        }
+        if u.persistence_busy.get() {
+            u.close_after_save.set(true);
+            u.message(Ok("پس از ذخیرهٔ امن، برنامه بسته می‌شود…"));
+            return glib::Propagation::Stop;
+        }
+        match u.form_draft() {
+            Ok((_, false)) => {
+                u.close_after_save.set(true);
+                u.save_form_async();
+                return glib::Propagation::Stop;
+            }
+            Err(error) => {
+                u.message(Err::<String, _>(error));
+                return glib::Propagation::Stop;
+            }
+            _ => {}
         }
         if let Err(e) = u.save_form() {
             u.message(Err::<String, _>(e));
@@ -1574,7 +2061,7 @@ fn build(app: &gtk::Application, store: Store) {
                         }
                         "save" => {
                             ui.stack.set_visible_child_name("settings");
-                            ui.split.set_show_content(true);
+                            ui.show_workspace_content();
                             if let Some(page) = ui.stack.child_by_name("settings") {
                                 activate_named_button(&page, "save-settings");
                             }
@@ -1591,9 +2078,14 @@ fn build(app: &gtk::Application, store: Store) {
         }
         glib::Propagation::Proceed
     });
-    adw_window.set_content(Some(&root));
+    adw_window.set_content(Some(&body));
     window.present();
     ui.customer.grab_focus();
+    accounting::schedule(&ui);
+    procurement::schedule(&ui);
+    sales::schedule(&ui);
+    core::start_core_smoke(&ui);
     smoke::schedule(&ui, &approve);
     responsiveness::schedule(&ui);
+    editor::schedule_quote_callback_qa(&ui);
 }

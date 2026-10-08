@@ -1,0 +1,210 @@
+{
+  "result": "failed",
+  "binary_sha256": "7b390bb6287b6803081b743e676f196de17840e9e6346e0d4c507f4d3fa81a4a",
+  "source": "/workspace/sarv-quote/artifacts/product-native/run-829mv1xc",
+  "profile": "/workspace/sarv-quote/artifacts/product-native/run-0jzshuso",
+  "checks": [
+    {
+      "name": "Actual focused name field belongs to visible composer dialog",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "other",
+        "focus_bounds": [
+          18.0,
+          286.0,
+          1076.0,
+          61.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          198.0,
+          1076.0,
+          687.0
+        ],
+        "focus_label": null,
+        "focus_name": "AdwActionRow",
+        "focus_scope": "window",
+        "focus_type": "AdwActionRow",
+        "key": "Return",
+        "page": "catalog",
+        "quotes": 4,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "ancestry": [
+        {
+          "role": "text",
+          "name": "نام فهرست"
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "scroll pane",
+          "name": ""
+        },
+        {
+          "role": "grouping",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "dialog",
+          "name": "ساخت نسخهٔ تازهٔ فهرست"
+        },
+        {
+          "role": "panel",
+          "name": ""
+        },
+        {
+          "role": "frame",
+          "name": "سرو | آماده‌سازی پیشنهاد قیمت"
+        },
+        {
+          "role": "application",
+          "name": "sarv-M4-freeze5"
+        }
+      ]
+    },
+    {
+      "name": "Modified Escape preserves composer and edited input",
+      "passed": true
+    },
+    {
+      "name": "Dropdown Escape closes only popup and retains composer input",
+      "passed": true
+    }
+  ],
+  "resumed_debug": true,
+  "input": "Private Xvfb XTest and owned-process native AT-SPI actions",
+  "modal_focus_observation": {
+    "actual_focused_field": true,
+    "accessible_ancestry": [
+      {
+        "role": "text",
+        "name": "نام فهرست"
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "scroll pane",
+        "name": ""
+      },
+      {
+        "role": "grouping",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "dialog",
+        "name": "ساخت نسخهٔ تازهٔ فهرست"
+      },
+      {
+        "role": "panel",
+        "name": ""
+      },
+      {
+        "role": "frame",
+        "name": "سرو | آماده‌سازی پیشنهاد قیمت"
+      },
+      {
+        "role": "application",
+        "name": "sarv-M4-freeze5"
+      }
+    ],
+    "latest_window_event": {
+      "dialog_open": false,
+      "dialog_title": null,
+      "focus": "other",
+      "focus_bounds": [
+        18.0,
+        286.0,
+        1076.0,
+        61.0
+      ],
+      "focus_clip_bounds": [
+        18.0,
+        198.0,
+        1076.0,
+        687.0
+      ],
+      "focus_label": null,
+      "focus_name": "AdwActionRow",
+      "focus_scope": "window",
+      "focus_type": "AdwActionRow",
+      "key": "Return",
+      "page": "catalog",
+      "quotes": 4,
+      "settings_dirty": false,
+      "window_size": [
+        1390,
+        930
+      ]
+    },
+    "limitation": "Window key-controller events may not observe subsequent modal key events; actual focused field ancestry is authoritative here"
+  },
+  "captures": {
+    "currency-popover-before-Escape.png": {
+      "page": "catalog",
+      "geometry": [
+        1400,
+        940
+      ]
+    }
+  },
+  "error": "RuntimeError('Timed out waiting for condition')"
+}

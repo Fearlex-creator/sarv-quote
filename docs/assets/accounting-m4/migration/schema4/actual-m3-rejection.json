@@ -1,0 +1,9 @@
+{
+  "committed_row_unchanged": true,
+  "exit_code": 1,
+  "old_binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "old_schema": 4,
+  "rejected_schema": 5,
+  "result": "passed",
+  "stderr": "Error: نسخهٔ داده پشتیبانی نمی‌شود\n"
+}

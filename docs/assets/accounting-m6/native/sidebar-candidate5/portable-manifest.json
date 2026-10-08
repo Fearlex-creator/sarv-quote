@@ -1,0 +1,30 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/sidebar-native/run-bii2ljf4",
+  "files": {
+    "accounting-narrow-dark.png": "6c22bd777f96bcc137e03e5426a2af82ccc033bf9e0f98d3ef000f336b45c1a5",
+    "accounting-narrow-history-light.png": "32b81c1baff70c0a00f07e777da3a093b3abf55b413bf56e124397ab285bb60d",
+    "accounting-narrow-light.png": "8f5beb93b95b582d92e8030e89ebb379e2c1b1ba620e61c90bc0e30669af747f",
+    "initial.png": "8d878968772e698677d2e6178211cb3a9949a7a642a1e54276816e7eb994546d",
+    "keyboard-events.jsonl": "889bfa1c02ce29f0ce9c6229dd64912d25cc1ca3d9b501a1d50c74e535f1ef7a",
+    "native-sidebar-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-sidebar.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "restart.png": "2d7bfd9198b4038b5a37dfd55ef71bf438e5546080ac7b8fceb9e37d337c7b11",
+    "shell-wide-hidden-page-change.png": "9d1425877878a629cd36a6b71bce060ca199ce6ae3b15e99eb6fefa11d7f450c",
+    "shell-wide-sidebar-hidden.png": "0774e8952f4db9e3e1d0aafe00c8269e019447e62f027a7d0683064b83fbebf5",
+    "shell-wide-sidebar-restored.png": "5ad25f9fa0fa8971f4abf45182d25039e41bd5465f54452a57f34760c39d23b3",
+    "sidebar-narrow-dark-focus.png": "5d61bcbb39ba8496af91eff0934f144d2fd230e544985e45642d4f07313ae751",
+    "sidebar-narrow-light-focus.png": "94455aa8290dcc49851124b808186ee2a877d93d12a1423127eb88d44798b34b",
+    "sidebar-standard-dark.png": "edba6c5ec304793a226af3a418fcaf448ca907d85998638e68bcfdd3f597e015",
+    "sidebar-standard-light-focus.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-standard-light.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-verification.json": "3d41498199ba6b8b22635c30c67a2ad3335b86eff4098e79c32698df344dd18b",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "checks": 31,
+  "result": "passed",
+  "binary_sha256": "355e975c473e22da3ca37ada1893de029279c4c167b4c7876a6e0d3f0b62a94d",
+  "production_source_sha256": "9241e35e3f7a9a324ffaae9a670212e2d1fb1e4fa792fd6dd99af92812ab942a",
+  "observer_sha256": "54142b2db609f2ffd26baff028e9670ec7a720ed0db1ec90cf6aee56aa57ac97",
+  "scope": "Actual native wide F9/titlebar collapse, page switching with sidebar hidden, narrow overlay, keyboard/focus, light/dark/appearance/restart; before frozen runtime74 and after source checks."
+}

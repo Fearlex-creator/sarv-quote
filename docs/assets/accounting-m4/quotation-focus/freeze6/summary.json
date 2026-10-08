@@ -1,0 +1,88 @@
+{
+  "status": "Actual freeze6 quotation38 and scoped Escape6 passed",
+  "binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "production_source_sha256": "4545e5f018a80a9f403c686ecd19ee2ec66bbc683c6a8d80bb293ba6dd98fc14",
+  "cases": [
+    {
+      "case": "full28",
+      "result": "passed",
+      "checks": 28,
+      "original_profile": "artifacts/product-native/run-h4yc8bxg",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze6/full28/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-h4yc8bxg/app.log",
+        "artifacts/product-native/run-h4yc8bxg/xvfb.log",
+        "artifacts/product-native/run-h4yc8bxg/openbox.log",
+        "artifacts/product-native/run-h4yc8bxg/restart.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary6; no LD_PRELOAD shim"
+    },
+    {
+      "case": "disclosure4",
+      "result": "passed",
+      "checks": 4,
+      "original_profile": "artifacts/product-native/run-xtr160ge",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze6/disclosure4/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-xtr160ge/app.log",
+        "artifacts/product-native/run-xtr160ge/xvfb.log",
+        "artifacts/product-native/run-xtr160ge/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary6; no LD_PRELOAD shim"
+    },
+    {
+      "case": "modal3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-mkdjbqxn",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze6/modal3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-mkdjbqxn/app.log",
+        "artifacts/product-native/run-mkdjbqxn/xvfb.log",
+        "artifacts/product-native/run-mkdjbqxn/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary6; no LD_PRELOAD shim"
+    },
+    {
+      "case": "failure3",
+      "result": "passed",
+      "checks": 3,
+      "original_profile": "artifacts/product-native/run-s5bov03a",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze6/failure3/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-s5bov03a/app.log",
+        "artifacts/product-native/run-s5bov03a/xvfb.log",
+        "artifacts/product-native/run-s5bov03a/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary6; no LD_PRELOAD shim"
+    },
+    {
+      "case": "escape6",
+      "result": "passed",
+      "checks": 6,
+      "original_profile": "artifacts/product-native/run-uq36csiy",
+      "report": "docs/assets/accounting-m4/quotation-focus/freeze6/escape6/product-verification.json",
+      "actual_gtk_adwaita_glib_warning_critical_lines": [],
+      "logs_scanned": [
+        "artifacts/product-native/run-uq36csiy/app.log",
+        "artifacts/product-native/run-uq36csiy/xvfb.log",
+        "artifacts/product-native/run-uq36csiy/openbox.log"
+      ],
+      "mode": "G_DEBUG=fatal-criticals; immutable binary6; no LD_PRELOAD shim"
+    }
+  ],
+  "current_source_differences_at_collection": [],
+  "observer_sha256": {
+    "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+    "artifacts/m4-quote-diagnostics/repeat-final/disclosure4.py": "5778c8e35ed367d17980dfbb6ca6c2544d819a2abf4187a2e33493d9dc166205",
+    "artifacts/m4-quote-diagnostics/repeat-final/escape6.py": "887e2f4c907b75845cd990ae72acfdba305293b4374a5751bd32be1666039470",
+    "artifacts/m4-quote-diagnostics/repeat-final/failure3.py": "3b7ea7b9e1efcaf3584cbc18287a3b1fb48089d3cccc81e774907e0592f9d676",
+    "artifacts/m4-quote-diagnostics/repeat-final/full28.py": "ec5dceaf7eb1025cd59c5a59c2059fbe49a4bb412fb94103ff654cefe6d65aff",
+    "artifacts/m4-quote-diagnostics/repeat-final/modal3.py": "8d1458bf3edde6e08b5b549ce2b2489ed454564d85ed08100b30a4e1507a4cb1"
+  },
+  "escape_limits": "Actual focused name-field AT-SPI ancestry proves Composer ownership. Real later events report dialog scope; initial window event can be stale. Exact header/FlowBox focus not witnessed; plain Escape tests actual name-field. Nested native dismissal tests keyboard-focused Save, not SearchEntry stop-search. Historical freeze5 scope/observer failures remain separate. Window-only capture omits popup surface; popup ownership uses visible-option states and actual Escape."
+}

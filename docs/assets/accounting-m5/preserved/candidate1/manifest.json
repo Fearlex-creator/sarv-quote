@@ -1,0 +1,83 @@
+{
+  "root_manifest": "docs/assets/accounting-m5/checks/candidate1/manifest.json",
+  "binary_sha256": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "production_source_sha256": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+  "checks": [
+    {
+      "label": "core",
+      "command": "dbus-run-session -- python3 scripts/core-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 51.12716088099842,
+      "observer_sha256": {
+        "scripts/a11y_audit.py": "7c97a7f703a3793c219edcbe85031365345b0faa4463936c2dceb13e05bc9815",
+        "scripts/native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+        "scripts/jalali-qa.py": "c88b58cdda1b989d3d84d5c30c85c695c410d697870231d9f658771c85269bfb",
+        "scripts/native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+        "scripts/sales-qa.py": "1e53193a5dfb14f7b55d2316e72996e8825ae00978c3c4bd2bc5b5b660146264",
+        "scripts/core-qa.py": "d117f430f7e31267cc595a11a7e2c9619ea8ba13ceb4716e5e7eb900ce78b1dd",
+        "scripts/native-sidebar-qa.py": "a7044ea1ef46a0ba56f1d009aa26b8d63b296284464a27e4265d03e899d21874",
+        "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+        "scripts/accounting-qa.py": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+        "scripts/native-performance-M5.py": "8c571f4d00d3c35797ac15aedd16a4c8c317b04b27e338a25f5d2bfe2ac315a3",
+        "scripts/qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+        "scripts/native-save-close.py": "4bf70626a7c82e7d2054809c717391fcaa6c1d586194ba8018307c40ede554d9",
+        "scripts/procurement-qa.py": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+        "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+        "scripts/native-performance-M3.py": "9e7439e7b96f3ba866ea7c49e6980e2e4af040a65aad6f9b5d5aac6b901fe733",
+        "scripts/accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956"
+      },
+      "log_sha256": "f5b7c3108565430415f8e8aa45cd0aefcc4714c04ebffa7d79325a7bee090e31"
+    },
+    {
+      "label": "jalali",
+      "command": "dbus-run-session -- python3 scripts/jalali-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 46.67282157899899,
+      "observer_sha256": {
+        "scripts/a11y_audit.py": "7c97a7f703a3793c219edcbe85031365345b0faa4463936c2dceb13e05bc9815",
+        "scripts/native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+        "scripts/jalali-qa.py": "c88b58cdda1b989d3d84d5c30c85c695c410d697870231d9f658771c85269bfb",
+        "scripts/native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+        "scripts/sales-qa.py": "1e53193a5dfb14f7b55d2316e72996e8825ae00978c3c4bd2bc5b5b660146264",
+        "scripts/core-qa.py": "d117f430f7e31267cc595a11a7e2c9619ea8ba13ceb4716e5e7eb900ce78b1dd",
+        "scripts/native-sidebar-qa.py": "a7044ea1ef46a0ba56f1d009aa26b8d63b296284464a27e4265d03e899d21874",
+        "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+        "scripts/accounting-qa.py": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+        "scripts/native-performance-M5.py": "e044804103616a92747241047ca9025b2d79f183126f00f3339022fb6b17fc24",
+        "scripts/qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+        "scripts/native-save-close.py": "4bf70626a7c82e7d2054809c717391fcaa6c1d586194ba8018307c40ede554d9",
+        "scripts/procurement-qa.py": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+        "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+        "scripts/native-performance-M3.py": "9e7439e7b96f3ba866ea7c49e6980e2e4af040a65aad6f9b5d5aac6b901fe733",
+        "scripts/accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956"
+      },
+      "log_sha256": "4c1c208b694051ed70f51bd68f6eb38f5e4295c9b17dacb00e68ef1ff2fc48ef"
+    },
+    {
+      "label": "sidebar",
+      "command": "dbus-run-session -- python3 scripts/native-sidebar-qa.py",
+      "exit_code": 1,
+      "elapsed_seconds": 10.202557885997521,
+      "observer_sha256": {
+        "scripts/a11y_audit.py": "7c97a7f703a3793c219edcbe85031365345b0faa4463936c2dceb13e05bc9815",
+        "scripts/native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+        "scripts/jalali-qa.py": "c88b58cdda1b989d3d84d5c30c85c695c410d697870231d9f658771c85269bfb",
+        "scripts/native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+        "scripts/sales-qa.py": "1e53193a5dfb14f7b55d2316e72996e8825ae00978c3c4bd2bc5b5b660146264",
+        "scripts/core-qa.py": "d117f430f7e31267cc595a11a7e2c9619ea8ba13ceb4716e5e7eb900ce78b1dd",
+        "scripts/native-sidebar-qa.py": "a7044ea1ef46a0ba56f1d009aa26b8d63b296284464a27e4265d03e899d21874",
+        "scripts/product-qa.py": "8829eabea4724d93a2b9d31ac3d92b1ba24596d120b5a9f75bf48453109f75dd",
+        "scripts/accounting-qa.py": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+        "scripts/native-performance-M5.py": "e044804103616a92747241047ca9025b2d79f183126f00f3339022fb6b17fc24",
+        "scripts/qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+        "scripts/native-save-close.py": "4bf70626a7c82e7d2054809c717391fcaa6c1d586194ba8018307c40ede554d9",
+        "scripts/procurement-qa.py": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+        "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+        "scripts/native-performance-M3.py": "9e7439e7b96f3ba866ea7c49e6980e2e4af040a65aad6f9b5d5aac6b901fe733",
+        "scripts/accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956"
+      },
+      "log_sha256": "b4e4274a1d40da7bf9abb300de700f50ae60b89e07ee8206b3177e68e333fd1c"
+    }
+  ],
+  "passed": false
+}

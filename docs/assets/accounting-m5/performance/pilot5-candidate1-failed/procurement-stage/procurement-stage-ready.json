@@ -1,0 +1,12 @@
+{
+  "catalog_count": 1,
+  "note": "no smoke changes after ready; external observer owns preview/post",
+  "opening_journals": 1,
+  "phase": "unposted-order-native-forms",
+  "post_name": "procurement-order-save",
+  "preview_name": "procurement-preview",
+  "ready": true,
+  "resource_records": 4,
+  "search_name": "procurement-search",
+  "source_snapshot": "catalog ID/name/fingerprint/product/unit/date/IRR frozen through native picker"
+}

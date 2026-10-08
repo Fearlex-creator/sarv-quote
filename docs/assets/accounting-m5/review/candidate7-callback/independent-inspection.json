@@ -1,0 +1,19 @@
+{
+  "result": "passed13 bounded callback checks; no timing acceptance",
+  "epoch": "candidate7",
+  "source_sha256": "03aa9377ee5fd7a1568d34bb804c44c14e1d6c98db3e6492aafccbb89c410db0",
+  "binary_sha256": "7f83e3e60afe439e6d7e3af2b33e3b325547ce81190d11aa3d7492420b07a6d5",
+  "source36_binary_before_after_exact": true,
+  "callback_report_sha256": "08c2a45440e772b9cc95262ffb764fd9c0fd451cf831adf894888530d4488f8c",
+  "raw_sqlite_integrity": "ok",
+  "generation": 12,
+  "raw_payload_equals_portable_State": true,
+  "line_count": 211,
+  "literal_quantity_sum": 213000,
+  "literal_fixed_price": 1251,
+  "independent_total_IRR": 266463,
+  "quotes": 0,
+  "sales_drafts": 0,
+  "distribution_hashes_verified": "8 portable +1 local-only ignored SQLite",
+  "qualification": "local six-control traversal preserves all13 declared callback/page/invalid/Settingsfocus/Undo/identity/restart boundaries on actual C7; opt-in compiled/additive and cached accessibility qualification separately pending"
+}

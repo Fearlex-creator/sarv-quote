@@ -1,0 +1,34 @@
+{
+  "candidate": "candidate12",
+  "binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e",
+  "production_source_sha256": "a065b023e0d83fb4c41991382b990a9a746afb3f8bcbdf0ca23e2d00b45e8bed",
+  "main_acceptance": "passed83/83, material diagnostics empty; fresh identity37/37 passed",
+  "inspector": "native-diagnostics-fix agent",
+  "images": [
+    {
+      "path": "main/full/M5-sales-light-650x550-focused-source.png",
+      "sha256": "146b3109a2c48b7dfbf0522ce6c1ffb3d70695091deca15fcac1b30d4fb0e01e",
+      "personally_viewed": true,
+      "finding": "Fresh light650×550 current source action fully visible with blue focus ring; natural whole-page native scrolling preserves global navigation header."
+    },
+    {
+      "path": "main/full/M5-sales-dark-650x550-zero.png",
+      "sha256": "95cdbd952d1ca56fb932088ac4ba4cb25d484c266b8d484f533303f7ade10011",
+      "personally_viewed": true,
+      "finding": "Fresh dark650×550 all three commands, focused search, Persian zero-result count and empty state readable within available height."
+    },
+    {
+      "path": "main/detail-pages/M5-real-detail-last-page.png",
+      "sha256": "1edcc316dd4df5bc43fb4b2b511e975be07fd43494f87e9aabcc01d354a13cfd",
+      "personally_viewed": true,
+      "finding": "Fresh final source line029 visible; Previous has blue focus ring, Next disabled, summary26–32 of32; current native Window/Dialog and independent AT-SPI focus receipts passed."
+    },
+    {
+      "path": "main/stage/M5-stage-narrow-editor.png",
+      "sha256": "05f24e8caeb29991477c4c8d58ead005560aa4306e958b9db5ab6f03be83b8bc",
+      "personally_viewed": true,
+      "finding": "Fresh650×550 native saved editor: RTL customer labels, LTR selected SO-M5 reference and date readable; persistent footer Save/Review/Submit/Cancel all visible, body naturally scrolls."
+    }
+  ],
+  "scope": "Only these four fresh native images are represented by this inspection receipt; no inspection claim for other copied media."
+}

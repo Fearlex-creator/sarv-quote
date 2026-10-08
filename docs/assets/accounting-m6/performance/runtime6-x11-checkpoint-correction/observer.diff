@@ -1,0 +1,312 @@
+--- runtime5/scripts/native-performance-M6.py
++++ runtime6-prepared/scripts/native-performance-M6.py
+@@ -29,7 +29,7 @@
+ legacy = module_from_spec(SPEC)
+ SPEC.loader.exec_module(legacy)
+ helper, native = legacy.helper, legacy.native
+-PROTOCOL = 'm6-scoped-v1.1'
++PROTOCOL = 'm6-scoped-v1.2'
+ QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
+ PREVIEW = 'بازبینی مقدار و اثر سند'
+ POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
+@@ -293,11 +293,86 @@
+             'exact_new_journal': journals[0], 'all_lines_exact': True, 'original_whole_state_prefix_exact': True}
+ 
+ 
++class XErrorEvent(C.Structure):
++    _fields_ = [('type', C.c_int), ('display', C.c_void_p), ('resourceid', C.c_ulong),
++                ('serial', C.c_ulong), ('error_code', C.c_ubyte),
++                ('request_code', C.c_ubyte), ('minor_code', C.c_ubyte)]
++
++
++class ScopedX11(native.X11):
++    """Keep C errors in Python; only retired PID-discovery windows are retried."""
++    def __init__(self, display, report, owns_pid):
++        super().__init__(display)
++        self.report, self.owns_pid, self.scope = report, owns_pid, None
++        self.pending_errors = []
++        self.x.XSync.restype, self.x.XSync.argtypes = C.c_int, [C.c_void_p, C.c_int]
++        self.x.XSetErrorHandler.restype, self.x.XSetErrorHandler.argtypes = C.c_void_p, [C.c_void_p]
++        callback_type = C.CFUNCTYPE(C.c_int, C.c_void_p, C.POINTER(XErrorEvent))
++        self.error_callback = callback_type(self.record_error)  # Retain callback for the connection lifetime.
++        self.previous_handler = self.x.XSetErrorHandler(C.cast(self.error_callback, C.c_void_p))
++
++    @staticmethod
++    def retired_pid_window(error):
++        scope = error.get('scope') or {}
++        return (error['error_code'] == 3 and error['request_code'] == 20 and error['minor_code'] == 0
++                and error.get('owned_private_display') is True
++                and scope.get('phase') == 'owned-private-window-discovery'
++                and scope.get('property') == '_NET_WM_PID'
++                and error['resource_id'] == scope.get('window') and scope.get('owned_pid') is not None)
++
++    def record_error(self, display, pointer):
++        event = pointer.contents
++        row = {'error_code': event.error_code, 'request_code': event.request_code,
++               'minor_code': event.minor_code, 'resource_id': event.resourceid, 'serial': event.serial,
++               'owned_private_display': display == self.d and event.display == self.d,
++               'scope': dict(self.scope) if self.scope else None, 'monotonic_ns': time.monotonic_ns()}
++        row['retired_pid_window_rejected'] = self.retired_pid_window(row)
++        self.report['x11_error_observations'].append(row)
++        self.pending_errors.append(row)
++        return 0  # Never raise inside a ctypes C callback.
++
++    def check(self):
++        self.x.XSync(self.d, 0)
++        pending, self.pending_errors = self.pending_errors, []
++        unexpected = [row for row in pending if not row['retired_pid_window_rejected']]
++        if unexpected:
++            raise RuntimeError('Unexpected observer X11 error: ' + json.dumps(unexpected))
++        return pending
++
++    def prop(self, window, name):
++        self.check()  # Drain earlier requests before assigning this request's scope.
++        previous = self.scope
++        if previous:
++            self.scope = {**previous, 'property': name, 'window': window}
++        try:
++            result = super().prop(window, name)
++            errors = self.check()
++            return [] if errors else result
++        finally:
++            self.scope = previous
++
++    def find(self, pid):
++        assert self.owns_pid(pid), 'Private X11 discovery requires a newly owned application PID'
++        self.check()
++        self.scope = {'phase': 'owned-private-window-discovery', 'owned_pid': pid}
++        try:
++            return super().find(pid)
++        finally:
++            self.scope = None
++
++
+ class Observer:
+     def __init__(self, args, report, dataset):
+         self.args, self.report, self.dataset = args, report, dataset
+         self.processes, self.logs = [], []
+         self.display, self.env, self.x11 = None, None, None
++
++    def checkpoint(self, event):
++        """Atomic partial raw report, called only after a declared timing endpoint."""
++        self.report['completed_checkpoint_boundaries'].append({'event': event, 'monotonic_ns': time.monotonic_ns()})
++        temporary = self.args.output / '.performance.partial.tmp'
++        write(temporary, self.report)
++        temporary.replace(self.args.output / 'performance.partial.json')
+ 
+     def start(self, command, name, env=None, **kwargs):
+         stream = (self.args.output / f'{name}.log').open('x')
+@@ -305,6 +380,10 @@
+         process = subprocess.Popen(command, env=env, stdout=stream, stderr=stream,
+                                    start_new_session=True, **kwargs)
+         self.processes.append(process)
++        proc_stat = Path(f'/proc/{process.pid}/stat').read_text()
++        suffix = proc_stat[proc_stat.rfind(')') + 2:].split()
++        self.report['owned_process_records'].append({'name': name, 'pid': process.pid, 'pgid': int(suffix[2]),
++                                                    'starttime_ticks': int(suffix[19]), 'command': command})
+         return process
+ 
+     def setup(self):
+@@ -323,7 +402,8 @@
+                         ADW_DEBUG_COLOR_SCHEME='prefer-light', G_DEBUG='fatal-criticals')
+         self.start(['openbox', '--sm-disable', '--config-file',
+                     str(helper.ENVROOT / 'sysroot/etc/xdg/openbox/rc.xml')], 'openbox', self.env)
+-        self.x11 = native.X11(self.display)
++        self.x11 = ScopedX11(self.display, self.report, lambda pid: any(
++            process.pid == pid and process.args == [str(self.args.binary)] for process in self.processes))
+         Access(0)
+ 
+     def capture(self, window, path):
+@@ -413,6 +493,7 @@
+         observe(zero, 'exact zero-result source scope')
+         result['zero_result_exact'] = True
+         assert payload(profile) == baseline
++        self.checkpoint(name + ':exact-zero-result-warmup')
+         expected_groups = {row['query']: row['pages'] for row in recipe['expected_filter_first_references']}
+         for index in range(self.args.search_samples):
+             query = ('PERF-A', 'PERF-B')[index % 2]
+@@ -429,6 +510,7 @@
+                                       'key_dispatch_ms': dispatch, 'correct_visible_ms': visible,
+                                       'focused_usable_ms': (time.perf_counter() - begin) * 1000})
+             result['identity_checks'].append({'query': query, 'expected_reference': expected_groups[query][0], 'exact_count': 60, 'current_parent_child_membership': True, 'visible_sensitive_geometry': True, 'actual_focus': True})
++            self.checkpoint(f'{name}:completed-query:{index}')
+             assert payload(profile) == baseline, 'Read-only source query changed durable state'
+         query = 'PERF-B'
+         for page in (2, 3):
+@@ -441,6 +523,7 @@
+             focus(access, action, self.x11)
+             observe(lambda: ready(access, action, root, True), 'filtered source focus')
+             result['filtered_pages'].append({'page': page, 'expected_reference': expected_groups[query][page - 1], 'correct_visible_ms': visible, 'focused_usable_ms': (time.perf_counter() - begin) * 1000})
++            self.checkpoint(f'{name}:completed-filtered-page:{page}')
+             assert payload(profile) == baseline
+         # Exact receipt correspondence corroborates visible source reference after selection.
+         selected = next(row for row in recipe['sources_in_posting_order'] if row['reference'] == expected_groups[query][2])
+@@ -455,6 +538,7 @@
+         result.update(result='measured', visible=quantiles([row['correct_visible_ms'] for row in result['samples']]),
+                       focused=quantiles([row['focused_usable_ms'] for row in result['samples']]),
+                       application_memory_kib=helper.rss(app.pid), durable_state_unchanged=True)
++        self.checkpoint(name + ':completed-source-picker')
+         native.stop(app)
+         print(json.dumps({'source_picker': name, 'focused': result['focused']}, ensure_ascii=False), flush=True)
+ 
+@@ -510,10 +594,9 @@
+         return {'page': target_page, 'direction': direction, 'first_receipt_line_id': receipt_ids[25 * (target_page - 1)], 'attached_quantity_entries': len(quantities),
+                 'correct_visible_ms': visible, 'focused_usable_ms': (time.perf_counter() - begin) * 1000}
+ 
+-    def preview_pages(self, access, editor, recipe):
++    def preview_pages(self, access, editor, recipe, result, name):
+         total_lines = len(recipe['receipt_line_ids'])
+         count = 2 * total_lines
+-        result = []
+         for page in range(1, math.ceil(count / 25) + 1):
+             if page > 1:
+                 pager = find(access, 'جزئیات برگشت بعد', editor, ('button', 'push button'))
+@@ -563,6 +646,7 @@
+                            'current_rows': [row['name'] for row in labels],
+                            'observed_ms': (time.perf_counter() - begin) * 1000,
+                            'scope': 'current source IDs, quantity/value, exact movement pool transitions and membership; first page inspection only; no pixel/CPU claim'})
++            self.checkpoint(f'{name}:completed-preview-detail-page:{page}')
+         return result
+ 
+     def workflow(self, name):
+@@ -575,6 +659,7 @@
+         receipt_ids = recipe['receipt_line_ids']
+         quantity, editor, opening = self.open_source(access, recipe['source_reference'], receipt_ids[0])
+         result['source_to_first_focused_quantity_ms'] = opening
++        self.checkpoint(name + ':completed-source-opening')
+         fill(access, 'تاریخ مؤثر مدنی', '2026-04-03', self.x11, editor)
+         fill(access, 'تاریخ سند طرف', '2026-04-03', self.x11, editor)
+         fill(access, 'شرح و دلیل ثبت', f'M6 performance exact original cost {name}', self.x11, editor)
+@@ -585,6 +670,7 @@
+         for page in range(1, pages + 1):
+             if page > 1:
+                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'next'))
++                self.checkpoint(f'{name}:completed-next-page:{page}')
+             quantities = observe(lambda: self.page_state(access, editor, receipt_ids, page), 'bounded editor entries')
+             for row in quantities:
+                 focus(access, row, self.x11)
+@@ -593,6 +679,7 @@
+                 self.x11.type_ascii('1')
+                 observe(lambda: access.text(row) == '1' and ready(access, row, editor, True), 'exact current quantity input')
+                 result['input_samples'].append({'receipt_line_id': row['name'][len(QUANTITY_PREFIX):], 'input_ready_ms': (time.perf_counter() - begin) * 1000})
++                self.checkpoint(f'{name}:completed-input:{len(result["input_samples"])}')
+             assert payload(profile) == baseline
+         # Deliberately invalid hidden final row: preview must reveal/focus that actual row.
+         if pages > 1:
+@@ -600,17 +687,20 @@
+             fill(access, last['name'], '2', self.x11, editor)
+             for page in range(pages - 1, 0, -1):
+                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'previous', '1'))
++                self.checkpoint(f'{name}:completed-previous-page:{page}')
+             press(access, PREVIEW, self.x11, editor)
+             invalid = observe(lambda: find(access, QUANTITY_PREFIX + receipt_ids[-1], editor, ('entry', 'text')), 'offpage invalid source row revealed')
+             observe(lambda: ready(access, invalid, editor, True) and access.text(invalid) == '2', 'actual invalid last row retained/focused')
+             assert payload(profile) == baseline
+             result['hidden_invalid_last_row_retained_focused'] = True
++            self.checkpoint(name + ':completed-hidden-invalid-focus')
+             self.capture(window, profile / 'invalid-last-row-focused.png')
+             fill(access, invalid['name'], '1', self.x11, editor)
+             # Verify every raw input retained after error and correction, separately from latency samples.
+             for page in range(pages - 1, 0, -1):
+                 self.turn(access, editor, receipt_ids, page, 'previous', '1')
+             result['first_page_input_retained_after_hidden_error'] = True
++            self.checkpoint(name + ':completed-input-retention-after-correction')
+         result['all_entered_lines'] = len(result['input_samples'])
+         result['entered_total_irr'] = 15 * len(receipt_ids)
+         result['memory_kib_after_editor_input'] = helper.rss(app.pid)
+@@ -629,7 +719,11 @@
+         observe(lambda: legacy.sensitive(access, post), 'actual return preview enables post')
+         result['preview_observed_ms'] = (time.perf_counter() - begin) * 1000
+         assert payload(profile) == baseline
+-        result['preview_pages'] = self.preview_pages(access, editor, recipe)
++        observe(lambda: any(row['phase'] == 'preview' and row['result'] == 'verified'
++                            for row in phase_records(profile)[phase_begin:]), 'terminal preview phase before checkpoint')
++        self.checkpoint(name + ':completed-preview-endpoint')
++        result['preview_pages'] = []
++        self.preview_pages(access, editor, recipe, result['preview_pages'], name)
+         self.capture(window, profile / 'last-preview-page.png')
+         result['memory_kib_after_preview'] = helper.rss(app.pid)
+         focus(access, post, self.x11)
+@@ -642,6 +736,9 @@
+         observe(lambda: find(access, RETURN, roles=('button', 'push button')), 'usable Purchases after post')
+         result['durable_and_visible_result_ms'] = (time.perf_counter() - begin) * 1000
+         after = state(profile)
++        write(profile / 'before-state.json', before)
++        write(profile / 'after-state.json', after)
++        self.checkpoint(name + ':completed-durable-visible-post')
+         result['raw_literal_proof'] = literal_return(before, after, recipe, 1000, result['entered_total_irr'])
+         result['native_phase_records'] = phase_records(profile)
+         result['strict_phase_checks'] = strict_phases(result['native_phase_records'])
+@@ -649,8 +746,7 @@
+                                              for phase in ('preview', 'post')}
+         result['memory_kib_after_post'] = helper.rss(app.pid)
+         result['read_only_page_edit_continuous_heartbeat'] = 'unmeasured; loaded action latencies are not GTK heartbeat traces'
+-        write(profile / 'before-state.json', before)
+-        write(profile / 'after-state.json', after)
++        self.checkpoint(name + ':completed-exact-literal-and-phase-proof')
+         self.capture(window, profile / 'posted.png')
+         native.stop(app)
+         app, window, access = self.app(profile, name + '-restart')
+@@ -661,6 +757,7 @@
+                           'visible': quantiles([row['correct_visible_ms'] for row in result['page_samples'] if row['direction'] == direction]),
+                           'focused': quantiles([row['focused_usable_ms'] for row in result['page_samples'] if row['direction'] == direction])}
+                           for direction in ('next', 'previous')})
++        self.checkpoint(name + ':completed-exact-restart')
+         native.stop(app)
+         print(json.dumps({'workflow': name, 'pages': result['page_by_direction'], 'phases': result['strict_phase_checks']}, ensure_ascii=False), flush=True)
+ 
+@@ -706,12 +803,17 @@
+             finally:
+                 stopping.set()
+                 monitor_thread.join()
++                if result['samples'] and result['samples'][-1]['index'] == index:
++                    result['samples'][-1]['rss_observer_raw_kib'] = list(memory_samples)
++                    result['samples'][-1]['rss_observer_samples'] = len(memory_samples)
+                 native.stop(app)
+             assert payload(profile) == baseline, 'Startup changed initialized durable state'
++            self.checkpoint(f'{name}:completed-startup:{index}')
+         rows = result['samples'][1:]
+         result.update(result='measured', repeated_startup_ms=quantiles([row['startup_ms'] for row in rows]),
+                       initial_rss_kib=quantiles([row['steady_rss_kib'] for row in rows]),
+                       initial_hwm_kib=quantiles([row['kernel_peak_rss_kib'] for row in rows]))
++        self.checkpoint(name + ':completed-startup-cohort')
+         print(json.dumps({'startup': name, 'latency': result['repeated_startup_ms'], 'rss': result['initial_rss_kib']}), flush=True)
+ 
+     def close(self):
+@@ -760,6 +862,7 @@
+               'dataset_manifest_sha256': sha(args.dataset_manifest), 'dataset_files_before': fixtures_before,
+               'startup': {}, 'source_picker_search': {}, 'return_workflows': {}, 'capture_samples': [],
+               'rejected_source_observations': [],
++              'x11_error_observations': [], 'completed_checkpoint_boundaries': [], 'owned_process_records': [],
+               'hardware': {'lscpu': helper.command('lscpu'), 'os': Path('/etc/os-release').read_text(),
+                            'filesystem': helper.command('df', '-T', '/workspace'), 'meminfo': Path('/proc/meminfo').read_text(),
+                            'cgroup_cpu_max': Path('/sys/fs/cgroup/cpu.max').read_text().strip(),
+@@ -772,22 +875,28 @@
+                              'source_picker': 'Actual Ctrl+A/ASCII query to exact first current reference/count/page/action, allocated visible sensitive then actual focus. Current bounded25-row subtree traversal, fresh parent-child membership, debounce/layout/AT-SPI5ms poll included. Initial picker/index discovery and zero warmup outside timer.',
+                              'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 current entries. Main-thread read-only continuous heartbeat unmeasured.',
+                              'preview_post': 'Actual real-key preview/post dispatch through usable Post or durable return and visible result. Existing native16ms dispatch-to-render/busy-release phases independently retain every tick/terminal gap; zero-tick/rejected/absent unmeasured. n1 per20billed/20unbilled/200billed workflow.',
++                             'lifecycle_and_partial_checkpoints': 'm6-scoped-v1.2: private owned-PID window discovery drains X11 requests with XSync and rejects only exact retired-window PID-property BadWindow. Full raw partial JSON is atomically checkpointed after completed endpoints/native terminal phases, outside active intervals; inter-action disk/cache effects remain possible.',
+                              'memory': 'Application PID only; /proc10ms startup sampling +500ms idle; later search/editor/preview/post RSS/HWM points separate. Helpers excluded.'},
+               'historical_M5_strict_misses_retained': {'pages_ms': [51.488974,51.002871,51.904600], 'choice_ms':73.664108,'internal_PDF_ms':80.439368,'global_ms':289.749728,'PDF_busy_ms':107.151621,'persistence_busy_ms':96.586120},
+               'limits': ['Shared virtual hardware: no dedicated4core8GBSSD, genuine physical-cache-cold or causal Rust-speed/competitor/production/statutory claim.',
+                          'No full five-year100k-doc/million-journal/50k-item/10k-party reference profile;200line returns do not establish1000line or posted-ledger capacity.',
+                          'n10/n20 p99 equals worst; sequential page samples and n1 commands/memory are descriptive, not independent tail estimates.',
+                          'Read-only page/edit GTK heartbeat unmeasured; latency and accessibility readiness do not prove pixels or isolated CPU.',
++                         'Observer XSync contributes to lifecycle discovery; per-completed-observation atomic checkpoint I/O occurs between actions and may affect subsequent caches/work. Search still includes full25-action descendant/ancestry RPC and50ms debounce; no isolated product/causal speed inference.',
+                          'Typical20line INVOICE, annual reports/import, Windows/Wayland/physical print/screen readers/hardware loss/leaks/professional review remain unmeasured.']}
+     observer = Observer(args, report, dataset)
++    observer.checkpoint('initial-guarded-report-before-GUI')
+     try:
+         observer.setup()
+         for name in ('source120-billed', 'source120-unbilled'):
+             observer.searches(name)
++            observer.x11.check()
+         for name in ('return20-billed', 'return20-unbilled', 'return200-billed'):
+             observer.workflow(name)
++            observer.x11.check()
+         for name in dataset['startup_cohorts']:
+             observer.startups(name)
++            observer.x11.check()
+         report['result'] = 'measured'
+     except Exception as error:
+         report['error'] = repr(error)

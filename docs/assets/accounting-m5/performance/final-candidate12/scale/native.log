@@ -1,0 +1,345 @@
+SARV_MAIN_THREAD settings_global_digits 0.003ms
+SARV_MAIN_THREAD settings_global_apply 0.078ms
+SARV_MAIN_THREAD review_snapshot_clone 0.006ms
+SARV_MAIN_THREAD refresh_managers 2.126ms
+SARV_MAIN_THREAD settings_catalog_digits 0.005ms
+SARV_MAIN_THREAD settings_customer_digits 0.004ms
+SARV_MAIN_THREAD settings_quote_digits 0.007ms
+SARV_MAIN_THREAD settings_global_digits 0.001ms
+SARV_MAIN_THREAD settings_global_apply 0.006ms
+SARV_MAIN_THREAD review_snapshot_clone 4.169ms
+SARV_MAIN_THREAD refresh_managers 11.560ms
+SARV_MAIN_THREAD settings_catalog_digits 0.015ms
+SARV_MAIN_THREAD settings_customer_digits 0.007ms
+SARV_MAIN_THREAD settings_quote_digits 0.009ms
+SARV_MAIN_THREAD review_100_row_widget_construction 1.058ms
+SARV_MAIN_THREAD review_settings_apply 0.004ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-catalog-first.png 130.632ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-catalog-next.png 108.153ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-catalog-last.png 90.654ms
+SARV_MAIN_THREAD review_snapshot_clone 4.121ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 11.410ms
+SARV_MAIN_THREAD review_construct_20_rows 20.971ms
+SARV_MAIN_THREAD review_construct_20_rows 20.870ms
+SARV_MAIN_THREAD review_construct_20_rows 19.311ms
+SARV_MAIN_THREAD review_construct_20_rows 20.433ms
+SARV_MAIN_THREAD review_construct_20_rows 18.885ms
+SARV_MAIN_THREAD review_atomic_install 15.557ms
+SARV_MAIN_THREAD review_retire_20_rows 0.193ms
+SARV_MAIN_THREAD probe_screenshot_native-save-before.png 68.023ms
+SARV_ACTION_START 1 quote_changed_save_recovery native_save_button_after_lock_released
+SARV_MAIN_THREAD review_snapshot_clone 4.231ms
+SARV_MAIN_THREAD review_reuse_hide 1.853ms
+SARV_MAIN_THREAD review_reuse_setters 0.748ms
+SARV_MAIN_THREAD review_reuse_show 8.491ms
+SARV_MAIN_THREAD review_reuse_collect 0.008ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome 8.527ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.177ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 13.181ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.000ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":8,"first_amount":"۱۰٬۰۰۰.۱","first_id":0,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":4,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۵۰٬۰۵۰ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":8,"first_amount":"—","first_id":0,"first_quantity":"1","first_quantity_selection":null,"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":3,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی — در حال ویرایش","visual_pending":true},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":322.271746,"ended_since_probe_ms":27955.272917,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[28.791111,19.989027999999998,33.799917,32.516864,22.964491,20.047296,20.094966999999997,20.070642,20.08019,20.070536,23.383121,19.928656999999998,20.071813000000002,20.056951],"id":1,"interval_ms":20,"legacy_completion_ms":null,"max_gap_ms":33.799917,"operation":"quote_changed_save_recovery","origin":"native_save_button_after_lock_released","ready_frames":18,"ready_observed_ms":292.234828,"result":"accepted","started_since_probe_ms":27633.001171,"strict_status":"pass","terminal_gap_ms":0.406162,"ticks":14}
+SARV_ACTION_START 2 quote_unchanged_save_refresh native_save_button
+SARV_MAIN_THREAD review_reuse_hide 1.827ms
+SARV_MAIN_THREAD review_reuse_setters 0.481ms
+SARV_MAIN_THREAD review_reuse_show 7.089ms
+SARV_MAIN_THREAD review_reuse_collect 0.006ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.005ms
+SARV_MAIN_THREAD review_reuse_chrome 7.119ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 0.826ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 10.692ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.000ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":8,"first_amount":"۱۰٬۰۰۰.۱","first_id":0,"first_quantity":"۱","first_quantity_selection":[0,1],"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":4,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۵۰٬۰۵۰ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":8,"first_amount":"۱۰٬۰۰۰.۱","first_id":0,"first_quantity":"۱","first_quantity_selection":[0,1],"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":4,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۵۰٬۰۵۰ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":270.226119,"ended_since_probe_ms":28528.867838,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[13.150435,19.991623,20.116566,20.085069,20.086997,20.104143,20.102731,20.083592,20.120267000000002,20.092265,20.081629,20.105044,20.110031],"id":2,"interval_ms":20,"legacy_completion_ms":null,"max_gap_ms":20.120267000000002,"operation":"quote_unchanged_save_refresh","origin":"native_save_button","ready_frames":16,"ready_observed_ms":240.46456,"result":"accepted","started_since_probe_ms":28258.641719,"strict_status":"pass","terminal_gap_ms":15.995727,"ticks":13}
+SARV_MAIN_THREAD probe_screenshot_native-save-after.png 63.080ms
+SARV_ACTION_START 3 quote_page_changed_save native_pager_button
+SARV_MAIN_THREAD review_snapshot_clone 3.186ms
+SARV_MAIN_THREAD review_reuse_hide 1.625ms
+SARV_MAIN_THREAD review_reuse_setters 25.685ms
+SARV_MAIN_THREAD review_reuse_show 9.198ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.030ms
+SARV_MAIN_THREAD review_reuse_chrome 9.309ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.097ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 38.339ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.852ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۱۰.۱","first_id":100,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00101","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":199,"last_query":"SCALE-00200","page":2,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"—","first_id":0,"first_quantity":"2","first_quantity_selection":null,"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":4,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی — در حال ویرایش","visual_pending":true},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":343.84418300000004,"ended_since_probe_ms":29241.45781,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[5.660749,19.939465,20.074728999999998,20.072775,20.078284,20.075519,30.66051,20.048328,20.071243,20.083467000000002,49.841195,35.386981,20.033516000000002,20.089119999999998,21.434720000000002],"id":3,"interval_ms":20,"legacy_completion_ms":312.327532,"max_gap_ms":49.841195,"operation":"quote_page_changed_save","origin":"native_pager_button","ready_frames":18,"ready_observed_ms":312.428875,"result":"accepted","started_since_probe_ms":28897.613627,"strict_status":"pass","terminal_gap_ms":0.293582,"ticks":15}
+SARV_ACTION_START 4 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.484ms
+SARV_MAIN_THREAD review_reuse_setters 26.276ms
+SARV_MAIN_THREAD review_reuse_show 10.570ms
+SARV_MAIN_THREAD review_reuse_collect 0.009ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.027ms
+SARV_MAIN_THREAD review_reuse_chrome 10.639ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.306ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 40.080ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.124ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۲۰.۱","first_id":200,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00201","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":299,"last_query":"SCALE-00300","page":3,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۱۰.۱","first_id":100,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00101","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":199,"last_query":"SCALE-00200","page":2,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":138.64038100000002,"ended_since_probe_ms":29413.514833,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[42.134197,35.971050999999996,21.165311,20.045304],"id":4,"interval_ms":20,"legacy_completion_ms":108.45581899999999,"max_gap_ms":42.134197,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":108.58304100000001,"result":"accepted","started_since_probe_ms":29274.874452,"strict_status":"pass","terminal_gap_ms":19.324517999999998,"ticks":4}
+SARV_ACTION_START 5 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.563ms
+SARV_MAIN_THREAD review_reuse_setters 26.086ms
+SARV_MAIN_THREAD review_reuse_show 9.394ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.021ms
+SARV_MAIN_THREAD review_reuse_chrome 9.446ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.232ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 38.712ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.126ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۳۰.۱","first_id":300,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00301","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":399,"last_query":"SCALE-00400","page":4,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۲۰.۱","first_id":200,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00201","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":299,"last_query":"SCALE-00300","page":3,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":136.1693,"ended_since_probe_ms":29579.929071,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[40.675298999999995,34.986928,20.696337,20.046174999999998],"id":5,"interval_ms":20,"legacy_completion_ms":106.01266,"max_gap_ms":40.675298999999995,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":106.16200500000001,"result":"accepted","started_since_probe_ms":29443.759771,"strict_status":"pass","terminal_gap_ms":19.764561,"ticks":4}
+SARV_ACTION_START 6 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.422ms
+SARV_MAIN_THREAD review_reuse_setters 26.978ms
+SARV_MAIN_THREAD review_reuse_show 8.970ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.022ms
+SARV_MAIN_THREAD review_reuse_chrome 9.027ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.392ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 39.221ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.149ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۴۰.۱","first_id":400,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00401","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":499,"last_query":"SCALE-00500","page":5,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۳۰.۱","first_id":300,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00301","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":399,"last_query":"SCALE-00400","page":4,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":132.95187,"ended_since_probe_ms":29743.071802,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[41.209454,31.288864999999998,20.108079,20.813536],"id":6,"interval_ms":20,"legacy_completion_ms":102.78883,"max_gap_ms":41.209454,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":102.92082900000001,"result":"accepted","started_since_probe_ms":29610.119932,"strict_status":"pass","terminal_gap_ms":19.531935999999998,"ticks":4}
+SARV_ACTION_START 7 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.428ms
+SARV_MAIN_THREAD review_reuse_setters 27.372ms
+SARV_MAIN_THREAD review_reuse_show 9.004ms
+SARV_MAIN_THREAD review_reuse_collect 0.008ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.025ms
+SARV_MAIN_THREAD review_reuse_chrome 9.062ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.257ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 39.494ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.148ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۵۰.۱","first_id":500,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00501","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":599,"last_query":"SCALE-00600","page":6,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۴۰.۱","first_id":400,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00401","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":499,"last_query":"SCALE-00500","page":5,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":133.910952,"ended_since_probe_ms":29907.576412000002,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[41.419736,30.549302,20.051333,20.085303999999997,21.480958],"id":7,"interval_ms":20,"legacy_completion_ms":102.334322,"max_gap_ms":41.419736,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":102.527052,"result":"accepted","started_since_probe_ms":29773.66546,"strict_status":"pass","terminal_gap_ms":0.324319,"ticks":5}
+SARV_ACTION_START 8 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.458ms
+SARV_MAIN_THREAD review_reuse_setters 36.230ms
+SARV_MAIN_THREAD review_reuse_show 9.634ms
+SARV_MAIN_THREAD review_reuse_collect 0.008ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.024ms
+SARV_MAIN_THREAD review_reuse_chrome 9.692ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.270ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 49.089ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.197ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۶۰.۱","first_id":600,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00601","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":699,"last_query":"SCALE-00700","page":7,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۵۰.۱","first_id":500,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00501","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":599,"last_query":"SCALE-00600","page":6,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":150.684741,"ended_since_probe_ms":30091.503762,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[51.488974,33.854992,20.012119,20.077218000000002,20.101038000000003],"id":8,"interval_ms":20,"legacy_completion_ms":118.810132,"max_gap_ms":51.488974,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":6,"ready_observed_ms":119.390067,"result":"accepted","started_since_probe_ms":29940.819021,"strict_status":"miss","terminal_gap_ms":5.1504,"ticks":5}
+SARV_ACTION_START 9 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.482ms
+SARV_MAIN_THREAD review_reuse_setters 36.671ms
+SARV_MAIN_THREAD review_reuse_show 8.891ms
+SARV_MAIN_THREAD review_reuse_collect 0.008ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.022ms
+SARV_MAIN_THREAD review_reuse_chrome 8.944ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.279ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 48.773ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.178ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۷۰.۱","first_id":700,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00701","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":799,"last_query":"SCALE-00800","page":8,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۶۰.۱","first_id":600,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00601","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":699,"last_query":"SCALE-00700","page":7,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":149.892047,"ended_since_probe_ms":30274.625269,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[51.002871,35.290255,20.033727000000003,20.08896,23.063672],"id":9,"interval_ms":20,"legacy_completion_ms":116.627273,"max_gap_ms":51.002871,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":6,"ready_observed_ms":116.643538,"result":"accepted","started_since_probe_ms":30124.733222,"strict_status":"miss","terminal_gap_ms":0.412562,"ticks":5}
+SARV_ACTION_START 10 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.404ms
+SARV_MAIN_THREAD review_reuse_setters 35.225ms
+SARV_MAIN_THREAD review_reuse_show 8.668ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.019ms
+SARV_MAIN_THREAD review_reuse_chrome 8.715ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.210ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 46.943ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.179ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۸۰.۱","first_id":800,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00801","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":899,"last_query":"SCALE-00900","page":9,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۷۰.۱","first_id":700,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00701","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":799,"last_query":"SCALE-00800","page":8,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":140.003086,"ended_since_probe_ms":30447.168506,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[49.101947,30.147987,21.278121000000002,20.045235],"id":10,"interval_ms":20,"legacy_completion_ms":109.539884,"max_gap_ms":49.101947,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":109.843972,"result":"accepted","started_since_probe_ms":30307.16542,"strict_status":"pass","terminal_gap_ms":19.429796,"ticks":4}
+SARV_ACTION_START 11 quote_page_unchanged_next native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.626ms
+SARV_MAIN_THREAD review_reuse_setters 30.221ms
+SARV_MAIN_THREAD review_reuse_show 9.704ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.031ms
+SARV_MAIN_THREAD review_reuse_chrome 9.766ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.175ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 43.236ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.120ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۹۰.۱","first_id":900,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00901","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":999,"last_query":"SCALE-01000","page":10,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":10,"first_amount":"۱۰٬۰۸۰.۱","first_id":800,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00801","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":5,"last_id":899,"last_query":"SCALE-00900","page":9,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۶۰٬۰۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":147.30919500000002,"ended_since_probe_ms":30624.512086,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[45.445527999999996,34.73009,20.029311,20.123332,20.083602],"id":11,"interval_ms":20,"legacy_completion_ms":114.191975,"max_gap_ms":45.445527999999996,"operation":"quote_page_unchanged_next","origin":"native_pager_button","ready_frames":6,"ready_observed_ms":114.23011199999999,"result":"accepted","started_since_probe_ms":30477.202891,"strict_status":"pass","terminal_gap_ms":6.897332,"ticks":5}
+SARV_MAIN_THREAD review_snapshot_clone 3.816ms
+SARV_MAIN_THREAD review_reuse_hide 1.720ms
+SARV_MAIN_THREAD review_reuse_setters 1.095ms
+SARV_MAIN_THREAD review_reuse_show 7.270ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.006ms
+SARV_MAIN_THREAD review_reuse_chrome 7.301ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.114ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 11.881ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.000ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-editor-last-page.png 62.070ms
+SARV_MAIN_THREAD review_snapshot_clone 3.812ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 3.832ms
+SARV_MAIN_THREAD review_construct_20_rows 15.142ms
+SARV_MAIN_THREAD review_construct_20_rows 14.319ms
+SARV_MAIN_THREAD review_construct_20_rows 14.520ms
+SARV_MAIN_THREAD review_construct_20_rows 16.520ms
+SARV_MAIN_THREAD review_construct_20_rows 14.163ms
+SARV_MAIN_THREAD review_atomic_install 29.314ms
+SARV_MAIN_THREAD review_retire_20_rows 4.375ms
+SARV_MAIN_THREAD review_retire_20_rows 3.504ms
+SARV_MAIN_THREAD review_retire_20_rows 4.513ms
+SARV_MAIN_THREAD review_retire_20_rows 3.687ms
+SARV_MAIN_THREAD review_retire_20_rows 3.401ms
+SARV_MAIN_THREAD review_retire_20_rows 0.342ms
+SARV_MAIN_THREAD review_snapshot_clone 6.047ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 5.713ms
+SARV_MAIN_THREAD review_construct_20_rows 19.151ms
+SARV_MAIN_THREAD review_construct_20_rows 18.971ms
+SARV_MAIN_THREAD review_construct_20_rows 18.655ms
+SARV_MAIN_THREAD review_construct_20_rows 18.849ms
+SARV_MAIN_THREAD review_construct_20_rows 13.646ms
+SARV_MAIN_THREAD review_atomic_install 25.077ms
+SARV_MAIN_THREAD review_retire_20_rows 3.975ms
+SARV_MAIN_THREAD review_retire_20_rows 3.326ms
+SARV_MAIN_THREAD review_retire_20_rows 3.110ms
+SARV_MAIN_THREAD review_retire_20_rows 3.036ms
+SARV_MAIN_THREAD review_retire_20_rows 2.976ms
+SARV_ACTION_START 12 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.778ms
+SARV_MAIN_THREAD review_reuse_setters 25.296ms
+SARV_MAIN_THREAD review_reuse_show 10.941ms
+SARV_MAIN_THREAD review_reuse_collect 0.006ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.031ms
+SARV_MAIN_THREAD review_reuse_chrome 11.003ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.547ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 40.061ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.300ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۸۰.۱","first_id":800,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00801","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":899,"last_query":"SCALE-00900","page":9,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۹۰.۱","first_id":900,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00901","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":8,"last_id":999,"last_query":"SCALE-01000","page":10,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":140.546586,"ended_since_probe_ms":32498.838664,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[42.765259,37.287684,20.163474,20.043200000000002],"id":12,"interval_ms":20,"legacy_completion_ms":110.367011,"max_gap_ms":42.765259,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":110.528114,"result":"accepted","started_since_probe_ms":32358.292078,"strict_status":"pass","terminal_gap_ms":20.286969,"ticks":4}
+SARV_ACTION_START 13 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.677ms
+SARV_MAIN_THREAD review_reuse_setters 27.149ms
+SARV_MAIN_THREAD review_reuse_show 10.495ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.022ms
+SARV_MAIN_THREAD review_reuse_chrome 10.560ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.271ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 41.068ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.129ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۷۰.۱","first_id":700,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00701","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":799,"last_query":"SCALE-00800","page":8,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۸۰.۱","first_id":800,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00801","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":899,"last_query":"SCALE-00900","page":9,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":135.371897,"ended_since_probe_ms":32664.510135,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[43.149107,31.743591000000002,20.21492,20.048859],"id":13,"interval_ms":20,"legacy_completion_ms":105.280756,"max_gap_ms":43.149107,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":105.371063,"result":"accepted","started_since_probe_ms":32529.138238000003,"strict_status":"pass","terminal_gap_ms":20.21542,"ticks":4}
+SARV_ACTION_START 14 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.911ms
+SARV_MAIN_THREAD review_reuse_setters 32.506ms
+SARV_MAIN_THREAD review_reuse_show 10.899ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.026ms
+SARV_MAIN_THREAD review_reuse_chrome 10.959ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.389ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 47.244ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.229ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۶۰.۱","first_id":600,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00601","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":699,"last_query":"SCALE-00700","page":7,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۷۰.۱","first_id":700,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00701","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":799,"last_query":"SCALE-00800","page":8,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":146.404006,"ended_since_probe_ms":32841.298455000004,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[49.536811,34.793957999999996,20.022589,20.101284,21.596702],"id":14,"interval_ms":20,"legacy_completion_ms":114.671115,"max_gap_ms":49.536811,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":114.73703400000001,"result":"accepted","started_since_probe_ms":32694.894449000003,"strict_status":"pass","terminal_gap_ms":0.35266200000000003,"ticks":5}
+SARV_ACTION_START 15 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.796ms
+SARV_MAIN_THREAD review_reuse_setters 26.769ms
+SARV_MAIN_THREAD review_reuse_show 11.080ms
+SARV_MAIN_THREAD review_reuse_collect 0.008ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.028ms
+SARV_MAIN_THREAD review_reuse_chrome 11.147ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.454ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 41.592ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.264ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۵۰.۱","first_id":500,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00501","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":599,"last_query":"SCALE-00600","page":6,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۶۰.۱","first_id":600,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00601","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":699,"last_query":"SCALE-00700","page":7,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":141.773899,"ended_since_probe_ms":33016.697049,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[44.757085000000004,36.378214,20.012365,20.087847999999997,20.012534],"id":15,"interval_ms":20,"legacy_completion_ms":111.491149,"max_gap_ms":44.757085000000004,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":111.63561700000001,"result":"accepted","started_since_probe_ms":32874.92315,"strict_status":"pass","terminal_gap_ms":0.5258529999999999,"ticks":5}
+SARV_ACTION_START 16 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.705ms
+SARV_MAIN_THREAD review_reuse_setters 35.154ms
+SARV_MAIN_THREAD review_reuse_show 10.754ms
+SARV_MAIN_THREAD review_reuse_collect 0.006ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.025ms
+SARV_MAIN_THREAD review_reuse_chrome 10.810ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.349ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 49.478ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.197ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۴۰.۱","first_id":400,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00401","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":499,"last_query":"SCALE-00500","page":5,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۵۰.۱","first_id":500,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00501","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":599,"last_query":"SCALE-00600","page":6,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":144.34128299999998,"ended_since_probe_ms":33191.19098,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[51.9046,32.044475000000006,20.043446,23.246843],"id":16,"interval_ms":20,"legacy_completion_ms":114.26881399999999,"max_gap_ms":51.9046,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":114.341394,"result":"accepted","started_since_probe_ms":33046.849697,"strict_status":"miss","terminal_gap_ms":17.101919,"ticks":4}
+SARV_ACTION_START 17 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.695ms
+SARV_MAIN_THREAD review_reuse_setters 25.290ms
+SARV_MAIN_THREAD review_reuse_show 10.815ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.027ms
+SARV_MAIN_THREAD review_reuse_chrome 10.878ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.498ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 39.744ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.135ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۳۰.۱","first_id":300,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00301","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":399,"last_query":"SCALE-00400","page":4,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۴۰.۱","first_id":400,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00401","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":499,"last_query":"SCALE-00500","page":5,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":134.461595,"ended_since_probe_ms":33358.680001,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[41.832993,32.192187,20.059756,22.394694],"id":17,"interval_ms":20,"legacy_completion_ms":104.373729,"max_gap_ms":41.832993,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":104.54989400000001,"result":"accepted","started_since_probe_ms":33224.218406,"strict_status":"pass","terminal_gap_ms":17.981965,"ticks":4}
+SARV_ACTION_START 18 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 2.018ms
+SARV_MAIN_THREAD review_reuse_setters 28.325ms
+SARV_MAIN_THREAD review_reuse_show 10.665ms
+SARV_MAIN_THREAD review_reuse_collect 0.006ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.023ms
+SARV_MAIN_THREAD review_reuse_chrome 10.723ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.211ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 42.725ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.152ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۲۰.۱","first_id":200,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00201","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":299,"last_query":"SCALE-00300","page":3,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۳۰.۱","first_id":300,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00301","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":399,"last_query":"SCALE-00400","page":4,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":138.282118,"ended_since_probe_ms":33530.645713,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[44.704296,33.080725,19.966546,20.074879,20.079375],"id":18,"interval_ms":20,"legacy_completion_ms":108.21557399999999,"max_gap_ms":44.704296,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":108.26535,"result":"accepted","started_since_probe_ms":33392.363595,"strict_status":"pass","terminal_gap_ms":0.376297,"ticks":5}
+SARV_ACTION_START 19 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.641ms
+SARV_MAIN_THREAD review_reuse_setters 26.364ms
+SARV_MAIN_THREAD review_reuse_show 10.625ms
+SARV_MAIN_THREAD review_reuse_collect 0.006ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.023ms
+SARV_MAIN_THREAD review_reuse_chrome 10.681ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.254ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 40.347ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.129ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۱۰.۱","first_id":100,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00101","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":199,"last_query":"SCALE-00200","page":2,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۲۰.۱","first_id":200,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00201","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":299,"last_query":"SCALE-00300","page":3,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":146.927825,"ended_since_probe_ms":33707.861786,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[42.424749999999996,36.682843,20.039987,20.080988,20.083752],"id":19,"interval_ms":20,"legacy_completion_ms":113.233324,"max_gap_ms":42.424749999999996,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":6,"ready_observed_ms":113.249169,"result":"accepted","started_since_probe_ms":33560.933961,"strict_status":"pass","terminal_gap_ms":7.615505,"ticks":5}
+SARV_ACTION_START 20 quote_page_unchanged_previous native_pager_button
+SARV_MAIN_THREAD review_reuse_hide 1.783ms
+SARV_MAIN_THREAD review_reuse_setters 25.570ms
+SARV_MAIN_THREAD review_reuse_show 10.813ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.036ms
+SARV_MAIN_THREAD review_reuse_chrome 10.879ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 1.211ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 39.879ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.136ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":12,"first_amount":"۲۰٬۰۰۰.۲","first_id":0,"first_quantity":"۲","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00001","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":12,"first_amount":"۱۰٬۰۱۰.۱","first_id":100,"first_quantity":"۱","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SCALE-00101","first_query_visible_and_focused":true,"focus_widget":"GtkText","generation":8,"last_id":199,"last_query":"SCALE-00200","page":2,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":136.718626,"ended_since_probe_ms":33878.130986000004,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[41.818511,34.416759,24.285974,20.04258],"id":20,"interval_ms":20,"legacy_completion_ms":106.52454,"max_gap_ms":41.818511,"operation":"quote_page_unchanged_previous","origin":"native_pager_button","ready_frames":5,"ready_observed_ms":106.704471,"result":"accepted","started_since_probe_ms":33741.412359999995,"strict_status":"pass","terminal_gap_ms":16.154802,"ticks":4}
+SARV_MAIN_THREAD probe_screenshot_native-scale-picker-cold.png 84.512ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-picker-last-product.png 78.954ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-picker-warm.png 87.017ms
+SARV_MAIN_THREAD review_snapshot_clone 5.430ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 5.872ms
+SARV_MAIN_THREAD review_retire_20_rows 0.080ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 5.379ms
+SARV_MAIN_THREAD review_construct_20_rows 19.292ms
+SARV_MAIN_THREAD review_construct_20_rows 20.014ms
+SARV_MAIN_THREAD review_construct_20_rows 19.197ms
+SARV_MAIN_THREAD review_construct_20_rows 19.516ms
+SARV_MAIN_THREAD review_construct_20_rows 19.425ms
+SARV_MAIN_THREAD review_atomic_install 27.365ms
+SARV_MAIN_THREAD review_retire_20_rows 3.611ms
+SARV_MAIN_THREAD review_retire_20_rows 3.244ms
+SARV_MAIN_THREAD review_retire_20_rows 3.095ms
+SARV_MAIN_THREAD review_retire_20_rows 5.185ms
+SARV_MAIN_THREAD review_retire_20_rows 3.118ms
+SARV_MAIN_THREAD review_retire_20_rows 0.192ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-unknown-selector.png 0.786ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-unknown-selector.png 84.922ms
+SARV_ACTION_START 21 quote_product_choice native_product_choose_button
+SARV_MAIN_THREAD review_snapshot_clone 5.751ms
+SARV_MAIN_THREAD review_batched_snapshot_clone 6.354ms
+SARV_MAIN_THREAD review_construct_20_rows 25.224ms
+SARV_MAIN_THREAD review_construct_20_rows 14.966ms
+SARV_MAIN_THREAD review_construct_20_rows 14.103ms
+SARV_MAIN_THREAD review_construct_20_rows 14.319ms
+SARV_MAIN_THREAD review_construct_20_rows 14.413ms
+SARV_MAIN_THREAD review_atomic_install 31.577ms
+SARV_MAIN_THREAD review_retire_20_rows 3.964ms
+SARV_MAIN_THREAD review_retire_20_rows 3.673ms
+SARV_MAIN_THREAD review_retire_20_rows 3.389ms
+SARV_MAIN_THREAD review_retire_20_rows 3.203ms
+SARV_MAIN_THREAD review_retire_20_rows 3.562ms
+SARV_MAIN_THREAD review_retire_20_rows 0.301ms
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":20,"first_amount":"۲۰٬۰۰۰.۲","first_id":0,"first_quantity":"۲","first_quantity_selection":[0,1],"first_quantity_visible_and_focused":true,"first_query":"SYNTHETIC-UNMATCHED-REQUEST","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":10,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":true,"edit_revision":20,"first_amount":"—","first_id":0,"first_quantity":"۲","first_quantity_selection":null,"first_quantity_visible_and_focused":false,"first_query":"SYNTHETIC-UNMATCHED-REQUEST","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":9,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی — نیاز به بررسی","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":585.784412,"ended_since_probe_ms":37233.650612,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[10.999226,20.309284,20.051246000000003,20.081312,21.286738,20.048571000000003,20.079419,20.090284,24.165326,29.221125,26.274644,23.110136,23.488335,25.958168,25.29682,25.16301,29.168264,73.664108,63.187329,29.543901,20.087210000000002],"id":21,"interval_ms":20,"legacy_completion_ms":555.406604,"max_gap_ms":73.664108,"operation":"quote_product_choice","origin":"native_product_choose_button","ready_frames":24,"ready_observed_ms":556.190065,"result":"accepted","started_since_probe_ms":36647.866200000004,"strict_status":"miss","terminal_gap_ms":14.509955999999999,"ticks":21}
+SARV_MAIN_THREAD review_snapshot_clone 6.302ms
+SARV_MAIN_THREAD review_reuse_hide 1.813ms
+SARV_MAIN_THREAD review_reuse_setters 6.508ms
+SARV_MAIN_THREAD review_reuse_show 7.945ms
+SARV_MAIN_THREAD review_reuse_collect 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome_setters 0.007ms
+SARV_MAIN_THREAD review_reuse_chrome 7.984ms
+SARV_MAIN_THREAD review_reuse_preserved_focus 2.948ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 19.985ms
+SARV_MAIN_THREAD review_reuse_requested_focus 0.000ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-composer-first.png 101.095ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-composer-last-product.png 4.291ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-composer-last-product.png 101.530ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-editor-1000.png 65.788ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-settings-while-pdf.png 97.672ms
+SARV_MAIN_THREAD probe_screenshot_native-scale-editor-narrow.png 53.532ms
+SARV_ACTION_START 22 quote_pdf_preview_and_export internal_probe_preview_then_background_pdf
+SARV_ACTION_PHASE {"after":{"active_dialog":false,"edit_revision":20,"first_amount":"۲۰٬۰۰۰.۲","first_id":0,"first_quantity":"۲","first_quantity_selection":[0,1],"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":11,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"before":{"active_dialog":false,"edit_revision":20,"first_amount":"۲۰٬۰۰۰.۲","first_id":0,"first_quantity":"۲","first_quantity_selection":[0,1],"first_quantity_visible_and_focused":true,"first_query":"SCALE-00001","first_query_visible_and_focused":false,"focus_widget":"GtkText","generation":11,"last_id":99,"last_query":"SCALE-00100","page":1,"persistence_busy":false,"queued_save_action":false,"review_pending":false,"rows":100,"total":"جمع نهایی  ۱۰٬۰۸۰٬۲۵۰.۱ تومان","visual_pending":false},"boundary":"before production dispatch through exact adopted generation, all100 current row IDs/queries, first-row amount, literal fixture total, allocated visible sensitive required focus and two subsequent frames; terminal gap included; not every-row amount or painted-pixel proof","budget_ms":50,"elapsed_ms":1894.181847,"ended_since_probe_ms":43142.224049,"fixture_capture_disk_verification_inside_scope":false,"gaps_ms":[80.439368,20.076704,20.10026,20.030835,20.168893,20.104316,20.068933,20.11343,20.121416,20.399527,20.094134999999998,20.112648,20.051085999999998,20.123535,20.097115,20.016654,20.124541999999998,20.096569000000002,20.077,20.209580000000003,20.093209,20.077866,20.125177,20.084647,20.081391,20.090586000000002,20.123334,20.172819,20.138277,20.172634,20.006052999999998,20.105813,20.101477,20.081982,20.101542,20.091637,20.071967,20.110816,20.096003,20.069359,20.085988,20.117135,20.098708,20.105798,23.606404,20.099263,20.13407,20.100476,20.091441000000003,20.122238,20.10278,20.080239,20.142073,20.069884,20.095107000000002,20.080535,20.130665,20.112298,20.111537,20.100341,20.109683,20.115859,20.108212,20.100851,20.105277,20.084861,20.081612,30.728856999999998,20.07373,20.089764,20.009062,20.105538,20.066228,20.04636,20.104526,20.1736,20.068151999999998,20.085818,20.109504,20.00775,20.11365,20.114842,20.058296,20.134391,20.111603,20.085632999999998,20.147481,20.075197,20.977096,20.144105999999997],"id":22,"interval_ms":20,"legacy_completion_ms":null,"max_gap_ms":80.439368,"operation":"quote_pdf_preview_and_export","origin":"internal_probe_preview_then_background_pdf","ready_frames":109,"ready_observed_ms":1864.377359,"result":"accepted","started_since_probe_ms":41248.042202000004,"strict_status":"miss","terminal_gap_ms":9.634193,"ticks":90}

@@ -1,0 +1,256 @@
+{
+  "result": "failed",
+  "profile": "/workspace/sarv-quote/artifacts/independent-native/run-ca8mvfpn",
+  "source": "/workspace/sarv-quote/artifacts/m6-preserved/quote-rows-r8la8apr",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "backend": "X11 Xvfb + Openbox + real XTest key events",
+  "checks": [
+    {
+      "name": "Tab enters first row quantity",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row0-quantity",
+        "focus_bounds": [
+          495.0,
+          353.0,
+          56.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Tab",
+        "page": "order",
+        "quotes": 2,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Shift+Tab returns to first row query",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row0-query",
+        "focus_bounds": [
+          823.0,
+          353.0,
+          213.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Shift_L",
+        "page": "order",
+        "quotes": 2,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Enter saves/reviews and retains query focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row0-query",
+        "focus_bounds": [
+          823.0,
+          353.0,
+          213.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Return",
+        "page": "order",
+        "quotes": 2,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Ctrl+Down advances same-column row focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row1-query",
+        "focus_bounds": [
+          823.0,
+          388.0,
+          213.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Control_L",
+        "page": "order",
+        "quotes": 2,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Ctrl+Up returns same-column row focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row0-query",
+        "focus_bounds": [
+          823.0,
+          353.0,
+          213.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Control_L",
+        "page": "order",
+        "quotes": 2,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Ctrl+S saves existing draft and retains query focus",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row0-query",
+        "focus_bounds": [
+          823.0,
+          353.0,
+          213.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Control_L",
+        "page": "order",
+        "quotes": 2,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Save preserved exact payload",
+      "passed": true
+    },
+    {
+      "name": "Ctrl+Enter reaches approved workflow",
+      "passed": true,
+      "event": {
+        "dialog_open": false,
+        "dialog_title": null,
+        "focus": "row0-query",
+        "focus_bounds": [
+          823.0,
+          353.0,
+          213.0,
+          24.0
+        ],
+        "focus_clip_bounds": [
+          18.0,
+          301.0,
+          1076.0,
+          214.0
+        ],
+        "focus_label": null,
+        "focus_name": "GtkText",
+        "focus_scope": "window",
+        "focus_type": "GtkText",
+        "key": "Return",
+        "page": "order",
+        "quotes": 3,
+        "settings_dirty": false,
+        "window_size": [
+          1390,
+          930
+        ]
+      },
+      "latency_seconds": 0.051
+    },
+    {
+      "name": "Repeat approval preserved existing quote count",
+      "passed": false
+    }
+  ],
+  "error": "Repeat approval preserved existing quote count"
+}

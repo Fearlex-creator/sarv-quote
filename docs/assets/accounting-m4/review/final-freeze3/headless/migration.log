@@ -1,0 +1,3 @@
+PASS independentactualschema4→5 actual-quotes-manual: exact priorfullstate/quotes/manual/M3opening/zeroaliases, originalv4recovery,v5backup,freshrestore/reopen,onegeneration
+PASS independentactualschema4→5 actual-detailed-opening: exact priorfullstate/quotes/manual/M3opening/zeroaliases, originalv4recovery,v5backup,freshrestore/reopen,onegeneration
+PASS independentactualschema4→5 actual-zero-initialization: exact priorfullstate/quotes/manual/M3opening/zeroaliases, originalv4recovery,v5backup,freshrestore/reopen,onegeneration

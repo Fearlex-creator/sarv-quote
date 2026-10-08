@@ -1,0 +1,14 @@
+{
+  "fresh_restore_and_restart_equal": true,
+  "full_state_equal_except_schema": true,
+  "generation_after": 42,
+  "generation_before": 41,
+  "journals": 1,
+  "opening_details": 1,
+  "previous_snapshot_exact": true,
+  "procurement_installed_into_old_books": false,
+  "quotes": 0,
+  "result": "passed",
+  "schema_after": 5,
+  "schema_before": 4
+}

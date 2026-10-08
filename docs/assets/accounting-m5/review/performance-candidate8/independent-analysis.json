@@ -1,0 +1,494 @@
+{
+  "result": "FAIL strict performance; PASS recorded functional/source/provenance boundaries; M5 remains OPEN",
+  "epoch": "candidate8 final quiet once M5 plus sequentialM2",
+  "source_sha256": "efd4fdda06b2aa492239aac3dde74741b1a439c4d54afb11fa34ae0699244c72",
+  "binary_sha256": "c8ff9dd27b9e5a0d1946978de13c231e0c12ca1d6c30496636a00f00e01b0aad",
+  "external_observer": "m5-cached-v3/472e83",
+  "actual_issued_source_binary_observer_guards_equal": true,
+  "nearest_rank_stats_verified": [
+    {
+      "name": "core-small-posted/repeated_process_startup_ms",
+      "n": 10,
+      "p50": 807.7382640040014,
+      "p95": 854.4497200055048,
+      "p99": 854.4497200055048,
+      "worst": 854.4497200055048
+    },
+    {
+      "name": "core-small-posted/steady_rss_kib",
+      "n": 10,
+      "p50": 96208,
+      "p95": 97376,
+      "p99": 97376,
+      "worst": 97376
+    },
+    {
+      "name": "core-small-posted/kernel_peak_rss_kib",
+      "n": 10,
+      "p50": 101408,
+      "p95": 102528,
+      "p99": 102528,
+      "worst": 102528
+    },
+    {
+      "name": "quote-scale/repeated_process_startup_ms",
+      "n": 10,
+      "p50": 1037.5894399985555,
+      "p95": 1098.4197459983989,
+      "p99": 1098.4197459983989,
+      "worst": 1098.4197459983989
+    },
+    {
+      "name": "quote-scale/steady_rss_kib",
+      "n": 10,
+      "p50": 176040,
+      "p95": 176112,
+      "p99": 176112,
+      "worst": 176112
+    },
+    {
+      "name": "quote-scale/kernel_peak_rss_kib",
+      "n": 10,
+      "p50": 176040,
+      "p95": 176112,
+      "p99": 176112,
+      "worst": 176112
+    },
+    {
+      "name": "procurement-small-posted/repeated_process_startup_ms",
+      "n": 10,
+      "p50": 841.9181720018969,
+      "p95": 961.9028390006861,
+      "p99": 961.9028390006861,
+      "worst": 961.9028390006861
+    },
+    {
+      "name": "procurement-small-posted/steady_rss_kib",
+      "n": 10,
+      "p50": 96920,
+      "p95": 99708,
+      "p99": 99708,
+      "worst": 99708
+    },
+    {
+      "name": "procurement-small-posted/kernel_peak_rss_kib",
+      "n": 10,
+      "p50": 103820,
+      "p95": 104068,
+      "p99": 104068,
+      "worst": 104068
+    },
+    {
+      "name": "sales-small-posted/repeated_process_startup_ms",
+      "n": 10,
+      "p50": 894.237897999119,
+      "p95": 1071.7715409991797,
+      "p99": 1071.7715409991797,
+      "worst": 1071.7715409991797
+    },
+    {
+      "name": "sales-small-posted/steady_rss_kib",
+      "n": 10,
+      "p50": 98564,
+      "p95": 99336,
+      "p99": 99336,
+      "worst": 99336
+    },
+    {
+      "name": "sales-small-posted/kernel_peak_rss_kib",
+      "n": 10,
+      "p50": 105108,
+      "p95": 105752,
+      "p99": 105752,
+      "worst": 105752
+    },
+    {
+      "name": "sales-paged-drafts/repeated_process_startup_ms",
+      "n": 10,
+      "p50": 882.7863640035503,
+      "p95": 954.8258909999277,
+      "p99": 954.8258909999277,
+      "worst": 954.8258909999277
+    },
+    {
+      "name": "sales-paged-drafts/steady_rss_kib",
+      "n": 10,
+      "p50": 97696,
+      "p95": 98584,
+      "p99": 98584,
+      "worst": 98584
+    },
+    {
+      "name": "sales-paged-drafts/kernel_peak_rss_kib",
+      "n": 10,
+      "p50": 103972,
+      "p95": 104988,
+      "p99": 104988,
+      "worst": 104988
+    },
+    {
+      "name": "sales-long-draft/repeated_process_startup_ms",
+      "n": 10,
+      "p50": 822.9397020040778,
+      "p95": 922.0064550027018,
+      "p99": 922.0064550027018,
+      "worst": 922.0064550027018
+    },
+    {
+      "name": "sales-long-draft/steady_rss_kib",
+      "n": 10,
+      "p50": 98424,
+      "p95": 100620,
+      "p99": 100620,
+      "worst": 100620
+    },
+    {
+      "name": "sales-long-draft/kernel_peak_rss_kib",
+      "n": 10,
+      "p50": 104412,
+      "p95": 105136,
+      "p99": 105136,
+      "worst": 105136
+    },
+    {
+      "name": "core visible",
+      "n": 20,
+      "p50": 83.15329700417351,
+      "p95": 88.16273700358579,
+      "p99": 89.5072830026038,
+      "worst": 89.5072830026038
+    },
+    {
+      "name": "core focused",
+      "n": 20,
+      "p50": 108.98130699933972,
+      "p95": 117.6778560038656,
+      "p99": 118.54134800523752,
+      "worst": 118.54134800523752
+    },
+    {
+      "name": "proc document/correct_visible_ms",
+      "n": 20,
+      "p50": 98.6257789991214,
+      "p95": 129.08216600044398,
+      "p99": 131.90172200120287,
+      "worst": 131.90172200120287
+    },
+    {
+      "name": "proc document/focused_usable_ms",
+      "n": 20,
+      "p50": 112.99200400389964,
+      "p95": 140.95613400422735,
+      "p99": 148.84223099943483,
+      "worst": 148.84223099943483
+    },
+    {
+      "name": "proc party/correct_visible_ms",
+      "n": 20,
+      "p50": 79.67476400517626,
+      "p95": 92.23169199685799,
+      "p99": 92.49406600429211,
+      "worst": 92.49406600429211
+    },
+    {
+      "name": "proc party/focused_usable_ms",
+      "n": 20,
+      "p50": 79.6764170008828,
+      "p95": 92.23539700178662,
+      "p99": 92.49660999921616,
+      "worst": 92.49660999921616
+    },
+    {
+      "name": "proc item/correct_visible_ms",
+      "n": 20,
+      "p50": 79.20621799712535,
+      "p95": 85.84096400591079,
+      "p99": 89.74347200273769,
+      "worst": 89.74347200273769
+    },
+    {
+      "name": "proc item/focused_usable_ms",
+      "n": 20,
+      "p50": 79.20844099862734,
+      "p95": 85.84318700013682,
+      "p99": 89.74529400438769,
+      "worst": 89.74529400438769
+    },
+    {
+      "name": "proc mixed_master/correct_visible_ms",
+      "n": 20,
+      "p50": 80.94123499904526,
+      "p95": 89.74041199689964,
+      "p99": 94.96464099356672,
+      "worst": 94.96464099356672
+    },
+    {
+      "name": "proc mixed_master/focused_usable_ms",
+      "n": 20,
+      "p50": 80.94285699917236,
+      "p95": 89.74279600079171,
+      "p99": 94.96582299470901,
+      "worst": 94.96582299470901
+    },
+    {
+      "name": "120 draft/correct_visible_ms",
+      "n": 20,
+      "p50": 76.87981900380692,
+      "p95": 113.7661550019402,
+      "p99": 127.43839800532442,
+      "worst": 127.43839800532442
+    },
+    {
+      "name": "120 draft/focused_usable_ms",
+      "n": 20,
+      "p50": 90.97451900015585,
+      "p95": 125.8964599983301,
+      "p99": 139.2798570013838,
+      "worst": 139.2798570013838
+    },
+    {
+      "name": "6 posted/correct_visible_ms",
+      "n": 20,
+      "p50": 65.74293699668488,
+      "p95": 80.657122998673,
+      "p99": 88.31726999778766,
+      "worst": 88.31726999778766
+    },
+    {
+      "name": "6 posted/focused_usable_ms",
+      "n": 20,
+      "p50": 90.77163899928564,
+      "p95": 104.98869799630484,
+      "p99": 118.40191699593561,
+      "worst": 118.40191699593561
+    },
+    {
+      "name": "long39 visible",
+      "n": 39,
+      "p50": 52.88014300458599,
+      "p95": 72.60563599993475,
+      "p99": 76.87477600120474,
+      "worst": 76.87477600120474
+    },
+    {
+      "name": "long39 focused",
+      "n": 39,
+      "p50": 332.3349029960809,
+      "p95": 401.77659499750007,
+      "p99": 404.0573959937319,
+      "worst": 404.0573959937319
+    }
+  ],
+  "additive_phase_intervals_and_terminal_maxima_verified": [
+    {
+      "id": 1,
+      "operation": "quote_changed_save_recovery",
+      "max_gap_ms": 38.177665,
+      "strict_status": "pass",
+      "elapsed_ms": 381.078604
+    },
+    {
+      "id": 2,
+      "operation": "quote_unchanged_save_refresh",
+      "max_gap_ms": 48.897628999999995,
+      "strict_status": "pass",
+      "elapsed_ms": 272.622914
+    },
+    {
+      "id": 3,
+      "operation": "quote_page_changed_save",
+      "max_gap_ms": 76.73186899999999,
+      "strict_status": "miss",
+      "elapsed_ms": 419.23726700000003
+    },
+    {
+      "id": 4,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 66.86940299999999,
+      "strict_status": "miss",
+      "elapsed_ms": 182.41157099999998
+    },
+    {
+      "id": 5,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 52.662248000000005,
+      "strict_status": "miss",
+      "elapsed_ms": 165.659611
+    },
+    {
+      "id": 6,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 57.42027,
+      "strict_status": "miss",
+      "elapsed_ms": 165.962797
+    },
+    {
+      "id": 7,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 52.449166999999996,
+      "strict_status": "miss",
+      "elapsed_ms": 154.39435
+    },
+    {
+      "id": 8,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 47.598276,
+      "strict_status": "pass",
+      "elapsed_ms": 151.732649
+    },
+    {
+      "id": 9,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 46.914204,
+      "strict_status": "pass",
+      "elapsed_ms": 151.36877
+    },
+    {
+      "id": 10,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 63.942572000000006,
+      "strict_status": "miss",
+      "elapsed_ms": 167.156007
+    },
+    {
+      "id": 11,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 51.580819,
+      "strict_status": "miss",
+      "elapsed_ms": 166.079194
+    },
+    {
+      "id": 12,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 53.314065,
+      "strict_status": "miss",
+      "elapsed_ms": 158.314203
+    },
+    {
+      "id": 13,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 51.187876,
+      "strict_status": "miss",
+      "elapsed_ms": 151.91249100000002
+    },
+    {
+      "id": 14,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 52.038779,
+      "strict_status": "miss",
+      "elapsed_ms": 162.619955
+    },
+    {
+      "id": 15,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 56.598972999999994,
+      "strict_status": "miss",
+      "elapsed_ms": 165.88863800000001
+    },
+    {
+      "id": 16,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 55.792358,
+      "strict_status": "miss",
+      "elapsed_ms": 158.660985
+    },
+    {
+      "id": 17,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 57.443127,
+      "strict_status": "miss",
+      "elapsed_ms": 161.704154
+    },
+    {
+      "id": 18,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 52.775324,
+      "strict_status": "miss",
+      "elapsed_ms": 156.94907899999998
+    },
+    {
+      "id": 19,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 56.950273,
+      "strict_status": "miss",
+      "elapsed_ms": 163.096136
+    },
+    {
+      "id": 20,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 54.920954,
+      "strict_status": "miss",
+      "elapsed_ms": 167.020476
+    },
+    {
+      "id": 21,
+      "operation": "quote_product_choice",
+      "max_gap_ms": 61.364331,
+      "strict_status": "miss",
+      "elapsed_ms": 569.197889
+    },
+    {
+      "id": 22,
+      "operation": "quote_pdf_preview_and_export",
+      "max_gap_ms": 35.694924,
+      "strict_status": "pass",
+      "elapsed_ms": 1721.749585
+    }
+  ],
+  "strict_misses": {
+    "long39_focused_p95_ms": 401.77659499750007,
+    "long39_focused_budget_ms": 150,
+    "quote_global_pdf_busy_save_busy_ms": [
+      305.86222499999997,
+      105.96620700000001,
+      102.90051
+    ],
+    "legacy_max17_unchanged_page_ms": 152.53994600000001,
+    "additive_page_misses": 16,
+    "additive_page_scopes": 18,
+    "additive_choice_gap_ms": 61.364331
+  },
+  "distinction": {
+    "long_visible_to_focused_delta_ms": {
+      "min": 215.57734200177947,
+      "p95": 334.5927310001571,
+      "max": 345.91105099389097
+    },
+    "focus_path": "component grabFocus plus own-state pumping and realTab fallback with10ms waits; no step trace isolates product focus latency vs observer/navigation cost; full focus budget remains failed",
+    "synchronous_source_reuse_wall_ms": {
+      "n": 22,
+      "max": 64.435,
+      "over50_count": 12
+    },
+    "nested_source_spans": "setters max36.285ms and chrome max24.693ms are inside outer reuse; not added to outer, not pureCPU or uninterrupted execution proof",
+    "actionable": "reduce/profile current100-row reuse setters/chrome on main thread; independently trace actual focus path while preserving complete focus endpoint and historical misses"
+  },
+  "qualifications": [
+    "method change forbids causal product-only comparison against C2 traversal",
+    "39 distinct pages descriptive one-process p95, not population tail guarantee",
+    "broad heartbeat includes probe/setup/screenshots; accepted additive action scopes exclude fixture/capture verification",
+    "v3 root/currentmembership and focused usable target required; no UUID/everyrowamount/paint proof",
+    "virtual shared4CPUequiv16GiB; no dedicated referencehardware/cachecold/Windows/Wayland/physicalpowerloss/printing/accountant approval"
+  ],
+  "final_acceptance": "NOT ACCEPTED",
+  "portable_owner_evidence_files_verified": 234,
+  "native_timer_misses_verified": [
+    {
+      "scope": "core",
+      "operation": null,
+      "phase": "post",
+      "max_gap_ms": 51.60206,
+      "result": "worker_finished",
+      "ticks": 2
+    },
+    {
+      "scope": "sales_full",
+      "operation": "sales.return.v1",
+      "phase": "post",
+      "max_gap_ms": 57.104584,
+      "result": "worker_finished",
+      "ticks": 2
+    }
+  ],
+  "native_warning": "Actual sales-native-full.log Gtk-WARNING GtkText did not receive focus-out event retained; app warning count1, no zero-warning claim"
+}

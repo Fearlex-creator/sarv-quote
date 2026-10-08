@@ -1,0 +1,30 @@
+{
+  "checks": [
+    "actual sales catalog price20/core SKU+unit mapping",
+    "actual sales catalog price20/core SKU+unit mapping",
+    "actual sales catalog price20/core SKU+unit mapping",
+    "actual sales catalog price20/core SKU+unit mapping",
+    "older durable draft receipt retains newer GTK input",
+    "explicit raw draft saves durable revision and current header/lines",
+    "order199 nonfinancial and raw draft consumed atomically",
+    "partial paired delivery/invoice100 with separate IDs and original cost58",
+    "split original-cost return23+35 and exact credit40+60",
+    "final fulfillment original discount residual99 and cost58",
+    "authentic approved quotation converted through native selector/mapping without GL or original quote edits",
+    "cancelled pending native source read preserves books and clears global loading status",
+    "actual window focus on a persistent card moves to live Sales search before row invalidation hides and disables that card",
+    "invalid cutoff requested while actual page reader is pending rejects older completion and clears all usable slot identities without writes",
+    "actual backup preview and confirmed restore rebuild Sales, retire the old Weak page, and route a new native draft to the attached current company and changed 2026-04-01 cutoff with posted books unchanged"
+  ],
+  "first_pair_id": "a11c5c65-6e06-4561-ae1f-b49e918bbf60",
+  "mode": "full",
+  "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+  "order_id": "6423fc78-5cb6-4909-b73e-a366dd87ca58",
+  "ready": true,
+  "record_count": 6,
+  "restored_company": "b52c6683-f12c-4c6d-8833-556a93a40541",
+  "restored_cutoff": "2026-04-01",
+  "search_name": "sales-search",
+  "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+  "synthetic_only": true
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "file": "bill-a.pdf",
+    "pages": 1,
+    "all_text_inside_margins": true,
+    "outliers": []
+  },
+  {
+    "file": "bill-b.pdf",
+    "pages": 1,
+    "all_text_inside_margins": true,
+    "outliers": []
+  },
+  {
+    "file": "procurement-reconciliation.pdf",
+    "pages": 6,
+    "all_text_inside_margins": true,
+    "outliers": []
+  },
+  {
+    "file": "purchase-order.pdf",
+    "pages": 1,
+    "all_text_inside_margins": true,
+    "outliers": []
+  },
+  {
+    "file": "receipt-a.pdf",
+    "pages": 1,
+    "all_text_inside_margins": true,
+    "outliers": []
+  },
+  {
+    "file": "receipt-b.pdf",
+    "pages": 1,
+    "all_text_inside_margins": true,
+    "outliers": []
+  },
+  {
+    "file": "warehouse-transfer.pdf",
+    "pages": 1,
+    "all_text_inside_margins": true,
+    "outliers": []
+  }
+]

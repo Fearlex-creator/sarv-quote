@@ -1,0 +1,11 @@
+{
+  "baseline_head": "4aa82c2988fb2ea48a2fa2ae9824c06187f3d76a",
+  "reviewed_accounting_binary_sha256": "ae35fe5d21095af53c194e75081d8b2087f7e31d96a3b0d1565a7f1aa1228f65",
+  "accounting_source_sha256": {
+    "src/accounting.rs": "f7203c71a8ab393a43c5698a659dc1a97420ac8a12a67a3f6b400cf02babf917",
+    "src/accounting_export.rs": "72004030804f43ec4cde869e981a399decd111615671a022edee6e28291d21f3",
+    "src/store.rs": "5cb151b0eab30d0a906b44fa440612d4f3c32147e61331119ec624eb28105d54",
+    "src/ui/accounting.rs": "32a0fe0a3fdaafc2816e7d0de982e7685c3cd270262ea2ad63af659002eb740b"
+  },
+  "review_scope": "accounting source and native binary; later picker-only changes need separate affected checks"
+}

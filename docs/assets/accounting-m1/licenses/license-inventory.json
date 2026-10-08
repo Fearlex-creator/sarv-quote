@@ -1,0 +1,10 @@
+{
+  "scope": "Cargo locked resolved metadata plus existing bundled-font license; inventory not legal/advisory certification",
+  "packages": 131,
+  "unknown_license_metadata": [],
+  "cargo_lock_sha256": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+  "font_ofl_sha256": "17e355067c8284f47743a1ee3b1ef7ff684ff0601eda357f9353b10b3016ab31",
+  "source_distribution_license": "Existing MIT metadata retained; future distribution choice pending user",
+  "native_libraries": "Dynamic GTK4/libadwaita and Cairo/Pango keep their separate licenses; native system component inventory incomplete",
+  "advisories": "Not evaluated; no vulnerability scan or latest advisory DB claimed"
+}

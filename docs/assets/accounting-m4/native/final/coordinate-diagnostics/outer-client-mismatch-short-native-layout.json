@@ -1,0 +1,13 @@
+{
+  "result": "failed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M4-freeze2",
+  "binary_sha256": "614da6fa4ee6d334606a8d3182f1d91d52c9b494579c81cfe10cf41c763f9713",
+  "checks": [],
+  "key_events": [],
+  "fixture_profile": "/workspace/sarv-quote/artifacts/procurement-native/run-oi4h0f5z/full",
+  "run": "/workspace/sarv-quote/artifacts/procurement-short-native/run-gys40zn6",
+  "scope": "Actual private XTest Tab navigation and auto-scroll in short native windows; synthetic10record5journal fixture copied read-only; no financial writes.",
+  "gtk_diagnostics": {
+    "light.log": ""
+  }
+}

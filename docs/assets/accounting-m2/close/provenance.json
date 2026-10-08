@@ -1,0 +1,7 @@
+{
+  "binary_sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d",
+  "script": "scripts/native-save-close.py",
+  "checks": 3,
+  "synthetic_only": true,
+  "result": "passed"
+}

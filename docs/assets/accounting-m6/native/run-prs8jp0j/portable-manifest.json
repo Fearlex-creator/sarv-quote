@@ -1,0 +1,19 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/purchase-returns-native/run-prs8jp0j",
+  "portable": "/workspace/sarv-quote/docs/assets/accounting-m6/native/run-prs8jp0j",
+  "files": {
+    "M5-actual-before-purchases.png": "4942cfa0db5a9bf00258cff824b39c077ae18c87a91f804f47f1ce866bf374ee",
+    "M5-actual-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-failure.png": "c2ae4c4432a0d0726b9fcdd25b29ed5712acc5b1872056c01277e53afba72361",
+    "M6-main-after-before.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "M6-main-before-state.json": "44e92be3ab033be21f4ee4a3e99f8695ec4b7eebc4530f8836638c7d9644da6b",
+    "M6-main.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "failed-access-tree.json": "89459c8c6577bae74c8530ed4f20d1185bb7e425020b1e38c2bde932692dce96",
+    "frozen-source-manifest.json": "de7debc430721c7cdc04e10171e3081281236bbd2f879fe4ab8f436f0b8257dd",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "progress.jsonl": "41d8748f1ce3b445cce3e9f6fe3efb05cf8885d9c213c1b68aa96066e2f70131",
+    "purchase-returns-independent-native.json": "a92355f0f4ec3cfd26585bb87ca4483671ce42c79e5c821b08b5bdac7565d3f9",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "result": "failed"
+}

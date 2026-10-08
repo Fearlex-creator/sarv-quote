@@ -1,0 +1,70 @@
+{
+  "passed": true,
+  "scope": "Isolated actual AST inner function with adversarial probe doubles; no native imports, GUI, keys or focus changes. This is static logic evidence, not native fallback exercise.",
+  "observer_sha256": "a4ba1500f756b81810a40386b8d37782cdb010a0b22d0eee6062216bf23c6fb4",
+  "cases": [
+    {
+      "case": "live",
+      "accepted": true,
+      "correct": true,
+      "observation": {
+        "scope": "read-only current AT-SPI field after asynchronous callback",
+        "requested_focus": "row99-quantity",
+        "name": "تعداد ردیف ۱۰۰",
+        "role": "text",
+        "focused": true,
+        "text": "2.375",
+        "ancestry": [
+          "0x1",
+          "0x2"
+        ],
+        "original_key_event": {
+          "key": "Up",
+          "focus": "row100-quantity"
+        }
+      }
+    },
+    {
+      "case": "retired",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "field-defunct",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "parent-defunct",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "focus-lost",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "renamed",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "duplicate",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    },
+    {
+      "case": "foreign-app",
+      "accepted": false,
+      "correct": true,
+      "observation": null
+    }
+  ]
+}

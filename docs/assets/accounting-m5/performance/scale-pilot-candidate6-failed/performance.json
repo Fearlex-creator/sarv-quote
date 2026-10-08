@@ -1,0 +1,126 @@
+{
+  "application_memory_kib_after_full_workflow": {
+    "VmHWM": 304888,
+    "VmRSS": 294000
+  },
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate6",
+  "sha256": "3259e1e4b94fe8471a2b0d3cfc9446a515a50247fc2856769519dc0caf5fd18e",
+  "native_report": "/workspace/sarv-quote/artifacts/performance-m5/candidate6-scale-functional-pilot/synthetic-profile/native-responsiveness-verification.json",
+  "functional_result": "failed",
+  "main_thread_trace_ms": {
+    "review_snapshot_clone": [
+      0.006,
+      3.384,
+      4.53,
+      4.233,
+      3.777,
+      3.836
+    ],
+    "review_100_row_widget_construction": [
+      2.983
+    ],
+    "review_settings_apply": [
+      0.004
+    ],
+    "probe_screenshot_native-scale-catalog-first.png": [
+      112.596
+    ],
+    "probe_screenshot_native-scale-catalog-next.png": [
+      101.402
+    ],
+    "probe_screenshot_native-scale-catalog-last.png": [
+      90.515
+    ],
+    "review_batched_snapshot_clone": [
+      5.365
+    ],
+    "review_construct_20_rows": [
+      13.738,
+      15.826,
+      13.792,
+      13.704,
+      13.614
+    ],
+    "review_atomic_install": [
+      15.604
+    ],
+    "review_retire_20_rows": [
+      0.152
+    ],
+    "probe_screenshot_native-save-before.png": [
+      63.175
+    ],
+    "review_reuse_setters": [
+      0.788,
+      0.506,
+      24.746,
+      31.035,
+      26.371,
+      26.928,
+      28.525,
+      32.305,
+      31.846,
+      32.226,
+      31.875,
+      0.486
+    ],
+    "review_reuse_chrome": [
+      17.755,
+      17.856,
+      17.535,
+      20.645,
+      21.447,
+      18.152,
+      19.405,
+      17.264,
+      16.265,
+      16.766,
+      17.235,
+      16.994
+    ],
+    "review_100_row_widget_reuse": [
+      28.515,
+      26.998,
+      48.943,
+      59.249,
+      55.128,
+      54.271,
+      55.157,
+      56.535,
+      54.519,
+      55.117,
+      55.854,
+      24.841
+    ],
+    "probe_screenshot_native-save-after.png": [
+      65.249
+    ],
+    "probe_screenshot_native-scale-editor-last-page.png": [
+      60.954
+    ]
+  },
+  "strict_budgets": {
+    "maximum_heartbeat_gap_ms": {
+      "actual": 289.236934,
+      "budget": 50,
+      "passes": false
+    },
+    "unchanged_editor_page_ms": {
+      "actual": 140.79332399999998,
+      "budget": 150,
+      "passes": true
+    },
+    "pdf_busy_heartbeat_ms": {
+      "actual": null,
+      "budget": 50,
+      "passes": false
+    }
+  },
+  "measurement": "n=1 complete native workflow; timer gaps include observer and scheduling; no p95 claim",
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "limits": [
+    "private X11/Cairo executor; Wayland and physical desktop untested",
+    "20 ms heartbeat is a responsiveness proxy, not a continuous CPU trace",
+    "probe screenshots and setup are included in global gaps"
+  ]
+}

@@ -171,7 +171,8 @@ fn malicious_backup_valid_hash_rejected() {
     let d = tempfile::tempdir().unwrap();
     let p = d.path().join("bad.json");
     let bytes = serde_json::to_vec(&s).unwrap();
-    let b = serde_json::json!({"format":"sarv-quote-backup-v1","checksum":hash(&bytes),"state":s});
+    let b =
+        serde_json::json!({"format":"sarv-accounting-backup-v7","checksum":hash(&bytes),"state":s});
     std::fs::write(&p, serde_json::to_vec(&b).unwrap()).unwrap();
     assert!(Store::restore_preview(&p).is_err());
     assert!(Store::restore_preview(Path::new("/no-such-backup")).is_err());

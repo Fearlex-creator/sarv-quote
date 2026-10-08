@@ -1,0 +1,3848 @@
+{
+  "result": "measured",
+  "synthetic_only": true,
+  "development_pilot": true,
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate2",
+  "binary_sha256": "9b32342c5dd966fb0f1a3f43f55529990221090e7a27d7aa7ddf7b96b4bf9537",
+  "utc": "2026-10-08T01:47:30Z",
+  "root_freeze_manifest": "/workspace/sarv-quote/docs/assets/accounting-m5/checks/candidate2/manifest.json",
+  "root_freeze_manifest_sha256": "c7ddeda0ea4ad839e34000f3251b9ad2bb7f66960479ecae26a419becbb3fc2d",
+  "source_head": "24ae57bc179336ad21d7d1d52501f49e80f3330b",
+  "source_status": "M README.md\n M decisions.md\n M migrations.md\n M requirements/evidence.md\n M requirements/roadmap.md\n M scripts/native-sidebar-qa.py\n M src/accounting.rs\n M src/core.rs\n M src/domain.rs\n M src/lib.rs\n M src/procurement.rs\n M src/store.rs\n M src/ui.rs\n M src/ui/accounting.rs\n M tests/accounting_migration.rs\n M tests/core_migration.rs\n M tests/core_store.rs\n M tests/procurement.rs\n M tests/procurement_migration.rs\n M tests/qa_invariants.rs\n M tests/workflow.rs\n?? docs/assets/accounting-m5/\n?? docs/sales-api.md\n?? docs/sales-exports.md\n?? requirements/fixtures-M5.md\n?? requirements/independent-review-M5.md\n?? requirements/milestone-M5.md\n?? requirements/performance-M5.md\n?? scripts/native-performance-M5.py\n?? scripts/sales-qa.py\n?? src/sales.rs\n?? src/sales_draft.rs\n?? src/sales_export.rs\n?? src/ui/sales.rs\n?? tests/sales.rs\n?? tests/sales_drafts.rs\n?? tests/sales_exports.rs\n?? tests/sales_migration.rs",
+  "source_code_sha256": "c9ffa4559429ff67154fb067dbec667c7c1787cffe49e61b1d56cbe336978a36",
+  "frozen_source_provenance_before": {
+    "sha256": "30dc57763c904f740a42df7f863276b2c2f08e2c4c8510901603d6b6571fda5b",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+      "src/ui/accounting.rs": "76faf44f705bac44e6e1413e2d78e696af83238962cc03a4877a3627ec6a348f",
+      "src/ui/background.rs": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+      "src/ui/sales.rs": "816c0069fdf8f89b3534b3b95eadc11282bd38aeaafe17a1e813d690207ff696",
+      "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+      "src/ui/smoke.rs": "947cc2399837002fa159dedb7013cb764eb55a76021443efec45718f6a793b7b",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "observer_provenance_before": {
+    "native-performance-M5.py": "58cf88fdd660cf8b8a64b3ff25f90fb93f9c2cf56f93daf4d82ea8cc85879103",
+    "native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+    "native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+    "accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+  },
+  "source_hash_algorithm": "Sorted pathlib.Path components; relative UTF-8 path, NUL, raw bytes, NUL",
+  "matched_core_baseline": "docs/assets/accounting-m3/performance/performance.json",
+  "procurement_measurement": {
+    "result": "measured",
+    "source": "native forms; actual two-row catalogue import and explicit picker",
+    "stage_manifest": {
+      "catalog_count": 1,
+      "note": "no smoke changes after ready; external observer owns preview/post",
+      "opening_journals": 1,
+      "phase": "unposted-order-native-forms",
+      "post_name": "procurement-order-save",
+      "preview_name": "procurement-preview",
+      "ready": true,
+      "resource_records": 4,
+      "search_name": "procurement-search",
+      "source_snapshot": "catalog ID/name/fingerprint/product/unit/date/IRR frozen through native picker"
+    },
+    "order_preview_observed_ms": 67.70450699696084,
+    "order_post_durable_observed_ms": 19.00192700122716,
+    "external_order_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 53.253232,
+        "gaps_ms": [
+          22.667903,
+          16.235785999999997,
+          14.349542999999999
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 22.667903,
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 59.786474999999996,
+        "gaps_ms": [
+          34.790828000000005,
+          24.995165999999998,
+          0.00048100000000000004
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 34.790828000000005,
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "external_order_durable_proof": {
+      "record_id": "b432e60b-1670-4c37-8771-1490af1afcb0",
+      "command_sha256": "1e7c311aa1495ebd0bd8282321af551c4343f44c6d4d30fc9b7eef341e16c286",
+      "total_irr": 180,
+      "journal_id": null,
+      "records": 5,
+      "journals": 1
+    },
+    "memory_kib_after_external_order": {
+      "VmRSS": 134736,
+      "VmHWM": 134736
+    },
+    "full_manifest": {
+      "checks": [
+        "fractional IRR rejected and retained in native line form",
+        "Rial15↔Toman1.5 exact; invalidIRR0.1 retained and unit switch refused",
+        "catalog15/piece cannot silently become15/carton; requires override reason",
+        "quantity-only edit preserves original catalog15, overridden30 and required reason",
+        "PO12pieces at15, immutable source, no financial journal",
+        "partial receipt independent74 mismatches75; retained and no post",
+        "two partial receipts75/105, two matched bills30/150 and paired nonfinancial transfer70"
+      ],
+      "item_queries": [
+        "SKU-A",
+        "SKU-B"
+      ],
+      "journal_count": 5,
+      "movement_count": 4,
+      "note": "160ms smoke observation polling is not worker latency; process remains alive for independent keyboard/RSS",
+      "party_queries": [
+        "CU-A",
+        "CU-B"
+      ],
+      "phase": "posted-literal-M4",
+      "queries": [
+        "REC-A",
+        "REC-B"
+      ],
+      "ready": true,
+      "record_count": 10,
+      "reports": [
+        "M4-controls.csv",
+        "M4-controls.pdf",
+        "M4-order.pdf"
+      ],
+      "search_name": "procurement-search",
+      "source": "native forms; real catalog import and explicit price picker; root worker preview/post"
+    },
+    "independent_raw_proof": {
+      "record_count": 10,
+      "journal_count": 5,
+      "records_by_kind": {
+        "Resources": 4,
+        "Order": 1,
+        "Receive": 2,
+        "Bill": 2,
+        "Transfer": 1
+      },
+      "movement_count": 4,
+      "frozen_price_source": "فهرست M4-synthetic-prices | catalog=38b06263-3c93-4d5e-8326-fb93b510f832 | SHA256=c4263e9adcc3a46128ad4aecc34d58bdf90b9823ca0cbb53b742662d5502555d | SKU=SKU-A | نام=کالای الف خرید | اندازه=عدد | واحدمنبع=ریال | قیمت‌ریال=15 | تاریخ‌منبع=2026-03-22T09:00:00Z | نگاشت‌کالا=SKU-A | نگاشت‌واحد=PIECE",
+      "signed_controls_irr": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 200,
+        "Inventory": 480,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952,
+        "SupplierAdvances": 0,
+        "CustomerAdvances": 0,
+        "Cogs": 0,
+        "InventoryLoss": 0,
+        "Sales": 0,
+        "SalesReturns": 0,
+        "OperatingExpense": 0,
+        "BankFees": 0
+      },
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "transfer_pools": {
+        "W1": {
+          "item_id": "ITEM-A",
+          "warehouse_id": "W1",
+          "quantity_thousandths": 30000,
+          "value": 350
+        },
+        "W2": {
+          "item_id": "ITEM-A",
+          "warehouse_id": "W2",
+          "quantity_thousandths": 12000,
+          "value": 130
+        }
+      },
+      "latest_operational_stock_date": "2026-03-27",
+      "immutable_opening_equal": true
+    },
+    "catalog_csv_sha256": "c316f4c17a6f71823d6d96093ec9ddfbbf872ad92b163183690a22541d734eca",
+    "catalog_csv_data_rows": 2,
+    "full_workflow_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 72.630728,
+        "gaps_ms": [
+          25.704966,
+          23.009297,
+          23.642773,
+          0.27369200000000005
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 25.704966,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 71.336152,
+        "gaps_ms": [
+          32.959007,
+          38.376543999999996,
+          0.0006010000000000001
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 38.376543999999996,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.621719000000006,
+        "gaps_ms": [
+          16.088563999999998,
+          16.084708,
+          18.070546999999998,
+          0.3779
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 18.070546999999998,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 49.379401,
+        "gaps_ms": [
+          31.559907999999997,
+          17.819133,
+          0.00035999999999999997
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 31.559907999999997,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 74.36663,
+        "gaps_ms": [
+          16.110458,
+          16.096395,
+          41.730720999999996,
+          0.429056
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 41.730720999999996,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 68.37178300000001,
+        "gaps_ms": [
+          51.853350999999996,
+          16.517711000000002,
+          0.000721
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 51.853350999999996,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 53.275495,
+        "gaps_ms": [
+          16.091529,
+          16.081993999999998,
+          20.687917,
+          0.41405499999999995
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 20.687917,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 75.941964,
+        "gaps_ms": [
+          53.230937,
+          22.710507,
+          0.00052
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 53.230937,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.946573,
+        "gaps_ms": [
+          16.093842000000002,
+          16.099911000000002,
+          16.093842000000002,
+          2.6589780000000003
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.099911000000002,
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 48.369183,
+        "gaps_ms": [
+          16.096275,
+          32.272147000000004,
+          0.000761
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 32.272147000000004,
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 65.095799,
+        "gaps_ms": [
+          16.095745,
+          16.737537,
+          32.050558,
+          0.211959
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 32.050558,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "rejected",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.698811000000006,
+        "gaps_ms": [
+          16.080312,
+          16.09602,
+          16.089980999999998,
+          2.432498
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.09602,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 35.559377000000005,
+        "gaps_ms": [
+          18.397604,
+          17.161452,
+          0.000321
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 18.397604,
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 65.444895,
+        "gaps_ms": [
+          20.549483,
+          16.036815999999998,
+          28.440424999999998,
+          0.418171
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 28.440424999999998,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 59.959199999999996,
+        "gaps_ms": [
+          39.80719,
+          20.151349,
+          0.000661
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 39.80719,
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 59.057831,
+        "gaps_ms": [
+          16.101694,
+          16.077588,
+          26.347638999999997,
+          0.53091
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 26.347638999999997,
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 70.743709,
+        "gaps_ms": [
+          48.017748999999995,
+          22.725389,
+          0.000571
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 48.017748999999995,
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 69.01797699999999,
+        "gaps_ms": [
+          19.035206,
+          49.311168,
+          0.671603
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 49.311168,
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 38.542674999999996,
+        "gaps_ms": [
+          17.391278,
+          21.150846,
+          0.000551
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 21.150846,
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 76.472593,
+        "gaps_ms": [
+          25.615257999999997,
+          23.873994,
+          26.578541,
+          0.4048
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 26.578541,
+        "operation": "transfer",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 50.082407,
+        "gaps_ms": [
+          21.627095,
+          28.454571,
+          0.000741
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 28.454571,
+        "operation": "transfer",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "strict_phase_heartbeat_checks": [
+      {
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2,
+        "actual_ms": 22.667903,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 34.790828000000005,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 25.704966,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 38.376543999999996,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 18.070546999999998,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 31.559907999999997,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 41.730720999999996,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 51.853350999999996,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": false
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 20.687917,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 53.230937,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": false
+      },
+      {
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.099911000000002,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 32.272147000000004,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "rejected",
+        "ticks": 3,
+        "actual_ms": 32.050558,
+        "budget_ms": 50,
+        "measurable": false,
+        "passes": false
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.09602,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 18.397604,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 28.440424999999998,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 39.80719,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 26.347638999999997,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 48.017748999999995,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2,
+        "actual_ms": 49.311168,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 21.150846,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "transfer",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 26.578541,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "transfer",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 28.454571,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      }
+    ],
+    "memory_kib_after_full_workflow": {
+      "VmRSS": 143608,
+      "VmHWM": 143608
+    },
+    "searches": {
+      "document": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.10034200386144221,
+            "correct_visible_ms": 120.28142800409114,
+            "focused_usable_ms": 138.33727900055237
+          },
+          {
+            "index": 1,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.07908899715403095,
+            "correct_visible_ms": 118.58789299731143,
+            "focused_usable_ms": 131.64149400108727
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 118.58789299731143,
+          "p95": 120.28142800409114,
+          "p99": 120.28142800409114,
+          "worst": 120.28142800409114,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 131.64149400108727,
+          "p95": 138.33727900055237,
+          "p99": 138.33727900055237,
+          "worst": 138.33727900055237,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current document Detail action, then real Tab to focused action",
+        "actionable_result": true
+      },
+      "party": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.09727699944050983,
+            "correct_visible_ms": 93.79255599924363,
+            "focused_usable_ms": 93.79538999928627
+          },
+          {
+            "index": 1,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.09591400157660246,
+            "correct_visible_ms": 96.14635000616545,
+            "focused_usable_ms": 96.14903400506591
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 93.79255599924363,
+          "p95": 96.14635000616545,
+          "p99": 96.14635000616545,
+          "worst": 96.14635000616545,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 93.79538999928627,
+          "p95": 96.14903400506591,
+          "p99": 96.14903400506591,
+          "worst": 96.14903400506591,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      },
+      "item": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.2632969990372658,
+            "correct_visible_ms": 91.59148400067352,
+            "focused_usable_ms": 91.6090600003372
+          },
+          {
+            "index": 1,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.2648490044521168,
+            "correct_visible_ms": 92.51741300249705,
+            "focused_usable_ms": 92.52026800095337
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 91.59148400067352,
+          "p95": 92.51741300249705,
+          "p99": 92.51741300249705,
+          "worst": 92.51741300249705,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 91.6090600003372,
+          "p95": 92.52026800095337,
+          "p99": 92.52026800095337,
+          "worst": 92.52026800095337,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      },
+      "mixed_master": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.06633000157307833,
+            "correct_visible_ms": 94.08956800325541,
+            "focused_usable_ms": 94.0921020010137
+          },
+          {
+            "index": 1,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.07247999747050926,
+            "correct_visible_ms": 91.62801299680723,
+            "focused_usable_ms": 91.62992599885911
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 91.62801299680723,
+          "p95": 94.08956800325541,
+          "p99": 94.08956800325541,
+          "worst": 94.08956800325541,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 91.62992599885911,
+          "p95": 94.0921020010137,
+          "p99": 94.0921020010137,
+          "worst": 94.0921020010137,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      }
+    },
+    "memory_kib_after_searches": {
+      "VmRSS": 137396,
+      "VmHWM": 145812
+    }
+  },
+  "datasets": {
+    "core-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-workflow",
+      "source_shape": {
+        "schema": 6,
+        "generation": 2,
+        "payload_sha256": "9614ca87cff529709b0211fb50866df072586ea9d42f446f5bb4af354679ab78",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "procurement": {},
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 865.9918409975944,
+          "interactive_before_png_ms": 762.2319539950695,
+          "steady_rss_kib": 96052,
+          "kernel_peak_rss_kib": 101420,
+          "rss_observer_samples": 133,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 775.5906530001084,
+          "interactive_before_png_ms": 672.494836995611,
+          "steady_rss_kib": 95824,
+          "kernel_peak_rss_kib": 101188,
+          "rss_observer_samples": 125,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-small-posted/startup-1.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 2,
+        "payload_sha256": "9614ca87cff529709b0211fb50866df072586ea9d42f446f5bb4af354679ab78",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "procurement": {},
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 1,
+        "p50": 775.5906530001084,
+        "p95": 775.5906530001084,
+        "p99": 775.5906530001084,
+        "worst": 775.5906530001084,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 1,
+        "p50": 95824,
+        "p95": 95824,
+        "p99": 95824,
+        "worst": 95824,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 1,
+        "p50": 101188,
+        "p95": 101188,
+        "p99": 101188,
+        "worst": 101188,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 775.5906530001084,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 98123776,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 2,
+        "payload_sha256": "9614ca87cff529709b0211fb50866df072586ea9d42f446f5bb4af354679ab78",
+        "customers": 0,
+        "quotes": 0,
+        "products": 0,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 1,
+          "requests": 1,
+          "audit": 30
+        },
+        "procurement": {},
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "quote-scale": {
+      "source": "/workspace/sarv-evidence/native-before-current",
+      "source_shape": {
+        "schema": 1,
+        "generation": 7,
+        "payload_sha256": "3b75e786f3daef592d1521032470a08797d818f796e19eb28a40e79e07caf2f0",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "procurement": {},
+        "core": {}
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 1583.3528530056356,
+          "interactive_before_png_ms": 1458.4730730057345,
+          "steady_rss_kib": 170968,
+          "kernel_peak_rss_kib": 172496,
+          "rss_observer_samples": 201,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/quote-scale/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1069.2774779963656,
+          "interactive_before_png_ms": 952.3402959966916,
+          "steady_rss_kib": 175604,
+          "kernel_peak_rss_kib": 175604,
+          "rss_observer_samples": 153,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/quote-scale/startup-1.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 8,
+        "payload_sha256": "2b3d70cbccf3444217c53d4874fdd9d4295af62ab575b33ec3b1f471303a5080",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "procurement": {},
+        "core": {}
+      },
+      "repeated_process_startup_ms": {
+        "n": 1,
+        "p50": 1069.2774779963656,
+        "p95": 1069.2774779963656,
+        "p99": 1069.2774779963656,
+        "worst": 1069.2774779963656,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 1,
+        "p50": 175604,
+        "p95": 175604,
+        "p99": 175604,
+        "worst": 175604,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 1,
+        "p50": 175604,
+        "p95": 175604,
+        "p99": 175604,
+        "worst": 175604,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1069.2774779963656,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 179818496,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 8,
+        "payload_sha256": "2b3d70cbccf3444217c53d4874fdd9d4295af62ab575b33ec3b1f471303a5080",
+        "customers": 0,
+        "quotes": 0,
+        "products": 50000,
+        "draft_lines": 1000,
+        "accounting": {},
+        "procurement": {},
+        "core": {}
+      }
+    },
+    "procurement-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-posted-workflow",
+      "source_shape": {
+        "schema": 6,
+        "generation": 13,
+        "payload_sha256": "04989453853d28eacafd3c0b9d78c447b79ec2288a03786f6644d89fd8029650",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 951.7207869939739,
+          "interactive_before_png_ms": 843.1538929944509,
+          "steady_rss_kib": 96672,
+          "kernel_peak_rss_kib": 103432,
+          "rss_observer_samples": 142,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1001.985260998481,
+          "interactive_before_png_ms": 866.8195540012675,
+          "steady_rss_kib": 96592,
+          "kernel_peak_rss_kib": 103324,
+          "rss_observer_samples": 147,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-small-posted/startup-1.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 13,
+        "payload_sha256": "04989453853d28eacafd3c0b9d78c447b79ec2288a03786f6644d89fd8029650",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 1,
+        "p50": 1001.985260998481,
+        "p95": 1001.985260998481,
+        "p99": 1001.985260998481,
+        "worst": 1001.985260998481,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 1,
+        "p50": 96592,
+        "p95": 96592,
+        "p99": 96592,
+        "worst": 96592,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 1,
+        "p50": 103324,
+        "p95": 103324,
+        "p99": 103324,
+        "worst": 103324,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1001.985260998481,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 98910208,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 13,
+        "payload_sha256": "04989453853d28eacafd3c0b9d78c447b79ec2288a03786f6644d89fd8029650",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "sales-small-posted": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-native-full",
+      "source_shape": {
+        "schema": 6,
+        "generation": 27,
+        "payload_sha256": "d93cddc7882c390a29b3e1fd880960c976b0467c45a0d1676e81ddc89d6ee8be",
+        "customers": 1,
+        "quotes": 1,
+        "products": 4,
+        "draft_lines": 1,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 9,
+          "requests": 9,
+          "audit": 46
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 927.1067320005386,
+          "interactive_before_png_ms": 816.6778160011745,
+          "steady_rss_kib": 97976,
+          "kernel_peak_rss_kib": 104388,
+          "rss_observer_samples": 139,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-small-posted/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1074.7505979961716,
+          "interactive_before_png_ms": 963.7762779966579,
+          "steady_rss_kib": 97912,
+          "kernel_peak_rss_kib": 104616,
+          "rss_observer_samples": 153,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-small-posted/startup-1.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 27,
+        "payload_sha256": "d93cddc7882c390a29b3e1fd880960c976b0467c45a0d1676e81ddc89d6ee8be",
+        "customers": 1,
+        "quotes": 1,
+        "products": 4,
+        "draft_lines": 1,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 9,
+          "requests": 9,
+          "audit": 46
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 1,
+        "p50": 1074.7505979961716,
+        "p95": 1074.7505979961716,
+        "p99": 1074.7505979961716,
+        "worst": 1074.7505979961716,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 1,
+        "p50": 97912,
+        "p95": 97912,
+        "p99": 97912,
+        "worst": 97912,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 1,
+        "p50": 104616,
+        "p95": 104616,
+        "p99": 104616,
+        "worst": 104616,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1074.7505979961716,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 100261888,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 27,
+        "payload_sha256": "d93cddc7882c390a29b3e1fd880960c976b0467c45a0d1676e81ddc89d6ee8be",
+        "customers": 1,
+        "quotes": 1,
+        "products": 4,
+        "draft_lines": 1,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 9,
+          "requests": 9,
+          "audit": 46
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "sales-paged-drafts": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-search",
+      "source_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "de91634339d3703c866892729a4d4427fa8ce6d7f92d7967c82afc0a5bd56090",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 990.2439979996416,
+          "interactive_before_png_ms": 883.6129549963516,
+          "steady_rss_kib": 97804,
+          "kernel_peak_rss_kib": 103720,
+          "rss_observer_samples": 144,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-drafts/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 1080.292222002754,
+          "interactive_before_png_ms": 974.0762650035322,
+          "steady_rss_kib": 97392,
+          "kernel_peak_rss_kib": 103356,
+          "rss_observer_samples": 152,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-drafts/startup-1.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "de91634339d3703c866892729a4d4427fa8ce6d7f92d7967c82afc0a5bd56090",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 1,
+        "p50": 1080.292222002754,
+        "p95": 1080.292222002754,
+        "p99": 1080.292222002754,
+        "worst": 1080.292222002754,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 1,
+        "p50": 97392,
+        "p95": 97392,
+        "p99": 97392,
+        "worst": 97392,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 1,
+        "p50": 103356,
+        "p95": 103356,
+        "p99": 103356,
+        "worst": 103356,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 1080.292222002754,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 99729408,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "de91634339d3703c866892729a4d4427fa8ce6d7f92d7967c82afc0a5bd56090",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    },
+    "sales-long-draft": {
+      "source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-long-editor",
+      "source_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "839364841ef3f93cd6f67c7af6d2de48fdc97b9c4b906e7080dd0eac0bec25a3",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "samples": [
+        {
+          "index": 0,
+          "startup_ms": 1023.9743669953896,
+          "interactive_before_png_ms": 911.8550679995678,
+          "steady_rss_kib": 97780,
+          "kernel_peak_rss_kib": 103964,
+          "rss_observer_samples": 147,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-long-draft/startup-0.png"
+        },
+        {
+          "index": 1,
+          "startup_ms": 967.9965860050288,
+          "interactive_before_png_ms": 863.2489150040783,
+          "steady_rss_kib": 97808,
+          "kernel_peak_rss_kib": 103992,
+          "rss_observer_samples": 143,
+          "screenshot": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-long-draft/startup-1.png"
+        }
+      ],
+      "initialized_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "839364841ef3f93cd6f67c7af6d2de48fdc97b9c4b906e7080dd0eac0bec25a3",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      },
+      "repeated_process_startup_ms": {
+        "n": 1,
+        "p50": 967.9965860050288,
+        "p95": 967.9965860050288,
+        "p99": 967.9965860050288,
+        "worst": 967.9965860050288,
+        "method": "nearest rank"
+      },
+      "steady_rss_kib": {
+        "n": 1,
+        "p50": 97808,
+        "p95": 97808,
+        "p99": 97808,
+        "worst": 97808,
+        "method": "nearest rank"
+      },
+      "kernel_peak_rss_kib": {
+        "n": 1,
+        "p50": 103992,
+        "p95": 103992,
+        "p99": 103992,
+        "worst": 103992,
+        "method": "nearest rank"
+      },
+      "proposed_startup_budget": {
+        "budget_ms": 3000,
+        "p95_ms": 967.9965860050288,
+        "passes": true
+      },
+      "proposed_initial_rss_budget": {
+        "budget_bytes": 250000000,
+        "p95_bytes": 100155392,
+        "passes": true
+      },
+      "final_shape": {
+        "schema": 6,
+        "generation": 14,
+        "payload_sha256": "839364841ef3f93cd6f67c7af6d2de48fdc97b9c4b906e7080dd0eac0bec25a3",
+        "customers": 0,
+        "quotes": 0,
+        "products": 2,
+        "draft_lines": 0,
+        "accounting": {
+          "companies": 1,
+          "periods": 1,
+          "accounts": 26,
+          "journals": 5,
+          "requests": 5,
+          "audit": 40
+        },
+        "procurement": {
+          "records": 10,
+          "requests": 10
+        },
+        "core": {
+          "setups": 1,
+          "openings": 1
+        },
+        "opening": {
+          "counts": {
+            "balances": 21,
+            "parties": 4,
+            "units": 2,
+            "items": 1,
+            "warehouses": 2,
+            "cash": 1,
+            "banks": 1,
+            "open_items": 4,
+            "advances": 0,
+            "cheques": 2,
+            "stock": 2,
+            "grni": 1
+          },
+          "packs": 1,
+          "import_source": null,
+          "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+          "source_id": "OPEN-F2-2026",
+          "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+          "as_of": "2026-03-21",
+          "ledger_debit_irr": 1251,
+          "ledger_credit_irr": 1251,
+          "stock_value_irr": 300,
+          "grni_value_irr": 50
+        }
+      }
+    }
+  },
+  "hardware": {
+    "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "loadavg_before": "0.29 0.52 0.78 2/1721 259087",
+    "cgroup_cpu_stat_before": "usage_usec 15089197252\nuser_usec 11734514572\nsystem_usec 3354682679\nnice_usec 7929\nnr_periods 190314\nnr_throttled 852\nthrottled_usec 22785957\nnr_bursts 0\nburst_usec 0\n",
+    "filesystem": "Filesystem     Type    1K-blocks     Used Available Use% Mounted on\noverlay        overlay  32978704 12110772  19173828  39% /workspace",
+    "meminfo": "MemTotal:       18440136 kB\nMemFree:         2752428 kB\nMemAvailable:   15037112 kB\nBuffers:           41156 kB\nCached:         12861208 kB\nSwapCached:            0 kB\nActive:          5592316 kB\nInactive:        8975216 kB\nActive(anon):     590100 kB\nInactive(anon):  1808716 kB\nActive(file):    5002216 kB\nInactive(file):  7166500 kB\nUnevictable:       29920 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:             26804 kB\nWriteback:             0 kB\nAnonPages:       1695384 kB\nMapped:           247536 kB\nShmem:            703872 kB\nKReclaimable:     562188 kB\nSlab:             679760 kB\nSReclaimable:     562188 kB\nSUnreclaim:       117572 kB\nKernelStack:        6712 kB\nPageTables:        20288 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     9220068 kB\nCommitted_AS:    5723424 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:        8976 kB\nVmallocChunk:          0 kB\nPercpu:             1368 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:    241664 kB\nFilePmdMapped:         0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:      274432 kB\nDirectMap2M:    18407424 kB\nDirectMap1G:    20971520 kB\n",
+    "cgroup_memory_max": "17179869184",
+    "cgroup_cpu_max": "400000 100000",
+    "screen": "1450x1050x24 private Xvfb/Openbox, X11, Cairo, scale 1",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "gtk_libadwaita": "4.22.5\n1.9.4",
+    "database_source_configuration": "SQLite WAL; synchronous=FULL; busy timeout3s (src/store.rs). Synthetic fixture injection uses FULL and SQLite consistent backup API.",
+    "loadavg_after": "2.49 1.40 1.07 1/1721 261894",
+    "cgroup_cpu_stat_after": "usage_usec 15409194862\nuser_usec 11980806104\nsystem_usec 3428388758\nnice_usec 7929\nnr_periods 192010\nnr_throttled 895\nthrottled_usec 24781093\nnr_bursts 0\nburst_usec 0\n"
+  },
+  "boundaries": {
+    "startup": "Popen to owned mapped window, usable visible editor Save, real XTest Tab focus roundtrip and completed PNG capture; includes AT-SPI polling and screenshot observer overhead.",
+    "first_start": "One new process on a fresh SQLite backup, initialization/migration may be included; OS cache uncontrolled.",
+    "repeated_startup": "n new processes on the same initialized backup; OS pages warm/uncontrolled, accessibility session initialized. Process-cold, not physical/cache-cold.",
+    "core_search": "Pre-discovery of search/list excluded. Real XTest Ctrl+A and ASCII keys to exact current ID label, then native Tab to focused, visible, sensitive Edit action. Includes debounce, rendering,5ms AT-SPI polling and result-focus navigation; no pure UI latency claim. Correct-visible-action boundary is recorded separately.",
+    "preview": "Real XTest Space on already-discovered focused preview button to enabled post button, after source reason mutation invalidates old verification. Includes accessibility polling; n=1.",
+    "post": "Real XTest Space on already-discovered focused post button to committed SQLite payload containing one opening and one journal; includes durable database observer polling; n=1.",
+    "rss": "Application-only /proc/PID/status KiB; startup sampled every10ms and steady after500ms idle. After-workflow separate point after posting. Helpers excluded."
+  },
+  "limits": [
+    "No OS cache flush, physical SSD evidence, dedicated reference hardware, Windows or Wayland claim.",
+    "Virtual shared executor scheduling and font/library cache state are uncontrolled; hashing and backup warm file pages.",
+    "Native forms fixture is distinct from the35-row CSV fixture. No CSV import claim when import_source is absent.",
+    "n10/n20 nearest-rank p99 equals worst; n1 preview/post and workflow memory are not tail estimates.",
+    "No five-year/100000-document/million-journal-line/10000-party or10000-row staged-import benchmark."
+  ],
+  "capture_samples": [
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-workflow/staged-search.png",
+      "elapsed_ms": 128.97593500383664
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-workflow/preview-ready.png",
+      "elapsed_ms": 155.18401600274956
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-workflow/after-post.png",
+      "elapsed_ms": 163.30842299794313
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-stage/external-order-preview.png",
+      "elapsed_ms": 134.95747399429092
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-posted-workflow/search-document.png",
+      "elapsed_ms": 134.7427900036564
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-posted-workflow/search-party.png",
+      "elapsed_ms": 116.42408699844964
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-posted-workflow/search-item.png",
+      "elapsed_ms": 123.01556400052505
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-posted-workflow/search-mixed_master.png",
+      "elapsed_ms": 111.66203700122423
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-external-stage/invalid-raw-saved.png",
+      "elapsed_ms": 123.74073399405461
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-external-stage/external-order-preview.png",
+      "elapsed_ms": 112.24049400334479
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-native-full/workflow-completed.png",
+      "elapsed_ms": 130.71924999530893
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-native-draft/workflow-completed.png",
+      "elapsed_ms": 104.64991899789311
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-search/search-last-filtered-page.png",
+      "elapsed_ms": 107.10027199820615
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-long-editor/1000-line-last-native-page.png",
+      "elapsed_ms": 105.85057899879757
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-small-posted/startup-0.png",
+      "elapsed_ms": 103.75047299748985
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/core-small-posted/startup-1.png",
+      "elapsed_ms": 103.0687449965626
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/quote-scale/startup-0.png",
+      "elapsed_ms": 124.87325999973109
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/quote-scale/startup-1.png",
+      "elapsed_ms": 116.93180300062522
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-small-posted/startup-0.png",
+      "elapsed_ms": 108.5606540000299
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/procurement-small-posted/startup-1.png",
+      "elapsed_ms": 135.16074899962405
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-small-posted/startup-0.png",
+      "elapsed_ms": 110.42216500209179
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-small-posted/startup-1.png",
+      "elapsed_ms": 110.96921200078214
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-drafts/startup-0.png",
+      "elapsed_ms": 106.62533399590757
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-drafts/startup-1.png",
+      "elapsed_ms": 106.2110990023939
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-long-draft/startup-0.png",
+      "elapsed_ms": 112.11092599842232
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-long-draft/startup-1.png",
+      "elapsed_ms": 104.7407000005478
+    }
+  ],
+  "core_workflow": {
+    "stage_manifest": {
+      "company_id": "616f3b9c-aedb-4d76-85d6-b0086f7a8b1c",
+      "controls": 12,
+      "counts": {
+        "advances": 0,
+        "ap": 2,
+        "ar": 2,
+        "banks": 1,
+        "cash": 1,
+        "cheques": 2,
+        "grni": 1,
+        "items": 1,
+        "ledger_balances": 21,
+        "packs": 1,
+        "parties": 4,
+        "stock": 2,
+        "units": 2,
+        "warehouses": 2
+      },
+      "import_source": null,
+      "items": 1,
+      "opening_journals": 0,
+      "parties": 4,
+      "preview_ms_includes_poll": 217,
+      "preview_total_irr": 1251,
+      "result": "ready",
+      "source": "native editable forms",
+      "stock_rows": 2,
+      "units": 2,
+      "warehouses": 2
+    },
+    "search_samples": [
+      {
+        "index": 0,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.12570000399136916,
+        "correct_visible_action_ms": 147.9084180027712,
+        "focused_usable_action_ms": 187.1238700041431
+      },
+      {
+        "index": 1,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.08649000665172935,
+        "correct_visible_action_ms": 120.28022400045302,
+        "focused_usable_action_ms": 154.20198600622825
+      }
+    ],
+    "search_ms": {
+      "n": 2,
+      "p50": 154.20198600622825,
+      "p95": 187.1238700041431,
+      "p99": 187.1238700041431,
+      "worst": 187.1238700041431,
+      "method": "nearest rank"
+    },
+    "correct_visible_action_ms": {
+      "n": 2,
+      "p50": 120.28022400045302,
+      "p95": 147.9084180027712,
+      "p99": 147.9084180027712,
+      "worst": 147.9084180027712,
+      "method": "nearest rank"
+    },
+    "search_memory_kib": {
+      "VmRSS": 131180,
+      "VmHWM": 131180
+    },
+    "preview_observed_ms": 72.54993200331228,
+    "post_durable_observed_ms": 23.01454500411637,
+    "native_phase_records_before_observer": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.850542999999995,
+        "gaps_ms": [
+          17.828819,
+          16.469049,
+          16.552675
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 17.828819,
+        "phase": "preview",
+        "result": "differences",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.911424,
+        "gaps_ms": [
+          16.093762,
+          16.123508,
+          16.101174999999998,
+          2.592979
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.123508,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      }
+    ],
+    "native_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 52.882712999999995,
+        "gaps_ms": [
+          21.671611,
+          16.053481,
+          15.157620999999999
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 21.671611,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 121.679066,
+        "gaps_ms": [
+          18.479399,
+          26.363574,
+          76.835211,
+          0.000882
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 76.835211,
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 3
+      }
+    ],
+    "strict_phase_heartbeat_budgets": {
+      "preview": {
+        "budget_ms": 50,
+        "actual_ms": 21.671611,
+        "passes": true,
+        "measurable": true,
+        "result": "verified"
+      },
+      "post": {
+        "budget_ms": 50,
+        "actual_ms": 76.835211,
+        "passes": false,
+        "measurable": true,
+        "result": "worker_finished"
+      }
+    },
+    "application_memory_kib_after_workflow": {
+      "VmRSS": 132576,
+      "VmHWM": 132576
+    },
+    "posted_shape": {
+      "schema": 6,
+      "generation": 2,
+      "payload_sha256": "9614ca87cff529709b0211fb50866df072586ea9d42f446f5bb4af354679ab78",
+      "customers": 0,
+      "quotes": 0,
+      "products": 0,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 1,
+        "requests": 1,
+        "audit": 30
+      },
+      "procurement": {},
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    }
+  },
+  "sales_measurement": {
+    "result": "measured",
+    "workflows": {
+      "full": {
+        "manifest": {
+          "checks": [
+            "actual sales catalog price20/core SKU+unit mapping",
+            "older durable draft receipt retains newer GTK input",
+            "explicit raw draft saves durable revision and current header/lines",
+            "order199 nonfinancial and raw draft consumed atomically",
+            "partial paired delivery/invoice100 with separate IDs and original cost58",
+            "split original-cost return23+35 and exact credit40+60",
+            "final fulfillment original discount residual99 and cost58",
+            "authentic approved quotation converted through native selector/mapping without GL or original quote edits",
+            "cancelled pending native source read preserves books and clears global loading status"
+          ],
+          "first_pair_id": "acd110b1-00fa-40a3-a9db-5630bffa3fa8",
+          "mode": "full",
+          "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+          "order_id": "b6237af0-d9d2-4bbe-ac13-2564823408b3",
+          "ready": true,
+          "record_count": 6,
+          "search_name": "sales-search",
+          "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+          "synthetic_only": true
+        },
+        "shape": {
+          "schema": 6,
+          "generation": 27,
+          "payload_sha256": "d93cddc7882c390a29b3e1fd880960c976b0467c45a0d1676e81ddc89d6ee8be",
+          "customers": 1,
+          "quotes": 1,
+          "products": 4,
+          "draft_lines": 1,
+          "accounting": {
+            "companies": 1,
+            "periods": 1,
+            "accounts": 26,
+            "journals": 9,
+            "requests": 9,
+            "audit": 46
+          },
+          "procurement": {
+            "records": 10,
+            "requests": 10
+          },
+          "core": {
+            "setups": 1,
+            "openings": 1
+          },
+          "opening": {
+            "counts": {
+              "balances": 21,
+              "parties": 4,
+              "units": 2,
+              "items": 1,
+              "warehouses": 2,
+              "cash": 1,
+              "banks": 1,
+              "open_items": 4,
+              "advances": 0,
+              "cheques": 2,
+              "stock": 2,
+              "grni": 1
+            },
+            "packs": 1,
+            "import_source": null,
+            "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+            "source_id": "OPEN-F2-2026",
+            "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+            "as_of": "2026-03-21",
+            "ledger_debit_irr": 1251,
+            "ledger_credit_irr": 1251,
+            "stock_value_irr": 300,
+            "grni_value_irr": 50
+          }
+        },
+        "native_phase_records": [
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 40.371507,
+            "gaps_ms": [
+              16.085662,
+              24.285404,
+              0.000441
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 24.285404,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 34.724698,
+            "gaps_ms": [
+              16.093218,
+              18.630909000000003,
+              0.000571
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 18.630909000000003,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 50.690123,
+            "gaps_ms": [
+              16.102597,
+              16.089828,
+              16.109748,
+              2.38795
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 16.109748,
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 45.894293000000005,
+            "gaps_ms": [
+              22.123884999999998,
+              23.769857,
+              0.000551
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 23.769857,
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 52.766604,
+            "gaps_ms": [
+              16.082487,
+              16.074985,
+              19.950369,
+              0.658763
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 19.950369,
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 58.285134,
+            "gaps_ms": [
+              39.513813,
+              18.771079999999998,
+              0.000241
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 39.513813,
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 62.906591,
+            "gaps_ms": [
+              16.08482,
+              16.077179,
+              30.079319,
+              0.665273
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 30.079319,
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 66.337037,
+            "gaps_ms": [
+              44.967228999999996,
+              21.369197999999997,
+              0.00061
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 44.967228999999996,
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 66.08084699999999,
+            "gaps_ms": [
+              16.075066,
+              16.091459999999998,
+              33.278883,
+              0.635438
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 33.278883,
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 60.087411,
+            "gaps_ms": [
+              37.978057,
+              22.109073,
+              0.000281
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 37.978057,
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 54.588917,
+            "gaps_ms": [
+              16.094274,
+              16.08578,
+              21.616268,
+              0.792595
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 21.616268,
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 67.358277,
+            "gaps_ms": [
+              37.349137,
+              30.008489,
+              0.000651
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 37.349137,
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through completed UI result rendering",
+            "elapsed_ms": 50.603599,
+            "gaps_ms": [
+              16.087594,
+              16.078930000000003,
+              16.076887000000003,
+              2.360188
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 16.087594,
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 77.577494,
+            "gaps_ms": [
+              26.000367,
+              16.054905,
+              35.521771,
+              0.000451
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 35.521771,
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 3
+          }
+        ],
+        "strict_phase_checks": [
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 24.285404,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 18.630909000000003,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 16.109748,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 23.769857,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 19.950369,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 39.513813,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 30.079319,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 44.967228999999996,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 33.278883,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.return.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 37.978057,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 21.616268,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "sales.fulfill.v1",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 37.349137,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "preview",
+            "result": "verified",
+            "ticks": 3,
+            "actual_ms": 16.087594,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "order",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 3,
+            "actual_ms": 35.521771,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          }
+        ],
+        "memory_kib_after_workflow": {
+          "VmRSS": 145588,
+          "VmHWM": 145588
+        },
+        "independent_raw_proof": {
+          "records": 6,
+          "journals": 9,
+          "records_by_kind": {
+            "Order": 2,
+            "Fulfill": 2,
+            "Return": 2
+          },
+          "typed_sales_movements": 4,
+          "signed_controls_irr": {
+            "Cash": 251,
+            "Bank": 300,
+            "Receivables": 299,
+            "Inventory": 422,
+            "ChequesReceivable": 200,
+            "Payables": -329,
+            "ChequesPayable": -100,
+            "Grni": -50,
+            "OwnerCapital": -952,
+            "Sales": -199,
+            "SalesReturns": 100,
+            "Cogs": 58,
+            "SupplierAdvances": 0,
+            "CustomerAdvances": 0,
+            "InventoryLoss": 0,
+            "OperatingExpense": 0,
+            "BankFees": 0
+          },
+          "trial_debit_irr": 1630,
+          "trial_credit_irr": 1630,
+          "inventory_irr": 422,
+          "profit_irr": 41,
+          "W1_quantity_thousandths": 25000,
+          "W1_value_irr": 292,
+          "financial_dates": [
+            "2026-03-28",
+            "2026-03-29",
+            "2026-03-30",
+            "2026-03-31"
+          ],
+          "final_report_as_of": "2026-03-31",
+          "original_cost_returns_irr": [
+            23,
+            35
+          ],
+          "original_credit_returns_irr": [
+            40,
+            60
+          ],
+          "authentic_quote_link": {
+            "quote_id": "65ec1ce4-8219-4878-b350-4f4a3e1d947d",
+            "quote_series": "262e6154-0b7c-4131-85c2-88620ea6f0d8",
+            "quote_revision": 1,
+            "quote_number": "Q-1",
+            "quote_sha256": "267598c1e42291d37e1451d2190ed8e52441929b8a32147aa1cc9101fff5e2d6",
+            "source_line_indices": [
+              0
+            ]
+          },
+          "core_procurement_and_previous_journals_unchanged": true
+        }
+      },
+      "draft": {
+        "manifest": {
+          "checks": [
+            "actual sales catalog price20/core SKU+unit mapping",
+            "older durable draft receipt retains newer GTK input",
+            "explicit raw draft saves durable revision and current header/lines"
+          ],
+          "company_id": "616f3b9c-aedb-4d76-85d6-b0086f7a8b1c",
+          "draft_id": "d49a878c-8467-434b-adab-9b9dcc3ee1a7",
+          "mode": "draft",
+          "note": "no further smoke edits; external observer owns preview/submit/keyboard",
+          "ready": true,
+          "reference": "DRAFT-INCOMPLETE-M5",
+          "revision": 2,
+          "stage": "saved-native-raw-draft",
+          "synthetic_only": true
+        },
+        "shape": {
+          "schema": 6,
+          "generation": 16,
+          "payload_sha256": "d173b754cdd8dc1c5dd2e760e3d48add8de6ff53fc09859a2608d658fdd2a206",
+          "customers": 0,
+          "quotes": 0,
+          "products": 4,
+          "draft_lines": 0,
+          "accounting": {
+            "companies": 1,
+            "periods": 1,
+            "accounts": 26,
+            "journals": 5,
+            "requests": 5,
+            "audit": 40
+          },
+          "procurement": {
+            "records": 10,
+            "requests": 10
+          },
+          "core": {
+            "setups": 1,
+            "openings": 1
+          },
+          "opening": {
+            "counts": {
+              "balances": 21,
+              "parties": 4,
+              "units": 2,
+              "items": 1,
+              "warehouses": 2,
+              "cash": 1,
+              "banks": 1,
+              "open_items": 4,
+              "advances": 0,
+              "cheques": 2,
+              "stock": 2,
+              "grni": 1
+            },
+            "packs": 1,
+            "import_source": null,
+            "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+            "source_id": "OPEN-F2-2026",
+            "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+            "as_of": "2026-03-21",
+            "ledger_debit_irr": 1251,
+            "ledger_credit_irr": 1251,
+            "stock_value_irr": 300,
+            "grni_value_irr": 50
+          }
+        },
+        "native_phase_records": [
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 37.064378000000005,
+            "gaps_ms": [
+              16.102795999999998,
+              20.961121,
+              0.00046100000000000004
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 20.961121,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          },
+          {
+            "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+            "elapsed_ms": 35.874624000000004,
+            "gaps_ms": [
+              16.090688,
+              19.783385,
+              0.000551
+            ],
+            "interval_ms": 16,
+            "max_gap_ms": 19.783385,
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2
+          }
+        ],
+        "strict_phase_checks": [
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 20.961121,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          },
+          {
+            "operation": "draft-save",
+            "phase": "post",
+            "result": "worker_finished",
+            "ticks": 2,
+            "actual_ms": 19.783385,
+            "budget_ms": 50,
+            "measurable": true,
+            "passes": true,
+            "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+          }
+        ],
+        "memory_kib_after_workflow": {
+          "VmRSS": 134084,
+          "VmHWM": 134084
+        }
+      }
+    },
+    "search_samples": [
+      {
+        "index": 0,
+        "query": "PERF-A",
+        "expected": "PERF-A-000",
+        "matches": 60,
+        "key_dispatch_ms": 0.07229900074889883,
+        "correct_visible_ms": 167.4958939984208,
+        "focused_usable_ms": 179.38095099816564
+      },
+      {
+        "index": 1,
+        "query": "PERF-B",
+        "expected": "PERF-B-001",
+        "matches": 60,
+        "key_dispatch_ms": 0.09357100498164073,
+        "correct_visible_ms": 171.5437259990722,
+        "focused_usable_ms": 183.54390700551448
+      }
+    ],
+    "external_stage": {
+      "stage_manifest": {
+        "checks": [
+          "actual sales catalog price20/core SKU+unit mapping",
+          "older durable draft receipt retains newer GTK input",
+          "explicit raw draft saves durable revision and current header/lines"
+        ],
+        "company_id": "616f3b9c-aedb-4d76-85d6-b0086f7a8b1c",
+        "draft_id": "610619ed-c093-489c-957d-c8cac610ab7f",
+        "mode": "stage",
+        "note": "no further smoke edits; external observer owns preview/submit/keyboard",
+        "ready": true,
+        "reference": "SO-M5",
+        "revision": 2,
+        "stage": "saved-native-raw-draft",
+        "synthetic_only": true
+      },
+      "n": 1,
+      "synthetic_only": true,
+      "boundary": "Pre-discovered native controls; real XTest Save/Space; SQLite durable payload then callback usability independently awaited. Polling/UI/layout included. Restart/correction distinct; no repeated-command percentile.",
+      "invalid_raw_save_durable_ms": 14.333008002722636,
+      "invalid_raw_save_callback_usable_ms": 53.353754003182985,
+      "invalid_raw_saved_revision": 3,
+      "invalid_raw_restart_preserved": true,
+      "clean_editor_cancel_preserved": true,
+      "corrected_raw_save_durable_ms": 19.852219993481413,
+      "order_preview_observed_ms": 52.772954004467465,
+      "order_submit_durable_ms": 19.357083998329472,
+      "order_submit_callback_ready_ms": 182.66046400094638,
+      "nonfinancial_order_proof": {
+        "id": "e0803960-a166-4d12-927d-167ffab6b151",
+        "total_irr": 199,
+        "journal_id": null,
+        "source_revision": 4,
+        "raw_consumed": true,
+        "core_procurement_journals_unchanged": true
+      },
+      "native_phase_records_before_observer": [
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 39.769669,
+          "gaps_ms": [
+            16.085141,
+            23.683927,
+            0.0006010000000000001
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 23.683927,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        },
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 32.215219000000005,
+          "gaps_ms": [
+            16.106744,
+            16.107964,
+            0.000511
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 16.107964,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        }
+      ],
+      "native_phase_records": [
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 36.186913000000004,
+          "gaps_ms": [
+            17.710608999999998,
+            18.475663,
+            0.000641
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 18.475663,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        },
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 47.048162999999995,
+          "gaps_ms": [
+            16.090619,
+            30.957173,
+            0.00037099999999999996
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 30.957173,
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        },
+        {
+          "boundary": "dispatch through completed UI result rendering",
+          "elapsed_ms": 50.690694,
+          "gaps_ms": [
+            16.083309,
+            16.092642,
+            16.078329999999998,
+            2.436413
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 16.092642,
+          "operation": "order",
+          "phase": "preview",
+          "result": "verified",
+          "ticks": 3
+        },
+        {
+          "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+          "elapsed_ms": 35.185728,
+          "gaps_ms": [
+            17.606403999999998,
+            17.578933000000003,
+            0.000391
+          ],
+          "interval_ms": 16,
+          "max_gap_ms": 17.606403999999998,
+          "operation": "order",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2
+        }
+      ],
+      "strict_phase_checks": [
+        {
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2,
+          "actual_ms": 18.475663,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        },
+        {
+          "operation": "draft-save",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2,
+          "actual_ms": 30.957173,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        },
+        {
+          "operation": "order",
+          "phase": "preview",
+          "result": "verified",
+          "ticks": 3,
+          "actual_ms": 16.092642,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        },
+        {
+          "operation": "order",
+          "phase": "post",
+          "result": "worker_finished",
+          "ticks": 2,
+          "actual_ms": 17.606403999999998,
+          "budget_ms": 50,
+          "measurable": true,
+          "passes": true,
+          "scope": "Observed timer responsiveness including worker wait, GTK and probe work; no continuous CPU trace"
+        }
+      ],
+      "memory_kib_after_external_workflow": {
+        "VmRSS": 130796,
+        "VmHWM": 130796
+      }
+    },
+    "posted_search": {
+      "samples": [
+        {
+          "index": 0,
+          "query": "INV-M5-A",
+          "matches": 1,
+          "key_dispatch_ms": 0.12444799358490855,
+          "correct_visible_ms": 128.91805499384645,
+          "focused_usable_ms": 141.11107599455863
+        },
+        {
+          "index": 1,
+          "query": "INV-M5-B",
+          "matches": 1,
+          "key_dispatch_ms": 0.25356300466228276,
+          "correct_visible_ms": 128.01502300135326,
+          "focused_usable_ms": 151.451174999238
+        }
+      ],
+      "result": "measured",
+      "correct_visible_ms": {
+        "n": 2,
+        "p50": 128.01502300135326,
+        "p95": 128.91805499384645,
+        "p99": 128.91805499384645,
+        "worst": 128.91805499384645,
+        "method": "nearest rank"
+      },
+      "focused_usable_ms": {
+        "n": 2,
+        "p50": 141.11107599455863,
+        "p95": 151.451174999238,
+        "p99": 151.451174999238,
+        "worst": 151.451174999238,
+        "method": "nearest rank"
+      },
+      "boundary": "Real alternating invoice-reference query to current exact one-row matched posted invoice and visible sensitive Detail, then focused usable Detail; six-record financial fixture, distinct from120 raw-draft paged search. Initial Ctrl+F reveal/exact Search focus occurs before each timer, matching M4 Purchases."
+    },
+    "correct_visible_ms": {
+      "n": 2,
+      "p50": 167.4958939984208,
+      "p95": 171.5437259990722,
+      "p99": 171.5437259990722,
+      "worst": 171.5437259990722,
+      "method": "nearest rank"
+    },
+    "focused_usable_ms": {
+      "n": 2,
+      "p50": 179.38095099816564,
+      "p95": 183.54390700551448,
+      "p99": 183.54390700551448,
+      "worst": 183.54390700551448,
+      "method": "nearest rank"
+    },
+    "search_budgets": {
+      "correct_visible_ms": {
+        "budget_ms": 200,
+        "p95_ms": 171.5437259990722,
+        "passes": true
+      },
+      "focused_usable_ms": {
+        "budget_ms": 200,
+        "p95_ms": 183.54390700551448,
+        "passes": true
+      }
+    },
+    "search_boundary": "Real XTest query to exact current first draft and 60-match summary with visible sensitive Continue action, then real Tab/component focus fallback to focused usable action; dispatch, debounce, AT-SPI/layout/result navigation included; initial discovery excluded.",
+    "filtered_page_samples": [
+      {
+        "page": 2,
+        "expected": "PERF-B-051",
+        "usable_visible_ms": 144.4428889953997,
+        "budget_ms": 150,
+        "passes": true
+      },
+      {
+        "page": 3,
+        "expected": "PERF-B-101",
+        "usable_visible_ms": 89.19664200220723,
+        "budget_ms": 150,
+        "passes": true
+      }
+    ],
+    "paged_search_shape": {
+      "schema": 6,
+      "generation": 14,
+      "payload_sha256": "de91634339d3703c866892729a4d4427fa8ce6d7f92d7967c82afc0a5bd56090",
+      "customers": 0,
+      "quotes": 0,
+      "products": 2,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 5,
+        "requests": 5,
+        "audit": 40
+      },
+      "procurement": {
+        "records": 10,
+        "requests": 10
+      },
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    },
+    "paged_search_memory_kib": {
+      "VmRSS": 123320,
+      "VmHWM": 123320
+    },
+    "long_editor_open_to_first_page_ms": 836.9652920009685,
+    "long_editor_open_to_focused_action_ms": 1059.169958003622,
+    "long_editor_pages": [
+      {
+        "page": 2,
+        "ready_ms": 342.174821998924,
+        "focused_usable_ms": 550.9990759965149,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 3,
+        "ready_ms": 389.78748099907534,
+        "focused_usable_ms": 669.7580179970828,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 4,
+        "ready_ms": 346.3921160000609,
+        "focused_usable_ms": 607.3176489953767,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 5,
+        "ready_ms": 344.2594209991512,
+        "focused_usable_ms": 614.062965993071,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 6,
+        "ready_ms": 367.2115239969571,
+        "focused_usable_ms": 570.0165599992033,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 7,
+        "ready_ms": 374.56459699751576,
+        "focused_usable_ms": 655.348986001627,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 8,
+        "ready_ms": 406.04041700134985,
+        "focused_usable_ms": 642.8428439976415,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 9,
+        "ready_ms": 595.3875090053771,
+        "focused_usable_ms": 879.4363859997247,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 10,
+        "ready_ms": 570.6839320046129,
+        "focused_usable_ms": 799.4206540024607,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 11,
+        "ready_ms": 448.38319400150795,
+        "focused_usable_ms": 727.5219860021025,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 12,
+        "ready_ms": 334.27501100231893,
+        "focused_usable_ms": 616.6552100039553,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 13,
+        "ready_ms": 451.87957899906905,
+        "focused_usable_ms": 726.080077001825,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 14,
+        "ready_ms": 479.94455700245453,
+        "focused_usable_ms": 692.5156430006609,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 15,
+        "ready_ms": 494.80952700105263,
+        "focused_usable_ms": 760.609712000587,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 16,
+        "ready_ms": 397.073026993894,
+        "focused_usable_ms": 599.3997589976061,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 17,
+        "ready_ms": 337.77520599687705,
+        "focused_usable_ms": 570.9761280013481,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 18,
+        "ready_ms": 430.7929749993491,
+        "focused_usable_ms": 678.7888050021138,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 19,
+        "ready_ms": 526.3661889985087,
+        "focused_usable_ms": 803.4233490034239,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 20,
+        "ready_ms": 468.1341200048337,
+        "focused_usable_ms": 735.0284850035678,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 21,
+        "ready_ms": 481.28741799882846,
+        "focused_usable_ms": 761.8617760017514,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 22,
+        "ready_ms": 403.4311319992412,
+        "focused_usable_ms": 672.6184750004904,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 23,
+        "ready_ms": 401.31166399805807,
+        "focused_usable_ms": 633.7724330005585,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 24,
+        "ready_ms": 471.189782001602,
+        "focused_usable_ms": 718.5886200022651,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 25,
+        "ready_ms": 437.33644299936714,
+        "focused_usable_ms": 678.6673980022897,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 26,
+        "ready_ms": 482.16154600231675,
+        "focused_usable_ms": 746.7145089976839,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 27,
+        "ready_ms": 466.38122700096574,
+        "focused_usable_ms": 671.9457989966031,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 28,
+        "ready_ms": 371.0014860043884,
+        "focused_usable_ms": 567.6192410028307,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 29,
+        "ready_ms": 506.5578439971432,
+        "focused_usable_ms": 825.2781400005915,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 30,
+        "ready_ms": 434.02061599772424,
+        "focused_usable_ms": 717.3003130010329,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 31,
+        "ready_ms": 499.4028290020651,
+        "focused_usable_ms": 783.7540410037036,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 32,
+        "ready_ms": 644.3442849995336,
+        "focused_usable_ms": 899.3227169994498,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 33,
+        "ready_ms": 422.59802400076296,
+        "focused_usable_ms": 705.7216760003939,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 34,
+        "ready_ms": 674.9303730030078,
+        "focused_usable_ms": 968.68127000198,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 35,
+        "ready_ms": 605.2280360017903,
+        "focused_usable_ms": 886.0913990065455,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 36,
+        "ready_ms": 541.451078002865,
+        "focused_usable_ms": 817.1020500012673,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 37,
+        "ready_ms": 636.359600997821,
+        "focused_usable_ms": 868.6431769965566,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 38,
+        "ready_ms": 432.30923500232166,
+        "focused_usable_ms": 712.2955580052803,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 39,
+        "ready_ms": 614.522780997504,
+        "focused_usable_ms": 902.6963759970386,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      },
+      {
+        "page": 40,
+        "ready_ms": 375.3765530054807,
+        "focused_usable_ms": 586.9984020027914,
+        "budget_ms": 150,
+        "passes": false,
+        "focused_passes": false
+      }
+    ],
+    "long_editor_page_ms": {
+      "n": 39,
+      "p50": 448.38319400150795,
+      "p95": 644.3442849995336,
+      "p99": 674.9303730030078,
+      "worst": 674.9303730030078,
+      "method": "nearest rank"
+    },
+    "long_editor_focused_page_ms": {
+      "n": 39,
+      "p50": 712.2955580052803,
+      "p95": 902.6963759970386,
+      "p99": 968.68127000198,
+      "worst": 968.68127000198,
+      "method": "nearest rank"
+    },
+    "long_editor_memory_kib": {
+      "VmRSS": 130712,
+      "VmHWM": 130712
+    },
+    "long_editor_shape": {
+      "schema": 6,
+      "generation": 14,
+      "payload_sha256": "839364841ef3f93cd6f67c7af6d2de48fdc97b9c4b906e7080dd0eac0bec25a3",
+      "customers": 0,
+      "quotes": 0,
+      "products": 2,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 5,
+        "requests": 5,
+        "audit": 40
+      },
+      "procurement": {
+        "records": 10,
+        "requests": 10
+      },
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "2ee45c8e8f1c90666e573b65950397e4eaa3db4bc0e9f7b23c886bebf7c3a80b",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "f068bebc-2d69-408a-8d87-7f941b9bdc2d",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    },
+    "long_editor_boundary": "Saved raw1000-line sales draft, first native25-row page and each next page through40; updated exact scoped page marker plus visible sensitive Edit, then focused usable Edit. Focus may scroll the current row into view and is included in its separate endpoint. Separate from posted invoices and unchanged1000-line quotation probe.",
+    "native_read_only_phases": {
+      "paged_search": [],
+      "long_editor": []
+    }
+  },
+  "source_code_sha256_after": "c9ffa4559429ff67154fb067dbec667c7c1787cffe49e61b1d56cbe336978a36",
+  "frozen_source_provenance_after": {
+    "sha256": "30dc57763c904f740a42df7f863276b2c2f08e2c4c8510901603d6b6571fda5b",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+      "src/ui/accounting.rs": "76faf44f705bac44e6e1413e2d78e696af83238962cc03a4877a3627ec6a348f",
+      "src/ui/background.rs": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+      "src/ui/sales.rs": "816c0069fdf8f89b3534b3b95eadc11282bd38aeaafe17a1e813d690207ff696",
+      "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+      "src/ui/smoke.rs": "947cc2399837002fa159dedb7013cb764eb55a76021443efec45718f6a793b7b",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "observer_provenance_after": {
+    "native-performance-M5.py": "58cf88fdd660cf8b8a64b3ff25f90fb93f9c2cf56f93daf4d82ea8cc85879103",
+    "native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+    "native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+    "accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+  },
+  "observer_stable": true,
+  "binary_sha256_after": "9b32342c5dd966fb0f1a3f43f55529990221090e7a27d7aa7ddf7b96b4bf9537",
+  "frozen_source_stable": true,
+  "binary_stable": true
+}

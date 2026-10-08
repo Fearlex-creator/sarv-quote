@@ -1,0 +1,29 @@
+dbus-daemon[252959]: [session uid=1000 pid=252959 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=252960 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[252959]: [session uid=1000 pid=252959 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[252995]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=252960 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[252995]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"core_search": {"n": 2, "p50": 117.61792600009358, "p95": 121.25784400268458, "p99": 121.25784400268458, "worst": 121.25784400268458, "method": "nearest rank"}, "preview_ms": 63.250762003008276, "post_ms": 6.257455002923962}
+{"procurement_searches": {"document": {"n": 2, "p50": 97.81264699995518, "p95": 111.44447999686236, "p99": 111.44447999686236, "worst": 111.44447999686236, "method": "nearest rank"}, "party": {"n": 2, "p50": 82.75688400317449, "p95": 95.69720899889944, "p99": 95.69720899889944, "worst": 95.69720899889944, "method": "nearest rank"}, "item": {"n": 2, "p50": 83.23023200500757, "p95": 93.73367900116136, "p99": 93.73367900116136, "worst": 93.73367900116136, "method": "nearest rank"}, "mixed_master": {"n": 2, "p50": 81.72766899951966, "p95": 106.74527099763509, "p99": 106.74527099763509, "worst": 106.74527099763509, "method": "nearest rank"}}}
+
+(process:252960): dbind-WARNING **: 01:31:34.796: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+X connection to :11 broken (explicit kill or server shutdown).
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1265, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1176, in main
+    sales, sales_profile, sales_large = measure_sales(output, procurement_profile, binary, env, start, x11, capture, args.search_samples, args.pilot, report)
+                                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 771, in measure_sales
+    result['external_stage'] = measure_sales_stage(output, procurement_source, binary, env, start, x11, capture, result)
+                               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 617, in measure_sales_stage
+    page_root, search = sales_scope(access, x11)
+                        ~~~~~~~~~~~^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 714, in sales_scope
+    observe(lambda: ready(access, search, focus=True), 'visible focused Sales search')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 81, in observe
+    raise RuntimeError(f'Timed out waiting for {label}')
+RuntimeError: Timed out waiting for visible focused Sales search

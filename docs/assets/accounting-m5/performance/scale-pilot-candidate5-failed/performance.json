@@ -1,0 +1,85 @@
+{
+  "application_memory_kib_after_full_workflow": {
+    "VmHWM": 305444,
+    "VmRSS": 250908
+  },
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate5",
+  "sha256": "45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e",
+  "native_report": "/workspace/sarv-quote/artifacts/performance-m5/candidate5-scale-functional-pilot/synthetic-profile/native-responsiveness-verification.json",
+  "functional_result": "failed",
+  "main_thread_trace_ms": {
+    "review_snapshot_clone": [
+      0.007,
+      3.43,
+      3.363,
+      3.309
+    ],
+    "review_100_row_widget_construction": [
+      0.928
+    ],
+    "review_settings_apply": [
+      0.007
+    ],
+    "probe_screenshot_native-scale-catalog-first.png": [
+      142.603
+    ],
+    "probe_screenshot_native-scale-catalog-next.png": [
+      95.893
+    ],
+    "probe_screenshot_native-scale-catalog-last.png": [
+      128.114
+    ],
+    "review_batched_snapshot_clone": [
+      7.251
+    ],
+    "review_construct_20_rows": [
+      22.41,
+      16.552,
+      15.089,
+      16.125,
+      15.57
+    ],
+    "review_atomic_install": [
+      15.856
+    ],
+    "review_retire_20_rows": [
+      0.245
+    ],
+    "probe_screenshot_native-save-before.png": [
+      81.982
+    ],
+    "review_reuse_setters": [
+      0.569
+    ],
+    "review_reuse_chrome": [
+      16.023
+    ],
+    "review_100_row_widget_reuse": [
+      23.41
+    ]
+  },
+  "strict_budgets": {
+    "maximum_heartbeat_gap_ms": {
+      "actual": 334.64624100000003,
+      "budget": 50,
+      "passes": false
+    },
+    "unchanged_editor_page_ms": {
+      "actual": null,
+      "budget": 150,
+      "passes": false
+    },
+    "pdf_busy_heartbeat_ms": {
+      "actual": null,
+      "budget": 50,
+      "passes": false
+    }
+  },
+  "measurement": "n=1 complete native workflow; timer gaps include observer and scheduling; no p95 claim",
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "limits": [
+    "private X11/Cairo executor; Wayland and physical desktop untested",
+    "20 ms heartbeat is a responsiveness proxy, not a continuous CPU trace",
+    "probe screenshots and setup are included in global gaps"
+  ]
+}

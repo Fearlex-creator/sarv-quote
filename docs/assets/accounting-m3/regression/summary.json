@@ -1,0 +1,111 @@
+{
+  "result": "passed",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "binary_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1",
+  "source_edits": false,
+  "harness_edits": false,
+  "output": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z",
+  "runs": [
+    {
+      "name": "quote",
+      "exit_code": 0,
+      "elapsed_seconds": 23.095,
+      "log": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/quote.log",
+      "harness": "/workspace/sarv-environment/check-native.py",
+      "harness_sha256": "8814c3d87322b2d1f409f63090140e11470260487365310b0eee8906b5e470a5",
+      "profile": "/workspace/sarv-quote/artifacts/cloud-onboarding/native-8hjxumwr",
+      "reports": [
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/quote/native-verification.json",
+          "result": "passed",
+          "checks": 23
+        },
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/quote/settings-native-verification.json",
+          "result": "passed",
+          "checks": 14
+        },
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/quote/preview-native-verification.json",
+          "result": "passed",
+          "checks": 3
+        },
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/quote/process-restart-verification.json",
+          "result": "passed",
+          "checks": 0
+        }
+      ],
+      "checks": 40
+    },
+    {
+      "name": "accounting",
+      "exit_code": 0,
+      "elapsed_seconds": 28.873,
+      "log": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/accounting.log",
+      "harness": "/workspace/sarv-quote/scripts/accounting-qa.py",
+      "harness_sha256": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+      "profile": "/workspace/sarv-quote/artifacts/accounting-native/run-76vkt8yx",
+      "reports": [
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/accounting/accounting-independent-native.json",
+          "result": "passed",
+          "checks": 16
+        }
+      ],
+      "checks": 16
+    },
+    {
+      "name": "jalali",
+      "exit_code": 0,
+      "elapsed_seconds": 46.691,
+      "log": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/jalali.log",
+      "harness": "/workspace/sarv-quote/scripts/jalali-qa.py",
+      "harness_sha256": "c88b58cdda1b989d3d84d5c30c85c695c410d697870231d9f658771c85269bfb",
+      "profile": "/workspace/sarv-quote/artifacts/jalali-native/run-fomu0iqf",
+      "reports": [
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/jalali/jalali-independent-native.json",
+          "result": "passed",
+          "checks": 44
+        }
+      ],
+      "checks": 44
+    },
+    {
+      "name": "sidebar",
+      "exit_code": 0,
+      "elapsed_seconds": 28.393,
+      "log": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/sidebar.log",
+      "harness": "/workspace/sarv-quote/scripts/native-sidebar-qa.py",
+      "harness_sha256": "c34e862037498cef21d11aa37b3e221942cd3793065d9682fd4506a37a927228",
+      "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-9w2uucgg",
+      "reports": [
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/sidebar/sidebar-verification.json",
+          "result": "passed",
+          "checks": 19
+        }
+      ],
+      "checks": 19
+    },
+    {
+      "name": "held-save-close",
+      "exit_code": 0,
+      "elapsed_seconds": 1.26,
+      "log": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/held-save-close.log",
+      "harness": "/workspace/sarv-quote/scripts/native-save-close.py",
+      "harness_sha256": "4bf70626a7c82e7d2054809c717391fcaa6c1d586194ba8018307c40ede554d9",
+      "profile": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/held-save-close-profile",
+      "reports": [
+        {
+          "file": "/workspace/sarv-quote/artifacts/accounting-m3-regression/final-10bf9929-20261007T194031Z/held-save-close/native-close-verification.json",
+          "result": "passed",
+          "checks": 3
+        }
+      ],
+      "checks": 3
+    }
+  ],
+  "total_named_checks": 122
+}

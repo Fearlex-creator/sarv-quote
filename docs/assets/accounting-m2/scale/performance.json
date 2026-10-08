@@ -1,0 +1,258 @@
+{
+  "application_memory_kib_after_full_workflow": {
+    "VmHWM": 311204,
+    "VmRSS": 282864
+  },
+  "binary": "/workspace/sarv-evidence/bin/sarv-M2-layout-final",
+  "sha256": "6c545a5642c53ac633a715f66f5f24cdfd107ccd58261724b688a89f1793a50d",
+  "native_report": "/workspace/sarv-quote/artifacts/independent-m2/scale-layout-final/synthetic-profile/native-responsiveness-verification.json",
+  "functional_result": "passed",
+  "main_thread_trace_ms": {
+    "review_snapshot_clone": [
+      0.005,
+      4.013,
+      4.724,
+      4.632,
+      3.59,
+      6.898,
+      4.065,
+      5.506,
+      7.988,
+      7.36,
+      7.06
+    ],
+    "review_100_row_widget_construction": [
+      0.615
+    ],
+    "review_settings_apply": [
+      0.723
+    ],
+    "probe_screenshot_native-scale-catalog-first.png": [
+      121.015
+    ],
+    "probe_screenshot_native-scale-catalog-next.png": [
+      114.402
+    ],
+    "probe_screenshot_native-scale-catalog-last.png": [
+      116.126
+    ],
+    "review_batched_snapshot_clone": [
+      9.14,
+      8.531,
+      10.738,
+      10.002,
+      6.506,
+      12.179
+    ],
+    "review_construct_20_rows": [
+      26.068,
+      22.268,
+      26.317,
+      22.563,
+      16.476,
+      30.727,
+      21.083,
+      14.997,
+      8.273,
+      8.683,
+      21.833,
+      19.785,
+      19.69,
+      20.963,
+      19.808,
+      15.68,
+      15.465,
+      16.178,
+      18.172,
+      17.978,
+      19.948,
+      20.639,
+      8.194,
+      8.357,
+      8.357
+    ],
+    "review_atomic_install": [
+      24.885,
+      39.486,
+      36.812,
+      28.046,
+      25.621
+    ],
+    "review_retire_20_rows": [
+      0.21,
+      3.433,
+      3.056,
+      2.818,
+      3.16,
+      3.54,
+      0.34,
+      5.887,
+      8.38,
+      3.519,
+      4.168,
+      4.58,
+      0.07,
+      3.667,
+      4.735,
+      2.987,
+      3.451,
+      3.201,
+      0.165,
+      4.127,
+      3.904,
+      5.541,
+      3.665,
+      3.161,
+      0.193
+    ],
+    "probe_screenshot_native-save-before.png": [
+      67.393
+    ],
+    "review_reuse_setters": [
+      1.882,
+      28.393,
+      14.56,
+      25.42,
+      18.879,
+      52.912,
+      16.177,
+      20.619,
+      15.481,
+      16.672,
+      1.388,
+      26.616,
+      27.737,
+      23.709,
+      36.95,
+      14.578,
+      12.503,
+      25.649,
+      14.24,
+      21.088
+    ],
+    "review_reuse_chrome": [
+      25.152,
+      19.855,
+      23.078,
+      21.141,
+      26.576,
+      30.812,
+      38.802,
+      34.58,
+      20.422,
+      25.319,
+      19.323,
+      20.273,
+      19.844,
+      20.103,
+      25.04,
+      23.793,
+      19.336,
+      33.181,
+      21.987,
+      22.402
+    ],
+    "review_reuse_settings": [
+      1.131,
+      0.959,
+      0.946,
+      1.115,
+      1.493,
+      1.13,
+      1.227,
+      1.507,
+      1.519,
+      1.677,
+      0.991,
+      0.971,
+      1.034,
+      0.87,
+      1.475,
+      1.201,
+      0.941,
+      1.59,
+      1.024,
+      1.119
+    ],
+    "review_100_row_widget_reuse": [
+      43.826,
+      58.38,
+      46.228,
+      55.813,
+      59.097,
+      95.171,
+      66.095,
+      67.892,
+      46.252,
+      53.479,
+      32.291,
+      55.871,
+      56.529,
+      51.789,
+      72.991,
+      49.232,
+      40.176,
+      71.527,
+      49.058,
+      51.928
+    ],
+    "probe_screenshot_native-save-after.png": [
+      68.204
+    ],
+    "probe_screenshot_native-scale-editor-last-page.png": [
+      82.808
+    ],
+    "probe_screenshot_native-scale-picker-cold.png": [
+      94.943
+    ],
+    "probe_screenshot_native-scale-picker-last-product.png": [
+      87.771
+    ],
+    "probe_screenshot_native-scale-picker-warm.png": [
+      98.548
+    ],
+    "probe_screenshot_native-scale-unknown-selector.png": [
+      92.656
+    ],
+    "probe_screenshot_native-scale-composer-first.png": [
+      119.205
+    ],
+    "probe_screenshot_native-scale-composer-last-product.png": [
+      7.047,
+      112.695
+    ],
+    "probe_screenshot_native-scale-editor-1000.png": [
+      85.957
+    ],
+    "probe_screenshot_native-scale-settings-while-pdf.png": [
+      91.187
+    ],
+    "probe_screenshot_native-scale-editor-narrow.png": [
+      74.47
+    ]
+  },
+  "strict_budgets": {
+    "maximum_heartbeat_gap_ms": {
+      "actual": 535.536369,
+      "budget": 50,
+      "passes": false
+    },
+    "unchanged_editor_page_ms": {
+      "actual": 184.400279,
+      "budget": 150,
+      "passes": false
+    },
+    "pdf_busy_heartbeat_ms": {
+      "actual": 118.791776,
+      "budget": 50,
+      "passes": false
+    }
+  },
+  "measurement": "n=1 complete native workflow; timer gaps include observer and scheduling; no p95 claim",
+  "host": "Linux-6.18.44-x86_64-with-glibc2.41",
+  "limits": [
+    "private X11/Cairo executor; Wayland and physical desktop untested",
+    "20 ms heartbeat is a responsiveness proxy, not a continuous CPU trace",
+    "probe screenshots and setup are included in global gaps"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "scope": "Root visual inspection of actual retained native C5 rasters; complements interaction/financial receipts, not substitute for them. C6 opt-in predicate correction does not establish new screenshot provenance.",
+  "files": {
+    "m4-before/M4-before.png": "86d08ef2e050d1e64ca5129eb79ae774e33620b46e504b6d34f98ddf48a167ba",
+    "full/M5-sales-light-650x550.png": "7c1b4cbe16da731a23bb89d90de3269f9d9c701cab39758d4d3669d1b402505e",
+    "full/M5-sales-dark-650x550.png": "090ce7f42a1555fcc6f6477c568bf3f8d29c60ea092a908e877db90bb7367efa",
+    "full/M5-real-restored-new-order.png": "42170473d8315052584281f3f35382f46994526c37a24965c7e00a46d567086e",
+    "full/M5-real-order-detail.png": "810c7e081f56de873989ce142049e8d3351792caaaf2dfc0aa7f3bbe461a279c",
+    "identity/M5-reused-lines-current-review-error.png": "aaf470efb531619be6d499ba48f87abb8f37ee6bab51a4d0c3d12bb268296f51"
+  },
+  "observations": [
+    "Persian text remains readable in narrow light/dark native views; RTL labels and LTR reference codes are distinguishable.",
+    "Restored New Order shows explicit dates, company context, rial unit, visible reference focus and separated unposted state.",
+    "Source detail exposes linked delivery/invoice identifiers and documented cumulative allocation policy; PDF/CSV controls are functional in separate interaction receipt.",
+    "Invalid current draft retains input and shows an exact supplied-total validation error with posting unavailable.",
+    "Native sections use consistent rounded controls, semantic headings and scrolling, with actual narrow sidebar collapse."
+  ],
+  "limits": [
+    "No native Persian reader/accountant user-study acceptance inferred.",
+    "High contrast, enlarged text, physical printing, Wayland and real screen-reader task completion remain unverified.",
+    "Screenshots alone do not prove financial correctness, keyboard behavior or timing."
+  ]
+}

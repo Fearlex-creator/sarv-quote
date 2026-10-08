@@ -248,12 +248,24 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     );
     let date_choice = combo(
         "نمایش تاریخ",
-        &["میلادی YYYY-MM-DD", "میلادی DD/MM/YYYY"],
-        u32::from(settings.date_display == DateDisplay::DayMonthYear),
+        &[
+            "میلادی YYYY-MM-DD",
+            "میلادی DD/MM/YYYY",
+            "هجری شمسی YYYY/MM/DD",
+        ],
+        match settings.date_display {
+            DateDisplay::Iso => 0,
+            DateDisplay::DayMonthYear => 1,
+            DateDisplay::Jalali => 2,
+        },
     );
     appearance_group.add(&appearance);
     appearance_group.add(&density);
     appearance_group.add(&digit_choice);
+    date_choice.set_widget_name("settings-date-display");
+    date_choice.set_subtitle(
+        "تقویم نمایش و پیش‌فرض ورود تاریخ مالی؛ تاریخ واقعی سند و مرز دوره تغییر نمی‌کند.",
+    );
     appearance_group.add(&date_choice);
     page.add(&appearance_group);
     page.add(&document);
@@ -282,7 +294,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     open_recovery.connect_clicked(move |_| {
         if let Some(ui) = weak.upgrade() {
             ui.stack.set_visible_child_name("backup");
-            ui.split.set_show_content(true);
+            ui.show_workspace_content();
         }
     });
     local_data.add(&recovery);
@@ -456,10 +468,10 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
                 } else {
                     Density::Compact
                 },
-                date_display: if date_choice.selected() == 0 {
-                    DateDisplay::Iso
-                } else {
-                    DateDisplay::DayMonthYear
+                date_display: match date_choice.selected() {
+                    1 => DateDisplay::DayMonthYear,
+                    2 => DateDisplay::Jalali,
+                    _ => DateDisplay::Iso,
                 },
                 display_digits: if digit_choice.selected() == 0 {
                     DisplayDigits::Persian
@@ -513,7 +525,37 @@ pub(super) fn discard_staged(ui: &Rc<Ui>) {
 }
 
 /// Apply real Adwaita appearance, table density and label digit preferences.
+pub(super) fn apply_digits(widget: &impl IsA<gtk::Widget>, choice: DisplayDigits) {
+    let widget = widget.as_ref();
+    if let Some(label) = widget.downcast_ref::<gtk::Label>() {
+        let text = label.text();
+        let formatted = choice.format(&text);
+        if text.as_str() != formatted {
+            label.set_text(&formatted);
+        }
+    }
+    let mut child = widget.first_child();
+    while let Some(current) = child {
+        child = current.next_sibling();
+        apply_digits(&current, choice);
+    }
+}
+
+pub(super) fn apply_manager_digits(ui: &Rc<Ui>) {
+    let choice = ui.store.borrow().state.settings.display_digits;
+    for (operation, root) in [
+        ("settings_catalog_digits", &ui.catalog_list),
+        ("settings_customer_digits", &ui.customer_list),
+        ("settings_quote_digits", &ui.quote_list),
+    ] {
+        let started = std::time::Instant::now();
+        apply_digits(root, choice);
+        super::editor::performance_trace(operation, started);
+    }
+}
+
 pub(super) fn apply(ui: &Rc<Ui>) {
+    let apply_started = std::time::Instant::now();
     let settings = ui.store.borrow().state.settings.clone();
     let scheme = match settings.appearance {
         Appearance::System => adw::ColorScheme::Default,
@@ -532,19 +574,8 @@ pub(super) fn apply(ui: &Rc<Ui>) {
         gtk::style_context_add_provider_for_display(&gtk::prelude::WidgetExt::display(&ui.window), &provider, gtk::STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
         provider
     }); });
-    fn labels(widget: &gtk::Widget, choice: DisplayDigits) {
-        if let Some(label) = widget.downcast_ref::<gtk::Label>() {
-            let text = label.text();
-            let formatted = choice.format(&text);
-            if text.as_str() != formatted {
-                label.set_text(&formatted);
-            }
-        }
-        let mut child = widget.first_child();
-        while let Some(current) = child {
-            child = current.next_sibling();
-            labels(&current, choice);
-        }
-    }
-    labels(ui.window.upcast_ref(), settings.display_digits);
+    let digits_started = std::time::Instant::now();
+    apply_digits(&ui.window, settings.display_digits);
+    super::editor::performance_trace("settings_global_digits", digits_started);
+    super::editor::performance_trace("settings_global_apply", apply_started);
 }

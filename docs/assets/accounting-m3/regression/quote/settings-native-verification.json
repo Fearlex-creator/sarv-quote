@@ -1,0 +1,23 @@
+{
+  "checks": [
+    "all business fields/header/footer/terms saved by native controls",
+    "toman/rial setting preserves canonical discount",
+    "default currency/discount/expiry applied to new quote",
+    "configured basis-point tax uses exact integer rial",
+    "number consumed once and stable after repeated clicks",
+    "approved issuer/terms/digits snapshots",
+    "light theme applied by Adwaita",
+    "compact geometry applied",
+    "Latin digits applied then Persian restored",
+    "customer manager native dialog creates persisted customer",
+    "settings/quote/customer SQLite reopen",
+    "PDF and CSV settings export",
+    "settings backup validated",
+    "Gregorian date format saved and snapshotted in generated documents"
+  ],
+  "quote_number": "DEMO-42",
+  "quote_total_rial": 5516700,
+  "quotes": 3,
+  "result": "passed",
+  "tax_rial": 262700
+}

@@ -1,0 +1,11 @@
+{
+  "result": "PASS7 actualC9 gates",
+  "source_sha256": "73269aaf5cca587c681e6db7c90aefba9907599a3212a5b1a909fcd51702da89",
+  "binary_sha256": "4892cc991bc933fc6621a10847ee4f1a25c7cc45e19f39fde90a973884fecf6b",
+  "actual_source36_buildverification52_binary_beforeafter_equal": true,
+  "all_log_hashes_verified": true,
+  "alltargets_passed": 220,
+  "alltargets_failed": 0,
+  "alltargets_ignored": 4,
+  "performance": "diagnostic functional only; no finaltiming"
+}

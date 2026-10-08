@@ -1,0 +1,100 @@
+{
+  "status": "Independent debug diagnostics, final frozen release reruns required",
+  "debug_final_binary_sha256": "11343fc6139f4c6df6c43b4a001c14761cb769adefa530661679f1e46d8040f1",
+  "parent_declared_build_source_aggregate": "e93b5d6dfe4e79bc75ee03222751c2c274a8ab7443efc8e7e56678d6af6a4a7e",
+  "later_observed_source_aggregate": "8c7b572678e59841d6e7a440bb92a2d29c0b87cf7454c65b610ea35ed709c2b3",
+  "modal_method": "Native AT-SPI Close header actions; real XTest Tab afterward; exact saved-state equality on cancel",
+  "cases": [
+    {
+      "label": "freeze1-fatal",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-bkn3b2i1",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/freeze1-fatal",
+      "actual_warning_critical_lines": [
+        "(sarv-M4-freeze1:169969): Gtk-WARNING **: 22:07:23.747: GtkText - did not receive a focus-out event.",
+        "(sarv-M4-freeze1:169969): Gtk-CRITICAL **: 22:07:48.433: gtk_window_get_focus: assertion 'GTK_IS_WINDOW (window)' failed"
+      ],
+      "result": "failed",
+      "checks": 19,
+      "binary_sha256": "cd14d26374c19ed04de32a2c3a4849304a3718511c2d2cc9ec4b56fe465e7668"
+    },
+    {
+      "label": "expander-debug",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-sr6rccwj",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/expander-debug",
+      "actual_warning_critical_lines": [
+        "(sarv-M4-expander-debug:172302): Gtk-WARNING **: 22:13:28.785: GtkText - did not receive a focus-out event.",
+        "(sarv-M4-expander-debug:172302): Adwaita-WARNING **: 22:14:36.973: AdwToolbarView 0x563f32dbfe50 exceeds AdwApplicationWindow height: requested 648 px, 550 px available"
+      ],
+      "result": "passed",
+      "checks": 28,
+      "binary_sha256": "da6e1d7253ffe88639076418f9f704a1a52f461d361e4032dbb53b40cb63cdae"
+    },
+    {
+      "label": "dialog-height-debug",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-h5uoht31",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/dialog-height-debug",
+      "actual_warning_critical_lines": [
+        "(sarv-M4-dialog-height-debug:174164): Gtk-WARNING **: 22:20:40.337: GtkText - did not receive a focus-out event."
+      ],
+      "result": "passed",
+      "checks": 28,
+      "binary_sha256": "62ad6b15d24b24591c6e9bf57c0de1aae11e35a61be47553dc7a2388795e0cd4"
+    },
+    {
+      "label": "focused-disable",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-0cawx_86",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/focused-disable",
+      "actual_warning_critical_lines": [
+        "(sarv-M4-dialog-height-debug:175606): Gtk-WARNING **: 22:23:40.308: GtkText - did not receive a focus-out event."
+      ],
+      "result": "failed",
+      "checks": 1,
+      "binary_sha256": "62ad6b15d24b24591c6e9bf57c0de1aae11e35a61be47553dc7a2388795e0cd4"
+    },
+    {
+      "label": "composer-full28",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-vowe6lag",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/composer-full28",
+      "actual_warning_critical_lines": [],
+      "result": "passed",
+      "checks": 28,
+      "binary_sha256": "11343fc6139f4c6df6c43b4a001c14761cb769adefa530661679f1e46d8040f1"
+    },
+    {
+      "label": "composer-modal3",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-9gu0trnv",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/composer-modal3",
+      "actual_warning_critical_lines": [],
+      "result": "passed",
+      "checks": 3,
+      "binary_sha256": "11343fc6139f4c6df6c43b4a001c14761cb769adefa530661679f1e46d8040f1"
+    },
+    {
+      "label": "composer-disclosure4",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-oaxx9dln",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/composer-disclosure4",
+      "result": "passed",
+      "checks": 4,
+      "binary_sha256": "11343fc6139f4c6df6c43b4a001c14761cb769adefa530661679f1e46d8040f1",
+      "actual_warning_critical_lines": []
+    },
+    {
+      "label": "composer-validation-failure3",
+      "profile": "/workspace/sarv-quote/artifacts/product-native/run-daoci7ww",
+      "retained": "/workspace/sarv-quote/artifacts/m4-quote-diagnostics/composer-validation-failure3",
+      "result": "passed",
+      "checks": 3,
+      "binary_sha256": "11343fc6139f4c6df6c43b4a001c14761cb769adefa530661679f1e46d8040f1",
+      "actual_warning_critical_lines": []
+    }
+  ],
+  "retained_observer_failures": [
+    "run-xo6l106l",
+    "run-iu47lafn",
+    "run-3ng9t7gw",
+    "run-4o686ztq",
+    "run-2ujklrrd",
+    "run-3jb5m_ke"
+  ],
+  "observer_corrections": "ASCII helper drops embedded newline; use explicit Return keys. Caption relation overrides input accessible property. Wait actual async confirmation, then choose native header Close; modal smoke key events can lag actual accessible tree."
+}
