@@ -1,0 +1,418 @@
+{
+  "schema": 5,
+  "catalogs": [],
+  "customers": [],
+  "quotes": [],
+  "draft": {
+    "series": "c551c2d3-e445-4b8c-9eb1-d3ec6db3c877",
+    "catalog_id": "",
+    "customer": "",
+    "phone": "",
+    "lines": [],
+    "discount_rial": 0,
+    "display_unit": "Toman",
+    "stale_ack": false,
+    "quote_date": "2026-10-08"
+  },
+  "accounting": {
+    "companies": [
+      {
+        "id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "name": "Independent actual M4 sales-prefix synthetic fixture"
+      }
+    ],
+    "periods": [
+      {
+        "id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "name": "2026",
+        "start_date": "2026-01-01",
+        "end_date": "2026-12-31",
+        "locked": true
+      }
+    ],
+    "accounts": [
+      {
+        "id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "parent_id": null,
+        "code": "A",
+        "name": "Ordinary asset",
+        "classification": "Asset",
+        "normal_balance": "Debit",
+        "postable": true,
+        "control": false,
+        "archived": false,
+        "version": 1
+      },
+      {
+        "id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "parent_id": null,
+        "code": "E",
+        "name": "Supplied capital",
+        "classification": "Equity",
+        "normal_balance": "Credit",
+        "postable": true,
+        "control": false,
+        "archived": false,
+        "version": 1
+      }
+    ],
+    "journals": [
+      {
+        "id": "3be9f313-5fc7-476c-9e28-1271778ab118",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+        "date": "2026-03-22",
+        "source_id": "actual-m4-legacy-sales-source",
+        "source_revision": 1,
+        "event": "sales.invoice.v1",
+        "actor": "reviewer",
+        "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+        "kind": "Manual",
+        "lines": [
+          {
+            "account": {
+              "id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+              "parent_id": null,
+              "code": "A",
+              "name": "Ordinary asset",
+              "classification": "Asset",
+              "normal_balance": "Debit",
+              "postable": true,
+              "control": false,
+              "archived": false,
+              "version": 1
+            },
+            "debit": 100,
+            "credit": 0,
+            "description": "supplied asset"
+          },
+          {
+            "account": {
+              "id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+              "parent_id": null,
+              "code": "E",
+              "name": "Supplied capital",
+              "classification": "Equity",
+              "normal_balance": "Credit",
+              "postable": true,
+              "control": false,
+              "archived": false,
+              "version": 1
+            },
+            "debit": 0,
+            "credit": 100,
+            "description": "supplied capital"
+          }
+        ],
+        "recorded_at": "2026-10-08T00:37:39.729083474+00:00"
+      },
+      {
+        "id": "39988da5-9aef-4ab8-b0f4-20ada21a7b83",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+        "date": "2026-03-22",
+        "source_id": "actual-m4-legacy-sales-source",
+        "source_revision": 2,
+        "event": "sales.invoice.v1",
+        "actor": "reviewer",
+        "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+        "kind": "Manual",
+        "lines": [
+          {
+            "account": {
+              "id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+              "parent_id": null,
+              "code": "A",
+              "name": "Ordinary asset",
+              "classification": "Asset",
+              "normal_balance": "Debit",
+              "postable": true,
+              "control": false,
+              "archived": false,
+              "version": 1
+            },
+            "debit": 200,
+            "credit": 0,
+            "description": "supplied asset"
+          },
+          {
+            "account": {
+              "id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+              "parent_id": null,
+              "code": "E",
+              "name": "Supplied capital",
+              "classification": "Equity",
+              "normal_balance": "Credit",
+              "postable": true,
+              "control": false,
+              "archived": false,
+              "version": 1
+            },
+            "debit": 0,
+            "credit": 200,
+            "description": "supplied capital"
+          }
+        ],
+        "recorded_at": "2026-10-08T00:37:39.733464730+00:00"
+      },
+      {
+        "id": "3fadfb77-9927-467f-a6f4-70246d4202dd",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+        "date": "2026-03-23",
+        "source_id": "3be9f313-5fc7-476c-9e28-1271778ab118",
+        "source_revision": 1,
+        "event": "reversal",
+        "actor": "reviewer",
+        "reason": "Linked exact ordinary M4 reversal",
+        "kind": {
+          "Reversal": {
+            "journal_id": "3be9f313-5fc7-476c-9e28-1271778ab118"
+          }
+        },
+        "lines": [
+          {
+            "account": {
+              "id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+              "parent_id": null,
+              "code": "A",
+              "name": "Ordinary asset",
+              "classification": "Asset",
+              "normal_balance": "Debit",
+              "postable": true,
+              "control": false,
+              "archived": false,
+              "version": 1
+            },
+            "debit": 0,
+            "credit": 100,
+            "description": "supplied asset"
+          },
+          {
+            "account": {
+              "id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+              "parent_id": null,
+              "code": "E",
+              "name": "Supplied capital",
+              "classification": "Equity",
+              "normal_balance": "Credit",
+              "postable": true,
+              "control": false,
+              "archived": false,
+              "version": 1
+            },
+            "debit": 100,
+            "credit": 0,
+            "description": "supplied capital"
+          }
+        ],
+        "recorded_at": "2026-10-08T00:37:39.736983646+00:00"
+      }
+    ],
+    "requests": [
+      {
+        "command": {
+          "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+          "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+          "date": "2026-03-22",
+          "source_id": "actual-m4-legacy-sales-source",
+          "source_revision": 1,
+          "event": "sales.invoice.v1",
+          "request_key": "actual-m4-sales-key",
+          "actor": "reviewer",
+          "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account_id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "debit": 100,
+              "credit": 0,
+              "description": "supplied asset"
+            },
+            {
+              "account_id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "debit": 0,
+              "credit": 100,
+              "description": "supplied capital"
+            }
+          ]
+        },
+        "journal_id": "3be9f313-5fc7-476c-9e28-1271778ab118"
+      },
+      {
+        "command": {
+          "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+          "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+          "date": "2026-03-22",
+          "source_id": "actual-m4-legacy-sales-source",
+          "source_revision": 1,
+          "event": "sales.invoice.v1",
+          "request_key": "actual-m4-sales-alias",
+          "actor": "reviewer",
+          "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account_id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "debit": 100,
+              "credit": 0,
+              "description": "supplied asset"
+            },
+            {
+              "account_id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "debit": 0,
+              "credit": 100,
+              "description": "supplied capital"
+            }
+          ]
+        },
+        "journal_id": "3be9f313-5fc7-476c-9e28-1271778ab118"
+      },
+      {
+        "command": {
+          "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+          "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+          "date": "2026-03-22",
+          "source_id": "actual-m4-legacy-sales-source",
+          "source_revision": 2,
+          "event": "sales.invoice.v1",
+          "request_key": "actual-m4-sales-revision2",
+          "actor": "reviewer",
+          "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account_id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "debit": 200,
+              "credit": 0,
+              "description": "supplied asset"
+            },
+            {
+              "account_id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "debit": 0,
+              "credit": 200,
+              "description": "supplied capital"
+            }
+          ]
+        },
+        "journal_id": "39988da5-9aef-4ab8-b0f4-20ada21a7b83"
+      },
+      {
+        "command": {
+          "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+          "period_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+          "date": "2026-03-23",
+          "source_id": "3be9f313-5fc7-476c-9e28-1271778ab118",
+          "source_revision": 1,
+          "event": "reversal",
+          "request_key": "actual-m4-sales-reversal",
+          "actor": "reviewer",
+          "reason": "Linked exact ordinary M4 reversal",
+          "kind": {
+            "Reversal": {
+              "journal_id": "3be9f313-5fc7-476c-9e28-1271778ab118"
+            }
+          },
+          "lines": [
+            {
+              "account_id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+              "debit": 0,
+              "credit": 100,
+              "description": "supplied asset"
+            },
+            {
+              "account_id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+              "debit": 100,
+              "credit": 0,
+              "description": "supplied capital"
+            }
+          ]
+        },
+        "journal_id": "3fadfb77-9927-467f-a6f4-70246d4202dd"
+      }
+    ],
+    "audit": [
+      {
+        "id": "11850902-dac1-4751-a0e9-b29edd26ee8b",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "operation": "CompanyCreated",
+        "actor": "reviewer",
+        "reason": "ایجاد کسب‌وکار",
+        "recorded_at": "2026-10-08T00:37:39.728097758+00:00"
+      },
+      {
+        "id": "79b8e802-3c8d-4e37-9720-cf4a1abb9f75",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+        "operation": "PeriodCreated",
+        "actor": "reviewer",
+        "reason": "ایجاد سال مالی",
+        "recorded_at": "2026-10-08T00:37:39.728113492+00:00"
+      },
+      {
+        "id": "37dc58a9-da11-452c-ad0c-982d52414e7d",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "a3b4c152-1a36-4860-a4aa-8eabc7a87164",
+        "operation": "AccountCreated",
+        "actor": "reviewer",
+        "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+        "recorded_at": "2026-10-08T00:37:39.728120292+00:00"
+      },
+      {
+        "id": "e14f4e80-b551-4fa4-a7fd-1ec65e24c89b",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "ac77e152-98e0-48a7-896d-5cea7a6c3b65",
+        "operation": "AccountCreated",
+        "actor": "reviewer",
+        "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+        "recorded_at": "2026-10-08T00:37:39.728130137+00:00"
+      },
+      {
+        "id": "ae379828-0f7e-411a-aa35-f931c489391f",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "3be9f313-5fc7-476c-9e28-1271778ab118",
+        "operation": "JournalPosted",
+        "actor": "reviewer",
+        "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+        "recorded_at": "2026-10-08T00:37:39.729083474+00:00"
+      },
+      {
+        "id": "602e4b27-23f7-4b05-974e-882059e08b55",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "39988da5-9aef-4ab8-b0f4-20ada21a7b83",
+        "operation": "JournalPosted",
+        "actor": "reviewer",
+        "reason": "Permitted ordinary manual source under tagged M4, not a typed goods sale",
+        "recorded_at": "2026-10-08T00:37:39.733464730+00:00"
+      },
+      {
+        "id": "0134d4e0-5dfa-4504-8b12-88831367895d",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "3fadfb77-9927-467f-a6f4-70246d4202dd",
+        "operation": "JournalPosted",
+        "actor": "reviewer",
+        "reason": "Linked exact ordinary M4 reversal",
+        "recorded_at": "2026-10-08T00:37:39.736983646+00:00"
+      },
+      {
+        "id": "f24f13c3-d8ae-4627-a065-87439d21907c",
+        "company_id": "a3e54c97-3281-4a8e-93c9-924598651294",
+        "entity_id": "35ddb98c-5059-4adc-990c-580f0c625b8a",
+        "operation": "PeriodLocked",
+        "actor": "reviewer",
+        "reason": "Locked historical M4 fixture",
+        "recorded_at": "2026-10-08T00:37:39.739104754+00:00"
+      }
+    ]
+  }
+}

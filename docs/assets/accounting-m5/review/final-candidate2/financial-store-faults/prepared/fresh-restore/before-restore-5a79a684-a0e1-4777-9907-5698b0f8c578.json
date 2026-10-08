@@ -1,0 +1,21 @@
+{
+  "format": "sarv-accounting-backup-v6",
+  "checksum": "03525fb24ebc8c67c2acc62dad54ef3ca1bbbdb3c25de2533ea02d7730919c8f",
+  "state": {
+    "schema": 6,
+    "catalogs": [],
+    "customers": [],
+    "quotes": [],
+    "draft": {
+      "series": "c13c5769-8a70-4ba8-afbd-554d129de372",
+      "catalog_id": "",
+      "customer": "",
+      "phone": "",
+      "lines": [],
+      "discount_rial": 0,
+      "display_unit": "Toman",
+      "stale_ack": false,
+      "quote_date": "2026-10-08"
+    }
+  }
+}

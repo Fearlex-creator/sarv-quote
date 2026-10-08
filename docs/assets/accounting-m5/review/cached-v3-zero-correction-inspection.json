@@ -1,0 +1,8 @@
+{
+  "result": "source approved for functional qualification; no runtime/timing acceptance",
+  "external_protocol": "m5-cached-v3 correctedzero",
+  "sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "exact_delta": "summary_count(0) returnszero_hidden, whose checks requireexactquery/count/statusready/currentsearchstatusmemberships/actioninsensitive/absenttitleactionpaths; redundant secondzeroobserverremoved; positive60 keepsallpathsexposed; notimers/budgets changed",
+  "basis": "staged exact472e file/diff vsarchiveddeb6 source inspected; original C8snapshot unchanged",
+  "qualification": "fresh preexecution correctedhelper52capture and n1/n2/all3/all40/zero-hide-reveal required"
+}

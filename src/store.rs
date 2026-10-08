@@ -32,7 +32,8 @@ fn backup_view<'a>(state: &'a State, payload: &[u8]) -> BackupView<'a> {
             2 => "sarv-accounting-backup-v2",
             3 => "sarv-accounting-backup-v3",
             4 => "sarv-accounting-backup-v4",
-            _ => "sarv-accounting-backup-v5",
+            5 => "sarv-accounting-backup-v5",
+            _ => "sarv-accounting-backup-v6",
         },
         checksum: hash(payload),
         state,
@@ -403,7 +404,8 @@ impl Store {
                 || (b.format == "sarv-accounting-backup-v2" && b.state.schema == 2)
                 || (b.format == "sarv-accounting-backup-v3" && b.state.schema == 3)
                 || (b.format == "sarv-accounting-backup-v4" && b.state.schema == 4)
-                || (b.format == "sarv-accounting-backup-v5" && b.state.schema == CURRENT_SCHEMA),
+                || (b.format == "sarv-accounting-backup-v5" && b.state.schema == 5)
+                || (b.format == "sarv-accounting-backup-v6" && b.state.schema == CURRENT_SCHEMA),
             "قالب پشتیبان ناشناخته"
         );
         ensure!(

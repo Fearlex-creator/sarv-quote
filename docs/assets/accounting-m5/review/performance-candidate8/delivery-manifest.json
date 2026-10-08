@@ -1,0 +1,30 @@
+{
+  "scope": "portable actual final C8 reports plus independently recomputed analysis; original failed epochs untouched",
+  "files": {
+    "source-provenance.json": {
+      "sha256": "586f7215d664f4627a6f91b066dcd0ecfcee489eefc1089b644737c9f51685f2",
+      "bytes": 9563
+    },
+    "scale-performance.json": {
+      "sha256": "46055e119a5dfe300afe020405321cbed72b0381366edda44ff3f186352c113c",
+      "bytes": 4672
+    },
+    "independent-analysis.json": {
+      "sha256": "3add994525e8f84ff189758b5c1cda9c1def6212e9980d68c23c2fa68a58bace",
+      "bytes": 13374
+    },
+    "performance.json": {
+      "sha256": "48e8ffd0cedb418cb10cc117f10f02ee02568f8ff87a636d0e25c7f6b8b42457",
+      "bytes": 504419
+    },
+    "native-responsiveness-verification.json": {
+      "sha256": "9533cabd19971c4bf2026eda0a710b6d4dd47858428529a3e87f6522e28401df",
+      "bytes": 72513
+    },
+    "check-final-candidate8.py": {
+      "sha256": "a6f0cf7e05bfdb7dc64667172e1bf8367bd837da8e3d9ed836a7d29ab351162a",
+      "bytes": 7672
+    }
+  },
+  "checker_capture": "Exact executed checker copied after analysis; raw input files and independently recomputed output hash-bound; no historical runtime source dictionary invented"
+}

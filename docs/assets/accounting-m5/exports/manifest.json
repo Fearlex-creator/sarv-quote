@@ -1,0 +1,48 @@
+{
+  "evidence_kind": "synthetic M5 sales exports; local worktree, no release acceptance",
+  "command": "source /workspace/sarv-environment/activate.sh; SARV_SALES_EXPORT_ARTIFACT_DIR=<new directory> cargo test --test sales_exports -- --test-threads=1",
+  "tests": {
+    "passed": 8,
+    "failed": 0
+  },
+  "source_sha256": {
+    "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+    "tests/sales_exports.rs": "4f8a04feac14cea64f84161477104d44dabc1bf184199607bd3cd6f02666c56e"
+  },
+  "artifacts_sha256": {
+    "final/credit-final.csv": "ca60e1148ab29915a7b948bf7312c74482b88b37881c71f2ab31cb1bae6e0342",
+    "final/credit-final.pdf": "e6dc54a6a077dd975e4d3e780c5dc11f7591d175bc4f103b20868dc19a73053c",
+    "final/credit-page-1.png": "173917cba141a68a33c9fce4631f321189a36a74952e8332fd019c0166cfd649",
+    "final/credit.csv": "5aa0986e32e63026dfbd2e3ea6e40f533be0efa169eafcdf76f33cdc767f8721",
+    "final/credit.pdf": "a5ce2f40f9727209222eab29e37d5fafb25e8d6d71bbe224a2f83d82a7e30945",
+    "final/delivery.csv": "dca6faec13cca2bb9e15a2899434c655a7e1a10086a6141834149e69b8fdc788",
+    "final/delivery.pdf": "fc7ae3afd934238882500e08b4abcfb032b89261036d52a921f9d2fa9ff5dd6b",
+    "final/divisible-partial-0.csv": "d6c89f2c21b2dc52c2d4c90a855476ac1111887ebbf19df751ab311fcd3a2a5f",
+    "final/divisible-partial-0.pdf": "89aa2a9f0fb2e5feadd62b2b14485c345b10b0a37ef66683d74d0066ee9056c3",
+    "final/divisible-partial-1-page-1.png": "84b519243609fff693289e6f65c295b9504ab5a51f876fdea0de97202169f44f",
+    "final/divisible-partial-1.csv": "d7cda253f284192ddbaa34a3c220ea5891073989fc970941d9dd33dd534c140c",
+    "final/divisible-partial-1.pdf": "b5e1b450069ae283601239e63853769f3a258f93ecf2ede7748b20ac79bb99dd",
+    "final/divisible-partial-2.csv": "b5c2abf93318c332d0ddc1e9abf7ce95d127c1c5ac6ba1687a5222e1be9b0b76",
+    "final/divisible-partial-2.pdf": "9f7275544492e33a03b308a9991d07bcd4b46ecd31dacc6dca3fcbb56020caf9",
+    "final/invoice-final.csv": "1d666d75a0762c05916f90b5b5afa38d0998de5f90759a6f5abac275a9585dc7",
+    "final/invoice-final.pdf": "1323e741567f2b0a04dee7804360cc04ab6f792a65cbbb525895cf1850bafb91",
+    "final/invoice-page-1.png": "fc156b7fccc7e2ac5f0588fa0700fb3fdb56446bdbaed202773c293062893f0d",
+    "final/invoice.csv": "934469202bffb1e3a24bf150e531c270f0aeff558450a530722de138e5e08461",
+    "final/invoice.pdf": "5ccf306f20860010efd35626e92ad079448e7d1b7cac8d3d29430d124c11acf5",
+    "final/quote-linked-approved-source.json": "e7e4605dd384d7d1fb7b1ac452e2c5da229ccfb979397c69a12d046f8d2be8ec",
+    "final/quote-linked-order-page-1.png": "feb13796f43d5a9664c55c20a7b13d8dc7da5c66653da2f888c1b28fdfb6ee65",
+    "final/quote-linked-order.csv": "670e3e81f5a58b912778183f77ac694a853a64a32daf545fd879aa1e9172dea4",
+    "final/quote-linked-order.pdf": "54ef746a179d3c8e80c91cefb1e328bdbe1da1c5dfc838784baf3ae0d0d09f0a",
+    "final/reconciliation-page-1.png": "f5430cf1a8e957860b90cbd8d170b0ecd548316f0450304813ab2aa984ca24ac",
+    "final/return.csv": "574a9648811688b41df5486ce2bbd39b82ae0c1b4e8a442df3647cbe16e5b343",
+    "final/return.pdf": "b9ce68e4ef8f627317db2649b353826705e42dd097bbf0b482bf45ff7948c619",
+    "final/sales-order.csv": "4a964f4096c3c7fd44b9750a17a4d920f0ad943d5e3e1b4716ee014053d6efe8",
+    "final/sales-order.pdf": "848d32ff24ea3f9b1afa009758ce81d639ca7bb3359d13860c745b2a1e8ed920",
+    "final/sales-reconciliation-fonts.txt": "636b513896b399b92c99ee2304d8f6885a9542602e2e40e07b43920e382a63fe",
+    "final/sales-reconciliation-text.txt": "5939a6752c034916785cb2628f3ade1003a4b65ce815ddd120be8c731577f2fd",
+    "final/sales-reconciliation.csv": "2ced640f267eef050d5f076512d19b378116a83d26371a4e0e69903c082e2730",
+    "final/sales-reconciliation.pdf": "bacfac8776ce20d5a44dafec14d4eb5f55596fb32de2b877a14580c2116fa8ff",
+    "final/divisible-partial-1-text.txt": "cbbc9e11ee27fc4bed0540be59a20c0fb895d0d4c3a561ea646f28fdca3f0944"
+  },
+  "inspection": "Final source PDFs regenerated after allocation disclosure. Invoice, credit, quotation-linked-order, divisible partial and reconciliation page1 rasters inspected. Pango Persian shaping, wrapping and explicit original-price/allocation notes readable; embedded subset Unicode Vazirmatn verified with pdffonts; repeated headings verified by pdftotext/pdfinfo. Physical printing, accountant/native reader approval, accessibility, Windows and large-report performance untested."
+}

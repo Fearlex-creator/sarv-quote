@@ -9,6 +9,7 @@ mod managers;
 mod pickers;
 mod procurement;
 mod responsiveness;
+mod sales;
 mod settings;
 mod smoke;
 mod workspace;
@@ -46,6 +47,7 @@ struct Ui {
     review_cache: RefCell<Option<Rc<editor::PreparedReview>>>,
     review_requested: Cell<Option<i64>>,
     review_request_serial: Cell<u64>,
+    review_focus: RefCell<Option<editor::PendingReviewFocus>>,
     total: gtk::Label,
     subtotal: gtk::Label,
     tax: gtk::Label,
@@ -66,7 +68,7 @@ struct Ui {
     table_page: Cell<usize>,
     table_dirty: Cell<bool>,
     visual_pending: Cell<bool>,
-    deleted_lines: RefCell<Option<(usize, OrderLine)>>,
+    deleted_lines: RefCell<Option<(String, usize, OrderLine)>>,
     catalog_list: gtk::Box,
     customer_list: gtk::Box,
     quote_list: gtk::Box,
@@ -394,13 +396,20 @@ impl Ui {
                 .map(String::as_str)
                 .collect::<Vec<_>>()
                 .join(" • ");
-            self.customer_details.set_text(&details);
+            self.customer_details
+                .set_text(&store.state.settings.display_digits.format(&details));
             self.customer_details.set_visible(!details.is_empty());
         }
         self.loading.set(true);
-        self.order
-            .buffer()
-            .set_text(&csv_order(&self.store.borrow().state.draft.lines));
+        let csv = csv_order(&self.store.borrow().state.draft.lines);
+        let buffer = self.order.buffer();
+        if buffer
+            .text(&buffer.start_iter(), &buffer.end_iter(), true)
+            .as_str()
+            != csv
+        {
+            buffer.set_text(&csv);
+        }
         self.stale
             .set_active(self.store.borrow().state.draft.stale_ack);
         self.loading.set(false);
@@ -465,7 +474,8 @@ impl Ui {
             .map(String::as_str)
             .collect::<Vec<_>>()
             .join(" • ");
-        self.customer_details.set_text(&details);
+        self.customer_details
+            .set_text(&s.settings.display_digits.format(&details));
         self.customer_details.set_visible(!details.is_empty());
         self.order.buffer().set_text(&csv_order(&d.lines));
         self.unit
@@ -483,14 +493,20 @@ impl Ui {
         self.loading.set(false);
     }
     fn refresh_lists(self: &Rc<Self>) {
+        let started = std::time::Instant::now();
         self.refresh_managers();
-        settings::apply(self);
+        editor::performance_trace("refresh_managers", started);
+        settings::apply_manager_digits(self);
         let store = self.store.borrow();
+        settings::apply_digits(&self.status, store.state.settings.display_digits);
         for (name, count) in &self.nav_counts {
             let value = match *name {
                 "catalog" => store.state.catalogs.iter().map(|c| c.products.len()).sum(),
                 "customers" => store.state.customers.iter().filter(|c| !c.archived).count(),
                 "quotes" => store.state.quotes.len(),
+                "sales" => {
+                    store.state.accounting.sales.records.len() + store.state.sales_drafts.len()
+                }
                 _ => 0,
             };
             count.set_text(&store.state.settings.display_digits.format(value));
@@ -889,6 +905,10 @@ impl Ui {
                             }
                             ui.stack
                                 .add_named(&accounting::build(ui), Some("accounting"));
+                            if let Some(page) = ui.stack.child_by_name("sales") {
+                                ui.stack.remove(&page);
+                            }
+                            ui.stack.add_named(&sales::build(ui), Some("sales"));
                             for (name, kind) in [
                                 ("procurement", procurement::PageKind::Purchases),
                                 ("inventory", procurement::PageKind::Inventory),
@@ -901,6 +921,7 @@ impl Ui {
                                     Some(name),
                                 );
                             }
+                            settings::apply(ui);
                         }
                     },
                 );
@@ -1368,12 +1389,12 @@ fn build(app: &gtk::Application, store: Store) {
     let backup_page = column();
     backup_page.add_css_class("page");
     backup_page.append(&heading("پشتیبان و بازیابی"));
-    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
+    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای فروش، خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
     let backup = button("ساخت پشتیبان JSON");
     let restore = button("انتخاب پشتیبان و بررسی بازیابی");
     backup_page.append(&backup);
     backup_page.append(&restore);
-    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش عملیاتی، تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
+    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+0 فروش • Alt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش با تحویل/صورتحساب هم‌زمان و برگشت با بهای اصلی فراهم است؛ تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
     stack.add_named(&backup_page, Some("backup"));
     let destinations = gtk::ListBox::new();
     destinations.set_widget_name("workspace-destinations");
@@ -1445,6 +1466,15 @@ fn build(app: &gtk::Application, store: Store) {
             "accessories-calculator-symbolic",
             Some("حسابداری"),
             Some("شرکت، اسناد و تراز آزمایشی"),
+            false,
+        ),
+        (
+            0,
+            "sales",
+            "فروش‌ها",
+            "document-send-symbolic",
+            None,
+            Some("سفارش، تحویل و صورتحساب، برگشت"),
             false,
         ),
         (
@@ -1580,6 +1610,7 @@ fn build(app: &gtk::Application, store: Store) {
         review_cache: RefCell::new(None),
         review_requested: Cell::new(None),
         review_request_serial: Cell::new(0),
+        review_focus: RefCell::new(None),
         total,
         subtotal,
         tax,
@@ -1619,6 +1650,7 @@ fn build(app: &gtk::Application, store: Store) {
         pending_save_action: RefCell::new(None),
         nav_counts,
     });
+    editor::install_review_focus_guard(&ui);
     ui.refresh_settings();
     ui.stack
         .add_named(&accounting::build(&ui), Some("accounting"));
@@ -1638,9 +1670,21 @@ fn build(app: &gtk::Application, store: Store) {
         ),
         Some("inventory"),
     );
+    ui.stack.add_named(&sales::build(&ui), Some("sales"));
+    let weak_sales = Rc::downgrade(&ui);
+    ui.stack.connect_visible_child_name_notify(move |stack| {
+        if stack.visible_child_name().as_deref() == Some("sales")
+            && let Some(ui) = weak_sales.upgrade()
+        {
+            sales::refresh_all(&ui);
+        }
+    });
     ui.fill_form();
     ui.refresh_review();
     ui.refresh_lists();
+    // All workspace pages now exist; apply persisted appearance and digits to
+    // their initial labels once. Later list updates format only rebuilt lists.
+    settings::apply(&ui);
     ui.wire_product_picker();
     let weak = Rc::downgrade(&ui);
     select_customer.connect_clicked(move |_| {
@@ -1816,6 +1860,9 @@ fn build(app: &gtk::Application, store: Store) {
         }
     });
     let keys = gtk::EventControllerKey::new();
+    // Workspace shortcuts must run before focused composite controls consume
+    // their own key bindings. Modal editors still keep their local shortcuts.
+    keys.set_propagation_phase(gtk::PropagationPhase::Capture);
     let u = ui.clone();
     let navigation_toggle = navigation.clone();
     keys.connect_key_pressed(move |_, key, _, mods| {
@@ -1868,7 +1915,7 @@ fn build(app: &gtk::Application, store: Store) {
                             u.search_quote.grab_focus();
                         }
                         Some("order") => u.open_customer_picker(),
-                        Some("accounting" | "procurement" | "inventory") => {
+                        Some("accounting" | "procurement" | "inventory" | "sales") => {
                             if !u
                                 .stack
                                 .visible_child()
@@ -1880,13 +1927,20 @@ fn build(app: &gtk::Application, store: Store) {
                         _ => return glib::Propagation::Proceed,
                     }
                 }
-                gtk::gdk::Key::n | gtk::gdk::Key::N => u.new_draft(),
+                gtk::gdk::Key::n | gtk::gdk::Key::N => {
+                    if u.stack.visible_child_name().as_deref() == Some("sales") {
+                        sales::new_order(&u);
+                    } else {
+                        u.new_draft();
+                    }
+                }
                 _ => return glib::Propagation::Proceed,
             }
             return glib::Propagation::Stop;
         }
         if mods.contains(gtk::gdk::ModifierType::ALT_MASK) {
             let page = match key {
+                gtk::gdk::Key::_0 => "sales",
                 gtk::gdk::Key::_1 => "order",
                 gtk::gdk::Key::_2 => "catalog",
                 gtk::gdk::Key::_3 => "customers",
@@ -1907,6 +1961,10 @@ fn build(app: &gtk::Application, store: Store) {
     window.add_controller(keys);
     let u = ui.clone();
     window.connect_close_request(move |_| {
+        if sales::has_unsaved(&u) {
+            sales::explain_unsaved(&u);
+            return glib::Propagation::Stop;
+        }
         if let Some(p) = u.pending.borrow_mut().take() {
             p.remove();
         }
@@ -1974,7 +2032,9 @@ fn build(app: &gtk::Application, store: Store) {
     ui.customer.grab_focus();
     accounting::schedule(&ui);
     procurement::schedule(&ui);
+    sales::schedule(&ui);
     core::start_core_smoke(&ui);
     smoke::schedule(&ui, &approve);
     responsiveness::schedule(&ui);
+    editor::schedule_quote_callback_qa(&ui);
 }

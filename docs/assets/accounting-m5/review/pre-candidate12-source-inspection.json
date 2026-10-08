@@ -1,0 +1,249 @@
+{
+  "result": "PASS source review only; C12 runtime and warning resolution unaccepted",
+  "production_files_compared": 36,
+  "changed_files": [
+    "src/ui/background.rs"
+  ],
+  "prior_background_sha256": "0df6e6812847f2e062a4a35bad6a4d822734d84ae52305ba42956fe0815483fd",
+  "reviewed_background_sha256": "f6475be8c633b8104ba9a6eafedc903fae5a16eb6873a9c1d0332545061590c6",
+  "source_diff": "--- candidate11-diagnostic/src/ui/background.rs\n+++ pre-candidate12/src/ui/background.rs\n@@ -162,10 +162,39 @@\n     Product(LineProductChoice),\n     Customer(Customer),\n }\n \n impl Ui {\n+    fn restore_quote_origin_focus(\n+        &self,\n+        frozen: &Option<(gtk::Widget, bool, Option<glib::WeakRef<gtk::Widget>>)>,\n+    ) {\n+        let Some((workspace, _, Some(origin))) = frozen else {\n+            return;\n+        };\n+        // Completion may have queued a row focus, opened a dialog, navigated,\n+        // or begun another write. Never override that newer interaction.\n+        if self.persistence_busy.get()\n+            || self.background_busy.get()\n+            || self.review_focus.borrow().is_some()\n+            || self.visible_dialog().is_some()\n+            || !self.window.is_visible()\n+            || self.stack.visible_child_name().as_deref() != Some(\"order\")\n+            || self.stack.child_by_name(\"order\").as_ref() != Some(workspace)\n+            || gtk::prelude::GtkWindowExt::focus(&self.window).is_some()\n+        {\n+            return;\n+        }\n+        if let Some(origin) = origin.upgrade()\n+            && origin.is_mapped()\n+            && origin.is_sensitive()\n+            && (origin == *workspace || origin.is_ancestor(workspace))\n+        {\n+            origin.grab_focus();\n+        }\n+    }\n+\n     /// Structural quotation changes start only after the latest form save.\n     /// Freeze the quote workspace while its row indices change; closing waits\n     /// for the definite receipt through the shared persistence gate.\n     pub(super) fn mutate_quote_async<T: Send + 'static>(\n         self: &Rc<Self>,\n@@ -205,13 +234,18 @@\n             pending.remove();\n         }\n         let frozen = self.stack.child_by_name(\"order\").map(|widget| {\n             let sensitive = widget.is_sensitive();\n             super::sales::qa_focus_diagnostic(\"before quote workspace insensitive\", Some(&widget));\n+            let origin = gtk::prelude::GtkWindowExt::focus(&self.window)\n+                .filter(|focus| focus == &widget || focus.is_ancestor(&widget));\n+            if origin.is_some() {\n+                gtk::prelude::GtkWindowExt::set_focus(&self.window, None::<&gtk::Widget>);\n+            }\n             widget.set_sensitive(false);\n             super::sales::qa_focus_diagnostic(\"after quote workspace insensitive\", Some(&widget));\n-            (widget, sensitive)\n+            (widget, sensitive, origin.map(|focus| focus.downgrade()))\n         });\n         self.persistence_busy.set(true);\n         self.message(Ok(\"در حال ذخیرهٔ تغییر ردیف‌ها…\"));\n         let (sender, receiver) = mpsc::sync_channel(1);\n         let spawned = thread::Builder::new()\n@@ -227,17 +261,18 @@\n             });\n         if let Err(error) = spawned {\n             let result = self.store.borrow_mut().finish_detached(Err(error.into()));\n             self.persistence_busy.set(false);\n             self.close_after_save.set(false);\n-            if let Some((widget, sensitive)) = frozen {\n-                widget.set_sensitive(sensitive);\n+            if let Some((widget, sensitive, _)) = &frozen {\n+                widget.set_sensitive(*sensitive);\n             }\n             complete(\n                 self,\n                 result.and_then(|()| Err(anyhow::anyhow!(\"ذخیره انجام نشد\"))),\n             );\n+            self.restore_quote_origin_focus(&frozen);\n             return;\n         }\n         let ui = self.clone();\n         let mut complete = Some(complete);\n         glib::timeout_add_local(Duration::from_millis(20), move || {\n@@ -252,11 +287,11 @@\n                 Ok((receipt, value)) => (Ok(receipt), Some(value)),\n                 Err(error) => (Err(error), None),\n             };\n             let result = ui.store.borrow_mut().finish_detached(receipt);\n             ui.persistence_busy.set(false);\n-            if let Some((widget, sensitive)) = &frozen {\n+            if let Some((widget, sensitive, _)) = &frozen {\n                 super::sales::qa_focus_diagnostic(\n                     \"before quote workspace sensitive restore\",\n                     Some(widget),\n                 );\n                 widget.set_sensitive(*sensitive);\n@@ -273,10 +308,11 @@\n                 ui.pending_save_action.borrow_mut().take();\n             }\n             if let Some(complete) = complete.take() {\n                 complete(&ui, result);\n             }\n+            ui.restore_quote_origin_focus(&frozen);\n             if succeeded && !ui.persistence_busy.get() {\n                 if ui.pending_save_action.borrow().is_some() {\n                     ui.save_form_async();\n                 } else if ui.close_after_save.replace(false) {\n                     ui.window.close();\n",
+  "C11_scope": "disposable native full-smoke focus diagnosis only; no external keyboard/release qualification",
+  "C11_guards": 9,
+  "C11_diagnostics": [
+    "(sarv-quote:299716): Gtk-WARNING **: 05:18:06.122: GtkText - did not receive a focus-out event."
+  ],
+  "C11_focus_boundary_records": [
+    {
+      "action": "before quote workspace insensitive",
+      "active_dialog": null,
+      "background_busy": false,
+      "dialog_focus": [],
+      "focus": [
+        {
+          "focusable": true,
+          "mapped": true,
+          "name": "GtkText",
+          "sensitive": true,
+          "type": "GtkText",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkEntry",
+          "sensitive": true,
+          "type": "GtkEntry",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkBox",
+          "sensitive": true,
+          "type": "GtkBox",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkBox",
+          "sensitive": true,
+          "type": "GtkBox",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkGrid",
+          "sensitive": true,
+          "type": "GtkGrid",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkBox",
+          "sensitive": true,
+          "type": "GtkBox",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkViewport",
+          "sensitive": true,
+          "type": "GtkViewport",
+          "visible": true
+        },
+        {
+          "focusable": true,
+          "mapped": true,
+          "name": "quote-document-scroll",
+          "sensitive": true,
+          "type": "GtkScrolledWindow",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkBox",
+          "sensitive": true,
+          "type": "GtkBox",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "GtkStack",
+          "sensitive": true,
+          "type": "GtkStack",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwNavigationPage",
+          "sensitive": true,
+          "type": "AdwNavigationPage",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwBin",
+          "sensitive": true,
+          "type": "AdwBin",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwNavigationSplitView",
+          "sensitive": true,
+          "type": "AdwNavigationSplitView",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwToolbarView",
+          "sensitive": true,
+          "type": "AdwToolbarView",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwBreakpointBin",
+          "sensitive": true,
+          "type": "AdwBreakpointBin",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwBin",
+          "sensitive": true,
+          "type": "AdwBin",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwDialogHost",
+          "sensitive": true,
+          "type": "AdwDialogHost",
+          "visible": true
+        },
+        {
+          "focusable": false,
+          "mapped": true,
+          "name": "AdwApplicationWindow",
+          "sensitive": true,
+          "type": "AdwApplicationWindow",
+          "visible": true
+        }
+      ],
+      "persistence_busy": false,
+      "quote_focus_target": "customer",
+      "stage": 19,
+      "target": {
+        "label": null,
+        "name": "GtkBox",
+        "type": "GtkBox"
+      },
+      "timestamp": "2026-10-08T05:18:06.088662588+00:00",
+      "visible_dialog": null
+    },
+    {
+      "action": "after quote workspace insensitive",
+      "active_dialog": null,
+      "background_busy": false,
+      "dialog_focus": [],
+      "focus": [],
+      "persistence_busy": false,
+      "quote_focus_target": null,
+      "stage": 19,
+      "target": {
+        "label": null,
+        "name": "GtkBox",
+        "type": "GtkBox"
+      },
+      "timestamp": "2026-10-08T05:18:06.090080896+00:00",
+      "visible_dialog": null
+    },
+    {
+      "action": "before quote workspace sensitive restore",
+      "active_dialog": null,
+      "background_busy": false,
+      "dialog_focus": [],
+      "focus": [],
+      "persistence_busy": false,
+      "quote_focus_target": null,
+      "stage": 19,
+      "target": {
+        "label": null,
+        "name": "GtkBox",
+        "type": "GtkBox"
+      },
+      "timestamp": "2026-10-08T05:18:06.116226776+00:00",
+      "visible_dialog": null
+    },
+    {
+      "action": "after quote workspace sensitive restore",
+      "active_dialog": null,
+      "background_busy": false,
+      "dialog_focus": [],
+      "focus": [],
+      "persistence_busy": false,
+      "quote_focus_target": null,
+      "stage": 19,
+      "target": {
+        "label": null,
+        "name": "GtkBox",
+        "type": "GtkBox"
+      },
+      "timestamp": "2026-10-08T05:18:06.117081074+00:00",
+      "visible_dialog": null
+    }
+  ],
+  "review_findings": [],
+  "source_assessment": [
+    "Actual GtkWindow focus is captured only when inside the original order workspace and held weakly.",
+    "Explicit set_focus(None) precedes set_sensitive(false).",
+    "Original sensitivity is restored before completion; origin restoration follows completion, including thread-spawn failure.",
+    "Restoration requires the same attached visible order root, live mapped sensitive origin inside that root, visible window, and no active dialog/current focus/pending review focus/background or persistence busy.",
+    "Financial/data/Store/migration source and command/receipt behavior are unchanged."
+  ],
+  "required_fresh_qualification": [
+    "Frozen C12 source/binary and observer provenance.",
+    "Actual callback13 retained error/header/latest-page/newer-input/Settings-navigation boundaries.",
+    "Strict native fatal-critical/no-material-diagnostic qualification including posting/restore/current-ID/persistent pager and narrow controls."
+  ],
+  "input_sha256": {
+    "docs/assets/accounting-m5/checks/candidate11-diagnostic/manifest.json": "304b6e1df6c09b20e629594f212a642d59aded337abc135f5e3b64c65e1f0fce",
+    "docs/assets/accounting-m5/native/candidate11-diagnostic/single-full-smoke/focus-boundary-diagnostic.json": "6ae20f7ff7d8dac25d0a622a87882810e08adfcb8e51f3fd6424350a0066e74d",
+    "docs/assets/accounting-m5/native/candidate11-diagnostic/single-full-smoke/full/sales-focus-diagnostic.jsonl": "6de15a7db538c5486664a3ed5ced39c6878317be25914371672e238b878f3186",
+    "docs/assets/accounting-m5/native/candidate11-diagnostic/single-full-smoke/M5-full.log": "e1305b4b89b6934ce50c818fe1f152187e4f99b140ee3b7a46aa5bf71f0f44fc"
+  }
+}

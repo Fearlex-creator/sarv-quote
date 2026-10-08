@@ -1,0 +1,17 @@
+SARV_MAIN_THREAD review_snapshot_clone 0.324ms
+SARV_MAIN_THREAD review_100_row_widget_construction 0.192ms
+SARV_MAIN_THREAD review_settings_apply 0.004ms
+SARV_MAIN_THREAD review_snapshot_clone 0.055ms
+SARV_MAIN_THREAD review_100_row_widget_construction 0.559ms
+SARV_MAIN_THREAD review_settings_apply 2.554ms
+SARV_MAIN_THREAD review_snapshot_clone 0.143ms
+SARV_MAIN_THREAD review_100_row_widget_construction 0.882ms
+SARV_MAIN_THREAD review_settings_apply 1.894ms
+SARV_MAIN_THREAD review_snapshot_clone 0.132ms
+SARV_MAIN_THREAD review_100_row_widget_construction 2.729ms
+SARV_MAIN_THREAD review_settings_apply 1.222ms
+SARV_MAIN_THREAD review_snapshot_clone 0.082ms
+SARV_MAIN_THREAD review_reuse_setters 0.022ms
+SARV_MAIN_THREAD review_reuse_chrome 0.761ms
+SARV_MAIN_THREAD review_reuse_settings 1.035ms
+SARV_MAIN_THREAD review_100_row_widget_reuse 2.060ms

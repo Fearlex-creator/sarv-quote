@@ -1,0 +1,64 @@
+{"name": "frozen binary exact before native proof", "passed": true}
+{"name": "frozen source files and aggregate exact before native proof", "passed": true}
+{"name": "M4 seed immutable opening/stock without sales", "passed": true}
+{"name": "actual M4 baseline rendering preserves source", "passed": true}
+{"name": "native sale/draft/pair/returns/quote conversion complete", "passed": true, "failure": null, "returncode": null}
+{"name": "opening and procurement exact preserved", "passed": true}
+{"name": "two orders/two paired sales/two credits", "passed": true}
+{"name": "direct order199 nonfinancial catalog20 frozen", "passed": true}
+{"name": "authentic retained quote and zero-tax linked order", "passed": true}
+{"name": "partial nets100/99 and exact issue costs58/58", "passed": true}
+{"name": "original return allocations40/23 then60/35", "passed": true}
+{"name": "distinct stable paired identities", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "every journal exact balanced", "passed": true}
+{"name": "independent final inventory/AR/AP/sales/COGS controls", "passed": true, "expected": {"Cash": 251, "Bank": 300, "Receivables": 299, "Inventory": 422, "ChequesReceivable": 200, "Payables": -329, "ChequesPayable": -100, "Grni": -50, "OwnerCapital": -952, "Sales": -199, "SalesReturns": 100, "Cogs": 58}}
+{"name": "independent final trial1630/1630", "passed": true}
+{"name": "returns never reopen original order", "passed": true}
+{"name": "actual accountant reports generated", "passed": true}
+{"name": "completed Sales load clears global loading status", "passed": true}
+{"name": "real Tab exact Sales top action سفارش فروش تازه", "passed": true}
+{"name": "real Tab exact Sales top action از پیشنهاد تأییدشده", "passed": true}
+{"name": "real Tab exact Sales top action به‌روزرسانی", "passed": true}
+{"name": "real CtrlF directs typed text to Sales search", "passed": true}
+{"name": "real Alt0/CtrlF typed normalized Sales source search", "passed": true}
+{"name": "real source detail shows complete fulfillment and linked pairs", "passed": true}
+{"name": "completed source detail clears global loading status", "passed": true}
+{"name": "real Tab exact source export action خروجی سند CSV", "passed": true}
+{"name": "real Tab exact source export action خروجی سند PDF", "passed": true}
+{"name": "real keyboard overreturn retains quantity/source and does not commit", "passed": true}
+{"name": "real Escape cancellation preserves financial aggregate", "passed": true}
+{"name": "native Sales light 1280x900 rendered", "passed": true}
+{"name": "native Sales light 650x550 rendered", "passed": true}
+{"name": "native Sales dark 1280x900 rendered", "passed": true}
+{"name": "native Sales dark 650x550 rendered", "passed": true}
+{"name": "financial and quote source exact across restart", "passed": true}
+{"name": "native stage durable draft and newer edit receipt", "passed": true, "failure": null}
+{"name": "stage draft exists without GL", "passed": true}
+{"name": "stage saved raw header exact after restart", "passed": true}
+{"name": "real Tab/Enter opens exact existing line action", "passed": true}
+{"name": "nested price picker owns Escape and suppresses workspace CtrlN", "passed": true}
+{"name": "real modal CtrlS saves sales draft and preserves quote editor", "passed": true}
+{"name": "real keyboard order acceptance consumes draft without GL", "passed": true}
+{"name": "real keyboard paired sale exact100/58", "passed": true}
+{"name": "real keyboard original cost credit exact40/23", "passed": true}
+{"name": "native draft durable draft and newer edit receipt", "passed": true, "failure": null}
+{"name": "draft draft exists without GL", "passed": true}
+{"name": "draft saved raw header exact after restart", "passed": true}
+{"name": "incomplete invalid raw quantity/price exact across restart", "passed": true}
+{"name": "reopened incomplete line shown with exact raw input", "passed": true}
+{"name": "synthetic 30-line raw fixture preserves authentic M4 books", "passed": true}
+{"name": "30-line raw fixture accepted through real CtrlS Store boundary", "passed": true}
+{"name": "real 30-line order posts599 without financial effects", "passed": true}
+{"name": "real Tab Enter detail Next shows final source line and removes first", "passed": true}
+{"name": "real Tab Enter detail Previous returns first source line without write", "passed": true}
+{"name": "frozen source files and aggregate unchanged after native proof", "passed": true}
+{"name": "frozen binary unchanged after native proof", "passed": true}
+{"name": "observer source unchanged during native proof", "passed": true}

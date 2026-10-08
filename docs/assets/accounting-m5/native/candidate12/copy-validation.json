@@ -1,0 +1,12 @@
+{
+  "copies": 103,
+  "every_recorded_source_and_copy_sha256_matches": true,
+  "owned_apps_and_private_runtime_processes_stopped": true,
+  "owned_raw_runs": [
+    "/workspace/sarv-quote/artifacts/sales-native/run-yji_0ewe",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-lsmu2c93"
+  ],
+  "main_checks": 83,
+  "identity_checks": 37,
+  "source_hold": true
+}

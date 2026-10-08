@@ -1,0 +1,465 @@
+{
+  "result": "passed bounded evidence inspection; performance remains PARTIAL and M5 OPEN",
+  "scope": "Read-only recomputation and raw SQLite inspection; no fresh application, financial probe, migration or GUI execution.",
+  "production_source_sha256": "73269aaf5cca587c681e6db7c90aefba9907599a3212a5b1a909fcd51702da89",
+  "binary_sha256": "4892cc991bc933fc6621a10847ee4f1a25c7cc45e19f39fde90a973884fecf6b",
+  "source_files": 36,
+  "verification_files": 52,
+  "source_comparisons": {
+    "candidate5": {
+      "identical_files": 31,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/editor.rs",
+        "src/ui/responsiveness.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    },
+    "candidate8": {
+      "identical_files": 32,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/editor.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    }
+  },
+  "worktree_matches_C9_at_inspection": false,
+  "root_gates": [
+    {
+      "label": "fmt",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    },
+    {
+      "label": "clippy",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    },
+    {
+      "label": "all-targets",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    },
+    {
+      "label": "font-opt-in",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    },
+    {
+      "label": "actual-m3-refusal",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    },
+    {
+      "label": "actual-m4-refusal",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    },
+    {
+      "label": "gtk-lifecycle",
+      "source_files": 36,
+      "observer_files": 52,
+      "before_equals_after": true
+    }
+  ],
+  "ordinary_tests": {
+    "summaries": 35,
+    "passed": 220,
+    "failed": 0,
+    "ignored": 4
+  },
+  "preserved": [
+    {
+      "label": "core",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    },
+    {
+      "label": "jalali",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    },
+    {
+      "label": "sidebar",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    },
+    {
+      "label": "ledger",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    },
+    {
+      "label": "procurement",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    },
+    {
+      "label": "quote",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    },
+    {
+      "label": "held-save-close",
+      "source_files": 36,
+      "observer_files": 16,
+      "before_equals_after": true
+    }
+  ],
+  "callback": {
+    "checks": 13,
+    "generation": 12,
+    "quantity_milli": 213000,
+    "literal_total_rial": 266463,
+    "portable_files_hashed": 9
+  },
+  "native_main": {
+    "checks": 66,
+    "states": {
+      "full": {
+        "generation": 29,
+        "schema": 6,
+        "journals": 9,
+        "all_journals_balanced": true
+      },
+      "stage": {
+        "generation": 21,
+        "schema": 6,
+        "journals": 7,
+        "all_journals_balanced": true
+      },
+      "draft": {
+        "generation": 17,
+        "schema": 6,
+        "journals": 5,
+        "all_journals_balanced": true
+      },
+      "detail-pages": {
+        "generation": 20,
+        "schema": 6,
+        "journals": 5,
+        "all_journals_balanced": true
+      }
+    },
+    "role_balances": {
+      "Cash": 251,
+      "Bank": 300,
+      "Receivables": 299,
+      "ChequesReceivable": 200,
+      "Inventory": 422,
+      "SupplierAdvances": 0,
+      "FixedAssets": 0,
+      "Payables": -329,
+      "ChequesPayable": -100,
+      "Grni": -50,
+      "CustomerAdvances": 0,
+      "Loans": 0,
+      "OwnerCapital": -952,
+      "OwnerDrawings": 0,
+      "RetainedEarnings": 0,
+      "Sales": -199,
+      "SalesReturns": 100,
+      "Cogs": 58,
+      "OperatingExpense": 0,
+      "BankFees": 0,
+      "InventoryLoss": 0
+    },
+    "trial_balance": [
+      1630,
+      1630
+    ],
+    "components": [
+      {
+        "kind": "Order",
+        "total": 199,
+        "cost": null
+      },
+      {
+        "kind": "Fulfill",
+        "total": 100,
+        "cost": 58
+      },
+      {
+        "kind": "Return",
+        "total": 40,
+        "cost": 23
+      },
+      {
+        "kind": "Return",
+        "total": 60,
+        "cost": 35
+      },
+      {
+        "kind": "Fulfill",
+        "total": 99,
+        "cost": 58
+      },
+      {
+        "kind": "Order",
+        "total": 20,
+        "cost": null
+      }
+    ]
+  },
+  "identity": {
+    "checks": 37,
+    "pager_focus_receipts": [
+      {
+        "name": "real Next hands exact Window/Dialog focus to current first Edit",
+        "passed": true,
+        "receipt": {
+          "dialog_focus_exact": true,
+          "grab_accepted": true,
+          "line_id": "reuse-line-025",
+          "mapped": true,
+          "page": 2,
+          "sensitive": true,
+          "target_name": "sales-line-0-25",
+          "window_focus_exact": true
+        }
+      },
+      {
+        "name": "real Previous hands exact Window/Dialog focus to current first Edit",
+        "passed": true,
+        "receipt": {
+          "dialog_focus_exact": true,
+          "grab_accepted": true,
+          "line_id": "reuse-line-000",
+          "mapped": true,
+          "page": 1,
+          "sensitive": true,
+          "target_name": "sales-line-0-0",
+          "window_focus_exact": true
+        }
+      },
+      {
+        "name": "Next after reorder focuses current immutable line026",
+        "passed": true,
+        "receipt": {
+          "dialog_focus_exact": true,
+          "grab_accepted": true,
+          "line_id": "reuse-line-026",
+          "mapped": true,
+          "page": 2,
+          "sensitive": true,
+          "target_name": "sales-line-0-25",
+          "window_focus_exact": true
+        }
+      }
+    ],
+    "retained_ids": [
+      "reuse-line-000",
+      "reuse-line-001",
+      "reuse-line-002",
+      "reuse-line-003",
+      "reuse-line-004",
+      "reuse-line-005",
+      "reuse-line-006",
+      "reuse-line-007",
+      "reuse-line-008",
+      "reuse-line-009",
+      "reuse-line-010",
+      "reuse-line-011",
+      "reuse-line-012",
+      "reuse-line-013",
+      "reuse-line-014",
+      "reuse-line-015",
+      "reuse-line-016",
+      "reuse-line-017",
+      "reuse-line-018",
+      "reuse-line-019",
+      "reuse-line-020",
+      "reuse-line-021",
+      "reuse-line-022",
+      "reuse-line-023",
+      "reuse-line-027"
+    ],
+    "accounting_equals_original": true,
+    "stale_owned_window_errors": [
+      {
+        "code": 3,
+        "request": 20,
+        "resource": 6291460
+      }
+    ],
+    "unexpected_x11_errors": []
+  },
+  "performance_diagnostic": {
+    "native_checks": 15,
+    "accepted_scopes": 22,
+    "page_scopes": 18,
+    "page_gap_misses": 7,
+    "missed_scopes": [
+      {
+        "operation": "quote_page_changed_save",
+        "max_gap_ms": 70.791219,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 54.764612,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 53.987018,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 56.846919,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 55.938179,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 68.271591,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_previous",
+        "max_gap_ms": 53.952521000000004,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_product_choice",
+        "max_gap_ms": 63.16069100000001,
+        "budget_ms": 50
+      }
+    ],
+    "reuse_wall_max_ms": 59.248,
+    "broad_strict_budgets": {
+      "maximum_heartbeat_gap_ms": {
+        "actual": 298.93091,
+        "budget": 50,
+        "passes": false
+      },
+      "unchanged_editor_page_ms": {
+        "actual": 139.31550000000001,
+        "budget": 150,
+        "passes": true
+      },
+      "pdf_busy_heartbeat_ms": {
+        "actual": 120.52264,
+        "budget": 50,
+        "passes": false
+      }
+    },
+    "accepted_final_measurement": false
+  },
+  "retained_native_warnings": {
+    "artifacts/sales-native/run-5br6f6ku/M5-layout-light.log": [
+      "(sarv-quote:294454): Adwaita-WARNING **: 04:46:38.005: AdwToolbarView 0x560f3d56e900 exceeds AdwApplicationWindow height: requested 573 px, 540 px available"
+    ],
+    "artifacts/sales-native/run-5br6f6ku/M5-draft-restart.log": [
+      "(sarv-quote:295220): Adwaita-WARNING **: 04:48:37.044: AdwToolbarView 0x55d3f07213c0 exceeds AdwApplicationWindow height: requested 573 px, 540 px available"
+    ],
+    "artifacts/sales-native/run-5br6f6ku/M5-full.log": [
+      "(sarv-quote:293959): Gtk-WARNING **: 04:45:40.626: GtkText - did not receive a focus-out event."
+    ],
+    "artifacts/sales-native/run-5br6f6ku/M5-stage-restart.log": [
+      "(sarv-quote:294603): Adwaita-WARNING **: 04:46:54.101: AdwToolbarView 0x555f60b545e0 exceeds AdwApplicationWindow height: requested 573 px, 540 px available"
+    ],
+    "artifacts/sales-native/run-5br6f6ku/M5-detail-pages.log": [
+      "(sarv-quote:295367): Gtk-CRITICAL **: 04:51:19.165: gtk_widget_is_ancestor: assertion 'GTK_IS_WIDGET (widget)' failed",
+      "(sarv-quote:295367): Gtk-CRITICAL **: 04:51:27.148: gtk_widget_is_ancestor: assertion 'GTK_IS_WIDGET (widget)' failed"
+    ],
+    "artifacts/sales-native/run-5br6f6ku/M5-layout-dark.log": [
+      "(sarv-quote:294506): Adwaita-WARNING **: 04:46:42.380: AdwToolbarView 0x55c009053e90 exceeds AdwApplicationWindow height: requested 573 px, 540 px available"
+    ]
+  },
+  "inputs_sha256": {
+    "docs/assets/accounting-m5/checks/candidate9/manifest.json": "3b7b6b6aae41a5a110bc61912885c0cc3c7ddeda7abe8e092a95f61f3abc4db7",
+    "docs/assets/accounting-m5/checks/candidate9/source-provenance-before.json": "53fab3c825e5de6af1a2bb38dc1d016b79f3ca899033491dc58b52cbfc589b1d",
+    "docs/assets/accounting-m5/checks/candidate9/source-provenance-after.json": "53fab3c825e5de6af1a2bb38dc1d016b79f3ca899033491dc58b52cbfc589b1d",
+    "docs/assets/accounting-m5/checks/candidate9/verification-source-before.json": "69519a48b5a3112467ff5671837c01637abcc933ab6f9d67eac9443d24a57f39",
+    "docs/assets/accounting-m5/checks/candidate9/verification-source-after.json": "69519a48b5a3112467ff5671837c01637abcc933ab6f9d67eac9443d24a57f39",
+    "docs/assets/accounting-m5/checks/candidate5/manifest.json": "ccaa1062d56a99a870114749c65e47ec3e8c79389d93e2bdf685f55f1ca48be2",
+    "docs/assets/accounting-m5/checks/candidate8/manifest.json": "960fb3de5747b56e7749859522d4a3aabd9bd049ca6b1b0761ad3b98c9621f27",
+    "docs/assets/accounting-m5/checks/candidate9/gates/manifest.json": "472c4cd4c0aeb819c52e2f6fe7335f27a1535987fd3272743fd4a7d89230e7d8",
+    "docs/assets/accounting-m5/checks/candidate9/gates/fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/assets/accounting-m5/checks/candidate9/gates/fmt-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/fmt-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/clippy.log": "63bd8a3ac13f8b1c160887cdaf9b30715b07e638d60df463cb8815f661518191",
+    "docs/assets/accounting-m5/checks/candidate9/gates/clippy-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/clippy-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/all-targets.log": "6ffb74485d8c882fd623c63bd8bc3cfe5bf8ae1cbe4db6ad2f72b2d41d1c284c",
+    "docs/assets/accounting-m5/checks/candidate9/gates/all-targets-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/all-targets-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/font-opt-in.log": "e426806650d099b982703014f8853d767d56fe95d88a3fc1b52cc9fdbac02eec",
+    "docs/assets/accounting-m5/checks/candidate9/gates/font-opt-in-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/font-opt-in-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/actual-m3-refusal.log": "74698b793a68eb7b5dbac18ebbe55fa5977d4a46bee8e1aea970f9bd4ed44aa1",
+    "docs/assets/accounting-m5/checks/candidate9/gates/actual-m3-refusal-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/actual-m3-refusal-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/actual-m4-refusal.log": "d1308c49ccf410ab851e7776ed3f355c913b58821792a650ca96bad9a040f9e7",
+    "docs/assets/accounting-m5/checks/candidate9/gates/actual-m4-refusal-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/actual-m4-refusal-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/gtk-lifecycle.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/assets/accounting-m5/checks/candidate9/gates/gtk-lifecycle-before.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/gates/gtk-lifecycle-after.json": "7654969438f54587a6dd307fda0489b6297cf6dca07602fe49b7d257fd4f2d43",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/manifest.json": "2ddf7b015dee186731d83aef7563aa5ebafd5e0f56a5d1bcde008a02703c0e7b",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/core.log": "d69d0e8fbbd84c17449dd40dd1d6eca8072c6f6173d74adae784384f565cd20d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/core-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/core-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/jalali.log": "7dd9f692858adfc36ad613ac9016c9d7ae65c45b6bcd45d49f569cb8d8cfbb14",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/jalali-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/jalali-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/sidebar.log": "1c4461292afdfc7566655e1eab0540cad0b17d4910fd5deb2a86040ce8d16d4c",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/sidebar-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/sidebar-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/ledger.log": "c808719a54b56aebeb7ccadb7303828a513d023e1d5cd41d49ed6d8dd1a7a78e",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/ledger-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/ledger-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/procurement.log": "9916dbb5c2504bbf4c02e14812a15aa82db2791602ca7e138c94036f41b4a904",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/procurement-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/procurement-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/quote.log": "32cee29b4fe768be11eb262dd5517769b40557b2081781db246344d930a9f25c",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/quote-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/quote-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/held-save-close.log": "e582b0a79de9e4bedae3f518aad3bc994dbdbfdc93109868ff1f1cdb464d7b19",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/held-save-close-before.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/preserved-gates/held-save-close-after.json": "f097bf907b518639ffece5f7544dbf16e52a9d66507d8b4bee30aeea18dc279d",
+    "docs/assets/accounting-m5/checks/candidate9/quote-callback/manifest.json": "97739d4becba865f4bb648dee5c83dc580b252d9f25f8fd5cf7018226a533b2e",
+    "docs/assets/accounting-m5/checks/candidate9/quote-callback/delivery-manifest.json": "e4721632910cb7d9675c4c46877224acf83b3d82b03d3db9c9ccfe91881ac4a8",
+    "docs/assets/accounting-m5/checks/candidate9/quote-callback/profile/sarv.sqlite3:payload": "871995b5b4ed5bc17cfb66d7fbc41ceafa5e98df30acb71027c34b6279548990",
+    "docs/assets/accounting-m5/checks/candidate9/quote-callback/profile/final-state.json": "26fd74f22ea841e09bd317749f420b1d69165e40ea784692689c1361e2f1e0b9",
+    "artifacts/sales-native/run-5br6f6ku/sales-independent-native.json": "e0affe4761a6af9e23a29030b290f950083caa9a88306aea24b7755496e4995c",
+    "artifacts/sales-native/run-5br6f6ku/full/sales-native-verification.json": "e8a9d4654e611ba44ed24e0a298b4dd084a11a9a60fe37ea754a444e8cd2a3f1",
+    "artifacts/sales-native/run-5br6f6ku/full/sarv.sqlite3:payload": "4fb86ab132cb7696dcf5ba177a2c71d8e7db4ef92598ab93daaa4d6f3f54f38b",
+    "artifacts/sales-native/run-5br6f6ku/stage/sarv.sqlite3:payload": "26a7709541b7fb7f6ae3ffcae17a73426c82c28da33b8d48da8ba289a1d5910d",
+    "artifacts/sales-native/run-5br6f6ku/draft/sarv.sqlite3:payload": "17629e23b4fed8aab927ec14600ca56afa8836b1dff02f0a8d1e59190efab713",
+    "artifacts/sales-native/run-5br6f6ku/detail-pages/sarv.sqlite3:payload": "b447c2aac4949528c8fcf58b81608fd53fbfa26840390ef34ffa3fe7b65dcd16",
+    "artifacts/sales-native/slot-reuse-28axdwy7/slot-reuse-native.json": "37b576a3efcd1db1542094da5f0b919f3c41574d054aad52ea4842bae73295e4",
+    "artifacts/sales-native/slot-reuse-28axdwy7/editor/sarv.sqlite3:payload": "e798b6ab71e65c154d2d6eb9417fb9d3747341cdf2d4d0101df083a50b830495",
+    "artifacts/sales-native/slot-reuse-28axdwy7/editor/synthetic-input-state.json": "b3bafa59b2cc68ee539d96854b551b636d92b13c683c316be238b85e3b0b5c2d",
+    "docs/assets/accounting-m5/performance/scale-pilot-candidate9-passed/source-provenance.json": "6a593614bd12aedc0a8754fee20e5e4f4aacbefdc92ed9ae5c02a6765e1b3971",
+    "docs/assets/accounting-m5/performance/scale-pilot-candidate9-passed/performance.json": "cdf64dd5d17b389155db2697cc1c9a545503cd99a4bdfd30e10e6bda51d1c182",
+    "docs/assets/accounting-m5/performance/scale-pilot-candidate9-passed/synthetic-profile/native-responsiveness-verification.json": "43a17731e783c0f111fdbf54d1413f296b9613bd780a286c9bcccec8158a5b27",
+    "artifacts/sales-native/run-5br6f6ku/M5-layout-light.log": "0f9589a46cd9547b3694b82c0915cd0905e57e0b01a94631da60ae38bb4b73bb",
+    "artifacts/sales-native/run-5br6f6ku/M5-draft-restart.log": "39bdf2df7c31908ddf9ac3014b322870abe29b3ac776e5e1f58b0bf1dd80f9dd",
+    "artifacts/sales-native/run-5br6f6ku/M5-full.log": "cdec72dff36fc6dc171ded155d6d102f58723fd622658cbfee0ff15ca92df8b2",
+    "artifacts/sales-native/run-5br6f6ku/M5-stage-restart.log": "64b5b50e8e84555e3f1e58d08c097096aba48fc991f1529e891ad2677ee5cec6",
+    "artifacts/sales-native/run-5br6f6ku/M5-detail-pages.log": "fb6ebcbe99012e98e2e86a3d2c525134c76f612a46d115a3d2bfbd1d4c3453db",
+    "artifacts/sales-native/run-5br6f6ku/M5-layout-dark.log": "4c1ba6c4b5555bd87764d5e8f40af1ac117d630a86dd08fab4f51b101777fb28"
+  }
+}

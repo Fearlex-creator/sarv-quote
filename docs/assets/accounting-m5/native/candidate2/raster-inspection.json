@@ -1,0 +1,32 @@
+{
+  "owner": "M5 native UI owner",
+  "method": "personally viewed actual native rasters using view_image",
+  "binary_sha256": "9b32342c5dd966fb0f1a3f43f55529990221090e7a27d7aa7ddf7b96b4bf9537",
+  "count": 22,
+  "files": {
+    "m4-before/M4-before.png": "86d08ef2e050d1e64ca5129eb79ae774e33620b46e504b6d34f98ddf48a167ba",
+    "full/M5-catalog-picker.png": "512e9a8aa300e601cb01747876740349f06500f926f76097997e3e7f44d30d9b",
+    "full/M5-order-preview.png": "b2b1f22b009df065ecf7293f891bd419e309d3ad2d2053948e85f0624ff6bd62",
+    "full/M5-first-pair-preview.png": "55dbb9a03117d9f771f9c7231ae91a7ca8ac8abed7b99becbdb507bfa84701fa",
+    "full/M5-first-return-preview.png": "403f7789a67380397fe76c60c6776bb2a8ca56ffbb9e6bd3e2a74b8fbaf23e29",
+    "full/M5-final-pair-preview.png": "7f966f0f2c88904746a88dc260372bb4b88bbeb5fd7cef0347911ada451046c1",
+    "full/M5-converted-quotation-preview.png": "806f81a3685c7159fd51bcd35f9194fc3dd34d236ce7b48a422489cba65e35b7",
+    "full/M5-real-retained-overreturn.png": "95f64bedb1f9ee3b00bc6c4ed716ae5b0940169ce5073d288807ae6d11597d53",
+    "full/M5-real-filtered-search.png": "af56fe72286f4b51f8bae26ee1ceac1cab69fbed6b515799f9ff62e5a31df2fa",
+    "full/M5-sales-light-650x550.png": "7c1b4cbe16da731a23bb89d90de3269f9d9c701cab39758d4d3669d1b402505e",
+    "full/M5-sales-dark-1280x900.png": "b6c2a3fc5c11e5d2d4cec3be1aafeb9b0e71e3ed30c0061068254dd2bd12aa9a",
+    "full/M5-real-export-action-focus.png": "cbcc6fb54bf0fee3987e3ac8542957f61724edb749cb227459598bdfe4f5e969",
+    "stage/M5-stage-narrow-editor.png": "92fb5bbfaf3efbbc2ae550fddb93b0bf2d5896340949c21fb4a4483b82c4e0e7",
+    "draft/M5-invalid-raw-line-reopened.png": "a33c46f7ad7b51ee06a005c99a34a67dd5a4dcf690740a8671c7f7d3cddb539a",
+    "posted-return-inspection/M5-real-keyboard-completed-return-detail.png": "55e7ed6bad784e2abfc4bd6d6031b3b4a6caff2a52c4238f6351f00681404c20",
+    "detail-pages/M5-real-detail-last-page.png": "f542d114c53ec99fc4db7ebac051edfaf50bc78dabe1cc3b52fa5fa9e7286982",
+    "list-pager-inspection/M5-list-next-focused-650x550.png": "58852e6bf1fd29bf0a8a269ee71301139905076033fff2c9c671f17c4ca26a35",
+    "list-pager-inspection/M5-list-previous-focused-650x550.png": "48137397336f2702d84aa06e5a3d39d76339a0ad0a1610119c4068fea7e4f68f",
+    "list-pager-inspection/M5-list-previous-focused-1280x900.png": "be2c8fc64b1d54b3e4e521000028941fca56589ca12ef82746ef188ac3f36421",
+    "full/M5-sales-light-1280x900.png": "dd5b6f78f6d3e23358ac2224f0c60a0e2ed262b69b434375796a72da5635e9e2",
+    "full/M5-sales-dark-650x550.png": "090ce7f42a1555fcc6f6477c568bf3f8d29c60ea092a908e877db90bb7367efa",
+    "list-pager-inspection/M5-list-next-focused-1280x900.png": "dc790661d838ce75da7a10fb1af99e22ccf376fbe4e67f5461da1bdd21a780b0"
+  },
+  "narrow_note": "Top actions remain visible; source actions/pager require scrolling at650x550. Exact Tab focus automatically scrolled Next/Previous into view; shown in both narrow focus rasters.",
+  "list_supplement_origin": "independent guarded read-only supplement under run-dn3ivp_q; the unrelated30line schema5 fixture failed in that parent main run. Supplement has its own complete repeated source/binary/state checks."
+}

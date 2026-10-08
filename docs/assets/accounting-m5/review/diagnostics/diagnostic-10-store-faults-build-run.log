@@ -1,0 +1,4 @@
+   Compiling sarv-independent-m5-probe v0.0.0 (/workspace/sarv-quote/artifacts/independent-m5/probe)
+    Finished `dev` profile [unoptimized] target(s) in 0.51s
+     Running `target/debug/sarv-independent-m5-store-faults artifacts/independent-m5/diagnostic-1/interleaved/state.json artifacts/independent-m5/diagnostic-10/store-faults`
+PASS independent financial paired-fulfillment SIGKILL before/after durable commit, identical/different-key simultaneous CAS, exact one effect and reopened aliases; AR1086 Inv537 COGS63 profit823.

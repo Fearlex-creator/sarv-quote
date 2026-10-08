@@ -1,0 +1,45 @@
+{
+  "candidate": "candidate12",
+  "inspector": "root integration lead",
+  "scope": "Personally viewed these4 exact native rasters; visual inspection does not substitute for financial proofs or general platform/accessibility acceptance.",
+  "images": [
+    {
+      "path": "main/full/M5-sales-light-650x550-focused-source.png",
+      "sha256": "146b3109a2c48b7dfbf0522ce6c1ffb3d70695091deca15fcac1b30d4fb0e01e",
+      "personally_viewed": true,
+      "finding": "Current source-detail action and its blue focus ring are fully visible in650×550 after natural scrolling; application navigation remains available."
+    },
+    {
+      "path": "main/full/M5-sales-dark-650x550-zero.png",
+      "sha256": "95cdbd952d1ca56fb932088ac4ba4cb25d484c266b8d484f533303f7ade10011",
+      "personally_viewed": true,
+      "finding": "Dark650×550 shows all3commands, focused mixed-script search, zero count and useful empty state clearly."
+    },
+    {
+      "path": "main/detail-pages/M5-real-detail-last-page.png",
+      "sha256": "1edcc316dd4df5bc43fb4b2b511e975be07fd43494f87e9aabcc01d354a13cfd",
+      "personally_viewed": true,
+      "finding": "Detail final page shows original source lines, exact199IRR total and visible focus on Previous; Next is disabled. Long metadata wraps and the body scrolls under the fixed dialog title."
+    },
+    {
+      "path": "main/stage/M5-stage-narrow-editor.png",
+      "sha256": "05f24e8caeb29991477c4c8d58ead005560aa4306e958b9db5ab6f03be83b8bc",
+      "personally_viewed": true,
+      "finding": "650×550 saved editor keeps Persian customer/state labels, selected LTR SO-M5 reference and ISO date readable. Save/Review/Submit/Cancel footer remains visible while the form body scrolls; Submit is visibly disabled until review."
+    }
+  ],
+  "before_comparison": {
+    "path": "../candidate9/main/full/M5-sales-light-650x550.png",
+    "sha256": "7c1b4cbe16da731a23bb89d90de3269f9d9c701cab39758d4d3669d1b402505e",
+    "personally_viewed": true,
+    "finding": "Earlier650×550 source card is clipped at the bottom and detail button lies below the visible window. C12 uses whole-page scroll; comparison differs in focus/scroll position and is not a controlled performance comparison."
+  },
+  "untested": [
+    "screen reader",
+    "enlarged text",
+    "high contrast",
+    "Wayland",
+    "physical print",
+    "accountant task study"
+  ]
+}

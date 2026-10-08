@@ -1,0 +1,221 @@
+{
+  "result": "passed",
+  "run": "/workspace/sarv-quote/artifacts/sales-native/run-wi8gkf41",
+  "binary_source": "/workspace/sarv-quote/target/debug/sarv-quote",
+  "binary_sha256": "598d38b16542403302aa912d589999392cdd8280ce8d65aa1b21efa2a55788f1",
+  "scope": "native GTK signal workflow, independent raw SQLite, real XTest keyboard, private X11",
+  "checks": [
+    {
+      "name": "M4 seed immutable opening/stock without sales",
+      "passed": true
+    },
+    {
+      "name": "actual M4 baseline rendering preserves source",
+      "passed": true
+    },
+    {
+      "name": "native sale/draft/pair/returns/quote conversion complete",
+      "passed": true,
+      "failure": null,
+      "returncode": null
+    },
+    {
+      "name": "opening and procurement exact preserved",
+      "passed": true
+    },
+    {
+      "name": "two orders/two paired sales/two credits",
+      "passed": true
+    },
+    {
+      "name": "direct order199 nonfinancial catalog20 frozen",
+      "passed": true
+    },
+    {
+      "name": "authentic retained quote and zero-tax linked order",
+      "passed": true
+    },
+    {
+      "name": "partial nets100/99 and exact issue costs58/58",
+      "passed": true
+    },
+    {
+      "name": "original return allocations40/23 then60/35",
+      "passed": true
+    },
+    {
+      "name": "distinct stable paired identities",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "independent final inventory/AR/AP/sales/COGS controls",
+      "passed": true,
+      "expected": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "Inventory": 422,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58
+      }
+    },
+    {
+      "name": "independent final trial1630/1630",
+      "passed": true
+    },
+    {
+      "name": "returns never reopen original order",
+      "passed": true
+    },
+    {
+      "name": "actual accountant reports generated",
+      "passed": true
+    },
+    {
+      "name": "real CtrlF directs typed text to Sales search",
+      "passed": true
+    },
+    {
+      "name": "real Alt0/CtrlF typed normalized Sales source search",
+      "passed": true
+    },
+    {
+      "name": "real source detail shows complete fulfillment and linked pairs",
+      "passed": true
+    },
+    {
+      "name": "real keyboard overreturn retains quantity/source and does not commit",
+      "passed": true
+    },
+    {
+      "name": "real Escape cancellation preserves financial aggregate",
+      "passed": true
+    },
+    {
+      "name": "native Sales light 1280x900 rendered",
+      "passed": true
+    },
+    {
+      "name": "native Sales light 650x550 rendered",
+      "passed": true
+    },
+    {
+      "name": "native Sales dark 1280x900 rendered",
+      "passed": true
+    },
+    {
+      "name": "native Sales dark 650x550 rendered",
+      "passed": true
+    },
+    {
+      "name": "financial and quote source exact across restart",
+      "passed": true
+    },
+    {
+      "name": "native stage durable draft and newer edit receipt",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "stage draft exists without GL",
+      "passed": true
+    },
+    {
+      "name": "stage saved raw header exact after restart",
+      "passed": true
+    },
+    {
+      "name": "native draft durable draft and newer edit receipt",
+      "passed": true,
+      "failure": null
+    },
+    {
+      "name": "draft draft exists without GL",
+      "passed": true
+    },
+    {
+      "name": "draft saved raw header exact after restart",
+      "passed": true
+    },
+    {
+      "name": "incomplete invalid raw quantity/price exact across restart",
+      "passed": true
+    }
+  ],
+  "seed_source": "/workspace/sarv-quote/artifacts/performance-m4/freeze6-repeated/procurement-posted-workflow",
+  "seed_state_sha256": "df4b1f364046ac944e2ae4e1c0cb3ad474c0be9cfee95df8dbfc123984b65a75",
+  "source_manifest": {
+    "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+    "src/ui/sales.rs": "5a19a7444c505511905136790a316a5e3036e3aae0506b724b2179a962a474a5",
+    "scripts/sales-qa.py": "1ad854eadf1c837b6e510dba5e5726c0ea83d4a3f4b0844f8a475f329bc5b09e",
+    "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4"
+  },
+  "m4_binary_sha256": "9be5f0ba6a7fe6f000b722042d426987e79647578ab9ca803a9869ee1a343d5e",
+  "native_manifest": {
+    "checks": [
+      "actual sales catalog price20/core SKU+unit mapping",
+      "actual sales catalog price20/core SKU+unit mapping",
+      "actual sales catalog price20/core SKU+unit mapping",
+      "actual sales catalog price20/core SKU+unit mapping",
+      "older durable draft receipt retains newer GTK input",
+      "explicit raw draft saves durable revision and current header/lines",
+      "order199 nonfinancial and raw draft consumed atomically",
+      "partial paired delivery/invoice100 with separate IDs and original cost58",
+      "split original-cost return23+35 and exact credit40+60",
+      "final fulfillment original discount residual99 and cost58",
+      "authentic approved quotation converted through native selector/mapping without GL or original quote edits"
+    ],
+    "first_pair_id": "51ef0bcc-c303-4e17-8e4c-c32c6f280622",
+    "mode": "full",
+    "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+    "order_id": "7fba740d-c70e-4ef2-8256-e30a51e052a0",
+    "ready": true,
+    "record_count": 6,
+    "search_name": "sales-search",
+    "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+    "synthetic_only": true
+  },
+  "x11_errors": []
+}

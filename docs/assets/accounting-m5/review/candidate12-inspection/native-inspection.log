@@ -1,0 +1,111 @@
+{
+  "result": "PASS frozen C12 build, root gates and callback receipts; checkpoint approval pending",
+  "source_files": 36,
+  "verification_files": 53,
+  "ordinary_tests": {
+    "summaries": 35,
+    "passed": 220,
+    "failed": 0,
+    "ignored": 4
+  },
+  "source_comparisons": {
+    "candidate5": {
+      "identical_files": 30,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/background.rs",
+        "src/ui/editor.rs",
+        "src/ui/responsiveness.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    },
+    "candidate9": {
+      "identical_files": 34,
+      "changed_files": [
+        "src/ui/background.rs",
+        "src/ui/sales.rs"
+      ]
+    },
+    "candidate11-diagnostic": {
+      "identical_files": 35,
+      "changed_files": [
+        "src/ui/background.rs"
+      ]
+    }
+  },
+  "callback": {
+    "checks": 13,
+    "generation": 12,
+    "quantity_milli": 213000,
+    "literal_total_rial": 266463,
+    "portable_files_hashed": 9
+  }
+}
+{
+  "result": "PASS actual C12 native83; identity37 and final performance still pending",
+  "checks": 83,
+  "states": {
+    "full": {
+      "generation": 29,
+      "schema": 6,
+      "journals": 9,
+      "all_journals_balanced": true
+    },
+    "stage": {
+      "generation": 21,
+      "schema": 6,
+      "journals": 7,
+      "all_journals_balanced": true
+    },
+    "draft": {
+      "generation": 17,
+      "schema": 6,
+      "journals": 5,
+      "all_journals_balanced": true
+    },
+    "detail-pages": {
+      "generation": 20,
+      "schema": 6,
+      "journals": 5,
+      "all_journals_balanced": true
+    }
+  },
+  "trial_balance": [
+    1630,
+    1630
+  ],
+  "material_native_diagnostics": [],
+  "detail_pager_focus": [
+    {
+      "name": "native detail pager offset25 hands focus to live sales-detail-previous",
+      "passed": true,
+      "receipt": {
+        "count": 7,
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "mapped": true,
+        "offset": 25,
+        "sensitive": true,
+        "target_name": "sales-detail-previous",
+        "total": 32,
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "native detail pager offset0 hands focus to live sales-detail-next",
+      "passed": true,
+      "receipt": {
+        "count": 25,
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "mapped": true,
+        "offset": 0,
+        "sensitive": true,
+        "target_name": "sales-detail-next",
+        "total": 32,
+        "window_focus_exact": true
+      }
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "profile": "/workspace/sarv-quote/artifacts/m5-preserved/quote-w1hc4pqg",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate7",
+  "binary_sha256": "7f83e3e60afe439e6d7e3af2b33e3b325547ce81190d11aa3d7492420b07a6d5",
+  "native": {
+    "checks": [
+      "catalog preview and explicit confirm",
+      "Persian/Arabic input",
+      "ambiguous review dropdown",
+      "unmatched review dropdown",
+      "unresolved approval blocked",
+      "stale acknowledgement gate",
+      "toman/rial UI preserves discount",
+      "repeated approval clicks",
+      "invalid CSV approval blocked",
+      "native revision button",
+      "immutable prior quote",
+      "customer and quote search",
+      "PDF and CSV exports",
+      "backup validated",
+      "native restore confirmation",
+      "automatic safety backup",
+      "SQLite reopened",
+      "invalid table input preserved by New/Revision/Approve",
+      "pending edits labelled unsaved",
+      "delete-edit-add-undo preserves intervening changes",
+      "changed product requires visual review and stale re-ack",
+      "restore saves immediate widget edit before safety backup",
+      "restore clears prior-profile undo buffer"
+    ],
+    "data_directory": "/workspace/sarv-quote/artifacts/m5-preserved/quote-w1hc4pqg",
+    "first_total_rial": 3995000,
+    "native_backend": "x11",
+    "quotes": 2,
+    "result": "passed",
+    "second_total_rial": 5245000
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "measurement_complete": true,
+  "performance_acceptance": "partial; strict lookup/navigation/global/PDF/persistence misses remain",
+  "final_epoch_count": 1,
+  "unchanged_M2_invocations": 1,
+  "strict_budgets": {
+    "paged_sales_visible_search_p95": {
+      "actual_ms": 331.61632300470956,
+      "budget_ms": 200,
+      "passes": false
+    },
+    "paged_sales_focused_search_p95": {
+      "actual_ms": 345.2775859987014,
+      "budget_ms": 200,
+      "passes": false
+    },
+    "long_sales_visible_page_p95": {
+      "actual_ms": 419.6224519982934,
+      "budget_ms": 150,
+      "passes": false
+    },
+    "long_sales_focused_page_p95": {
+      "actual_ms": 690.3692990017589,
+      "budget_ms": 150,
+      "passes": false
+    },
+    "maximum_heartbeat_gap_ms": {
+      "actual_ms": 320.116878,
+      "budget_ms": 50,
+      "passes": false
+    },
+    "unchanged_editor_page_ms": {
+      "actual_ms": 138.524176,
+      "budget_ms": 150,
+      "passes": true
+    },
+    "pdf_busy_heartbeat_ms": {
+      "actual_ms": 117.240539,
+      "budget_ms": 50,
+      "passes": false
+    },
+    "broad_persistence_busy_heartbeat": {
+      "actual_ms": 100.135268,
+      "budget_ms": 50,
+      "passes": false
+    }
+  },
+  "historic_M4_misses_retained": {
+    "global_ms": 280.552,
+    "unchanged_page_ms": 161.263,
+    "pdf_busy_ms": 127.266,
+    "broad_persistence_busy_ms": 98.725
+  },
+  "long_open_ms": 822.0799699993222,
+  "long_open_focused_ms": 1045.7730529960827,
+  "long_navigation_sample_count": 39,
+  "limits": [
+    "AT-SPI visible/sensitive/showing/rectangle/focus readiness and real keys; no continuous CPU trace or independently painted-frame endpoint.",
+    "Current repeated n10/n20 nearest-rank p99 equals worst; long navigation n39 p95 is second worst, not a repeated-process population tail.",
+    "Strict misses are not waived for observer traversal, GTK layout, screenshots, shared scheduling or probe mutations.",
+    "No physical-cache-cold/reference4core8GBSSD/fiveyear100000docs1Mjournallines10000parties/WindowsWayland/printing/powerloss/leak claim."
+  ]
+}

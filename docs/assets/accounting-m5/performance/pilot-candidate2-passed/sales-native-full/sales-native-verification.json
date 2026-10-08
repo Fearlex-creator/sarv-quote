@@ -1,0 +1,22 @@
+{
+  "checks": [
+    "actual sales catalog price20/core SKU+unit mapping",
+    "older durable draft receipt retains newer GTK input",
+    "explicit raw draft saves durable revision and current header/lines",
+    "order199 nonfinancial and raw draft consumed atomically",
+    "partial paired delivery/invoice100 with separate IDs and original cost58",
+    "split original-cost return23+35 and exact credit40+60",
+    "final fulfillment original discount residual99 and cost58",
+    "authentic approved quotation converted through native selector/mapping without GL or original quote edits",
+    "cancelled pending native source read preserves books and clears global loading status"
+  ],
+  "first_pair_id": "acd110b1-00fa-40a3-a9db-5630bffa3fa8",
+  "mode": "full",
+  "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+  "order_id": "b6237af0-d9d2-4bbe-ac13-2564823408b3",
+  "ready": true,
+  "record_count": 6,
+  "search_name": "sales-search",
+  "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+  "synthetic_only": true
+}

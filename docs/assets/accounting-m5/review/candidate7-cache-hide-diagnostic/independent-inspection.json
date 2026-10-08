@@ -1,0 +1,539 @@
+{
+  "result": "cached-v2 runtime unqualified; observer diagnosis only",
+  "source_report_sha256": "592e31d3d93c1f43a435f03e39a29803fde09aacb0bf9a5317b2d7487782fa26",
+  "source_binary_observer_guards_equal": true,
+  "durable_state_unchanged": true,
+  "observations": [
+    {
+      "label": "initial six records",
+      "query": "",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "name": "\u062c\u0633\u062a\u200c\u0648\u062c\u0648\u06cc \u0634\u0645\u0627\u0631\u0647\u060c \u0645\u0634\u062a\u0631\u06cc\u060c \u06a9\u0627\u0644\u0627 \u06cc\u0627 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "name": "\u0633\u0641\u0627\u0631\u0634 \u2022 SO-M5",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "name": "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "name": "\u06f6 \u0646\u062a\u06cc\u062c\u0647 \u2022 \u0627\u0633\u0646\u0627\u062f \u062a\u0627 \u2068\u06f2\u06f0\u06f2\u06f6-\u06f1\u06f0-\u06f0\u06f8\u2069 \u2022 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633\u200c\u0647\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647\u200c\u0634\u062f\u0647 \u2022 \u0645\u0628\u0627\u0644\u063a \u0631\u06cc\u0627\u0644",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "missing_parent_child_edges": [],
+      "fresh_exposed_actions": [
+        [
+          "0x1233ff60",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ],
+        [
+          "0x12340500",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ],
+        [
+          "0x12340aa0",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ],
+        [
+          "0x123410e0",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ],
+        [
+          "0x12341fc0",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ],
+        [
+          "0x123425c0",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ]
+      ]
+    },
+    {
+      "label": "exact zero before explicit pump",
+      "query": "NO-MATCH-PERFORMANCE",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "name": "\u062c\u0633\u062a\u200c\u0648\u062c\u0648\u06cc \u0634\u0645\u0627\u0631\u0647\u060c \u0645\u0634\u062a\u0631\u06cc\u060c \u06a9\u0627\u0644\u0627 \u06cc\u0627 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "name": "",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "name": "",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "name": "\u06f0 \u0646\u062a\u06cc\u062c\u0647 \u2022 \u0627\u0633\u0646\u0627\u062f \u062a\u0627 \u2068\u06f2\u06f0\u06f2\u06f6-\u06f1\u06f0-\u06f0\u06f8\u2069 \u2022 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633\u200c\u0647\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647\u200c\u0634\u062f\u0647 \u2022 \u0645\u0628\u0627\u0644\u063a \u0631\u06cc\u0627\u0644",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "missing_parent_child_edges": [
+        [
+          "0x1233fb80",
+          "0x1233e9e0"
+        ],
+        [
+          "0x1233e9e0",
+          "0x1233e240"
+        ],
+        [
+          "0x1233ff60",
+          "0x1233e9e0"
+        ]
+      ],
+      "fresh_exposed_actions": []
+    },
+    {
+      "label": "exact zero after explicit pump",
+      "query": "NO-MATCH-PERFORMANCE",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "name": "\u062c\u0633\u062a\u200c\u0648\u062c\u0648\u06cc \u0634\u0645\u0627\u0631\u0647\u060c \u0645\u0634\u062a\u0631\u06cc\u060c \u06a9\u0627\u0644\u0627 \u06cc\u0627 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "name": "",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "name": "",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "name": "\u06f0 \u0646\u062a\u06cc\u062c\u0647 \u2022 \u0627\u0633\u0646\u0627\u062f \u062a\u0627 \u2068\u06f2\u06f0\u06f2\u06f6-\u06f1\u06f0-\u06f0\u06f8\u2069 \u2022 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633\u200c\u0647\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647\u200c\u0634\u062f\u0647 \u2022 \u0645\u0628\u0627\u0644\u063a \u0631\u06cc\u0627\u0644",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "missing_parent_child_edges": [
+        [
+          "0x1233fb80",
+          "0x1233e9e0"
+        ],
+        [
+          "0x1233e9e0",
+          "0x1233e240"
+        ],
+        [
+          "0x1233ff60",
+          "0x1233e9e0"
+        ]
+      ],
+      "fresh_exposed_actions": []
+    },
+    {
+      "label": "exact zero after extra pump",
+      "query": "NO-MATCH-PERFORMANCE",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "name": "\u062c\u0633\u062a\u200c\u0648\u062c\u0648\u06cc \u0634\u0645\u0627\u0631\u0647\u060c \u0645\u0634\u062a\u0631\u06cc\u060c \u06a9\u0627\u0644\u0627 \u06cc\u0627 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "name": "",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "name": "",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "name": "\u06f0 \u0646\u062a\u06cc\u062c\u0647 \u2022 \u0627\u0633\u0646\u0627\u062f \u062a\u0627 \u2068\u06f2\u06f0\u06f2\u06f6-\u06f1\u06f0-\u06f0\u06f8\u2069 \u2022 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633\u200c\u0647\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647\u200c\u0634\u062f\u0647 \u2022 \u0645\u0628\u0627\u0644\u063a \u0631\u06cc\u0627\u0644",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "missing_parent_child_edges": [
+        [
+          "0x1233fb80",
+          "0x1233e9e0"
+        ],
+        [
+          "0x1233e9e0",
+          "0x1233e240"
+        ],
+        [
+          "0x1233ff60",
+          "0x1233e9e0"
+        ]
+      ],
+      "fresh_exposed_actions": []
+    },
+    {
+      "label": "INV-M5-A current query after fresh status",
+      "query": "INV-M5-A",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "name": "\u062c\u0633\u062a\u200c\u0648\u062c\u0648\u06cc \u0634\u0645\u0627\u0631\u0647\u060c \u0645\u0634\u062a\u0631\u06cc\u060c \u06a9\u0627\u0644\u0627 \u06cc\u0627 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "name": "\u062a\u062d\u0648\u06cc\u0644 DEL-M5-A \u2022 \u0635\u0648\u0631\u062a\u062d\u0633\u0627\u0628 INV-M5-A",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "name": "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "name": "\u06f1 \u0646\u062a\u06cc\u062c\u0647 \u2022 \u0627\u0633\u0646\u0627\u062f \u062a\u0627 \u2068\u06f2\u06f0\u06f2\u06f6-\u06f1\u06f0-\u06f0\u06f8\u2069 \u2022 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633\u200c\u0647\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647\u200c\u0634\u062f\u0647 \u2022 \u0645\u0628\u0627\u0644\u063a \u0631\u06cc\u0627\u0644",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "missing_parent_child_edges": [],
+      "fresh_exposed_actions": [
+        [
+          "0x1233ff60",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ]
+      ]
+    },
+    {
+      "label": "INV-M5-B current query after fresh status",
+      "query": "INV-M5-B",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "name": "\u062c\u0633\u062a\u200c\u0648\u062c\u0648\u06cc \u0634\u0645\u0627\u0631\u0647\u060c \u0645\u0634\u062a\u0631\u06cc\u060c \u06a9\u0627\u0644\u0627 \u06cc\u0627 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "name": "\u062a\u062d\u0648\u06cc\u0644 DEL-M5-A \u2022 \u0635\u0648\u0631\u062a\u062d\u0633\u0627\u0628 INV-M5-A",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "name": "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "name": "\u06f1 \u0646\u062a\u06cc\u062c\u0647 \u2022 \u0627\u0633\u0646\u0627\u062f \u062a\u0627 \u2068\u06f2\u06f0\u06f2\u06f6-\u06f1\u06f0-\u06f0\u06f8\u2069 \u2022 \u067e\u06cc\u0634\u200c\u0646\u0648\u06cc\u0633\u200c\u0647\u0627\u06cc \u0630\u062e\u06cc\u0631\u0647\u200c\u0634\u062f\u0647 \u2022 \u0645\u0628\u0627\u0644\u063a \u0631\u06cc\u0627\u0644",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "missing_parent_child_edges": [],
+      "fresh_exposed_actions": [
+        [
+          "0x1233ff60",
+          "\u062c\u0632\u0626\u06cc\u0627\u062a \u0648 \u062c\u0631\u06cc\u0627\u0646 \u06a9\u0627\u0631"
+        ]
+      ]
+    }
+  ],
+  "conclusion": "Stale cached SHOWING/get_parent/positive rectangles persist at zero despite blank current names, disabled action, absent parent-to-child membership and no exposed actions; explicit pump unchanged. No Sales product regression established. Require current membership at all positive endpoints and an independently attributed effective-hidden zero qualification; fresh v3 runtime pending."
+}

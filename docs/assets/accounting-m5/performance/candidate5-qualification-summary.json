@@ -1,0 +1,102 @@
+{
+  "functional_qualification_only": true,
+  "accepted_final_measurement": false,
+  "concurrency": "Root preserved-native and identity diagnostic checks overlapped; timing is diagnostic.",
+  "candidate5_binary_sha256": "45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e",
+  "candidate5_source_sha256": "07d0edcee2f5a13d4a708faff3e444016829f15ea6149d4d182b23037860822c",
+  "M5": {
+    "qualification_result": "passed",
+    "development_pilot": true,
+    "startup_repeated_n": 1,
+    "search_n": 2,
+    "frozen_source_stable": true,
+    "binary_stable": true,
+    "observer_stable": true,
+    "filtered_pages_reached": 3,
+    "long_pages_reached": 40,
+    "long_page_samples": 39,
+    "filtered_page_samples_diagnostic": [
+      {
+        "page": 2,
+        "expected": "PERF-B-051",
+        "usable_visible_ms": 209.05540300009307,
+        "budget_ms": 150,
+        "passes": false
+      },
+      {
+        "page": 3,
+        "expected": "PERF-B-101",
+        "usable_visible_ms": 158.6823999969056,
+        "budget_ms": 150,
+        "passes": false
+      }
+    ],
+    "raw_report": "pilot-candidate5-passed/performance.json"
+  },
+  "M2": {
+    "qualification_result": "failed",
+    "native_failure": "Native probe exceeded 120-second bounded timeout",
+    "driver_return_code": 0,
+    "source_stable": true,
+    "binary_stable": true,
+    "observers_stable": true,
+    "first_scope": {
+      "id": 1,
+      "operation": "quote_changed_save_recovery",
+      "origin": "native_save_button_after_lock_released",
+      "result": "Native probe exceeded 120-second bounded timeout",
+      "strict_status": "incomplete",
+      "elapsed_ms": 92741.938744,
+      "ticks": 4606,
+      "max_gap_ms": 35.37576,
+      "terminal_gap_ms": 9.728309,
+      "before": {
+        "active_dialog": false,
+        "edit_revision": 8,
+        "first_amount": "—",
+        "first_id": 0,
+        "first_quantity": "1",
+        "first_quantity_selection": null,
+        "first_quantity_visible_and_focused": true,
+        "first_query": "SCALE-00001",
+        "first_query_visible_and_focused": false,
+        "focus_widget": "GtkText",
+        "generation": 3,
+        "last_id": 99,
+        "last_query": "SCALE-00100",
+        "page": 1,
+        "persistence_busy": false,
+        "review_pending": false,
+        "rows": 100,
+        "total": "جمع نهایی — در حال ویرایش",
+        "visual_pending": true
+      },
+      "after": {
+        "active_dialog": false,
+        "edit_revision": 8,
+        "first_amount": "۱۰٬۰۰۰.۱",
+        "first_id": 0,
+        "first_quantity": "۱",
+        "first_quantity_selection": null,
+        "first_quantity_visible_and_focused": true,
+        "first_query": "SCALE-00001",
+        "first_query_visible_and_focused": false,
+        "focus_widget": "GtkText",
+        "generation": 4,
+        "last_id": 99,
+        "last_query": "SCALE-00100",
+        "page": 1,
+        "persistence_busy": false,
+        "review_pending": false,
+        "rows": 100,
+        "total": "جمع نهایی  ۱۰٬۰۵۰٬۰۵۰ تومان",
+        "visual_pending": false
+      }
+    },
+    "downstream_additive_scopes": "unmeasured; first readiness did not complete",
+    "observer_defect": "ASCII1 literal rejects valid native Persian1; exact quantity1000milli is correct",
+    "raw_report": "scale-pilot-candidate5-failed/synthetic-profile/native-responsiveness-verification.json"
+  },
+  "correction": "c6-observer-quantity-correction/quantity-readiness.patch",
+  "C2_historical_results_unchanged": true
+}

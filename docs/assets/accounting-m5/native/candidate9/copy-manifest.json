@@ -1,0 +1,433 @@
+{
+  "scope": "Actual frozen candidate9 main66 and identity37 native proof, synthetic data only. Raw SQLite and executable local-only; exact State payload JSON, media and reports portable. Includes unresolved GTK diagnostics without suppression. Copying a file does not claim visual inspection.",
+  "sources": {
+    "main": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku",
+    "identity": "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7"
+  },
+  "files": {
+    "main/M4-before.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "main/M5-detail-pages.log": {
+      "sha256": "fb6ebcbe99012e98e2e86a3d2c525134c76f612a46d115a3d2bfbd1d4c3453db",
+      "bytes": 238
+    },
+    "main/M5-draft-restart.log": {
+      "sha256": "39bdf2df7c31908ddf9ac3014b322870abe29b3ac776e5e1f58b0bf1dd80f9dd",
+      "bytes": 158
+    },
+    "main/M5-draft.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "main/M5-full.log": {
+      "sha256": "cdec72dff36fc6dc171ded155d6d102f58723fd622658cbfee0ff15ca92df8b2",
+      "bytes": 205
+    },
+    "main/M5-layout-dark.log": {
+      "sha256": "4c1ba6c4b5555bd87764d5e8f40af1ac117d630a86dd08fab4f51b101777fb28",
+      "bytes": 158
+    },
+    "main/M5-layout-light.log": {
+      "sha256": "0f9589a46cd9547b3694b82c0915cd0905e57e0b01a94631da60ae38bb4b73bb",
+      "bytes": 158
+    },
+    "main/M5-stage-restart.log": {
+      "sha256": "64b5b50e8e84555e3f1e58d08c097096aba48fc991f1529e891ad2677ee5cec6",
+      "bytes": 158
+    },
+    "main/M5-stage.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "main/detail-pages/M5-detail-pages-restart.png": {
+      "sha256": "9974889ac93f391e3cf0325c7b42810d91a466fafc634df51afe17f461fc29c7",
+      "bytes": 112896
+    },
+    "main/detail-pages/M5-real-detail-last-page.png": {
+      "sha256": "670f4d2b2c5665c185d244e048b933ad04fa6c29c9349574373b8dbf4acac1a0",
+      "bytes": 208954
+    },
+    "main/detail-pages/keyboard-events.jsonl": {
+      "sha256": "f7b827fd64865915466b1188ca76007fd7d69cfe3b69aa9a336dcdd5a85b3853",
+      "bytes": 7773
+    },
+    "main/detail-pages/synthetic-raw-fixture.json": {
+      "sha256": "af2a1b41ac2b4b59cba7d0eca718e8101c131c3ae4430c676880a8b0edb496c8",
+      "bytes": 19886
+    },
+    "main/draft/M5-catalog-picker.png": {
+      "sha256": "30fc8710e0f9675935644b9ef358031318b29f12ada437714f7e2380402f15ff",
+      "bytes": 114027
+    },
+    "main/draft/M5-draft-narrow-editor.png": {
+      "sha256": "e56f915fb56805acb54d7636b01814c0bbac33e30cf949bfd56606fdd03c4f89",
+      "bytes": 41964
+    },
+    "main/draft/M5-draft-reopened-editor.png": {
+      "sha256": "16fd06acd65635e2a52e24b2cc3640d7db4f5b1b567a4e3ac2c28e64c95f9401",
+      "bytes": 120150
+    },
+    "main/draft/M5-draft-restart.png": {
+      "sha256": "32cb4402f5b5c6259dd34f541a0db74bb7f647603c164607becfc36db5f365e8",
+      "bytes": 113854
+    },
+    "main/draft/M5-frozen-catalog-line.png": {
+      "sha256": "8e97f58a4c25383aeb4670deb39e8f1d2336e6e7e7b5e84caf384dbb7f568f60",
+      "bytes": 122498
+    },
+    "main/draft/M5-invalid-raw-line-reopened.png": {
+      "sha256": "4cce9b5474d455d10cb2d17614fba05f4c102b18cca1e62d4af6a700a08edbc7",
+      "bytes": 108198
+    },
+    "main/draft/M5-saved-raw-draft.png": {
+      "sha256": "0c2b11a9b5d728c71e0a6b767fbe40ceaef482a861a398ad4ba71b3ea4503ba2",
+      "bytes": 120285
+    },
+    "main/draft/M5-synthetic-prices.csv": {
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4",
+      "bytes": 140
+    },
+    "main/draft/before-schema6-65cca97c-3e80-449c-b0d0-6c5438658ea5.json": {
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b",
+      "bytes": 152360
+    },
+    "main/draft/keyboard-events.jsonl": {
+      "sha256": "d46a50b5146feeb5bbc3982cc2afd6e11e184e94d62d25ac1d348d1a4d95804a",
+      "bytes": 2765
+    },
+    "main/draft/sales-native-verification.json": {
+      "sha256": "9b0e3dcae7f29e2bafaac1abbdc0bad0e5d49647872592204b366d9a55ac3fc3",
+      "bytes": 955
+    },
+    "main/draft/sales-stage-ready.json": {
+      "sha256": "9b0e3dcae7f29e2bafaac1abbdc0bad0e5d49647872592204b366d9a55ac3fc3",
+      "bytes": 955
+    },
+    "main/frozen-source-manifest.json": {
+      "sha256": "3b7b6b6aae41a5a110bc61912885c0cc3c7ddeda7abe8e092a95f61f3abc4db7",
+      "bytes": 7563
+    },
+    "main/full/M5-authentic-quotation.png": {
+      "sha256": "2efeb5381d12b4bac8dad2417af172cd79219f43b05c9b8f3138652c3065735e",
+      "bytes": 131426
+    },
+    "main/full/M5-catalog-picker.png": {
+      "sha256": "55754a10fa0687590ac1f835d4b7a0a2c344b7548ea088f58ab39b2cf719d73a",
+      "bytes": 131536
+    },
+    "main/full/M5-controls.csv": {
+      "sha256": "2978c0ea7a7bbfcaa98876122d0e37a7f8ea6bc972bd6ed1b40118b697ac6d65",
+      "bytes": 147928
+    },
+    "main/full/M5-controls.pdf": {
+      "sha256": "969d8cdcd6562376fa08c2a0b17ce48166bb10c3662987c4f8f1e162f9b12557",
+      "bytes": 37466
+    },
+    "main/full/M5-converted-quotation-preview.png": {
+      "sha256": "806f81a3685c7159fd51bcd35f9194fc3dd34d236ce7b48a422489cba65e35b7",
+      "bytes": 147455
+    },
+    "main/full/M5-final-controls.png": {
+      "sha256": "f801fe888ad30cd939ad4ec6ef2fd95edaa724b34f683aede2494a4923894164",
+      "bytes": 141007
+    },
+    "main/full/M5-final-pair-preview.png": {
+      "sha256": "1cb4406db366d89c58cac590db24a86a50493258595973148fe33c57c875684c",
+      "bytes": 166103
+    },
+    "main/full/M5-final-return-preview.png": {
+      "sha256": "373fd2d00036a62799ed39c5cba7b3bdea2ba4bb8e3d2c9facae028114537ea6",
+      "bytes": 156029
+    },
+    "main/full/M5-first-pair-preview.png": {
+      "sha256": "5506e6f315780927c6ace20001c84d2808045881077a311aaa2056f8a5a2beef",
+      "bytes": 164635
+    },
+    "main/full/M5-first-return-preview.png": {
+      "sha256": "4b3d4d202ccc57eecbb3cbc5ddbb24c664debddfa93c4d12ff6e4631d748a2df",
+      "bytes": 155426
+    },
+    "main/full/M5-frozen-catalog-line.png": {
+      "sha256": "bce9036ab55d1370981930c648f702bd3a73a9f2eb25f67f5e994c35406e02ec",
+      "bytes": 133133
+    },
+    "main/full/M5-lifecycle-unchanged-backup.json": {
+      "sha256": "963b864f1b1e545e7612c42fb2d048fd8622ce6666c11baea9d85a63f1d88ee4",
+      "bytes": 230295
+    },
+    "main/full/M5-order-preview.png": {
+      "sha256": "4d901356ca29bffb291466458a8a8aeaa98352c5c4ac247b9e2742b1bcd35fa6",
+      "bytes": 148140
+    },
+    "main/full/M5-real-export-action-focus.png": {
+      "sha256": "9f2eee3aed0a71a44e9b670290c9300f69e638ae68fd32e3c41d8946dd78329c",
+      "bytes": 150037
+    },
+    "main/full/M5-real-filtered-search.png": {
+      "sha256": "8dd863ad16cefc713d46f113c3b63d89d659d598b3011399f01c03a0414233c7",
+      "bytes": 100742
+    },
+    "main/full/M5-real-order-detail.png": {
+      "sha256": "b0271dc2cc87ea70695b9026168ed2eb57ffa3e91d16f4e4b10127ea385cce07",
+      "bytes": 149516
+    },
+    "main/full/M5-real-restored-new-order.png": {
+      "sha256": "a4c74f5076a8171589ebaab47815d5c186a8b644ec43ac057dc148e321c027ff",
+      "bytes": 141183
+    },
+    "main/full/M5-real-retained-overreturn.png": {
+      "sha256": "c2a2a8160a10e9ecb552f16bbd49e46541733dc945f4536f5e1890ff7fe64ebe",
+      "bytes": 122970
+    },
+    "main/full/M5-restart-dark.png": {
+      "sha256": "5ca7520e63e1ba6bcfbfb30beb5cc09ba60cbdb0fbf0e70079dfefc80fcb4cf2",
+      "bytes": 154716
+    },
+    "main/full/M5-restart-light.png": {
+      "sha256": "51157519205b01750620d3113d54d915e5b64b82962d47601d13a16d45474f5c",
+      "bytes": 154464
+    },
+    "main/full/M5-sales-dark-1280x900.png": {
+      "sha256": "b6c2a3fc5c11e5d2d4cec3be1aafeb9b0e71e3ed30c0061068254dd2bd12aa9a",
+      "bytes": 134013
+    },
+    "main/full/M5-sales-dark-650x550.png": {
+      "sha256": "090ce7f42a1555fcc6f6477c568bf3f8d29c60ea092a908e877db90bb7367efa",
+      "bytes": 52895
+    },
+    "main/full/M5-sales-light-1280x900.png": {
+      "sha256": "dd5b6f78f6d3e23358ac2224f0c60a0e2ed262b69b434375796a72da5635e9e2",
+      "bytes": 133382
+    },
+    "main/full/M5-sales-light-650x550.png": {
+      "sha256": "7c1b4cbe16da731a23bb89d90de3269f9d9c701cab39758d4d3669d1b402505e",
+      "bytes": 52302
+    },
+    "main/full/M5-synthetic-prices.csv": {
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4",
+      "bytes": 140
+    },
+    "main/full/before-restore-bc010962-4d21-4128-80eb-80f8d8c92af7.json": {
+      "sha256": "963b864f1b1e545e7612c42fb2d048fd8622ce6666c11baea9d85a63f1d88ee4",
+      "bytes": 230295
+    },
+    "main/full/before-schema6-d84a0507-93f2-4621-a98f-6c06f9e11c1a.json": {
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b",
+      "bytes": 152360
+    },
+    "main/full/sales-native-verification.json": {
+      "sha256": "e8a9d4654e611ba44ed24e0a298b4dd084a11a9a60fe37ea754a444e8cd2a3f1",
+      "bytes": 1869
+    },
+    "main/m4-before/M4-before.png": {
+      "sha256": "86d08ef2e050d1e64ca5129eb79ae774e33620b46e504b6d34f98ddf48a167ba",
+      "bytes": 150440
+    },
+    "main/openbox.log": {
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+      "bytes": 207
+    },
+    "main/sales-check-progress.jsonl": {
+      "sha256": "1a0160ef5d909f4eac1e234aa4f5be7debbd8f8b322ea0559098cb04a661329a",
+      "bytes": 5289
+    },
+    "main/sales-independent-native.json": {
+      "sha256": "e0affe4761a6af9e23a29030b290f950083caa9a88306aea24b7755496e4995c",
+      "bytes": 17362
+    },
+    "main/stage/M5-catalog-picker.png": {
+      "sha256": "94602bd55e53cfcd2ce72622994395700f735ee523be34d3a8f71345c4fefe60",
+      "bytes": 113639
+    },
+    "main/stage/M5-frozen-catalog-line.png": {
+      "sha256": "31d800945a32b8eb6b1d10d0e2150c93bad77a5bff4c0650b9b9f12c8ef0ff80",
+      "bytes": 122452
+    },
+    "main/stage/M5-real-keyboard-posted-return.png": {
+      "sha256": "5dcc43ba242597c484e9311f10f46f94ca170b2e9f41f05e36e8ba28fc9a8665",
+      "bytes": 113932
+    },
+    "main/stage/M5-saved-raw-draft.png": {
+      "sha256": "dc57def112613befd7b55c29ee890f87c3c9305b0cd331c279b4eb97d4997d76",
+      "bytes": 118552
+    },
+    "main/stage/M5-stage-narrow-editor.png": {
+      "sha256": "d7005af91d8d12e8443bd0a6332ca7882b18996570b56da26a664fbed6837328",
+      "bytes": 40368
+    },
+    "main/stage/M5-stage-reopened-editor.png": {
+      "sha256": "4d41bbe30347b9450c6e8fd5ee0be8cbc13d07f88a4e1893e5ffefb0448c6b25",
+      "bytes": 118420
+    },
+    "main/stage/M5-stage-restart.png": {
+      "sha256": "4ada751f91a0826ac03966be4b1506ede68def99e8a686607ea54fcabe281f19",
+      "bytes": 112327
+    },
+    "main/stage/M5-synthetic-prices.csv": {
+      "sha256": "9a9b6b26405245118b1c2e4143fa75078ffabea5d51c26a2cfe1e91e6f4184b4",
+      "bytes": 140
+    },
+    "main/stage/before-schema6-a270ab78-ff22-4936-93db-4d614d19ee6f.json": {
+      "sha256": "aab7bbcbab3b024c4f99bd24c7f10c06b6560da69ffc445b2ba69a210796801b",
+      "bytes": 152360
+    },
+    "main/stage/keyboard-events.jsonl": {
+      "sha256": "36624aea532abc9578d3794d48f47c0897a9662e3a58fa4d6f95fd1574534750",
+      "bytes": 7670
+    },
+    "main/stage/sales-native-verification.json": {
+      "sha256": "867927f46be2ec447a6236461eca492b9700352ad38280cb61d7f1dd1d5ad446",
+      "bytes": 941
+    },
+    "main/stage/sales-stage-ready.json": {
+      "sha256": "867927f46be2ec447a6236461eca492b9700352ad38280cb61d7f1dd1d5ad446",
+      "bytes": 941
+    },
+    "main/xvfb.log": {
+      "sha256": "ac10897129359e1f2a961170dc23959df0e3235a98a62322781492fc0f47ac9b",
+      "bytes": 1780
+    },
+    "main/detail-pages/extracted-final-state.json": {
+      "sha256": "b447c2aac4949528c8fcf58b81608fd53fbfa26840390ef34ffa3fe7b65dcd16",
+      "bytes": 134347,
+      "source_generation": 20,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/detail-pages/sarv.sqlite3"
+    },
+    "main/draft/extracted-final-state.json": {
+      "sha256": "17629e23b4fed8aab927ec14600ca56afa8836b1dff02f0a8d1e59190efab713",
+      "bytes": 90280,
+      "source_generation": 17,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/draft/sarv.sqlite3"
+    },
+    "main/full/extracted-final-state.json": {
+      "sha256": "4fb86ab132cb7696dcf5ba177a2c71d8e7db4ef92598ab93daaa4d6f3f54f38b",
+      "bytes": 132527,
+      "source_generation": 29,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/full/sarv.sqlite3"
+    },
+    "main/m4-before/extracted-final-state.json": {
+      "sha256": "b73d40101034e38a13f48ba37f945885aad3d7efebcd151e44b77a1226f701aa",
+      "bytes": 88800,
+      "source_generation": 13,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/m4-before/sarv.sqlite3"
+    },
+    "main/stage/extracted-final-state.json": {
+      "sha256": "26a7709541b7fb7f6ae3ffcae17a73426c82c28da33b8d48da8ba289a1d5910d",
+      "bytes": 110055,
+      "source_generation": 21,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/stage/sarv.sqlite3"
+    },
+    "identity/M5-pager-page-1-reuse-line-000-focused.png": {
+      "sha256": "7b20361c7aaf6888b7675c9d074a216d427efd017bfaac5bfd7cbaaf90bd6986",
+      "bytes": 131680
+    },
+    "identity/M5-pager-page-2-reuse-line-025-focused.png": {
+      "sha256": "3c7e8038f7eeb705e47048a8d17b5d4286b68f1d58ad324fbfe7eaf458c9730a",
+      "bytes": 141633
+    },
+    "identity/M5-pager-page-2-reuse-line-026-focused.png": {
+      "sha256": "ea935875aa659e21d09f570ebc56abbcf5a840c90303d6c7feab399f7f02abde",
+      "bytes": 131212
+    },
+    "identity/M5-reused-lines-current-review-error.png": {
+      "sha256": "71814e9ad236ef0c1fcce31550e53c36e3b11cf6e7cb0725a96e1309451cd17c",
+      "bytes": 126626
+    },
+    "identity/editor/keyboard-events.jsonl": {
+      "sha256": "097660c6950683f26da3fa595b5c3024a8d22511e193cee7ac1a7e1b4d39a1fc",
+      "bytes": 2752
+    },
+    "identity/editor/ready.png": {
+      "sha256": "6df5aa93ae088e004c6538fe373423baa3f394098148ce679b7ea7dedce46044",
+      "bytes": 112596
+    },
+    "identity/editor/sales-pager-focus.jsonl": {
+      "sha256": "c615f8f24eddd4abd765be6cb45f40a632ec0d2d4ba437dbedcd8fda8fc9a246",
+      "bytes": 521
+    },
+    "identity/editor/synthetic-input-state.json": {
+      "sha256": "b3bafa59b2cc68ee539d96854b551b636d92b13c683c316be238b85e3b0b5c2d",
+      "bytes": 105355
+    },
+    "identity/editor/synthetic-raw-fixture.json": {
+      "sha256": "7c0ff38fac24745b94484cc262c1609ee4115bb4bfa26ea4523f39539f96ec86",
+      "bytes": 19755
+    },
+    "identity/editor.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "identity/list/keyboard-events.jsonl": {
+      "sha256": "65487585d409cf6394e7e8a09d11ec8fb89136ed7fe01ef54fbec56895031389",
+      "bytes": 27505
+    },
+    "identity/list/ready.png": {
+      "sha256": "3f5850f7770fe9aa50558da407983aa98f087b799a8236a80fd190268c90cb01",
+      "bytes": 137762
+    },
+    "identity/list.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "identity/openbox.log": {
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+      "bytes": 207
+    },
+    "identity/progress.jsonl": {
+      "sha256": "29e989529ff7fbe1c471871647156cb744abb1406536f20eee5ed60d8f25f19f",
+      "bytes": 3435
+    },
+    "identity/slot-reuse-native.json": {
+      "sha256": "37b576a3efcd1db1542094da5f0b919f3c41574d054aad52ea4842bae73295e4",
+      "bytes": 13867
+    },
+    "identity/xvfb.log": {
+      "sha256": "9d7f7c165140805b72199571a0117abc61f16e88ed1e5993e590ef7121628d7b",
+      "bytes": 1648
+    },
+    "identity/editor/extracted-final-state.json": {
+      "sha256": "e798b6ab71e65c154d2d6eb9417fb9d3747341cdf2d4d0101df083a50b830495",
+      "bytes": 102745,
+      "source_generation": 26,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/editor/sarv.sqlite3"
+    },
+    "identity/list/extracted-final-state.json": {
+      "sha256": "de91634339d3703c866892729a4d4427fa8ce6d7f92d7967c82afc0a5bd56090",
+      "bytes": 184097,
+      "source_generation": 14,
+      "source_integrity": "ok",
+      "source_sqlite_local_only": "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/list/sarv.sqlite3"
+    }
+  },
+  "local_only_sqlite": [
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/detail-pages/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/detail-pages/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/detail-pages/sarv.sqlite3-wal",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/draft/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/draft/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/draft/sarv.sqlite3-wal",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/full/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/full/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/full/sarv.sqlite3-wal",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/m4-before/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/m4-before/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/m4-before/sarv.sqlite3-wal",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/stage/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/stage/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/run-5br6f6ku/stage/sarv.sqlite3-wal",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/editor/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/editor/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/editor/sarv.sqlite3-wal",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/list/sarv.sqlite3",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/list/sarv.sqlite3-shm",
+    "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-28axdwy7/list/sarv.sqlite3-wal"
+  ]
+}

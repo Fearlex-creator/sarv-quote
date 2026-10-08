@@ -1,0 +1,51 @@
+{
+  "result": "PASS frozen candidate1 independent headless financial/data checks",
+  "overall_native_performance_acceptance": "pending",
+  "production_source_sha256": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+  "root_release_binary_sha256_verified": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "probe_count": 7,
+  "cutoff_count": 8,
+  "guard_observation_count": 30,
+  "authentic_quote_draft_observation_count": 20,
+  "original_full_fixture": {
+    "inventory": 550,
+    "AR": 1066,
+    "AP": 449,
+    "GRNI": 50,
+    "COGS": 50,
+    "profit": 816,
+    "trial_balance_debit_credit": 3050,
+    "operational_records": 15,
+    "movements": 14,
+    "journals": 11
+  },
+  "financial_fault_fixture": {
+    "date": "2026-04-04",
+    "original_W1": [
+      29000,
+      378
+    ],
+    "issued_base_quantity_thousandths": 1000,
+    "issue_cost": 13,
+    "invoice_net": 20,
+    "final_inventory": 537,
+    "final_AR": 1086,
+    "final_COGS": 63,
+    "final_profit": 823,
+    "journals": 12,
+    "owned_child_kill_phases": [
+      "prepared-before-transaction",
+      "committed-before-receipt-adoption"
+    ],
+    "simultaneous_detached_writers": 2,
+    "identical_and_different_keys": true,
+    "full_state_fresh_restores": 4
+  },
+  "limitations": [
+    "software SIGKILL, not physical power loss",
+    "financial probe binaries are debug builds of frozen source, release executable native proof separate",
+    "native keyboard/focus/loading/quotation regressions pending",
+    "performance epoch and declared budget assessment pending",
+    "Iranian accountant/legal/statutory approval excluded and unaccepted"
+  ]
+}

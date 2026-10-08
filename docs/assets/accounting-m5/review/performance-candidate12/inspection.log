@@ -1,0 +1,50 @@
+{
+  "result": "PASS bounded local workflow checkpoint review; strict performance FAIL remains PARTIAL and full M5/G4 OPEN",
+  "stats": 34,
+  "files": 239,
+  "action_misses": [
+    {
+      "id": 8,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 51.488974,
+      "strict_status": "miss",
+      "elapsed_ms": 150.684741
+    },
+    {
+      "id": 9,
+      "operation": "quote_page_unchanged_next",
+      "max_gap_ms": 51.002871,
+      "strict_status": "miss",
+      "elapsed_ms": 149.892047
+    },
+    {
+      "id": 16,
+      "operation": "quote_page_unchanged_previous",
+      "max_gap_ms": 51.9046,
+      "strict_status": "miss",
+      "elapsed_ms": 144.34128299999998
+    },
+    {
+      "id": 21,
+      "operation": "quote_product_choice",
+      "max_gap_ms": 73.664108,
+      "strict_status": "miss",
+      "elapsed_ms": 585.784412
+    },
+    {
+      "id": 22,
+      "operation": "quote_pdf_preview_and_export",
+      "max_gap_ms": 80.439368,
+      "strict_status": "miss",
+      "elapsed_ms": 1894.181847
+    }
+  ],
+  "broad": {
+    "global": 289.749728,
+    "PDF_busy": 107.151621,
+    "persistence_busy": 96.58612,
+    "unchanged_quote_pages": 118.810132
+  },
+  "application_logs": 76,
+  "active_source_wall_max": 49.478
+}

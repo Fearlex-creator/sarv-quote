@@ -1,0 +1,20 @@
+{
+  "result": "failed",
+  "run": "/workspace/sarv-quote/artifacts/sales-native/run-xc7fnwry",
+  "binary_source": "/workspace/sarv-quote/target/debug/sarv-quote",
+  "binary_sha256": "3e729f85075990919826d667896b14c549f4f181ba5d0c8f6cabd7e1cb172146",
+  "scope": "native GTK signal workflow, independent raw SQLite, real XTest keyboard, private X11",
+  "checks": [
+    {
+      "name": "M4 seed immutable opening/stock without sales",
+      "passed": true
+    },
+    {
+      "name": "native sale/draft/pair/returns/quote conversion complete",
+      "passed": false,
+      "failure": "stage 20: actual native quotation approval failed: قیمت قدیمی است؛ هشدار را تأیید کنید",
+      "returncode": null
+    }
+  ],
+  "error": "native sale/draft/pair/returns/quote conversion complete"
+}

@@ -1,0 +1,5 @@
+# Candidate 1 fifth failed functional observer pilot
+
+Development n1/n2 qualification only; concurrent root frozen financial checks are disclosed and no final performance claim follows. Refocusing the restarted draft Continue action failed. A same-reference unfiltered row could satisfy the current-reference condition before SearchEntry debounce rebuilt it, leaving a stale action handle. The observer now awaits a real exact zero-result filter before discovering the single draft reference. Long-document discovery uses the same warmup; alternating measured queries already reject stale results. Focus timeouts now retain target name/role/readiness/rectangle, full owned accessibility tree and screenshot.
+
+Result is incomplete. Source/binary/observer stayed stable. The original entire ignored profile remains `artifacts/performance-m5/candidate1-functional-pilot5`; this portable raw report/log/phase/manifest/screenshot set excludes binaries and SQLite. No failed or completed raw measurement is removed; final quiet immutable measurement has not started. Root permits bounded failure-driven functional qualification corrections.

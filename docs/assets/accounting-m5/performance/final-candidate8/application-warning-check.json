@@ -1,0 +1,11 @@
+{
+  "application_GTK_warning_critical_count": 1,
+  "entries": [
+    {
+      "path": "repeated/sales-native-full.log",
+      "line": 14,
+      "text": "(sarv-M5-candidate8:288295): Gtk-WARNING **: 04:25:37.763: GtkText - did not receive a focus-out event."
+    }
+  ],
+  "scope": "Application log scan; AT-SPI shutdown notices retained separately in observer logs."
+}

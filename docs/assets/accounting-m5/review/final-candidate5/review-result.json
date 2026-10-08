@@ -1,0 +1,11 @@
+{
+  "result": "PASS bounded candidate5 frozen independent financial/data/migration checks only",
+  "source_sha256": "07d0edcee2f5a13d4a708faff3e444016829f15ea6149d4d182b23037860822c",
+  "root_binary_sha256": "45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e",
+  "commands": 7,
+  "actual_per_command_guard_dicts_stable": true,
+  "exact_reviewer_bytes_captured_before_execution": true,
+  "scope": "Eight cutoff literal stock/AR/AP/GRNI/P&L/TB;30guard cases;20authenticquote/rawdraft cases;tiny residual conservation;actual owned financial child SIGKILL/CAS/retry/fourfreshrestores;actual archived M4 migration/ordinary revenue lineage",
+  "limitations": "Debug independent probes exercise exact frozen library source; native immutable-release qualification is separate. Software process kill, not hardware power loss. Native/final performance pending, historical C2 strict misses retained.",
+  "portable_copy": "All raw non-SQLite outputs and exact verification bytes retained; live SQLite files remain only ignored scratch. Full State/checksummed backups/restore reports are portable."
+}

@@ -1,0 +1,18 @@
+{
+  "portable_repository_files": {
+    "before.json": "c586209a483d4ab417b9dfd386b64d09087bcb584ecb7db9f14e4c0ee8c9f75b",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "after.json": "c586209a483d4ab417b9dfd386b64d09087bcb584ecb7db9f14e4c0ee8c9f75b",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "delivery-manifest.json": "e4721632910cb7d9675c4c46877224acf83b3d82b03d3db9c9ccfe91881ac4a8",
+    "manifest.json": "97739d4becba865f4bb648dee5c83dc580b252d9f25f8fd5cf7018226a533b2e",
+    "application.log": "833d8b244c7a6f435283ad5d9c13422755df8cf6f062b80c1730f329e2c013bb",
+    "profile/quote-callback-verification.json": "35c918f0a1434021cabe43e54c11a2b363f17012c5f4fa167edb361c9aed6913",
+    "profile/final-state.json": "26fd74f22ea841e09bd317749f420b1d69165e40ea784692689c1361e2f1e0b9"
+  },
+  "local_only_ignored_files": {
+    "profile/sarv.sqlite3": "9e4c58a36e89553f41edbab0993a8bc155f1739ac0f2cf0baa8a869a85652ced"
+  },
+  "scope": "Additional distribution clarification; original delivery receipt unchanged",
+  "note": "Synthetic SQLite backup local-only/Git-ignored; exact final State JSON, reports/logs/provenance portable; no live data."
+}

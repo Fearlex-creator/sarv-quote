@@ -1,0 +1,38 @@
+{
+  "native-performance-M5-cached-v2.py": {
+    "sha256": "ef30d01efd0ffed9d1cf1ea6d58d1ff81ee2ccf834bb3340968f27559dba0b20",
+    "bytes": 94710
+  },
+  "observer-method.patch": {
+    "sha256": "23dc0fc34dd49e2b8a9e1ec3487e55e36d70d0cd91bf391b231088d9db6a1a46",
+    "bytes": 21730
+  },
+  "provenance.json": {
+    "sha256": "4505ee0f815265b9299482e76cbda7e1b502cb75093964c849b0d1fa1a1bedd4",
+    "bytes": 729
+  },
+  "prior-observer.json": {
+    "sha256": "cfc4b9319419713f9292289a88cbe644c6b47447fa07659f003b9e92afc24e17",
+    "bytes": 265
+  },
+  "readiness-correction-provenance.json": {
+    "sha256": "b6002d4814ddfe263e298a75467106f0d4ad3b4b7d53bf57b89e652127e75b4a",
+    "bytes": 821
+  },
+  "readiness-correction.patch": {
+    "sha256": "4242c0d0ab1c4caa480a3d9e233f9d79d8b886a06f2f1a24360c501d2023f333",
+    "bytes": 3448
+  },
+  "native-performance-M5-prior.py": {
+    "sha256": "58cf88fdd660cf8b8a64b3ff25f90fb93f9c2cf56f93daf4d82ea8cc85879103",
+    "bytes": 84289
+  },
+  "native-performance-M5-cached-v2-corrected.py": {
+    "sha256": "2d0c095580318890e665b8aa7583fca28ab72e97759520ed32ba92ea3368b258",
+    "bytes": 96449
+  },
+  "README.md": {
+    "sha256": "cca5173ac7e9a257d3e834ef4e375af868d7b85fef70ef311301fd39dd226c37",
+    "bytes": 4611
+  }
+}

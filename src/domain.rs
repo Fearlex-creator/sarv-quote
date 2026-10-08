@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
-pub const CURRENT_SCHEMA: u32 = 5;
+pub const CURRENT_SCHEMA: u32 = 6;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
 pub const MAX_QUOTE_LINES: usize = 10_000;
 const MAX_REFERENCE_CHARS: usize = 160;
@@ -807,6 +807,8 @@ pub struct State {
         skip_serializing_if = "crate::accounting::AccountingState::is_empty"
     )]
     pub accounting: crate::accounting::AccountingState,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub sales_drafts: Vec<crate::sales_draft::RawSalesDraft>,
 }
 impl Default for State {
     fn default() -> Self {
@@ -818,6 +820,7 @@ impl Default for State {
             draft: Draft::default(),
             settings: Settings::default(),
             accounting: crate::accounting::AccountingState::default(),
+            sales_drafts: vec![],
         }
     }
 }
@@ -1287,7 +1290,7 @@ impl State {
     }
     pub fn validate(&self) -> Result<()> {
         self.settings.validate()?;
-        ensure!(matches!(self.schema, 1..=5), "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(matches!(self.schema, 1..=6), "نسخهٔ داده پشتیبانی نمی‌شود");
         ensure!(
             self.schema >= 5 || self.accounting.procurement.is_empty(),
             "گردش خرید و موجودی نیازمند نسخهٔ دادهٔ ۵ است"
@@ -1310,6 +1313,11 @@ impl State {
                         .all(|q| q.date_display != DateDisplay::Jalali)),
             "تاریخ شمسی نیازمند نسخهٔ دادهٔ ۳ است"
         );
+        ensure!(
+            self.schema >= 6 || (self.accounting.sales.is_empty() && self.sales_drafts.is_empty()),
+            "گردش فروش نیازمند نسخهٔ دادهٔ ۶ است"
+        );
+        self.validate_sales_drafts_and_links()?;
         self.accounting.validate()?;
         ensure!(
             self.catalogs.len() <= 1000

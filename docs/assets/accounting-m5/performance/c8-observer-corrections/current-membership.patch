@@ -1,0 +1,182 @@
+--- scripts/native-performance-M5.py
++++ scripts/native-performance-M5.py
+@@ -29,7 +29,7 @@
+ native = helper.native
+ QUOTE_SOURCE = Path('/workspace/sarv-evidence/native-before-current')
+ FOCUS_FAILURE_OUTPUT = None
+-EXTERNAL_OBSERVER_PROTOCOL = 'm5-cached-v2'
++EXTERNAL_OBSERVER_PROTOCOL = 'm5-cached-v3'
+ 
+ 
+ def frozen_source_provenance():
+@@ -78,10 +78,11 @@
+         self.access, self.root, self.nodes = access, root, nodes
+         self.calls = {'predicates': 0, 'node_reads': 0, 'parent_checks': 0,
+                       'process_checks': 0, 'role_reads': 0, 'name_reads': 0,
+-                      'state_reads': 0, 'accessible_id_reads': 0}
++                      'state_reads': 0, 'accessible_id_reads': 0,
++                      'parent_children_reads': 0, 'membership_edges_checked': 0}
+         self.metadata = metadata
+         self.roles, self.parents = {}, {}
+-        self.edges = {}
++        self.edges, self.paths = {}, {}
+         self.api_id = getattr(access.a, 'atspi_accessible_get_accessible_id', None)
+         if self.api_id is not None:
+             self.api_id.argtypes = [C.c_void_p, C.c_void_p]
+@@ -95,19 +96,24 @@
+                         lifetime='this owned process/current workspace or dialog only')
+         self.root_role = self.role(root)
+         self.root_parent = self.parent(root)
++        assert self.root_parent, 'Cached current root must have a live exposed parent'
++        self.edges[root] = self.root_parent
+         for key, row in nodes.items():
+             node = row['node']
+             self.roles[key], self.parents[key] = self.role(node), self.parent(node)
+             assert self.roles[key], f'Cached {key} has no native role'
+             current = node
++            self.paths[key] = []
+             for _ in range(24):
+                 if current == root:
+                     break
+                 parent = self.parent(current)
+                 assert parent, f'Cached {key} does not belong to current root'
+                 self.edges[current] = parent
++                self.paths[key].append(current)
+                 current = parent
+             assert current == root, f'Cached {key} ancestry escaped current root'
++            self.paths[key].append(root)
+         self.check_identity()
+         metadata['discovered_nodes'] = {key: {'node': hex(row['node']),
+             'parent': hex(self.parents[key]), 'role': self.roles[key],
+@@ -145,25 +151,43 @@
+             'Cached Sales node is defunct; timed rediscovery is forbidden'
+ 
+     def check_identity(self):
++        # Memoize direct children within this check only; never across updates.
++        parent_children, exposed_edges = {}, {}
+         self.check_node(self.root)
+         assert self.role(self.root) == self.root_role and self.parent(self.root) == self.root_parent, \
+             'Cached Sales current root changed or retired'
+         for node, expected_parent in self.edges.items():
+             self.check_node(node)
+             assert self.parent(node) == expected_parent, 'Cached Sales current parent changed'
++            if expected_parent not in parent_children:
++                self.access.a.atspi_accessible_clear_cache(expected_parent)
++                self.calls['parent_children_reads'] += 1
++                parent_children[expected_parent] = set(self.access.children(expected_parent))
++            self.calls['membership_edges_checked'] += 1
++            exposed_edges[node] = node in parent_children[expected_parent]
+         for key, row in self.nodes.items():
+             assert self.role(row['node']) == self.roles[key], f'Cached {key} role changed'
++        paths = {key: all(exposed_edges[node] for node in path)
++                 for key, path in self.paths.items()}
++        self.metadata['current_membership'] = {
++            'paths_exposed': paths,
++            'edges': [{'child': hex(node), 'parent': hex(self.edges[node]), 'currently_exposed': exposed}
++                      for node, exposed in exposed_edges.items()],
++            'direct_parent_children_memo_lifetime': 'this identity check only'}
++        return all(paths.values())
+ 
+     def read(self, key):
+         self.calls['node_reads'] += 1
+         return self.name(self.nodes[key]['node'])
+ 
+-    def predicate(self, label, callback):
++    def predicate(self, label, callback, require_exposed=True):
+         started = time.perf_counter()
+         self.calls['predicates'] += 1
+         stats = self.metadata['predicate_stats'].setdefault(label, {'n': 0, 'total_ms': 0, 'worst_ms': 0})
+         try:
+-            self.check_identity()
++            exposed = self.check_identity()
++            if require_exposed and not exposed:
++                return None
+             if not ready(self.access, {'node': self.root}):
+                 return None
+             return callback()
+@@ -192,14 +216,17 @@
+                     return False
+                 states[key] = {'showing': bool(self.access.a.atspi_state_set_contains(native_states, 25)),
+                                'sensitive': bool(self.access.a.atspi_state_set_contains(native_states, 24))}
+-            hidden = not states['action']['showing'] and not states['action']['sensitive'] \
+-                and not states['title']['showing']
++            paths = self.metadata['current_membership']['paths_exposed']
++            hidden = paths['search'] and paths['status'] and not states['action']['sensitive'] \
++                and not paths['action'] and not paths['title']
+             if hidden:
+                 self.metadata['zero_result_hide_qualification'] = {
+                     'exact_query': 'NO-MATCH-PERFORMANCE', 'matches': 0, 'states': states,
+-                    'identity_and_current_status_ready': True}
++                    'identity_and_current_status_ready': True,
++                    'current_paths_exposed': dict(paths),
++                    'retained_leaf_showing_flags_are_not_effective_visibility': True}
+             return hidden
+-        return self.predicate('zero_result_cached_hide', current)
++        return self.predicate('zero_result_current_tree_absence', current, require_exposed=False)
+ 
+     def receipt(self, label, expected):
+         self.check_identity()
+@@ -207,7 +234,8 @@
+             'names': {key: self.read(key) for key in self.nodes},
+             'nodes': {key: hex(row['node']) for key, row in self.nodes.items()},
+             'accessible_ids': {key: self.accessible_id(row['node']) for key, row in self.nodes.items()},
+-            'rectangles': {key: self.access.rect(row) for key, row in self.nodes.items()}})
++            'rectangles': {key: self.access.rect(row) for key, row in self.nodes.items()},
++            'current_membership': self.metadata['current_membership']})
+         self.metadata['validity'] = 'current root/parents/process/roles checked; transitions retained'
+ 
+ 
+@@ -939,7 +967,7 @@
+     x11.key('a', 'Control_L')
+     x11.type_ascii('NO-MATCH-PERFORMANCE')
+     observe(lambda: count(0), 'zero-row posted Sales warmup')
+-    observe(cache.zero_hidden, 'owned cached slot0 insensitive/not-showing at exact zero results')
++    observe(cache.zero_hidden, 'owned cached slot0 insensitive/current-tree absent at exact zero results')
+     cache.receipt('zero-result hide', {'matches': 0, 'cached_hide_qualified': True})
+     for index in range(samples):
+         query = ('INV-M5-A', 'INV-M5-B')[index % 2]
+@@ -970,7 +998,7 @@
+         assert helper.payload(profile) == baseline, 'Posted Sales search changed durable state'
+     measurement.update({'result': 'measured', 'correct_visible_ms': helper.stats([r['correct_visible_ms'] for r in rows]),
+             'focused_usable_ms': helper.stats([r['focused_usable_ms'] for r in rows]),
+-            'boundary': 'm5-cached-v2: same real alternating invoice-reference/current one-row invoice/visible sensitive Detail then focused usable endpoint; discovery of persistent slot0 nodes moved before timers, current names/roles/parents/process/states/geometry reread inside. Six-record financial fixture, distinct from120 raw drafts; no causal product-speed comparison with original traversal method.'})
++            'boundary': 'm5-cached-v3: same real alternating invoice-reference/current one-row invoice/visible sensitive Detail then focused usable endpoint; discovery of persistent slot0 nodes moved before timers, current names/roles/parents/process/states/geometry and every ancestry parent-child membership reread inside. Six-record financial fixture, distinct from120 raw drafts; no causal product-speed comparison with original traversal method.'})
+     return measurement
+ 
+ 
+@@ -1036,7 +1064,7 @@
+     x11.key('a', 'Control_L')
+     x11.type_ascii('NO-MATCH-PERFORMANCE')
+     observe(lambda: summary_count(0), 'zero-row Sales search warmup')
+-    observe(page_cache.zero_hidden, 'owned cached paged slot0 insensitive/not-showing at exact zero results')
++    observe(page_cache.zero_hidden, 'owned cached paged slot0 insensitive/current-tree absent at exact zero results')
+     page_cache.receipt('zero-result hide', {'matches': 0, 'cached_hide_qualified': True})
+     for index in range(search_samples):
+         group = 'A' if index % 2 == 0 else 'B'
+@@ -1063,7 +1091,7 @@
+     result['search_budgets'] = {key: {'budget_ms': 200, 'p95_ms': result[key]['p95'],
+                                    'passes': result[key]['p95'] <= 200}
+                               for key in ('correct_visible_ms', 'focused_usable_ms')}
+-    result['search_boundary'] = 'm5-cached-v2: same real XTest query/exact current first draft/60-match summary/visible sensitive Continue then component-first focused usable endpoint; persistent discovery before timer, fresh names/roles/current parent/process/states/geometry inside. Observation-method delta, not product-only speed.'
++    result['search_boundary'] = 'm5-cached-v3: same real XTest query/exact current first draft/60-match summary/visible sensitive Continue then component-first focused usable endpoint; persistent discovery before timer, fresh names/roles/current parent/process/states/geometry and every ancestry parent-child membership inside. Observation-method delta, not product-only speed.'
+     # Current B query: visit every filtered page and reject stale first-page rows.
+     result['filtered_page_samples'] = []
+     for page_index, expected in [(1, 'PERF-B-051'), (2, 'PERF-B-101')]:
+@@ -1169,7 +1197,7 @@
+     capture(window, large / '1000-line-last-native-page.png')
+     result['long_editor_memory_kib'] = helper.rss(app.pid)
+     result['long_editor_shape'] = core_shape(large)
+-    result['long_editor_boundary'] = 'm5-cached-v2 loaded pages: same exact current scoped page marker plus visible sensitive Edit then focused usable Edit; persistent marker/slot0 action/Next discovered before page timers, current roles/parents/process/names/states/geometry refreshed inside. Historical opening discovery and visible-phase focus assistance retained. No invented visible lineUUID; observation-method change is not causal product-speed evidence.'
++    result['long_editor_boundary'] = 'm5-cached-v3 loaded pages: same exact current scoped page marker plus visible sensitive Edit then focused usable Edit; persistent marker/slot0 action/Next discovered before page timers, current roles/parents/process/names/states/geometry and every ancestry parent-child membership refreshed inside. Historical opening discovery and visible-phase focus assistance retained. No invented visible lineUUID; observation-method change is not causal product-speed evidence.'
+     result['native_read_only_phases'] = {'paged_search': sales_phases(paged), 'long_editor': sales_phases(large)}
+     native.stop(app)
+     env.pop('SARV_SALES_PERFORMANCE_TRACE')
+@@ -1214,7 +1242,7 @@
+     report = {
+         'result': 'incomplete', 'synthetic_only': True, 'development_pilot': args.pilot, 'binary': str(binary),
+         'external_observer_protocol': EXTERNAL_OBSERVER_PROTOCOL,
+-        'external_method_delta': 'Sales posted/paged queries and loaded long pages cache persistent owned current nodes before timed dispatch; exact historical semantic readiness/focus endpoints and budgets retained; startup/core/procurement/long opening unchanged. No timed traversal fallback. C2/C5 original method is separately attributed.',
++        'external_method_delta': 'Sales posted/paged queries and loaded long pages cache persistent owned current nodes before timed dispatch; exact current readiness/focus and budgets retained with stronger fresh parent-child membership on every cached ancestry edge; zero-result oracle uses exact0/statusready/actioninsensitive/absence from exposed ancestry and records retained stale SHOWING flags. Startup/core/procurement/long opening unchanged. Direct parent-child enumeration memoized only within one predicate, no timed BFS fallback. C2/C5 original method and failed v2 separately attributed; no product-speed causal claim.',
+         'binary_sha256': args.expect_sha, 'utc': helper.command('date', '-u', '+%Y-%m-%dT%H:%M:%SZ'),
+         'root_freeze_manifest': str(args.source_manifest.resolve()),
+         'root_freeze_manifest_sha256': helper.sha(args.source_manifest),

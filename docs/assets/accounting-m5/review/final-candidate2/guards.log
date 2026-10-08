@@ -1,0 +1,5 @@
+    Blocking waiting for file lock on package cache
+    Blocking waiting for file lock on build directory
+    Finished `dev` profile [unoptimized] target(s) in 2.48s
+     Running `target/debug/sarv-independent-m5-guards /workspace/sarv-quote/artifacts/independent-m5/final-candidate2/interleaved/state.json /workspace/sarv-quote/artifacts/independent-m5/final-candidate2/guards`
+PASS 30 independent identity/retry/input/lock/reversal/tamper observations. No acceptance of untested native/fault cases.

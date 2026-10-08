@@ -1,0 +1,57 @@
+{
+  "scope": "inherited candidate5 Sales native behavior qualification, not a fresh candidate6 native execution or performance claim",
+  "candidate5_binary_sha256": "45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e",
+  "candidate6_binary_sha256": "3259e1e4b94fe8471a2b0d3cfc9446a515a50247fc2856769519dc0caf5fd18e",
+  "candidate6_production_sha256": "4f14b3f0c29e74bb686611779d2e916db9edb2c62174ff5630e9c7db483f6857",
+  "unchanged_production_files": [
+    "Cargo.lock",
+    "Cargo.toml",
+    "src/accounting.rs",
+    "src/accounting_export.rs",
+    "src/calendar.rs",
+    "src/core.rs",
+    "src/core_export.rs",
+    "src/core_import.rs",
+    "src/domain.rs",
+    "src/export.rs",
+    "src/imports.rs",
+    "src/lib.rs",
+    "src/main.rs",
+    "src/procurement.rs",
+    "src/procurement_export.rs",
+    "src/sales.rs",
+    "src/sales_draft.rs",
+    "src/sales_export.rs",
+    "src/store.rs",
+    "src/style.css",
+    "src/ui.rs",
+    "src/ui/accounting.rs",
+    "src/ui/background.rs",
+    "src/ui/catalog_editor.rs",
+    "src/ui/catalog_preview.rs",
+    "src/ui/components.rs",
+    "src/ui/core.rs",
+    "src/ui/editor.rs",
+    "src/ui/managers.rs",
+    "src/ui/pickers.rs",
+    "src/ui/procurement.rs",
+    "src/ui/sales.rs",
+    "src/ui/settings.rs",
+    "src/ui/smoke.rs",
+    "src/ui/workspace.rs"
+  ],
+  "changed_production_files": [
+    "src/ui/responsiveness.rs"
+  ],
+  "inspected_delta": "Opt-in responsiveness step63 changes exact_ready quantity text equality to quantity parser == Some(1000), accepting equivalent canonical1.000 as1. Only schedule with SARV_RESPONSIVENESS=1 executes this probe. Ordinary UI callbacks, Sales/root ownership, shared mapped date validation, kernel/Store and export paths are byte-identical.",
+  "inherited_receipts": {
+    "main_native_checks": 66,
+    "distinct_id_checks": 34,
+    "main_report": "sales-independent-native.json",
+    "identity_report": "identity/slot-reuse-native.json"
+  },
+  "limitations": [
+    "C5 executed binary remains C5; inheritance does not rename historical receipts.",
+    "C6 opt-in responsiveness observer requires its own qualification; root owns that proof."
+  ]
+}

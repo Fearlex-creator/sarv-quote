@@ -1,0 +1,22 @@
+dbus-daemon[250670]: [session uid=1000 pid=250670 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=250671 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[250670]: [session uid=1000 pid=250670 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[250706]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=250671 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[250706]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"core_search": {"n": 2, "p50": 137.51117599895224, "p95": 171.67183900164673, "p99": 171.67183900164673, "worst": 171.67183900164673, "method": "nearest rank"}, "preview_ms": 55.60958499700064, "post_ms": 6.083434003812727}
+{"procurement_searches": {"document": {"n": 2, "p50": 127.99213699327083, "p95": 138.99962300638435, "p99": 138.99962300638435, "worst": 138.99962300638435, "method": "nearest rank"}, "party": {"n": 2, "p50": 84.66417300223839, "p95": 97.62855999724707, "p99": 97.62855999724707, "worst": 97.62855999724707, "method": "nearest rank"}, "item": {"n": 2, "p50": 84.58504400186939, "p95": 94.68342900072457, "p99": 94.68342900072457, "worst": 94.68342900072457, "method": "nearest rank"}, "mixed_master": {"n": 2, "p50": 90.07848600595025, "p95": 98.85057100473205, "p99": 98.85057100473205, "worst": 98.85057100473205, "method": "nearest rank"}}}
+X connection to :11 broken (explicit kill or server shutdown).
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1249, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1160, in main
+    sales, sales_profile, sales_large = measure_sales(output, procurement_profile, binary, env, start, x11, capture, args.search_samples, args.pilot, report)
+                                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 755, in measure_sales
+    result['external_stage'] = measure_sales_stage(output, procurement_source, binary, env, start, x11, capture, result)
+                               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 581, in measure_sales_stage
+    assert access.text(total) == 'INVALID-M5-RAW-TOTAL'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

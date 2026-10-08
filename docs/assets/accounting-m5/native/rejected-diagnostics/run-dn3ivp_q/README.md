@@ -1,0 +1,1 @@
+Rejected added30-line observer fixture: raw schema6 draft was seeded into schema5 before upgrade. Application correctly refused. Existing57 check receipts retained; overall run failed. Error capture queried an already-dead owned AT-SPI app and was interrupted; finally wrote report/cleanup.

@@ -11,8 +11,8 @@ Only explicit user choices and delegation are confirmed. The latest delegation p
 | DEC-05 Platforms/collaboration | Native stack confirmed; launch support pending | User explicitly confirms Rust + GTK4 + stable libadwaita; no React/Svelte/Tauri migration. Existing environment is Linux/X11. Windows/multiuser/mobile/cloud are separate scopes. | Confirm supported releases/hardware before public support claims; no shared/cloud-synced SQLite workaround. |
 | DEC-06 Release authority | Pending user | Independent technical review is required by user. Accountant/tax specialist acceptance is not supplied by code tests. | User names product/accounting/security/statutory acceptors; production/static tax claims stay blocked. |
 | MNY-IRR Canonical currency | Confirmed by user during this cycle | Canonical **integer IRR**, exact **1 toman = 10 rials**, and **fractional rial input rejected**. Current quote value/precision remains preserved. | Implement bounded exact signed journal amounts with checked range and explicit units; presentation conversion never changes stored economic value. This approval does not select tax/stock/recognition/rounding policies. |
-| MNY-ROUND Calculation policy | Order/receipt/bill allocations evidenced; returns pending | Current quotation rounding remains unchanged. The next core version explicitly defines quantity thousandths, positive half-up, stable largest-remainder document discount allocation and cumulative original-value returns; see the core policy proposal. New core tax is disabled. | Version and independently fixture-test new policies; never reinterpret old totals. Professional production review remains pending. |
-| INV-VAL Stock valuation/backdating | Receipt/transfer costing evidenced; sales/returns pending | The core policy proposal specifies per-company/item/warehouse moving weighted average, whole-rial residuals, original-cost returns, blocked negative stock and nondecreasing stock dates. | Implement checked quantity/value controls, same-date commit ordering, late-cost boundaries and lock enforcement before claiming G3. Professional production review remains pending. |
+| MNY-ROUND Calculation policy | Goods allocations and original-cost returns evidenced; full launch pending | Current quotation rounding remains unchanged. The next core version explicitly defines quantity thousandths, positive half-up, stable largest-remainder document discount allocation and cumulative original-value returns; see the core policy proposal. New core tax is disabled. | Version and independently fixture-test new policies; never reinterpret old totals. Professional production review remains pending. |
+| INV-VAL Stock valuation/backdating | Receipt/transfer/sale/original-cost-return slice evidenced; full inventory pending | The core policy proposal specifies per-company/item/warehouse moving weighted average, whole-rial residuals, original-cost returns, blocked negative stock and nondecreasing stock dates. | Implement checked quantity/value controls, same-date commit ordering, late-cost boundaries and lock enforcement before claiming G3. Professional production review remains pending. |
 | IR-STAT Statutory applicability | Deferred by current user instruction | Vendor taxpayer-system claims are not tax authority schemas/rates/deadlines/certification. No current legal rule is selected. | Obtain effective primary technical/legal sources and entity applicability before G5; credentials/submission require separate authorization. |
 | PERF-BUDGET Hardware/latency | Proposed, not accepted target proof | Blueprint targets four-core x86-64/8 GB/SSD with 100k documents/1m journal lines/50k items/10k parties/5 years. Current quote fixture is smaller and cloud-specific. | Declare actual measured hardware/datasets/build, distinguish cold definitions and latency boundaries; user accepts any revised budget. |
 | DATA-CAP Existing 64 MiB bound | Baseline limitation | Quote aggregate cannot grow beyond a restorable 64 MiB JSON envelope. This is current safety behavior, not a free-core quota decision. | Future indexed transactional accounting schema must scale without quietly imposing a product record quota. Migration/restore rehearsal required. |
@@ -105,3 +105,52 @@ budgets. Dispatch and choice readiness are separate measurements. This changes
 no accounting policy, schema, money arithmetic, journal or procurement command.
 Other synchronous commands and rendering limits remain tracked; this is not an
 assertion that every expensive GTK path has been eliminated.
+
+
+## M5 goods sales and durable editing
+
+The user's latest policy delegation authorizes the guide's versioned engineering
+accounting defaults for development and excludes actual statutory/legal tax
+integrations. Professional accountant review remains a production acceptance
+gate. Existing core-policy-v1 accrual/perpetual, exact integer IRR, moving average
+stock and company-global backdating guard remain in force. No software license,
+paid service or legal compliance rule has been selected anew.
+
+M5 offers direct or authentic approved-quotation-linked goods orders, partial
+same-date paired deliveries/invoices, and normal original-warehouse restock
+returns/credits. Separate IDs and references preserve each document's state.
+An invoice is not a collected payment; returns do not reopen order fulfillment.
+Service sales, unbilled deliveries, pre-delivery invoices, refunds, damaged stock,
+purchase returns, advance allocation and tax submissions remain staged work.
+Tax-bearing quotations are retained unchanged and conversion rejects them.
+
+Schema6 adds optional sales records and safe bounded raw drafts; invalid money
+and calendar text can be saved without authorizing posting. Review canonicalizes
+raw dates using the draft's explicit calendar and amounts using its explicit
+rial/toman unit. Posting uses a saved revision; definite success removes the
+active draft, while retries resolve the same immutable order after restart or
+a lost receipt. The complete approved quotation hash and explicit source-line
+indices bind every linked order; exact unique SKU/unit mapping is required, and
+multiple warehouses require explicit selection. A differing customer mapping
+requires an explicit source/customer mapping reason, not fuzzy matching.
+
+Shared stock history now merges procurement and sales in persisted audit order.
+Sequence numbers retain the original audit-count basis including opening/manual
+journals. Old ordinary sales.* history stays ordinary, and separately disclosed
+ordinary revenue adjustments never become fabricated invoice balances. No
+original M4 record, journal, retry alias or fixture is rewritten.
+
+
+M5 partial allocation treats original net, line discount and document discount
+as authoritative conserved components. Each uses cumulative integer half-up
+allocation with the final exact residual. Allocated source gross is the exact
+sum of those components, not a new multiplication of the original unit price
+by a partial quantity. Fresh order gross still uses the existing exact price
+calculation. Native review/details and exports must label the original source
+price and allocated gross explicitly and explain component rounding. This avoids
+negative partial net amounts produced by independently rounding gross minus
+discounts. For gross2/discount1/net1 over three equal portions, authoritative net
+allocations are0/1/0, discounts0/1/0 and allocated gross0/2/0; all remain
+nonnegative and conserve the source exactly. The final remaining portion does
+not receive an invented rial. This is a bounded engineering policy documented
+for accountant review, without a statutory invoice claim.

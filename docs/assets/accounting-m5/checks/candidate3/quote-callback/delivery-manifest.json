@@ -1,0 +1,22 @@
+{
+  "files": {
+    "after.json": "f545bdcc02ab0150d041cb5f20a3f132c0062c4ca7c648abe92e2e92784f6917",
+    "application.log": "a841616a9d2099db765bc64473ade89a56c160d363f2c6a778b664534f21e619",
+    "before.json": "f545bdcc02ab0150d041cb5f20a3f132c0062c4ca7c648abe92e2e92784f6917",
+    "manifest.json": "9a122c56c44feaadf37e47718dff4c75a06346ff982d8573e55ab4d2ec40b48a",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "profile/final-state.json": "e849d409e8a210fe2f17a72103014f0cad31326ef66b85b1f6fa6e1e3431cc67",
+    "profile/quote-callback-verification.json": "2650384f44ffba81384eaca8218ce320311dcf9123c9202cd479f9b838633773",
+    "profile/sarv.sqlite3": "f7be435dd8aa692d61da8b95d3e3e8f9d09b33580b63005488305bf0c5369d0f",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "source_physical_sha256": {
+    "sarv.sqlite3-shm": "45ccb6a79506078009eddf00b6be978fe49b025fe04dd66ce96e58fef4930cb9",
+    "sarv.sqlite3": "ecebcfef853ac1d1a44fc652c28ae7a95f8fce2a9b8d2a64c9dd5315ec865abb",
+    "sarv.sqlite3-wal": "93bed5be0c23770b968d45b82195fae9ef0fe5a6ba9a8c11287088c18fe9a0cf"
+  },
+  "sqlite_export_method": "SQLite online backup from original stopped synthetic profile including WAL; generation+payload exact before/destination/after; original source preserved; synthetic delivery copy consolidated into DELETE journal mode to avoid mutable WAL/SHM sidecars; exact logical state retained",
+  "sqlite_integrity": "ok",
+  "scope": "nine held-writer quotation callback correctness checks; phase11 does not establish final requested page correctness; independently identified defect remains open",
+  "benchmark_status": "diagnostic qualification under concurrent native checks; dispatch samples are not final performance acceptance"
+}

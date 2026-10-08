@@ -884,6 +884,10 @@ impl AccountingState {
             !self.procurement.uses_nonfinancial_key(&command.request_key),
             "کلید درخواست قبلاً برای رویداد خرید یا انبار استفاده شده است"
         );
+        ensure!(
+            !self.sales.uses_nonfinancial_key(&command.request_key),
+            "کلید درخواست قبلاً برای رویداد فروش استفاده شده است"
+        );
         let record = ZeroOpeningRequest {
             request_key: command.request_key.clone(),
             company_id: command.company_id.clone(),

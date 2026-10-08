@@ -1,0 +1,283 @@
+{
+  "result": "PASS actual C12 native83; identity37 and final performance still pending",
+  "scope": "native GTK signal workflow, independent raw SQLite, real XTest keyboard, private X11",
+  "production_source_sha256": "a065b023e0d83fb4c41991382b990a9a746afb3f8bcbdf0ca23e2d00b45e8bed",
+  "binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e",
+  "checks": 83,
+  "source36_before_equals_after": true,
+  "observer_sha256": "742ee492da5e9d2fac6d47f56a88e50bdea9f60c87a0a0f817045cb7c8c55d01",
+  "fatal_criticals": true,
+  "material_native_diagnostics": [],
+  "x11_errors": [],
+  "states": {
+    "full": {
+      "generation": 29,
+      "schema": 6,
+      "journals": 9,
+      "all_journals_balanced": true
+    },
+    "stage": {
+      "generation": 21,
+      "schema": 6,
+      "journals": 7,
+      "all_journals_balanced": true
+    },
+    "draft": {
+      "generation": 17,
+      "schema": 6,
+      "journals": 5,
+      "all_journals_balanced": true
+    },
+    "detail-pages": {
+      "generation": 20,
+      "schema": 6,
+      "journals": 5,
+      "all_journals_balanced": true
+    }
+  },
+  "role_balances": {
+    "Cash": 251,
+    "Bank": 300,
+    "Receivables": 299,
+    "ChequesReceivable": 200,
+    "Inventory": 422,
+    "SupplierAdvances": 0,
+    "FixedAssets": 0,
+    "Payables": -329,
+    "ChequesPayable": -100,
+    "Grni": -50,
+    "CustomerAdvances": 0,
+    "Loans": 0,
+    "OwnerCapital": -952,
+    "OwnerDrawings": 0,
+    "RetainedEarnings": 0,
+    "Sales": -199,
+    "SalesReturns": 100,
+    "Cogs": 58,
+    "OperatingExpense": 0,
+    "BankFees": 0,
+    "InventoryLoss": 0
+  },
+  "trial_balance": [
+    1630,
+    1630
+  ],
+  "components": [
+    {
+      "kind": "Order",
+      "total": 199,
+      "cost": null
+    },
+    {
+      "kind": "Fulfill",
+      "total": 100,
+      "cost": 58
+    },
+    {
+      "kind": "Return",
+      "total": 40,
+      "cost": 23
+    },
+    {
+      "kind": "Return",
+      "total": 60,
+      "cost": 35
+    },
+    {
+      "kind": "Fulfill",
+      "total": 99,
+      "cost": 58
+    },
+    {
+      "kind": "Order",
+      "total": 20,
+      "cost": null
+    }
+  ],
+  "detail_pager_focus": [
+    {
+      "name": "native detail pager offset25 hands focus to live sales-detail-previous",
+      "passed": true,
+      "receipt": {
+        "count": 7,
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "mapped": true,
+        "offset": 25,
+        "sensitive": true,
+        "target_name": "sales-detail-previous",
+        "total": 32,
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "native detail pager offset0 hands focus to live sales-detail-next",
+      "passed": true,
+      "receipt": {
+        "count": 25,
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "mapped": true,
+        "offset": 0,
+        "sensitive": true,
+        "target_name": "sales-detail-next",
+        "total": 32,
+        "window_focus_exact": true
+      }
+    }
+  ],
+  "narrow_actual_keyboard_checks": [
+    {
+      "name": "narrow light actual Tab reaches سفارش فروش تازه",
+      "passed": true
+    },
+    {
+      "name": "narrow light actual Tab reaches از پیشنهاد تأییدشده",
+      "passed": true
+    },
+    {
+      "name": "narrow light actual Tab reaches به‌روزرسانی",
+      "passed": true
+    },
+    {
+      "name": "narrow light CtrlF reveals native search and zero state",
+      "passed": true
+    },
+    {
+      "name": "narrow light real Tab Enter opens current source",
+      "passed": true
+    },
+    {
+      "name": "narrow light loaded source action scrolls into view",
+      "passed": true
+    },
+    {
+      "name": "narrow dark actual Tab reaches سفارش فروش تازه",
+      "passed": true
+    },
+    {
+      "name": "narrow dark actual Tab reaches از پیشنهاد تأییدشده",
+      "passed": true
+    },
+    {
+      "name": "narrow dark actual Tab reaches به‌روزرسانی",
+      "passed": true
+    },
+    {
+      "name": "narrow dark CtrlF reveals native search and zero state",
+      "passed": true
+    },
+    {
+      "name": "narrow dark real Tab Enter opens current source",
+      "passed": true
+    },
+    {
+      "name": "narrow dark loaded source action scrolls into view",
+      "passed": true
+    }
+  ],
+  "native_application_logs": {
+    "artifacts/sales-native/run-yji_0ewe/M5-draft.log": {
+      "sha256": "22f1fd18bd423f1363a2c16c673bcc8d6915b433e8d43436f2989986d58e5c52",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-layout-light.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-draft-restart.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-full.log": {
+      "sha256": "7974587574438fa9e2c4d7e411570823694282542316323d48202d1501c36de0",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-stage-restart.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-detail-pages.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-layout-dark.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "diagnostics": []
+    },
+    "artifacts/sales-native/run-yji_0ewe/M5-stage.log": {
+      "sha256": "25f177f85ee60e7be0e535eb667e2ad61f22a3fa4d211ecadea610ff470c4647",
+      "diagnostics": []
+    }
+  },
+  "limits": [
+    "Actual private X11 synthetic execution only; no general warning-free/platform/accessibility claim.",
+    "Independent financial/data7 remains C5 execution on unchanged implementation; this fresh C12 native fixture is separate.",
+    "No performance or local checkpoint acceptance until remaining receipts are reviewed."
+  ],
+  "inputs_sha256": {
+    "docs/assets/accounting-m5/checks/candidate12/manifest.json": "60aa8e1671b4ea4954404370c8f53caa868d4b03c9110f1916608b070c2ea11c",
+    "docs/assets/accounting-m5/checks/candidate12/source-provenance-before.json": "46ce9f2d650cb1e7c32163a7e3cb43b23ad9509bfb407dfeefec580402468714",
+    "docs/assets/accounting-m5/checks/candidate12/source-provenance-after.json": "46ce9f2d650cb1e7c32163a7e3cb43b23ad9509bfb407dfeefec580402468714",
+    "docs/assets/accounting-m5/checks/candidate12/verification-source-before.json": "162e3e80e098b45439c66b05ddcb0e6d95db4017a6ddead693c8c508a121aaed",
+    "docs/assets/accounting-m5/checks/candidate12/verification-source-after.json": "162e3e80e098b45439c66b05ddcb0e6d95db4017a6ddead693c8c508a121aaed",
+    "docs/assets/accounting-m5/checks/candidate5/manifest.json": "ccaa1062d56a99a870114749c65e47ec3e8c79389d93e2bdf685f55f1ca48be2",
+    "docs/assets/accounting-m5/checks/candidate9/manifest.json": "3b7b6b6aae41a5a110bc61912885c0cc3c7ddeda7abe8e092a95f61f3abc4db7",
+    "docs/assets/accounting-m5/checks/candidate11-diagnostic/manifest.json": "304b6e1df6c09b20e629594f212a642d59aded337abc135f5e3b64c65e1f0fce",
+    "docs/assets/accounting-m5/checks/candidate12/gates/manifest.json": "163a8be04c818930e69fe19be047c918863a56767eb4c6aa97962d3d14e283de",
+    "docs/assets/accounting-m5/checks/candidate12/gates/fmt.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/assets/accounting-m5/checks/candidate12/gates/fmt-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/fmt-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/clippy.log": "9ddcb7a97f3589835ba8f354c41d25b0a805bd5f85ddbccaff009e6f6dc7236c",
+    "docs/assets/accounting-m5/checks/candidate12/gates/clippy-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/clippy-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/all-targets.log": "53ac581e48620f1112190254321cdff8a34acc11340486695bc0de285bf9f6d9",
+    "docs/assets/accounting-m5/checks/candidate12/gates/all-targets-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/all-targets-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/font-opt-in.log": "6a729d26ecd68db415f3e6f49cd5163d8170fb99657ed6551ee249ea80efba6d",
+    "docs/assets/accounting-m5/checks/candidate12/gates/font-opt-in-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/font-opt-in-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/actual-m3-refusal.log": "195ba70706ff599a0a0de70639bbd4a863ed0ce2645b5cbef907b3343b6ade0e",
+    "docs/assets/accounting-m5/checks/candidate12/gates/actual-m3-refusal-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/actual-m3-refusal-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/actual-m4-refusal.log": "c4c25a217c0e5d9b93b6f558b7da54c68ac34ac86c420b7e22e65ff827108c40",
+    "docs/assets/accounting-m5/checks/candidate12/gates/actual-m4-refusal-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/actual-m4-refusal-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/gtk-lifecycle.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "docs/assets/accounting-m5/checks/candidate12/gates/gtk-lifecycle-before.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/gates/gtk-lifecycle-after.json": "37dfad772ec3959c642631f8539241b4b93a974b13a9f0f8cbc592b4f273e4c1",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/manifest.json": "e19b9a2f01408e8fc76ccce16b3765c73db3b44f1fbac12de1e116078b94c2dd",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/core.log": "9602cd4bb895e5dec9ac0aa939fef8507665df076e18fd827397b0756a5a08aa",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/core-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/core-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/jalali.log": "637d924605598d28ca5a9700c4339ce64c603aa0c942b91004b9d158a04d4104",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/jalali-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/jalali-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/sidebar.log": "f5b6c51d792d3be9ebb077624aa8f0d6ed7b558211029f19a1bc15c70277a978",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/sidebar-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/sidebar-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/ledger.log": "8080f3a8ee0b2bd066763897e46d38c08cc52cadc7a156ae5def4649989b1e31",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/ledger-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/ledger-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/procurement.log": "e211aff015a9b30cdf8e20fcc40f54c82559aea43585299397393adfde4b2823",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/procurement-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/procurement-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/quote.log": "956ce1d1740061ea3cae38228aad7cb2e45fdc9711e8a3c6689b0e59fdc582ae",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/quote-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/quote-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/held-save-close.log": "e582b0a79de9e4bedae3f518aad3bc994dbdbfdc93109868ff1f1cdb464d7b19",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/held-save-close-before.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/preserved-gates/held-save-close-after.json": "b4037154e2ea05d27097e8501c27ff075644dbf0b06f6aea10d95170bd9ae465",
+    "docs/assets/accounting-m5/checks/candidate12/quote-callback/manifest.json": "b94cac504dcaaa66775cdfcc8f2f7fd463b95b68416fbff8a1165468b6307b7a",
+    "docs/assets/accounting-m5/checks/candidate12/quote-callback/delivery-manifest.json": "7c9cc4fb7526bcbedcdac89d130d98ec547be5ef4a6d25ce27f94c3bdcad4440",
+    "docs/assets/accounting-m5/checks/candidate12/quote-callback/profile/sarv.sqlite3:payload": "00d32839fce66cedb426767a0338a12024f27ce1e999577500e9826c4b559edf",
+    "docs/assets/accounting-m5/checks/candidate12/quote-callback/profile/final-state.json": "f3455913c6f4134ddec5d8c7443cf7d9060b0677529a87addd8ccab046986b25",
+    "artifacts/sales-native/run-yji_0ewe/sales-independent-native.json": "efa86e603bffc12ee98fa7cbba8e107f41d739e2324502fccccb47bb31837fae",
+    "artifacts/sales-native/run-yji_0ewe/full/sales-native-verification.json": "ed7ec502489927fa288cf39b7204e41cb098e942a7e3c69b93db06e01ecad8ce",
+    "artifacts/sales-native/run-yji_0ewe/full/sarv.sqlite3:payload": "0af17b7c78e9391749ce99b5521629b148ccc5e0af84df881db193612cccaea9",
+    "artifacts/sales-native/run-yji_0ewe/stage/sarv.sqlite3:payload": "f0445b63c31ec4a154cb794fcd4576aa437b087e28f592f9cb480046235a42db",
+    "artifacts/sales-native/run-yji_0ewe/draft/sarv.sqlite3:payload": "4e145d16da55eed1fc0ee6d6d6ceba76a9d7f535f8ace5b26cc2234dc2637244",
+    "artifacts/sales-native/run-yji_0ewe/detail-pages/sarv.sqlite3:payload": "d60c08c64908c2e09839914ddb49e0b575c4522a85156c4af89efdc4c38bfbd8",
+    "artifacts/sales-native/run-yji_0ewe/detail-pages/sales-detail-pager-focus.jsonl": "212efea41e180d56b4c01b53c2f6324b681f4f1d275e65838f3100c8770fb34b"
+  }
+}

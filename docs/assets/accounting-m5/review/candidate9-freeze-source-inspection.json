@@ -1,0 +1,24 @@
+{
+  "result": "PASS archive and source review; runtime/performance pending",
+  "epoch": "candidate9",
+  "source_sha256": "73269aaf5cca587c681e6db7c90aefba9907599a3212a5b1a909fcd51702da89",
+  "binary_sha256": "4892cc991bc933fc6621a10847ee4f1a25c7cc45e19f39fde90a973884fecf6b",
+  "production_files": 36,
+  "verification_files": 52,
+  "actual_build_before_after_equal": true,
+  "changed_from_candidate8": [
+    "src/ui.rs",
+    "src/ui/editor.rs",
+    "src/ui/sales.rs",
+    "src/ui/settings.rs"
+  ],
+  "unchanged32scope": "all financial kernels/domain/Store/export/migration/procurement/core and compiledperformance observer identical; four UI changes requireactualfreshnative/callback/quote/runtime",
+  "source_changes": {
+    "editor": "synchronous hide/show preservesoriginalvisibility/currentparent; samefocusRAII/loading/setters/economics; splitnestedtraces; source_hint/full document_state directcurrentdisplaydigits",
+    "settings_ui": "only3rebuiltmanagerroots pluschangedcustomerDetails/status/sidebar locallyformat; initialallpages/restoredallpages andactualpreferencechanges retain globalappearance/density/digitsapply; no staleexisting metadata label sourcepath remains",
+    "Sales": "onlypageractivationrender\u2192firstcurrentEditfocus withcurrentimmutableID/mapped/sensitive/visibleexactdialog/noeditingguards; ordinarysave/delete/reorderrenderfocus unchanged; optionalsyntheticdiskreceipt excludedfromtiming ormustexplicitlyinclude"
+  },
+  "review_findings": "directcustomer/status +sourcehint/documentstate lostglobalformat sourcepaths corrected beforefreeze; no actionable source blocker remaining",
+  "qualification_required": "actualC9 rootgates/callback13/quote23/native main+identity/pager focus/all40/settingsprefs/restart plusfreshperformance; no speed claim from source",
+  "historical": "finalC8FAIL/sourcewarnings and all earlierfailures immutable; M5OPEN"
+}

@@ -1,0 +1,5134 @@
+{
+  "functional_diagnostic_only": true,
+  "accepted_measurement": false,
+  "observations": [
+    {
+      "label": "initial six records",
+      "query": "",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "سفارش • SO-M5",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۶ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "parent_memberships": [
+        {
+          "child": "0x12339c60",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233fb80",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 94
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233fb80",
+            "0x1233fdb0",
+            "0x1233ff60"
+          ]
+        },
+        {
+          "child": "0x1233e9e0",
+          "current_parent": {
+            "node": "0x1233e240",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331ba0",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 682
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e9e0",
+            "0x1233ebe0",
+            "0x1233ede0",
+            "0x1233efe0",
+            "0x1233f1e0",
+            "0x1233f3e0",
+            "0x1233f5e0"
+          ]
+        },
+        {
+          "child": "0x1233e240",
+          "current_parent": {
+            "node": "0x12331ba0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233a080",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e240"
+          ]
+        },
+        {
+          "child": "0x12331ba0",
+          "current_parent": {
+            "node": "0x1233a080",
+            "pid": 284436,
+            "name": "",
+            "role": "scroll pane",
+            "parent": "0x12331e30",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12331ba0",
+            "0x1232e8b0"
+          ]
+        },
+        {
+          "child": "0x1233a080",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233ff60",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 94
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233fb80",
+            "0x1233fdb0",
+            "0x1233ff60"
+          ]
+        },
+        {
+          "child": "0x12339e40",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        }
+      ],
+      "fresh_current_tree": [
+        {
+          "node": "0x12338cc0",
+          "pid": 284436,
+          "name": "فروش‌ها • سفارش، تحویل و برگشت",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12338ec0",
+          "pid": 284436,
+          "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۶ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233c6c0",
+          "pid": 284436,
+          "name": "شرکت",
+          "role": "label",
+          "parent": "0x12332080",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 18
+          }
+        },
+        {
+          "node": "0x1233c920",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "button",
+          "parent": "0x123396a0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233ccc0",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233cec0",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d0c0",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d8b0",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "label",
+          "parent": "0x1233c920",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233dc80",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "label",
+          "parent": "0x1233ccc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233de60",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "label",
+          "parent": "0x1233cec0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233e040",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "label",
+          "parent": "0x1233d0c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "سفارش • SO-M5",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233fdb0",
+          "pid": 284436,
+          "name": "مشتری الف • ⁨۲۰۲۶-۰۳-۲۲⁩ • ⁨۱۹۹⁩ ریال • غیرمالی • SKU-A کالای الف",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12340100",
+          "pid": 284436,
+          "name": "تحویل DEL-M5-A • صورتحساب INV-M5-A",
+          "role": "label",
+          "parent": "0x1233ebe0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12340350",
+          "pid": 284436,
+          "name": "مشتری الف • ⁨۲۰۲۶-۰۳-۲۸⁩ • ⁨۱۰۰⁩ ریال • بهای ⁨۵۸⁩ ریال • ثبت دفتر کل؛ وصول انجام نشده",
+          "role": "label",
+          "parent": "0x1233ebe0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12340500",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233ebe0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x123406a0",
+          "pid": 284436,
+          "name": "برگشت RET-M5-A • بستانکار CN-M5-A",
+          "role": "label",
+          "parent": "0x1233ede0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x123408f0",
+          "pid": 284436,
+          "name": "⁨۲۰۲۶-۰۳-۲۹⁩ • اعتبار ⁨۴۰⁩ ریال • برگشت بهای اصلی ⁨۲۳⁩ ریال • ثبت دفتر کل",
+          "role": "label",
+          "parent": "0x1233ede0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12340aa0",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233ede0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12340c40",
+          "pid": 284436,
+          "name": "برگشت RET-M5-B • بستانکار CN-M5-B",
+          "role": "label",
+          "parent": "0x1233efe0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12340e90",
+          "pid": 284436,
+          "name": "⁨۲۰۲۶-۰۳-۳۰⁩ • اعتبار ⁨۶۰⁩ ریال • برگشت بهای اصلی ⁨۳۵⁩ ریال • ثبت دفتر کل",
+          "role": "label",
+          "parent": "0x1233efe0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x123410e0",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233efe0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x123355b0",
+          "pid": 284436,
+          "name": "تحویل DEL-M5-B • صورتحساب INV-M5-B",
+          "role": "label",
+          "parent": "0x1233f1e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12341e10",
+          "pid": 284436,
+          "name": "مشتری الف • ⁨۲۰۲۶-۰۳-۳۱⁩ • ⁨۹۹⁩ ریال • بهای ⁨۵۸⁩ ریال • ثبت دفتر کل؛ وصول انجام نشده",
+          "role": "label",
+          "parent": "0x1233f1e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12341fc0",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233f1e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342160",
+          "pid": 284436,
+          "name": "سفارش • SO-Q-M5",
+          "role": "label",
+          "parent": "0x1233f3e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12342390",
+          "pid": 284436,
+          "name": "مشتری الف • ⁨۲۰۲۶-۰۳-۳۱⁩ • ⁨۲۰⁩ ریال • غیرمالی • SKU-A کالای الف",
+          "role": "label",
+          "parent": "0x1233f3e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x123425c0",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233f3e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342760",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 95,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342980",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 94,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342f50",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x1233ff60",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12343130",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x12340500",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x123433b0",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x12340aa0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12343590",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x123410e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12343770",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x12341fc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x123569d0",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x123425c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356be0",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "label",
+          "parent": "0x12342760",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 61,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356de0",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "label",
+          "parent": "0x12342980",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357550",
+          "pid": 284436,
+          "name": "نمایش ریال • IRR",
+          "role": "label",
+          "parent": "0x12357170",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 98,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357730",
+          "pid": 284436,
+          "name": "F2-core-v1 • شرکت ساختگی",
+          "role": "label",
+          "parent": "0x12357360",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 168,
+            "height": 24
+          }
+        }
+      ],
+      "zero_hidden_result": false
+    },
+    {
+      "label": "exact zero before explicit pump",
+      "query": "NO-MATCH-PERFORMANCE",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "parent_memberships": [
+        {
+          "child": "0x12339c60",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233fb80",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": []
+        },
+        {
+          "child": "0x1233e9e0",
+          "current_parent": {
+            "node": "0x1233e240",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331ba0",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": [
+            "0x12357910",
+            "0x1233f5e0"
+          ]
+        },
+        {
+          "child": "0x1233e240",
+          "current_parent": {
+            "node": "0x12331ba0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233a080",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e240"
+          ]
+        },
+        {
+          "child": "0x12331ba0",
+          "current_parent": {
+            "node": "0x1233a080",
+            "pid": 284436,
+            "name": "",
+            "role": "scroll pane",
+            "parent": "0x12331e30",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12331ba0"
+          ]
+        },
+        {
+          "child": "0x1233a080",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233ff60",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": []
+        },
+        {
+          "child": "0x12339e40",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        }
+      ],
+      "fresh_current_tree": [
+        {
+          "node": "0x12338cc0",
+          "pid": 284436,
+          "name": "فروش‌ها • سفارش، تحویل و برگشت",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12338ec0",
+          "pid": 284436,
+          "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233c6c0",
+          "pid": 284436,
+          "name": "شرکت",
+          "role": "label",
+          "parent": "0x12332080",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 18
+          }
+        },
+        {
+          "node": "0x1233c920",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "button",
+          "parent": "0x123396a0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233ccc0",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233cec0",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d0c0",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d8b0",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "label",
+          "parent": "0x1233c920",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233dc80",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "label",
+          "parent": "0x1233ccc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233de60",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "label",
+          "parent": "0x1233cec0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233e040",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "label",
+          "parent": "0x1233d0c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357910",
+          "pid": 284436,
+          "name": "سندی با این جست‌وجو وجود ندارد.",
+          "role": "label",
+          "parent": "0x1233e240",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12342760",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 95,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342980",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 94,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12356be0",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "label",
+          "parent": "0x12342760",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 61,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356de0",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "label",
+          "parent": "0x12342980",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357550",
+          "pid": 284436,
+          "name": "نمایش ریال • IRR",
+          "role": "label",
+          "parent": "0x12357170",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 98,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357730",
+          "pid": 284436,
+          "name": "F2-core-v1 • شرکت ساختگی",
+          "role": "label",
+          "parent": "0x12357360",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 168,
+            "height": 24
+          }
+        }
+      ],
+      "zero_hidden_result": false
+    },
+    {
+      "label": "exact zero after explicit pump",
+      "query": "NO-MATCH-PERFORMANCE",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "parent_memberships": [
+        {
+          "child": "0x12339c60",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233fb80",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": []
+        },
+        {
+          "child": "0x1233e9e0",
+          "current_parent": {
+            "node": "0x1233e240",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331ba0",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": [
+            "0x12357910",
+            "0x1233f5e0"
+          ]
+        },
+        {
+          "child": "0x1233e240",
+          "current_parent": {
+            "node": "0x12331ba0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233a080",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e240"
+          ]
+        },
+        {
+          "child": "0x12331ba0",
+          "current_parent": {
+            "node": "0x1233a080",
+            "pid": 284436,
+            "name": "",
+            "role": "scroll pane",
+            "parent": "0x12331e30",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12331ba0"
+          ]
+        },
+        {
+          "child": "0x1233a080",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233ff60",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": []
+        },
+        {
+          "child": "0x12339e40",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        }
+      ],
+      "fresh_current_tree": [
+        {
+          "node": "0x12338cc0",
+          "pid": 284436,
+          "name": "فروش‌ها • سفارش، تحویل و برگشت",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12338ec0",
+          "pid": 284436,
+          "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233c6c0",
+          "pid": 284436,
+          "name": "شرکت",
+          "role": "label",
+          "parent": "0x12332080",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 18
+          }
+        },
+        {
+          "node": "0x1233c920",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "button",
+          "parent": "0x123396a0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233ccc0",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233cec0",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d0c0",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d8b0",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "label",
+          "parent": "0x1233c920",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233dc80",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "label",
+          "parent": "0x1233ccc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233de60",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "label",
+          "parent": "0x1233cec0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233e040",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "label",
+          "parent": "0x1233d0c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357910",
+          "pid": 284436,
+          "name": "سندی با این جست‌وجو وجود ندارد.",
+          "role": "label",
+          "parent": "0x1233e240",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12342760",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 95,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342980",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 94,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12356be0",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "label",
+          "parent": "0x12342760",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 61,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356de0",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "label",
+          "parent": "0x12342980",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357550",
+          "pid": 284436,
+          "name": "نمایش ریال • IRR",
+          "role": "label",
+          "parent": "0x12357170",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 98,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357730",
+          "pid": 284436,
+          "name": "F2-core-v1 • شرکت ساختگی",
+          "role": "label",
+          "parent": "0x12357360",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 168,
+            "height": 24
+          }
+        }
+      ],
+      "zero_hidden_result": false
+    },
+    {
+      "label": "exact zero after extra pump",
+      "query": "NO-MATCH-PERFORMANCE",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "parent_memberships": [
+        {
+          "child": "0x12339c60",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233fb80",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": []
+        },
+        {
+          "child": "0x1233e9e0",
+          "current_parent": {
+            "node": "0x1233e240",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331ba0",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": [
+            "0x12357910",
+            "0x1233f5e0"
+          ]
+        },
+        {
+          "child": "0x1233e240",
+          "current_parent": {
+            "node": "0x12331ba0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233a080",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e240"
+          ]
+        },
+        {
+          "child": "0x12331ba0",
+          "current_parent": {
+            "node": "0x1233a080",
+            "pid": 284436,
+            "name": "",
+            "role": "scroll pane",
+            "parent": "0x12331e30",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12331ba0"
+          ]
+        },
+        {
+          "child": "0x1233a080",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233ff60",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 0,
+              "height": 0
+            }
+          },
+          "parent_children_contains_child": false,
+          "parent_children": []
+        },
+        {
+          "child": "0x12339e40",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        }
+      ],
+      "fresh_current_tree": [
+        {
+          "node": "0x12338cc0",
+          "pid": 284436,
+          "name": "فروش‌ها • سفارش، تحویل و برگشت",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12338ec0",
+          "pid": 284436,
+          "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233c6c0",
+          "pid": 284436,
+          "name": "شرکت",
+          "role": "label",
+          "parent": "0x12332080",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 18
+          }
+        },
+        {
+          "node": "0x1233c920",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "button",
+          "parent": "0x123396a0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233ccc0",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233cec0",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d0c0",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d8b0",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "label",
+          "parent": "0x1233c920",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233dc80",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "label",
+          "parent": "0x1233ccc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233de60",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "label",
+          "parent": "0x1233cec0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233e040",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "label",
+          "parent": "0x1233d0c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357910",
+          "pid": 284436,
+          "name": "سندی با این جست‌وجو وجود ندارد.",
+          "role": "label",
+          "parent": "0x1233e240",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12342760",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 95,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342980",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 94,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12356be0",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "label",
+          "parent": "0x12342760",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 61,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356de0",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "label",
+          "parent": "0x12342980",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357550",
+          "pid": 284436,
+          "name": "نمایش ریال • IRR",
+          "role": "label",
+          "parent": "0x12357170",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 98,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357730",
+          "pid": 284436,
+          "name": "F2-core-v1 • شرکت ساختگی",
+          "role": "label",
+          "parent": "0x12357360",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 168,
+            "height": 24
+          }
+        }
+      ],
+      "zero_hidden_result": false
+    },
+    {
+      "label": "INV-M5-A current query after fresh status",
+      "query": "INV-M5-A",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "تحویل DEL-M5-A • صورتحساب INV-M5-A",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۱ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "parent_memberships": [
+        {
+          "child": "0x12339c60",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233fb80",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 94
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233fb80",
+            "0x1233fdb0",
+            "0x1233ff60"
+          ]
+        },
+        {
+          "child": "0x1233e9e0",
+          "current_parent": {
+            "node": "0x1233e240",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331ba0",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e9e0",
+            "0x1233f5e0"
+          ]
+        },
+        {
+          "child": "0x1233e240",
+          "current_parent": {
+            "node": "0x12331ba0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233a080",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e240"
+          ]
+        },
+        {
+          "child": "0x12331ba0",
+          "current_parent": {
+            "node": "0x1233a080",
+            "pid": 284436,
+            "name": "",
+            "role": "scroll pane",
+            "parent": "0x12331e30",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12331ba0"
+          ]
+        },
+        {
+          "child": "0x1233a080",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233ff60",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 94
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233fb80",
+            "0x1233fdb0",
+            "0x1233ff60"
+          ]
+        },
+        {
+          "child": "0x12339e40",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        }
+      ],
+      "fresh_current_tree": [
+        {
+          "node": "0x12338cc0",
+          "pid": 284436,
+          "name": "فروش‌ها • سفارش، تحویل و برگشت",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12338ec0",
+          "pid": 284436,
+          "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۱ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233c6c0",
+          "pid": 284436,
+          "name": "شرکت",
+          "role": "label",
+          "parent": "0x12332080",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 18
+          }
+        },
+        {
+          "node": "0x1233c920",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "button",
+          "parent": "0x123396a0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233ccc0",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233cec0",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d0c0",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d8b0",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "label",
+          "parent": "0x1233c920",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233dc80",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "label",
+          "parent": "0x1233ccc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233de60",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "label",
+          "parent": "0x1233cec0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233e040",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "label",
+          "parent": "0x1233d0c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "تحویل DEL-M5-A • صورتحساب INV-M5-A",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233fdb0",
+          "pid": 284436,
+          "name": "مشتری الف • ⁨۲۰۲۶-۰۳-۲۸⁩ • ⁨۱۰۰⁩ ریال • بهای ⁨۵۸⁩ ریال • ثبت دفتر کل؛ وصول انجام نشده",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342760",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 95,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342980",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 94,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342f50",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x1233ff60",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356be0",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "label",
+          "parent": "0x12342760",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 61,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356de0",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "label",
+          "parent": "0x12342980",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357550",
+          "pid": 284436,
+          "name": "نمایش ریال • IRR",
+          "role": "label",
+          "parent": "0x12357170",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 98,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357730",
+          "pid": 284436,
+          "name": "F2-core-v1 • شرکت ساختگی",
+          "role": "label",
+          "parent": "0x12357360",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 168,
+            "height": 24
+          }
+        }
+      ],
+      "zero_hidden_result": false
+    },
+    {
+      "label": "INV-M5-B current query after fresh status",
+      "query": "INV-M5-B",
+      "cached": {
+        "search": {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "title": {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "تحویل DEL-M5-A • صورتحساب INV-M5-A",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        "action": {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        "status": {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۱ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        }
+      },
+      "parent_memberships": [
+        {
+          "child": "0x12339c60",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233fb80",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 94
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233fb80",
+            "0x1233fdb0",
+            "0x1233ff60"
+          ]
+        },
+        {
+          "child": "0x1233e9e0",
+          "current_parent": {
+            "node": "0x1233e240",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331ba0",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e9e0",
+            "0x1233f5e0"
+          ]
+        },
+        {
+          "child": "0x1233e240",
+          "current_parent": {
+            "node": "0x12331ba0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233a080",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233e240"
+          ]
+        },
+        {
+          "child": "0x12331ba0",
+          "current_parent": {
+            "node": "0x1233a080",
+            "pid": 284436,
+            "name": "",
+            "role": "scroll pane",
+            "parent": "0x12331e30",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 415
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12331ba0"
+          ]
+        },
+        {
+          "child": "0x1233a080",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        },
+        {
+          "child": "0x1233ff60",
+          "current_parent": {
+            "node": "0x1233e9e0",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x1233e240",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1076,
+              "height": 94
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x1233fb80",
+            "0x1233fdb0",
+            "0x1233ff60"
+          ]
+        },
+        {
+          "child": "0x12339e40",
+          "current_parent": {
+            "node": "0x12331e30",
+            "pid": 284436,
+            "name": "",
+            "role": "panel",
+            "parent": "0x12331370",
+            "states": {
+              "defunct": false,
+              "sensitive": true,
+              "showing": true,
+              "visible": true,
+              "focused": false
+            },
+            "rect": {
+              "x": 0,
+              "y": 0,
+              "width": 1112,
+              "height": 857
+            }
+          },
+          "parent_children_contains_child": true,
+          "parent_children": [
+            "0x12338cc0",
+            "0x12338ec0",
+            "0x12332080",
+            "0x123396a0",
+            "0x12339860",
+            "0x12339a30",
+            "0x12339c60",
+            "0x12339e40",
+            "0x1233a080"
+          ]
+        }
+      ],
+      "fresh_current_tree": [
+        {
+          "node": "0x12338cc0",
+          "pid": 284436,
+          "name": "فروش‌ها • سفارش، تحویل و برگشت",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12338ec0",
+          "pid": 284436,
+          "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x12339c60",
+          "pid": 284436,
+          "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+          "role": "entry",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": true
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12339e40",
+          "pid": 284436,
+          "name": "۱ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+          "role": "label",
+          "parent": "0x12331e30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233c6c0",
+          "pid": 284436,
+          "name": "شرکت",
+          "role": "label",
+          "parent": "0x12332080",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 18
+          }
+        },
+        {
+          "node": "0x1233c920",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "button",
+          "parent": "0x123396a0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233ccc0",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233cec0",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d0c0",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "button",
+          "parent": "0x12339a30",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x1233d8b0",
+          "pid": 284436,
+          "name": "تاریخ و واحد نمایش",
+          "role": "label",
+          "parent": "0x1233c920",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233dc80",
+          "pid": 284436,
+          "name": "سفارش فروش تازه",
+          "role": "label",
+          "parent": "0x1233ccc0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233de60",
+          "pid": 284436,
+          "name": "از پیشنهاد تأییدشده",
+          "role": "label",
+          "parent": "0x1233cec0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233e040",
+          "pid": 284436,
+          "name": "به‌روزرسانی",
+          "role": "label",
+          "parent": "0x1233d0c0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x1233fb80",
+          "pid": 284436,
+          "name": "تحویل DEL-M5-B • صورتحساب INV-M5-B",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233fdb0",
+          "pid": 284436,
+          "name": "مشتری الف • ⁨۲۰۲۶-۰۳-۳۱⁩ • ⁨۹۹⁩ ریال • بهای ⁨۵۸⁩ ریال • ثبت دفتر کل؛ وصول انجام نشده",
+          "role": "label",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 22
+          }
+        },
+        {
+          "node": "0x1233ff60",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "button",
+          "parent": "0x1233e9e0",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1076,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342760",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 95,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342980",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "button",
+          "parent": "0x1233f5e0",
+          "states": {
+            "defunct": false,
+            "sensitive": false,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 94,
+            "height": 34
+          }
+        },
+        {
+          "node": "0x12342f50",
+          "pid": 284436,
+          "name": "جزئیات و جریان کار",
+          "role": "label",
+          "parent": "0x1233ff60",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 1042,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356be0",
+          "pid": 284436,
+          "name": "صفحهٔ قبل",
+          "role": "label",
+          "parent": "0x12342760",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 61,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12356de0",
+          "pid": 284436,
+          "name": "صفحهٔ بعد",
+          "role": "label",
+          "parent": "0x12342980",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 60,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357550",
+          "pid": 284436,
+          "name": "نمایش ریال • IRR",
+          "role": "label",
+          "parent": "0x12357170",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 98,
+            "height": 24
+          }
+        },
+        {
+          "node": "0x12357730",
+          "pid": 284436,
+          "name": "F2-core-v1 • شرکت ساختگی",
+          "role": "label",
+          "parent": "0x12357360",
+          "states": {
+            "defunct": false,
+            "sensitive": true,
+            "showing": true,
+            "visible": true,
+            "focused": false
+          },
+          "rect": {
+            "x": 0,
+            "y": 0,
+            "width": 168,
+            "height": 24
+          }
+        }
+      ],
+      "zero_hidden_result": false
+    }
+  ],
+  "observer_sha256": "2d0c095580318890e665b8aa7583fca28ab72e97759520ed32ba92ea3368b258",
+  "source_before": {
+    "sha256": "03aa9377ee5fd7a1568d34bb804c44c14e1d6c98db3e6492aafccbb89c410db0",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "ed185b02400a31063f5e36c252f3f5f5b2d4ee1c58d28c9c6946f162f955585f",
+      "src/ui/accounting.rs": "91511389f4d2a333b00a196afd3d6b5f21035411a7d6be2ba26eaeb855a9bccc",
+      "src/ui/background.rs": "4f5981720274e44994c58230486470e34362808b4dcce55a5e805f17a8474189",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "e1eb8d4a0cf0bacad918195c71018ff1a49b90772092162142ceab09178693c5",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "4953f6955c42943e0ac0adbde13b4fc86e4560b52138d126c21e52c4a4465329",
+      "src/ui/sales.rs": "d8ea80b15f38dfcce37c51db6257bcff2231c497ea44ccf8793e8472f39885fe",
+      "src/ui/settings.rs": "4dfcc27d8c4df35fb2c386863a2445b5ad98951764db780a792660cd1cadd05b",
+      "src/ui/smoke.rs": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "binary_sha256": "7f83e3e60afe439e6d7e3af2b33e3b325547ce81190d11aa3d7492420b07a6d5",
+  "cache_metadata": {
+    "protocol": "m5-cached-v2",
+    "owned_pid": 284436,
+    "root_node": "0x12331e30",
+    "calls": {
+      "predicates": 6,
+      "node_reads": 3,
+      "parent_checks": 80,
+      "process_checks": 63,
+      "role_reads": 40,
+      "name_reads": 7,
+      "state_reads": 69,
+      "accessible_id_reads": 4
+    },
+    "predicate_stats": {
+      "zero_result_cached_hide": {
+        "n": 6,
+        "total_ms": 43.99943099269876,
+        "worst_ms": 9.997050001402386
+      }
+    },
+    "identity_receipts": [],
+    "validity": "initialized; runtime transition qualification pending",
+    "api_accessible_id_available": true,
+    "logical_call_counts_not_exact_remote_IPC_counts": true,
+    "timed_BFS_fallback": false,
+    "lifetime": "this owned process/current workspace or dialog only",
+    "discovered_nodes": {
+      "search": {
+        "node": "0x12339c60",
+        "parent": "0x12331e30",
+        "role": "entry",
+        "initial_name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+        "initial_accessible_id": ""
+      },
+      "title": {
+        "node": "0x1233fb80",
+        "parent": "0x1233e9e0",
+        "role": "label",
+        "initial_name": "سفارش • SO-M5",
+        "initial_accessible_id": ""
+      },
+      "action": {
+        "node": "0x1233ff60",
+        "parent": "0x1233e9e0",
+        "role": "button",
+        "initial_name": "جزئیات و جریان کار",
+        "initial_accessible_id": ""
+      },
+      "status": {
+        "node": "0x12339e40",
+        "parent": "0x12331e30",
+        "role": "label",
+        "initial_name": "۶ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+        "initial_accessible_id": ""
+      }
+    },
+    "discovery_ms_outside_timers": 196.93122299941024,
+    "warmup_effect": "Initial populated slot discovery then original zero-result warmup; no added calibration query."
+  },
+  "durable_state_unchanged": true,
+  "source_after": {
+    "sha256": "03aa9377ee5fd7a1568d34bb804c44c14e1d6c98db3e6492aafccbb89c410db0",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "ed185b02400a31063f5e36c252f3f5f5b2d4ee1c58d28c9c6946f162f955585f",
+      "src/ui/accounting.rs": "91511389f4d2a333b00a196afd3d6b5f21035411a7d6be2ba26eaeb855a9bccc",
+      "src/ui/background.rs": "4f5981720274e44994c58230486470e34362808b4dcce55a5e805f17a8474189",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "e1eb8d4a0cf0bacad918195c71018ff1a49b90772092162142ceab09178693c5",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "4953f6955c42943e0ac0adbde13b4fc86e4560b52138d126c21e52c4a4465329",
+      "src/ui/sales.rs": "d8ea80b15f38dfcce37c51db6257bcff2231c497ea44ccf8793e8472f39885fe",
+      "src/ui/settings.rs": "4dfcc27d8c4df35fb2c386863a2445b5ad98951764db780a792660cd1cadd05b",
+      "src/ui/smoke.rs": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "source_stable": true,
+  "observer_sha256_after": "2d0c095580318890e665b8aa7583fca28ab72e97759520ed32ba92ea3368b258",
+  "binary_sha256_after": "7f83e3e60afe439e6d7e3af2b33e3b325547ce81190d11aa3d7492420b07a6d5"
+}

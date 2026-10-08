@@ -1,0 +1,66 @@
+[
+  {
+    "components": [
+      {
+        "cost": 0,
+        "discount": 1,
+        "gross": 1,
+        "journal": false,
+        "net": 0
+      },
+      {
+        "cost": 1,
+        "discount": 0,
+        "gross": 1,
+        "journal": true,
+        "net": 1
+      },
+      {
+        "cost": 0,
+        "discount": 1,
+        "gross": 1,
+        "journal": false,
+        "net": 0
+      }
+    ],
+    "fixture": "one-rial-three-pieces",
+    "full_return_restores_inventory1": true,
+    "orders_remain_fulfilled": true
+  },
+  {
+    "components": [
+      {
+        "cost": 0,
+        "discount": 0,
+        "gross": 0,
+        "journal": false,
+        "net": 0
+      },
+      {
+        "cost": 1,
+        "discount": 1,
+        "gross": 2,
+        "journal": true,
+        "net": 1
+      },
+      {
+        "cost": 0,
+        "discount": 0,
+        "gross": 0,
+        "journal": false,
+        "net": 0
+      }
+    ],
+    "fixture": "divisible-derived-gross",
+    "full_return_restores_inventory1": true,
+    "orders_remain_fulfilled": true
+  },
+  {
+    "document_discounts": [
+      0,
+      1,
+      1
+    ],
+    "fixture": "equal weights in input order c,a,b"
+  }
+]

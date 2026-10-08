@@ -1,0 +1,105 @@
+{
+  "phase": "historical evolving-source diagnostics, not final acceptance",
+  "files": {
+    "diagnostic-1-guards-build-run.log": {
+      "sha256": "45837c5f3435417393322f363424cbe611b88b0297c44a894032bf184ce589af",
+      "bytes": 499
+    },
+    "diagnostic-1-interleaved-build-run.log": {
+      "sha256": "523dbb8c1d61eface3924a2bb509853f97a9b7626267a3239525c86dbdbd0420",
+      "bytes": 559
+    },
+    "diagnostic-1-migration-build-run.log": {
+      "sha256": "6c2a2feb258a76e98be207a49ea0f8f2a661f980966203bf1226fae7fddbaebe",
+      "bytes": 972
+    },
+    "diagnostic-1-raw-literal-check.json": {
+      "sha256": "c19804dbbe961080867b244497472b325fbeb5a3e4c4a9cb884bb91684f59175",
+      "bytes": 406
+    },
+    "diagnostic-1-source-after.json": {
+      "sha256": "db666b3e15709c8740313b1865077a98adaee0734fc621f05ec4085182032215",
+      "bytes": 3561
+    },
+    "diagnostic-1-source-before.json": {
+      "sha256": "a496725608d8bd732dc54bf78e6596bf42c8870ac4477b0b2de52385d0977f77",
+      "bytes": 3494
+    },
+    "diagnostic-10-financial-store-observations.json": {
+      "sha256": "bb71900f301d1bafb174d0c978d5aea4ec258b6d352ed48871231e3ff1c1fb19",
+      "bytes": 846
+    },
+    "diagnostic-10-store-faults-build-run.log": {
+      "sha256": "1c79ff47ae584d24e768e22aae67416a03f7ff9b536e61cd9cf5409f39474e9b",
+      "bytes": 531
+    },
+    "diagnostic-2-guards-build-run.log": {
+      "sha256": "c5a868cbbf8a76d406f2e27ca9c68ce81b4da8f9861be65b67414a01e1c7e59d",
+      "bytes": 499
+    },
+    "diagnostic-2-guards-guards.json": {
+      "sha256": "fe0a7df9c400a353d9370838b5a62bd1351818443ec96bf8eae8754b329cd742",
+      "bytes": 4276
+    },
+    "diagnostic-2-quote-draft-build-run.log": {
+      "sha256": "5ab3575839b308bdaac3908ea04f140121ba7b8da5dc203c2f0274d4e54c3e3d",
+      "bytes": 2218
+    },
+    "diagnostic-3-quote-draft-build-run.log": {
+      "sha256": "59246ec37edc29555653de725981a1c0ddc94fcdfdf760fb28c823bd80d20b6f",
+      "bytes": 497
+    },
+    "diagnostic-3-quote-draft-quote-draft-observations.json": {
+      "sha256": "539f572d01cf9a4090d87e5962060ce47815ca40e8927109faf1fef905d8eb2e",
+      "bytes": 2175
+    },
+    "diagnostic-4-residuals-build-run.log": {
+      "sha256": "78efcfeb30580708a0dc0221ebb495d01dca5d09f49038b1eb9214a5918a74d2",
+      "bytes": 4130
+    },
+    "diagnostic-5-residuals-build-run.log": {
+      "sha256": "c081ae36ecd9de7b95e62a1c0d1be0e4595be74d75bc5daa32878b67e27e8c27",
+      "bytes": 396
+    },
+    "diagnostic-6-residuals-build-run.log": {
+      "sha256": "b12192760e3c647ffb323c7394a702fe4e209e1323b77d6d1da729de4527de42",
+      "bytes": 304
+    },
+    "diagnostic-7-residual-observations.json": {
+      "sha256": "403781a9edf19a80dfb0146c289bedb25cd6308bc4faa8fdd731550b08d9cc93",
+      "bytes": 1168
+    },
+    "diagnostic-7-residuals-build-run.log": {
+      "sha256": "38ab7a16e1617091902e245f03713b50ab0759ae103a619b30c956ed581b779f",
+      "bytes": 408
+    },
+    "diagnostic-8-guards-build-run.log": {
+      "sha256": "ae210d912f5950f828acba319b073b7020fd39218907a1a45c4313548501ed91",
+      "bytes": 444
+    },
+    "diagnostic-8-guards.json": {
+      "sha256": "0084459782a242885150e1277a54c60c9288f340056a4bdccbf0824c4cc114f2",
+      "bytes": 5197
+    },
+    "diagnostic-9-store-faults-build-run.log": {
+      "sha256": "5402da4e1a1ffd31ec3ddf5881f33b508d692d9d10e5d122d38bbff7884189d2",
+      "bytes": 530
+    },
+    "native-diagnostic-wi8gkf41/M5-real-filtered-search.png": {
+      "sha256": "623ee815fd4f3dd13c136239a156ffeb768e681577336191a3f31e1c3589cb4b",
+      "bytes": 100834
+    },
+    "native-diagnostic-wi8gkf41/M5-sales-dark-650x550.png": {
+      "sha256": "99a86ece84ed15c50c7d7846c1f42442344b7884f8dde2351cc036c37c68d4f6",
+      "bytes": 57397
+    },
+    "native-diagnostic-wi8gkf41/review-qualification.txt": {
+      "sha256": "38c821ebcc2ad6b1849d8e0594b43807bdec24f8e14937deeae58873faac9950",
+      "bytes": 400
+    },
+    "native-diagnostic-wi8gkf41/sales-independent-native.json": {
+      "sha256": "b4c8ce07fbf8dcb4cd560bbd9b5919f000642621e47017992f330a8eca509b38",
+      "bytes": 6452
+    }
+  }
+}

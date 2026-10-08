@@ -93,17 +93,19 @@ def main():
             native.wait_for(lambda: x.geometry(window) == [width, height], label='native resize')
             time.sleep(.35)
         resize(1280, 900)
-        for number, name in [(1, 'order'), (2, 'catalog'), (3, 'customers'), (4, 'quotes'), (5, 'backup'), (6, 'settings'), (7, 'accounting'), (8, 'procurement'), (9, 'inventory')]:
+        for number, name in [(1, 'order'), (2, 'catalog'), (3, 'customers'), (4, 'quotes'), (5, 'backup'), (6, 'settings'), (7, 'accounting'), (0, 'sales'), (8, 'procurement'), (9, 'inventory')]:
             check(f'Alt+{number} opens {name}', page(number, name)['page'] == name)
         check('Navigation preserves entire saved payload', payload(profile) == original)
         names = [row['name'] for row in access.tree()]
         check('Native hierarchy exposes all three work groups', all(name in names for name in ['پیشنهادها', 'کالا و مشتری', 'حسابداری']))
         # Tab enters a native ListBox at its selected row. Other destinations
-        # use the standard arrow-key route, including the two M4 additions.
+        # use the standard arrow-key route, including the M4 inventory/purchase and M5 sales additions.
         current = tab_to('موجودی و انتقال', roles=['list item'])
         check('Tab reaches selected Inventory sidebar row', access.focused(current))
         key('Up'); key('Return')
         check('Standard sidebar Up/Enter opens Purchases', native.events(profile)[-1]['page'] == 'procurement')
+        key('Up'); key('Return')
+        check('Standard sidebar Up/Enter opens Sales', native.events(profile)[-1]['page'] == 'sales')
         key('Up'); key('Return')
         check('Standard sidebar Up/Enter opens Accounting', native.events(profile)[-1]['page'] == 'accounting')
         tab_to('دفتر حسابداری')

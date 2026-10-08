@@ -1,0 +1,27 @@
+{
+  "result": "PASS7 actualC8 gates",
+  "source_sha256": "efd4fdda06b2aa492239aac3dde74741b1a439c4d54afb11fa34ae0699244c72",
+  "binary_sha256": "c8ff9dd27b9e5a0d1946978de13c231e0c12ca1d6c30496636a00f00e01b0aad",
+  "commands": [
+    "fmt",
+    "clippy",
+    "all-targets",
+    "font-opt-in",
+    "actual-m3-refusal",
+    "actual-m4-refusal",
+    "gtk-lifecycle"
+  ],
+  "actual_percommand_before_after_equal": true,
+  "source36_binary_matches_issued_freeze": true,
+  "qualification_verification_files": 52,
+  "preexecution_exact_copies_all_match": true,
+  "changed_from_original_build52": [
+    "scripts/native-performance-M5.py"
+  ],
+  "corrected_helper_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "old_build_helper_archive": "unchanged Deb6 snapshot; separate current472 qualificationepoch",
+  "alltargets_passed": 220,
+  "alltargets_failed": 0,
+  "alltargets_ignored": 4,
+  "performance": "pending quietfinal; diagnosticmissesretained"
+}

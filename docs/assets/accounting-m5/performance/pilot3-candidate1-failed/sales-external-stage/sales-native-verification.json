@@ -1,0 +1,16 @@
+{
+  "checks": [
+    "actual sales catalog price20/core SKU+unit mapping",
+    "older durable draft receipt retains newer GTK input",
+    "explicit raw draft saves durable revision and current header/lines"
+  ],
+  "company_id": "b3cd4a80-792a-47a0-91a1-20306ccf16f3",
+  "draft_id": "cbf8a4fe-9c60-4f94-93ce-edf4e7b8cffd",
+  "mode": "stage",
+  "note": "no further smoke edits; external observer owns preview/submit/keyboard",
+  "ready": true,
+  "reference": "SO-M5",
+  "revision": 2,
+  "stage": "saved-native-raw-draft",
+  "synthetic_only": true
+}

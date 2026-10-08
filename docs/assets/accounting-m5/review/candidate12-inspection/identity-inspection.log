@@ -1,0 +1,93 @@
+{
+  "result": "PASS frozen C12 build, root gates and callback receipts; checkpoint approval pending",
+  "source_files": 36,
+  "verification_files": 53,
+  "ordinary_tests": {
+    "summaries": 35,
+    "passed": 220,
+    "failed": 0,
+    "ignored": 4
+  },
+  "source_comparisons": {
+    "candidate5": {
+      "identical_files": 30,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/background.rs",
+        "src/ui/editor.rs",
+        "src/ui/responsiveness.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    },
+    "candidate9": {
+      "identical_files": 34,
+      "changed_files": [
+        "src/ui/background.rs",
+        "src/ui/sales.rs"
+      ]
+    },
+    "candidate11-diagnostic": {
+      "identical_files": 35,
+      "changed_files": [
+        "src/ui/background.rs"
+      ]
+    }
+  },
+  "callback": {
+    "checks": 13,
+    "generation": 12,
+    "quantity_milli": 213000,
+    "literal_total_rial": 266463,
+    "portable_files_hashed": 9
+  }
+}
+{
+  "result": "PASS actual C12 current-ID37; final performance review still pending",
+  "checks": 37,
+  "pager_focus_receipts": [
+    {
+      "name": "real Next hands exact Window/Dialog focus to current first Edit",
+      "passed": true,
+      "receipt": {
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "line_id": "reuse-line-025",
+        "mapped": true,
+        "page": 2,
+        "sensitive": true,
+        "target_name": "sales-line-0-25",
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "real Previous hands exact Window/Dialog focus to current first Edit",
+      "passed": true,
+      "receipt": {
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "line_id": "reuse-line-000",
+        "mapped": true,
+        "page": 1,
+        "sensitive": true,
+        "target_name": "sales-line-0-0",
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "Next after reorder focuses current immutable line026",
+      "passed": true,
+      "receipt": {
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "line_id": "reuse-line-026",
+        "mapped": true,
+        "page": 2,
+        "sensitive": true,
+        "target_name": "sales-line-0-25",
+        "window_focus_exact": true
+      }
+    }
+  ],
+  "accounting_equals_original": true
+}

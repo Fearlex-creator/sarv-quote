@@ -1,0 +1,99 @@
+{
+  "result": "passed bounded evidence inspection; performance remains PARTIAL and M5 OPEN",
+  "source_files": 36,
+  "verification_files": 52,
+  "ordinary_tests": {
+    "summaries": 35,
+    "passed": 220,
+    "failed": 0,
+    "ignored": 4
+  },
+  "source_comparisons": {
+    "candidate5": {
+      "identical_files": 31,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/editor.rs",
+        "src/ui/responsiveness.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    },
+    "candidate8": {
+      "identical_files": 32,
+      "changed_files": [
+        "src/ui.rs",
+        "src/ui/editor.rs",
+        "src/ui/sales.rs",
+        "src/ui/settings.rs"
+      ]
+    }
+  },
+  "performance_diagnostic": {
+    "native_checks": 15,
+    "accepted_scopes": 22,
+    "page_scopes": 18,
+    "page_gap_misses": 7,
+    "missed_scopes": [
+      {
+        "operation": "quote_page_changed_save",
+        "max_gap_ms": 70.791219,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 54.764612,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 53.987018,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 56.846919,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 55.938179,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_next",
+        "max_gap_ms": 68.271591,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_page_unchanged_previous",
+        "max_gap_ms": 53.952521000000004,
+        "budget_ms": 50
+      },
+      {
+        "operation": "quote_product_choice",
+        "max_gap_ms": 63.16069100000001,
+        "budget_ms": 50
+      }
+    ],
+    "reuse_wall_max_ms": 59.248,
+    "broad_strict_budgets": {
+      "maximum_heartbeat_gap_ms": {
+        "actual": 298.93091,
+        "budget": 50,
+        "passes": false
+      },
+      "unchanged_editor_page_ms": {
+        "actual": 139.31550000000001,
+        "budget": 150,
+        "passes": true
+      },
+      "pdf_busy_heartbeat_ms": {
+        "actual": 120.52264,
+        "budget": 50,
+        "passes": false
+      }
+    },
+    "accepted_final_measurement": false
+  }
+}

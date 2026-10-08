@@ -1,0 +1,12 @@
+[package]
+name = "sarv-independent-m4-sales-namespace-fixture"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+sarv-quote = { path = "../m4-source" }
+anyhow = "1"
+serde_json = "1"
+
+[profile.dev]
+debug = 0

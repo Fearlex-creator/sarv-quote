@@ -11,3 +11,8 @@ pub mod store;
 
 pub mod procurement;
 pub mod procurement_export;
+
+pub mod sales;
+pub mod sales_draft;
+
+pub mod sales_export;

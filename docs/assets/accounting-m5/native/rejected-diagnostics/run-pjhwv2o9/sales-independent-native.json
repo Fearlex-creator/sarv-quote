@@ -1,0 +1,135 @@
+{
+  "result": "failed",
+  "run": "/workspace/sarv-quote/artifacts/sales-native/run-pjhwv2o9",
+  "binary_source": "/workspace/sarv-quote/target/debug/sarv-quote",
+  "binary_sha256": "aa5c5dafef4f833830a2f5cbb6d520e0fb619422908297acf262c423561a353a",
+  "scope": "native GTK signal workflow, independent raw SQLite, real XTest keyboard, private X11",
+  "checks": [
+    {
+      "name": "M4 seed immutable opening/stock without sales",
+      "passed": true
+    },
+    {
+      "name": "native sale/draft/pair/returns/quote conversion complete",
+      "passed": true,
+      "failure": null,
+      "returncode": null
+    },
+    {
+      "name": "opening and procurement exact preserved",
+      "passed": true
+    },
+    {
+      "name": "two orders/two paired sales/two credits",
+      "passed": true
+    },
+    {
+      "name": "direct order199 nonfinancial catalog20 frozen",
+      "passed": true
+    },
+    {
+      "name": "authentic retained quote and zero-tax linked order",
+      "passed": true
+    },
+    {
+      "name": "partial nets100/99 and exact issue costs58/58",
+      "passed": true
+    },
+    {
+      "name": "original return allocations40/23 then60/35",
+      "passed": true
+    },
+    {
+      "name": "distinct stable paired identities",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "every journal exact balanced",
+      "passed": true
+    },
+    {
+      "name": "independent final inventory/AR/AP/sales/COGS controls",
+      "passed": true,
+      "expected": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "Inventory": 422,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58
+      }
+    },
+    {
+      "name": "independent final trial1630/1630",
+      "passed": true
+    },
+    {
+      "name": "returns never reopen original order",
+      "passed": true
+    },
+    {
+      "name": "actual accountant reports generated",
+      "passed": true
+    }
+  ],
+  "native_manifest": {
+    "checks": [
+      "actual sales catalog price20/core SKU+unit mapping",
+      "older durable draft receipt retains newer GTK input",
+      "explicit raw draft saves durable revision and current header/lines",
+      "order199 nonfinancial and raw draft consumed atomically",
+      "partial paired delivery/invoice100 with separate IDs and original cost58",
+      "split original-cost return23+35 and exact credit40+60",
+      "final fulfillment original discount residual99 and cost58",
+      "authentic approved quotation converted through native selector/mapping without GL or original quote edits"
+    ],
+    "first_pair_id": "f5268aea-a2c1-467f-8558-cf97934cede0",
+    "mode": "full",
+    "note": "no further smoke edits; external observer owns keyboard/layout/raw-state checks",
+    "order_id": "63b0969e-cca0-4d27-98ad-92ec1ba16f12",
+    "ready": true,
+    "record_count": 6,
+    "search_name": "sales-search",
+    "source": "native dialogs, real catalog picker, raw draft State worker, approved quotation conversion",
+    "synthetic_only": true
+  },
+  "error": "Timed out waiting for real CtrlF Sales search"
+}

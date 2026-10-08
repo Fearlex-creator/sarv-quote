@@ -834,7 +834,7 @@ fn recomputed_backup_checksum_cannot_hide_zero_initialization_procurement_key_co
         };
         let checksum = hash(&serde_json::to_vec(&bad_state).unwrap());
         let envelope = serde_json::json!({
-            "format": "sarv-accounting-backup-v5", "checksum": checksum, "state": bad_state
+            "format": "sarv-accounting-backup-v6", "checksum": checksum, "state": bad_state
         });
         let path = dir
             .path()

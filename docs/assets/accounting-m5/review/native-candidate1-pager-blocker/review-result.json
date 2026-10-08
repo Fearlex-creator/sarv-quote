@@ -1,0 +1,8 @@
+{
+  "result": "BLOCKED candidate1 overall native pagination acceptance",
+  "finding": "M5-R07; R05 broad keyboard acceptance reopened",
+  "source": "candidate1-functional-pilot6",
+  "observed": "120raw drafts/60filtered/25rows perpage; exact target Next exists but160realTabs could not focus it; screenshot shows last Continue PERF-B049 focus and pager belowfold",
+  "source_review": "main list uses actions()/insert_action() GtkFlowBox childset_focusable(false); editor pager was already directGtkBox",
+  "qualification": "54smallfixture native checks remain valid; they did not exercise paged list. New source/binaryfreeze and actual allpage keyboard qualification required."
+}

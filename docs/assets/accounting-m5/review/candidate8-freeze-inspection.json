@@ -1,0 +1,18 @@
+{
+  "result": "passed archival and unchanged-source scope only",
+  "source_sha256": "efd4fdda06b2aa492239aac3dde74741b1a439c4d54afb11fa34ae0699244c72",
+  "binary_sha256": "c8ff9dd27b9e5a0d1946978de13c231e0c12ca1d6c30496636a00f00e01b0aad",
+  "source_files": 36,
+  "verification_build_files": 52,
+  "actual_build_before_after_equal": true,
+  "changed_vs_candidate7": [
+    "src/ui/responsiveness.rs"
+  ],
+  "normal_source35_unchanged": true,
+  "optin_diff": "exact product choice expectedfocus Query\u2192Quantity according to current production picker; newv1.2protocol/limit description; timers/budgets unchanged",
+  "carry": "C7 actualcallback13/quote23 execution retainsC7binary; normalquotation/Sales/core/procurement/Store/sharedUI source unchanged inC8; C5financial7/native66/currentID34 source exceptlocalquoteDFS/optinobserver exactC8, explicitly scoped",
+  "external_build_helper_sha256": "deb6d95c31c937d655f77d171fda14b152f1079d936a4f15319b30e7a8c18ca4",
+  "corrected_external_helper_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "verification_runtime_epoch": "requires new preexecution52 capture of correctedhelper; oldbuildsnapshot immutable",
+  "performance": "pending functionalqualification/quietfinal"
+}

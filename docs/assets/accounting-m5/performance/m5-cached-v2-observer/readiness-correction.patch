@@ -1,0 +1,63 @@
+--- scripts/native-performance-M5.py
++++ scripts/native-performance-M5.py
+@@ -176,6 +176,30 @@
+             stats['n'] += 1
+             stats['total_ms'] += elapsed
+             stats['worst_ms'] = max(stats['worst_ms'], elapsed)
++
++    def zero_hidden(self):
++        def current():
++            if self.access.text(self.nodes['search']) != 'NO-MATCH-PERFORMANCE' \
++                    or not normalize_digits(self.read('status')).startswith('0 نتیجه •') \
++                    or not ready(self.access, self.nodes['status']):
++                return False
++            states = {}
++            for key in ('action', 'title'):
++                self.access.a.atspi_accessible_clear_cache(self.nodes[key]['node'])
++                self.calls['state_reads'] += 1
++                native_states = self.access.a.atspi_accessible_get_state_set(self.nodes[key]['node'])
++                if not native_states:
++                    return False
++                states[key] = {'showing': bool(self.access.a.atspi_state_set_contains(native_states, 25)),
++                               'sensitive': bool(self.access.a.atspi_state_set_contains(native_states, 24))}
++            hidden = not states['action']['showing'] and not states['action']['sensitive'] \
++                and not states['title']['showing']
++            if hidden:
++                self.metadata['zero_result_hide_qualification'] = {
++                    'exact_query': 'NO-MATCH-PERFORMANCE', 'matches': 0, 'states': states,
++                    'identity_and_current_status_ready': True}
++            return hidden
++        return self.predicate('zero_result_cached_hide', current)
+ 
+     def receipt(self, label, expected):
+         self.check_identity()
+@@ -915,7 +939,8 @@
+     x11.key('a', 'Control_L')
+     x11.type_ascii('NO-MATCH-PERFORMANCE')
+     observe(lambda: count(0), 'zero-row posted Sales warmup')
+-    cache.receipt('zero-result hide', {'matches': 0})
++    observe(cache.zero_hidden, 'owned cached slot0 insensitive/not-showing at exact zero results')
++    cache.receipt('zero-result hide', {'matches': 0, 'cached_hide_qualified': True})
+     for index in range(samples):
+         query = ('INV-M5-A', 'INV-M5-B')[index % 2]
+         sales_focus_search(access, search, x11)
+@@ -927,7 +952,8 @@
+             def current():
+                 title = cache.read('title')
+                 action_name = cache.read('action')
+-                if access.text(search) != query or not normalize_digits(cache.read('status')).startswith('1 نتیجه •'):
++                if access.text(search) != query or not normalize_digits(cache.read('status')).startswith('1 نتیجه •') \
++                        or not ready(access, cache.nodes['status']):
+                     return None
+                 action = cache.nodes['action']
+                 return action if query in title and 'صورتحساب' in title \
+@@ -1010,7 +1036,8 @@
+     x11.key('a', 'Control_L')
+     x11.type_ascii('NO-MATCH-PERFORMANCE')
+     observe(lambda: summary_count(0), 'zero-row Sales search warmup')
+-    page_cache.receipt('zero-result hide', {'matches': 0})
++    observe(page_cache.zero_hidden, 'owned cached paged slot0 insensitive/not-showing at exact zero results')
++    page_cache.receipt('zero-result hide', {'matches': 0, 'cached_hide_qualified': True})
+     for index in range(search_samples):
+         group = 'A' if index % 2 == 0 else 'B'
+         query = f'PERF-{group}'

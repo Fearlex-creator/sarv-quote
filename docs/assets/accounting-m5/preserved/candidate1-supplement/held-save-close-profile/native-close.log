@@ -1,0 +1,5 @@
+dbus-daemon[256443]: [session uid=1000 pid=256443 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.0' (uid=1000 pid=256444 comm="/workspace/sarv-evidence/bin/sarv-M5-candidate1" label="kernel")
+dbus-daemon[256443]: [session uid=1000 pid=256443 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[256470]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=256444 comm="/workspace/sarv-evidence/bin/sarv-M5-candidate1" label="kernel")
+dbus-daemon[256470]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry

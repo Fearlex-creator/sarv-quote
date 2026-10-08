@@ -1,0 +1,36 @@
+{
+  "checks": [
+    "fractional IRR rejected and retained in native line form",
+    "Rial15↔Toman1.5 exact; invalidIRR0.1 retained and unit switch refused",
+    "catalog15/piece cannot silently become15/carton; requires override reason",
+    "quantity-only edit preserves original catalog15, overridden30 and required reason",
+    "PO12pieces at15, immutable source, no financial journal",
+    "partial receipt independent74 mismatches75; retained and no post",
+    "two partial receipts75/105, two matched bills30/150 and paired nonfinancial transfer70"
+  ],
+  "item_queries": [
+    "SKU-A",
+    "SKU-B"
+  ],
+  "journal_count": 5,
+  "movement_count": 4,
+  "note": "160ms smoke observation polling is not worker latency; process remains alive for independent keyboard/RSS",
+  "party_queries": [
+    "CU-A",
+    "CU-B"
+  ],
+  "phase": "posted-literal-M4",
+  "queries": [
+    "REC-A",
+    "REC-B"
+  ],
+  "ready": true,
+  "record_count": 10,
+  "reports": [
+    "M4-controls.csv",
+    "M4-controls.pdf",
+    "M4-order.pdf"
+  ],
+  "search_name": "procurement-search",
+  "source": "native forms; real catalog import and explicit price picker; root worker preview/post"
+}

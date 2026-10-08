@@ -525,7 +525,37 @@ pub(super) fn discard_staged(ui: &Rc<Ui>) {
 }
 
 /// Apply real Adwaita appearance, table density and label digit preferences.
+pub(super) fn apply_digits(widget: &impl IsA<gtk::Widget>, choice: DisplayDigits) {
+    let widget = widget.as_ref();
+    if let Some(label) = widget.downcast_ref::<gtk::Label>() {
+        let text = label.text();
+        let formatted = choice.format(&text);
+        if text.as_str() != formatted {
+            label.set_text(&formatted);
+        }
+    }
+    let mut child = widget.first_child();
+    while let Some(current) = child {
+        child = current.next_sibling();
+        apply_digits(&current, choice);
+    }
+}
+
+pub(super) fn apply_manager_digits(ui: &Rc<Ui>) {
+    let choice = ui.store.borrow().state.settings.display_digits;
+    for (operation, root) in [
+        ("settings_catalog_digits", &ui.catalog_list),
+        ("settings_customer_digits", &ui.customer_list),
+        ("settings_quote_digits", &ui.quote_list),
+    ] {
+        let started = std::time::Instant::now();
+        apply_digits(root, choice);
+        super::editor::performance_trace(operation, started);
+    }
+}
+
 pub(super) fn apply(ui: &Rc<Ui>) {
+    let apply_started = std::time::Instant::now();
     let settings = ui.store.borrow().state.settings.clone();
     let scheme = match settings.appearance {
         Appearance::System => adw::ColorScheme::Default,
@@ -544,19 +574,8 @@ pub(super) fn apply(ui: &Rc<Ui>) {
         gtk::style_context_add_provider_for_display(&gtk::prelude::WidgetExt::display(&ui.window), &provider, gtk::STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
         provider
     }); });
-    fn labels(widget: &gtk::Widget, choice: DisplayDigits) {
-        if let Some(label) = widget.downcast_ref::<gtk::Label>() {
-            let text = label.text();
-            let formatted = choice.format(&text);
-            if text.as_str() != formatted {
-                label.set_text(&formatted);
-            }
-        }
-        let mut child = widget.first_child();
-        while let Some(current) = child {
-            child = current.next_sibling();
-            labels(&current, choice);
-        }
-    }
-    labels(ui.window.upcast_ref(), settings.display_digits);
+    let digits_started = std::time::Instant::now();
+    apply_digits(&ui.window, settings.display_digits);
+    super::editor::performance_trace("settings_global_digits", digits_started);
+    super::editor::performance_trace("settings_global_apply", apply_started);
 }

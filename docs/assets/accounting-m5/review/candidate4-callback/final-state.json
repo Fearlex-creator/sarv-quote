@@ -1,0 +1,1097 @@
+{
+  "synthetic_only": true,
+  "generation": 12,
+  "state": {
+    "schema": 6,
+    "catalogs": [
+      {
+        "id": "f2e21e72-205e-496c-898b-dad12e8d88ca",
+        "name": "آزمون ساختگی پاسخ‌گویی",
+        "imported_at": "2026-10-08T03:09:23.382084718+00:00",
+        "fingerprint": "a59344353692b92b476f0a73a095555f80b085cf05ff49edab114bd56ef1a944",
+        "products": [
+          {
+            "code": "CALLBACK-ONE",
+            "name": "کالای ساختگی",
+            "measure": "عدد",
+            "price_rial": 1251,
+            "source_unit": "Rial",
+            "source_at": "2026-10-08T02:09:23.382003546+00:00",
+            "aliases": [
+              "آزمون"
+            ]
+          }
+        ]
+      }
+    ],
+    "customers": [],
+    "quotes": [],
+    "draft": {
+      "series": "12c7a7c8-f7f3-44a0-906d-3faf605ca302",
+      "catalog_id": "f2e21e72-205e-496c-898b-dad12e8d88ca",
+      "customer": "مشتری ساختگی",
+      "phone": "",
+      "lines": [
+        {
+          "query": "SYNTHETIC-UNMATCHED",
+          "quantity_milli": 3000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": "CALLBACK-ONE"
+        },
+        {
+          "query": "CALLBACK-ONE",
+          "quantity_milli": 1000,
+          "chosen_code": null
+        }
+      ],
+      "discount_rial": 0,
+      "display_unit": "Rial",
+      "stale_ack": false,
+      "quote_date": "2026-10-08"
+    }
+  }
+}

@@ -1,4 +1,35 @@
-# Current schema 5 procurement checkpoint
+# Current schema 6 sales checkpoint
+
+M5 adds optional immutable goods sales records and durable raw editor drafts.
+Quotations, orders, paired deliveries/invoices and paired returns/credits retain
+separate linked identities and states. Existing core-policy-v1 posts delivery and
+invoice together on one financial date. Returns restore the original issue cost;
+no statutory tax, payment or unbilled-delivery route is introduced.
+
+Schemas 1–5 are validated in their original schema before upgrade. Store publishes
+and verifies a unique `before-schema6-<uuid>.json` matching the preceding logical
+state, then conditionally upgrades schema and generation together. A schema5
+recovery keeps `sarv-accounting-backup-v5`; new backups use
+`sarv-accounting-backup-v6`. Empty new fields are omitted so original checksums
+remain verifiable. Repeat open does not migrate again. Original schema5 histories
+are preserved without rebuilding or inventing invoices from ledger balances.
+
+Stock movements from purchases, transfers, sales and returns replay in persisted
+audit order, including same-day events. Numbering retains M4's audit-count basis.
+Ordinary historical `sales.*` journals stay ordinary/reversible; newly appended
+reserved events require an actual typed source. Ordinary mapped revenue is
+explicitly reported as journal adjustments, separately from invoice provenance.
+Linked approved quotations are validated against their complete immutable hash.
+
+Raw drafts preserve incomplete dates and money text without ledger effects.
+Posting uses the exact saved draft revision and atomically removes it on success;
+a lost receipt can retry the immutable source using another request key. Draft
+revision and SQLite generation guards prevent stale-window overwrites. Physical
+power loss and production-scale field use remain unverified. Current verification
+is tracked in [M5](requirements/milestone-M5.md); the historical evidence below
+remains attributed to its original schema and executable.
+
+# Historical schema 5 procurement checkpoint
 
 M4 adds an optional immutable procurement aggregate: resource additions, purchase
 orders, partial receipts, matched supplier bills, paired warehouse movements,

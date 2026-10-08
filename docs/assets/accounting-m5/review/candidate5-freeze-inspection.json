@@ -1,0 +1,442 @@
+{
+  "epoch": "candidate5",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate5",
+  "issued_binary_sha256": "45431f7776a6389d27827b4d73012155c7c2ce9c7ef668ffdaad130f7929cf1e",
+  "source_files_checked": 36,
+  "source_archive_complete": true,
+  "source_aggregate": "07d0edcee2f5a13d4a708faff3e444016829f15ea6149d4d182b23037860822c",
+  "matches_issued_source": true,
+  "build_source_dicts_equal": true,
+  "verification_archived_files": 52,
+  "verification_archives_match": true,
+  "verification_build_dicts_equal": true,
+  "scope": "Exact36 source overlay on named base HEAD and build receipts only; no candidate5 runtime/performance acceptance",
+  "checks": [
+    {
+      "path": "Cargo.lock",
+      "archive_sha256": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "expected_sha256": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "matches": true
+    },
+    {
+      "path": "Cargo.toml",
+      "archive_sha256": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "expected_sha256": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "matches": true
+    },
+    {
+      "path": "src/accounting.rs",
+      "archive_sha256": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "expected_sha256": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "matches": true
+    },
+    {
+      "path": "src/accounting_export.rs",
+      "archive_sha256": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "expected_sha256": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "matches": true
+    },
+    {
+      "path": "src/calendar.rs",
+      "archive_sha256": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "expected_sha256": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "matches": true
+    },
+    {
+      "path": "src/core.rs",
+      "archive_sha256": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "expected_sha256": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "matches": true
+    },
+    {
+      "path": "src/core_export.rs",
+      "archive_sha256": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "expected_sha256": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "matches": true
+    },
+    {
+      "path": "src/core_import.rs",
+      "archive_sha256": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "expected_sha256": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "matches": true
+    },
+    {
+      "path": "src/domain.rs",
+      "archive_sha256": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "expected_sha256": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "matches": true
+    },
+    {
+      "path": "src/export.rs",
+      "archive_sha256": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "expected_sha256": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "matches": true
+    },
+    {
+      "path": "src/imports.rs",
+      "archive_sha256": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "expected_sha256": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "matches": true
+    },
+    {
+      "path": "src/lib.rs",
+      "archive_sha256": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "expected_sha256": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "matches": true
+    },
+    {
+      "path": "src/main.rs",
+      "archive_sha256": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "expected_sha256": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "matches": true
+    },
+    {
+      "path": "src/procurement.rs",
+      "archive_sha256": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "expected_sha256": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "matches": true
+    },
+    {
+      "path": "src/procurement_export.rs",
+      "archive_sha256": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "expected_sha256": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "matches": true
+    },
+    {
+      "path": "src/sales.rs",
+      "archive_sha256": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "expected_sha256": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "matches": true
+    },
+    {
+      "path": "src/sales_draft.rs",
+      "archive_sha256": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "expected_sha256": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "matches": true
+    },
+    {
+      "path": "src/sales_export.rs",
+      "archive_sha256": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "expected_sha256": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "matches": true
+    },
+    {
+      "path": "src/store.rs",
+      "archive_sha256": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "expected_sha256": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "matches": true
+    },
+    {
+      "path": "src/style.css",
+      "archive_sha256": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "expected_sha256": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "matches": true
+    },
+    {
+      "path": "src/ui.rs",
+      "archive_sha256": "ed185b02400a31063f5e36c252f3f5f5b2d4ee1c58d28c9c6946f162f955585f",
+      "expected_sha256": "ed185b02400a31063f5e36c252f3f5f5b2d4ee1c58d28c9c6946f162f955585f",
+      "matches": true
+    },
+    {
+      "path": "src/ui/accounting.rs",
+      "archive_sha256": "91511389f4d2a333b00a196afd3d6b5f21035411a7d6be2ba26eaeb855a9bccc",
+      "expected_sha256": "91511389f4d2a333b00a196afd3d6b5f21035411a7d6be2ba26eaeb855a9bccc",
+      "matches": true
+    },
+    {
+      "path": "src/ui/background.rs",
+      "archive_sha256": "4f5981720274e44994c58230486470e34362808b4dcce55a5e805f17a8474189",
+      "expected_sha256": "4f5981720274e44994c58230486470e34362808b4dcce55a5e805f17a8474189",
+      "matches": true
+    },
+    {
+      "path": "src/ui/catalog_editor.rs",
+      "archive_sha256": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "expected_sha256": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "matches": true
+    },
+    {
+      "path": "src/ui/catalog_preview.rs",
+      "archive_sha256": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "expected_sha256": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "matches": true
+    },
+    {
+      "path": "src/ui/components.rs",
+      "archive_sha256": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "expected_sha256": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "matches": true
+    },
+    {
+      "path": "src/ui/core.rs",
+      "archive_sha256": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "expected_sha256": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "matches": true
+    },
+    {
+      "path": "src/ui/editor.rs",
+      "archive_sha256": "6093e165bedece9f5c357d2d2fc80648e02fc25b4be7c3344fae0005168ccf15",
+      "expected_sha256": "6093e165bedece9f5c357d2d2fc80648e02fc25b4be7c3344fae0005168ccf15",
+      "matches": true
+    },
+    {
+      "path": "src/ui/managers.rs",
+      "archive_sha256": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "expected_sha256": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "matches": true
+    },
+    {
+      "path": "src/ui/pickers.rs",
+      "archive_sha256": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "expected_sha256": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "matches": true
+    },
+    {
+      "path": "src/ui/procurement.rs",
+      "archive_sha256": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "expected_sha256": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "matches": true
+    },
+    {
+      "path": "src/ui/responsiveness.rs",
+      "archive_sha256": "e189c0607efe8600de6633834ff4144fe6e1d2c459744eef3c60a0d74fd6aa92",
+      "expected_sha256": "e189c0607efe8600de6633834ff4144fe6e1d2c459744eef3c60a0d74fd6aa92",
+      "matches": true
+    },
+    {
+      "path": "src/ui/sales.rs",
+      "archive_sha256": "d8ea80b15f38dfcce37c51db6257bcff2231c497ea44ccf8793e8472f39885fe",
+      "expected_sha256": "d8ea80b15f38dfcce37c51db6257bcff2231c497ea44ccf8793e8472f39885fe",
+      "matches": true
+    },
+    {
+      "path": "src/ui/settings.rs",
+      "archive_sha256": "4dfcc27d8c4df35fb2c386863a2445b5ad98951764db780a792660cd1cadd05b",
+      "expected_sha256": "4dfcc27d8c4df35fb2c386863a2445b5ad98951764db780a792660cd1cadd05b",
+      "matches": true
+    },
+    {
+      "path": "src/ui/smoke.rs",
+      "archive_sha256": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "expected_sha256": "2c3a40790ca63a24ec2e6ccd3762f28ca4816359583ac6705e2f39cca41a02d5",
+      "matches": true
+    },
+    {
+      "path": "src/ui/workspace.rs",
+      "archive_sha256": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107",
+      "expected_sha256": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107",
+      "matches": true
+    }
+  ],
+  "verification_checks": [
+    {
+      "path": "docs/assets/accounting-m5/native/inspect-c3-focus.py",
+      "matches": true
+    },
+    {
+      "path": "docs/assets/accounting-m5/native/inspect-list-pages.py",
+      "matches": true
+    },
+    {
+      "path": "docs/assets/accounting-m5/native/inspect-posted-return.py",
+      "matches": true
+    },
+    {
+      "path": "docs/assets/accounting-m5/native/inspect-slot-reuse.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/a11y_audit.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/accounting-performance.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/accounting-qa.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/core-qa.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/jalali-qa.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/native-performance-M2.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/native-performance-M3.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/native-performance-M4.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/native-performance-M5.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/native-save-close.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/native-sidebar-qa.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/procurement-qa.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/product-qa.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/qa-native.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/qa_access.py",
+      "matches": true
+    },
+    {
+      "path": "scripts/sales-qa.py",
+      "matches": true
+    },
+    {
+      "path": "tests/accounting_exports.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/accounting_kernel.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/accounting_migration.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/calendar.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/calendar_workflow.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/core_exports.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/core_import.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/core_migration.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/core_opening.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/core_store.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/customer_details.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/detached_save.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/domain_hardening.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/export_hardening.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/import_diagnostics.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/index_matching.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/manager_workflow.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/process_recovery.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/procurement.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/procurement_exports.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/procurement_migration.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/procurement_store.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/product_qa.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/qa_invariants.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/sales.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/sales_drafts.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/sales_exports.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/sales_migration.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/settings.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/storage_financial_guards.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/storage_hardening.rs",
+      "matches": true
+    },
+    {
+      "path": "tests/workflow.rs",
+      "matches": true
+    }
+  ]
+}

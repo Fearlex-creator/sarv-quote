@@ -1,0 +1,1170 @@
+{
+  "pid": 258021,
+  "target_name": "صفحهٔ بعد",
+  "target_role": "button",
+  "target_ready": true,
+  "target_rectangle": {
+    "x": 0,
+    "y": 0,
+    "width": 307,
+    "height": 34
+  },
+  "accessible_tree": [
+    {
+      "name": "sarv-M5-candidate1",
+      "role": "application"
+    },
+    {
+      "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+      "role": "frame"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "صفحه‌ها",
+      "role": "grouping"
+    },
+    {
+      "name": "فروش‌ها",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "اسناد فروش آماده‌اند.",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "scroll pane"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "سرو",
+      "role": "label"
+    },
+    {
+      "name": "پیشنهاد قیمت · فضای کار محلی",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "scroll bar"
+    },
+    {
+      "name": "تنظیمات و نگهداری داده",
+      "role": "list"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "صفحه‌های فضای کار",
+      "role": "list"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "پشتیبان و بازیابی",
+      "role": "list item"
+    },
+    {
+      "name": "تنظیمات",
+      "role": "list item"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "داده‌ها روی این رایانه",
+      "role": "label"
+    },
+    {
+      "name": "فروش‌ها • سفارش، تحویل و برگشت",
+      "role": "label"
+    },
+    {
+      "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "نمایش ریال • IRR",
+      "role": "combo box"
+    },
+    {
+      "name": "",
+      "role": "table"
+    },
+    {
+      "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+      "role": "entry"
+    },
+    {
+      "name": "۶۰ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "scroll pane"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "پیشنهاد قیمت",
+      "role": "list item"
+    },
+    {
+      "name": "بایگانی پیشنهادها",
+      "role": "list item"
+    },
+    {
+      "name": "مشتری‌ها",
+      "role": "list item"
+    },
+    {
+      "name": "کالاها و قیمت‌ها",
+      "role": "list item"
+    },
+    {
+      "name": "دفتر حسابداری",
+      "role": "list item"
+    },
+    {
+      "name": "فروش‌ها",
+      "role": "list item"
+    },
+    {
+      "name": "خریدها",
+      "role": "list item"
+    },
+    {
+      "name": "موجودی و انتقال",
+      "role": "list item"
+    },
+    {
+      "name": "پیشنهادها",
+      "role": "label"
+    },
+    {
+      "name": "کالا و مشتری",
+      "role": "label"
+    },
+    {
+      "name": "حسابداری",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "شرکت",
+      "role": "label"
+    },
+    {
+      "name": "شرکت",
+      "role": "combo box"
+    },
+    {
+      "name": "تاریخ و واحد نمایش",
+      "role": "button"
+    },
+    {
+      "name": "نمایش ریال • IRR",
+      "role": "toggle button"
+    },
+    {
+      "name": "سفارش فروش تازه",
+      "role": "table cell"
+    },
+    {
+      "name": "از پیشنهاد تأییدشده",
+      "role": "table cell"
+    },
+    {
+      "name": "به‌روزرسانی",
+      "role": "table cell"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "scroll bar"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "شرکت",
+      "role": "toggle button"
+    },
+    {
+      "name": "تاریخ و واحد نمایش",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "سفارش فروش تازه",
+      "role": "button"
+    },
+    {
+      "name": "از پیشنهاد تأییدشده",
+      "role": "button"
+    },
+    {
+      "name": "به‌روزرسانی",
+      "role": "button"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "grouping"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "۲",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "۱۲۰",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "image"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "پشتیبان و بازیابی",
+      "role": "label"
+    },
+    {
+      "name": "تنظیمات",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "سفارش فروش تازه",
+      "role": "label"
+    },
+    {
+      "name": "از پیشنهاد تأییدشده",
+      "role": "label"
+    },
+    {
+      "name": "به‌روزرسانی",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "table"
+    },
+    {
+      "name": "فروش‌ها",
+      "role": "label"
+    },
+    {
+      "name": "سرو · فضای کار محلی",
+      "role": "label"
+    },
+    {
+      "name": "Minimize",
+      "role": "button"
+    },
+    {
+      "name": "Maximize",
+      "role": "button"
+    },
+    {
+      "name": "Close",
+      "role": "button"
+    },
+    {
+      "name": "پیشنهاد قیمت",
+      "role": "label"
+    },
+    {
+      "name": "بایگانی پیشنهادها",
+      "role": "label"
+    },
+    {
+      "name": "مشتری‌ها",
+      "role": "label"
+    },
+    {
+      "name": "کالاها و قیمت‌ها",
+      "role": "label"
+    },
+    {
+      "name": "دفتر حسابداری",
+      "role": "label"
+    },
+    {
+      "name": "شرکت، اسناد و تراز آزمایشی",
+      "role": "label"
+    },
+    {
+      "name": "فروش‌ها",
+      "role": "label"
+    },
+    {
+      "name": "سفارش، تحویل و صورتحساب، برگشت",
+      "role": "label"
+    },
+    {
+      "name": "خریدها",
+      "role": "label"
+    },
+    {
+      "name": "سفارش، دریافت کالا و صورتحساب",
+      "role": "label"
+    },
+    {
+      "name": "موجودی و انتقال",
+      "role": "label"
+    },
+    {
+      "name": "مقدار، ارزش و گردش انبار",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-001",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-003",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-005",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-007",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-009",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-011",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-013",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-015",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-017",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-019",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-021",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-023",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-025",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-027",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-029",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-031",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-033",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-035",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-037",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-039",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-041",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-043",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-045",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-047",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "پیش‌نویس • PERF-B-049",
+      "role": "label"
+    },
+    {
+      "name": "مشتری ب • ذخیره‌شده، غیرمالی • نسخه 1",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "button"
+    },
+    {
+      "name": "صفحهٔ قبل",
+      "role": "table cell"
+    },
+    {
+      "name": "صفحهٔ بعد",
+      "role": "table cell"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "ادامهٔ پیش‌نویس",
+      "role": "label"
+    },
+    {
+      "name": "صفحهٔ قبل",
+      "role": "button"
+    },
+    {
+      "name": "صفحهٔ بعد",
+      "role": "button"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "صفحهٔ قبل",
+      "role": "label"
+    },
+    {
+      "name": "صفحهٔ بعد",
+      "role": "label"
+    },
+    {
+      "name": "",
+      "role": "panel"
+    },
+    {
+      "name": "نمایش ریال • IRR",
+      "role": "label"
+    },
+    {
+      "name": "F2-core-v1 • شرکت ساختگی",
+      "role": "label"
+    }
+  ]
+}

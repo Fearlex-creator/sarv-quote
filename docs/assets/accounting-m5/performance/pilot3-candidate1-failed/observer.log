@@ -1,0 +1,28 @@
+dbus-daemon[254543]: [session uid=1000 pid=254543 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=254544 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[254543]: [session uid=1000 pid=254543 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[254577]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=254544 comm="/usr/bin/python3 scripts/native-performance-M5.py" label="kernel")
+dbus-daemon[254577]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+{"core_search": {"n": 2, "p50": 138.38252000277862, "p95": 151.81425099581247, "p99": 151.81425099581247, "worst": 151.81425099581247, "method": "nearest rank"}, "preview_ms": 63.05997199524427, "post_ms": 6.247789999179076}
+{"procurement_searches": {"document": {"n": 2, "p50": 100.4847950025578, "p95": 117.36351699801162, "p99": 117.36351699801162, "worst": 117.36351699801162, "method": "nearest rank"}, "party": {"n": 2, "p50": 86.21416600362863, "p95": 106.35199800162809, "p99": 106.35199800162809, "worst": 106.35199800162809, "method": "nearest rank"}, "item": {"n": 2, "p50": 79.63012399704894, "p95": 101.89189099764917, "p99": 101.89189099764917, "worst": 101.89189099764917, "method": "nearest rank"}, "mixed_master": {"n": 2, "p50": 82.77250199898845, "p95": 97.37427499931073, "p99": 97.37427499931073, "worst": 97.37427499931073, "method": "nearest rank"}}}
+
+(process:254544): dbind-WARNING **: 01:34:15.801: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+X connection to :12 broken (explicit kill or server shutdown).
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1278, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 1189, in main
+    sales, sales_profile, sales_large = measure_sales(output, procurement_profile, binary, env, start, x11, capture, args.search_samples, args.pilot, report)
+                                        ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 782, in measure_sales
+    result['external_stage'] = measure_sales_stage(output, procurement_source, binary, env, start, x11, capture, result)
+                               ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 680, in measure_sales_stage
+    order = observe(durable_order, 'one exact Sales order durable and draft consumed')
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 77, in observe
+    result = predicate()
+  File "/workspace/sarv-quote/scripts/native-performance-M5.py", line 677, in durable_order
+    records = current['accounting']['sales']['records']
+              ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'sales'

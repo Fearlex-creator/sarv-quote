@@ -1,0 +1,48 @@
+{
+  "epoch": "candidate3 intermediate",
+  "callback_report_sha256": "2650384f44ffba81384eaca8218ce320311dcf9123c9202cd479f9b838633773",
+  "callback_result": "passed",
+  "callback_checks": [
+    "held-lock commit returns with GTK ticks; newer valid quantity wins",
+    "held-lock add freezes topology; repeated activation has one effect",
+    "delete token appears after commit; identical adjacent rows are not deleted twice",
+    "SQLite lock timeout retains undo token, rows and focused usable Undo",
+    "explicit header focus cancels delayed row focus",
+    "explicit later page navigation cancels old page focus intent",
+    "newer invalid quantity stays visible and cancels deferred review",
+    "newer changed target rejects deferred delete",
+    "held-lock human choice preserves query/exact code; restart exact; independent total 141363 IRR; zero GL"
+  ],
+  "callback_scope": "synthetic correctness and held-writer callback responsiveness; no accounting posting or speed superiority claim",
+  "not_accepted": "Final requested page/row range not asserted; source R11 unresolved. Callback-driven synthetic checks are separate from real keyboard and performance acceptance.",
+  "slot_first_trial_report_sha256": "50359c97da91260a72f5e2da84b9b2bca33dfdf49f12c5ff988000fab18516fb",
+  "slot_first_trial_result": "failed",
+  "slot_first_trial_checks": [
+    {
+      "name": "120 synthetic raw-draft list retained",
+      "passed": true
+    },
+    {
+      "name": "reused first card opens current PERF-A-000",
+      "passed": true
+    },
+    {
+      "name": "reused first card opens current PERF-B-001",
+      "passed": true
+    },
+    {
+      "name": "reused first card opens current PERF-A-000",
+      "passed": true
+    },
+    {
+      "name": "zero-result persistent cards are all insensitive and not showing",
+      "passed": false
+    }
+  ],
+  "failed_tree_sha256": "729b576810ba61009c3ef6130f3c631c424d8a88f4308dfaf4dbdab10e7412e2",
+  "failed_tree_exposed_document_actions": 0,
+  "finding": "Observer required hidden actions to remain exposed via bool(opens); zero exposed document actions are consistent with proper hiding. No product stale-action defect demonstrated by this failed assertion. Corrected observer/current-line part pending.",
+  "callback_persisted_before_after_dicts_equal": true,
+  "callback_dicts_match_issued_source_binary": true,
+  "callback_root_manifest_hash_matches": true
+}

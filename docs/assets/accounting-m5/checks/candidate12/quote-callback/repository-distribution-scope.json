@@ -1,0 +1,16 @@
+{
+  "portable_files": {
+    "after.json": "0938c201ae77726f671bf7df63d0ddd56887efa0838f47c911bc2210a775d9ef",
+    "application.log": "94ed1f2f5416f387f4ddcc662a39ffdd7f001b1504117e6400cc3a1da95eebca",
+    "before.json": "0938c201ae77726f671bf7df63d0ddd56887efa0838f47c911bc2210a775d9ef",
+    "manifest.json": "b94cac504dcaaa66775cdfcc8f2f7fd463b95b68416fbff8a1165468b6307b7a",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "profile/final-state.json": "f3455913c6f4134ddec5d8c7443cf7d9060b0677529a87addd8ccab046986b25",
+    "profile/quote-callback-verification.json": "c91e98823f6d4c2a2433218924038d799576023af5ee710432c688ce516ad390",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "local_only_ignored_files": [
+    "profile/sarv.sqlite3"
+  ],
+  "scope": "Original delivery receipt includes a local-only synthetic SQLite online backup. Portable repository includes eight delivery files: exact final-state JSON and seven original guarded logs/receipts; no ignored database is force-added."
+}

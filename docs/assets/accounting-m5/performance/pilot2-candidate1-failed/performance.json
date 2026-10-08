@@ -1,0 +1,1295 @@
+{
+  "result": "incomplete",
+  "synthetic_only": true,
+  "development_pilot": true,
+  "binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate1",
+  "binary_sha256": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "utc": "2026-10-08T01:31:03Z",
+  "root_freeze_manifest": "/workspace/sarv-quote/docs/assets/accounting-m5/checks/candidate1/manifest.json",
+  "root_freeze_manifest_sha256": "ac04027449721a4dbd432e47483f9697ead5aeb437bff95dd6a58910aec45d41",
+  "source_head": "24ae57bc179336ad21d7d1d52501f49e80f3330b",
+  "source_status": "M README.md\n M decisions.md\n M migrations.md\n M requirements/evidence.md\n M requirements/roadmap.md\n M src/accounting.rs\n M src/core.rs\n M src/domain.rs\n M src/lib.rs\n M src/procurement.rs\n M src/store.rs\n M src/ui.rs\n M src/ui/accounting.rs\n M tests/accounting_migration.rs\n M tests/core_migration.rs\n M tests/core_store.rs\n M tests/procurement.rs\n M tests/procurement_migration.rs\n M tests/qa_invariants.rs\n M tests/workflow.rs\n?? docs/assets/accounting-m5/\n?? docs/sales-api.md\n?? docs/sales-exports.md\n?? requirements/fixtures-M5.md\n?? requirements/independent-review-M5.md\n?? requirements/milestone-M5.md\n?? requirements/performance-M5.md\n?? scripts/native-performance-M5.py\n?? scripts/sales-qa.py\n?? src/sales.rs\n?? src/sales_draft.rs\n?? src/sales_export.rs\n?? src/ui/sales.rs\n?? tests/sales.rs\n?? tests/sales_drafts.rs\n?? tests/sales_exports.rs\n?? tests/sales_migration.rs",
+  "source_code_sha256": "208465863d0a1731b49710229c06733902986b4490aff03308b8efad53242b0d",
+  "frozen_source_provenance_before": {
+    "sha256": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+      "src/ui/accounting.rs": "76faf44f705bac44e6e1413e2d78e696af83238962cc03a4877a3627ec6a348f",
+      "src/ui/background.rs": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+      "src/ui/sales.rs": "b68c2fb6100aac8d95d2dc86dd6c929b5d33265ec692f28efbe1b6e270ca6941",
+      "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+      "src/ui/smoke.rs": "947cc2399837002fa159dedb7013cb764eb55a76021443efec45718f6a793b7b",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "observer_provenance_before": {
+    "native-performance-M5.py": "e044804103616a92747241047ca9025b2d79f183126f00f3339022fb6b17fc24",
+    "native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+    "native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+    "accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+  },
+  "source_hash_algorithm": "Sorted pathlib.Path components; relative UTF-8 path, NUL, raw bytes, NUL",
+  "matched_core_baseline": "docs/assets/accounting-m3/performance/performance.json",
+  "procurement_measurement": {
+    "result": "measured",
+    "source": "native forms; actual two-row catalogue import and explicit picker",
+    "stage_manifest": {
+      "catalog_count": 1,
+      "note": "no smoke changes after ready; external observer owns preview/post",
+      "opening_journals": 1,
+      "phase": "unposted-order-native-forms",
+      "post_name": "procurement-order-save",
+      "preview_name": "procurement-preview",
+      "ready": true,
+      "resource_records": 4,
+      "search_name": "procurement-search",
+      "source_snapshot": "catalog ID/name/fingerprint/product/unit/date/IRR frozen through native picker"
+    },
+    "order_preview_observed_ms": 56.30021900287829,
+    "order_post_durable_observed_ms": 12.569195998366922,
+    "external_order_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.640956,
+        "gaps_ms": [
+          16.708706,
+          16.043669,
+          16.019393,
+          1.8691879999999998
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.708706,
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 39.365772,
+        "gaps_ms": [
+          20.824477,
+          18.540884000000002,
+          0.000411
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 20.824477,
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "external_order_durable_proof": {
+      "record_id": "efb5b158-b3d8-4ce6-bd79-4748058a8a57",
+      "command_sha256": "30ff924c63c72b0363cd4a55f43dceec5b53acb5a9739e7814f647ab5bde6812",
+      "total_irr": 180,
+      "journal_id": null,
+      "records": 5,
+      "journals": 1
+    },
+    "memory_kib_after_external_order": {
+      "VmRSS": 134068,
+      "VmHWM": 134068
+    },
+    "full_manifest": {
+      "checks": [
+        "fractional IRR rejected and retained in native line form",
+        "Rial15↔Toman1.5 exact; invalidIRR0.1 retained and unit switch refused",
+        "catalog15/piece cannot silently become15/carton; requires override reason",
+        "quantity-only edit preserves original catalog15, overridden30 and required reason",
+        "PO12pieces at15, immutable source, no financial journal",
+        "partial receipt independent74 mismatches75; retained and no post",
+        "two partial receipts75/105, two matched bills30/150 and paired nonfinancial transfer70"
+      ],
+      "item_queries": [
+        "SKU-A",
+        "SKU-B"
+      ],
+      "journal_count": 5,
+      "movement_count": 4,
+      "note": "160ms smoke observation polling is not worker latency; process remains alive for independent keyboard/RSS",
+      "party_queries": [
+        "CU-A",
+        "CU-B"
+      ],
+      "phase": "posted-literal-M4",
+      "queries": [
+        "REC-A",
+        "REC-B"
+      ],
+      "ready": true,
+      "record_count": 10,
+      "reports": [
+        "M4-controls.csv",
+        "M4-controls.pdf",
+        "M4-order.pdf"
+      ],
+      "search_name": "procurement-search",
+      "source": "native forms; real catalog import and explicit price picker; root worker preview/post"
+    },
+    "independent_raw_proof": {
+      "record_count": 10,
+      "journal_count": 5,
+      "records_by_kind": {
+        "Resources": 4,
+        "Order": 1,
+        "Receive": 2,
+        "Bill": 2,
+        "Transfer": 1
+      },
+      "movement_count": 4,
+      "frozen_price_source": "فهرست M4-synthetic-prices | catalog=b1d392a3-5dd6-46bf-b80a-31447fd11644 | SHA256=c4263e9adcc3a46128ad4aecc34d58bdf90b9823ca0cbb53b742662d5502555d | SKU=SKU-A | نام=کالای الف خرید | اندازه=عدد | واحدمنبع=ریال | قیمت‌ریال=15 | تاریخ‌منبع=2026-03-22T09:00:00Z | نگاشت‌کالا=SKU-A | نگاشت‌واحد=PIECE",
+      "signed_controls_irr": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 200,
+        "Inventory": 480,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952,
+        "SupplierAdvances": 0,
+        "CustomerAdvances": 0,
+        "Cogs": 0,
+        "InventoryLoss": 0,
+        "Sales": 0,
+        "SalesReturns": 0,
+        "OperatingExpense": 0,
+        "BankFees": 0
+      },
+      "trial_debit_irr": 1431,
+      "trial_credit_irr": 1431,
+      "transfer_pools": {
+        "W1": {
+          "item_id": "ITEM-A",
+          "warehouse_id": "W1",
+          "quantity_thousandths": 30000,
+          "value": 350
+        },
+        "W2": {
+          "item_id": "ITEM-A",
+          "warehouse_id": "W2",
+          "quantity_thousandths": 12000,
+          "value": 130
+        }
+      },
+      "latest_operational_stock_date": "2026-03-27",
+      "immutable_opening_equal": true
+    },
+    "catalog_csv_sha256": "c316f4c17a6f71823d6d96093ec9ddfbbf872ad92b163183690a22541d734eca",
+    "catalog_csv_data_rows": 2,
+    "full_workflow_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 73.789376,
+        "gaps_ms": [
+          23.960836999999998,
+          23.600513,
+          25.923106,
+          0.30491999999999997
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 25.923106,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 71.203838,
+        "gaps_ms": [
+          30.838787,
+          40.363819,
+          0.001232
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 40.363819,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 53.670662,
+        "gaps_ms": [
+          16.089549,
+          16.097601,
+          20.890067,
+          0.593445
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 20.890067,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 47.66685,
+        "gaps_ms": [
+          30.354117,
+          17.312212,
+          0.000521
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 30.354117,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 56.816475,
+        "gaps_ms": [
+          16.087967000000003,
+          16.082888999999998,
+          24.023301,
+          0.6223179999999999
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 24.023301,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 53.27114,
+        "gaps_ms": [
+          34.885429,
+          18.384808999999997,
+          0.000902
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 34.885429,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 60.809405,
+        "gaps_ms": [
+          16.088637,
+          18.264008,
+          26.021043000000002,
+          0.435717
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 26.021043000000002,
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 51.879441,
+        "gaps_ms": [
+          34.328559,
+          17.550371,
+          0.000511
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 34.328559,
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.965723,
+        "gaps_ms": [
+          16.084992,
+          16.105933999999998,
+          16.079964,
+          2.694833
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.105933999999998,
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 38.077399,
+        "gaps_ms": [
+          16.113214,
+          21.963684,
+          0.000501
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 21.963684,
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 61.759043999999996,
+        "gaps_ms": [
+          16.088176,
+          16.085011,
+          29.230171,
+          0.355686
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 29.230171,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "rejected",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.726311,
+        "gaps_ms": [
+          16.099453,
+          16.100355,
+          16.09072,
+          2.435783
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.100355,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 36.384667,
+        "gaps_ms": [
+          16.187526000000002,
+          20.19665,
+          0.000491
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 20.19665,
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 63.728261999999994,
+        "gaps_ms": [
+          16.096528,
+          16.081226,
+          30.93504,
+          0.615468
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 30.93504,
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 63.726771,
+        "gaps_ms": [
+          44.609318,
+          19.116942,
+          0.000511
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 44.609318,
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 58.694646000000006,
+        "gaps_ms": [
+          16.091061,
+          16.078472,
+          26.056226,
+          0.468887
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 26.056226,
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 57.162917,
+        "gaps_ms": [
+          37.185907,
+          19.976519000000003,
+          0.000491
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 37.185907,
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 58.595186,
+        "gaps_ms": [
+          16.087736,
+          16.080635,
+          25.808032,
+          0.6187830000000001
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 25.808032,
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 42.781622999999996,
+        "gaps_ms": [
+          19.328242,
+          23.45253,
+          0.000851
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 23.45253,
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 65.919339,
+        "gaps_ms": [
+          26.339844,
+          38.976076,
+          0.603419
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 38.976076,
+        "operation": "transfer",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 50.465819,
+        "gaps_ms": [
+          16.544194,
+          33.920984000000004,
+          0.000641
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 33.920984000000004,
+        "operation": "transfer",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "strict_phase_heartbeat_checks": [
+      {
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.708706,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 20.824477,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 25.923106,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 40.363819,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 20.890067,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 30.354117,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 24.023301,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 34.885429,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 26.021043000000002,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "resources",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 34.328559,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.105933999999998,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "order",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 21.963684,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "rejected",
+        "ticks": 3,
+        "actual_ms": 29.230171,
+        "budget_ms": 50,
+        "measurable": false,
+        "passes": false
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 16.100355,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 20.19665,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 30.93504,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "receipt",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 44.609318,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 26.056226,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 37.185907,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3,
+        "actual_ms": 25.808032,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "bill",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 23.45253,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "transfer",
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 2,
+        "actual_ms": 38.976076,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      },
+      {
+        "operation": "transfer",
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2,
+        "actual_ms": 33.920984000000004,
+        "budget_ms": 50,
+        "measurable": true,
+        "passes": true
+      }
+    ],
+    "memory_kib_after_full_workflow": {
+      "VmRSS": 140256,
+      "VmHWM": 141052
+    },
+    "searches": {
+      "document": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "REC-A",
+            "expected": "REC-A",
+            "key_dispatch_ms": 0.07425199873978272,
+            "correct_visible_ms": 97.81264699995518,
+            "focused_usable_ms": 116.93238400039263
+          },
+          {
+            "index": 1,
+            "query": "REC-B",
+            "expected": "REC-B",
+            "key_dispatch_ms": 0.21933099924353883,
+            "correct_visible_ms": 111.44447999686236,
+            "focused_usable_ms": 127.08535300043877
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 97.81264699995518,
+          "p95": 111.44447999686236,
+          "p99": 111.44447999686236,
+          "worst": 111.44447999686236,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 116.93238400039263,
+          "p95": 127.08535300043877,
+          "p99": 127.08535300043877,
+          "worst": 127.08535300043877,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current document Detail action, then real Tab to focused action",
+        "actionable_result": true
+      },
+      "party": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.09910900553222746,
+            "correct_visible_ms": 82.75688400317449,
+            "focused_usable_ms": 82.75878700078465
+          },
+          {
+            "index": 1,
+            "query": "CU-B",
+            "expected": "CU-B",
+            "key_dispatch_ms": 0.07920899952296168,
+            "correct_visible_ms": 95.69720899889944,
+            "focused_usable_ms": 95.69999299856136
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 82.75688400317449,
+          "p95": 95.69720899889944,
+          "p99": 95.69720899889944,
+          "worst": 95.69720899889944,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 82.75878700078465,
+          "p95": 95.69999299856136,
+          "p99": 95.69999299856136,
+          "worst": 95.69999299856136,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      },
+      "item": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "SKU-A",
+            "expected": "ITEM-A",
+            "key_dispatch_ms": 0.06202400254551321,
+            "correct_visible_ms": 93.73367900116136,
+            "focused_usable_ms": 93.73642300488427
+          },
+          {
+            "index": 1,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.06297499930951744,
+            "correct_visible_ms": 83.23023200500757,
+            "focused_usable_ms": 83.23292600107379
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 83.23023200500757,
+          "p95": 93.73367900116136,
+          "p99": 93.73367900116136,
+          "worst": 93.73367900116136,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 83.23292600107379,
+          "p95": 93.73642300488427,
+          "p99": 93.73642300488427,
+          "worst": 93.73642300488427,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      },
+      "mixed_master": {
+        "samples": [
+          {
+            "index": 0,
+            "query": "CU-A",
+            "expected": "CU-A",
+            "key_dispatch_ms": 0.11375200119800866,
+            "correct_visible_ms": 81.72766899951966,
+            "focused_usable_ms": 81.73087300383486
+          },
+          {
+            "index": 1,
+            "query": "SKU-B",
+            "expected": "ITEM-B",
+            "key_dispatch_ms": 0.09659599891165271,
+            "correct_visible_ms": 106.74527099763509,
+            "focused_usable_ms": 106.74772399943322
+          }
+        ],
+        "correct_visible_ms": {
+          "n": 2,
+          "p50": 81.72766899951966,
+          "p95": 106.74527099763509,
+          "p99": 106.74527099763509,
+          "worst": 106.74527099763509,
+          "method": "nearest rank"
+        },
+        "focused_usable_ms": {
+          "n": 2,
+          "p50": 81.73087300383486,
+          "p95": 106.74772399943322,
+          "p99": 106.74772399943322,
+          "worst": 106.74772399943322,
+          "method": "nearest rank"
+        },
+        "boundary": "Visible current read-only master ID row while search remains focused; no selectable-row claim",
+        "actionable_result": false
+      }
+    },
+    "memory_kib_after_searches": {
+      "VmRSS": 134076,
+      "VmHWM": 142188
+    }
+  },
+  "datasets": {},
+  "hardware": {
+    "lscpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           46 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  5\nOn-line CPU(s) list:                     0-4\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 9V74 80-Core Processor\nCPU family:                              25\nModel:                                   17\nThread(s) per core:                      1\nCore(s) per socket:                      5\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                5192.28\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 x2apic movbe popcnt tsc_deadline_timer aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase tsc_adjust bmi1 avx2 smep bmi2 erms invpcid avx512f avx512dq rdseed adx smap avx512ifma clflushopt clwb avx512cd sha_ni avx512bw avx512vl xsaveopt xsavec xgetbv1 xsaves avx512_bf16 clzero xsaveerptr arat npt nrip_save tsc_scale vmcb_clean flushbyasid pausefilter pfthreshold v_vmsave_vmload avx512vbmi umip avx512_vbmi2 gfni vaes vpclmulqdq avx512_vnni avx512_bitalg avx512_vpopcntdq rdpid fsrm arch_capabilities\nHypervisor vendor:                       KVM\nVirtualization type:                     full\nL1d cache:                               96 KiB (3 instances)\nL1i cache:                               96 KiB (3 instances)\nL2 cache:                                3 MiB (3 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-4\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Vulnerable: __user pointer sanitization and usercopy barriers only; no swapgs barriers\nVulnerability Spectre v2:                Vulnerable; STIBP: disabled; PBRSB-eIBRS: Not affected; BHI: Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "os": "PRETTY_NAME=\"Debian GNU/Linux 13 (trixie)\"\nNAME=\"Debian GNU/Linux\"\nVERSION_ID=\"13\"\nVERSION=\"13 (trixie)\"\nVERSION_CODENAME=trixie\nDEBIAN_VERSION_FULL=13.6\nID=debian\nHOME_URL=\"https://www.debian.org/\"\nSUPPORT_URL=\"https://www.debian.org/support\"\nBUG_REPORT_URL=\"https://bugs.debian.org/\"\n",
+    "loadavg_before": "1.40 1.31 0.90 3/1656 252969",
+    "cgroup_cpu_stat_before": "usage_usec 14446584315\nuser_usec 11228954859\nsystem_usec 3217629455\nnice_usec 7929\nnr_periods 184862\nnr_throttled 848\nthrottled_usec 22572080\nnr_bursts 0\nburst_usec 0\n",
+    "filesystem": "Filesystem     Type    1K-blocks     Used Available Use% Mounted on\noverlay        overlay  32978704 11911596  19373004  39% /workspace",
+    "meminfo": "MemTotal:       18440136 kB\nMemFree:         3012212 kB\nMemAvailable:   15086776 kB\nBuffers:           40000 kB\nCached:         12627812 kB\nSwapCached:            0 kB\nActive:          5417540 kB\nInactive:        8902264 kB\nActive(anon):     563180 kB\nInactive(anon):  1787424 kB\nActive(file):    4854360 kB\nInactive(file):  7114840 kB\nUnevictable:       29920 kB\nMlocked:               0 kB\nSwapTotal:             0 kB\nSwapFree:              0 kB\nDirty:            107196 kB\nWriteback:             0 kB\nAnonPages:       1682112 kB\nMapped:           242556 kB\nShmem:            668836 kB\nKReclaimable:     551584 kB\nSlab:             673996 kB\nSReclaimable:     551584 kB\nSUnreclaim:       122412 kB\nKernelStack:        6644 kB\nPageTables:        20564 kB\nSecPageTables:         0 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:     9220068 kB\nCommitted_AS:    5734896 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:        8944 kB\nVmallocChunk:          0 kB\nPercpu:             1368 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:    241664 kB\nFilePmdMapped:         0 kB\nBalloon:               0 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:      270336 kB\nDirectMap2M:    18411520 kB\nDirectMap1G:    20971520 kB\n",
+    "cgroup_memory_max": "17179869184",
+    "cgroup_cpu_max": "400000 100000",
+    "screen": "1450x1050x24 private Xvfb/Openbox, X11, Cairo, scale 1",
+    "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+    "gtk_libadwaita": "4.22.5\n1.9.4",
+    "database_source_configuration": "SQLite WAL; synchronous=FULL; busy timeout3s (src/store.rs). Synthetic fixture injection uses FULL and SQLite consistent backup API.",
+    "loadavg_after": "1.58 1.38 0.94 1/1699 253704",
+    "cgroup_cpu_stat_after": "usage_usec 14495219422\nuser_usec 11268746708\nsystem_usec 3226472713\nnice_usec 7929\nnr_periods 185332\nnr_throttled 848\nthrottled_usec 22572080\nnr_bursts 0\nburst_usec 0\n"
+  },
+  "boundaries": {
+    "startup": "Popen to owned mapped window, usable visible editor Save, real XTest Tab focus roundtrip and completed PNG capture; includes AT-SPI polling and screenshot observer overhead.",
+    "first_start": "One new process on a fresh SQLite backup, initialization/migration may be included; OS cache uncontrolled.",
+    "repeated_startup": "n new processes on the same initialized backup; OS pages warm/uncontrolled, accessibility session initialized. Process-cold, not physical/cache-cold.",
+    "core_search": "Pre-discovery of search/list excluded. Real XTest Ctrl+A and ASCII keys to exact current ID label, then native Tab to focused, visible, sensitive Edit action. Includes debounce, rendering,5ms AT-SPI polling and result-focus navigation; no pure UI latency claim. Correct-visible-action boundary is recorded separately.",
+    "preview": "Real XTest Space on already-discovered focused preview button to enabled post button, after source reason mutation invalidates old verification. Includes accessibility polling; n=1.",
+    "post": "Real XTest Space on already-discovered focused post button to committed SQLite payload containing one opening and one journal; includes durable database observer polling; n=1.",
+    "rss": "Application-only /proc/PID/status KiB; startup sampled every10ms and steady after500ms idle. After-workflow separate point after posting. Helpers excluded."
+  },
+  "limits": [
+    "No OS cache flush, physical SSD evidence, dedicated reference hardware, Windows or Wayland claim.",
+    "Virtual shared executor scheduling and font/library cache state are uncontrolled; hashing and backup warm file pages.",
+    "Native forms fixture is distinct from the35-row CSV fixture. No CSV import claim when import_source is absent.",
+    "n10/n20 nearest-rank p99 equals worst; n1 preview/post and workflow memory are not tail estimates.",
+    "No five-year/100000-document/million-journal-line/10000-party or10000-row staged-import benchmark."
+  ],
+  "capture_samples": [
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/core-workflow/staged-search.png",
+      "elapsed_ms": 160.81213599682087
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/core-workflow/preview-ready.png",
+      "elapsed_ms": 109.92720200010808
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/core-workflow/after-post.png",
+      "elapsed_ms": 149.92599700053688
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/procurement-stage/external-order-preview.png",
+      "elapsed_ms": 116.32906000158982
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/procurement-posted-workflow/search-document.png",
+      "elapsed_ms": 101.27464599645464
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/procurement-posted-workflow/search-party.png",
+      "elapsed_ms": 123.98381499951938
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/procurement-posted-workflow/search-item.png",
+      "elapsed_ms": 130.20972199592507
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/procurement-posted-workflow/search-mixed_master.png",
+      "elapsed_ms": 95.44568999990588
+    },
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m5/candidate1-functional-pilot2/sales-external-stage/invalid-raw-saved.png",
+      "elapsed_ms": 130.38629799848422
+    }
+  ],
+  "core_workflow": {
+    "stage_manifest": {
+      "company_id": "40d71bfb-6573-4287-a83b-12ed6f83cc73",
+      "controls": 12,
+      "counts": {
+        "advances": 0,
+        "ap": 2,
+        "ar": 2,
+        "banks": 1,
+        "cash": 1,
+        "cheques": 2,
+        "grni": 1,
+        "items": 1,
+        "ledger_balances": 21,
+        "packs": 1,
+        "parties": 4,
+        "stock": 2,
+        "units": 2,
+        "warehouses": 2
+      },
+      "import_source": null,
+      "items": 1,
+      "opening_journals": 0,
+      "parties": 4,
+      "preview_ms_includes_poll": 278,
+      "preview_total_irr": 1251,
+      "result": "ready",
+      "source": "native editable forms",
+      "stock_rows": 2,
+      "units": 2,
+      "warehouses": 2
+    },
+    "search_samples": [
+      {
+        "index": 0,
+        "query": "CU-A",
+        "key_dispatch_ms": 0.2282939967699349,
+        "correct_visible_action_ms": 90.76515500055393,
+        "focused_usable_action_ms": 121.25784400268458
+      },
+      {
+        "index": 1,
+        "query": "CU-B",
+        "key_dispatch_ms": 0.07837799785193056,
+        "correct_visible_action_ms": 83.10526199784363,
+        "focused_usable_action_ms": 117.61792600009358
+      }
+    ],
+    "search_ms": {
+      "n": 2,
+      "p50": 117.61792600009358,
+      "p95": 121.25784400268458,
+      "p99": 121.25784400268458,
+      "worst": 121.25784400268458,
+      "method": "nearest rank"
+    },
+    "correct_visible_action_ms": {
+      "n": 2,
+      "p50": 83.10526199784363,
+      "p95": 90.76515500055393,
+      "p99": 90.76515500055393,
+      "worst": 90.76515500055393,
+      "method": "nearest rank"
+    },
+    "search_memory_kib": {
+      "VmRSS": 134616,
+      "VmHWM": 134616
+    },
+    "preview_observed_ms": 63.250762003008276,
+    "post_durable_observed_ms": 6.257455002923962,
+    "native_phase_records_before_observer": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.668890000000005,
+        "gaps_ms": [
+          16.611646,
+          16.077306,
+          16.088214999999998,
+          1.891723
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.611646,
+        "phase": "preview",
+        "result": "differences",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 50.893431,
+        "gaps_ms": [
+          16.108646,
+          16.107976999999998,
+          16.112342,
+          2.564466
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.112342,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      }
+    ],
+    "native_phase_records": [
+      {
+        "boundary": "dispatch through completed UI result rendering",
+        "elapsed_ms": 51.617984,
+        "gaps_ms": [
+          16.089738999999998,
+          16.047324000000003,
+          16.07736,
+          3.403561
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 16.089738999999998,
+        "phase": "preview",
+        "result": "verified",
+        "ticks": 3
+      },
+      {
+        "boundary": "dispatch through observed persistence busy release; durable state independently checked",
+        "elapsed_ms": 59.129292,
+        "gaps_ms": [
+          18.244869,
+          40.883351999999995,
+          0.001071
+        ],
+        "interval_ms": 16,
+        "max_gap_ms": 40.883351999999995,
+        "phase": "post",
+        "result": "worker_finished",
+        "ticks": 2
+      }
+    ],
+    "strict_phase_heartbeat_budgets": {
+      "preview": {
+        "budget_ms": 50,
+        "actual_ms": 16.089738999999998,
+        "passes": true,
+        "measurable": true,
+        "result": "verified"
+      },
+      "post": {
+        "budget_ms": 50,
+        "actual_ms": 40.883351999999995,
+        "passes": true,
+        "measurable": true,
+        "result": "worker_finished"
+      }
+    },
+    "application_memory_kib_after_workflow": {
+      "VmRSS": 135600,
+      "VmHWM": 135600
+    },
+    "posted_shape": {
+      "schema": 6,
+      "generation": 2,
+      "payload_sha256": "34b1786a711cd0a7c2d272e0200638f70a8892410be643d81c707f98ddfb9e3d",
+      "customers": 0,
+      "quotes": 0,
+      "products": 0,
+      "draft_lines": 0,
+      "accounting": {
+        "companies": 1,
+        "periods": 1,
+        "accounts": 26,
+        "journals": 1,
+        "requests": 1,
+        "audit": 30
+      },
+      "procurement": {},
+      "core": {
+        "setups": 1,
+        "openings": 1
+      },
+      "opening": {
+        "counts": {
+          "balances": 21,
+          "parties": 4,
+          "units": 2,
+          "items": 1,
+          "warehouses": 2,
+          "cash": 1,
+          "banks": 1,
+          "open_items": 4,
+          "advances": 0,
+          "cheques": 2,
+          "stock": 2,
+          "grni": 1
+        },
+        "packs": 1,
+        "import_source": null,
+        "command_sha256": "068b41b3e0ffc8d0e629ef29c8e238eeac756108e908b18f4cc94a258b3f043c",
+        "source_id": "OPEN-F2-2026",
+        "journal_id": "f40c6626-6000-44d2-af20-c7b46b7e4efe",
+        "as_of": "2026-03-21",
+        "ledger_debit_irr": 1251,
+        "ledger_credit_irr": 1251,
+        "stock_value_irr": 300,
+        "grni_value_irr": 50
+      }
+    }
+  },
+  "sales_measurement": {
+    "result": "incomplete",
+    "workflows": {},
+    "search_samples": [],
+    "external_stage": {
+      "stage_manifest": {
+        "checks": [
+          "actual sales catalog price20/core SKU+unit mapping",
+          "older durable draft receipt retains newer GTK input",
+          "explicit raw draft saves durable revision and current header/lines"
+        ],
+        "company_id": "40d71bfb-6573-4287-a83b-12ed6f83cc73",
+        "draft_id": "65075a93-f290-4742-aa69-496924000aac",
+        "mode": "stage",
+        "note": "no further smoke edits; external observer owns preview/submit/keyboard",
+        "ready": true,
+        "reference": "SO-M5",
+        "revision": 2,
+        "stage": "saved-native-raw-draft",
+        "synthetic_only": true
+      },
+      "n": 1,
+      "synthetic_only": true,
+      "boundary": "Pre-discovered native controls; real XTest Save/Space; SQLite durable payload then callback usability independently awaited. Polling/UI/layout included. Restart/correction distinct; no repeated-command percentile.",
+      "invalid_raw_save_durable_ms": 22.107144999608863,
+      "invalid_raw_save_callback_usable_ms": 71.17376100359252,
+      "invalid_raw_saved_revision": 3
+    }
+  },
+  "error": "RuntimeError('Timed out waiting for visible focused Sales search')",
+  "source_code_sha256_after": "208465863d0a1731b49710229c06733902986b4490aff03308b8efad53242b0d",
+  "frozen_source_provenance_after": {
+    "sha256": "4da38731bf7d6208d39f233a4f7ef1f654cac798d437e726659333ec3da38d08",
+    "files": {
+      "Cargo.lock": "ebc43f4e71ca29a738a43ccd48bf2ebe0f0dade0d718fd81f641feb61b7263a4",
+      "Cargo.toml": "1ec4b60ee3eecb3ac52f9a66f680ec6daf8e8024c68cd4d260627818b9a6d67f",
+      "src/accounting.rs": "d985d4a764d20d07081aaf1f306c8061d4dee8542bb027de3d60db67ba6f4723",
+      "src/accounting_export.rs": "c00df202fd6e1bae65aeb241971c2ba8f79cd4f3bd8ea2c70e91bd29ab735fa7",
+      "src/calendar.rs": "eae39b4e5a6ded956d5ccf3d98817a469b2b2ea1476177748d66730586e97649",
+      "src/core.rs": "95e268d47c5c1baf959ec4d12e20fafc9f4c36d413a89b383bc604e8fce54646",
+      "src/core_export.rs": "8d523d97027d9e77f01a59bd450d84a542e7e323a57337bd6e7e259aaa9caf5e",
+      "src/core_import.rs": "056f18907fc1c2e2e1bf0f56e38cdff4d264a4cb4e7e2c81d751cbabc4a18d44",
+      "src/domain.rs": "17e59d943a51545617aeb179adcc58fb1e6193031ea9a87cde7765ba36a61d95",
+      "src/export.rs": "e76f83107bc8d59cdd66d68b3328b01cae164dd9258ccf2d4ae0c3a795a11008",
+      "src/imports.rs": "d3e5452a71d2d87dcaefbf466bae0f11971452408459afaf9c2df33475c5315d",
+      "src/lib.rs": "d3c6f80eaf0590e0fea9e6e887d83b0416e376b81352034b802645d5159d003f",
+      "src/main.rs": "a06bc9fc26d86a9568ac5fd6d2281fbe6291ef3fa5a1d0b5ba0d40aec1d62902",
+      "src/procurement.rs": "4aa27ff85d53ee3185ef5ea956c548a1a0079f15a7899993dbbdad663806fcb7",
+      "src/procurement_export.rs": "13cb350a0debaac81418c6b4a9a8b40d8235408f47c8f4fa90b9d44f4247d062",
+      "src/sales.rs": "f52fae3357a84564fd4ad92550f7d97831a107086a350d59bbd7708f348e5c65",
+      "src/sales_draft.rs": "8221f32e30d77bd02d5b837bf583b988d38de69c2ec03528e4dc90f4b75e592b",
+      "src/sales_export.rs": "0fc305c70ec2e69d010fb70acf1e506896ac21921850f4917e6480cd7ea428e7",
+      "src/store.rs": "036e2168c295204a6e3a45282ceeb282018d15521ba483fa847387931dd35332",
+      "src/style.css": "22e8edce8a2ff2b8471828b8cfa85d7879c8e4190d50b70a8dcf82d3b2d90b5c",
+      "src/ui.rs": "3ad6750c6f4019c79ff0a746938eebf65ef3bafc111e196727565fae48b059bb",
+      "src/ui/accounting.rs": "76faf44f705bac44e6e1413e2d78e696af83238962cc03a4877a3627ec6a348f",
+      "src/ui/background.rs": "a3fb096036105d24cebc57aeabb6753bbfc7f332fcb4b9420c82ce102dbd6cff",
+      "src/ui/catalog_editor.rs": "43d2e3232e5b556a17846a48bde6109c53ab1e0d70a2aca71cb2fb065be3f1f7",
+      "src/ui/catalog_preview.rs": "229a8f8f26b7b28240320d451bdba6e791930e59460181a13c2643bc3e076828",
+      "src/ui/components.rs": "e712dcfdfb1eb282e2976cf40dd694bda3f279a7b57eb64a8bcd1a65a8f7fc43",
+      "src/ui/core.rs": "83999e356eff7216c0feb8a065c2f4578998994aabe09718a4dfddbc7f6f842b",
+      "src/ui/editor.rs": "391fcb864a31691767ac66b44f540dca244daaec45dd9944f2da300d7cf48288",
+      "src/ui/managers.rs": "ebab98cf2c76861cdb7e61a007fa087324dd6bcccabb642def2304850c983901",
+      "src/ui/pickers.rs": "d35fd3be26aafd801d4e0e112bb3ce3c4cf08e5d7f879e1ffa7a4f13c70f97c5",
+      "src/ui/procurement.rs": "b054cff7b7fbdb20396e6852a9094ecc6e14d7b4cc5b5302d30b776b60abc4cb",
+      "src/ui/responsiveness.rs": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+      "src/ui/sales.rs": "b68c2fb6100aac8d95d2dc86dd6c929b5d33265ec692f28efbe1b6e270ca6941",
+      "src/ui/settings.rs": "ccaef3bf4efd45359942dcff5b62366f9f4cc1ef9efb25924613ffb35d186532",
+      "src/ui/smoke.rs": "947cc2399837002fa159dedb7013cb764eb55a76021443efec45718f6a793b7b",
+      "src/ui/workspace.rs": "4e98038a31a8f62fb9e9a7e96e04642b8cfe1e9b1b6e1ebfb4177083742c9107"
+    },
+    "algorithm": "UTF-8 relative-path byte order; path, NUL, raw bytes, NUL"
+  },
+  "observer_provenance_after": {
+    "native-performance-M5.py": "e044804103616a92747241047ca9025b2d79f183126f00f3339022fb6b17fc24",
+    "native-performance-M4.py": "c5efb59e399e34ebb65b764645ffc12cf8b3e4c4f54d08b34b169dba6bc6bc69",
+    "native-performance-M2.py": "579a255004d9a98ab94611e45873c13c65de9a0dcf609b355b24c3dd44e040c5",
+    "accounting-performance.py": "b499b053349c3f5b0a350f3d37402ae4611af3339923678536e223ac2ccb3956",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4"
+  },
+  "observer_stable": true,
+  "binary_sha256_after": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "frozen_source_stable": true,
+  "binary_stable": true
+}

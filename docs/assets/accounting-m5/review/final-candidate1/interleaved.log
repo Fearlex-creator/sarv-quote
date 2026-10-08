@@ -1,0 +1,4 @@
+   Compiling sarv-independent-m5-probe v0.0.0 (/workspace/sarv-quote/docs/assets/accounting-m5/review/probe)
+    Finished `dev` profile [unoptimized] target(s) in 1.05s
+     Running `target/debug/sarv-independent-m5-probe /workspace/sarv-quote/artifacts/independent-m5/final-candidate1/interleaved`
+PASS independent eight-cutoff interleaved purchase/sale/transfer/return fixture, exact controls and fresh restore. Final Inv550 AR1066 AP449 GRNI50 COGS50 P&L816 TB3050.

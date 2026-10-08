@@ -1,0 +1,37 @@
+dbus-daemon[261955]: [session uid=1000 pid=261955 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=261962 comm="/workspace/sarv-evidence/bin/sarv-M5-candidate2" label="kernel")
+dbus-daemon[261955]: [session uid=1000 pid=261955 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[261990]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=261962 comm="/workspace/sarv-evidence/bin/sarv-M5-candidate2" label="kernel")
+dbus-daemon[261990]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :11 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "scope": "native read-only filtered Sales Next/Previous using exact Tab and Space at standard/narrow geometry",
+  "synthetic_only": true,
+  "seed_source": "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-search",
+  "binary_sha256": "9b32342c5dd966fb0f1a3f43f55529990221090e7a27d7aa7ddf7b96b4bf9537",
+  "checks": [
+    {
+      "geometry": [
+        1280,
+        900
+      ],
+      "filtered_rows": 60,
+      "page_size": 25,
+      "exact_real_Tab_Next_Previous": true,
+      "Space_051_then_001": true,
+      "financial_and_raw_state_unchanged": true
+    },
+    {
+      "geometry": [
+        650,
+        550
+      ],
+      "filtered_rows": 60,
+      "page_size": 25,
+      "exact_real_Tab_Next_Previous": true,
+      "Space_051_then_001": true,
+      "financial_and_raw_state_unchanged": true
+    }
+  ]
+}

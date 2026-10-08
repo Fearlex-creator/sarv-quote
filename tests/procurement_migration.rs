@@ -66,7 +66,7 @@ fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_o
         e.unwrap()
             .file_name()
             .to_string_lossy()
-            .starts_with("before-schema5-")
+            .starts_with("before-schema6-")
     }));
     held.execute_batch("ROLLBACK").unwrap();
     drop(held);
@@ -86,7 +86,7 @@ fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_o
     if let Ok(root) = std::env::var("SARV_M4_MIGRATION_ARTIFACT_DIR") {
         fs::create_dir_all(&root).unwrap();
         fs::write(Path::new(&root).join("interrupted-startup.json"), serde_json::to_vec_pretty(&serde_json::json!({
-            "result":"passed", "schema_before":4,"schema_after":5,
+            "result":"passed", "schema_before":4,"schema_after":6,
             "scope":"owned-child kill while startup INSERT waits, before schema UPDATE; software interruption only",
             "exact_old_row_after_kill":true,"no_recovery_before_kill":true,"next_open_generation":42,
             "repeat_open_generation":42,"integrity":"ok"
@@ -96,7 +96,7 @@ fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_o
 
 #[test]
 #[ignore = "requires retained immutable M3 executable in SARV_M3_COMPAT_BINARY"]
-fn actual_m3_binary_rejects_schema5_without_modifying_committed_row() {
+fn actual_m3_binary_rejects_current_schema_without_modifying_committed_row() {
     let binary = std::env::var("SARV_M3_COMPAT_BINARY").expect("retained M3 executable required");
     let envelope: Value = serde_json::from_slice(include_bytes!(
         "../docs/assets/accounting-m3/restore/core-v4.json"
@@ -123,7 +123,7 @@ fn actual_m3_binary_rejects_schema5_without_modifying_committed_row() {
         fs::write(
             Path::new(&root).join("actual-m3-rejection.json"),
             serde_json::to_vec_pretty(&serde_json::json!({
-                "result":"passed","old_binary":binary,"old_schema":4,"rejected_schema":5,
+                "result":"passed","old_binary":binary,"old_schema":4,"rejected_schema":6,
                 "exit_code":output.status.code(),"stderr":diagnostic,"committed_row_unchanged":true
             }))
             .unwrap(),
@@ -186,7 +186,7 @@ fn legacy_procurement_named_manual_and_linked_reversal_migrate_with_exact_histor
                 path.file_name()
                     .unwrap()
                     .to_string_lossy()
-                    .starts_with("before-schema5-")
+                    .starts_with("before-schema6-")
             })
             .unwrap();
         let raw: Value = serde_json::from_slice(&fs::read(&recovery).unwrap()).unwrap();
@@ -205,7 +205,7 @@ fn legacy_procurement_named_manual_and_linked_reversal_migrate_with_exact_histor
         if let Ok(root) = std::env::var("SARV_M4_MIGRATION_ARTIFACT_DIR") {
             let output = Path::new(&root).join(event.replace('.', "-"));
             fs::create_dir_all(&output).unwrap();
-            fs::copy(recovery, output.join("verified-before-schema5-v4.json")).unwrap();
+            fs::copy(recovery, output.join("verified-before-schema6-v4.json")).unwrap();
             fs::copy(backup, output.join("current-v5.json")).unwrap();
             fs::write(
                 output.join("verification.json"),
@@ -377,7 +377,7 @@ fn retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recove
                 p.file_name()
                     .unwrap()
                     .to_string_lossy()
-                    .starts_with("before-schema5-")
+                    .starts_with("before-schema6-")
             })
             .unwrap();
         let raw: Value = serde_json::from_slice(&fs::read(&recovery).unwrap()).unwrap();
@@ -387,7 +387,7 @@ fn retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recove
         let backup = profile.path().join("current-v5.json");
         opened.backup(&backup).unwrap();
         let current: Value = serde_json::from_slice(&fs::read(&backup).unwrap()).unwrap();
-        assert_eq!(current["format"], "sarv-accounting-backup-v5");
+        assert_eq!(current["format"], "sarv-accounting-backup-v6");
         let fresh = tempfile::tempdir().unwrap();
         let mut restored = Store::open(fresh.path()).unwrap();
         restored
@@ -408,14 +408,14 @@ fn retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recove
                     .unwrap()
                     .file_name()
                     .to_string_lossy()
-                    .starts_with("before-schema5-"))
+                    .starts_with("before-schema6-"))
                 .count(),
             1
         );
         if let Ok(root) = std::env::var("SARV_M4_MIGRATION_ARTIFACT_DIR") {
             let output = Path::new(&root).join(name);
             fs::create_dir_all(&output).unwrap();
-            fs::copy(&recovery, output.join("verified-before-schema5-v4.json")).unwrap();
+            fs::copy(&recovery, output.join("verified-before-schema6-v4.json")).unwrap();
             fs::copy(&backup, output.join("current-v5.json")).unwrap();
             fs::write(
                 output.join("verification.json"),

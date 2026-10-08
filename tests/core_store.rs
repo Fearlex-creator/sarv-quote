@@ -115,7 +115,7 @@ fn immutable_details_policy_and_recomputed_backup_checksum_cannot_bypass_restore
     forged.accounting.core.openings[0].command.open_items[0].due_date = "2026-06-01".into();
     let payload = exact(&forged);
     let p = dir.path().join("forged.json");
-    std::fs::write(&p,serde_json::to_vec(&serde_json::json!({"format":"sarv-accounting-backup-v5","checksum":hash(&payload),"state":forged})).unwrap()).unwrap();
+    std::fs::write(&p,serde_json::to_vec(&serde_json::json!({"format":"sarv-accounting-backup-v6","checksum":hash(&payload),"state":forged})).unwrap()).unwrap();
     assert!(Store::restore_preview(&p).is_err());
     assert_eq!(exact(&Store::open(dir.path()).unwrap().state), before);
 }

@@ -1,0 +1,54 @@
+{
+  "source-provenance.json": {
+    "sha256": "6eabdffef95929e26ad76f57d68155790d4792552667b49112a92e9328e13fed",
+    "bytes": 9143
+  },
+  "xvfb.log": {
+    "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "bytes": 1384
+  },
+  "native.log": {
+    "sha256": "1e4f7f63c93b66cededa99b9b30c8ba50ddd5f0a81b0506327d5348f9946b0db",
+    "bytes": 58853
+  },
+  "openbox.log": {
+    "sha256": "84b9b2c90bfcf84324830930ea65df98bdb566b9877cbe697f603efbc0cb355a",
+    "bytes": 141
+  },
+  "observer.log": {
+    "sha256": "148cdc71581daf12b2891c168d47062e16a50c4f321dd7cbca6360f39b0dd0f6",
+    "bytes": 1829
+  },
+  "root-freeze-manifest.json": {
+    "sha256": "ccaa1062d56a99a870114749c65e47ec3e8c79389d93e2bdf685f55f1ca48be2",
+    "bytes": 7564
+  },
+  "performance.json": {
+    "sha256": "2131035686b15260eec5afa7971d9cf668f48f3ff68e975ca1d365f841be2d0d",
+    "bytes": 2130
+  },
+  "README.md": {
+    "sha256": "dbb32f585f6260ad45550bc8a1afb077a1dfea771dfb29f2870327663284c54f",
+    "bytes": 3020
+  },
+  "synthetic-profile/native-save-before.png": {
+    "sha256": "396a9998daf466cc91300e2acec5006aaa6aff7fe54d8fbf9c44b38111ea3f07",
+    "bytes": 208324
+  },
+  "synthetic-profile/native-scale-catalog-last.png": {
+    "sha256": "6d9467f53cf937a0752095e0c183dc4735514ac3e7b20e7f6323092c7fb4129f",
+    "bytes": 194420
+  },
+  "synthetic-profile/native-scale-catalog-first.png": {
+    "sha256": "9afdd7ba4e2e355135e3d351cef23b3f87d737ea77ebaa505a23af06ce385d63",
+    "bytes": 192127
+  },
+  "synthetic-profile/native-scale-catalog-next.png": {
+    "sha256": "cfb893661f1de7a4fcd378d655e4cd74eb6f8ffda8d65f88eec4c87ef60addf4",
+    "bytes": 191433
+  },
+  "synthetic-profile/native-responsiveness-verification.json": {
+    "sha256": "ed84bc4b18d4d28703b611ce9ccdfab93f14477d09763df9c9aabf875c83f580",
+    "bytes": 104318
+  }
+}

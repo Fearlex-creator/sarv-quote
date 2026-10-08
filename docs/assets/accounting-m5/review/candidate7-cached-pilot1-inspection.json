@@ -1,0 +1,10 @@
+{
+  "result": "incomplete functional pilot; no accepted timing",
+  "source_report": "artifacts/performance-m5/candidate7-functional-pilot/performance.json",
+  "sha256": "7222c9f6ad02ccafa4547adab2ee6de5bb1103a76841f22b15ee3299be24f104",
+  "error": "RuntimeError('Timed out waiting for owned cached slot0 insensitive/not-showing at exact zero results')",
+  "observer_version": "m5-cached-v2",
+  "scope": "cached posted zero-hide check failed before timed posted/paged/long samples; identity process/parent/role checks passed; child/ancestor state diagnosis pending",
+  "raw_counter_inference": "1156 predicates; state12725 minus identity10413 equals2\u00d71156: all zero callbacks reached action/title states, exactquery/count/status readiness did not short circuit",
+  "limits": "C5 native34 zero accessibility tree absence proof remains distinct from cached hidden-child state proof; no source regression or weakened oracle acceptance inferred"
+}

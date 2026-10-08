@@ -385,7 +385,7 @@ impl AccountingState {
             .find(|r| r.id == id)
             .ok_or_else(|| anyhow::anyhow!("سند خرید پیدا نشد"))
     }
-    fn procurement_pools(
+    pub(crate) fn operational_stock_pools(
         &self,
         company: &str,
         asof: &str,
@@ -409,17 +409,50 @@ impl AccountingState {
                 .ok_or_else(|| anyhow::anyhow!("سرریز موجودی"))?;
             pool.value = pool.value.checked_add(s.value)?;
         }
-        for r in self.procurement.records.iter().filter(|r| {
-            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
-        }) {
-            for m in &r.movements {
-                let p = pools
+        // A single persisted audit order governs both modules, including same-day moves.
+        let mut movements: Vec<_> = self
+            .procurement
+            .records
+            .iter()
+            .map(|r| {
+                (
+                    &r.id,
+                    r.journal_id.as_deref(),
+                    r.command.context(),
+                    &r.movements,
+                )
+            })
+            .chain(self.sales.records.iter().map(|r| {
+                (
+                    &r.id,
+                    r.journal_id.as_deref(),
+                    r.command.context(),
+                    &r.movements,
+                )
+            }))
+            .filter(|(_, _, c, _)| c.company_id == company && c.date.as_str() <= asof)
+            .map(|(id, journal, c, moves)| {
+                let position = self
+                    .audit
+                    .iter()
+                    .position(|a| {
+                        a.company_id == company
+                            && (a.entity_id == *id || journal == Some(a.entity_id.as_str()))
+                    })
+                    .ok_or_else(|| anyhow::anyhow!("حرکت انبار بدون تاریخچهٔ معتبر است"))?;
+                Ok((position, c, moves))
+            })
+            .collect::<Result<Vec<_>>>()?;
+        movements.sort_by_key(|(position, _, _)| *position);
+        for (_, _, moves) in movements {
+            for m in moves {
+                let pool = pools
                     .entry((m.item_id.clone(), m.warehouse_id.clone()))
                     .or_insert_with(|| empty_pool(&m.item_id, &m.warehouse_id));
-                ensure!(*p == m.before, "توالی موجودی یا بهای حرکت نامعتبر است");
-                let after = move_pool(p, m.direction, m.quantity_thousandths, m.value)?;
+                ensure!(*pool == m.before, "توالی موجودی یا بهای حرکت نامعتبر است");
+                let after = move_pool(pool, m.direction, m.quantity_thousandths, m.value)?;
                 ensure!(after == m.after, "ماندهٔ حرکت موجودی نامعتبر است");
-                *p = after;
+                *pool = after;
             }
         }
         Ok(pools)
@@ -552,7 +585,7 @@ impl AccountingState {
         let opening = self.reconcile_opening(company, &o.command.as_of)?;
         ensure!(opening.reconciled, "افتتاحیه تطبیق ندارد");
         let stock: Vec<_> = self
-            .procurement_pools(company, asof)?
+            .operational_stock_pools(company, asof)?
             .into_values()
             .collect();
         let receipts = self.procurement_receipts(company, asof)?;
@@ -564,6 +597,9 @@ impl AccountingState {
                 CoreRole::Inventory => sum(stock.iter().map(|x| x.value))?,
                 CoreRole::Grni => sum(receipts.iter().map(|x| x.value))?,
                 CoreRole::Payables => sum(payables.iter().map(|x| x.remaining))?,
+                CoreRole::Receivables | CoreRole::Cogs => {
+                    self.sales_control_detail(r.role, company, asof)?
+                }
                 _ => r.detail,
             };
             let ledger = if let Some(t) = tb.rows.iter().find(|t| t.account_id == r.account_id) {
@@ -596,7 +632,10 @@ impl AccountingState {
             reconciled,
         })
     }
-    fn validate_procurement_context(&self, c: &ProcurementContext) -> Result<&CoreSetup> {
+    pub(crate) fn validate_operational_context(
+        &self,
+        c: &ProcurementContext,
+    ) -> Result<&CoreSetup> {
         for t in [
             &c.company_id,
             &c.period_id,
@@ -651,7 +690,7 @@ impl AccountingState {
         }
         ids
     }
-    fn procurement_known_ids(&self) -> HashSet<String> {
+    pub(crate) fn operational_known_ids(&self) -> HashSet<String> {
         let mut out: HashSet<String> = self
             .companies
             .iter()
@@ -692,9 +731,10 @@ impl AccountingState {
                 _ => {}
             }
         }
+        out.extend(self.sales_entity_ids().into_iter().map(str::to_owned));
         out
     }
-    fn procurement_stock_date(&self, company: &str) -> Result<&str> {
+    pub(crate) fn operational_stock_date(&self, company: &str) -> Result<&str> {
         let o = self.procurement_opening(company)?;
         Ok(self
             .procurement
@@ -702,14 +742,42 @@ impl AccountingState {
             .iter()
             .filter(|r| r.command.context().company_id == company && !r.movements.is_empty())
             .map(|r| r.command.context().date.as_str())
+            .chain(
+                self.sales
+                    .records
+                    .iter()
+                    .filter(|r| {
+                        r.command.context().company_id == company && !r.movements.is_empty()
+                    })
+                    .map(|r| r.command.context().date.as_str()),
+            )
             .max()
             .unwrap_or(&o.command.as_of))
     }
+    pub(crate) fn operational_sequence(&self, company: &str) -> Result<u64> {
+        u64::try_from(
+            self.audit
+                .iter()
+                .filter(|a| {
+                    a.company_id == company
+                        && matches!(
+                            a.operation,
+                            AuditOperation::JournalPosted
+                                | AuditOperation::CoreOpeningInitialized
+                                | AuditOperation::ProcurementRecorded
+                                | AuditOperation::SalesRecorded
+                        )
+                })
+                .count(),
+        )?
+        .checked_add(1)
+        .ok_or_else(|| anyhow::anyhow!("سرریز توالی شرکت"))
+    }
     pub fn preview_procurement(&self, command: &ProcurementCommand) -> Result<ProcurementPreview> {
         let c = command.context();
-        let setup = self.validate_procurement_context(c)?;
+        let setup = self.validate_operational_context(c)?;
         let resources = self.procurement_resources(&c.company_id)?;
-        let mut ids = self.procurement_known_ids();
+        let mut ids = self.operational_known_ids();
         let claim = |id: &str, ids: &mut HashSet<String>| -> Result<()> {
             text(id)?;
             ensure!(
@@ -875,7 +943,7 @@ impl AccountingState {
                     "تعداد ردیف رسید نامعتبر است"
                 );
                 ensure!(
-                    c.date.as_str() >= self.procurement_stock_date(&c.company_id)?,
+                    c.date.as_str() >= self.operational_stock_date(&c.company_id)?,
                     "ثبت موجودی پیش از آخرین تاریخ موجودی شرکت ممنوع است"
                 );
                 let order_record = self.procurement_document(&x.order_id)?;
@@ -901,7 +969,7 @@ impl AccountingState {
                 ensure!(!self.procurement.records.iter().any(|r|matches!((&r.data,&r.command),(ProcurementData::Receive(v),ProcurementCommand::Receive(p)) if p.context.company_id==c.company_id&&v.supplier_id==order.supplier.id&&normalize(&p.reference)==normalize(&x.reference)&&p.document_date==x.document_date)),"مرجع رسید تأمین‌کننده تکراری است");
                 let mut lines = Vec::new();
                 let mut source_ids = HashSet::new();
-                let mut pools = self.procurement_pools(&c.company_id, "9999-12-31")?;
+                let mut pools = self.operational_stock_pools(&c.company_id, "9999-12-31")?;
                 for l in &x.lines {
                     claim(&l.id, &mut ids)?;
                     warehouse(&l.warehouse_id)?;
@@ -1105,7 +1173,7 @@ impl AccountingState {
                 warehouse(&x.source_warehouse_id)?;
                 warehouse(&x.target_warehouse_id)?;
                 ensure!(
-                    c.date.as_str() >= self.procurement_stock_date(&c.company_id)?,
+                    c.date.as_str() >= self.operational_stock_date(&c.company_id)?,
                     "ثبت موجودی پیش از آخرین تاریخ موجودی شرکت ممنوع است"
                 );
                 let item = resources
@@ -1114,7 +1182,7 @@ impl AccountingState {
                     .find(|i| i.id == x.item_id)
                     .ok_or_else(|| anyhow::anyhow!("کالای انتقال پیدا نشد"))?;
                 let q = base(item, &x.unit_id, x.quantity_thousandths)?;
-                let pools = self.procurement_pools(&c.company_id, "9999-12-31")?;
+                let pools = self.operational_stock_pools(&c.company_id, "9999-12-31")?;
                 let source = pools
                     .get(&(x.item_id.clone(), x.source_warehouse_id.clone()))
                     .cloned()
@@ -1190,6 +1258,14 @@ impl AccountingState {
     }
     fn post_procurement_inner(&mut self, command: ProcurementCommand) -> Result<ProcurementResult> {
         let c = command.context();
+        ensure!(
+            !self
+                .sales
+                .requests
+                .iter()
+                .any(|r| r.request_key == c.request_key),
+            "کلید درخواست قبلاً برای فروش استفاده شده است"
+        );
         text(&c.request_key)?;
         let business = business_hash(&command)?;
         ensure!(
@@ -1277,27 +1353,12 @@ impl AccountingState {
             .clone();
         let record_id = id();
         ensure!(
-            !self.procurement_known_ids().contains(&record_id)
+            !self.operational_known_ids().contains(&record_id)
                 && !data_ids(&preview.data).contains(&record_id.as_str())
                 && !preview.movements.iter().any(|m| m.id == record_id),
             "شناسهٔ رویداد خرید با منابع تداخل دارد"
         );
-        let sequence = u64::try_from(
-            self.audit
-                .iter()
-                .filter(|a| {
-                    a.company_id == c.company_id
-                        && matches!(
-                            a.operation,
-                            AuditOperation::JournalPosted
-                                | AuditOperation::CoreOpeningInitialized
-                                | AuditOperation::ProcurementRecorded
-                        )
-                })
-                .count(),
-        )?
-        .checked_add(1)
-        .ok_or_else(|| anyhow::anyhow!("سرریز توالی شرکت"))?;
+        let sequence = self.operational_sequence(&c.company_id)?;
         let command_sha256 = hash(&command)?;
         let journal_id = if preview.nonfinancial {
             self.activity(
@@ -1339,7 +1400,7 @@ impl AccountingState {
     ) -> Result<Option<String>> {
         text(&record.id)?;
         ensure!(
-            !self.procurement_known_ids().contains(&record.id)
+            !self.operational_known_ids().contains(&record.id)
                 && !data_ids(&record.data).contains(&record.id.as_str())
                 && !record.movements.iter().any(|m| m.id == record.id),
             "شناسهٔ تاریخچهٔ خرید با شناسهٔ منبع تداخل دارد"

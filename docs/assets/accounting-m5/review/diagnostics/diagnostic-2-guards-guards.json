@@ -1,0 +1,134 @@
+[
+  {
+    "check": "same key changed actor",
+    "error": "کلید درخواست با محتوای متفاوت استفاده شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "new key changed revision across all-revision identity",
+    "error": "رویداد فروش قبلاً با محتوای متفاوت یا نسخهٔ دیگر ثبت شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "new key changed source-price provenance",
+    "error": "رویداد فروش قبلاً با محتوای متفاوت یا نسخهٔ دیگر ثبت شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "new key changed due date of fulfillment",
+    "error": "رویداد فروش قبلاً با محتوای متفاوت یا نسخهٔ دیگر ثبت شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "new key changed original return cost",
+    "error": "رویداد فروش قبلاً با محتوای متفاوت یا نسخهٔ دیگر ثبت شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "procurement financial key",
+    "error": "کلید درخواست قبلاً برای شروع دفتر یا خرید استفاده شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "procurement nonfinancial key",
+    "error": "کلید درخواست قبلاً برای شروع دفتر یا خرید استفاده شده است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "negative source quantity",
+    "error": "مقدار باید مثبت و در محدوده باشد",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "line discount cannot offset another line",
+    "error": "تخفیف ردیف از مبلغ بیشتر است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "source price overflow limit",
+    "error": "مبلغ فروش خارج از محدوده یا منفی است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "unknown pack unit",
+    "error": "ضریب بسته‌بندی مشخص نیست",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "supplier-only/unavailable customer",
+    "error": "شخص نقش مشتری ندارد",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "sales nested ID collides with procurement source line",
+    "error": "شناسهٔ سند یا ردیف تکراری یا متعلق به سابقه است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "independent total mismatch one rial",
+    "error": "جمع مستقل سفارش برابر نیست",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "full original order stays fulfilled after return",
+    "error": "مقدار از ماندهٔ منبع بیشتر است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "full returned invoice stays nonreturnable",
+    "error": "مقدار از ماندهٔ منبع بیشتر است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "new order during lock",
+    "error": "سال مالی قفل یا تاریخ خارج از دوره است",
+    "result": "rejected_unchanged"
+  },
+  {
+    "check": "order/fulfillment/return exact and different-key retries after lock",
+    "result": "same_original_result_no_second_effect"
+  },
+  {
+    "check": "typed generic reversal",
+    "result": "rejected_unchanged"
+  },
+  {
+    "ar": 1066,
+    "check": "same-day sale -> transfer -> receipt120 -> original-cost return26",
+    "grni": 170,
+    "inventory": 670,
+    "net_cogs": 50,
+    "prior_cutoff_exact": true,
+    "profit": 816,
+    "result": "global_sequence_replay_exact",
+    "trial_balance": 3190,
+    "w1": [
+      29000,
+      485
+    ],
+    "w2": [
+      16000,
+      185
+    ]
+  },
+  {
+    "check": "stock movement cost tamper",
+    "result": "restored_history_rejected"
+  },
+  {
+    "check": "duplicate sequence tamper",
+    "result": "restored_history_rejected"
+  },
+  {
+    "check": "component net tamper",
+    "result": "restored_history_rejected"
+  },
+  {
+    "check": "source allocation hash tamper",
+    "result": "restored_history_rejected"
+  },
+  {
+    "check": "sales request record ID tamper",
+    "result": "restored_history_rejected"
+  }
+]

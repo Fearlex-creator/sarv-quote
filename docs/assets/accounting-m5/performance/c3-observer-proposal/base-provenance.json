@@ -1,0 +1,23 @@
+{
+  "status": "integrated under root UNHOLD; cargo check passed; functional qualification and measurement pending",
+  "base_file": "src/ui/responsiveness.rs",
+  "base_sha256": "e8fd268b8e7813f9e1a222221863204ced6119e3a4b50019b6e76d85b65a3ca3",
+  "base_bytes": 56132,
+  "proposed_source_sha256_before_rustfmt": "9610add32160fe02cad34431788454bfcd40901fa40f836c704964592c06e966",
+  "legacy_broad_sampler_unchanged": true,
+  "legacy_reset_and_report_fields_preserved": true,
+  "original_pdf_capture_window_unchanged": true,
+  "additive_pdf_is_second_internal_helper_action": true,
+  "proposed_source_sha256": "e189c0607efe8600de6633834ff4144fe6e1d2c459744eef3c60a0d74fd6aa92",
+  "rustfmt_syntax_check": "passed; isolated /tmp file, no production edit or build",
+  "legacy_timer_exact_contiguous_block_preserved": true,
+  "integrated_owned_source_sha256": "e189c0607efe8600de6633834ff4144fe6e1d2c459744eef3c60a0d74fd6aa92",
+  "legacy_reset_lines_exactly_preserved": [
+    "            p.heartbeat_last = Instant::now();",
+    "            p.heartbeat_last = started;",
+    "        p.heartbeat_last = now;"
+  ],
+  "external_M2_observer_changed": false,
+  "final_integrated_cargo_check_offline_all_targets": "passed after all observer changes",
+  "clippy_offline_all_targets_D_warnings": "failed only on concurrent out-of-ownership editor.rs collapsible_if; root/quote owner notified"
+}

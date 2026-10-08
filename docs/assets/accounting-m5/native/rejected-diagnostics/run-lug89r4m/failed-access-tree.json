@@ -1,0 +1,1146 @@
+[
+  {
+    "name": "sarv-quote",
+    "role": "application"
+  },
+  {
+    "name": "سرو | آماده‌سازی پیشنهاد قیمت",
+    "role": "frame"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سفارش فروش • پیش‌نویس و بازبینی",
+    "role": "dialog"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌ها",
+    "role": "grouping"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "اسناد فروش آماده‌اند.",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll bar"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "پیشنهاد قیمت · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll bar"
+  },
+  {
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "داده‌ها روی این رایانه",
+    "role": "label"
+  },
+  {
+    "name": "فروش‌ها • سفارش، تحویل و برگشت",
+    "role": "label"
+  },
+  {
+    "name": "تحویل و صورتحساب هم‌زمان ثبت می‌شوند • ریال پایه • مالیات غیرفعال • وصول و پرداخت در مرحلهٔ بعد",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "نمایش ریال • IRR",
+    "role": "combo box"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "جست‌وجوی شماره، مشتری، کالا یا پیش‌نویس",
+    "role": "entry"
+  },
+  {
+    "name": "۱ نتیجه • اسناد تا ⁨۲۰۲۶-۱۰-۰۸⁩ • پیش‌نویس‌های ذخیره‌شده • مبالغ ریال",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیش‌نویس ذخیره شد • نسخه ۳ • غیرمالی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ریال • IRR",
+    "role": "combo box"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "افزودن کالا و قیمت",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "بازبینی سفارش",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "list item"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "list item"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "list item"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "خریدها",
+    "role": "list item"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "list item"
+  },
+  {
+    "name": "پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "شرکت",
+    "role": "label"
+  },
+  {
+    "name": "شرکت",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ و واحد نمایش",
+    "role": "button"
+  },
+  {
+    "name": "نمایش ریال • IRR",
+    "role": "toggle button"
+  },
+  {
+    "name": "سفارش فروش تازه",
+    "role": "table cell"
+  },
+  {
+    "name": "از پیشنهاد تأییدشده",
+    "role": "table cell"
+  },
+  {
+    "name": "به‌روزرسانی",
+    "role": "table cell"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "مشتری",
+    "role": "label"
+  },
+  {
+    "name": "مشتری",
+    "role": "combo box"
+  },
+  {
+    "name": "شماره یا مرجع سفارش",
+    "role": "label"
+  },
+  {
+    "name": "شماره یا مرجع سفارش",
+    "role": "text"
+  },
+  {
+    "name": "تاریخ مالی سفارش",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ مالی سفارش",
+    "role": "text"
+  },
+  {
+    "name": "شمسی: ⁨۱۴۰۵/۰۱/۰۲⁩ • میلادی: ⁨۲۰۲۶-۰۳-۲۲⁩",
+    "role": "label"
+  },
+  {
+    "name": "تاریخ سند سفارش",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "combo box"
+  },
+  {
+    "name": "تاریخ سند سفارش",
+    "role": "text"
+  },
+  {
+    "name": "شمسی: ⁨۱۴۰۵/۰۱/۰۲⁩ • میلادی: ⁨۲۰۲۶-۰۳-۲۲⁩",
+    "role": "label"
+  },
+  {
+    "name": "شرح و دلیل ثبت",
+    "role": "label"
+  },
+  {
+    "name": "شرح و دلیل ثبت",
+    "role": "text"
+  },
+  {
+    "name": "ریال • IRR",
+    "role": "toggle button"
+  },
+  {
+    "name": "تخفیف کل سند",
+    "role": "label"
+  },
+  {
+    "name": "تخفیف کل سند",
+    "role": "text"
+  },
+  {
+    "name": "جمع خالص مستقل سفارش",
+    "role": "label"
+  },
+  {
+    "name": "جمع خالص مستقل سفارش",
+    "role": "text"
+  },
+  {
+    "name": "افزودن کالا و قیمت",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "۱ ردیف • صفحه ۱",
+    "role": "label"
+  },
+  {
+    "name": "بازبینی سفارش",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ذخیرهٔ پیش‌نویس",
+    "role": "button"
+  },
+  {
+    "name": "ثبت سفارش بازبینی‌شده",
+    "role": "button"
+  },
+  {
+    "name": "انصراف",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "شرکت",
+    "role": "toggle button"
+  },
+  {
+    "name": "تاریخ و واحد نمایش",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سفارش فروش تازه",
+    "role": "button"
+  },
+  {
+    "name": "از پیشنهاد تأییدشده",
+    "role": "button"
+  },
+  {
+    "name": "به‌روزرسانی",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "مشتری",
+    "role": "toggle button"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "toggle button"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "toggle button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "⁨SKU-A⁩ • کالای الف • عدد • مقدار ⁨۱۰⁩ • قیمت ⁨۲۰⁩ ریال",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "ردیف‌های قبل",
+    "role": "table cell"
+  },
+  {
+    "name": "ردیف‌های بعد",
+    "role": "table cell"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ذخیرهٔ پیش‌نویس",
+    "role": "label"
+  },
+  {
+    "name": "ثبت سفارش بازبینی‌شده",
+    "role": "label"
+  },
+  {
+    "name": "انصراف",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۳",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۱",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "سفارش فروش تازه",
+    "role": "label"
+  },
+  {
+    "name": "از پیشنهاد تأییدشده",
+    "role": "label"
+  },
+  {
+    "name": "به‌روزرسانی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "label"
+  },
+  {
+    "name": "سرو · فضای کار محلی",
+    "role": "label"
+  },
+  {
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ویرایش ردیف",
+    "role": "table cell"
+  },
+  {
+    "name": "حذف ردیف",
+    "role": "table cell"
+  },
+  {
+    "name": "بالا",
+    "role": "table cell"
+  },
+  {
+    "name": "پایین",
+    "role": "table cell"
+  },
+  {
+    "name": "ردیف‌های قبل",
+    "role": "button"
+  },
+  {
+    "name": "ردیف‌های بعد",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیشنهاد قیمت",
+    "role": "label"
+  },
+  {
+    "name": "بایگانی پیشنهادها",
+    "role": "label"
+  },
+  {
+    "name": "مشتری‌ها",
+    "role": "label"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "شرکت، اسناد و تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "فروش‌ها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، تحویل و صورتحساب، برگشت",
+    "role": "label"
+  },
+  {
+    "name": "خریدها",
+    "role": "label"
+  },
+  {
+    "name": "سفارش، دریافت کالا و صورتحساب",
+    "role": "label"
+  },
+  {
+    "name": "موجودی و انتقال",
+    "role": "label"
+  },
+  {
+    "name": "مقدار، ارزش و گردش انبار",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "پیش‌نویس • SO-M5",
+    "role": "label"
+  },
+  {
+    "name": "مشتری الف • ذخیره‌شده، غیرمالی • نسخه 3",
+    "role": "label"
+  },
+  {
+    "name": "ادامهٔ پیش‌نویس",
+    "role": "button"
+  },
+  {
+    "name": "صفحهٔ قبل",
+    "role": "table cell"
+  },
+  {
+    "name": "صفحهٔ بعد",
+    "role": "table cell"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ویرایش ردیف",
+    "role": "button"
+  },
+  {
+    "name": "حذف ردیف",
+    "role": "button"
+  },
+  {
+    "name": "بالا",
+    "role": "button"
+  },
+  {
+    "name": "پایین",
+    "role": "button"
+  },
+  {
+    "name": "ردیف‌های قبل",
+    "role": "label"
+  },
+  {
+    "name": "ردیف‌های بعد",
+    "role": "label"
+  },
+  {
+    "name": "سفارش فروش • پیش‌نویس و بازبینی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ادامهٔ پیش‌نویس",
+    "role": "label"
+  },
+  {
+    "name": "صفحهٔ قبل",
+    "role": "button"
+  },
+  {
+    "name": "صفحهٔ بعد",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ویرایش ردیف",
+    "role": "label"
+  },
+  {
+    "name": "حذف ردیف",
+    "role": "label"
+  },
+  {
+    "name": "بالا",
+    "role": "label"
+  },
+  {
+    "name": "پایین",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "صفحهٔ قبل",
+    "role": "label"
+  },
+  {
+    "name": "صفحهٔ بعد",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "نمایش ریال • IRR",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "ریال • IRR",
+    "role": "label"
+  },
+  {
+    "name": "F۲-core-v۱ • شرکت ساختگی",
+    "role": "label"
+  },
+  {
+    "name": "مشتری الف • ⁨CU-A⁩",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "label"
+  },
+  {
+    "name": "میلادی • YYYY-MM-DD",
+    "role": "label"
+  }
+]

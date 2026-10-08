@@ -1,0 +1,22 @@
+{
+  "owner": "M5 native UI owner",
+  "review": "Actual view_image inspection of final candidate1 native rasters; no browser mockups",
+  "scope": "Persian labels and mixed SKU/ref codes, exact displayed allocated net/cost/gross/discount, real focus ring, retained invalid raw fields, source links, narrow footer reachability and completed idle status",
+  "inspected_files": {
+    "m4-before/M4-before.png": "86d08ef2e050d1e64ca5129eb79ae774e33620b46e504b6d34f98ddf48a167ba",
+    "full/M5-catalog-picker.png": "9d5c2fcef1cd680a0ef55a516e5142b81aab90b8502d71c307c1f7bbac346b37",
+    "full/M5-order-preview.png": "68a88db5aa4db7a832c2e403c9b7f406ad1b5670b52675953e5610dfec701f8d",
+    "full/M5-first-pair-preview.png": "00b5e5932a8bea7b54b0a3be24354de3b0bf905627ab84494d257632e515f7b7",
+    "full/M5-first-return-preview.png": "6cf56c873016a53af215f95384b213383f74cc1adcd307863467cd64c182f822",
+    "full/M5-final-pair-preview.png": "6bc237938e264d92c048d679d91577cb5c98d38963d67c6f6982301eb953424e",
+    "full/M5-converted-quotation-preview.png": "5d2a880a1d2ab7d31e6f79bb74790169d24c066a3d2f32b48c18b278e95c3fca",
+    "full/M5-real-retained-overreturn.png": "e4078909acab03ae76506584db462e0611747c195209593618fdca600528e4dc",
+    "full/M5-real-filtered-search.png": "88045f17d209530a661a855043a0fcbacb6ea86ab077a3854a430b89b064b788",
+    "full/M5-sales-light-650x550.png": "9f65556d16658edc3b8d4df7ebc2c641f5276ec7dace556368cff2cce36e69f1",
+    "full/M5-sales-dark-1280x900.png": "76d5cb4cf8407e3ff44aa304c4466474ff7ac0739bad47427015def5dde414ac",
+    "stage/M5-stage-narrow-editor.png": "670fd005b72db5dd3c8e9c109c2e349ef137187560cae94a04c58dead0e76ff3",
+    "draft/M5-invalid-raw-line-reopened.png": "05d031a51c5bc1a3c929592efc029c0d71cba6715f795b7346cbddf93f18147e",
+    "posted-return-inspection/M5-real-keyboard-completed-return-detail.png": "f34cf9797d52c068086e04c9a81c867c0aab99d83d7b0143eb0c80acba9a7994"
+  },
+  "dispatch_capture": "stage/M5-real-keyboard-durable-return-dispatch.png is DBdurability/GTK-pending, not a completed outcome; use posted-return-inspection completed detail image"
+}

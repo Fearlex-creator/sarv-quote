@@ -1,0 +1,21 @@
+{
+  "result": "passed archive and scoped source comparison only",
+  "epoch": "candidate7",
+  "source_sha256": "03aa9377ee5fd7a1568d34bb804c44c14e1d6c98db3e6492aafccbb89c410db0",
+  "binary_sha256": "7f83e3e60afe439e6d7e3af2b33e3b325547ce81190d11aa3d7492420b07a6d5",
+  "source_archive_files": 36,
+  "build_verification_files": 52,
+  "build_before_after_equal": true,
+  "changed_from_candidate5": [
+    "src/ui/editor.rs",
+    "src/ui/responsiveness.rs"
+  ],
+  "unchanged_source_count": 34,
+  "unchanged_scope": "all Sales UI/kernel/Store/sharedUI/date/export/core/procurement/library/manifest dependencies; C5 executed proofs retain original binary attribution",
+  "quotation_change": "local ReviewChrome single traversal only; fresh callback13/quotation23 runtime pending",
+  "optin_observer_change": "quantity parser1000; structural waits; pending Save absence; queuedflag/rawprotocolv1.1; timers/budgets unchanged",
+  "external_helper_build_snapshot_sha256": "ef30d01efd0ffed9d1cf1ea6d58d1ff81ee2ccf834bb3340968f27559dba0b20",
+  "corrected_external_helper_sha256": "2d0c095580318890e665b8aa7583fca28ab72e97759520ed32ba92ea3368b258",
+  "external_qualification": "separate preexecution checkpoint/guards/runtime pending; original build snapshot unchanged",
+  "performance": "pending functional and quiet final measurement"
+}

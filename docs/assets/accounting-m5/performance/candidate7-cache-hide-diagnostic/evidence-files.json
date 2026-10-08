@@ -1,0 +1,34 @@
+{
+  "diagnosis.json": {
+    "sha256": "592e31d3d93c1f43a435f03e39a29803fde09aacb0bf9a5317b2d7487782fa26",
+    "bytes": 138599
+  },
+  "xvfb.log": {
+    "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "bytes": 1384
+  },
+  "native.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "openbox.log": {
+    "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "bytes": 207
+  },
+  "observer.log": {
+    "sha256": "c89661e6246dabca09ad70dedaee987b5d88fe955dae79a7dd1af6387ab51673",
+    "bytes": 872
+  },
+  "root-freeze-manifest.json": {
+    "sha256": "b6d9ca36e641462aba54557ad0a1882ca3a30f813019dc2b6ae255a26c38923a",
+    "bytes": 7563
+  },
+  "diagnostic-observer.py": {
+    "sha256": "ce13dc289b0c57d21ce5d3ad10224a54ee083ea6ca1f83675d342b507c662777",
+    "bytes": 4962
+  },
+  "README.md": {
+    "sha256": "4a302649f243cd825cbf40a26aa2beffa53e949de1087ac9ef1fdeb1b7be10ee",
+    "bytes": 2457
+  }
+}

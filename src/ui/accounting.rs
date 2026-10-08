@@ -263,7 +263,9 @@ pub(super) fn date_value(field: &DateField) -> Result<String> {
         result.as_ref().err().map(|e| e.to_string()).as_deref(),
         "تاریخ مالی در تقویم انتخاب‌شده",
     );
-    if result.is_err() {
+    // Validation may run while a date disclosure is collapsed. Focusing its
+    // unmapped text child traps Tab traversal in a hidden control.
+    if result.is_err() && field.entry.is_mapped() && field.entry.is_sensitive() {
         field.entry.grab_focus();
     }
     result
@@ -1441,6 +1443,23 @@ impl Page {
                 });
                 buttons.insert(&document, -1);
             }
+            if let Some(source) = state
+                .sales
+                .records
+                .iter()
+                .find(|r| r.journal_id.as_deref() == Some(journal.id.as_str()))
+            {
+                let document = button("منبع فروش و اثر موجودی");
+                document.set_widget_name(&format!("accounting-sales-source-{}", journal.id));
+                let id = source.id.clone();
+                let weak_ui = Rc::downgrade(&ui);
+                document.connect_clicked(move |_| {
+                    if let Some(ui) = weak_ui.upgrade() {
+                        super::sales::open_document(&ui, &id);
+                    }
+                });
+                buttons.insert(&document, -1);
+            }
             if protected_source {
                 c.append(&label(
                     "این سند به جزئیات منبع متصل است و معکوس‌کردن مستقل آن مجاز نیست.",
@@ -2189,6 +2208,7 @@ fn audit_operation(operation: &AuditOperation) -> &'static str {
         AuditOperation::CoreConfigured => "تنظیم رویه و نگاشت حساب‌ها",
         AuditOperation::CoreOpeningInitialized => "شروع دفتر بدون مانده و بدون سند مالی",
         AuditOperation::ProcurementRecorded => "رویداد خرید یا گردش انبار بدون سند مالی",
+        AuditOperation::SalesRecorded => "رویداد فروش یا برگشت بدون سند مالی",
     }
 }
 

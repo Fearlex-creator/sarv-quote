@@ -1,0 +1,3 @@
+    Finished `dev` profile [unoptimized] target(s) in 0.04s
+     Running `target/debug/sarv-independent-m5-guards /workspace/sarv-quote/artifacts/independent-m5/final-candidate1/interleaved/state.json /workspace/sarv-quote/artifacts/independent-m5/final-candidate1/guards`
+PASS 30 independent identity/retry/input/lock/reversal/tamper observations. No acceptance of untested native/fault cases.

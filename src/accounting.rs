@@ -221,6 +221,7 @@ pub enum AuditOperation {
     CoreConfigured,
     CoreOpeningInitialized,
     ProcurementRecorded,
+    SalesRecorded,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -255,6 +256,8 @@ pub struct AccountingState {
         skip_serializing_if = "crate::procurement::ProcurementState::is_empty"
     )]
     pub procurement: crate::procurement::ProcurementState,
+    #[serde(default, skip_serializing_if = "crate::sales::SalesState::is_empty")]
+    pub sales: crate::sales::SalesState,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TrialBalanceRow {
@@ -310,6 +313,7 @@ impl AccountingState {
             && self.audit.is_empty()
             && self.core.is_empty()
             && self.procurement.is_empty()
+            && self.sales.is_empty()
     }
     /// Validate a restored snapshot by replaying its complete command/audit history.
     /// This is integrity validation, not authentication against a file owner.
@@ -333,6 +337,7 @@ impl AccountingState {
             )
             .map(String::as_str)
             .chain(self.procurement_entity_ids())
+            .chain(self.sales_entity_ids())
         {
             text(entity_id)?;
             ensure!(ids.insert(entity_id), "شناسهٔ حسابداری تکراری است");
@@ -368,6 +373,31 @@ impl AccountingState {
                     ensure!(
                         replay.procurement.records.last() == Some(record),
                         "تصویر یا جزئیات رویداد خرید یا انبار نامعتبر است"
+                    );
+                }
+                AuditOperation::SalesRecorded => {
+                    let record = self
+                        .sales
+                        .records
+                        .iter()
+                        .find(|r| r.id == event.entity_id && r.journal_id.is_none())
+                        .ok_or_else(|| anyhow::anyhow!("رویداد غیرمالی فروش یا برگشت پیدا نشد"))?;
+                    let context = record.command.context();
+                    ensure!(
+                        context.company_id == event.company_id
+                            && context.actor == event.actor
+                            && context.reason == event.reason,
+                        "رویداد فروش و تاریخچهٔ آن سازگار نیستند"
+                    );
+                    let journal_count = replay.journals.len();
+                    ensure!(
+                        replay.replay_sales_record(record)?.is_none()
+                            && replay.journals.len() == journal_count,
+                        "رویداد غیرمالی نباید سند مالی ایجاد کند"
+                    );
+                    ensure!(
+                        replay.sales.records.last() == Some(record),
+                        "تصویر یا جزئیات رویداد فروش یا برگشت نامعتبر است"
                     );
                 }
                 AuditOperation::CoreConfigured => {
@@ -535,8 +565,16 @@ impl AccountingState {
                         .records
                         .iter()
                         .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
+                    let sales = self
+                        .sales
+                        .records
+                        .iter()
+                        .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
                     ensure!(
-                        opening.is_none() || procurement.is_none(),
+                        usize::from(opening.is_some())
+                            + usize::from(procurement.is_some())
+                            + usize::from(sales.is_some())
+                            <= 1,
                         "منبع سند مالی تکراری است"
                     );
                     let generated = if let Some(opening) = opening {
@@ -558,6 +596,24 @@ impl AccountingState {
                         ensure!(
                             replay.procurement.records.last() == Some(&expected),
                             "تصویر یا بهای رویداد خرید نامعتبر است"
+                        );
+                        generated
+                    } else if let Some(record) = sales {
+                        let context = record.command.context();
+                        ensure!(
+                            context.company_id == event.company_id
+                                && context.actor == event.actor
+                                && context.reason == event.reason,
+                            "رویداد فروش و تاریخچهٔ سند مالی سازگار نیستند"
+                        );
+                        let generated = replay.replay_sales_record(record)?.ok_or_else(|| {
+                            anyhow::anyhow!("رویداد فروش اثر مالی مورد انتظار را ندارد")
+                        })?;
+                        let mut expected = record.clone();
+                        expected.journal_id = Some(generated.clone());
+                        ensure!(
+                            replay.sales.records.last() == Some(&expected),
+                            "تصویر یا بهای رویداد فروش نامعتبر است"
                         );
                         generated
                     } else {
@@ -587,6 +643,9 @@ impl AccountingState {
                         replay.procurement.records.last_mut().unwrap().journal_id =
                             Some(j.id.clone());
                     }
+                    if sales.is_some() {
+                        replay.sales.records.last_mut().unwrap().journal_id = Some(j.id.clone());
+                    }
                 }
             }
             ensure!(
@@ -611,6 +670,14 @@ impl AccountingState {
                 "درخواست شروع دفتر به رویداد دیگری اشاره می‌کند"
             );
         }
+        let sales_count = replay.sales.records.len();
+        for request in &self.sales.requests {
+            let result = replay.replay_sales_request(request)?;
+            ensure!(
+                result.record_id == request.record_id,
+                "درخواست فروش به رویداد دیگری اشاره می‌کند"
+            );
+        }
         let procurement_count = replay.procurement.records.len();
         for request in &self.procurement.requests {
             let result = replay.replay_procurement_request(request)?;
@@ -622,7 +689,8 @@ impl AccountingState {
         ensure!(
             replay.journals.len() == journal_count
                 && replay.audit.len() == audit_count
-                && replay.procurement.records.len() == procurement_count,
+                && replay.procurement.records.len() == procurement_count
+                && replay.sales.records.len() == sales_count,
             "درخواست بدون تاریخچهٔ ثبت وجود دارد"
         );
         // Original request order includes retry aliases between journal commands.
@@ -643,6 +711,11 @@ impl AccountingState {
         );
         replay.procurement.requests = self.procurement.requests.clone();
         ensure!(
+            replay.sales.requests.len() == self.sales.requests.len(),
+            "کلید درخواست فروش تکراری است"
+        );
+        replay.sales.requests = self.sales.requests.clone();
+        ensure!(
             replay == *self,
             "دادهٔ حسابداری با تاریخچهٔ کامل آن سازگار نیست"
         );
@@ -654,6 +727,7 @@ impl AccountingState {
         next.validate()?;
         self.core.validate_transition(&next.core)?;
         self.procurement.validate_transition(&next.procurement)?;
+        self.sales.validate_transition(&next.sales)?;
         ensure!(
             next.journals.starts_with(&self.journals),
             "سند ثبت‌شده قابل تغییر یا حذف نیست؛ برگشت مرتبط ثبت کنید"
@@ -663,6 +737,7 @@ impl AccountingState {
                 || journal
                     .event
                     .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
+                || journal.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
             {
                 ensure!(
                     next.has_typed_journal_source(&journal.id),
@@ -928,6 +1003,14 @@ impl AccountingState {
         );
         self.post_internal(command, true, false)
     }
+    pub(crate) fn post_sales(&mut self, command: PostCommand) -> Result<String> {
+        ensure!(
+            command.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
+                && command.kind == JournalKind::Manual,
+            "رویداد فروش فقط از گردش کار معتبر مجاز است"
+        );
+        self.post_internal(command, true, false)
+    }
     fn post_internal(
         &mut self,
         command: PostCommand,
@@ -947,6 +1030,10 @@ impl AccountingState {
         ensure!(
             !self.procurement.uses_nonfinancial_key(&command.request_key),
             "کلید درخواست قبلاً برای رویداد غیرمالی خرید یا انبار استفاده شده است"
+        );
+        ensure!(
+            !self.sales.uses_nonfinancial_key(&command.request_key),
+            "کلید درخواست برای رویداد غیرمالی فروش استفاده شده است"
         );
         if let Some(prior) = self
             .requests
@@ -981,7 +1068,8 @@ impl AccountingState {
                 || (command.event != crate::core::CORE_OPENING_EVENT
                     && !command
                         .event
-                        .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)),
+                        .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
+                    && !command.event.starts_with(crate::sales::SALES_EVENT_PREFIX)),
             "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است"
         );
         ensure!(
@@ -1237,6 +1325,11 @@ impl AccountingState {
             .any(|opening| opening.journal_id == journal_id)
             || self
                 .procurement
+                .records
+                .iter()
+                .any(|record| record.journal_id.as_deref() == Some(journal_id))
+            || self
+                .sales
                 .records
                 .iter()
                 .any(|record| record.journal_id.as_deref() == Some(journal_id))

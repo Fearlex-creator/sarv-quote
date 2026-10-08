@@ -1,0 +1,11 @@
+{
+  "initial_C8_build_observer_sha256": "deb6d95c31c937d655f77d171fda14b152f1079d936a4f15319b30e7a8c18ca4",
+  "external_qualified_epoch_observer_sha256": "472e83fa8231a77a32293f4b00713552ec61bec9d802c16b3ff76781b2b2a40d",
+  "compiled_source_sha256": "847bb7959c2aa8804aad6d67ea96f856fc9e72c89f954efe0bbd03a2ec005fba",
+  "syntax": "passed",
+  "source_review": "approved exact staged472e83 copy before runtime",
+  "correction": "summary_count(0) delegates to complete zero_hidden oracle; positive counts retain all memberships; remove duplicate warmup check",
+  "runtime_qualification": "starting functional only",
+  "accepted_performance_measurement": false,
+  "prior_build_snapshot_immutable": true
+}

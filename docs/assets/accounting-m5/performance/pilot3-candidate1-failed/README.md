@@ -1,0 +1,5 @@
+# Candidate 1 third failed functional observer pilot
+
+Development n1/n2 qualification only, no final performance evidence. Concurrent root frozen financial checks are disclosed. Core/procurement, real invalid raw typing/Save/restart, clean Escape cancellation, corrected Save and Sales preview completed. Polling the first Sales order durable commit immediately indexed the optional empty `sales` module before it was serialized and raised KeyError. The observer now reads absent optional sales/draft vectors as empty while still requiring exactly one matching order and consumed source draft.
+
+Source/executable/observer stayed stable. Original entire artifact remains `artifacts/performance-m5/candidate1-functional-pilot3`; portable report/logs/all phases/manifests/screenshots retain every completed sample and exclude binaries/SQLite. Root authorized bounded observer failure correction and functional requalification, never selective final performance reruns. Final quiet epoch remains pending.

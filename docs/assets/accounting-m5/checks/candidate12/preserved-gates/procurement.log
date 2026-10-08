@@ -1,0 +1,190 @@
+dbus-daemon[302954]: [session uid=1000 pid=302954 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=302961 comm="/workspace/sarv-evidence/bin/sarv-M3-final" label="kernel")
+dbus-daemon[302954]: [session uid=1000 pid=302954 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[302990]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=302961 comm="/workspace/sarv-evidence/bin/sarv-M3-final" label="kernel")
+dbus-daemon[302990]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :12 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "run": "/workspace/sarv-quote/artifacts/procurement-native/run-xicuieoc",
+  "binary": "/workspace/sarv-quote/artifacts/procurement-native/run-xicuieoc/sarv-quote",
+  "binary_source": "/workspace/sarv-evidence/bin/sarv-M5-candidate12",
+  "binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e",
+  "seed_binary": "/workspace/sarv-evidence/bin/sarv-M3-final",
+  "seed_sha256": "10bf9929d00cdf98280a51a2c12860ec39939cdbe8620eb2d827b2bb1de6cee1",
+  "scope": "private X11 GTK4 native financial forms, raw SQLite independent arithmetic, external XTest separately",
+  "checks": [
+    {
+      "name": "immutable M3 synthetic opening seed",
+      "passed": true
+    },
+    {
+      "name": "seed opening1251/no operational effects",
+      "passed": true
+    },
+    {
+      "name": "native typed workflow completed",
+      "passed": true,
+      "failure": null,
+      "app_returncode": null
+    },
+    {
+      "name": "source opening preserved exactly",
+      "passed": true
+    },
+    {
+      "name": "4additive resources and PO/2receipts/2bills/transfer",
+      "passed": true,
+      "record_count": 10,
+      "journal_count": 5
+    },
+    {
+      "name": "PO12pieces@15=180 nonfinancial",
+      "passed": true
+    },
+    {
+      "name": "partial receipt75+105 from frozenPO",
+      "passed": true
+    },
+    {
+      "name": "partial matched bill30+150",
+      "passed": true
+    },
+    {
+      "name": "transfer6pieces70 paired/nojournal",
+      "passed": true
+    },
+    {
+      "name": "literal final W1=30/350 W2=12/130",
+      "passed": true
+    },
+    {
+      "name": "independent final controls, untouched unrelated balances",
+      "passed": true,
+      "expected": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 200,
+        "Inventory": 480,
+        "ChequesReceivable": 200,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "OwnerCapital": -952
+      }
+    },
+    {
+      "name": "independent trial1431/1431",
+      "passed": true
+    },
+    {
+      "name": "catalogsource snapshot frozen",
+      "passed": true
+    },
+    {
+      "name": "actual reports produced",
+      "passed": true
+    },
+    {
+      "name": "actual XTest fractionalIRR error retains typed input",
+      "passed": true
+    },
+    {
+      "name": "actual Enter adds staged line",
+      "passed": true
+    },
+    {
+      "name": "actual keyboard edits staged quantity",
+      "passed": true
+    },
+    {
+      "name": "actual keyboard removes staged line",
+      "passed": true
+    },
+    {
+      "name": "actual Escape cancellation preserves posted aggregate",
+      "passed": true
+    },
+    {
+      "name": "actual typed immutable document search",
+      "passed": true
+    },
+    {
+      "name": "actual inventory light 1280px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual inventory light 650px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual procurement light 1280px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual procurement light 650px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual inventory dark 1280px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual inventory dark 650px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual procurement dark 1280px native layout",
+      "passed": true
+    },
+    {
+      "name": "actual procurement dark 650px native layout",
+      "passed": true
+    },
+    {
+      "name": "posted operational records exact across restart/layout",
+      "passed": true
+    },
+    {
+      "name": "no unexpected X11 errors",
+      "passed": true
+    }
+  ],
+  "native_manifest": {
+    "checks": [
+      "fractional IRR rejected and retained in native line form",
+      "Rial15↔Toman1.5 exact; invalidIRR0.1 retained and unit switch refused",
+      "catalog15/piece cannot silently become15/carton; requires override reason",
+      "quantity-only edit preserves original catalog15, overridden30 and required reason",
+      "PO12pieces at15, immutable source, no financial journal",
+      "partial receipt independent74 mismatches75; retained and no post",
+      "two partial receipts75/105, two matched bills30/150 and paired nonfinancial transfer70"
+    ],
+    "item_queries": [
+      "SKU-A",
+      "SKU-B"
+    ],
+    "journal_count": 5,
+    "movement_count": 4,
+    "note": "160ms smoke observation polling is not worker latency; process remains alive for independent keyboard/RSS",
+    "party_queries": [
+      "CU-A",
+      "CU-B"
+    ],
+    "phase": "posted-literal-M4",
+    "queries": [
+      "REC-A",
+      "REC-B"
+    ],
+    "ready": true,
+    "record_count": 10,
+    "reports": [
+      "M4-controls.csv",
+      "M4-controls.pdf",
+      "M4-order.pdf"
+    ],
+    "search_name": "procurement-search",
+    "source": "native forms; real catalog import and explicit price picker; root worker preview/post"
+  },
+  "x11_errors": []
+}

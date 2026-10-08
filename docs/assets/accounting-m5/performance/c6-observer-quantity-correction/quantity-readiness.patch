@@ -1,0 +1,11 @@
+--- candidate5/src/ui/responsiveness.rs
++++ candidate6/src/ui/responsiveness.rs
+@@ -801,7 +801,7 @@
+         63 => {
+             let exact_ready = ui.store.borrow().local_generation() == p.save_generation + 2
+                 && ui.customer.text() == "نسخهٔ تازه در زمان ذخیرهٔ ساختگی"
+-                && ui.row_editors.borrow()[0].quantity.text() == "1"
++                && quantity(ui.row_editors.borrow()[0].quantity.text().as_str()).ok() == Some(1000)
+                 && action_review_ready(ui, 0, true)?;
+             if !p.action_ready(exact_ready) {
+                 return Ok(());

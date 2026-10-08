@@ -1,0 +1,9 @@
+{
+  "source": "copies of actual current executors after C3 execution; historical assertions and persisted receipts qualified separately",
+  "sha256": {
+    "sarv-M5-build-freeze.py": "b326fdc9a290f1f44ff5f5b9763766b68f1a9f54d8bb33a503cb09c5e5ade574",
+    "sarv-M5-frozen-gates.py": "22a439810c93e5a6497f6cfacd04a88571e359b2b46374f225ac8484dde1dbee",
+    "sarv-M5-gtk-gate.py": "1c6087f078e36869553cb427d45691666c9dd42027b24cca959eca5ca1794066",
+    "sarv-M5-quote-callback-runner.py": "a691bf4828ee3e7901f5563cd42d47c09fd78ceb9c576c6ac1f84a1e7657fd50"
+  }
+}

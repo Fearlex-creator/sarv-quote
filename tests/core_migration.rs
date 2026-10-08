@@ -46,7 +46,7 @@ fn recovery(path: &std::path::Path) -> Option<std::path::PathBuf> {
             p.file_name()
                 .unwrap()
                 .to_string_lossy()
-                .starts_with("before-schema5-")
+                .starts_with("before-schema6-")
                 && p.extension().is_some_and(|x| x == "json")
         })
 }
@@ -90,7 +90,7 @@ fn schema_three_upgrade_preserves_jalali_and_exact_history_with_v3_recovery_and_
     let backup = dir.path().join("current-v5.json");
     store.backup(&backup).unwrap();
     let envelope: serde_json::Value = serde_json::from_slice(&fs::read(&backup).unwrap()).unwrap();
-    assert_eq!(envelope["format"], "sarv-accounting-backup-v5");
+    assert_eq!(envelope["format"], "sarv-accounting-backup-v6");
     let fresh = tempfile::tempdir().unwrap();
     let mut restored = Store::open(fresh.path()).unwrap();
     restored
@@ -108,7 +108,7 @@ fn schema_three_upgrade_preserves_jalali_and_exact_history_with_v3_recovery_and_
             .filter(|e| e
                 .file_name()
                 .to_string_lossy()
-                .starts_with("before-schema5-"))
+                .starts_with("before-schema6-"))
             .count(),
         1
     );
@@ -116,7 +116,7 @@ fn schema_three_upgrade_preserves_jalali_and_exact_history_with_v3_recovery_and_
     if let Ok(output) = std::env::var("SARV_M4_LEGACY_CORE_MIGRATION_ARTIFACT_DIR") {
         fs::create_dir_all(&output).unwrap();
         let p = std::path::Path::new(&output);
-        fs::copy(recovery, p.join("verified-before-schema5-v3.json")).unwrap();
+        fs::copy(recovery, p.join("verified-before-schema6-v3.json")).unwrap();
         fs::copy(backup, p.join("current-v5.json")).unwrap();
         fs::write(p.join("verification.json"),serde_json::to_vec_pretty(&serde_json::json!({"result":"passed","schema_before":3,"schema_after":CURRENT_SCHEMA,"generation_before":37,"generation_after":38,"quotes":original.quotes.len(),"journals":original.accounting.journals.len(),"date_display":"Jalali","core_installed_into_old_company":false,"full_state_equal_except_schema":true,"fresh_restore_and_restart_equal":true,"quote_sha256":hash(&serde_json::to_vec(&original.quotes).unwrap()),"ledger_sha256":hash(&serde_json::to_vec(&original.accounting).unwrap())})).unwrap()).unwrap();
     }
@@ -190,7 +190,7 @@ fn mismatched_backup_versions_and_future_schema_never_replace_state() {
         assert!(Store::restore_preview(&target).is_err());
     }
     let mut future = state;
-    future.schema = 6;
+    future.schema = CURRENT_SCHEMA + 1;
     seed(dir.path(), &future);
     let original = row(dir.path());
     assert!(Store::open(dir.path()).is_err());

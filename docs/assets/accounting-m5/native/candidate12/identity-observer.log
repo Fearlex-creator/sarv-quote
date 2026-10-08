@@ -1,0 +1,231 @@
+dbus-daemon[303729]: [session uid=1000 pid=303729 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=303738 comm="/workspace/sarv-evidence/bin/sarv-M5-candidate12" label="kernel")
+dbus-daemon[303729]: [session uid=1000 pid=303729 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[303764]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=303738 comm="/workspace/sarv-evidence/bin/sarv-M5-candidate12" label="kernel")
+dbus-daemon[303764]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :10 broken (explicit kill or server shutdown).
+{
+  "result": "passed",
+  "run": "/workspace/sarv-quote/artifacts/sales-native/slot-reuse-lsmu2c93",
+  "binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e",
+  "observer_sha256": "acfd27576cb87202179e05e5ba91ce1c963f162ed3011c43052b65220efaf189",
+  "verification_before": {
+    "docs/assets/accounting-m5/native/inspect-slot-reuse.py": "acfd27576cb87202179e05e5ba91ce1c963f162ed3011c43052b65220efaf189",
+    "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+    "scripts/qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "artifacts/sales-native/run-t_qx8es0/detail-pages/synthetic-raw-fixture.json": "a059977030fe7b35c0e8537cad8f8332b674b41d63b116cb9d848de5431a735b"
+  },
+  "synthetic_sources": {
+    "/workspace/sarv-quote/artifacts/performance-m5/candidate2-functional-pilot/sales-paged-search": {
+      "generation": 14,
+      "payload_sha256": "de91634339d3703c866892729a4d4427fa8ce6d7f92d7967c82afc0a5bd56090"
+    },
+    "/workspace/sarv-quote/artifacts/sales-native/run-t_qx8es0/draft": {
+      "generation": 17,
+      "payload_sha256": "0787ffa681e3f22f7f3d35cdb8899b13255a81e28cd61aa165759eb0a0a17982"
+    }
+  },
+  "checks": [
+    {
+      "name": "120 synthetic raw-draft list retained",
+      "passed": true
+    },
+    {
+      "name": "reused first card opens current PERF-A-000",
+      "passed": true
+    },
+    {
+      "name": "reused first card opens current PERF-B-001",
+      "passed": true
+    },
+    {
+      "name": "reused first card opens current PERF-A-000",
+      "passed": true
+    },
+    {
+      "name": "zero-result persistent cards are absent or all insensitive and not showing",
+      "passed": true,
+      "accessible_action_count": 0
+    },
+    {
+      "name": "filter activation/cancellation preserves source and copied payload",
+      "passed": true
+    },
+    {
+      "name": "real Next hands exact Window/Dialog focus to current first Edit",
+      "passed": true,
+      "receipt": {
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "line_id": "reuse-line-025",
+        "mapped": true,
+        "page": 2,
+        "sensitive": true,
+        "target_name": "sales-line-0-25",
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "reused page2 Edit resolves immutable line025 quantity26",
+      "passed": true
+    },
+    {
+      "name": "real CtrlS accepts distinct-quantity raw fixture through Store",
+      "passed": true
+    },
+    {
+      "name": "exact current ID edited with all others retained",
+      "passed": true
+    },
+    {
+      "name": "delete current page2 row saves without books",
+      "passed": true
+    },
+    {
+      "name": "current line025 deleted and next line026 retained",
+      "passed": true
+    },
+    {
+      "name": "move current reused row across page boundary",
+      "passed": true
+    },
+    {
+      "name": "current immutable line026 moved above024 across page boundary",
+      "passed": true
+    },
+    {
+      "name": "reused slot after reorder opens current line024 quantity25",
+      "passed": true
+    },
+    {
+      "name": "delete reordered current ID without books",
+      "passed": true
+    },
+    {
+      "name": "reordered line024 deleted, current line027 remains",
+      "passed": true
+    },
+    {
+      "name": "real Previous hands exact Window/Dialog focus to current first Edit",
+      "passed": true,
+      "receipt": {
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "line_id": "reuse-line-000",
+        "mapped": true,
+        "page": 1,
+        "sensitive": true,
+        "target_name": "sales-line-0-0",
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "move last first-page row down across boundary",
+      "passed": true
+    },
+    {
+      "name": "line026 moved down with current line027 moved up",
+      "passed": true
+    },
+    {
+      "name": "Next after reorder focuses current immutable line026",
+      "passed": true,
+      "receipt": {
+        "dialog_focus_exact": true,
+        "grab_accepted": true,
+        "line_id": "reuse-line-026",
+        "mapped": true,
+        "page": 2,
+        "sensitive": true,
+        "target_name": "sales-line-0-25",
+        "window_focus_exact": true
+      }
+    },
+    {
+      "name": "cross-page Down then Edit resolves current line026 quantity27",
+      "passed": true
+    },
+    {
+      "name": "delete tail raw row to count27",
+      "passed": true
+    },
+    {
+      "name": "tail count current 27",
+      "passed": true
+    },
+    {
+      "name": "delete tail raw row to count26",
+      "passed": true
+    },
+    {
+      "name": "tail count current 26",
+      "passed": true
+    },
+    {
+      "name": "delete tail raw row to count25",
+      "passed": true
+    },
+    {
+      "name": "tail count current 25",
+      "passed": true
+    },
+    {
+      "name": "deletion clamps persistent page and disables Next",
+      "passed": true
+    },
+    {
+      "name": "clamped reused first Edit resolves line000 quantity1",
+      "passed": true
+    },
+    {
+      "name": "review uses current rows and rejects stale independently supplied total",
+      "passed": true
+    },
+    {
+      "name": "immutable synthetic sources unchanged",
+      "passed": true
+    },
+    {
+      "name": "synthetic input State and raw fixture files unchanged",
+      "passed": true
+    },
+    {
+      "name": "no unexpected X11 observer error",
+      "passed": true
+    },
+    {
+      "name": "frozen production source exact before/after",
+      "passed": true
+    },
+    {
+      "name": "frozen binary and observer unchanged",
+      "passed": true
+    },
+    {
+      "name": "observer helpers and synthetic fixture file unchanged",
+      "passed": true
+    }
+  ],
+  "synthetic_input": {
+    "generation": 18,
+    "payload_sha256": "b3bafa59b2cc68ee539d96854b551b636d92b13c683c316be238b85e3b0b5c2d",
+    "files": {
+      "editor/synthetic-input-state.json": "b3bafa59b2cc68ee539d96854b551b636d92b13c683c316be238b85e3b0b5c2d",
+      "editor/synthetic-raw-fixture.json": "7c0ff38fac24745b94484cc262c1609ee4115bb4bfa26ea4523f39539f96ec86"
+    }
+  },
+  "stale_owned_window_errors": [
+    {
+      "code": 3,
+      "request": 20,
+      "resource": 6291460
+    }
+  ],
+  "unexpected_x11_errors": [],
+  "verification_after": {
+    "docs/assets/accounting-m5/native/inspect-slot-reuse.py": "acfd27576cb87202179e05e5ba91ce1c963f162ed3011c43052b65220efaf189",
+    "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+    "scripts/qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "artifacts/sales-native/run-t_qx8es0/detail-pages/synthetic-raw-fixture.json": "a059977030fe7b35c0e8537cad8f8332b674b41d63b116cb9d848de5431a735b"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "reason": "candidate5 functional pilot timed out because native valid quantity rendered Persian1 while observer required ASCII1",
+  "candidate5_owned_source_sha256": "e189c0607efe8600de6633834ff4144fe6e1d2c459744eef3c60a0d74fd6aa92",
+  "candidate6_owned_source_sha256": "a25789ec22f1aacc316a0a499dfa7cede1d3041b85a967595444e1b08e7d65e1",
+  "change": "quantity(native_text).ok()==Some(1000) using the same exact thousandths parser used by production forms",
+  "legacy_broad_timer_reset_report_unchanged": true,
+  "readiness_endpoint_budget_interval_unchanged": true,
+  "cargo_check_offline_all_targets": "passed",
+  "qualification": "pending immutable candidate6; no further pilot started"
+}

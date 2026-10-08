@@ -1,0 +1,40 @@
+{
+  "status": "independent expectations authored before M5 implementation; no production result claimed",
+  "canonical_unit": "integer IRR",
+  "quantity_unit": "base piece thousandths",
+  "policy": "core-policy-v1 same-date paired delivery/invoice and original-cost paired normal-restock/credit",
+  "sales_order": {
+    "gross_irr": [1255, 350], "line_discount_irr": [4, 1],
+    "discount_weights_irr": [1251, 349], "document_discount_irr": 101,
+    "allocated_document_discount_irr": [79, 22], "net_irr": [1172, 327], "total_irr": 1499,
+    "base_quantity_thousandths": [5000, 2000], "warehouses": ["w1", "w2"]
+  },
+  "first_fulfillment": {
+    "base_quantity_thousandths": [2000, 1000], "net_irr": [469, 164],
+    "allocated_line_discount_irr": [2, 1], "allocated_document_discount_irr": [32, 11],
+    "derived_gross_irr": [503, 176], "issue_cost_irr": [23, 11], "total_net_irr": 633, "total_cost_irr": 34
+  },
+  "second_fulfillment": {
+    "base_quantity_thousandths": [3000, 1000], "net_irr": [703, 163],
+    "allocated_line_discount_irr": [2, 0], "allocated_document_discount_irr": [47, 11],
+    "derived_gross_irr": [752, 174], "issue_cost_irr": [39, 11], "total_net_irr": 866, "total_cost_irr": 50
+  },
+  "first_invoice_returns": [
+    {"source": "A", "base_quantity_thousandths": 1000, "net_irr": 235, "original_issue_cost_irr": 12},
+    {"source": "A", "base_quantity_thousandths": 1000, "net_irr": 234, "original_issue_cost_irr": 11},
+    {"source": "B", "base_quantity_thousandths": 1000, "net_irr": 164, "original_issue_cost_irr": 11}
+  ],
+  "cutoffs": [
+    {"date":"2026-03-27","w1":[30000,350],"w2":[12000,130],"inventory_irr":480,"ar_irr":200,"ap_irr":329,"grni_irr":50,"sales_irr":0,"sales_returns_irr":0,"net_cogs_irr":0,"pnl_irr":0,"tb_irr":1431},
+    {"date":"2026-03-28","w1":[28000,327],"w2":[11000,119],"inventory_irr":446,"ar_irr":833,"ap_irr":329,"grni_irr":50,"sales_irr":633,"sales_returns_irr":0,"net_cogs_irr":34,"pnl_irr":599,"tb_irr":2064},
+    {"date":"2026-03-29","w1":[34000,447],"w2":[11000,119],"inventory_irr":566,"ar_irr":833,"ap_irr":329,"grni_irr":170,"sales_irr":633,"sales_returns_irr":0,"net_cogs_irr":34,"pnl_irr":599,"tb_irr":2184},
+    {"date":"2026-03-30","w1":[30000,394],"w2":[15000,172],"inventory_irr":566,"ar_irr":833,"ap_irr":329,"grni_irr":170,"sales_irr":633,"sales_returns_irr":0,"net_cogs_irr":34,"pnl_irr":599,"tb_irr":2184},
+    {"date":"2026-03-31","w1":[27000,355],"w2":[14000,161],"inventory_irr":516,"ar_irr":1699,"ap_irr":329,"grni_irr":170,"sales_irr":1499,"sales_returns_irr":0,"net_cogs_irr":84,"pnl_irr":1415,"tb_irr":3050},
+    {"date":"2026-04-01","w1":[28000,367],"w2":[14000,161],"inventory_irr":528,"ar_irr":1464,"ap_irr":329,"grni_irr":170,"sales_irr":1499,"sales_returns_irr":235,"net_cogs_irr":72,"pnl_irr":1192,"tb_irr":3050},
+    {"date":"2026-04-02","w1":[28000,367],"w2":[14000,161],"inventory_irr":528,"ar_irr":1464,"ap_irr":449,"grni_irr":50,"sales_irr":1499,"sales_returns_irr":235,"net_cogs_irr":72,"pnl_irr":1192,"tb_irr":3050},
+    {"date":"2026-04-03","w1":[29000,378],"w2":[15000,172],"inventory_irr":550,"ar_irr":1066,"ap_irr":449,"grni_irr":50,"sales_irr":1499,"sales_returns_irr":633,"net_cogs_irr":50,"pnl_irr":816,"tb_irr":3050}
+  ],
+  "unchanged_controls_irr": {"cash":251,"bank":300,"receivable_cheque":200,"payable_cheque":100,"capital":952,"customer_advances":0,"supplier_advances":0},
+  "small_allocation_fixture": {"original_net_irr":1,"original_cost_irr":1,"quantity":3,"three_equal_return_net_irr":[0,1,0],"three_equal_return_cost_irr":[0,1,0]},
+  "not_a_production_calculator_or_generated_expected_output": true
+}

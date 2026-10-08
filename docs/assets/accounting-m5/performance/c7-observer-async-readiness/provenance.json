@@ -1,0 +1,11 @@
+{
+  "candidate6_owned_source_sha256": "a25789ec22f1aacc316a0a499dfa7cede1d3041b85a967595444e1b08e7d65e1",
+  "candidate7_owned_source_sha256": "4953f6955c42943e0ac0adbde13b4fc86e4560b52138d126c21e52c4a4465329",
+  "change": "Wait for production persistence, queued save action, review request and visual completion before existing exact Delete/Undo assertions; action review acceptance also awaits queued save action.",
+  "legacy_sampler_resets_reports_budgets_unchanged": true,
+  "cargo_check_offline_all_targets": "passed",
+  "qualification": "pending new freeze; no pilot or final measurement started",
+  "additive_protocol": "m5-action-v1.1",
+  "protocol_delta": "Stronger terminal readiness requires queued Save action absent; raw metadata records this flag.",
+  "same_endpoint_causal_comparison_with_v1": false
+}

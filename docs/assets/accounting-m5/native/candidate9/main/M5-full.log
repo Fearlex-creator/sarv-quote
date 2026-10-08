@@ -1,0 +1,5 @@
+
+(sarv-quote:293959): Gtk-WARNING **: 04:45:40.626: GtkText - did not receive a focus-out event.
+If you handle this event, you must return
+GDK_EVENT_PROPAGATE so the default handler
+gets the event as well

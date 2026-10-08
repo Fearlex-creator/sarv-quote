@@ -1,0 +1,7 @@
+{
+  "result": "PASS bounded candidate2 main list pagination; R07 closed for named fixture",
+  "pure_Tab_scope": "1280x900 and650x550 exact Next/Previous focus + realSpace B001\u2192B051\u2192B001; source/binary/payloadgeneration unchanged",
+  "pilot_scope": "60match120draft list all3pages B001/B051/B101;1000line raweditor exact scoped page markers and visible/focused Edit through40; perpage payloadgeneration unchanged",
+  "pilot_qualification": "AT-SPI component focus first, realTab fallback, realSpace navigation; development_pilot true and concurrentnative QA; no final timing acceptance",
+  "personally_viewed": "Narrow Next focus ring and standard Previous focus ring; functionalpilot lastlistpage and40thlongeditorEdit focus"
+}

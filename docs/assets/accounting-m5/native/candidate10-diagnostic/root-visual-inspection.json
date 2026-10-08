@@ -1,0 +1,22 @@
+{
+  "scope": "Root personally viewed these two exact rasters during C10 diagnostic; visual inspection is not financial correctness or C10 acceptance. C10 material log gate failed separately.",
+  "images": [
+    {
+      "path": "main/full/M5-sales-light-650x550-focused-source.png",
+      "sha256": "146b3109a2c48b7dfbf0522ce6c1ffb3d70695091deca15fcac1b30d4fb0e01e",
+      "finding": "Whole-page narrow scroll keeps current detail button and blue focus ring visible; Persian labels and mixed-script source remain readable. Top content heading can scroll while application navigation remains available."
+    },
+    {
+      "path": "main/full/M5-sales-dark-650x550-zero.png",
+      "sha256": "95cdbd952d1ca56fb932088ac4ba4cb25d484c266b8d484f533303f7ade10011",
+      "finding": "All three actions, focused NO-MATCH-M5-NARROW search, zero-result count and useful empty state fit in the narrow viewport; Persian typography is readable in dark mode."
+    }
+  ],
+  "untested": [
+    "screen readers",
+    "enlarged text",
+    "high contrast",
+    "Wayland",
+    "physical print"
+  ]
+}

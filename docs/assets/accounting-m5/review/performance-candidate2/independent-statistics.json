@@ -1,0 +1,34 @@
+{
+  "sales120draftsearch": {
+    "n": 20,
+    "independent_nearest_rank": {
+      "correct_visible_ms": {
+        "p95": 331.61632300470956,
+        "worst": 343.34722100174986
+      },
+      "focused_usable_ms": {
+        "p95": 345.2775859987014,
+        "worst": 355.35332900326466
+      }
+    }
+  },
+  "long_editor39transitions": {
+    "n": 39,
+    "independent_nearest_rank": {
+      "ready_ms": {
+        "p95": 419.6224519982934,
+        "worst": 501.68125399795827
+      },
+      "focused_usable_ms": {
+        "p95": 690.3692990017589,
+        "worst": 766.2040520008304
+      }
+    }
+  },
+  "result": "STRICT PERFORMANCE BUDGET FAIL; measured functional completion and small dataset startup/lookup PASS",
+  "declared_method": "One quiet frozen final repeated epoch, development_pilot false; six datasets each first launch+10newprocesses, search20, long39transitions; unchangedM2 sequential with exact source/binary/observer guards",
+  "unmeasured_read_only_heartbeats": {
+    "paged_search": [],
+    "long_editor": []
+  }
+}

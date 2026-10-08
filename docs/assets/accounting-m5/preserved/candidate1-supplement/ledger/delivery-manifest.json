@@ -1,0 +1,33 @@
+{
+  "original_profile": "/workspace/sarv-quote/artifacts/accounting-native/run-k87gv2ur",
+  "binary_sha256": "db63cb2eef2d80bc6656e9f51a1ea9e262cc8ef27eb1df44c3a9fea58f8636d4",
+  "files": {
+    "accounting-after.png": "df1bebe31530e9a15b2377ac7f5320b6f6b729ce53afadc5912dd62a9a322276",
+    "accounting-backup.json": "b57295e49248975d9c9540a2191911b3256444776fe4cb3ec2975f6269e47045",
+    "accounting-before.png": "7a2e5f42e3a2364e3d87f9731ff862a1c2ae2bc525f58026f86f5f2fbe414e68",
+    "accounting-independent-native.json": "52058a20c2249e9105528ac22f4af39b881f82e752662c22f6effe6d6747b849",
+    "accounting-narrow.png": "348565a5b72c8ff8b71e75893ee7b1ebe530838a65cac479f47a4a6aea24b993",
+    "accounting-native-verification.json": "1802fa04e4c1d222e144aed9dc7ea0b5717213c2cc018b822e4cf76f2e880405",
+    "accounting-recovery-verification.json": "d492402763ec7901954edafd3798bb9999cb05451bf3563c86885558ebda5db6",
+    "accounting-trial-before-reversal.png": "d1e96dcf48adf1356cc78dfec63ce748cdc9a6a6db5b0598fcdf527b4b20d964",
+    "financial-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "keyboard-accounting-1280x900.png": "f5bf774bc9897f4873c0ebbc34a70868a1a0f82abaaa226d4fe23baa507af02e",
+    "keyboard-accounting-650x760.png": "845503eed8bb77ee1619019d602f6ce4f28f65410a11a8bb139496fef57e21eb",
+    "keyboard-dialog-tree.json": "0a95462df62bb7b8f8508eaf2f889217dc6e05295eb7a561d38636c1f323c05c",
+    "keyboard-events.jsonl": "e0a177d6204e752ae18f13495998688185598005df52c8dd26f9cb5cee00db61",
+    "keyboard-initial.png": "36581163d1501f9065528b703bca7a8f2dbebc176fd2956969e7d4692a8dda06",
+    "keyboard-journal-dialog.png": "180739f24daec70d126a3aea0fdce80edfec88020ab240bfa2c414ac462f07ce",
+    "keyboard-native.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "restored-profile/before-restore-14cf8d71-c175-408f-b82c-d264c4fe19b6.json": "d0c0499b2c3060fae1c857ec50979945895c419db19a4643f1c2798e8c1e7bc9",
+    "restored-profile/synthetic-persisted-state.json": "9be9ec8741cb7a995a1deb25a98d8ee6a3bf680f3175c75cfc9e241e3ea404c7",
+    "synthetic-persisted-state.json": "9be9ec8741cb7a995a1deb25a98d8ee6a3bf680f3175c75cfc9e241e3ea404c7",
+    "trial-before-reversal-rial.csv": "6bcb48d739b2aac258cb3110790bdfee1d3928586e809429d4a0bc962e4a47cb",
+    "trial-before-reversal-rial.pdf": "208577e10ce3d9e1124287b378d4fa092114511b29a17ad4ff4130a73a771f89",
+    "trial-before-reversal-rial.png": "b0d4f8375a453d662e565f6d46d554687c779be5af782000877a91d14098bf25",
+    "trial-final-toman.csv": "74193d58f65c02db880329fd672adb97ccc4ff7cc7f331ab4b555160e37e5acb",
+    "trial-final-toman.pdf": "afb3a345fcf860bc6060502c334cfc9886e49ea24d5391caaefd944e40885944",
+    "trial-final-toman.png": "7b1eb931bfc5b7862052ab4a67670865a30f655e9db912db9245b56693fcb62f",
+    "xvfb.log": "97eb84ddaf1b0633126b4c0306694e13ef3824c95d1fb3ba1af6a067abd739f2"
+  }
+}

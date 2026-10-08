@@ -1,0 +1,31 @@
+{
+  "versions": {
+    "compiled": "m5-action-v1.2",
+    "external": "m5-cached-v3"
+  },
+  "files": [
+    {
+      "path": "src/ui/responsiveness.rs",
+      "prior_sha256": "4953f6955c42943e0ac0adbde13b4fc86e4560b52138d126c21e52c4a4465329",
+      "new_sha256": "847bb7959c2aa8804aad6d67ea96f856fc9e72c89f954efe0bbd03a2ec005fba",
+      "bytes": 75337
+    },
+    {
+      "path": "scripts/native-performance-M5.py",
+      "prior_sha256": "2d0c095580318890e665b8aa7583fca28ab72e97759520ed32ba92ea3368b258",
+      "new_sha256": "deb6d95c31c937d655f77d171fda14b152f1079d936a4f15319b30e7a8c18ca4",
+      "bytes": 98708
+    }
+  ],
+  "syntax_py_compile": "passed",
+  "cargo_check_offline_all_targets": "passed",
+  "root_authorization": "bounded correction after all C7 guards closed",
+  "focus_contract": "src/ui/pickers.rs Ui::product_picker_saved dialog.connect_closed restores actual row.quantity focus; stage131 now requires Quantity, all other exact predicates retained",
+  "external_delta": "Every cached ancestry edge including root\u2192current parent requires fresh parent-child membership for positive result. Direct children memo is local to one identity check only; no timed BFS fallback. Zero requires exact query/0/status ready, current search/status exposed paths, action insensitive and both action/title exposed paths absent, with raw stale SHOWING states recorded.",
+  "budgets_unchanged": true,
+  "legacy_broad_sampler_reset_report_fields_unchanged": true,
+  "failed_versions_preserved": true,
+  "runtime_qualification": "pending new candidate8 freeze; full n1/n2/all3/all40",
+  "accepted_performance_measurement": false,
+  "causal_product_speed_claim": false
+}
