@@ -1,0 +1,46 @@
+{
+  "closure.json": {
+    "bytes": 707,
+    "sha256": "984530594fcefd8134c195f9d9658a50b09ffcbf78ad190d42cc04edd7ecc329"
+  },
+  "diagnostic-child.json": {
+    "bytes": 2726,
+    "sha256": "247335b3ca8d826c23e54abd37643ebdeca27a30977b21b9e50168c4ab3bb43d"
+  },
+  "diagnostic-guardian.json": {
+    "bytes": 45227,
+    "sha256": "601a58f61916f83e81f47bd6796a222f39a46f949bb4eaa2501d3680524776ca"
+  },
+  "native-faulthandler.log": {
+    "bytes": 1009,
+    "sha256": "fc00d5c2955b1cb994a0e4d5ba2730d4d0bdc18a7acfb6eae04e6d92d6eec944"
+  },
+  "openbox.log": {
+    "bytes": 207,
+    "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+  },
+  "opened20-editor.png": {
+    "bytes": 197842,
+    "sha256": "22a6405c858f317f24dffbadb942a4151754f06f533ec7caaf266c2e9c9715bc"
+  },
+  "owned-processes.jsonl": {
+    "bytes": 586,
+    "sha256": "fcaf626a953a0ea87579d8c5b2cccabe50b1959278a79a0f7ecb61a4c908ae2a"
+  },
+  "performance.partial.json": {
+    "bytes": 2726,
+    "sha256": "247335b3ca8d826c23e54abd37643ebdeca27a30977b21b9e50168c4ab3bb43d"
+  },
+  "return20-opening/stopped-state.json": {
+    "bytes": 317523,
+    "sha256": "761be58f325b048749b6a088975064a76fc9b4bf69aa11a4f86150962e2abfc9"
+  },
+  "return20-opening.log": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "xvfb.log": {
+    "bytes": 1384,
+    "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  }
+}

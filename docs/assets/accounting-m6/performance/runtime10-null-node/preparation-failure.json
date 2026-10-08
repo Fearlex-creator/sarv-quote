@@ -1,0 +1,7 @@
+{
+  "case": "missing final child rejected after readiness",
+  "initial_result": "FAILED static fixture hook",
+  "reason": "Fixture hook targeted third children(rows) read, but this factory has only direct/read-after reads1/2; changed only fixture to target2",
+  "product_or_observer_defect_inferred": false,
+  "GUI": false
+}

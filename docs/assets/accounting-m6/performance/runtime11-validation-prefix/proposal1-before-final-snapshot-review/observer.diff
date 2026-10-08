@@ -1,0 +1,139 @@
+--- observer-v3-daf721.py
++++ scripts/native-performance-M6.py
+@@ -42,6 +42,7 @@
+ SEARCH = 'جست‌وجوی منبع، تأمین‌کننده، کالا یا انبار'
+ NEXT = 'ردیف‌های برگشت بعد'
+ PREVIOUS = 'ردیف‌های برگشت پیشین'
++INVALID_QUANTITY = 'مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد'
+ CONTROL_NAMES = (PREVIEW, POST, RETURN, SEARCH, NEXT, PREVIOUS)
+ ISOLATION = dict.fromkeys(map(ord, '\u2066\u2067\u2068\u2069\u200e\u200f'), None)
+ DIGITS = str.maketrans('۰۱۲۳۴۵۶۷۸۹٠١٢٣٤٥٦٧٨٩', '01234567890123456789')
+@@ -173,6 +174,8 @@
+     """
+     def __init__(self, access, root, nodes):
+         self.root, self.edges, self.roles = root, {}, {}
++        self.validation_prefixes = {}
++        self.validation_sibling_roles = {}
+         for leaf in [root, *nodes]:
+             node = leaf
+             for _ in range(40):
+@@ -201,8 +204,31 @@
+         for parent in dict.fromkeys(self.edges.values()):
+             access.a.atspi_accessible_clear_cache(parent)
+             children[parent] = tuple(access.children(parent))
+-        if self.stable_children is not None and children != self.stable_children:
+-            return None
++        if self.stable_children is not None:
++            if children.keys() != self.stable_children.keys():
++                return None
++            for parent, original in self.stable_children.items():
++                current = children[parent]
++                if current == original:
++                    continue
++                label = self.validation_prefixes.get(parent)
++                if label is None or current != (label, *original):
++                    return None
++                row = current_node(access, label)
++                if not row or row['parent'] != parent or row['role'] != 'label' or row['name'] != INVALID_QUANTITY:
++                    return None
++                access.a.atspi_accessible_clear_cache(label)
++                if access.children(label) or current_node(access, label) != row:
++                    return None
++                expected_roles = self.validation_sibling_roles.get(parent, {})
++                if len(original) != 16 or set(expected_roles) != set(original):
++                    return None
++                for sibling in original:
++                    sibling_row = current_node(access, sibling)
++                    if not sibling_row or sibling_row['parent'] != parent or sibling_row['role'] != expected_roles[sibling]:
++                        return None
++                    rows[sibling] = sibling_row
++                rows[label] = row
+         if any(rows[node]['parent'] != parent or node not in children[parent]
+                for node, parent in self.edges.items()):
+             return None
+@@ -782,6 +808,12 @@
+         nodes = [row['node'] for row in quantities]
+         paths = CurrentPaths(access, editor, [markers[0]['node'], *nodes])
+         paths.stable_children = paths.snapshot(access)['children']
++        validation_parent = paths.edges[markers[0]['node']]
++        original = paths.stable_children[validation_parent]
++        if len(original) == 16:
++            siblings = [current_node(access, node) for node in original]
++            assert all(row and row['parent'] == validation_parent for row in siblings), 'Current original16 sibling ownership/edges required'
++            paths.validation_sibling_roles[validation_parent] = {row['node']: row['role'] for row in siblings}
+         self.editor_paths[editor] = {'paths': paths, 'nodes': nodes, 'marker': markers[0]['node'],
+                                     'expected': dict.fromkeys(receipt_ids, '')}
+         assert self.page_state(access, editor, receipt_ids, 1) is not None, 'Initial editor binding is not coherent'
+@@ -818,6 +850,46 @@
+         # Exact ordered identities plus per-parent ordered child lists reject mixed
+         # persistent widget rebinding; correct complete rebinding is expected.
+         return quantities
++
++    def qualify_invalid_quantity_label(self, access, editor, receipt_ids, page):
++        """Qualify only the observed factory's one error prefix, outside timers."""
++        cache = self.editor_paths[editor]
++        paths = cache['paths']
++        parent = paths.edges[cache['marker']]
++        original = paths.stable_children[parent]
++        assert len(original) == 16 and not paths.validation_prefixes, 'One billed factory16-sibling qualification only'
++        def attempt():
++            owner = current_node(access, parent)
++            if not owner or owner['role'] != 'panel' or owner['name'] != '':
++                return None
++            access.a.atspi_accessible_clear_cache(parent)
++            current = tuple(access.children(parent))
++            if len(current) != 17 or current[1:] != original or not current[0]:
++                return None
++            label = current[0]
++            row = current_node(access, label)
++            if not row or row['role'] != 'label' or row['name'] != INVALID_QUANTITY or row['parent'] != parent:
++                return None
++            # Registration never replaces/rebaselines any original child list.
++            paths.validation_prefixes[parent] = label
++            accepted = False
++            try:
++                before = paths.snapshot(access)
++                fields = self.page_state(access, editor, receipt_ids, page)
++                after = paths.snapshot(access)
++                accepted = bool(paths.coherent(before, after) and fields and fields[-1]['name'] == QUANTITY_PREFIX + receipt_ids[-1]
++                                and access.text(fields[-1]) == '2' and ready(access, fields[-1], editor, True))
++                if accepted:
++                    return {'parent_node': hex(parent), 'label_node': hex(label), 'literal_name': INVALID_QUANTITY,
++                            'original16_children': [hex(node) for node in original], 'childless_current_owned_label': True,
++                            'two_coherent_current_snapshots': True, 'all_ordered_source_names_and_raw_values_checked': True,
++                            'outside_latency_intervals': True}
++            finally:
++                if not accepted:
++                    paths.validation_prefixes.pop(parent, None)
++            return None
++        proof = observe(attempt, 'one exact live invalid-quantity label before unchanged16 siblings')
++        self.report.setdefault('validation_prefix_qualifications', []).append(proof)
+ 
+     def turn(self, access, editor, receipt_ids, target_page, direction, expected_text=None):
+         pager = find(access, NEXT if direction == 'next' else PREVIOUS, editor, ('button', 'push button'))
+@@ -979,7 +1051,7 @@
+             entered = [row['receipt_line_id'] for row in result['input_samples']]
+             assert entered == receipt_ids, 'First Preview requires every exact source input in order'
+             result['editor_first_preview_coverage'] = {'entered_lines': len(entered), 'receipt_line_ids': entered,
+-                'all_entered_before_first_preview': True, 'native_scope': 'ready editor to first Preview dispatch, including common metadata, all inputs, pagers and inter-action checkpoints; excludes construction and later reveal/preview/post'}
++                'all_entered_before_first_preview': True, 'native_scope': 'After ReturnRows::new, before Review setup/dialog presentation/layout, to first Preview dispatch; includes remaining setup/layout, common metadata, all inputs, pagers and inter-action checkpoints; excludes ReturnRows construction and later reveal/preview/post'}
+             self.checkpoint(name + ':all-inputs-before-first-preview-dispatch')
+         def accepted_editor():
+             rows = observe(lambda: [row for row in phase_records(profile) if row['phase'] == 'editor'], 'terminal editor phase receipt')
+@@ -1019,6 +1091,7 @@
+             observe(lambda: ready(access, invalid, editor, True) and access.text(invalid) == '2', 'actual invalid last row retained/focused')
+             assert payload(profile) == baseline
+             accepted_editor()
++            self.qualify_invalid_quantity_label(access, editor, receipt_ids, pages)
+             result['hidden_invalid_last_row_retained_focused'] = True
+             self.checkpoint(name + ':completed-hidden-invalid-focus')
+             settled_begin = time.perf_counter()
+@@ -1258,7 +1331,7 @@
+               'boundaries': {'startup': 'Popen to owned mapped window, usable Save, real Tab focus response and completed PNG; pre-PNG/capture separate. Initial stopped-backup launch n1 separately; repeated n10 new processes with warm/uncontrolled OS pages. No physical OS-cold claim.',
+                              'source_picker': 'Actual Ctrl+A/ASCII query to exact first current reference/count/page/action, allocated visible sensitive then actual focus. Qualified direct source-child snapshots before/after every observation, fresh parent-child membership, debounce/layout/AT-SPI5ms poll included. Initial picker/index discovery and zero warmup outside timer.',
+                              'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 persistent identity paths qualified outside dispatch, all roles/names/text/marker/current edges refreshed before/after each poll. Natural initial client geometry is recorded, narrow620x800 invalid2 captures are untimed, and exact initial client size restored before later timed actions. Passive standard/narrow invalid2 settled captures require independent pixel review; modal GTK window-key geometry unavailable.',
+-                             'editor_heartbeat': 'C9 native16ms ready editor→first Preview collect/dispatch only, with explicit return/preview_requested terminal result. Includes common metadata, all20/200 real-key inputs, Next/Previous and inter-action checkpoint I/O; excludes widget construction, later invalid reveal/correction, preview and post. Exact ordered input association precedes first dispatch. One positive complete accepted editor trace per workflow, separate50ms maximum; no pooled phases or subtraction.',
++                             'editor_heartbeat': 'C9 native16ms starts after ReturnRows::new, before Review setup/dialog presentation/layout, and ends at first Preview collect/dispatch with explicit return/preview_requested result. Includes remaining setup/layout, common metadata, all20/200 real-key inputs, Next/Previous and inter-action checkpoint I/O; excludes ReturnRows construction and later invalid reveal/correction/preview/post. Initial gap remains included. Exact ordered input association precedes first dispatch. One positive complete accepted editor trace per workflow, separate50ms maximum; no pooling/subtraction.',
+                              'preview_post': 'Actual real-key preview/post dispatch through usable Post or durable return and visible result. Existing native16ms dispatch-to-render/busy-release phases independently retain every tick/terminal gap; zero-tick/rejected/absent unmeasured. n1 per20billed/20unbilled/200billed workflow.',
+                              'lifecycle_and_partial_checkpoints': 'm6-scoped-v3: early Python faulthandler plus fsynced exact PID/PGID/starttime/comm/command spawn ledger before native discovery and external identity-verified SIGTERM cleanup. Journaling remains inside startup timing; partial raw JSON checkpoints occur after latency endpoints, including before first return opening. Editor trace deliberately includes inter-action checkpoint I/O. X11 private owned-PID discovery still drains with XSync/rejects only exact retired-window PID-property BadWindow. Native hard-exit cause remains unknown; no reliability/cause claim from diagnostic passes.',
+                              'memory': 'Application PID only; /proc10ms startup sampling +500ms idle; later search/editor/preview/post RSS/HWM points separate. Helpers excluded.'},

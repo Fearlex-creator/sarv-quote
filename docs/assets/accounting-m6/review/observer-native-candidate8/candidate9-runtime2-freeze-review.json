@@ -1,0 +1,25 @@
+{
+  "result": "PASS exact current/archive84 runtime2 and held C9 provenance; no GUI acceptance",
+  "reviewer": "m6_observer_native_reviewer",
+  "runtime2_sha256": "de808b22806808f490852dd39981b9afd78c99e2e89835de48706aa019d270a7",
+  "receipt_sha256": "d46333ee62b3dd2e9223a696fe47642ab4aa9ad7e62f960aba1ac810d080525c",
+  "current_exact": 84,
+  "archive_exact": 84,
+  "old81_changed": {
+    "scripts/native-performance-M6.py": {
+      "before": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910",
+      "after": "daf7210c50843e173161675b0f70eec5d263c864c11e11dfb88805b9c30a1255"
+    }
+  },
+  "added": [
+    "docs/assets/accounting-m6/performance/runtime10-null-node/guardian-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime10-null-node/null-membership-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime10-null-node/observer-v3-c79ee7.py"
+  ],
+  "production_current_files_exact": 36,
+  "production_sha256": "87ece16d15640d60ee0bdba3c38c8158e12a50221b3e65d8ec088bd7a4766e7a",
+  "binary_sha256": "da427a634b9b31a58ff81da2cca67043f9c8a9a7ddddb378f4c21e084e8a1903",
+  "same_production_binary_coordinator_analyzer_dataset": true,
+  "null_fix_independent159_and_author71_76_PASS": true,
+  "native_GUI_build_network": false
+}

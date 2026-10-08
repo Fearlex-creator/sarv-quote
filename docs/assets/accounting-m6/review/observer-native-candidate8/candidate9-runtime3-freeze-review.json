@@ -1,0 +1,33 @@
+{
+  "result": "PASS exact current/archive88 runtime3 and held C9 provenance; no GUI acceptance",
+  "reviewer": "m6_observer_native_reviewer",
+  "runtime3_sha256": "71dffdc03e3f2043b17c24bc406a481d7587aa2dd7224a7927b47691cc1eaac7",
+  "receipt_sha256": "bca8475d98cb2401179fc684a0f4f25a8e0333a4c1465926b1991b47b0cea1a3",
+  "static_guard_sha256": "0ad322eea943298a0c85f908884441eca27685014c521d98ed41046f1cec2223",
+  "current_exact": 88,
+  "archive_exact": 88,
+  "archive_has_only_manifest_paths": true,
+  "old84_changed": {
+    "scripts/native-performance-M6.py": {
+      "before": "daf7210c50843e173161675b0f70eec5d263c864c11e11dfb88805b9c30a1255",
+      "after": "63edfdab8e16e96fb3451e14a54f0a8fab8417062d0d4302f2abbf292a446b6b"
+    }
+  },
+  "old84_same": 83,
+  "added": [
+    "docs/assets/accounting-m6/performance/candidate9-invalid-topology-diagnostic/probe.py",
+    "docs/assets/accounting-m6/performance/runtime11-validation-prefix/guardian-static-check.py",
+    "docs/assets/accounting-m6/performance/runtime11-validation-prefix/observer-v3-daf721.py",
+    "docs/assets/accounting-m6/performance/runtime11-validation-prefix/validation-static-check.py"
+  ],
+  "production_current_files_exact": 36,
+  "production_sha256": "87ece16d15640d60ee0bdba3c38c8158e12a50221b3e65d8ec088bd7a4766e7a",
+  "binary_sha256": "da427a634b9b31a58ff81da2cca67043f9c8a9a7ddddb378f4c21e084e8a1903",
+  "dataset_current_files_exact": 38,
+  "seed_current_files_exact": 2,
+  "same_production_binary_coordinator_analyzer_dataset": true,
+  "guard_before_after_exact": true,
+  "corrected_adapter_independent100_author104_77_PASS": true,
+  "no_current200_or_final_performance_acceptance_inferred": true,
+  "native_GUI_build_network": false
+}

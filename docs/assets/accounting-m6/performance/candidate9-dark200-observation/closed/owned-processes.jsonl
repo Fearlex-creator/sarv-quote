@@ -1,0 +1,3 @@
+{"name": "xvfb", "pid": 388598, "pgid": 388598, "comm": "Xvfb", "starttime_ticks": 10776143, "command": ["Xvfb", "-displayfd", "3", "-screen", "0", "1450x1050x24", "-nolisten", "tcp", "-xkbdir", "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"]}
+{"name": "openbox", "pid": 388602, "pgid": 388602, "comm": "openbox", "starttime_ticks": 10776149, "command": ["openbox", "--sm-disable", "--config-file", "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"]}
+{"name": "invalid200-dark", "pid": 388621, "pgid": 388621, "comm": "sarv-M6-candida", "starttime_ticks": 10776153, "command": ["/workspace/sarv-evidence/bin/sarv-M6-candidate9"]}

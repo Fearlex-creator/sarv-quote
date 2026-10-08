@@ -1,0 +1,312 @@
+{
+  "observer_sha256": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910",
+  "coordinator_sha256": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f",
+  "no_native_imports_or_gui": true,
+  "cases": [
+    {
+      "case": "exact positive complete editor accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "exact positive complete preview accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "exact positive complete post accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "reject phase='unknown'",
+      "result": "PASS"
+    },
+    {
+      "case": "reject result='closed'",
+      "result": "PASS"
+    },
+    {
+      "case": "reject result='timeout'",
+      "result": "PASS"
+    },
+    {
+      "case": "reject result='worker_finished'",
+      "result": "PASS"
+    },
+    {
+      "case": "reject operation='purchase'",
+      "result": "PASS"
+    },
+    {
+      "case": "reject interval_ms=20",
+      "result": "PASS"
+    },
+    {
+      "case": "reject interval_ms=16.0",
+      "result": "PASS"
+    },
+    {
+      "case": "reject ticks=True",
+      "result": "PASS"
+    },
+    {
+      "case": "reject ticks=2.0",
+      "result": "PASS"
+    },
+    {
+      "case": "reject ticks=-1",
+      "result": "PASS"
+    },
+    {
+      "case": "reject elapsed_ms=nan",
+      "result": "PASS"
+    },
+    {
+      "case": "reject elapsed_ms=inf",
+      "result": "PASS"
+    },
+    {
+      "case": "reject elapsed_ms=-1",
+      "result": "PASS"
+    },
+    {
+      "case": "reject max_gap_ms=nan",
+      "result": "PASS"
+    },
+    {
+      "case": "reject max_gap_ms=18.0",
+      "result": "PASS"
+    },
+    {
+      "case": "reject elapsed_ms=35.0",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=[]",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=None",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms='not gaps'",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=7",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=[16.0, nan, 3.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=[16.0, inf, 3.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=[16.0, -1.0, 3.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=[True, 17.0, 3.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "reject gaps_ms=[16.0, 20.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "missing phase not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing operation not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing result not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing ticks not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing interval_ms not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing gaps_ms not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing elapsed_ms not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "missing max_gap_ms not accepted",
+      "result": "PASS"
+    },
+    {
+      "case": "zero ticks with valid terminal still unmeasured",
+      "result": "PASS"
+    },
+    {
+      "case": "terminal51ms retained strict miss",
+      "result": "PASS"
+    },
+    {
+      "case": "unknown phase worker_finished cannot inherit post acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "missing journal fails closure without discovery or signals",
+      "result": "PASS"
+    },
+    {
+      "case": "empty journal fails closure without discovery or signals",
+      "result": "PASS"
+    },
+    {
+      "case": "only exact owned identity receives SIGTERM",
+      "result": "PASS"
+    },
+    {
+      "case": "changed pgid untouched/rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "unexpected pgid arguments/name redacted",
+      "result": "PASS"
+    },
+    {
+      "case": "changed starttime_ticks untouched/rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "unexpected starttime_ticks arguments/name redacted",
+      "result": "PASS"
+    },
+    {
+      "case": "changed comm untouched/rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "unexpected comm arguments/name redacted",
+      "result": "PASS"
+    },
+    {
+      "case": "changed command untouched/rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "unexpected command arguments/name redacted",
+      "result": "PASS"
+    },
+    {
+      "case": "absent owned identity inactive/no signal",
+      "result": "PASS"
+    },
+    {
+      "case": "zombie inactive/no signal",
+      "result": "PASS"
+    },
+    {
+      "case": "remaining active owned identity fails closure",
+      "result": "PASS"
+    },
+    {
+      "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 100, 'starttime_ticks': 180, 'comm': 'sarv-M6-candida', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+      "result": "PASS"
+    },
+    {
+      "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 101, 'starttime_ticks': 200, 'comm': 'sarv-M6-candida', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+      "result": "PASS"
+    },
+    {
+      "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': True, 'pgid': 100, 'starttime_ticks': 200, 'comm': 'sarv-M6-candida', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+      "result": "PASS"
+    },
+    {
+      "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 100, 'starttime_ticks': 200, 'comm': 'sarv-M6-candida', 'command': ['/historical/binary']}",
+      "result": "PASS"
+    },
+    {
+      "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 100, 'starttime_ticks': 200, 'comm': '', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+      "result": "PASS"
+    },
+    {
+      "case": "truncated final journal preserves valid prefix cleanup and rejects completeness",
+      "result": "PASS"
+    },
+    {
+      "case": "duplicate identity rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "exact declared private helper allowlisted openbox",
+      "result": "PASS"
+    },
+    {
+      "case": "exact declared private helper allowlisted Xvfb",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data literal_return",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data original_prefix",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data raw_controls",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data source_result",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data source_rows",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data source_action_shape",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data source_pager_shape",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data qualify_editor",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data page_state",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data turn",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data user_wins_invalid_reveal",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged strict membership/data preview_pages",
+      "result": "PASS"
+    },
+    {
+      "case": "faulthandler enabled before native imports",
+      "result": "PASS"
+    },
+    {
+      "case": "workflow durable pre-opening checkpoint present",
+      "result": "PASS"
+    }
+  ],
+  "total": 76
+}

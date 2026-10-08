@@ -1,0 +1,111 @@
+{
+  "result": "qualified_scoped20_opening_no_input_or_post",
+  "diagnostic_only": true,
+  "timed_budget_claim": false,
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate8",
+  "startup": {},
+  "source_picker_search": {},
+  "return_workflows": {},
+  "capture_samples": [
+    {
+      "path": "/workspace/sarv-quote/artifacts/performance-m6/observer-sig11-diagnostic1/opened20-editor.png",
+      "elapsed_ms": 133.74734499666374
+    }
+  ],
+  "owned_process_records": [
+    {
+      "name": "xvfb",
+      "pid": 376030,
+      "pgid": 376030,
+      "starttime_ticks": 9216486,
+      "command": [
+        "Xvfb",
+        "-displayfd",
+        "3",
+        "-screen",
+        "0",
+        "1450x1050x24",
+        "-nolisten",
+        "tcp",
+        "-xkbdir",
+        "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+      ]
+    },
+    {
+      "name": "openbox",
+      "pid": 376034,
+      "pgid": 376034,
+      "starttime_ticks": 9216497,
+      "command": [
+        "openbox",
+        "--sm-disable",
+        "--config-file",
+        "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+      ]
+    },
+    {
+      "name": "return20-opening",
+      "pid": 376053,
+      "pgid": 376053,
+      "starttime_ticks": 9216501,
+      "command": [
+        "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+      ]
+    }
+  ],
+  "x11_error_observations": [],
+  "rejected_source_observations": [
+    {
+      "event": "one-original-source;reference=M6-PERF-return20-billed-BILL",
+      "monotonic_ns": 92168145906888,
+      "reason": "Source/query/status/children changed during observation",
+      "root_node": "0x34eb2730",
+      "rows_node": "0x34eb6a50"
+    }
+  ],
+  "completed_checkpoint_boundaries": [
+    {
+      "event": "diagnostic-completed20-opening",
+      "monotonic_ns": 92171213007269
+    }
+  ],
+  "identity_path_qualifications": [
+    {
+      "scope": "source",
+      "rows_node": "0x34eb6a50",
+      "root_node": "0x34eb2730",
+      "direct_source_children": 4,
+      "qualified_path_edges": 11,
+      "outside_dispatch_interval": true
+    },
+    {
+      "scope": "editor",
+      "root_node": "0x34eba600",
+      "stable_entry_nodes": [
+        "0x34ed08e0",
+        "0x34ed0c80",
+        "0x34ed10e0",
+        "0x34ed1540",
+        "0x34ed19a0",
+        "0x34ed1e00",
+        "0x34ed2260",
+        "0x34ecfe20",
+        "0x34ed0410",
+        "0x34ed3420",
+        "0x34ed3a80",
+        "0x34ed40e0",
+        "0x34ed4740",
+        "0x351102c0",
+        "0x35110920",
+        "0x35110f80",
+        "0x351115e0",
+        "0x35111c40",
+        "0x351122a0",
+        "0x34ed28c0"
+      ],
+      "qualified_path_edges": 71,
+      "outside_dispatch_interval": true
+    }
+  ],
+  "quantity20_current_empty": true
+}

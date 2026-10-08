@@ -1,0 +1,30 @@
+{
+  "protocol": "m6-scoped-v3",
+  "status": "STATIC PROPOSAL; NO GUI OR CURRENT FULL200 ACCEPTANCE",
+  "files": {
+    "scripts/native-performance-M6.py": {
+      "bytes": 83785,
+      "sha256": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910"
+    },
+    "docs/assets/accounting-m6/performance/coordinator.py": {
+      "bytes": 13381,
+      "sha256": "bd23690f63281f1931082be4a18f91c9521609ee0cf51958bb63736e0d29fae5"
+    },
+    "docs/assets/accounting-m6/performance/analyze.py": {
+      "bytes": 7027,
+      "sha256": "a0e520632179fe6df38af9b049f8390dbcacaa8637e7b56c54d357354fba24aa"
+    }
+  },
+  "diff_sha256": "b0a1aa1e51f7411a28e4569ff6c5f0744fc0e617cb1582204f400c5202640fe4",
+  "checks": {
+    "py_compile": "PASS",
+    "phase_guardian_AST": 74,
+    "held_strict_membership_AST": 61,
+    "analyzer_cases": 7,
+    "synthetic_faulthandler": "PASS; self-signal only",
+    "actual_owned_python_cleanup": "one initial fixture timeout preserved, one bounded exact pidfd SIGTERM closure preserved; original crash cause unknown"
+  },
+  "production_changes_by_measurement_agent": false,
+  "GUI_launched_after_closed_diagnostics": false,
+  "next_required": "Independent static review; root fresh C9 runtime freeze and immutable receipt; separate one functional pilot GO"
+}

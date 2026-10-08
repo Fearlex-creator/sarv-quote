@@ -1,0 +1,746 @@
+{
+  "reviewer": "m6_observer_native_reviewer",
+  "result": "PASS minimal NULL fail-closed static review; no GUI reliability/current200 acceptance",
+  "observer_sha256": "daf7210c50843e173161675b0f70eec5d263c864c11e11dfb88805b9c30a1255",
+  "diff_sha256": "01baec9c93e0d45806bc2a1a7c45557cc474ce3f27751c3d1bab74ac809a3ebd",
+  "independent_cases": 159,
+  "cases": [
+    {
+      "case": "exact distinct ordered source captions and FSI first reference",
+      "result": "pass",
+      "expected": "accept"
+    },
+    {
+      "case": "modal defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "modal pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "modal parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under cell rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under pager rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under source rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "third wrapper rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bare direct pager rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source button hidden in pager wrapper rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness visible false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness visible false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness sensitive false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness sensitive false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness allocated false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness allocated false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "focused source required and false rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "coherent missing FSI rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact count rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact query rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact page rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status gains hidden child at final child read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label gains hidden child at final read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label gains hidden child at final read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "actual 56-node recorded GTK subtree accepted through actual AST",
+      "result": "pass",
+      "expected": "accept"
+    },
+    {
+      "case": "null None rejects beforeANYaccessattribute",
+      "result": "PASS"
+    },
+    {
+      "case": "null 0 rejects beforeANYaccessattribute",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at0 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at1 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at2 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at3 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at4 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at5 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at6 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at7 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at8 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at9 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at10 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at11 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at12 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at13 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at14 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at15 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at16 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at17 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at18 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at19 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at20 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at21 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at22 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at23 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at24 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at25 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child None at26 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child None parent7 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child None parent8 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child None parent9 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child None parent10 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing finaldirect None retainedrejection",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at0 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at1 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at2 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at3 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at4 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at5 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at6 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at7 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at8 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at9 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at10 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at11 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at12 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at13 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at14 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at15 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at16 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at17 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at18 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at19 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at20 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at21 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at22 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at23 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at24 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at25 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing direct child 0 at26 completeinventoryrejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child 0 parent7 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child 0 parent8 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child 0 parent9 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing nested source/pager child 0 parent10 rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "missing finaldirect 0 retainedrejection",
+      "result": "PASS"
+    },
+    {
+      "case": "failed before snapshot preventsanyrowsABIread",
+      "result": "PASS"
+    },
+    {
+      "case": "exactonlytwofunctions changed",
+      "result": "PASS"
+    },
+    {
+      "case": "nullguardfirstexecutablebranch",
+      "result": "PASS"
+    },
+    {
+      "case": "current_node everyexistingpredicate exactAST",
+      "result": "PASS"
+    },
+    {
+      "case": "source_rows only3rejectonlybranches added",
+      "result": "PASS"
+    }
+  ],
+  "author_actualcanonical_cases": [
+    71,
+    76
+  ],
+  "exactchangedfunctions": [
+    "current_node",
+    "source_rows"
+  ],
+  "originalABI_metadata_membership_focus_query_editor_financial_predicates_preserved": true,
+  "missing_children_filtered": false,
+  "native_GUI_build_network": false,
+  "historical_actual_crash_argument": "unknown",
+  "next": "freshrootfreeze/receipt and separatepilotGO"
+}

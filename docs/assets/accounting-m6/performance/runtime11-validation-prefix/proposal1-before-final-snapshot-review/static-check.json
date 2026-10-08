@@ -1,0 +1,416 @@
+{
+  "observer_sha256": "e0a9fd31859d278c386cd7b0fd218b7c6b64fd4ad7e385e096b6ab5613d076b1",
+  "protocol": "m6-scoped-v3-validation-prefix-static-only",
+  "no_native_imports_or_gui": true,
+  "cases": [
+    {
+      "case": "exact direct status/25 actions/reference/query",
+      "result": "pass"
+    },
+    {
+      "case": "retired direct action rejected + event retained",
+      "result": "pass"
+    },
+    {
+      "case": "foreign action rejected",
+      "result": "pass"
+    },
+    {
+      "case": "wrong action parent rejected",
+      "result": "pass"
+    },
+    {
+      "case": "retired common rows path rejected",
+      "result": "pass"
+    },
+    {
+      "case": "foreign modal attachment rejected",
+      "result": "pass"
+    },
+    {
+      "case": "child retired between before/after lists rejected",
+      "result": "pass"
+    },
+    {
+      "case": "action name changes during snapshot rejected",
+      "result": "pass"
+    },
+    {
+      "case": "query changes after row read rejected",
+      "result": "pass"
+    },
+    {
+      "case": "missing exact FSI reference rejected",
+      "result": "pass"
+    },
+    {
+      "case": "unknown nested source action rejected",
+      "result": "pass"
+    },
+    {
+      "case": "qualified 25 initial entries exact empty text",
+      "result": "pass"
+    },
+    {
+      "case": "complete persistent page rebind accepted",
+      "result": "pass"
+    },
+    {
+      "case": "mixed persistent names rejected",
+      "result": "pass"
+    },
+    {
+      "case": "mixed stale retained text rejected",
+      "result": "pass"
+    },
+    {
+      "case": "editor ancestor DEFUNCT rejected",
+      "result": "pass"
+    },
+    {
+      "case": "foreign persistent entry rejected",
+      "result": "pass"
+    },
+    {
+      "case": "persistent entry current parent edge rejected",
+      "result": "pass"
+    },
+    {
+      "case": "stable slot ordering change rejected",
+      "result": "pass"
+    },
+    {
+      "case": "marker changes during text read rejected",
+      "result": "pass"
+    },
+    {
+      "case": "text changes on final read rejected",
+      "result": "pass"
+    },
+    {
+      "case": "exact current page mismatch rejected",
+      "result": "pass"
+    },
+    {
+      "case": "status role mismatch rejected",
+      "result": "pass"
+    },
+    {
+      "case": "unexpected pager-bar role rejected",
+      "result": "pass"
+    },
+    {
+      "case": "duplicate pager order rejected",
+      "result": "pass"
+    },
+    {
+      "case": "status rebind during readiness rejected",
+      "result": "pass"
+    },
+    {
+      "case": "persistent entry role change rejected",
+      "result": "pass"
+    },
+    {
+      "case": "persistent page marker DEFUNCT rejected",
+      "result": "pass"
+    },
+    {
+      "case": "unique actual owned focus identity and ancestry",
+      "result": "pass"
+    },
+    {
+      "case": "foreign focused control rejected",
+      "result": "pass"
+    },
+    {
+      "case": "DEFUNCT focused control rejected",
+      "result": "pass"
+    },
+    {
+      "case": "ambiguous actual focus rejected",
+      "result": "pass"
+    },
+    {
+      "case": "real Space and Tab calls immediately consecutive",
+      "result": "pass"
+    },
+    {
+      "case": "user-wins failure records and checkpoints then raises",
+      "result": "pass"
+    },
+    {
+      "case": "extra nested source action under current direct action rejected",
+      "result": "pass"
+    },
+    {
+      "case": "qualified button label child accepted",
+      "result": "pass"
+    },
+    {
+      "case": "button child wrong parent rejected",
+      "result": "pass"
+    },
+    {
+      "case": "button child DEFUNCT rejected",
+      "result": "pass"
+    },
+    {
+      "case": "button child label changed during observation rejected",
+      "result": "pass"
+    },
+    {
+      "case": "action child-shape qualification from discovery-only metadata",
+      "result": "pass"
+    },
+    {
+      "case": "FlowBox wrapper wrong current parent rejected",
+      "result": "pass"
+    },
+    {
+      "case": "FlowBox wrapper DEFUNCT rejected",
+      "result": "pass"
+    },
+    {
+      "case": "FlowBox wrapper foreign PID rejected",
+      "result": "pass"
+    },
+    {
+      "case": "unknown FlowBox wrapper role rejected",
+      "result": "pass"
+    },
+    {
+      "case": "pager button wrong cell parent rejected",
+      "result": "pass"
+    },
+    {
+      "case": "extra button in wrapper rejected",
+      "result": "pass"
+    },
+    {
+      "case": "wrapper/button literal name mismatch rejected",
+      "result": "pass"
+    },
+    {
+      "case": "wrapper changes between snapshots rejected",
+      "result": "pass"
+    },
+    {
+      "case": "same strict current wrapper shape accepts Previous",
+      "result": "pass"
+    },
+    {
+      "case": "zero-pager boundary current table accepted",
+      "result": "pass"
+    },
+    {
+      "case": "hidden nested source action under status rejected",
+      "result": "pass"
+    },
+    {
+      "case": "nonempty FlowBox bar name rejected",
+      "result": "pass"
+    },
+    {
+      "case": "source button label full-name mismatch rejected",
+      "result": "pass"
+    },
+    {
+      "case": "source caption label must be childless",
+      "result": "pass"
+    },
+    {
+      "case": "pager caption label must be childless",
+      "result": "pass"
+    },
+    {
+      "case": "pager button label full-name mismatch rejected",
+      "result": "pass"
+    },
+    {
+      "case": "coherent caption missing exact FSI reference rejected",
+      "result": "pass"
+    },
+    {
+      "case": "null current node rejected before ANY native call None",
+      "result": "pass"
+    },
+    {
+      "case": "null current node rejected before ANY native call 0",
+      "result": "pass"
+    },
+    {
+      "case": "missing direct child rejected without filtering at 0",
+      "result": "pass"
+    },
+    {
+      "case": "missing direct child rejected without filtering at 1",
+      "result": "pass"
+    },
+    {
+      "case": "missing direct child rejected without filtering at 15",
+      "result": "pass"
+    },
+    {
+      "case": "missing direct child rejected without filtering at 27",
+      "result": "pass"
+    },
+    {
+      "case": "missing final child rejected after readiness",
+      "result": "pass"
+    },
+    {
+      "case": "missing nested caption child rejected",
+      "result": "pass"
+    },
+    {
+      "case": "missing pager child rejected",
+      "result": "pass"
+    },
+    {
+      "case": "detached current source child still rejected",
+      "result": "pass"
+    },
+    {
+      "case": "unqualified exactvalidation prefix rejected",
+      "result": "pass"
+    },
+    {
+      "case": "exactone ownedchildlessprefix qualifies withfullbinding",
+      "result": "pass"
+    },
+    {
+      "case": "original sibling baselines never redefined",
+      "result": "pass"
+    },
+    {
+      "case": "qualifiedvalidation prefix currentpage accepted",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects wrongname",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects wrongrole",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects foreign",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects defunct",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects wrongparent",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects nested",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects extra",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects replaced",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects reordered",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects missing",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects falsefocus",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects wrongraw",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects mixedname",
+      "result": "pass"
+    },
+    {
+      "case": "qualification rejects wrongmarker",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects wrongname",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects wrongrole",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects foreign",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects defunct",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects wrongparent",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects nested",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects extra",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects reordered",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects siblingforeign",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects siblingrole",
+      "result": "pass"
+    },
+    {
+      "case": "freshpoll rejects siblingparent",
+      "result": "pass"
+    },
+    {
+      "case": "known errorhidden exactbaseline returns tovalidshape",
+      "result": "pass"
+    },
+    {
+      "case": "labelrebind duringqualification rejected/rollback",
+      "result": "pass"
+    },
+    {
+      "case": "unchanged literal_return",
+      "result": "pass"
+    },
+    {
+      "case": "unchanged original_prefix",
+      "result": "pass"
+    },
+    {
+      "case": "unchanged raw_controls",
+      "result": "pass"
+    },
+    {
+      "case": "unchanged preview_pages",
+      "result": "pass"
+    }
+  ],
+  "total": 102
+}

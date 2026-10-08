@@ -1,0 +1,33 @@
+--- /workspace/sarv-quote/docs/assets/accounting-m6/performance/runtime10-null-node/observer-v3-c79ee7.py	2026-10-08 17:36:34.412730029 +0000
++++ /workspace/sarv-quote/scripts/native-performance-M6.py	2026-10-08 17:36:53.658084602 +0000
+@@ -152,6 +152,8 @@
+ 
+ def current_node(access, node):
+     """Fresh owned live node metadata; state/name/role/parent are never cached."""
++    if not node:
++        return None
+     access.a.atspi_accessible_clear_cache(node)
+     states = access.a.atspi_accessible_get_state_set(node)
+     if not states or access.a.atspi_state_set_contains(states, 6):
+@@ -620,8 +622,12 @@
+     def source_rows(self, access, rows, root, event, validate=None):
+         paths = self.source_paths[rows]
+         before = paths.snapshot(access)
++        if not before:
++            return self.reject_source(event, rows, root, 'Retired/unowned source common path before child read')
+         access.a.atspi_accessible_clear_cache(rows)
+         direct = tuple(access.children(rows))
++        if any(not node for node in direct):
++            return self.reject_source(event, rows, root, 'Missing current direct source child during hierarchy rebind')
+         records = [current_node(access, node) for node in direct]
+         if not before or any(not row or row['parent'] != rows for row in records):
+             return self.reject_source(event, rows, root, 'Retired/unowned source child or common path')
+@@ -651,6 +657,8 @@
+         final_status_children = tuple(access.children(records[0]['node']))
+         access.a.atspi_accessible_clear_cache(rows)
+         final_direct = tuple(access.children(rows))
++        if any(not node for node in final_direct):
++            return self.reject_source(event, rows, root, 'Missing final direct source child during hierarchy rebind')
+         after = paths.snapshot(access)
+         if final_status_children or shapes != final_shapes or direct != final_direct or records != final_records or pager_shape != final_pager_shape or not paths.coherent(before, after):
+             return self.reject_source(event, rows, root, 'Source/query/status/children changed during observation')

@@ -1,0 +1,767 @@
+{
+  "result": "PASS bounded independent v3 canonical review",
+  "cases": [
+    {
+      "case": "exact distinct ordered source captions and FSI first reference",
+      "result": "pass",
+      "expected": "accept"
+    },
+    {
+      "case": "modal defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "modal pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "modal parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under cell rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under pager rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under source rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "third wrapper rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bare direct pager rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source button hidden in pager wrapper rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness visible false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness visible false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness sensitive false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness sensitive false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness allocated false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness allocated false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "focused source required and false rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "coherent missing FSI rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact count rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact query rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact page rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status gains hidden child at final child read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label gains hidden child at final read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label gains hidden child at final read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "actual 56-node recorded GTK subtree accepted through actual AST",
+      "result": "pass",
+      "expected": "accept"
+    },
+    {
+      "case": "explicit editor/preview_requested phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/verified phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/worker_finished phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/closed phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/timeout phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/not_started phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/stale_or_closed phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit editor/rejected phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/preview_requested phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/verified phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/worker_finished phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/closed phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/timeout phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/not_started phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/stale_or_closed phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit preview/rejected phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/preview_requested phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/verified phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/worker_finished phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/closed phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/timeout phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/not_started phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/stale_or_closed phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "explicit post/rejected phase acceptance",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record [16.0, -1.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record [16.0, nan]",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record [16.0, inf]",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record [16.0, True]",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record []",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record [16.0]",
+      "result": "PASS"
+    },
+    {
+      "case": "invalid full gap record None",
+      "result": "PASS"
+    },
+    {
+      "case": "rejected/zero/foreign phase {'operation': 'return', 'phase': 'editor', 'result': 'preview_requested', 'ticks': 0, 'interval_ms': 16, 'gaps_ms': [20.0], 'elapsed_ms': 20.0, 'max_gap_ms': 20.0}",
+      "result": "PASS"
+    },
+    {
+      "case": "rejected/zero/foreign phase {'operation': 'return', 'phase': 'editor', 'result': 'preview_requested', 'ticks': True, 'interval_ms': 16, 'gaps_ms': [16.0, 4.0], 'elapsed_ms': 20.0, 'max_gap_ms': 16.0}",
+      "result": "PASS"
+    },
+    {
+      "case": "rejected/zero/foreign phase {'operation': 'return', 'phase': 'editor', 'result': 'preview_requested', 'ticks': 1, 'interval_ms': 16.0, 'gaps_ms': [16.0, 4.0], 'elapsed_ms': 20.0, 'max_gap_ms': 16.0}",
+      "result": "PASS"
+    },
+    {
+      "case": "rejected/zero/foreign phase {'operation': 'bill', 'phase': 'editor', 'result': 'preview_requested', 'ticks': 1, 'interval_ms': 16, 'gaps_ms': [16.0, 4.0], 'elapsed_ms': 20.0, 'max_gap_ms': 16.0}",
+      "result": "PASS"
+    },
+    {
+      "case": "rejected/zero/foreign phase {'operation': 'return', 'phase': 'unknown', 'result': 'worker_finished', 'ticks': 1, 'interval_ms': 16, 'gaps_ms': [16.0, 4.0], 'elapsed_ms': 20.0, 'max_gap_ms': 16.0}",
+      "result": "PASS"
+    },
+    {
+      "case": "terminal51 retained exact50ms miss",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged exact50ms threshold 50.0",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged exact50ms threshold 50.0001",
+      "result": "PASS"
+    },
+    {
+      "case": "absent ledger cannot claim closure",
+      "result": "PASS"
+    },
+    {
+      "case": "empty ledger cannot claim closure",
+      "result": "PASS"
+    },
+    {
+      "case": "blank ledger cannot claim closure",
+      "result": "PASS"
+    },
+    {
+      "case": "whitespace ledger cannot claim closure",
+      "result": "PASS"
+    },
+    {
+      "case": "truncated ledger cannot claim closure",
+      "result": "PASS"
+    },
+    {
+      "case": "different pid identity untouched and rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "different pid identity evidence redacts unexpected text",
+      "result": "PASS"
+    },
+    {
+      "case": "different pgid identity untouched and rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "different pgid identity evidence redacts unexpected text",
+      "result": "PASS"
+    },
+    {
+      "case": "different starttime_ticks identity untouched and rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "different starttime_ticks identity evidence redacts unexpected text",
+      "result": "PASS"
+    },
+    {
+      "case": "different comm identity untouched and rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "different comm identity evidence redacts unexpected text",
+      "result": "PASS"
+    },
+    {
+      "case": "different command identity untouched and rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "different command identity evidence redacts unexpected text",
+      "result": "PASS"
+    },
+    {
+      "case": "race after pidfd open cannot signal reused identity",
+      "result": "PASS"
+    },
+    {
+      "case": "exact owned process only SIGTERM",
+      "result": "PASS"
+    },
+    {
+      "case": "absent journaled identity needs no signal",
+      "result": "PASS"
+    },
+    {
+      "case": "journaled zombie identity inactive",
+      "result": "PASS"
+    },
+    {
+      "case": "valid prefix cleaned but incomplete journal rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "duplicate ledger identity rejected",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST literal_return",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST original_prefix",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST raw_controls",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST source_result",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST source_rows",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST source_action_shape",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST source_pager_shape",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST qualify_editor",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST page_state",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST turn",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST user_wins_invalid_reveal",
+      "result": "PASS"
+    },
+    {
+      "case": "unchanged actual AST preview_pages",
+      "result": "PASS"
+    },
+    {
+      "case": "startup timing/memory logic unchanged except post-endpoint natural geometry field",
+      "result": "PASS"
+    },
+    {
+      "case": "exact all entered original IDs before Preview",
+      "result": "PASS"
+    },
+    {
+      "case": "exact one accepted positive editor trace",
+      "result": "PASS"
+    },
+    {
+      "case": "preopening baseline checkpoint precedes new app",
+      "result": "PASS"
+    },
+    {
+      "case": "narrow geometry actual and natural restoration",
+      "result": "PASS"
+    },
+    {
+      "case": "budget quantiles unmodified actual AST",
+      "result": "PASS"
+    },
+    {
+      "case": "ledger flush then fsync before native discovery return",
+      "result": "PASS"
+    }
+  ],
+  "total": 167,
+  "observer_sha256": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910",
+  "coordinator_sha256": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f",
+  "analyzer_sha256": "a0e520632179fe6df38af9b049f8390dbcacaa8637e7b56c54d357354fba24aa",
+  "no_native_import_GUI_build_network_or_process_signal": true,
+  "scope": "AST and fake owned identities only; no current native200/performance acceptance"
+}

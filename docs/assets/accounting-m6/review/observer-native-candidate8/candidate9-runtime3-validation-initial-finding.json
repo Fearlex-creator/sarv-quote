@@ -1,0 +1,8 @@
+{
+  "result": "REPRODUCED then corrected",
+  "old_observer_sha256": "e0a9fd31859d278c386cd7b0fd218b7c6b64fd4ad7e385e096b6ab5613d076b1",
+  "accepted_registration_after_late_ready_label_rebind": true,
+  "actual_native_GUI": false,
+  "corrected_observer_sha256": "63edfdab8e16e96fb3451e14a54f0a8fab8417062d0d4302f2abbf292a446b6b",
+  "reason": "Finalsnapshot formerlyprecededready; corrected finalsnapshot followsreadyandsecondraw2read"
+}

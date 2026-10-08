@@ -1,0 +1,7 @@
+# One explicit invalid-quantity label qualification
+
+This static-only proposal addresses the independently observed C9 invalid-form topology: one childless label with the exact Persian quantity-validation message appears before the original16 children of the already qualified page-marker parent. Every original child identity and order remains fixed. The adapter qualifies only this current owned label with two coherent snapshots and all25 current ordered source names/raw values, last raw2 and actual focus. Failed registration rolls back; no sibling list is replaced or rebaselined. Current parent, roles, ownership, DEFUNCT checks, empty label children and literal message are refreshed on every subsequent observation. Unknown, extra, replaced, reordered or stale nodes remain rejected.
+
+The actual AST exercises pass102 membership/validation cases and77 unchanged phase/guardian cases without native imports or GUI. Independent review and a fresh runtime freeze/GO are still required before one full functional pilot. This does not establish the complete200/400/post/restart outcome or performance acceptance. The previous partial pilot and diagnostic remain immutable.
+
+The editor heartbeat wording now states its exact production boundary: after ReturnRows::new, before Review setup/dialog presentation/layout, through first Preview collect/dispatch. Remaining setup/layout and inter-action checkpoint I/O are included; the initial gap is retained. No timer, sample, acceptance predicate or budget changed. Coordinator and analyzer bytes remain unchanged.

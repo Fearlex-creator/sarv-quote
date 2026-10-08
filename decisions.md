@@ -1,5 +1,7 @@
 # Decision register — 2026-10-07
 
+Latest verification continuation — **2026-10-08**: the user instructed, “do that full 200 line ui and stuff too push oeverythign.” This authorizes resolving the native observer failure, completing the bounded 200-line return UI and declared performance verification, fixing reproduced defects, and committing/pushing/merging the follow-up. The prior measurement HOLD and integration-first instruction describe the earlier checkpoint, not a current prohibition. Existing financial policies, budgets, immutable evidence and all non-Git external-action boundaries remain unchanged.
+
 Latest Git authorization — **2026-10-08**: the user explicitly instructed, “good commit all and make sure all prs are on merged with main too.” This supersedes the earlier no-push/no-merge boundary for this Sarv repository. Commit all current project work, publish it through a reviewable PR, and merge relevant Sarv PRs into `main` while preserving existing history/data. Deployment, paid services/billing, credential creation, security-setting changes, customer messages, live financial data and license changes remain outside the authorization. Technical checkpoint acceptance and professional production approval remain distinct. Older authorization statements below are historical.
 
 

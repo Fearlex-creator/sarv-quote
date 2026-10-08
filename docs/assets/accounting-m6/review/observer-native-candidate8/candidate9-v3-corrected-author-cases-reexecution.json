@@ -1,0 +1,626 @@
+{
+  "result": "PASS corrected author cases independently reexecuted",
+  "files": {
+    "scripts/native-performance-M6.py": {
+      "bytes": 83785,
+      "sha256": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910"
+    },
+    "docs/assets/accounting-m6/performance/coordinator.py": {
+      "bytes": 13985,
+      "sha256": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f"
+    },
+    "docs/assets/accounting-m6/performance/analyze.py": {
+      "bytes": 7027,
+      "sha256": "a0e520632179fe6df38af9b049f8390dbcacaa8637e7b56c54d357354fba24aa"
+    }
+  },
+  "diff_sha256": "384522ae1d34e2bc2dd4f7b58b323014f108f5d08844a5313bafdcee8021391f",
+  "case_counts": [
+    76,
+    61,
+    7
+  ],
+  "receipts": [
+    {
+      "harness": "guardian-static-check.py",
+      "harness_sha256": "cf86a4a26fd53171fcaacba164a300fd59dd70e64e4ca19448901a52e3eae56a",
+      "execution": "actual corrected canonical AST/harness, omitted evidence-file write only",
+      "cases": [
+        {
+          "case": "exact positive complete editor accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "exact positive complete preview accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "exact positive complete post accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "reject phase='unknown'",
+          "result": "PASS"
+        },
+        {
+          "case": "reject result='closed'",
+          "result": "PASS"
+        },
+        {
+          "case": "reject result='timeout'",
+          "result": "PASS"
+        },
+        {
+          "case": "reject result='worker_finished'",
+          "result": "PASS"
+        },
+        {
+          "case": "reject operation='purchase'",
+          "result": "PASS"
+        },
+        {
+          "case": "reject interval_ms=20",
+          "result": "PASS"
+        },
+        {
+          "case": "reject interval_ms=16.0",
+          "result": "PASS"
+        },
+        {
+          "case": "reject ticks=True",
+          "result": "PASS"
+        },
+        {
+          "case": "reject ticks=2.0",
+          "result": "PASS"
+        },
+        {
+          "case": "reject ticks=-1",
+          "result": "PASS"
+        },
+        {
+          "case": "reject elapsed_ms=nan",
+          "result": "PASS"
+        },
+        {
+          "case": "reject elapsed_ms=inf",
+          "result": "PASS"
+        },
+        {
+          "case": "reject elapsed_ms=-1",
+          "result": "PASS"
+        },
+        {
+          "case": "reject max_gap_ms=nan",
+          "result": "PASS"
+        },
+        {
+          "case": "reject max_gap_ms=18.0",
+          "result": "PASS"
+        },
+        {
+          "case": "reject elapsed_ms=35.0",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=[]",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=None",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms='not gaps'",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=7",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=[16.0, nan, 3.0]",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=[16.0, inf, 3.0]",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=[16.0, -1.0, 3.0]",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=[True, 17.0, 3.0]",
+          "result": "PASS"
+        },
+        {
+          "case": "reject gaps_ms=[16.0, 20.0]",
+          "result": "PASS"
+        },
+        {
+          "case": "missing phase not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing operation not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing result not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing ticks not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing interval_ms not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing gaps_ms not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing elapsed_ms not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "missing max_gap_ms not accepted",
+          "result": "PASS"
+        },
+        {
+          "case": "zero ticks with valid terminal still unmeasured",
+          "result": "PASS"
+        },
+        {
+          "case": "terminal51ms retained strict miss",
+          "result": "PASS"
+        },
+        {
+          "case": "unknown phase worker_finished cannot inherit post acceptance",
+          "result": "PASS"
+        },
+        {
+          "case": "missing journal fails closure without discovery or signals",
+          "result": "PASS"
+        },
+        {
+          "case": "empty journal fails closure without discovery or signals",
+          "result": "PASS"
+        },
+        {
+          "case": "only exact owned identity receives SIGTERM",
+          "result": "PASS"
+        },
+        {
+          "case": "changed pgid untouched/rejected",
+          "result": "PASS"
+        },
+        {
+          "case": "unexpected pgid arguments/name redacted",
+          "result": "PASS"
+        },
+        {
+          "case": "changed starttime_ticks untouched/rejected",
+          "result": "PASS"
+        },
+        {
+          "case": "unexpected starttime_ticks arguments/name redacted",
+          "result": "PASS"
+        },
+        {
+          "case": "changed comm untouched/rejected",
+          "result": "PASS"
+        },
+        {
+          "case": "unexpected comm arguments/name redacted",
+          "result": "PASS"
+        },
+        {
+          "case": "changed command untouched/rejected",
+          "result": "PASS"
+        },
+        {
+          "case": "unexpected command arguments/name redacted",
+          "result": "PASS"
+        },
+        {
+          "case": "absent owned identity inactive/no signal",
+          "result": "PASS"
+        },
+        {
+          "case": "zombie inactive/no signal",
+          "result": "PASS"
+        },
+        {
+          "case": "remaining active owned identity fails closure",
+          "result": "PASS"
+        },
+        {
+          "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 100, 'starttime_ticks': 180, 'comm': 'sarv-M6-candida', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+          "result": "PASS"
+        },
+        {
+          "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 101, 'starttime_ticks': 200, 'comm': 'sarv-M6-candida', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+          "result": "PASS"
+        },
+        {
+          "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': True, 'pgid': 100, 'starttime_ticks': 200, 'comm': 'sarv-M6-candida', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+          "result": "PASS"
+        },
+        {
+          "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 100, 'starttime_ticks': 200, 'comm': 'sarv-M6-candida', 'command': ['/historical/binary']}",
+          "result": "PASS"
+        },
+        {
+          "case": "malformed/historical command or identity rejected {'name': 'new app', 'pid': 100, 'pgid': 100, 'starttime_ticks': 200, 'comm': '', 'command': ['/workspace/sarv-evidence/bin/sarv-M6-candidate9']}",
+          "result": "PASS"
+        },
+        {
+          "case": "truncated final journal preserves valid prefix cleanup and rejects completeness",
+          "result": "PASS"
+        },
+        {
+          "case": "duplicate identity rejected",
+          "result": "PASS"
+        },
+        {
+          "case": "exact declared private helper allowlisted openbox",
+          "result": "PASS"
+        },
+        {
+          "case": "exact declared private helper allowlisted Xvfb",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data literal_return",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data original_prefix",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data raw_controls",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data source_result",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data source_rows",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data source_action_shape",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data source_pager_shape",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data qualify_editor",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data page_state",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data turn",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data user_wins_invalid_reveal",
+          "result": "PASS"
+        },
+        {
+          "case": "unchanged strict membership/data preview_pages",
+          "result": "PASS"
+        },
+        {
+          "case": "faulthandler enabled before native imports",
+          "result": "PASS"
+        },
+        {
+          "case": "workflow durable pre-opening checkpoint present",
+          "result": "PASS"
+        }
+      ],
+      "total": 76
+    },
+    {
+      "harness": "membership-static-check.py",
+      "harness_sha256": "075fd6bde8f101c3b4bc80d15b430a3fb8e93ad98360744416e98cb8e8d6d25e",
+      "execution": "actual corrected canonical AST/harness, omitted evidence-file write only",
+      "cases": [
+        {
+          "case": "exact direct status/25 actions/reference/query",
+          "result": "pass"
+        },
+        {
+          "case": "retired direct action rejected + event retained",
+          "result": "pass"
+        },
+        {
+          "case": "foreign action rejected",
+          "result": "pass"
+        },
+        {
+          "case": "wrong action parent rejected",
+          "result": "pass"
+        },
+        {
+          "case": "retired common rows path rejected",
+          "result": "pass"
+        },
+        {
+          "case": "foreign modal attachment rejected",
+          "result": "pass"
+        },
+        {
+          "case": "child retired between before/after lists rejected",
+          "result": "pass"
+        },
+        {
+          "case": "action name changes during snapshot rejected",
+          "result": "pass"
+        },
+        {
+          "case": "query changes after row read rejected",
+          "result": "pass"
+        },
+        {
+          "case": "missing exact FSI reference rejected",
+          "result": "pass"
+        },
+        {
+          "case": "unknown nested source action rejected",
+          "result": "pass"
+        },
+        {
+          "case": "qualified 25 initial entries exact empty text",
+          "result": "pass"
+        },
+        {
+          "case": "complete persistent page rebind accepted",
+          "result": "pass"
+        },
+        {
+          "case": "mixed persistent names rejected",
+          "result": "pass"
+        },
+        {
+          "case": "mixed stale retained text rejected",
+          "result": "pass"
+        },
+        {
+          "case": "editor ancestor DEFUNCT rejected",
+          "result": "pass"
+        },
+        {
+          "case": "foreign persistent entry rejected",
+          "result": "pass"
+        },
+        {
+          "case": "persistent entry current parent edge rejected",
+          "result": "pass"
+        },
+        {
+          "case": "stable slot ordering change rejected",
+          "result": "pass"
+        },
+        {
+          "case": "marker changes during text read rejected",
+          "result": "pass"
+        },
+        {
+          "case": "text changes on final read rejected",
+          "result": "pass"
+        },
+        {
+          "case": "exact current page mismatch rejected",
+          "result": "pass"
+        },
+        {
+          "case": "status role mismatch rejected",
+          "result": "pass"
+        },
+        {
+          "case": "unexpected pager-bar role rejected",
+          "result": "pass"
+        },
+        {
+          "case": "duplicate pager order rejected",
+          "result": "pass"
+        },
+        {
+          "case": "status rebind during readiness rejected",
+          "result": "pass"
+        },
+        {
+          "case": "persistent entry role change rejected",
+          "result": "pass"
+        },
+        {
+          "case": "persistent page marker DEFUNCT rejected",
+          "result": "pass"
+        },
+        {
+          "case": "unique actual owned focus identity and ancestry",
+          "result": "pass"
+        },
+        {
+          "case": "foreign focused control rejected",
+          "result": "pass"
+        },
+        {
+          "case": "DEFUNCT focused control rejected",
+          "result": "pass"
+        },
+        {
+          "case": "ambiguous actual focus rejected",
+          "result": "pass"
+        },
+        {
+          "case": "real Space and Tab calls immediately consecutive",
+          "result": "pass"
+        },
+        {
+          "case": "user-wins failure records and checkpoints then raises",
+          "result": "pass"
+        },
+        {
+          "case": "extra nested source action under current direct action rejected",
+          "result": "pass"
+        },
+        {
+          "case": "qualified button label child accepted",
+          "result": "pass"
+        },
+        {
+          "case": "button child wrong parent rejected",
+          "result": "pass"
+        },
+        {
+          "case": "button child DEFUNCT rejected",
+          "result": "pass"
+        },
+        {
+          "case": "button child label changed during observation rejected",
+          "result": "pass"
+        },
+        {
+          "case": "action child-shape qualification from discovery-only metadata",
+          "result": "pass"
+        },
+        {
+          "case": "FlowBox wrapper wrong current parent rejected",
+          "result": "pass"
+        },
+        {
+          "case": "FlowBox wrapper DEFUNCT rejected",
+          "result": "pass"
+        },
+        {
+          "case": "FlowBox wrapper foreign PID rejected",
+          "result": "pass"
+        },
+        {
+          "case": "unknown FlowBox wrapper role rejected",
+          "result": "pass"
+        },
+        {
+          "case": "pager button wrong cell parent rejected",
+          "result": "pass"
+        },
+        {
+          "case": "extra button in wrapper rejected",
+          "result": "pass"
+        },
+        {
+          "case": "wrapper/button literal name mismatch rejected",
+          "result": "pass"
+        },
+        {
+          "case": "wrapper changes between snapshots rejected",
+          "result": "pass"
+        },
+        {
+          "case": "same strict current wrapper shape accepts Previous",
+          "result": "pass"
+        },
+        {
+          "case": "zero-pager boundary current table accepted",
+          "result": "pass"
+        },
+        {
+          "case": "hidden nested source action under status rejected",
+          "result": "pass"
+        },
+        {
+          "case": "nonempty FlowBox bar name rejected",
+          "result": "pass"
+        },
+        {
+          "case": "source button label full-name mismatch rejected",
+          "result": "pass"
+        },
+        {
+          "case": "source caption label must be childless",
+          "result": "pass"
+        },
+        {
+          "case": "pager caption label must be childless",
+          "result": "pass"
+        },
+        {
+          "case": "pager button label full-name mismatch rejected",
+          "result": "pass"
+        },
+        {
+          "case": "coherent caption missing exact FSI reference rejected",
+          "result": "pass"
+        },
+        {
+          "case": "unchanged literal_return",
+          "result": "pass"
+        },
+        {
+          "case": "unchanged original_prefix",
+          "result": "pass"
+        },
+        {
+          "case": "unchanged raw_controls",
+          "result": "pass"
+        },
+        {
+          "case": "unchanged preview_pages",
+          "result": "pass"
+        }
+      ],
+      "total": 61
+    },
+    {
+      "harness": "analyzer-static-check.py",
+      "harness_sha256": "cf35e79f332806800ac97585bf7baa5038fa1df7c29c6db4bee9e8a248ead59f",
+      "execution": "actual corrected canonical AST/harness, omitted evidence-file write only",
+      "cases": [
+        {
+          "case": "old epoch retains continuous editor heartbeat unmeasured",
+          "result": "PASS"
+        },
+        {
+          "case": "v3 only excludes heartbeat outside declared window",
+          "result": "PASS"
+        },
+        {
+          "case": "editor terminal gap51 strictMISS retained",
+          "result": "PASS"
+        },
+        {
+          "case": "200 association with accepted editor remains bounded",
+          "result": "PASS"
+        },
+        {
+          "case": "missing200 association unmeasured",
+          "result": "PASS"
+        },
+        {
+          "case": "duplicate accepted editor unmeasured",
+          "result": "PASS"
+        },
+        {
+          "case": "invalid native record cannot pass gap gate",
+          "result": "PASS"
+        }
+      ],
+      "total": 7
+    }
+  ],
+  "native_GUI_or_build": false
+}

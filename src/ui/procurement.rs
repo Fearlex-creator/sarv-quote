@@ -560,7 +560,8 @@ impl ProcurementPhase {
                     return glib::ControlFlow::Break;
                 }
             }
-            if measure.began.elapsed().as_secs() > 120 {
+            let timeout_seconds = if measure.phase == "editor" { 900 } else { 120 };
+            if measure.began.elapsed().as_secs() > timeout_seconds {
                 measure.finish("timeout");
                 return glib::ControlFlow::Break;
             }
@@ -575,7 +576,16 @@ impl ProcurementPhase {
         let now = std::time::Instant::now();
         let mut gaps = self.gaps.borrow().clone();
         gaps.push(now.duration_since(self.last.get()).as_secs_f64() * 1000.0);
-        let value = serde_json::json!({"phase":self.phase,"operation":self.operation,"elapsed_ms":now.duration_since(self.began).as_secs_f64()*1000.0,"ticks":gaps.len()-1,"interval_ms":16,"max_gap_ms":gaps.iter().copied().fold(0.0,f64::max),"gaps_ms":gaps,"result":result,"boundary":if self.phase=="preview"{"dispatch through completed UI result rendering"}else{"dispatch through observed persistence busy release; durable state independently checked"}});
+        let boundary = match self.phase {
+            "editor" => {
+                "constructed return editor through first Preview collection; native editing/paging heartbeat, excluding construction and later preview/post"
+            }
+            "preview" => "dispatch through completed UI result rendering",
+            _ => {
+                "dispatch through observed persistence busy release; durable state independently checked"
+            }
+        };
+        let value = serde_json::json!({"phase":self.phase,"operation":self.operation,"elapsed_ms":now.duration_since(self.began).as_secs_f64()*1000.0,"ticks":gaps.len()-1,"interval_ms":16,"max_gap_ms":gaps.iter().copied().fold(0.0,f64::max),"gaps_ms":gaps,"result":result,"boundary":boundary});
         let path = self.path.clone();
         let _ = std::thread::Builder::new()
             .name("sarv-procurement-metrics".into())
@@ -3520,6 +3530,11 @@ fn return_dialog(
         ui.store.borrow().state.settings.clone(),
         &unit,
     );
+    // Synthetic opt-in only: include the terminal gap and stop at the first
+    // Preview request. Editing/paging is a separate phase from validation/post.
+    let editor_monitor = ProcurementPhase::start(ui, "editor", false, "return");
+    let closing_monitor = editor_monitor.clone();
+    dialog.connect_closed(move |_| finish_monitor(&closing_monitor, "closed"));
     let c = common.clone();
     let collected_rows = rows.clone();
     let credit_field = credit.clone();
@@ -3527,6 +3542,7 @@ fn return_dialog(
     let credit_id = billed.then(|| Uuid::new_v4().to_string());
     let weak_dialog = dialog.downgrade();
     let collect = Rc::new(move || {
+        finish_monitor(&editor_monitor, "preview_requested");
         let dialog = weak_dialog
             .upgrade()
             .ok_or_else(|| anyhow::anyhow!("پنجرهٔ برگشت بسته شده است"))?;

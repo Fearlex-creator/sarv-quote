@@ -1,0 +1,55 @@
+{
+  "purpose": "bounded nonGUI guardian exercise; prior own worker stopped in finally",
+  "no_GUI_or_ATSPI_or_app": true,
+  "original_identity": {
+    "pid": 378331,
+    "state": "R",
+    "comm": "python3",
+    "pgid": 378331,
+    "starttime_ticks": 9326339,
+    "command": [
+      "/usr/bin/python3"
+    ]
+  },
+  "cleanup": {
+    "journal": "/tmp/tmppvpydzgp/ledger.jsonl",
+    "records": [
+      {
+        "record": {
+          "pid": 378331,
+          "pgid": 378331,
+          "comm": "python3",
+          "starttime_ticks": 9326339,
+          "command": [
+            "/usr/bin/python3"
+          ],
+          "name": "nonGUI synthetic guardian exercise"
+        },
+        "before": {
+          "pid": 378331,
+          "state": "R",
+          "comm": "python3",
+          "pgid": 378331,
+          "starttime_ticks": 9326339,
+          "command": [
+            "/usr/bin/python3"
+          ]
+        },
+        "action": "SIGTERM exact owned identity",
+        "after": {
+          "pid": 378331,
+          "state": "Z",
+          "comm": "python3",
+          "pgid": 378331,
+          "starttime_ticks": 9326339,
+          "command": []
+        },
+        "owned_identity_active": false
+      }
+    ],
+    "errors": [],
+    "all_owned_inactive": true
+  },
+  "own_worker_stopped_exit_code": -15,
+  "final_identity": null
+}

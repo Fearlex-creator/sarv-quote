@@ -1,0 +1,448 @@
+{
+  "format": "sarv-accounting-backup-v2",
+  "checksum": "90bd0472ae1071092ed172f22fe28c3bf992787eb0f0c425581dd148a12e030a",
+  "state": {
+    "schema": 2,
+    "catalogs": [],
+    "customers": [],
+    "quotes": [],
+    "draft": {
+      "series": "cd249bc1-4211-4854-ae1f-4ea0f3757c4a",
+      "catalog_id": "",
+      "customer": "",
+      "phone": "",
+      "lines": [],
+      "discount_rial": 0,
+      "display_unit": "Toman",
+      "stale_ack": false,
+      "quote_date": "2026-10-07"
+    },
+    "accounting": {
+      "companies": [
+        {
+          "id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "name": "شرکت مصنوعی بازبین"
+        }
+      ],
+      "periods": [
+        {
+          "id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "name": "2026",
+          "start_date": "2026-01-01",
+          "end_date": "2026-12-31",
+          "locked": true
+        },
+        {
+          "id": "67a96bcc-acc8-48a0-9f19-c30fe41a88ca",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "name": "2027",
+          "start_date": "2027-01-01",
+          "end_date": "2027-12-31",
+          "locked": false
+        }
+      ],
+      "accounts": [
+        {
+          "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "parent_id": null,
+          "code": "1001",
+          "name": "دارایی آزمایشی",
+          "classification": "Asset",
+          "normal_balance": "Debit",
+          "postable": true,
+          "control": false,
+          "archived": true,
+          "version": 2
+        },
+        {
+          "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "parent_id": null,
+          "code": "3001",
+          "name": "سرمایه آزمایشی",
+          "classification": "Equity",
+          "normal_balance": "Credit",
+          "postable": true,
+          "control": false,
+          "archived": false,
+          "version": 1
+        }
+      ],
+      "journals": [
+        {
+          "id": "80ca767b-8857-4a69-8f79-0e69f5d14912",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "date": "2026-01-01",
+          "source_id": "opening",
+          "source_revision": 1,
+          "event": "manual-independent",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "kind": "Opening",
+          "lines": [
+            {
+              "account": {
+                "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 1251,
+              "credit": 0,
+              "description": "independent fixture"
+            },
+            {
+              "account": {
+                "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 1251,
+              "description": "independent fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T15:39:24.541356512+00:00"
+        },
+        {
+          "id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "date": "2026-03-01",
+          "source_id": "adjustment",
+          "source_revision": 1,
+          "event": "manual-independent",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "kind": "Manual",
+          "lines": [
+            {
+              "account": {
+                "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": "independent fixture"
+            },
+            {
+              "account": {
+                "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": "independent fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T15:39:24.544639892+00:00"
+        },
+        {
+          "id": "caf7f664-cefd-4e00-960f-8375c7d4220f",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "date": "2026-03-02",
+          "source_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+          "source_revision": 1,
+          "event": "reversal",
+          "actor": "independent-review",
+          "reason": "exact linked correction",
+          "kind": {
+            "Reversal": {
+              "journal_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67"
+            }
+          },
+          "lines": [
+            {
+              "account": {
+                "id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "1001",
+                "name": "دارایی آزمایشی",
+                "classification": "Asset",
+                "normal_balance": "Debit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 0,
+              "credit": 349,
+              "description": "independent fixture"
+            },
+            {
+              "account": {
+                "id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+                "parent_id": null,
+                "code": "3001",
+                "name": "سرمایه آزمایشی",
+                "classification": "Equity",
+                "normal_balance": "Credit",
+                "postable": true,
+                "control": false,
+                "archived": false,
+                "version": 1
+              },
+              "debit": 349,
+              "credit": 0,
+              "description": "independent fixture"
+            }
+          ],
+          "recorded_at": "2026-10-07T15:39:24.548561683+00:00"
+        }
+      ],
+      "requests": [
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-01-01",
+            "source_id": "opening",
+            "source_revision": 1,
+            "event": "manual-independent",
+            "request_key": "request-1",
+            "actor": "independent-review",
+            "reason": "synthetic technical review; not approved policy",
+            "kind": "Opening",
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 1251,
+                "credit": 0,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 0,
+                "credit": 1251,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "80ca767b-8857-4a69-8f79-0e69f5d14912"
+        },
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-01-01",
+            "source_id": "opening",
+            "source_revision": 1,
+            "event": "manual-independent",
+            "request_key": "different-retry",
+            "actor": "independent-review",
+            "reason": "synthetic technical review; not approved policy",
+            "kind": "Opening",
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 1251,
+                "credit": 0,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 0,
+                "credit": 1251,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "80ca767b-8857-4a69-8f79-0e69f5d14912"
+        },
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-03-01",
+            "source_id": "adjustment",
+            "source_revision": 1,
+            "event": "manual-independent",
+            "request_key": "adjust-key",
+            "actor": "independent-review",
+            "reason": "synthetic technical review; not approved policy",
+            "kind": "Manual",
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 349,
+                "credit": 0,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 0,
+                "credit": 349,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67"
+        },
+        {
+          "command": {
+            "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+            "period_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+            "date": "2026-03-02",
+            "source_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+            "source_revision": 1,
+            "event": "reversal",
+            "request_key": "reverse-key",
+            "actor": "independent-review",
+            "reason": "exact linked correction",
+            "kind": {
+              "Reversal": {
+                "journal_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67"
+              }
+            },
+            "lines": [
+              {
+                "account_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+                "debit": 0,
+                "credit": 349,
+                "description": "independent fixture"
+              },
+              {
+                "account_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+                "debit": 349,
+                "credit": 0,
+                "description": "independent fixture"
+              }
+            ]
+          },
+          "journal_id": "caf7f664-cefd-4e00-960f-8375c7d4220f"
+        }
+      ],
+      "audit": [
+        {
+          "id": "c761031c-5184-40a5-932e-630ab5d41161",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "operation": "CompanyCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد کسب‌وکار",
+          "recorded_at": "2026-10-07T15:39:24.539749570+00:00"
+        },
+        {
+          "id": "ba59fb79-a78a-4531-a95a-4f4eae79eaa3",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "operation": "PeriodCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T15:39:24.539835580+00:00"
+        },
+        {
+          "id": "59a721ee-a6ce-4d26-9796-c2970bd1bd1f",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+          "operation": "AccountCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T15:39:24.539843852+00:00"
+        },
+        {
+          "id": "ef3ce72e-95d8-4cf2-88fd-3e7513d333a0",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "1f4fa8a9-af3c-4807-8be4-c4de60ad277c",
+          "operation": "AccountCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد حساب با طبقه‌بندی انتخاب‌شده",
+          "recorded_at": "2026-10-07T15:39:24.539854849+00:00"
+        },
+        {
+          "id": "87fe493b-2bdd-4415-8b53-0dd3eadb091f",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "80ca767b-8857-4a69-8f79-0e69f5d14912",
+          "operation": "JournalPosted",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "recorded_at": "2026-10-07T15:39:24.541356512+00:00"
+        },
+        {
+          "id": "fd91bcbf-9fec-457f-bd39-f061e40e28d8",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "46ba340f-c7c1-408d-bf61-144fcd7c0e67",
+          "operation": "JournalPosted",
+          "actor": "independent-review",
+          "reason": "synthetic technical review; not approved policy",
+          "recorded_at": "2026-10-07T15:39:24.544639892+00:00"
+        },
+        {
+          "id": "8425e3d6-cc97-47b1-bf3a-02c933e078c0",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "64cc22dc-b22f-48dc-84c6-f89895989be1",
+          "operation": "AccountArchived",
+          "actor": "independent-review",
+          "reason": "archive referenced account",
+          "recorded_at": "2026-10-07T15:39:24.546565454+00:00"
+        },
+        {
+          "id": "0cd053cc-31a8-48ff-86f6-d7402b933188",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "caf7f664-cefd-4e00-960f-8375c7d4220f",
+          "operation": "JournalPosted",
+          "actor": "independent-review",
+          "reason": "exact linked correction",
+          "recorded_at": "2026-10-07T15:39:24.548561683+00:00"
+        },
+        {
+          "id": "7fbedcd9-1a7a-4f4e-b95d-80611ff8b729",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "89a8d46a-2a46-46cd-a67e-1c689c82b74a",
+          "operation": "PeriodLocked",
+          "actor": "independent-review",
+          "reason": "lock test",
+          "recorded_at": "2026-10-07T15:39:24.550875221+00:00"
+        },
+        {
+          "id": "9a0b5e32-2203-4e12-a0b3-21505fc6499b",
+          "company_id": "316fa21d-0cf1-4f4f-a003-22545b89bae9",
+          "entity_id": "67a96bcc-acc8-48a0-9f19-c30fe41a88ca",
+          "operation": "PeriodCreated",
+          "actor": "independent-review",
+          "reason": "ایجاد سال مالی",
+          "recorded_at": "2026-10-07T15:39:24.554095525+00:00"
+        }
+      ]
+    }
+  }
+}

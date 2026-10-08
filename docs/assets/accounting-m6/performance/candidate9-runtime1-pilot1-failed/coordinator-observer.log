@@ -1,0 +1,18 @@
+dbus-daemon[378847]: [session uid=1000 pid=378847 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=378848 comm="/usr/bin/python3 -X faulthandler /workspace/sarv-q" label="kernel")
+dbus-daemon[378847]: [session uid=1000 pid=378847 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[378874]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=378848 comm="/usr/bin/python3 -X faulthandler /workspace/sarv-q" label="kernel")
+dbus-daemon[378874]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+(process:378848): dbind-WARNING **: 17:33:56.537: AT-SPI: Error in GetItems, sender=:1.2, error=Object does not exist at path “/org/a11y/atspi/cache”
+Fatal Python error: Segmentation fault
+
+Current thread 0x00007f13c2cc6780 (most recent call first):
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 156 in current_node
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 625 in source_rows
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 686 in zero
+  File "/workspace/sarv-quote/scripts/native-performance-M4.py", line 77 in observe
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 239 in observe
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 691 in searches
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 1269 in main
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 1306 in <module>

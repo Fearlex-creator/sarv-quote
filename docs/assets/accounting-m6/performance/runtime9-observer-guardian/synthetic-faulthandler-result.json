@@ -1,0 +1,10 @@
+{
+  "result": "PASS",
+  "synthetic_self_signal_only": true,
+  "no_ATSPI_X11_app_or_GUI": true,
+  "core_disabled": true,
+  "exit_code": -11,
+  "actual_historical_crash_reproduced": false,
+  "script_sha256": "314f997c6cb61419e139f47611cec5df0775934806863b1e342b3f79c2b0e61c",
+  "log_sha256": "91f260a56337f4919b14eff05ed80a093c5b1ede2555fab62f2a496df50f590c"
+}

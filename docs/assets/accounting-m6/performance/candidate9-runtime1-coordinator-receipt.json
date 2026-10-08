@@ -1,0 +1,34 @@
+{
+  "coordinator_sha256": "6414a97afe577d32e069f146e660fccc58693cc3354c15b8ba9637048ed0086f",
+  "source_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate9/manifest.json",
+    "sha256": "efb4bc5e77fec09df2eafdf5bab2785db14a5f9ffddf37948d8cb8327daca41a"
+  },
+  "verification_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate9/runtime-verification1.json",
+    "sha256": "c8f1d61c552737e8925adf9a07a399c1302e374862f52282ab07d04a4549c672"
+  },
+  "dataset_manifest": {
+    "path": "docs/assets/accounting-m6/performance/dataset-candidate2/dataset-manifest.json",
+    "sha256": "23099547410ef1215d25d5cab9aa935b4f1c1d77cb48fa461873bc20d75e6e72"
+  },
+  "production_sha256": "87ece16d15640d60ee0bdba3c38c8158e12a50221b3e65d8ec088bd7a4766e7a",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate9",
+  "binary_sha256": "da427a634b9b31a58ff81da2cca67043f9c8a9a7ddddb378f4c21e084e8a1903",
+  "candidate": "candidate9",
+  "epoch": "candidate9-runtime1",
+  "protocol": "m6-scoped-v3",
+  "performance_observer_sha256": "c79ee7de5146f5d6acf11d6a2d53bb84b2e81e9979243f11a0980266267a9910",
+  "synthetic_only": true,
+  "purpose": "User-authorized current 200-line native follow-up. One complete functional pilot precedes final n10/n20; each requires root GO, no timing pass from a pilot or stamping. Retain all raw samples and strict misses.",
+  "supersedes": {
+    "path": "docs/assets/accounting-m6/performance/candidate8-runtime2-coordinator-receipt.json",
+    "sha256": "98ffd3f333f439ee4beb70ba82d28ae425848eef0e325cfb0cdd7acb4a88dd03",
+    "reason": "C8 partial observer exit139 remains historical. C9 adds opt-in native editor trace, early faulthandler, exact durable spawn journal and independently reviewed known-worker cleanup, strict phase parsing and untimed narrow captures. Original crash cause remains unknown."
+  },
+  "independent_static_review": "docs/assets/accounting-m6/review/observer-native-candidate8/candidate9-v3-static-review.md",
+  "independent_freeze_review": "docs/assets/accounting-m6/review/observer-native-candidate8/candidate9-runtime1-freeze-review.json",
+  "required_functional_qualification": "Actual20/20/200 inputs, all400 details, standard/narrow settled invalid2 pixels, immediate Space/Tab focus retention, complete native editor/preview/post phase records, exact raw postings and whole restart States. Dark200 separate untimed closed native scope.",
+  "environment_quiet_boundary": "No newly active GUI/build/test/render/heavy-curation by team during each epoch. Existing unrelated historical processes remain untouched. Current source/manifest/binary held.",
+  "cleanup_scope": "Known complete journaled newly owned workers only; missing/empty/truncated journal or absent final report cannot prove the full workflow or an exhaustive worker list after a native hard exit."
+}

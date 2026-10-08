@@ -1,0 +1,5 @@
+Fatal Python error: Segmentation fault
+
+Current thread 0x00007f4826fc1740 (most recent call first):
+  File "/workspace/sarv-quote/docs/assets/accounting-m6/performance/runtime9-observer-guardian/synthetic-faulthandler-exercise.py", line 5 in synthetic_signal_only
+  File "/workspace/sarv-quote/docs/assets/accounting-m6/performance/runtime9-observer-guardian/synthetic-faulthandler-exercise.py", line 6 in <module>

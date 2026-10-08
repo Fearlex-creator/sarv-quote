@@ -1,0 +1,20 @@
+{
+  "result": "PASS bounded diagnostic only",
+  "historical_SIG139_reproduced": false,
+  "native_crash_stack_available": false,
+  "cause_established": false,
+  "full20_input_or200_UI_or_performance_acceptance": false,
+  "all_owned_inactive": true,
+  "all_original_C8_guards_exact": true,
+  "stopped_states": [
+    {
+      "profile": "return20-opening",
+      "prepared_fixture": "return20-billed",
+      "generation": 1,
+      "raw_payload_sha256": "ca9d513593bd7cddd224b16d59c5c677582a1f1e842cde9d70f7b19429fa26a1",
+      "whole_stopped_state_exact_prepared": true,
+      "integrity_check": "ok"
+    }
+  ],
+  "diagnostic_source_sha256": "2f10f22a5cd04059f99dfd714f283b7f169cab2639bc9de737904c8fbfa981ad"
+}

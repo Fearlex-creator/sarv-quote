@@ -1,0 +1,8 @@
+dbus-daemon[388596]: [session uid=1000 pid=388596 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=388597 comm="/usr/bin/python3 -X faulthandler /workspace/sarv-q" label="kernel")
+dbus-daemon[388596]: [session uid=1000 pid=388596 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[388615]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=388597 comm="/usr/bin/python3 -X faulthandler /workspace/sarv-q" label="kernel")
+dbus-daemon[388615]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+(process:388597): dbind-WARNING **: 21:21:33.696: AT-SPI: Error in GetItems, sender=:1.2, error=Object does not exist at path “/org/a11y/atspi/cache”
+X connection to :10 broken (explicit kill or server shutdown).

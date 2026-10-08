@@ -1,0 +1,66 @@
+{
+  "README.md": {
+    "sha256": "42edb2407ccecd8de3b3f5feaec554340a8918164f7deaf05166e07ff795df10",
+    "bytes": 1596
+  },
+  "diagnostic.json": {
+    "sha256": "edd7ddca9b1b4877116d7aab9b6478d5f90d5a3dabf93857a3b3197b1edf952f",
+    "bytes": 813002
+  },
+  "guardian.json": {
+    "sha256": "126eec4184cbdf9657b7cf6330b435af4869e21d6b391821bdbd2ca7999e807c",
+    "bytes": 48941
+  },
+  "invalid200-light.log": {
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  "invalid200-private/narrow-settled-min0.5s.png": {
+    "sha256": "ef01c467554793caf478fd2e6552ac680e501d20a7672d5ff56803383d7fc136",
+    "bytes": 124468
+  },
+  "invalid200-private/narrow-settled-min1s.png": {
+    "sha256": "d4247e874c295c520fa930652649572728ec66d885e3335fa9f46ddb4a9fb94f",
+    "bytes": 124386
+  },
+  "invalid200-private/narrow-settled-min2s.png": {
+    "sha256": "ba2198545ddae903cd5d0447a66fde6ed8e275595f3c0e89670f002f9ffa07f3",
+    "bytes": 124335
+  },
+  "invalid200-private/standard-settled-min0.5s.png": {
+    "sha256": "7766a419137b75b6680050b5ac532837fca5d2dd4c58733194c5c11e692ac0e1",
+    "bytes": 215484
+  },
+  "invalid200-private/standard-settled-min1s.png": {
+    "sha256": "e1b25b5ad2ea3327ec658511d6fe90bd11c3069bc6a662a12892e47b39147c42",
+    "bytes": 215423
+  },
+  "invalid200-private/standard-settled-min2s.png": {
+    "sha256": "660c3fd60baa6de0beb08841b997caf33cbbfa4b9d4d84465f59e5b162866e24",
+    "bytes": 215376
+  },
+  "native.log": {
+    "sha256": "ae85893a6c2e3dde06a10c1cc8ea82a744521b2f78e63536c33071ae766bec28",
+    "bytes": 878
+  },
+  "openbox.log": {
+    "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "bytes": 207
+  },
+  "owned-processes.jsonl": {
+    "sha256": "9b43781742ba5d1efd29218abd638fb80bf0d1073df5a1e23d75f8de1aa66473",
+    "bytes": 648
+  },
+  "performance.partial.json": {
+    "sha256": "edd7ddca9b1b4877116d7aab9b6478d5f90d5a3dabf93857a3b3197b1edf952f",
+    "bytes": 813002
+  },
+  "topology-delta.json": {
+    "sha256": "00557ab12cd8ddfbbc3479f0b74ce0c178a9150657132e610f2567906ac133a0",
+    "bytes": 10147
+  },
+  "xvfb.log": {
+    "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+    "bytes": 1384
+  }
+}

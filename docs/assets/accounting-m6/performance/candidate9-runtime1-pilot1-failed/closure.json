@@ -1,0 +1,88 @@
+{
+  "result": "FAILED observerSIG139; no samples/workflows completed",
+  "all_coordinator_guards_stable": true,
+  "coordinator_cleanup_result": "False/error preserved; app exited between identity checks",
+  "later_exact_recorded_inactive_corroboration": [
+    {
+      "record": {
+        "name": "xvfb",
+        "pid": 378858,
+        "pgid": 378858,
+        "comm": "Xvfb",
+        "starttime_ticks": 9410325,
+        "command": [
+          "Xvfb",
+          "-displayfd",
+          "3",
+          "-screen",
+          "0",
+          "1450x1050x24",
+          "-nolisten",
+          "tcp",
+          "-xkbdir",
+          "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+        ]
+      },
+      "current": {
+        "state": "Z",
+        "pgid": 378858,
+        "starttime_ticks": 9410325,
+        "comm": "Xvfb"
+      },
+      "same_owned_identity_inactive": true
+    },
+    {
+      "record": {
+        "name": "openbox",
+        "pid": 378862,
+        "pgid": 378862,
+        "comm": "openbox",
+        "starttime_ticks": 9410336,
+        "command": [
+          "openbox",
+          "--sm-disable",
+          "--config-file",
+          "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+        ]
+      },
+      "current": {
+        "state": "Z",
+        "pgid": 378862,
+        "starttime_ticks": 9410336,
+        "comm": "openbox"
+      },
+      "same_owned_identity_inactive": true
+    },
+    {
+      "record": {
+        "name": "source120-billed-search",
+        "pid": 378881,
+        "pgid": 378881,
+        "comm": "sarv-M6-candida",
+        "starttime_ticks": 9410340,
+        "command": [
+          "/workspace/sarv-evidence/bin/sarv-M6-candidate9"
+        ]
+      },
+      "current": {
+        "state": "Z",
+        "pgid": 378881,
+        "starttime_ticks": 9410340,
+        "comm": "sarv-M6-candida"
+      },
+      "same_owned_identity_inactive": true
+    }
+  ],
+  "only_known_journaled_workers_claimed": true,
+  "whole_stopped_state_equal_prepared": true,
+  "generation": 1,
+  "payload_sha256": "69f0716aee2b654548ec99f2f9b93880ac01e71c67dcba1243b8f2410763cf2d",
+  "integrity": "ok",
+  "faulthandler_python_top_frame": "current_node line156 atspi_accessible_get_state_set(node)",
+  "actual_node_argument": "not captured; null-child race plausible, not yet proven",
+  "native_C_stack": "unavailable",
+  "last_checkpoint": "initial-guarded-report-before-GUI",
+  "source_samples": 0,
+  "full200_400_post_restart_acceptance": false,
+  "automatic_replay": false
+}

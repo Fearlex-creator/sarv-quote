@@ -1,0 +1,428 @@
+[
+  {
+    "variation": "standard",
+    "min_s": 0.5,
+    "completion_s": 1.3947115640039556,
+    "geometry": [
+      1400,
+      940
+    ],
+    "path_snapshot_ready": false,
+    "bad_current_roles_parent_nodes": [],
+    "ordered_child_delta": [
+      {
+        "parent": {
+          "node": 327850496,
+          "role": "panel",
+          "name": "",
+          "parent": 327850064
+        },
+        "expected_nodes": [
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "current_nodes": [
+          327170128,
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "added": [
+          {
+            "node": 327170128,
+            "current": {
+              "node": 327170128,
+              "role": "label",
+              "name": "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد",
+              "parent": 327850496
+            }
+          }
+        ],
+        "removed": []
+      }
+    ],
+    "image": "/workspace/sarv-quote/artifacts/performance-m6/candidate9-invalid-topology-diagnostic1/invalid200-private/standard-settled-min0.5s.png"
+  },
+  {
+    "variation": "standard",
+    "min_s": 1.0,
+    "completion_s": 2.3942266939993715,
+    "geometry": [
+      1400,
+      940
+    ],
+    "path_snapshot_ready": false,
+    "bad_current_roles_parent_nodes": [],
+    "ordered_child_delta": [
+      {
+        "parent": {
+          "node": 327850496,
+          "role": "panel",
+          "name": "",
+          "parent": 327850064
+        },
+        "expected_nodes": [
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "current_nodes": [
+          327170128,
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "added": [
+          {
+            "node": 327170128,
+            "current": {
+              "node": 327170128,
+              "role": "label",
+              "name": "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد",
+              "parent": 327850496
+            }
+          }
+        ],
+        "removed": []
+      }
+    ],
+    "image": "/workspace/sarv-quote/artifacts/performance-m6/candidate9-invalid-topology-diagnostic1/invalid200-private/standard-settled-min1s.png"
+  },
+  {
+    "variation": "standard",
+    "min_s": 2.0,
+    "completion_s": 3.299187429001904,
+    "geometry": [
+      1400,
+      940
+    ],
+    "path_snapshot_ready": false,
+    "bad_current_roles_parent_nodes": [],
+    "ordered_child_delta": [
+      {
+        "parent": {
+          "node": 327850496,
+          "role": "panel",
+          "name": "",
+          "parent": 327850064
+        },
+        "expected_nodes": [
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "current_nodes": [
+          327170128,
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "added": [
+          {
+            "node": 327170128,
+            "current": {
+              "node": 327170128,
+              "role": "label",
+              "name": "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد",
+              "parent": 327850496
+            }
+          }
+        ],
+        "removed": []
+      }
+    ],
+    "image": "/workspace/sarv-quote/artifacts/performance-m6/candidate9-invalid-topology-diagnostic1/invalid200-private/standard-settled-min2s.png"
+  },
+  {
+    "variation": "narrow",
+    "min_s": 0.5,
+    "completion_s": 1.4888747689983575,
+    "geometry": [
+      620,
+      800
+    ],
+    "path_snapshot_ready": false,
+    "bad_current_roles_parent_nodes": [],
+    "ordered_child_delta": [
+      {
+        "parent": {
+          "node": 327850496,
+          "role": "panel",
+          "name": "",
+          "parent": 327850064
+        },
+        "expected_nodes": [
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "current_nodes": [
+          327170128,
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "added": [
+          {
+            "node": 327170128,
+            "current": {
+              "node": 327170128,
+              "role": "label",
+              "name": "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد",
+              "parent": 327850496
+            }
+          }
+        ],
+        "removed": []
+      }
+    ],
+    "image": "/workspace/sarv-quote/artifacts/performance-m6/candidate9-invalid-topology-diagnostic1/invalid200-private/narrow-settled-min0.5s.png"
+  },
+  {
+    "variation": "narrow",
+    "min_s": 1.0,
+    "completion_s": 2.460871508999844,
+    "geometry": [
+      620,
+      800
+    ],
+    "path_snapshot_ready": false,
+    "bad_current_roles_parent_nodes": [],
+    "ordered_child_delta": [
+      {
+        "parent": {
+          "node": 327850496,
+          "role": "panel",
+          "name": "",
+          "parent": 327850064
+        },
+        "expected_nodes": [
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "current_nodes": [
+          327170128,
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "added": [
+          {
+            "node": 327170128,
+            "current": {
+              "node": 327170128,
+              "role": "label",
+              "name": "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد",
+              "parent": 327850496
+            }
+          }
+        ],
+        "removed": []
+      }
+    ],
+    "image": "/workspace/sarv-quote/artifacts/performance-m6/candidate9-invalid-topology-diagnostic1/invalid200-private/narrow-settled-min1s.png"
+  },
+  {
+    "variation": "narrow",
+    "min_s": 2.0,
+    "completion_s": 3.344773491000524,
+    "geometry": [
+      620,
+      800
+    ],
+    "path_snapshot_ready": false,
+    "bad_current_roles_parent_nodes": [],
+    "ordered_child_delta": [
+      {
+        "parent": {
+          "node": 327850496,
+          "role": "panel",
+          "name": "",
+          "parent": 327850064
+        },
+        "expected_nodes": [
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "current_nodes": [
+          327170128,
+          327862240,
+          327862864,
+          327851040,
+          327863296,
+          327863760,
+          327864256,
+          327864752,
+          327865248,
+          327865744,
+          327852768,
+          327858544,
+          327859152,
+          327867920,
+          327868400,
+          327868896,
+          327869376
+        ],
+        "added": [
+          {
+            "node": 327170128,
+            "current": {
+              "node": 327170128,
+              "role": "label",
+              "name": "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد",
+              "parent": 327850496
+            }
+          }
+        ],
+        "removed": []
+      }
+    ],
+    "image": "/workspace/sarv-quote/artifacts/performance-m6/candidate9-invalid-topology-diagnostic1/invalid200-private/narrow-settled-min2s.png"
+  }
+]

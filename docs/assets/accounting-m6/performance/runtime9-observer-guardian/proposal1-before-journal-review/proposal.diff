@@ -1,0 +1,423 @@
+diff --git a/docs/assets/accounting-m6/performance/analyze.py b/docs/assets/accounting-m6/performance/analyze.py
+index b4a8e08..be044e9 100644
+--- a/docs/assets/accounting-m6/performance/analyze.py
++++ b/docs/assets/accounting-m6/performance/analyze.py
+@@ -48,17 +48,29 @@ def analyze(raw, directory):
+                     check(f'{name}:editor:{direction}:{boundary}', [r[boundary] for r in samples], 150)
+         for row in data.get('strict_phase_checks', []):
+             gaps = row['gaps_ms']
++            if row.get('record_valid') is False:
++                phases.append({'workflow': name, **row, 'gap_quantiles': {'n': 0, 'status': 'invalid native record'}})
++                unmeasured.append(f"{name}:invalid-{row.get('phase')}-native-record")
++                continue
+             assert len(gaps) == row['ticks'] + 1
+             assert abs(sum(gaps)-row['elapsed_ms']) < 1e-5
+             assert abs(max(gaps)-row['max_gap_ms']) < 1e-6
+             phases.append({'workflow': name, **row, 'gap_quantiles': quantiles(gaps)})
+             if row['measurable_accepted']:
+                 check(f"{name}:native-{row['phase']}-maximum-gap", gaps, 50, 'worst')
+-        for phase in ('preview', 'post'):
++        required_phases = ('editor', 'preview', 'post') if raw.get('protocol') == 'm6-scoped-v3' else ('preview', 'post')
++        for phase in required_phases:
+             if not any(r['measurable_accepted'] and r['phase'] == phase for r in data.get('strict_phase_checks', [])):
+                 unmeasured.append(f'{name}:accepted-{phase}-positive-tick-heartbeat')
+         if data['result'] != 'measured':
+             unmeasured.append(f'{name}:complete-native-workflow')
++        if raw.get('protocol') == 'm6-scoped-v3':
++            coverage = data.get('editor_first_preview_coverage', {})
++            expected_lines = 200 if name == 'return200-billed' else 20
++            if not coverage.get('all_entered_before_first_preview') or coverage.get('entered_lines') != expected_lines:
++                unmeasured.append(f'{name}:all-inputs-before-first-preview-editor-scope')
++            if sum(row['measurable_accepted'] and row['phase'] == 'editor' for row in data.get('strict_phase_checks', [])) != 1:
++                unmeasured.append(f'{name}:exactly-one-accepted-editor-phase')
+     expected = {'startup': 6, 'source_picker_search': 2, 'return_workflows': 3}
+     for key, count in expected.items():
+         if len(raw[key]) != count:
+@@ -79,7 +91,8 @@ def analyze(raw, directory):
+             'all_native_phase_records_with_terminal_gaps': phases,
+             'application_warnings': warnings, 'warning_count': len(warnings),
+             'historical_M5_strict_misses_retained': raw['historical_M5_strict_misses_retained'],
+-            'always_unmeasured': ['Read-only page/edit continuous GTK heartbeat', 'Dedicated reference hardware and real OS-cold',
++            'always_unmeasured': [('Read-only page/edit heartbeat outside ready editor→first Preview window' if raw.get('protocol') == 'm6-scoped-v3'
++                                   else 'Read-only page/edit continuous GTK heartbeat'), 'Dedicated reference hardware and real OS-cold',
+                                  'Full reference five-year dataset', 'Typical invoice/annual report/import budgets',
+                                  'Production, tax/statutory and competitor acceptance'],
+             'limits': raw['limits']}
+diff --git a/docs/assets/accounting-m6/performance/coordinator.py b/docs/assets/accounting-m6/performance/coordinator.py
+index 86497b8..c5e58d5 100644
+--- a/docs/assets/accounting-m6/performance/coordinator.py
++++ b/docs/assets/accounting-m6/performance/coordinator.py
+@@ -22,6 +22,105 @@ def save(path, value):
+     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + '\n')
+ 
+ 
++def process_identity(pid):
++    directory = Path(f'/proc/{pid}')
++    try:
++        stat = (directory / 'stat').read_text()
++        suffix = stat[stat.rfind(')') + 2:].split()
++        return {'pid': pid, 'state': suffix[0], 'comm': stat[stat.find('(') + 1:stat.rfind(')')],
++                'pgid': int(suffix[2]), 'starttime_ticks': int(suffix[19]),
++                'command': [part.decode() for part in (directory / 'cmdline').read_bytes().split(b'\0') if part]}
++    except FileNotFoundError:
++        return None
++
++
++def same_identity(record, current):
++    return current is not None and all(current.get(key) == record.get(key)
++        for key in ('pid', 'pgid', 'starttime_ticks', 'comm', 'command'))
++
++
++def public_identity(record, current):
++    if current is None or same_identity(record, current):
++        return current
++    # A reused/unexpected process may have unrelated arguments. Compare them
++    # internally, but never place those arguments or its name in evidence.
++    return {**{key: current[key] for key in ('pid', 'state', 'pgid', 'starttime_ticks')},
++            'mismatch_fields': [key for key in ('pid', 'pgid', 'starttime_ticks', 'comm', 'command') if current.get(key) != record.get(key)],
++            'comm_sha256': hashlib.sha256(current['comm'].encode()).hexdigest(),
++            'command_sha256': hashlib.sha256(json.dumps(current['command']).encode()).hexdigest()}
++
++
++def cleanup_owned(ledger, binary, wrapper_starttime):
++    """Stop only exact newly journaled private workers; never discover/kill by name."""
++    result = {'journal': str(ledger), 'records': [], 'errors': [], 'all_owned_inactive': True}
++    if not ledger.exists():
++        result['journal_missing'] = True
++        return result
++    seen = set()
++    for number, line in enumerate(ledger.read_text().splitlines(), 1):
++        try:
++            record = json.loads(line)
++            for key in ('pid', 'pgid', 'starttime_ticks'):
++                assert type(record[key]) is int and record[key] > 1, 'Invalid owned process integer'
++            assert record['pid'] == record['pgid'], 'Owned workers must have independent new sessions'
++            assert record['starttime_ticks'] >= wrapper_starttime, 'Historical process rejected'
++            assert isinstance(record['comm'], str) and record['comm'], 'Missing process name'
++            command = record['command']
++            assert isinstance(command, list) and command and all(isinstance(value, str) for value in command)
++            assert command == [str(binary)] or command == ['openbox', '--sm-disable', '--config-file',
++                '/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml'] or (
++                len(command) == 10 and command[0:2] == ['Xvfb', '-displayfd']
++                and command[2].isdigit() and command[3:] == ['-screen', '0', '1450x1050x24',
++                    '-nolisten', 'tcp', '-xkbdir', '/workspace/sarv-environment/sysroot/usr/share/X11/xkb']), 'Nonallowlisted private command'
++            identity = (record['pid'], record['starttime_ticks'])
++            assert identity not in seen, 'Duplicate owned identity'
++            seen.add(identity)
++            result['records'].append({'record': record})
++        except (AssertionError, KeyError, TypeError, ValueError) as error:
++            result['errors'].append({'line': number, 'error': repr(error)})
++    for row in reversed(result['records']):
++        record = row['record']
++        try:
++            current = process_identity(record['pid'])
++            row['before'] = public_identity(record, current)
++            if current is None or current['state'] == 'Z':
++                row['action'] = 'already inactive'
++            elif same_identity(record, current):
++                try:
++                    # A pidfd pins the process even if it exits and its PID is
++                    # reused between the final /proc check and the signal.
++                    descriptor = os.pidfd_open(record['pid'], 0)
++                    try:
++                        assert same_identity(record, process_identity(record['pid'])), 'Identity changed before signal'
++                        signal.pidfd_send_signal(descriptor, signal.SIGTERM)
++                    finally:
++                        os.close(descriptor)
++                    row['action'] = 'SIGTERM exact owned identity'
++                except ProcessLookupError:
++                    row['action'] = 'exited before SIGTERM'
++            else:
++                row['action'] = 'identity mismatch untouched'
++                result['errors'].append({'pid': record['pid'], 'error': 'Recorded identity no longer matches; no signal'})
++        except (AssertionError, OSError, ValueError) as error:
++            row['error'] = repr(error)
++            result['errors'].append({'pid': record['pid'], 'error': repr(error)})
++    deadline = time.monotonic() + 5
++    while time.monotonic() < deadline:
++        if not any((current := process_identity(row['record']['pid'])) is not None
++                   and current['state'] != 'Z' and same_identity(row['record'], current) for row in result['records']):
++            break
++        time.sleep(.1)
++    for row in result['records']:
++        current = process_identity(row['record']['pid'])
++        row['after'] = public_identity(row['record'], current)
++        row['owned_identity_active'] = current is not None and current['state'] != 'Z' and same_identity(row['record'], current)
++        if row['owned_identity_active']:
++            result['all_owned_inactive'] = False
++    if result['errors']:
++        result['all_owned_inactive'] = False
++    return result
++
++
+ def guard(receipt, receipt_path, receipt_sha):
+     result = {'coordinator_sha256': sha(SELF), 'receipt_sha256': sha(receipt_path)}
+     assert result['coordinator_sha256'] == receipt['coordinator_sha256'], 'Coordinator bytes changed'
+@@ -81,7 +180,8 @@ def main():
+     signal.signal(signal.SIGTERM, interrupted)
+     try:
+         result['guard_before'] = guard(receipt, args.receipt, args.receipt_sha)
+-        command = ['dbus-run-session', '--', '/usr/bin/python3', str(ROOT / 'scripts/native-performance-M6.py'),
++        assert hasattr(os, 'pidfd_open') and hasattr(signal, 'pidfd_send_signal'), 'Verified owned cleanup needs Linux pidfd support'
++        command = ['dbus-run-session', '--', '/usr/bin/python3', '-X', 'faulthandler', str(ROOT / 'scripts/native-performance-M6.py'),
+                    '--binary', receipt['binary'], '--expect-sha', receipt['binary_sha256'],
+                    '--source-manifest', str(ROOT / receipt['source_manifest']['path']),
+                    '--verification-manifest', str(ROOT / receipt['verification_manifest']['path']),
+@@ -93,6 +193,7 @@ def main():
+         save(args.output / 'coordinator.json', result)
+         with (args.output / 'coordinator-observer.log').open('x') as log:
+             process = subprocess.Popen(command, cwd=ROOT, stdout=log, stderr=subprocess.STDOUT, start_new_session=True)
++            result['observer_wrapper_identity'] = process_identity(process.pid)
+             result.update(observer_launched=True, observer_wrapper_pid=process.pid)
+             save(args.output / 'coordinator.json', result)
+             result['observer_exit_code'] = process.wait()
+@@ -108,6 +209,15 @@ def main():
+                 os.killpg(process.pid, signal.SIGTERM)
+                 result['observer_exit_code'] = process.wait(timeout=10)
+     finally:
++        if process:
++            try:
++                identity = result['observer_wrapper_identity']
++                result['external_owned_cleanup'] = cleanup_owned(args.output / 'observer/owned-processes.jsonl',
++                    Path(receipt['binary']), identity['starttime_ticks'])
++                if not result['external_owned_cleanup']['all_owned_inactive']:
++                    result['result'] = 'rejected_incomplete_owned_cleanup'
++            except BaseException as error:
++                result.update(external_cleanup_error=repr(error), result='rejected_incomplete_owned_cleanup')
+         try:
+             result['guard_after'] = guard(receipt, args.receipt, args.receipt_sha)
+             result['all_coordinator_guards_stable'] = result.get('guard_before') == result['guard_after']
+diff --git a/scripts/native-performance-M6.py b/scripts/native-performance-M6.py
+index 300aad3..b8cde88 100644
+--- a/scripts/native-performance-M6.py
++++ b/scripts/native-performance-M6.py
+@@ -7,6 +7,7 @@ This observer never builds, changes source, flushes caches or opens live profile
+ """
+ import argparse
+ import ctypes as C
++import faulthandler
+ import hashlib
+ import json
+ import math
+@@ -21,6 +22,10 @@ import time
+ from collections import deque
+ from importlib.util import module_from_spec, spec_from_file_location
+ 
++# Enable before importing any native accessibility/X11 infrastructure. Fatal
++# native signals can bypass Python finally; the external coordinator owns cleanup.
++faulthandler.enable(all_threads=True)
++
+ from qa_access import Access
+ 
+ ROOT = Path(__file__).resolve().parents[1]
+@@ -29,7 +34,7 @@ SPEC = spec_from_file_location('m6_unchanged_infrastructure', ROOT / 'scripts/na
+ legacy = module_from_spec(SPEC)
+ SPEC.loader.exec_module(legacy)
+ helper, native = legacy.helper, legacy.native
+-PROTOCOL = 'm6-scoped-v2.1'
++PROTOCOL = 'm6-scoped-v3'
+ QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
+ PREVIEW = 'بازبینی مقدار و اثر سند'
+ POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
+@@ -265,16 +270,33 @@ def phase_records(profile):
+ 
+ def strict_phases(records):
+     result = []
++    accepted = {'editor': 'preview_requested', 'preview': 'verified', 'post': 'worker_finished'}
++    def finite(value):
++        return isinstance(value, (int, float)) and not isinstance(value, bool) and math.isfinite(value) and value >= 0
+     for row in records:
+-        gaps = row['gaps_ms']
+-        actual = max(gaps) if gaps else None
+-        if actual is not None:
+-            assert abs(actual - row['max_gap_ms']) < 1e-6
+-            assert len(gaps) == row['ticks'] + 1 and row['interval_ms'] == 16
+-            assert abs(sum(gaps) - row['elapsed_ms']) < 1e-5
+-        expected = 'verified' if row['phase'] == 'preview' else 'worker_finished'
+-        measured = row['operation'] == 'return' and row['result'] == expected and row['ticks'] > 0 and actual is not None
+-        result.append({**row, 'max_gap_recomputed_ms': actual, 'terminal_gap_ms': gaps[-1] if gaps else None,
++        gaps, ticks = row.get('gaps_ms'), row.get('ticks')
++        valid_gaps = isinstance(gaps, list) and bool(gaps) and all(finite(value) for value in gaps)
++        valid_ticks = isinstance(ticks, int) and not isinstance(ticks, bool) and ticks >= 0
++        actual = max(gaps) if valid_gaps else None
++        errors = []
++        if not valid_gaps:
++            errors.append('Missing, nonfinite or negative complete gaps')
++        if not valid_ticks:
++            errors.append('Ticks must be a nonnegative integer, never bool')
++        if type(row.get('interval_ms')) is not int or row['interval_ms'] != 16:
++            errors.append('Native interval must be integer16ms')
++        if not finite(row.get('elapsed_ms')) or not finite(row.get('max_gap_ms')):
++            errors.append('Elapsed/max must be finite and nonnegative')
++        if valid_gaps and valid_ticks and len(gaps) != ticks + 1:
++            errors.append('Every tick and terminal gap required')
++        if valid_gaps and finite(row.get('max_gap_ms')) and abs(actual - row['max_gap_ms']) >= 1e-6:
++            errors.append('Recorded max differs from complete gaps')
++        if valid_gaps and finite(row.get('elapsed_ms')) and abs(sum(gaps) - row['elapsed_ms']) >= 1e-5:
++            errors.append('Complete gap sum differs from elapsed')
++        expected = accepted.get(row.get('phase'))
++        measured = not errors and expected is not None and row.get('operation') == 'return' and row.get('result') == expected and ticks > 0
++        result.append({**row, 'max_gap_recomputed_ms': actual, 'terminal_gap_ms': gaps[-1] if isinstance(gaps, list) and gaps else None,
++                       'record_valid': not errors, 'validation_errors': errors,
+                        'budget_ms': 50, 'measurable_accepted': measured,
+                        'strict_status': ('pass' if actual <= 50 else 'miss') if measured else 'unmeasured_or_rejected'})
+     return result
+@@ -444,8 +466,16 @@ class Observer:
+         self.processes.append(process)
+         proc_stat = Path(f'/proc/{process.pid}/stat').read_text()
+         suffix = proc_stat[proc_stat.rfind(')') + 2:].split()
+-        self.report['owned_process_records'].append({'name': name, 'pid': process.pid, 'pgid': int(suffix[2]),
+-                                                    'starttime_ticks': int(suffix[19]), 'command': command})
++        record = {'name': name, 'pid': process.pid, 'pgid': int(suffix[2]),
++                  'comm': proc_stat[proc_stat.find('(') + 1:proc_stat.rfind(')')],
++                  'starttime_ticks': int(suffix[19]), 'command': command}
++        self.report['owned_process_records'].append(record)
++        # Write before any native discovery. This I/O remains in Popen startup
++        # timing, and is never subtracted. The coordinator reads complete lines.
++        with (self.args.output / 'owned-processes.jsonl').open('a') as ledger:
++            ledger.write(json.dumps(record, ensure_ascii=False) + '\n')
++            ledger.flush()
++            os.fsync(ledger.fileno())
+         return process
+ 
+     def setup(self):
+@@ -915,8 +945,15 @@ class Observer:
+         profile, recipe = self.copied(name, name + '-workflow')
+         result = {'result': 'incomplete', 'page_samples': [], 'input_samples': [], 'native_phase_records': []}
+         self.report['return_workflows'][name] = result
+-        app, window, access = self.app(profile, name + '-workflow', True)
+         before, baseline = state(profile), payload(profile)
++        write(profile / 'before-state.json', before)
++        result.update(profile=str(profile), baseline_generation=baseline[0], baseline_payload_sha256=hashlib.sha256(baseline[1].encode()).hexdigest())
++        self.checkpoint(name + ':before-first-return-app-opening')
++        app, window, access = self.app(profile, name + '-workflow', True)
++        standard_geometry = self.x11.geometry(window)
++        origin = self.x11.origin(window)
++        assert origin[0] >= 0 and origin[1] >= 0 and origin[0] + standard_geometry[0] <= 1450 and origin[1] + standard_geometry[1] <= 1050, 'Natural standard client must fit the declared display'
++        result['standard_client_geometry'] = {'size': standard_geometry, 'origin': list(origin), 'display': [1450, 1050], 'natural_default': True}
+         self.purchases(access)
+         receipt_ids = recipe['receipt_line_ids']
+         quantity, editor, opening = self.open_source(access, recipe['source_reference'], receipt_ids[0])
+@@ -930,6 +967,18 @@ class Observer:
+         if recipe['kind'] == 'billed':
+             fill(access, 'مرجع بستانکار تأمین‌کننده', f'M6-PERF-CREDIT-{name}', self.x11, editor)
+         pages = math.ceil(len(receipt_ids) / 25)
++        def first_preview_coverage():
++            entered = [row['receipt_line_id'] for row in result['input_samples']]
++            assert entered == receipt_ids, 'First Preview requires every exact source input in order'
++            result['editor_first_preview_coverage'] = {'entered_lines': len(entered), 'receipt_line_ids': entered,
++                'all_entered_before_first_preview': True, 'native_scope': 'ready editor to first Preview dispatch, including common metadata, all inputs, pagers and inter-action checkpoints; excludes construction and later reveal/preview/post'}
++            self.checkpoint(name + ':all-inputs-before-first-preview-dispatch')
++        def accepted_editor():
++            rows = observe(lambda: [row for row in phase_records(profile) if row['phase'] == 'editor'], 'terminal editor phase receipt')
++            checks = strict_phases(rows)
++            assert len(checks) == 1 and checks[0]['measurable_accepted'], 'Exactly one positive complete accepted editor phase required'
++            result['native_phase_records'] = phase_records(profile)
++            result['strict_phase_checks'] = strict_phases(result['native_phase_records'])
+         for page in range(1, pages + 1):
+             if page > 1:
+                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'next'))
+@@ -956,10 +1005,12 @@ class Observer:
+             for page in range(pages - 1, 0, -1):
+                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'previous', '1'))
+                 self.checkpoint(f'{name}:completed-previous-page:{page}')
++            first_preview_coverage()
+             press(access, PREVIEW, self.x11, editor)
+             invalid = observe(lambda: find(access, QUANTITY_PREFIX + receipt_ids[-1], editor, ('entry', 'text')), 'offpage invalid source row revealed')
+             observe(lambda: ready(access, invalid, editor, True) and access.text(invalid) == '2', 'actual invalid last row retained/focused')
+             assert payload(profile) == baseline
++            accepted_editor()
+             result['hidden_invalid_last_row_retained_focused'] = True
+             self.checkpoint(name + ':completed-hidden-invalid-focus')
+             settled_begin = time.perf_counter()
+@@ -983,6 +1034,35 @@ class Observer:
+                     'no_focus_scroll_or_key_mutation': True, 'screenshot': str(image),
+                     'pixel_visibility': 'requires independent settled screenshot review; modal GTK geometry unavailable'})
+                 self.checkpoint(f'{name}:passive-hidden-invalid-settled:{minimum:g}s')
++            result['hidden_invalid_narrow_settled_observations'] = []
++            self.x11.resize(window, 620, 800)
++            self.x11.check()
++            observe(lambda: self.x11.geometry(window) == [620, 800], 'actual narrow620x800 app geometry')
++            resize_begin = time.perf_counter()
++            for minimum in (.5, 1., 2.):
++                remaining = minimum - (time.perf_counter() - resize_begin)
++                if remaining > 0:
++                    time.sleep(remaining)
++                fields = self.page_state(access, editor, receipt_ids, pages)
++                assert fields and fields[-1]['name'] == QUANTITY_PREFIX + receipt_ids[-1]
++                assert access.text(fields[-1]) == '2' and ready(access, fields[-1], editor, True)
++                assert payload(profile) == baseline and self.x11.geometry(window) == [620, 800]
++                image = profile / f'invalid-last-row-narrow-settled-min{minimum:g}s.png'
++                self.capture(window, image)
++                result['hidden_invalid_narrow_settled_observations'].append({
++                    'minimum_delay_s': minimum, 'capture_completion_delay_s': time.perf_counter() - resize_begin,
++                    'geometry': [620, 800], 'receipt_line_id': receipt_ids[-1], 'raw_text': '2',
++                    'actual_focus': True, 'current_membership': True, 'durable_state_unchanged': True,
++                    'no_focus_scroll_or_key_mutation_after_resize': True, 'screenshot': str(image),
++                    'pixel_visibility': 'requires independent settled screenshot review; modal GTK geometry unavailable'})
++                self.checkpoint(f'{name}:passive-narrow-hidden-invalid-settled:{minimum:g}s')
++            self.x11.resize(window, *standard_geometry)
++            self.x11.check()
++            observe(lambda: self.x11.geometry(window) == standard_geometry, 'restored exact natural standard client before later timed actions')
++            time.sleep(.5)
++            assert payload(profile) == baseline
++            result['geometry_restored_before_later_timed_actions'] = standard_geometry
++            self.checkpoint(name + ':restored-standard-geometry')
+             self.user_wins_invalid_reveal(access, editor, receipt_ids, pages, window, profile, baseline, result, name)
+             fill(access, invalid['name'], '1', self.x11, editor)
+             self.editor_paths[editor]['expected'][receipt_ids[-1]] = '1'
+@@ -1005,10 +1085,13 @@ class Observer:
+         assert not legacy.sensitive(access, post), 'Old verification unexpectedly retained'
+         preview = find(access, PREVIEW, editor, ('button', 'push button'))
+         focus(access, preview, self.x11)
++        if pages == 1:
++            first_preview_coverage()
+         begin = time.perf_counter()
+         self.x11.key('space')
+         observe(lambda: legacy.sensitive(access, post), 'actual return preview enables post')
+         result['preview_observed_ms'] = (time.perf_counter() - begin) * 1000
++        accepted_editor()
+         assert payload(profile) == baseline
+         observe(lambda: any(row['phase'] == 'preview' and row['result'] == 'verified'
+                             for row in phase_records(profile)[phase_begin:]), 'terminal preview phase before checkpoint')
+@@ -1034,9 +1117,10 @@ class Observer:
+         result['native_phase_records'] = phase_records(profile)
+         result['strict_phase_checks'] = strict_phases(result['native_phase_records'])
+         result['accepted_phase_coverage'] = {phase: sum(row['measurable_accepted'] for row in result['strict_phase_checks'] if row['phase'] == phase)
+-                                             for phase in ('preview', 'post')}
++                                             for phase in ('editor', 'preview', 'post')}
++        assert result['accepted_phase_coverage']['editor'] == 1, 'Exactly one accepted editor phase per workflow'
+         result['memory_kib_after_post'] = helper.rss(app.pid)
+-        result['read_only_page_edit_continuous_heartbeat'] = 'unmeasured; loaded action latencies are not GTK heartbeat traces'
++        result['read_only_page_edit_continuous_heartbeat'] = 'Measured only ready editor to first Preview dispatch; later error reveal, edits, preview and post outside this editor scope'
+         self.checkpoint(name + ':completed-exact-literal-and-phase-proof')
+         self.capture(window, profile / 'posted.png')
+         native.stop(app)
+@@ -1086,6 +1170,7 @@ class Observer:
+                 time.sleep(.5)
+                 memory = helper.rss(app.pid)
+                 result['samples'].append({'index': index, 'startup_ms': duration, 'interactive_before_png_ms': pre_png,
++                                          'natural_client_geometry': self.x11.geometry(window),
+                                           'steady_rss_kib': memory['VmRSS'], 'kernel_peak_rss_kib': memory['VmHWM'],
+                                           'rss_observer_samples': len(memory_samples), 'rss_observer_raw_kib': memory_samples,
+                                           'screenshot': str(screenshot)})
+@@ -1164,15 +1249,16 @@ def main():
+                            'rust': helper.command('rustc', '--version'), 'gtk_libadwaita': helper.command('pkg-config', '--modversion', 'gtk4', 'libadwaita-1')},
+               'boundaries': {'startup': 'Popen to owned mapped window, usable Save, real Tab focus response and completed PNG; pre-PNG/capture separate. Initial stopped-backup launch n1 separately; repeated n10 new processes with warm/uncontrolled OS pages. No physical OS-cold claim.',
+                              'source_picker': 'Actual Ctrl+A/ASCII query to exact first current reference/count/page/action, allocated visible sensitive then actual focus. Qualified direct source-child snapshots before/after every observation, fresh parent-child membership, debounce/layout/AT-SPI5ms poll included. Initial picker/index discovery and zero warmup outside timer.',
+-                             'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 persistent identity paths qualified outside dispatch, all roles/names/text/marker/current edges refreshed before/after each poll. Passive invalid2 settled captures require independent pixel review; modal GTK window-key geometry unavailable. Main-thread read-only continuous heartbeat unmeasured.',
++                             'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 persistent identity paths qualified outside dispatch, all roles/names/text/marker/current edges refreshed before/after each poll. Natural initial client geometry is recorded, narrow620x800 invalid2 captures are untimed, and exact initial client size restored before later timed actions. Passive standard/narrow invalid2 settled captures require independent pixel review; modal GTK window-key geometry unavailable.',
++                             'editor_heartbeat': 'C9 native16ms ready editor→first Preview collect/dispatch only, with explicit return/preview_requested terminal result. Includes common metadata, all20/200 real-key inputs, Next/Previous and inter-action checkpoint I/O; excludes widget construction, later invalid reveal/correction, preview and post. Exact ordered input association precedes first dispatch. One positive complete accepted editor trace per workflow, separate50ms maximum; no pooled phases or subtraction.',
+                              'preview_post': 'Actual real-key preview/post dispatch through usable Post or durable return and visible result. Existing native16ms dispatch-to-render/busy-release phases independently retain every tick/terminal gap; zero-tick/rejected/absent unmeasured. n1 per20billed/20unbilled/200billed workflow.',
+-                             'lifecycle_and_partial_checkpoints': 'm6-scoped-v1.2: private owned-PID window discovery drains X11 requests with XSync and rejects only exact retired-window PID-property BadWindow. Full raw partial JSON is atomically checkpointed after completed endpoints/native terminal phases, outside active intervals; inter-action disk/cache effects remain possible.',
++                             'lifecycle_and_partial_checkpoints': 'm6-scoped-v3: early Python faulthandler plus fsynced exact PID/PGID/starttime/comm/command spawn ledger before native discovery and external identity-verified SIGTERM cleanup. Journaling remains inside startup timing; partial raw JSON checkpoints occur after latency endpoints, including before first return opening. Editor trace deliberately includes inter-action checkpoint I/O. X11 private owned-PID discovery still drains with XSync/rejects only exact retired-window PID-property BadWindow. Native hard-exit cause remains unknown; no reliability/cause claim from diagnostic passes.',
+                              'memory': 'Application PID only; /proc10ms startup sampling +500ms idle; later search/editor/preview/post RSS/HWM points separate. Helpers excluded.'},
+               'historical_M5_strict_misses_retained': {'pages_ms': [51.488974,51.002871,51.904600], 'choice_ms':73.664108,'internal_PDF_ms':80.439368,'global_ms':289.749728,'PDF_busy_ms':107.151621,'persistence_busy_ms':96.586120},
+               'limits': ['Shared virtual hardware: no dedicated4core8GBSSD, genuine physical-cache-cold or causal Rust-speed/competitor/production/statutory claim.',
+                          'No full five-year100k-doc/million-journal/50k-item/10k-party reference profile;200line returns do not establish1000line or posted-ledger capacity.',
+                          'n10/n20 p99 equals worst; sequential page samples and n1 commands/memory are descriptive, not independent tail estimates.',
+-                         'Read-only page/edit GTK heartbeat unmeasured; latency and accessibility readiness do not prove pixels or isolated CPU.',
++                         'Editor GTK heartbeat is bounded to ready editor→first Preview; later error reveal/page/edit and unrelated read-only activity remain unmeasured. Latency and accessibility readiness do not prove pixels or isolated CPU.',
+                          'Observer XSync contributes to lifecycle discovery; per-completed-observation atomic checkpoint I/O occurs between actions and may affect subsequent caches/work. Protocol v2 qualifies direct source hierarchy and stable editor identity paths before dispatch; every poll refreshes ownership/DEFUNCT/current edges and all names/roles/text before/after. Reduced discovery RPC is a new observer method, never subtracted from or causally compared with preserved v1.2 misses. Search still includes native input,50ms debounce, rendering and RPC; no isolated product speed inference.',
+                          'Typical20line INVOICE, annual reports/import, Windows/Wayland/physical print/screen readers/hardware loss/leaks/professional review remain unmeasured.']}
+     observer = Observer(args, report, dataset)
