@@ -36,9 +36,9 @@ SPEC.loader.exec_module(legacy)
 helper, native = legacy.helper, legacy.native
 PROTOCOL = 'm6-scoped-v3'
 QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
-PREVIEW = 'بازبینی مقدار و اثر سند'
-POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
-RETURN = 'برگشت خرید با بهای اصلی'
+PREVIEW = 'پیش‌نمایش ثبت'
+POST = 'ثبت نهایی'
+RETURN = 'برگشت از خرید'
 SEARCH = 'جست‌وجوی منبع، تأمین‌کننده، کالا یا انبار'
 NEXT = 'ردیف‌های برگشت بعد'
 PREVIOUS = 'ردیف‌های برگشت پیشین'
@@ -584,7 +584,7 @@ class Observer:
         name = normalize(row['name'])
         if row['role'] == 'label' and re.fullmatch(r'\d+ منبع قابل برگشت • صفحهٔ \d+', name):
             return 'status'
-        if row['role'] in ('button', 'push button') and (name.startswith('صورتحساب ') or name.startswith('رسید صورتحساب‌نشده ')):
+        if row['role'] in ('button', 'push button') and (name.startswith('فاکتور ') or name.startswith('رسید بدون فاکتور خرید ')):
             return 'action'
         return None
 

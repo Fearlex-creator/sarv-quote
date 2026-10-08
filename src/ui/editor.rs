@@ -821,7 +821,7 @@ impl Ui {
         ] {
             let control = button(caption);
             control.set_widget_name(name);
-            accessible_name(&control, &format!("صفحهٔ {caption} اقلام پیشنهاد"));
+            accessible_name(&control, &format!("صفحهٔ {caption} اقلام پیش‌فاکتور"));
             control.set_sensitive(enabled);
             let weak = Rc::downgrade(self);
             control.connect_clicked(move |_| {

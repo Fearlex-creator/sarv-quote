@@ -1,0 +1,8 @@
+    Finished `test` profile [unoptimized] target(s) in 0.05s
+     Running tests/procurement_exports.rs (target/debug/deps/procurement_exports-2628451a6be69114)
+
+running 1 test
+test actual_persian_pdf_canonical_dates_codes_units_source_markers_and_repeated_headers ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 3 filtered out; finished in 0.33s
+

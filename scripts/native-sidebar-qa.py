@@ -80,7 +80,7 @@ def main():
             return seen
         def tab_to(name, limit=90, roles=None):
             for _ in range(limit):
-                item = access.find(name, roles or (['list item'] if name == 'دفتر حسابداری' else None))
+                item = access.find(name, roles or (['list item'] if name == 'حسابداری' else None))
                 if item and access.focused(item):
                     return item
                 x.key('Tab'); time.sleep(.035)
@@ -95,9 +95,10 @@ def main():
         resize(1280, 900)
         for number, name in [(1, 'order'), (2, 'catalog'), (3, 'customers'), (4, 'quotes'), (5, 'backup'), (6, 'settings'), (7, 'accounting'), (0, 'sales'), (8, 'procurement'), (9, 'inventory')]:
             check(f'Alt+{number} opens {name}', page(number, name)['page'] == name)
+        check('Body-focused page shortcuts do not pull focus into navigation', not native.events(profile)[-1].get('focus_name','').startswith('navigation-'))
         check('Navigation preserves entire saved payload', payload(profile) == original)
         names = [row['name'] for row in access.tree()]
-        check('Native hierarchy exposes all three work groups', all(name in names for name in ['پیشنهادها', 'کالا و مشتری', 'حسابداری']))
+        check('Native hierarchy exposes all three work groups', all(name in names for name in ['عملیات', 'پیش‌فاکتورها', 'کالا و مشتری']))
         # A desktop user can hide the sidebar without entering the narrow mode.
         # Both the standard keyboard shortcut and the native titlebar button
         # must preserve the current workspace and all stored records.
@@ -107,47 +108,49 @@ def main():
         toggle = tab_to('فهرست صفحه‌ها')
         check('Wide collapsed shell retains reachable native navigation button', access.focused(toggle))
         key('Return')
-        current = native.wait_for(lambda: access.find('موجودی و انتقال',['list item']),label='wide restored sidebar current row')
+        current = native.wait_for(lambda: access.find('انبار',['list item']),label='wide restored sidebar current row')
         check('Titlebar button restores wide sidebar and current-row focus', access.focused(current))
         capture('shell-wide-sidebar-restored.png')
         key('F9'); page(7,'accounting')
         capture('shell-wide-hidden-page-change.png')
         check('Hidden desktop sidebar permits normal page shortcuts without data writes', native.events(profile)[-1]['page']=='accounting' and payload(profile)==original)
         key('F9')
-        current = native.wait_for(lambda: access.find('دفتر حسابداری',['list item']),label='restored current accounting row')
+        current = native.wait_for(lambda: access.find('حسابداری',['list item']),label='restored current accounting row')
         check('F9 restores current destination after a hidden page change',access.focused(current))
         page(9,'inventory')
+        current = native.wait_for(lambda: access.find('انبار',['list item']),label='current row after nav-focused shortcut')
+        check('Nav-focused page shortcut keeps focus on newly selected destination',access.focused(current))
         # Tab enters a native ListBox at its selected row. Other destinations
         # use the standard arrow-key route, including the M4 inventory/purchase and M5 sales additions.
-        current = tab_to('موجودی و انتقال', roles=['list item'])
+        current = tab_to('انبار', roles=['list item'])
         check('Tab reaches selected Inventory sidebar row', access.focused(current))
         key('Up'); key('Return')
         check('Standard sidebar Up/Enter opens Purchases', native.events(profile)[-1]['page'] == 'procurement')
         key('Up'); key('Return')
         check('Standard sidebar Up/Enter opens Sales', native.events(profile)[-1]['page'] == 'sales')
-        key('Up'); key('Return')
-        check('Standard sidebar Up/Enter opens Accounting', native.events(profile)[-1]['page'] == 'accounting')
-        tab_to('دفتر حسابداری')
+        key('Down'); key('Down'); key('Down'); key('Return')
+        check('Standard sidebar Down/Enter opens Accounting', native.events(profile)[-1]['page'] == 'accounting')
+        tab_to('حسابداری')
         capture('sidebar-standard-light-focus.png')
         key('Return')
         capture('sidebar-standard-light.png')
         resize(650, 760)
         page(7, 'accounting')
         capture('accounting-narrow-light.png')
-        history = tab_to('تاریخچه', roles=['page tab'])
+        history = tab_to('سوابق تغییرات', roles=['page tab'])
         focus_event = native.wait_for(lambda: next((event for event in reversed(native.events(profile)) if event.get('focus_name') == 'accounting-tab-audit'), None), label='native history focus geometry')
         rect = focus_event['focus_bounds']
         viewport = focus_event['window_size']
         check('Narrow history tab is fully inside native window', rect and rect[0] >= 0 and rect[0] + rect[2] <= viewport[0] and rect[1] >= 0 and rect[1] + rect[3] <= viewport[1], native_focus_bounds=rect, native_viewport=viewport)
         key('space')
-        history = native.wait_for(lambda: access.find('تاریخچه', ['page tab']), label='history tab after keyboard activation')
+        history = native.wait_for(lambda: access.find('سوابق تغییرات', ['page tab']), label='history tab after keyboard activation')
         states = access.a.atspi_accessible_get_state_set(history['node'])
         check('Narrow keyboard activates history tab', states and access.a.atspi_state_set_contains(states, 23))
         capture('accounting-narrow-history-light.png')
         check('History navigation preserves saved payload', payload(profile) == original)
         tab_to('فهرست صفحه‌ها')
         key('Return')
-        current = native.wait_for(lambda: access.find('دفتر حسابداری', ['list item']), label='collapsed menu destination')
+        current = native.wait_for(lambda: access.find('حسابداری', ['list item']), label='collapsed menu destination')
         check('Opening narrow sidebar focuses current page', access.focused(current))
         capture('sidebar-narrow-light-focus.png')
         close = native.wait_for(lambda: access.find('بستن فهرست صفحه‌ها',['button','push button']),label='native narrow sidebar close button')
@@ -174,11 +177,46 @@ def main():
         key('Return')
         key('Up')
         key('Return')
-        check('Narrow arrow/Enter route opens catalog', native.events(profile)[-1]['page'] == 'catalog')
+        check('Narrow arrow/Enter route opens inventory', native.events(profile)[-1]['page'] == 'inventory')
         check('Narrow keyboard route preserves saved payload', payload(profile) == original)
         resize(1280, 900)
         page(6, 'settings')
-        tab_to('ظاهر', limit=130)
+        # Percent presentation must retain exact stored integer basis points.
+        def rate_entry(value):
+            for _ in range(160):
+                event = native.events(profile)[-1]
+                if event.get('focus_label') == 'نرخ افزودهٔ پیش‌فاکتور (%)' and event.get('focus_type') == 'GtkText':
+                    break
+                key('Tab')
+            else:
+                raise AssertionError('Keyboard cannot reach quotation rate')
+            key('a', 'Control_L'); x.type_text(value); time.sleep(.2)
+        before_rate = payload(profile)
+        for raw in ['9.755', '100.01']:
+            rate_entry(raw); key('s', 'Control_L')
+            event = native.events(profile)[-1]
+            check('Invalid percent preserves full state and focuses retained input: '+raw,
+                  payload(profile)==before_rate and event.get('focus_label')=='نرخ افزودهٔ پیش‌فاکتور (%)')
+        capture('settings-rate-error.png')
+        rate_entry('9.75')
+        tab_to('لغو تغییرات', roles=['button','push button']); key('Return')
+        check('Discarded percent edit preserves full saved state', payload(profile)==before_rate)
+        rate_entry('۹٫۷۵'); key('s', 'Control_L')
+        native.wait_for(lambda: payload(profile)['settings']['tax_basis_points']==975,label='exact Persian percent saved')
+        intended = json.loads(json.dumps(before_rate))
+        # Empty legacy profiles omit Settings; Save materializes its existing defaults.
+        intended.setdefault('settings', {
+            'business_name':'','business_phone':'','business_address':'','header':'','footer':'','default_terms':'',
+            'default_currency':'Toman','quote_prefix':'Q-','next_number':1,'default_validity_days':7,
+            'default_discount_rial':0,'tax_basis_points':0,'appearance':'System','density':'Comfortable','display_digits':'Persian'
+        })
+        intended['settings']['tax_basis_points']=975
+        check('Native Persian percent saves exact 975 basis points and changes only intended setting', payload(profile)==intended)
+        capture('settings-rate-saved.png')
+        for number, name in [(0,'sales'),(8,'procurement'),(9,'inventory'),(1,'order'),(7,'accounting')]:
+            page(number,name); capture('copy-'+name+'-light.png')
+        page(6,'settings')
+        tab_to('تم برنامه', limit=130)
         key('Return'); key('Home'); key('Down'); key('Down'); key('Return')
         key('s', 'Control_L')
         native.wait_for(lambda: payload(profile)['settings']['appearance'] == 'Dark', label='appearance persisted')

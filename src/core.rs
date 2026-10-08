@@ -179,7 +179,7 @@ impl CoreRole {
             Self::FixedAssets => "دارایی‌های ثابت",
             Self::Payables => "حساب‌های پرداختنی",
             Self::ChequesPayable => "اسناد پرداختنی",
-            Self::Grni => "کالای دریافت‌شده، صورتحساب‌نشده",
+            Self::Grni => "کالای دریافت‌شده، فاکتور‌نشده",
             Self::CustomerAdvances => "پیش‌دریافت مشتریان",
             Self::Loans => "وام‌ها",
             Self::OwnerCapital => "سرمایه",
@@ -966,7 +966,7 @@ impl AccountingState {
                     && a.operation == AuditOperation::CoreOpeningInitialized
                     && a.actor == opening.command.actor
                     && a.reason == opening.command.reason),
-                "تاریخچهٔ راه‌اندازی صفر پیدا نشد"
+                "سوابق تغییرات راه‌اندازی صفر پیدا نشد"
             );
             ensure!(
                 !self.journals.iter().any(|j| j.id == opening.journal_id),
@@ -1180,7 +1180,7 @@ impl AccountingState {
             };
             ensure!(
                 documents.insert((role, &open.party_id, normalize(&open.document_reference))),
-                "صورتحساب باز تکراری است"
+                "فاکتور باز تکراری است"
             );
             add_detail(&mut detail, role, open.remaining)?;
         }
@@ -1237,7 +1237,7 @@ impl AccountingState {
                 !c.open_items.iter().any(|o| o.party_id == cheque.party_id
                     && (o.side == OpenItemSide::Receivable) == customer
                     && normalize(&o.document_reference) == normalize(&cheque.settlement_reference)),
-                "مرجع تسویهٔ چک با صورتحساب باز هم‌پوشانی دارد؛ افتتاحیهٔ جزئی ترکیبی پشتیبانی نمی‌شود"
+                "مرجع تسویهٔ چک با فاکتور باز هم‌پوشانی دارد؛ افتتاحیهٔ جزئی ترکیبی پشتیبانی نمی‌شود"
             );
             ensure!(
                 cheques.insert((
@@ -1285,7 +1285,7 @@ impl AccountingState {
             amount(receipt.value, false)?;
             ensure!(
                 receipt_refs.insert((&receipt.party_id, normalize(&receipt.receipt_reference))),
-                "رسید صورتحساب‌نشده تکراری است"
+                "رسید فاکتور‌نشده تکراری است"
             );
             let qty = c.base_quantity(
                 &receipt.item_id,
@@ -1298,17 +1298,17 @@ impl AccountingState {
             pool.0 = pool
                 .0
                 .checked_add(qty)
-                .ok_or_else(|| anyhow::anyhow!("سرریز مقدار کالای صورتحساب‌نشده"))?;
+                .ok_or_else(|| anyhow::anyhow!("سرریز مقدار کالای فاکتور‌نشده"))?;
             pool.1 = pool.1.checked_add(receipt.value)?;
             add_detail(&mut detail, CoreRole::Grni, receipt.value)?;
         }
         for (key, (qty, value)) in unbilled {
             let pool = pools.get(&key).ok_or_else(|| {
-                anyhow::anyhow!("کالای صورتحساب‌نشده باید در همان موجودی کالا/انبار منظور شده باشد")
+                anyhow::anyhow!("کالای فاکتور‌نشده باید در همان موجودی کالا/انبار منظور شده باشد")
             })?;
             ensure!(
                 qty <= pool.0 && value.rials() <= pool.1.rials(),
-                "کالای صورتحساب‌نشده از زیرمجموعهٔ موجودی همان کالا/انبار بیشتر است"
+                "کالای فاکتور‌نشده از زیرمجموعهٔ موجودی همان کالا/انبار بیشتر است"
             );
         }
         let mut balances = BTreeMap::new();

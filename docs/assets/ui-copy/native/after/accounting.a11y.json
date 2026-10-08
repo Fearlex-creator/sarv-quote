@@ -1,0 +1,750 @@
+[
+  {
+    "name": "sarv-M6-copy-final4",
+    "role": "application"
+  },
+  {
+    "name": "سرو | حسابداری",
+    "role": "frame"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "table"
+  },
+  {
+    "name": "بخش‌های دفتر حسابداری",
+    "role": "page tab list"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "منابع و گزارش پایان روز آماده است.",
+    "role": "label"
+  },
+  {
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "ذخیره روی این دستگاه",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "دفتر حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "اسناد حسابداری، کدینگ و ماندهٔ حساب‌ها",
+    "role": "label"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت و سال مالی",
+    "role": "table cell"
+  },
+  {
+    "name": "کدینگ حساب‌ها",
+    "role": "table cell"
+  },
+  {
+    "name": "اسناد حسابداری",
+    "role": "table cell"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "table cell"
+  },
+  {
+    "name": "سوابق تغییرات",
+    "role": "table cell"
+  },
+  {
+    "name": "شرکت و دوره",
+    "role": "panel"
+  },
+  {
+    "name": "کدینگ",
+    "role": "panel"
+  },
+  {
+    "name": "اسناد",
+    "role": "panel"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "panel"
+  },
+  {
+    "name": "سوابق تغییرات",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "فروش",
+    "role": "list item"
+  },
+  {
+    "name": "خرید",
+    "role": "list item"
+  },
+  {
+    "name": "انبار",
+    "role": "list item"
+  },
+  {
+    "name": "حسابداری",
+    "role": "list item"
+  },
+  {
+    "name": "پیش‌فاکتور",
+    "role": "list item"
+  },
+  {
+    "name": "بایگانی پیش‌فاکتورها",
+    "role": "list item"
+  },
+  {
+    "name": "مشتریان",
+    "role": "list item"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "name": "عملیات",
+    "role": "label"
+  },
+  {
+    "name": "پیش‌فاکتورها",
+    "role": "label"
+  },
+  {
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "combo box"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "button"
+  },
+  {
+    "name": "شرکت و سال مالی",
+    "role": "page tab"
+  },
+  {
+    "name": "کدینگ حساب‌ها",
+    "role": "page tab"
+  },
+  {
+    "name": "اسناد حسابداری",
+    "role": "page tab"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "page tab"
+  },
+  {
+    "name": "سوابق تغییرات",
+    "role": "page tab"
+  },
+  {
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "toggle button"
+  },
+  {
+    "name": "شرکت تازه",
+    "role": "label"
+  },
+  {
+    "name": "شرکت و سال مالی",
+    "role": "label"
+  },
+  {
+    "name": "کدینگ حساب‌ها",
+    "role": "label"
+  },
+  {
+    "name": "اسناد حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "تراز آزمایشی",
+    "role": "label"
+  },
+  {
+    "name": "سوابق تغییرات",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۶",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۱",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۱",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "image"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "۳",
+    "role": "label"
+  },
+  {
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "فروش",
+    "role": "label"
+  },
+  {
+    "name": "سفارش و فاکتور فروش",
+    "role": "label"
+  },
+  {
+    "name": "خرید",
+    "role": "label"
+  },
+  {
+    "name": "سفارش و فاکتور خرید",
+    "role": "label"
+  },
+  {
+    "name": "انبار",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "پیش‌فاکتور",
+    "role": "label"
+  },
+  {
+    "name": "بایگانی پیش‌فاکتورها",
+    "role": "label"
+  },
+  {
+    "name": "مشتریان",
+    "role": "label"
+  },
+  {
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "تعریف دورهٔ مالی",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "فهرست صفحه‌ها",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "راه‌اندازی شرکت و مانده‌های افتتاحیه",
+    "role": "label"
+  },
+  {
+    "name": "راه‌اندازی شرکت",
+    "role": "button"
+  },
+  {
+    "name": "روش ثبت و بهای موجودی",
+    "role": "button"
+  },
+  {
+    "name": "منطقهٔ زمانی شرکت: Asia/Tehran • نسخهٔ سیاست و نگاشت حساب‌ها ثابت است.",
+    "role": "label"
+  },
+  {
+    "name": "افتتاحیه ثبت‌شده • فقط خواندنی",
+    "role": "label"
+  },
+  {
+    "name": "مرز آغاز روز ⁨۲۰۲۶-۰۳-۲۱⁩ • واحد ریال • منبع ⁨OPEN-F2-2026⁩ • سند ⁨65ee0bbf-1c28-4fed-82be-4cbe49cf3749⁩\nافتتاحیهٔ دیگری ایجاد نمی‌شود؛ مانده‌های ثبت‌شده با تغییر تنظیمات بازنویسی نمی‌شوند.",
+    "role": "label"
+  },
+  {
+    "name": "جزئیات منبع و تطبیق افتتاحیه",
+    "role": "button"
+  },
+  {
+    "name": "تعریف دورهٔ مالی",
+    "role": "label"
+  },
+  {
+    "name": "سال مالی ۱۴۰۵",
+    "role": "label"
+  },
+  {
+    "name": "⁨۲۰۲۶-۰۳-۲۱⁩ میلادی تا ⁨۲۰۲۷-۰۳-۲۰⁩ میلادی • باز",
+    "role": "label"
+  },
+  {
+    "name": "قفل دوره با دلیل",
+    "role": "button"
+  },
+  {
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "راه‌اندازی شرکت",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "جزئیات منبع و تطبیق افتتاحیه",
+    "role": "label"
+  },
+  {
+    "name": "قفل دوره با دلیل",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "F2-core-v1 • شرکت ساختگی",
+    "role": "label"
+  },
+  {
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "name": "روش ثبت و بهای موجودی",
+    "role": "label"
+  }
+]

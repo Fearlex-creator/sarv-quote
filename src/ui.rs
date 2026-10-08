@@ -268,7 +268,7 @@ impl Ui {
         if r.is_err() || self.stack.visible_child_name().as_deref() == Some(page) {
             self.message(r);
         } else if self.status.text() == working {
-            self.message(Ok("آماده • فضای کار محلی"));
+            self.message(Ok("آماده"));
         }
     }
     fn form_draft(&self) -> Result<(Draft, bool)> {
@@ -549,7 +549,7 @@ impl Ui {
             return;
         }
         let result = self.store.borrow_mut().change(State::approve);
-        self.message(result.map(|id| format!("پیشنهاد تأیید و ذخیره شد: {id}")));
+        self.message(result.map(|id| format!("پیش‌فاکتور تأیید و ذخیره شد: {id}")));
         self.refresh_review();
         self.refresh_lists();
     }
@@ -876,11 +876,11 @@ impl Ui {
             .build();
         let content = card();
         content.append(&heading("بازیابی دادهٔ تأییدشده"));
-        content.append(&label(&format!("{} فهرست • {} مشتری • {} پیشنهاد\nدادهٔ جاری جایگزین می‌شود؛ پیش از آن نسخهٔ ایمنی ساخته خواهد شد.",
+        content.append(&label(&format!("{} فهرست • {} مشتری • {} پیش‌فاکتور\nدادهٔ جاری جایگزین می‌شود؛ پیش از آن نسخهٔ ایمنی ساخته خواهد شد.",
             fa(candidate.catalogs.len()), fa(candidate.customers.len()), fa(candidate.quotes.len()))));
-        content.append(&label(&format!("دفترهای پشتیبان: {} شرکت • {} دوره • {} حساب • {} سند ثبت‌شده\nدفتر جاری: {} سند ثبت‌شده\nاین عمل همهٔ دفترها و تاریخچهٔ جاری را با پشتیبان جایگزین می‌کند. نسخهٔ ایمنیِ تأییدشده پیش از جایگزینی نگه داشته می‌شود.",
+        content.append(&label(&format!("دفترهای پشتیبان: {} شرکت • {} دوره • {} حساب • {} سند ثبت‌شده\nدفتر جاری: {} سند ثبت‌شده\nاین عمل همهٔ دفترها و سوابق تغییرات جاری را با پشتیبان جایگزین می‌کند. نسخهٔ ایمنیِ تأییدشده پیش از جایگزینی نگه داشته می‌شود.",
             fa(candidate.accounting.companies.len()), fa(candidate.accounting.periods.len()), fa(candidate.accounting.accounts.len()), fa(candidate.accounting.journals.len()), fa(self.store.borrow().state.accounting.journals.len()))));
-        content.append(&label(&format!("جزئیات پشتیبان: {} افتتاحیهٔ تطبیق‌شده • {} رویداد خرید و انبار\nتمام منبع‌ها، مقادیر، بهاها، درخواست‌ها و تاریخچهٔ این رویدادها نیز جایگزین می‌شوند.",
+        content.append(&label(&format!("جزئیات پشتیبان: {} افتتاحیهٔ تطبیق‌شده • {} رویداد خرید و انبار\nتمام منبع‌ها، مقادیر، بهاها، درخواست‌ها و سوابق تغییرات این رویدادها نیز جایگزین می‌شوند.",
             fa(candidate.accounting.core.openings.len()), fa(candidate.accounting.procurement.records.len()))));
         let confirm = button("بازیابی و ذخیرهٔ نسخهٔ ایمنی");
         confirm.add_css_class("destructive-action");
@@ -1091,7 +1091,7 @@ fn build(app: &gtk::Application, store: Store) {
     );
     let adw_window = adw::ApplicationWindow::builder()
         .application(app)
-        .title("سرو | پیشنهاد قیمت")
+        .title("سرو | حسابداری")
         .default_width(1400)
         .default_height(940)
         .build();
@@ -1102,7 +1102,7 @@ fn build(app: &gtk::Application, store: Store) {
     // Each split page owns its toolbar. A window-wide toolbar leaves an empty
     // strip above the sidebar and prevents its native surface reaching the top.
     header.set_show_back_button(false);
-    let window_title = adw::WindowTitle::new("پیشنهاد قیمت", "سرو · فضای کار محلی");
+    let window_title = adw::WindowTitle::new("حسابداری", "سرو");
     header.set_title_widget(Some(&window_title));
     let navigation = gtk::Button::from_icon_name("sidebar-show-symbolic");
     navigation.set_widget_name("show-workspace-navigation");
@@ -1163,7 +1163,7 @@ fn build(app: &gtk::Application, store: Store) {
     body.set_sidebar(Some(&sidebar_toolbar));
     root.set_content(Some(&stack));
     body.set_content(Some(&root));
-    let status = label("آماده • فضای کار محلی");
+    let status = label("آماده");
     status.add_css_class("status");
     root.add_bottom_bar(&status);
     let order_shell = column();
@@ -1172,7 +1172,7 @@ fn build(app: &gtk::Application, store: Store) {
     order_page.add_css_class("page");
     order_page.set_spacing(8);
     let actions = toolbar();
-    actions.append(&page_title("پیشنهاد قیمت"));
+    actions.append(&page_title("پیش‌فاکتور"));
     let document_state = status_label("پیش‌نویس", StatusTone::Neutral);
     actions.append(&document_state);
     let spacer = row();
@@ -1185,7 +1185,7 @@ fn build(app: &gtk::Application, store: Store) {
     let preview = button("پیش‌نمایش چاپ");
     let approve = button("تأیید نسخه");
     approve.add_css_class("suggested-action");
-    approve.set_tooltip_text(Some("Ctrl+Enter • ثبت نسخهٔ محفوظ پیشنهاد"));
+    approve.set_tooltip_text(Some("Ctrl+Enter • تأیید و بایگانی پیش‌فاکتور"));
     let document_buttons = adw::WrapBox::new();
     document_buttons.set_child_spacing(8);
     document_buttons.set_line_spacing(6);
@@ -1202,7 +1202,7 @@ fn build(app: &gtk::Application, store: Store) {
     metadata.add_css_class("metadata");
     let customer = entry("نام مشتری یا شرکت");
     let select_customer = gtk::Button::from_icon_name("system-search-symbolic");
-    accessible_name(&select_customer, "انتخاب مشتری از دفتر مشتری‌ها");
+    accessible_name(&select_customer, "انتخاب مشتری از دفتر مشتریان");
     select_customer.set_tooltip_text(Some("جست‌وجو و انتخاب مشتری"));
     let customer_control = row();
     customer_control.append(&customer);
@@ -1220,7 +1220,7 @@ fn build(app: &gtk::Application, store: Store) {
     let quote_date = accounting::date_field_with_preferences(
         store.state.settings.date_display,
         store.state.settings.display_digits,
-        "تاریخ پیشنهاد",
+        "تاریخ پیش‌فاکتور",
         "quote-date",
         &store.state.draft.quote_date,
     );
@@ -1277,14 +1277,14 @@ fn build(app: &gtk::Application, store: Store) {
             adaptive_optional.attach(widget, (i % columns) as i32, (i / columns) as i32, 1, 1);
         }
     });
-    let details = expander_with_child("جزئیات پیشنهاد • تاریخ، اعتبار و مرجع", &optional);
+    let details = expander_with_child("جزئیات پیش‌فاکتور • تاریخ، اعتبار و مرجع", &optional);
     details.set_widget_name("quote-details");
     order_page.append(&details);
     let source_hint = label("");
     source_hint.add_css_class("muted");
     order_page.append(&source_hint);
     let items_bar = row();
-    items_bar.append(&heading("اقلام پیشنهاد"));
+    items_bar.append(&heading("اقلام پیش‌فاکتور"));
     let spacer = row();
     spacer.set_hexpand(true);
     items_bar.append(&spacer);
@@ -1356,7 +1356,7 @@ fn build(app: &gtk::Application, store: Store) {
     let advanced = expander_with_child("ویرایش متن CSV سفارش", &order_scroll);
     remarks.append(&advanced);
     remarks.append(&label(
-        "قیمت فقط از فهرست تأییدشده • این پیشنهاد سند حسابداری نیست",
+        "قیمت از فهرست انتخاب‌شده است. تأیید پیش‌فاکتور، فروش ثبت نمی‌کند.",
     ));
     summary.append(&remarks);
     let totals = column();
@@ -1391,7 +1391,7 @@ fn build(app: &gtk::Application, store: Store) {
     let search_quote = gtk::SearchEntry::new();
     accessible_name(&search_catalog, "جست‌وجوی فهرست قیمت و کالا");
     accessible_name(&search_customer, "جست‌وجوی مشتری");
-    accessible_name(&search_quote, "جست‌وجوی پیشنهاد و نسخه‌ها");
+    accessible_name(&search_quote, "جست‌وجوی پیش‌فاکتور و نسخه‌ها");
     let import_catalog = button("ورود فهرست قیمت و پیش‌نمایش");
     for (name, title, search, list) in [
         (
@@ -1402,13 +1402,13 @@ fn build(app: &gtk::Application, store: Store) {
         ),
         (
             "customers",
-            "مشتری‌های ذخیره‌شده",
+            "مشتریان ذخیره‌شده",
             &search_customer,
             &customer_list,
         ),
         (
             "quotes",
-            "بایگانی پیشنهادها و نسخه‌ها",
+            "بایگانی پیش‌فاکتورها و نسخه‌ها",
             &search_quote,
             &quote_list,
         ),
@@ -1431,12 +1431,18 @@ fn build(app: &gtk::Application, store: Store) {
     let backup_page = column();
     backup_page.add_css_class("page");
     backup_page.append(&heading("پشتیبان و بازیابی"));
-    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتری‌ها، پیشنهادها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای فروش، خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
-    let backup = button("ساخت پشتیبان JSON");
-    let restore = button("انتخاب پشتیبان و بررسی بازیابی");
+    backup_page.append(&label("داده در همین رایانه ذخیره می‌شود. پشتیبان شامل فهرست‌ها، مشتریان، پیش‌فاکتورها، پیش‌نویس و تمام دفترها، افتتاحیه‌ها و رویدادهای فروش، خرید و انبار است.\nبازیابی فقط پس از اعتبارسنجی قالب، اثر انگشت، مبلغ‌ها و ارتباط داده‌ها انجام می‌شود."));
+    let backup = button("تهیهٔ پشتیبان");
+    let restore = button("بازیابی از فایل");
     backup_page.append(&backup);
     backup_page.append(&restore);
-    backup_page.append(&label(&format!("مسیر داده: {}\n\nمیانبرها: Ctrl+S ذخیره • Ctrl+Enter تأیید • Ctrl+N سفارش تازه\nAlt+0 فروش • Alt+1…9 جابه‌جایی صفحه • Tab پیمایش • Enter فعال‌سازی\n\nپیشنهاد قیمت و دفتر حسابداری دستی: شرکت، سال مالی، حساب‌ها، ماندهٔ افتتاحیه و اسناد متوازن. خرید و موجودی در صفحات خود با منبع و کنترل دفتر ثبت می‌شوند. فروش با تحویل/صورتحساب هم‌زمان و برگشت با بهای اصلی فراهم است؛ تسویه و ارسال مالیاتی هنوز فراهم نیست.",store.directory.display())));
+    backup_page.append(&label(&format!(
+        "محل ذخیرهٔ اطلاعات: {}",
+        store.directory.display()
+    )));
+    let shortcuts = column();
+    shortcuts.append(&label("Ctrl+S ذخیره • Ctrl+Enter تأیید پیش‌فاکتور • Ctrl+N پیش‌فاکتور جدید\nAlt+0 فروش • Alt+1…9 جابه‌جایی بخش‌ها • F9 نمایش فهرست\nTab پیمایش • Enter فعال‌سازی • Escape بستن"));
+    backup_page.append(&expander_with_child("میانبرهای صفحه‌کلید", &shortcuts));
     stack.add_named(&backup_page, Some("backup"));
     let destinations = gtk::ListBox::new();
     destinations.set_widget_name("workspace-destinations");
@@ -1445,9 +1451,10 @@ fn build(app: &gtk::Application, store: Store) {
     accessible_name(&destinations, "صفحه‌های فضای کار");
     destinations.set_header_func(|item, _| {
         let group = match item.widget_name().as_str() {
-            "navigation-order" => Some("پیشنهادها"),
+            "navigation-sales" => Some("عملیات"),
+            "navigation-order" => Some("پیش‌فاکتورها"),
             "navigation-customers" => Some("کالا و مشتری"),
-            "navigation-accounting" => Some("حسابداری"),
+
             _ => None,
         };
         if let Some(group) = group {
@@ -1466,18 +1473,54 @@ fn build(app: &gtk::Application, store: Store) {
     let mut nav_rows = vec![];
     for (i, name, caption, icon, _group, description, utility) in [
         (
+            0,
+            "sales",
+            "فروش",
+            "document-send-symbolic",
+            None,
+            Some("سفارش و فاکتور فروش"),
+            false,
+        ),
+        (
+            8,
+            "procurement",
+            "خرید",
+            "view-list-symbolic",
+            None,
+            Some("سفارش و فاکتور خرید"),
+            false,
+        ),
+        (
+            9,
+            "inventory",
+            "انبار",
+            "folder-symbolic",
+            None,
+            None,
+            false,
+        ),
+        (
+            7,
+            "accounting",
+            "حسابداری",
+            "accessories-calculator-symbolic",
+            Some("حسابداری"),
+            None,
+            false,
+        ),
+        (
             1,
             "order",
-            "پیشنهاد قیمت",
+            "پیش‌فاکتور",
             "document-edit-symbolic",
-            Some("پیشنهادها"),
+            Some("پیش‌فاکتورها"),
             None,
             false,
         ),
         (
             4,
             "quotes",
-            "بایگانی پیشنهادها",
+            "بایگانی پیش‌فاکتورها",
             "document-open-recent-symbolic",
             None,
             None,
@@ -1486,7 +1529,7 @@ fn build(app: &gtk::Application, store: Store) {
         (
             3,
             "customers",
-            "مشتری‌ها",
+            "مشتریان",
             "system-users-symbolic",
             Some("کالا و مشتری"),
             None,
@@ -1499,42 +1542,6 @@ fn build(app: &gtk::Application, store: Store) {
             "view-list-symbolic",
             None,
             None,
-            false,
-        ),
-        (
-            7,
-            "accounting",
-            "دفتر حسابداری",
-            "accessories-calculator-symbolic",
-            Some("حسابداری"),
-            Some("شرکت، اسناد و تراز آزمایشی"),
-            false,
-        ),
-        (
-            0,
-            "sales",
-            "فروش‌ها",
-            "document-send-symbolic",
-            None,
-            Some("سفارش، تحویل و صورتحساب، برگشت"),
-            false,
-        ),
-        (
-            8,
-            "procurement",
-            "خریدها",
-            "view-list-symbolic",
-            None,
-            Some("سفارش، دریافت کالا و صورتحساب"),
-            false,
-        ),
-        (
-            9,
-            "inventory",
-            "موجودی و انتقال",
-            "folder-symbolic",
-            None,
-            Some("مقدار، ارزش و گردش انبار"),
             false,
         ),
         (
@@ -1586,6 +1593,10 @@ fn build(app: &gtk::Application, store: Store) {
         let Some(name) = st.visible_child_name() else {
             return;
         };
+        let focus_in_navigation = shell_window
+            .upgrade()
+            .and_then(|window| gtk::prelude::GtkWindowExt::focus(&window))
+            .is_some_and(|focus| focus.is_ancestor(&primary) || focus.is_ancestor(&secondary));
         primary.unselect_all();
         secondary.unselect_all();
         for (page, caption, item, list) in &rows {
@@ -1598,6 +1609,9 @@ fn build(app: &gtk::Application, store: Store) {
             if current {
                 item.add_css_class("current-page");
                 list.select_row(Some(item));
+                if focus_in_navigation {
+                    item.grab_focus();
+                }
                 title.set_title(caption);
                 if let Some(window) = shell_window.upgrade() {
                     window.set_title(Some(&format!("سرو | {caption}")));
@@ -1620,7 +1634,7 @@ fn build(app: &gtk::Application, store: Store) {
     let local_icon = gtk::Image::from_icon_name("computer-symbolic");
     local_icon.set_pixel_size(14);
     local.append(&local_icon);
-    local.append(&label("داده‌ها روی این رایانه"));
+    local.append(&label("ذخیره روی این دستگاه"));
     footer.append(&local);
     nav.append(&footer);
     let split = body.downgrade();
@@ -2079,8 +2093,14 @@ fn build(app: &gtk::Application, store: Store) {
         glib::Propagation::Proceed
     });
     adw_window.set_content(Some(&body));
+    let has_initialized_company = !ui.store.borrow().state.accounting.core.openings.is_empty();
+    ui.stack.set_visible_child_name(if has_initialized_company {
+        "sales"
+    } else {
+        "accounting"
+    });
     window.present();
-    ui.customer.grab_focus();
+    ui.stack.child_focus(gtk::DirectionType::TabForward);
     accounting::schedule(&ui);
     procurement::schedule(&ui);
     sales::schedule(&ui);

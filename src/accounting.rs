@@ -347,7 +347,7 @@ impl AccountingState {
             text(&event.actor)?;
             text(&event.reason)?;
             DateTime::parse_from_rfc3339(&event.recorded_at)
-                .map_err(|_| anyhow::anyhow!("زمان تاریخچه نامعتبر است"))?;
+                .map_err(|_| anyhow::anyhow!("زمان سوابق تغییرات نامعتبر است"))?;
             let before_audit = replay.audit.len();
             match event.operation {
                 AuditOperation::ProcurementRecorded => {
@@ -362,7 +362,7 @@ impl AccountingState {
                         context.company_id == event.company_id
                             && context.actor == event.actor
                             && context.reason == event.reason,
-                        "رویداد خرید و تاریخچهٔ آن سازگار نیستند"
+                        "رویداد خرید و سوابق تغییرات آن سازگار نیستند"
                     );
                     let journal_count = replay.journals.len();
                     ensure!(
@@ -387,7 +387,7 @@ impl AccountingState {
                         context.company_id == event.company_id
                             && context.actor == event.actor
                             && context.reason == event.reason,
-                        "رویداد فروش و تاریخچهٔ آن سازگار نیستند"
+                        "رویداد فروش و سوابق تغییرات آن سازگار نیستند"
                     );
                     let journal_count = replay.journals.len();
                     ensure!(
@@ -406,12 +406,12 @@ impl AccountingState {
                         .setups
                         .iter()
                         .find(|s| s.id == event.entity_id)
-                        .ok_or_else(|| anyhow::anyhow!("تنظیمات تاریخچه پیدا نشد"))?;
+                        .ok_or_else(|| anyhow::anyhow!("تنظیمات سوابق تغییرات پیدا نشد"))?;
                     ensure!(
                         setup.command.company_id == event.company_id
                             && setup.command.actor == event.actor
                             && setup.command.reason == event.reason,
-                        "تنظیمات و تاریخچهٔ آن سازگار نیستند"
+                        "تنظیمات و سوابق تغییرات آن سازگار نیستند"
                     );
                     replay.replay_core_setup(setup)?;
                 }
@@ -429,7 +429,7 @@ impl AccountingState {
                         opening.command.company_id == event.company_id
                             && opening.command.actor == event.actor
                             && opening.command.reason == event.reason,
-                        "شروع دفتر و تاریخچهٔ آن سازگار نیستند"
+                        "شروع دفتر و سوابق تغییرات آن سازگار نیستند"
                     );
                     let before = replay.journals.len();
                     replay.replay_core_opening(opening.command.clone())?;
@@ -455,7 +455,7 @@ impl AccountingState {
                     ensure!(
                         company.id == event.company_id
                             && !replay.companies.iter().any(|c| c.id == company.id),
-                        "تاریخچهٔ ایجاد کسب‌وکار نامعتبر است"
+                        "سوابق تغییرات ایجاد کسب‌وکار نامعتبر است"
                     );
                     text(&company.name)?;
                     replay.companies.push(company.clone());
@@ -472,7 +472,7 @@ impl AccountingState {
                     ensure!(
                         p.company_id == event.company_id
                             && !replay.periods.iter().any(|old| old.id == p.id),
-                        "تاریخچهٔ ایجاد سال مالی نامعتبر است"
+                        "سوابق تغییرات ایجاد سال مالی نامعتبر است"
                     );
                     let generated = replay.add_period(
                         &p.company_id,
@@ -493,11 +493,11 @@ impl AccountingState {
                         .accounts
                         .iter()
                         .find(|a| a.id == event.entity_id)
-                        .ok_or_else(|| anyhow::anyhow!("حساب تاریخچه پیدا نشد"))?;
+                        .ok_or_else(|| anyhow::anyhow!("حساب سوابق تغییرات پیدا نشد"))?;
                     ensure!(
                         a.company_id == event.company_id
                             && !replay.accounts.iter().any(|old| old.id == a.id),
-                        "تاریخچهٔ ایجاد حساب نامعتبر است"
+                        "سوابق تغییرات ایجاد حساب نامعتبر است"
                     );
                     let generated = replay.add_account(
                         NewAccount {
@@ -525,14 +525,14 @@ impl AccountingState {
                             .accounts
                             .iter()
                             .any(|a| a.id == event.entity_id && a.company_id == event.company_id),
-                        "کسب‌وکار تاریخچهٔ حساب نامعتبر است"
+                        "کسب‌وکار سوابق تغییرات حساب نامعتبر است"
                     );
                     replay.archive_account(&event.entity_id, &event.actor, &event.reason)?;
                 }
                 AuditOperation::PeriodLocked | AuditOperation::PeriodReopened => {
                     ensure!(
                         replay.period(&event.entity_id)?.company_id == event.company_id,
-                        "کسب‌وکار تاریخچهٔ قفل نامعتبر است"
+                        "کسب‌وکار سوابق تغییرات قفل نامعتبر است"
                     );
                     replay.set_period_lock(
                         &event.entity_id,
@@ -546,13 +546,13 @@ impl AccountingState {
                         .journals
                         .iter()
                         .find(|j| j.id == event.entity_id)
-                        .ok_or_else(|| anyhow::anyhow!("سند تاریخچه پیدا نشد"))?;
+                        .ok_or_else(|| anyhow::anyhow!("سند سوابق تغییرات پیدا نشد"))?;
                     ensure!(
                         j.company_id == event.company_id
                             && j.actor == event.actor
                             && j.reason == event.reason
                             && j.recorded_at == event.recorded_at,
-                        "تاریخچه و سند ثبت‌شده سازگار نیستند"
+                        "سوابق تغییرات و سند ثبت‌شده سازگار نیستند"
                     );
                     let request = self
                         .requests
@@ -585,7 +585,7 @@ impl AccountingState {
                             context.company_id == event.company_id
                                 && context.actor == event.actor
                                 && context.reason == event.reason,
-                            "رویداد خرید و تاریخچهٔ سند مالی سازگار نیستند"
+                            "رویداد خرید و سوابق تغییرات سند مالی سازگار نیستند"
                         );
                         let generated =
                             replay.replay_procurement_record(record)?.ok_or_else(|| {
@@ -604,7 +604,7 @@ impl AccountingState {
                             context.company_id == event.company_id
                                 && context.actor == event.actor
                                 && context.reason == event.reason,
-                            "رویداد فروش و تاریخچهٔ سند مالی سازگار نیستند"
+                            "رویداد فروش و سوابق تغییرات سند مالی سازگار نیستند"
                         );
                         let generated = replay.replay_sales_record(record)?.ok_or_else(|| {
                             anyhow::anyhow!("رویداد فروش اثر مالی مورد انتظار را ندارد")
@@ -626,7 +626,9 @@ impl AccountingState {
                         .journals
                         .iter_mut()
                         .find(|posted| posted.id == generated)
-                        .ok_or_else(|| anyhow::anyhow!("تاریخچه رویداد اقتصادی تکراری دارد"))?;
+                        .ok_or_else(|| {
+                            anyhow::anyhow!("سوابق تغییرات رویداد اقتصادی تکراری دارد")
+                        })?;
                     let mut expected = j.clone();
                     expected.id = generated.clone();
                     expected.recorded_at = posted.recorded_at.clone();
@@ -650,7 +652,7 @@ impl AccountingState {
             }
             ensure!(
                 replay.audit.len() == before_audit + 1,
-                "تاریخچهٔ عملیات تکراری یا نامعتبر است"
+                "سوابق تغییرات عملیات تکراری یا نامعتبر است"
             );
             replay.audit[before_audit] = event.clone();
         }
@@ -691,7 +693,7 @@ impl AccountingState {
                 && replay.audit.len() == audit_count
                 && replay.procurement.records.len() == procurement_count
                 && replay.sales.records.len() == sales_count,
-            "درخواست بدون تاریخچهٔ ثبت وجود دارد"
+            "درخواست بدون سوابق تغییرات ثبت وجود دارد"
         );
         // Original request order includes retry aliases between journal commands.
         // Uniqueness has been checked by post; preserve that original order.
@@ -717,7 +719,7 @@ impl AccountingState {
         replay.sales.requests = self.sales.requests.clone();
         ensure!(
             replay == *self,
-            "دادهٔ حسابداری با تاریخچهٔ کامل آن سازگار نیست"
+            "دادهٔ حسابداری با سوابق تغییرات کامل آن سازگار نیست"
         );
         Ok(())
     }
@@ -747,11 +749,11 @@ impl AccountingState {
         }
         ensure!(
             next.requests.starts_with(&self.requests),
-            "تاریخچهٔ درخواست ثبت‌شده قابل تغییر یا حذف نیست"
+            "سوابق تغییرات درخواست ثبت‌شده قابل تغییر یا حذف نیست"
         );
         ensure!(
             next.audit.starts_with(&self.audit),
-            "تاریخچهٔ حسابداری قابل تغییر یا حذف نیست"
+            "سوابق تغییرات حسابداری قابل تغییر یا حذف نیست"
         );
         ensure!(
             next.companies.starts_with(&self.companies),

@@ -133,7 +133,7 @@ fn metadata(reference: &str, quote_date: &str, valid_until: &str, notes: &str) -
     if let Some(expiry) = expiry {
         ensure!(
             date.is_some_and(|date| expiry >= date),
-            "تاریخ اعتبار باید برابر یا پس از تاریخ پیشنهاد باشد"
+            "تاریخ اعتبار باید برابر یا پس از تاریخ پیش‌فاکتور باشد"
         );
     }
     Ok(())
@@ -1202,14 +1202,14 @@ impl State {
                     .quotes
                     .iter()
                     .any(|x| x.series != q.series && normalize(&x.number) == normalize(&q.number)),
-                "شمارهٔ پیشنهاد قبلاً استفاده شده است"
+                "شمارهٔ پیش‌فاکتور قبلاً استفاده شده است"
             );
             let next = self
                 .settings
                 .next_number
                 .checked_add(1)
                 .filter(|n| *n < u64::MAX)
-                .ok_or_else(|| anyhow::anyhow!("سرریز شمارهٔ پیشنهاد"))?;
+                .ok_or_else(|| anyhow::anyhow!("سرریز شمارهٔ پیش‌فاکتور"))?;
             self.settings.next_number = next;
             q.version = 1;
         }
@@ -1250,7 +1250,7 @@ impl State {
             .quotes
             .iter()
             .find(|q| q.id == quote_id)
-            .ok_or_else(|| anyhow::anyhow!("پیشنهاد یافت نشد"))?;
+            .ok_or_else(|| anyhow::anyhow!("پیش‌فاکتور یافت نشد"))?;
         self.draft = Draft {
             series: q.series.clone(),
             catalog_id: q.catalog_id.clone(),
@@ -1399,7 +1399,7 @@ impl State {
                 Uuid::parse_str(&q.customer_id)?;
                 ensure!(
                     self.customers.iter().any(|c| c.id == q.customer_id),
-                    "مشتری مرتبط پیشنهاد موجود نیست"
+                    "مشتری مرتبط پیش‌فاکتور موجود نیست"
                 );
             }
             issuer_metadata(
@@ -1412,22 +1412,22 @@ impl State {
             )?;
             ensure!(
                 q.number.chars().count() <= 64 && !q.number.chars().any(forbidden_control),
-                "شمارهٔ پیشنهاد نامعتبر است"
+                "شمارهٔ پیش‌فاکتور نامعتبر است"
             );
             if let Some(previous) = series_numbers.insert(&q.series, &q.number) {
                 ensure!(
                     previous == q.number,
-                    "شمارهٔ پیشنهاد در اصلاحیه تغییر کرده است"
+                    "شمارهٔ پیش‌فاکتور در اصلاحیه تغییر کرده است"
                 );
             }
             if !q.number.is_empty()
                 && let Some(previous_series) = used_numbers.insert(normalize(&q.number), &q.series)
             {
-                ensure!(previous_series == q.series, "شمارهٔ پیشنهاد تکراری است");
+                ensure!(previous_series == q.series, "شمارهٔ پیش‌فاکتور تکراری است");
             }
             ensure!(
                 !q.lines.is_empty() && q.lines.len() <= MAX_QUOTE_LINES,
-                "تعداد ردیف‌های پیشنهاد نامعتبر است"
+                "تعداد ردیف‌های پیش‌فاکتور نامعتبر است"
             );
             ensure!(
                 ids.insert(&q.id) && q.version > 0 && versions.insert((&q.series, q.version)),
@@ -1436,7 +1436,7 @@ impl State {
             let previous = series_versions.get(q.series.as_str()).copied().unwrap_or(0);
             ensure!(
                 previous.checked_add(1) == Some(q.version),
-                "ترتیب نسخه‌ها یا زنجیرهٔ پیشنهاد نامعتبر است"
+                "ترتیب نسخه‌ها یا زنجیرهٔ پیش‌فاکتور نامعتبر است"
             );
             series_versions.insert(&q.series, q.version);
             let approved_at = DateTime::parse_from_rfc3339(&q.approved_at)?;
@@ -1447,7 +1447,7 @@ impl State {
                 .catalogs
                 .iter()
                 .find(|c| c.id == q.catalog_id)
-                .ok_or_else(|| anyhow::anyhow!("فهرست پیشنهاد موجود نیست"))?;
+                .ok_or_else(|| anyhow::anyhow!("فهرست پیش‌فاکتور موجود نیست"))?;
             let mut check = State {
                 catalogs: vec![catalog.clone()],
                 ..State::default()
@@ -1493,11 +1493,11 @@ impl State {
                 text(&l.query)?;
                 ensure!(
                     DateTime::parse_from_rfc3339(&l.source_at)? <= approved_at,
-                    "زمان منبع پس از تأیید پیشنهاد است"
+                    "زمان منبع پس از تأیید پیش‌فاکتور است"
                 );
                 ensure!(
                     !stale_at(&l.source_at, &q.approved_at) || q.stale_ack,
-                    "تأیید هشدار قیمت قدیمی در پیشنهاد ثبت نشده است"
+                    "تأیید هشدار قیمت قدیمی در پیش‌فاکتور ثبت نشده است"
                 );
             }
             ensure!(
@@ -1505,7 +1505,7 @@ impl State {
                     && expected.total_rial == q.total_rial
                     && expected.tax_rial == q.tax_rial
                     && expected.catalog_name == q.catalog_name,
-                "مبالغ یا منبع پیشنهاد ناسازگار است"
+                "مبالغ یا منبع پیش‌فاکتور ناسازگار است"
             );
         }
         Uuid::parse_str(&self.draft.series)?;

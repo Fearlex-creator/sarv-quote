@@ -1,0 +1,1137 @@
+[
+  {
+    "node": 249036496,
+    "name": "sarv-quote",
+    "role": "application"
+  },
+  {
+    "node": 249077296,
+    "name": "سرو | مشتریان",
+    "role": "frame"
+  },
+  {
+    "node": 249076992,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249078144,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249424976,
+    "name": "مشتری تازه",
+    "role": "dialog"
+  },
+  {
+    "node": 249077840,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249425312,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249076448,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249425696,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249076304,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249011104,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249419792,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249426128,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249038720,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249046080,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249426544,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249056144,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249046592,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249083200,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249083696,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249084192,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249084688,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249426976,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249085184,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249085600,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249086064,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249086528,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249086992,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249087456,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249041232,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249041088,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249040944,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249089776,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249090272,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 249090768,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249091264,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249091760,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249427424,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 249423504,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249430592,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249381760,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249092256,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249092752,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249093248,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249093744,
+    "name": "تنظیمات و نگهداری داده",
+    "role": "list"
+  },
+  {
+    "node": 249094256,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249094704,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249095200,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249427856,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249430928,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249431472,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249383120,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249382368,
+    "name": "جست‌وجوی مشتری",
+    "role": "entry"
+  },
+  {
+    "node": 249383696,
+    "name": "",
+    "role": "scroll pane"
+  },
+  {
+    "node": 249096160,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249096656,
+    "name": "بازیابی پس از اجرای مجدد تأیید شد",
+    "role": "label"
+  },
+  {
+    "node": 249097216,
+    "name": "صفحه‌های فضای کار",
+    "role": "list"
+  },
+  {
+    "node": 249097792,
+    "name": "پشتیبان و بازیابی",
+    "role": "list item"
+  },
+  {
+    "node": 249098224,
+    "name": "تنظیمات",
+    "role": "list item"
+  },
+  {
+    "node": 249098784,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249099296,
+    "name": "ذخیره روی این دستگاه",
+    "role": "label"
+  },
+  {
+    "node": 249099776,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249428288,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249431968,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249432464,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249384192,
+    "name": "مشتریان ذخیره‌شده",
+    "role": "label"
+  },
+  {
+    "node": 249384672,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249102128,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249102624,
+    "name": "فروش",
+    "role": "list item"
+  },
+  {
+    "node": 249103904,
+    "name": "خرید",
+    "role": "list item"
+  },
+  {
+    "node": 249104384,
+    "name": "انبار",
+    "role": "list item"
+  },
+  {
+    "node": 249104896,
+    "name": "حسابداری",
+    "role": "list item"
+  },
+  {
+    "node": 249105408,
+    "name": "پیش‌فاکتور",
+    "role": "list item"
+  },
+  {
+    "node": 249105952,
+    "name": "بایگانی پیش‌فاکتورها",
+    "role": "list item"
+  },
+  {
+    "node": 249106448,
+    "name": "مشتریان",
+    "role": "list item"
+  },
+  {
+    "node": 249106960,
+    "name": "کالاها و قیمت‌ها",
+    "role": "list item"
+  },
+  {
+    "node": 249107440,
+    "name": "عملیات",
+    "role": "label"
+  },
+  {
+    "node": 249108048,
+    "name": "پیش‌فاکتورها",
+    "role": "label"
+  },
+  {
+    "node": 249108480,
+    "name": "کالا و مشتری",
+    "role": "label"
+  },
+  {
+    "node": 249108992,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249109440,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249109936,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249428768,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249429760,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249415760,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249420816,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249417392,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249432928,
+    "name": "ویرایش اطلاعات، نسخه‌های تأییدشده را تغییر نمی‌دهد.",
+    "role": "label"
+  },
+  {
+    "node": 249433408,
+    "name": "",
+    "role": "label"
+  },
+  {
+    "node": 249433872,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249434320,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249385872,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249112608,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249113120,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249113616,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249114112,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249114608,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249115104,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249115600,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249116112,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249116624,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249117136,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249117600,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249118096,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249118560,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249119056,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249435568,
+    "name": "نام مشتری",
+    "role": "label"
+  },
+  {
+    "node": 249429200,
+    "name": "نام مشتری",
+    "role": "text"
+  },
+  {
+    "node": 249436080,
+    "name": "نام مخاطب",
+    "role": "label"
+  },
+  {
+    "node": 249430032,
+    "name": "نام مخاطب",
+    "role": "text"
+  },
+  {
+    "node": 249436544,
+    "name": "تلفن",
+    "role": "label"
+  },
+  {
+    "node": 249420256,
+    "name": "تلفن",
+    "role": "text"
+  },
+  {
+    "node": 249437008,
+    "name": "ایمیل",
+    "role": "label"
+  },
+  {
+    "node": 249418064,
+    "name": "ایمیل",
+    "role": "text"
+  },
+  {
+    "node": 249437472,
+    "name": "نشانی",
+    "role": "label"
+  },
+  {
+    "node": 249417712,
+    "name": "نشانی",
+    "role": "text"
+  },
+  {
+    "node": 249437936,
+    "name": "ذخیرهٔ مشتری",
+    "role": "button"
+  },
+  {
+    "node": 249438384,
+    "name": "انصراف",
+    "role": "button"
+  },
+  {
+    "node": 249438880,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249386384,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249386880,
+    "name": "۳ مشتری",
+    "role": "label"
+  },
+  {
+    "node": 249387392,
+    "name": "",
+    "role": "list"
+  },
+  {
+    "node": 249126016,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249126512,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249127008,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249127504,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249127968,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249129216,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249129680,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249130176,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249130640,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249131136,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249131600,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249132096,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249132560,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249133056,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249133520,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249134016,
+    "name": "۳",
+    "role": "label"
+  },
+  {
+    "node": 249137648,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249138064,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249138560,
+    "name": "۳",
+    "role": "label"
+  },
+  {
+    "node": 249139072,
+    "name": "",
+    "role": "image"
+  },
+  {
+    "node": 249139488,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249139984,
+    "name": "۴",
+    "role": "label"
+  },
+  {
+    "node": 249140496,
+    "name": "پشتیبان و بازیابی",
+    "role": "label"
+  },
+  {
+    "node": 249140928,
+    "name": "تنظیمات",
+    "role": "label"
+  },
+  {
+    "node": 249141440,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249141856,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249142352,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249434816,
+    "name": "ذخیرهٔ مشتری",
+    "role": "label"
+  },
+  {
+    "node": 249435328,
+    "name": "انصراف",
+    "role": "label"
+  },
+  {
+    "node": 249440656,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249388656,
+    "name": "مشتری تازه",
+    "role": "button"
+  },
+  {
+    "node": 249389104,
+    "name": "نمایش بایگانی",
+    "role": "check box"
+  },
+  {
+    "node": 249389568,
+    "name": "",
+    "role": "list item"
+  },
+  {
+    "node": 249390112,
+    "name": "",
+    "role": "list item"
+  },
+  {
+    "node": 249390608,
+    "name": "",
+    "role": "list item"
+  },
+  {
+    "node": 249151904,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249152400,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249152896,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249153392,
+    "name": "فروش",
+    "role": "label"
+  },
+  {
+    "node": 249153904,
+    "name": "سفارش و فاکتور فروش",
+    "role": "label"
+  },
+  {
+    "node": 249154336,
+    "name": "خرید",
+    "role": "label"
+  },
+  {
+    "node": 249154848,
+    "name": "سفارش و فاکتور خرید",
+    "role": "label"
+  },
+  {
+    "node": 249156320,
+    "name": "انبار",
+    "role": "label"
+  },
+  {
+    "node": 249156832,
+    "name": "حسابداری",
+    "role": "label"
+  },
+  {
+    "node": 249157296,
+    "name": "پیش‌فاکتور",
+    "role": "label"
+  },
+  {
+    "node": 249157760,
+    "name": "بایگانی پیش‌فاکتورها",
+    "role": "label"
+  },
+  {
+    "node": 249158256,
+    "name": "مشتریان",
+    "role": "label"
+  },
+  {
+    "node": 249158720,
+    "name": "کالاها و قیمت‌ها",
+    "role": "label"
+  },
+  {
+    "node": 249159152,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249442512,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249442976,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249443472,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249387904,
+    "name": "مشتری تازه",
+    "role": "label"
+  },
+  {
+    "node": 249388416,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249392336,
+    "name": "نمایش بایگانی",
+    "role": "label"
+  },
+  {
+    "node": 249392816,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249393312,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249393808,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249170752,
+    "name": "فهرست صفحه‌ها",
+    "role": "button"
+  },
+  {
+    "node": 249171184,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249159648,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249160160,
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "node": 249160672,
+    "name": "پخش نمونهٔ سرو",
+    "role": "label"
+  },
+  {
+    "node": 249441120,
+    "name": "مشتری تازه",
+    "role": "label"
+  },
+  {
+    "node": 249441632,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249395504,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249396048,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249396464,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249397008,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249397424,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249397968,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249179120,
+    "name": "مشتریان",
+    "role": "label"
+  },
+  {
+    "node": 249179632,
+    "name": "سرو",
+    "role": "label"
+  },
+  {
+    "node": 249180096,
+    "name": "Minimize",
+    "role": "button"
+  },
+  {
+    "node": 249180512,
+    "name": "Maximize",
+    "role": "button"
+  },
+  {
+    "node": 249180976,
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "node": 249442080,
+    "name": "",
+    "role": "grouping"
+  },
+  {
+    "node": 249398384,
+    "name": "فروشگاه نمونهٔ پارس",
+    "role": "list item"
+  },
+  {
+    "node": 249398848,
+    "name": "فروشگاه نمونهٔ پارس",
+    "role": "list item"
+  },
+  {
+    "node": 249399360,
+    "name": "مشتری نمایشی دوم",
+    "role": "list item"
+  },
+  {
+    "node": 249445648,
+    "name": "Close",
+    "role": "button"
+  },
+  {
+    "node": 249394304,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249394848,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249395344,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249401616,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249402112,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249402608,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249403104,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249403600,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249404096,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249404592,
+    "name": "فروشگاه نمونهٔ پارس",
+    "role": "label"
+  },
+  {
+    "node": 249405072,
+    "name": "⁦۰۹۱۲۰۰۰۰۰۰۰⁩",
+    "role": "label"
+  },
+  {
+    "node": 249405552,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249406048,
+    "name": "فروشگاه نمونهٔ پارس",
+    "role": "label"
+  },
+  {
+    "node": 249406528,
+    "name": "بدون تلفن",
+    "role": "label"
+  },
+  {
+    "node": 249407040,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249407488,
+    "name": "مشتری نمایشی دوم",
+    "role": "label"
+  },
+  {
+    "node": 249407968,
+    "name": "⁦۰۹۱۲۰۰۰۰۰۰۱⁩",
+    "role": "label"
+  },
+  {
+    "node": 249408448,
+    "name": "",
+    "role": "panel"
+  },
+  {
+    "node": 249408944,
+    "name": "استفاده",
+    "role": "button"
+  },
+  {
+    "node": 249409440,
+    "name": "استفاده",
+    "role": "button"
+  },
+  {
+    "node": 249399872,
+    "name": "استفاده",
+    "role": "button"
+  },
+  {
+    "node": 249400368,
+    "name": "استفاده",
+    "role": "label"
+  },
+  {
+    "node": 249400880,
+    "name": "استفاده",
+    "role": "label"
+  },
+  {
+    "node": 249411632,
+    "name": "استفاده",
+    "role": "label"
+  }
+]

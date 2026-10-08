@@ -24,7 +24,7 @@ fn defaults_are_real_new_draft_snapshots() {
         business_name: "بازرگانی نمونه".into(),
         business_phone: "۱۲۳۴".into(),
         business_address: "خیابان اول\nپلاک دوم".into(),
-        header: "پیشنهاد فروش".into(),
+        header: "پیش‌فاکتور فروش".into(),
         footer: "با سپاس".into(),
         default_terms: "اعتبار هفت روز".into(),
         default_currency: Unit::Rial,
@@ -47,7 +47,7 @@ fn defaults_are_real_new_draft_snapshots() {
     assert_eq!(state.draft.issuer_name, "بازرگانی نمونه");
     assert_eq!(state.draft.issuer_phone, "۱۲۳۴");
     assert_eq!(state.draft.issuer_address, "خیابان اول\nپلاک دوم");
-    assert_eq!(state.draft.header, "پیشنهاد فروش");
+    assert_eq!(state.draft.header, "پیش‌فاکتور فروش");
     assert_eq!(state.draft.footer, "با سپاس");
     assert_eq!(state.draft.terms, "اعتبار هفت روز");
     assert_eq!(state.draft.tax_basis_points, 975);

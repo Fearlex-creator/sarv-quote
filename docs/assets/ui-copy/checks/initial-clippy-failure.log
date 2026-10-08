@@ -1,0 +1,31 @@
+    Checking sarv-quote v0.1.0 (/workspace/sarv-quote)
+error: for loop over a single element
+   --> src/ui/smoke.rs:306:5
+    |
+306 | /     for (title, value) in [("مدت اعتبار (روز)", 14.0)] {
+307 | |         descendants::<adw::SpinRow>(&page)
+308 | |             .iter()
+309 | |             .find(|r| r.title() == title)
+310 | |             .context("spin setting missing")?
+311 | |             .set_value(value);
+312 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.99.0/index.html#single_element_loop
+    = note: `-D clippy::single-element-loop` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::single_element_loop)]`
+help: try
+    |
+306 ~     {
+307 ~         let (title, value) = ("مدت اعتبار (روز)", 14.0);
+308 +         descendants::<adw::SpinRow>(&page)
+309 +             .iter()
+310 +             .find(|r| r.title() == title)
+311 +             .context("spin setting missing")?
+312 +             .set_value(value);
+313 +     }
+    |
+
+error: could not compile `sarv-quote` (bin "sarv-quote" test) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `sarv-quote` (bin "sarv-quote") due to 1 previous error

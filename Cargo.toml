@@ -3,7 +3,7 @@ name = "sarv-quote"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-description = "Offline Persian native distributor quotation preparation"
+description = "Offline Persian native accounting and quotation application"
 
 [dependencies]
 adw = { package = "libadwaita", version = "0.9.2", features = ["v1_9"] }

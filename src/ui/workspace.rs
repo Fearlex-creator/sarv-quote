@@ -83,7 +83,7 @@ pub(super) fn sidebar_header(business: &str) -> gtk::Box {
     title.add_css_class("title-3");
     header.append(&title);
     let business = if business.trim().is_empty() {
-        "پیشنهاد قیمت · فضای کار محلی"
+        "حسابداری"
     } else {
         business
     };
