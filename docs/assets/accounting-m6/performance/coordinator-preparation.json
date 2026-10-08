@@ -1,0 +1,24 @@
+{
+  "result": "PASS static syntax, coordinator root, unchanged observer; no GUI/build or measurement",
+  "files": {
+    "scripts/native-performance-M6.py": {
+      "sha256": "540cd09dc0ee2c00267ccf39e90e66ed110bffb5ab37b5bde0be82ce61620197",
+      "bytes": 48591,
+      "syntax": "PASS"
+    },
+    "docs/assets/accounting-m6/performance/coordinator.py": {
+      "sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+      "bytes": 6985,
+      "syntax": "PASS"
+    },
+    "docs/assets/accounting-m6/performance/analyze.py": {
+      "sha256": "fa2d1a891df12900f26e2af337587197b6dd987e8c6dcfaa3f4beef510a45a26",
+      "bytes": 5863,
+      "syntax": "PASS"
+    }
+  },
+  "GUI_started": false,
+  "build_started": false,
+  "receipt_stamped": false,
+  "reason": "Root candidate4 qualification/freeze and explicit pilot GO pending"
+}

@@ -1,0 +1,7 @@
+# Candidate8 read-only page completion status: static review
+
+Reviewed exact diff against candidate7 archived production files. Only `src/ui.rs`, `src/ui/sales.rs` and `src/ui/procurement.rs` differ; exact file/diff hashes are retained in `candidate8-status-static-result.json` and the adjacent diff. No GUI/Cargo/product edit by reviewer. No actionable P2/P3 finding in this bounded change.
+
+The new `page_load_message(page, working, result)` forwards errors and active-page completions. An inactive page success clears only its exact current loading text to generic local readiness; it preserves a different page/user status. Three read-only Sales completion paths and three Procurement completion paths use it. Procurement captures its actual Purchases/Inventory destination explicitly. Page model/snapshot rendering remains local and unchanged; command/export/persistence completion and background execution semantics remain global/unchanged.
+
+This addresses the static cause of C7-R03 (Sales-ready completion overwriting active Purchases). Native evidence must still show the affected page's late completion does not replace another page's status, the inactive owned loading text resolves, and ordinary active Sales/Purchases/Inventory completion remains useful. Prior candidate7 Return/sidebar native results retain their exact attribution; this static review does not relabel them as candidate8 execution.

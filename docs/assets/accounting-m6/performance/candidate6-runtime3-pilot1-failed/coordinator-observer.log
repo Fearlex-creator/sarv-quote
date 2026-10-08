@@ -1,0 +1,30 @@
+dbus-daemon[354761]: [session uid=1000 pid=354761 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=354762 comm="/usr/bin/python3 /workspace/sarv-quote/scripts/nat" label="kernel")
+dbus-daemon[354761]: [session uid=1000 pid=354761 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[354788]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=354762 comm="/usr/bin/python3 /workspace/sarv-quote/scripts/nat" label="kernel")
+dbus-daemon[354788]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+(process:354762): dbind-WARNING **: 12:22:53.967: AT-SPI: Error in GetItems, sender=:1.2, error=Object does not exist at path “/org/a11y/atspi/cache”
+X connection to :10 broken (explicit kill or server shutdown).
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 801, in <module>
+    main()
+    ~~~~^^
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 767, in main
+    observer.searches(name)
+    ~~~~~~~~~~~~~~~~~^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 398, in searches
+    observe(zero, 'exact zero-result source scope')
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 173, in observe
+    return legacy.observe(predicate, label, seconds)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M4.py", line 77, in observe
+    result = predicate()
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 396, in zero
+    statuses, actions = self.source_rows(access, rows, root)
+                        ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/native-performance-M6.py", line 370, in source_rows
+    assert all(member(access, row, root) for row in [*statuses, *actions])
+           ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError

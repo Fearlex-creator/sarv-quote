@@ -1,0 +1,17 @@
+{
+  "final_measurement_run": false,
+  "generator": "sarv-m6-performance-dataset-v1",
+  "result": "prepared-canonical-synthetic-only",
+  "root_compile_before_quiet_measurement": true,
+  "seed_backup": "docs/assets/accounting-m6/review/diagnostics/old-m5-helper/actual-old-M5-v6.json",
+  "seed_state": "docs/assets/accounting-m6/review/diagnostics/old-m5-helper/actual-old-M5-state.json",
+  "startup_cohorts": [
+    "main-seed",
+    "main-posted",
+    "source120-billed",
+    "source120-unbilled",
+    "return20-unbilled",
+    "return200-billed"
+  ],
+  "workflow_only_without_startup_cohort": "return20-billed"
+}

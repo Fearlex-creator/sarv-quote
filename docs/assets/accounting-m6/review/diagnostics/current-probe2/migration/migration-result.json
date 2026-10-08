@@ -1,0 +1,11 @@
+{
+  "checksum_rejected": true,
+  "exact_original_recovery": true,
+  "full_fresh_restores": 2,
+  "full_prefix_preserved": true,
+  "genuine_old_source": true,
+  "hardware_power_loss_tested": false,
+  "new_schema": 7,
+  "old_binary_refused_without_payload_mutation": true,
+  "original_schema": 6
+}

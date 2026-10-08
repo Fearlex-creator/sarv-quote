@@ -34,7 +34,7 @@ struct Ui {
     store: RefCell<Store>,
     window: gtk::ApplicationWindow,
     stack: gtk::Stack,
-    split: adw::NavigationSplitView,
+    split: adw::OverlaySplitView,
     status: gtk::Label,
     customer: gtk::Entry,
     phone: gtk::Entry,
@@ -233,6 +233,11 @@ fn sidebar_destination(
 }
 
 impl Ui {
+    fn show_workspace_content(&self) {
+        if self.split.is_collapsed() {
+            self.split.set_show_sidebar(false);
+        }
+    }
     fn set_quote_date(&self, field: &accounting::DateField, canonical: &str) {
         if field.set_canonical(canonical).is_err() {
             // A legacy date outside the Jalali range stays visible and editable
@@ -254,6 +259,16 @@ impl Ui {
                 self.status.add_css_class("error");
                 self.status.set_text(&format!("{e:#}"));
             }
+        }
+    }
+    // A read-only page load may finish after navigation. Keep its result in the
+    // page, and clear only the loading message that this worker still owns.
+    // Errors and financial/persistence completion messages remain global.
+    fn page_load_message(&self, page: &str, working: &str, r: Result<impl ToString>) {
+        if r.is_err() || self.stack.visible_child_name().as_deref() == Some(page) {
+            self.message(r);
+        } else if self.status.text() == working {
+            self.message(Ok("آماده • فضای کار محلی"));
         }
     }
     fn form_draft(&self) -> Result<(Draft, bool)> {
@@ -650,7 +665,7 @@ impl Ui {
         self.fill_form();
         self.refresh_review();
         self.stack.set_visible_child_name("order");
-        self.split.set_show_content(true);
+        self.show_workspace_content();
         self.customer.grab_focus();
     }
     fn import_catalog(self: &Rc<Self>, path: &Path) {
@@ -1076,7 +1091,7 @@ fn build(app: &gtk::Application, store: Store) {
     );
     let adw_window = adw::ApplicationWindow::builder()
         .application(app)
-        .title("سرو | آماده‌سازی پیشنهاد قیمت")
+        .title("سرو | پیشنهاد قیمت")
         .default_width(1400)
         .default_height(940)
         .build();
@@ -1084,44 +1099,71 @@ fn build(app: &gtk::Application, store: Store) {
     window.add_css_class("sarv-app");
     let root = adw::ToolbarView::new();
     let header = adw::HeaderBar::new();
+    // Each split page owns its toolbar. A window-wide toolbar leaves an empty
+    // strip above the sidebar and prevents its native surface reaching the top.
+    header.set_show_back_button(false);
     let window_title = adw::WindowTitle::new("پیشنهاد قیمت", "سرو · فضای کار محلی");
     header.set_title_widget(Some(&window_title));
     let navigation = gtk::Button::from_icon_name("sidebar-show-symbolic");
     navigation.set_widget_name("show-workspace-navigation");
-    navigation.set_tooltip_text(Some("فهرست صفحه‌ها"));
+    navigation.set_tooltip_text(Some("نمایش یا پنهان کردن فهرست صفحه‌ها • F9"));
     accessible_name(&navigation, "فهرست صفحه‌ها");
     header.pack_start(&navigation);
     root.add_top_bar(&header);
-    let body = adw::NavigationSplitView::new();
+    let body = adw::OverlaySplitView::new();
     body.set_min_sidebar_width(240.0);
     body.set_max_sidebar_width(280.0);
     body.set_sidebar_width_fraction(0.20);
-    body.set_show_content(true);
-    navigation.set_visible(body.is_collapsed());
+    body.set_show_sidebar(true);
+    navigation.update_state(&[gtk::accessible::State::Expanded(Some(true))]);
     let nav_toggle = navigation.clone();
-    body.connect_collapsed_notify(move |split| nav_toggle.set_visible(split.is_collapsed()));
+    body.connect_show_sidebar_notify(move |split| {
+        nav_toggle.update_state(&[gtk::accessible::State::Expanded(Some(
+            split.shows_sidebar(),
+        ))]);
+        if split.is_collapsed() && !split.shows_sidebar() {
+            nav_toggle.grab_focus();
+        }
+    });
     let breakpoint = adw::Breakpoint::new(
         adw::BreakpointCondition::parse("max-width: 1050px").expect("constant breakpoint"),
     );
     breakpoint.add_setter(&body, "collapsed", Some(&true.to_value()));
+    breakpoint.add_setter(&body, "show-sidebar", Some(&false.to_value()));
     adw_window.add_breakpoint(breakpoint);
     let nav = column();
     nav.set_spacing(0);
     nav.add_css_class("sidebar");
-    nav.append(&workspace::sidebar_header(
+    let sidebar_toolbar = adw::ToolbarView::new();
+    let sidebar_header = adw::HeaderBar::new();
+    sidebar_header.set_title_widget(Some(&workspace::sidebar_header(
         &store.state.settings.business_name,
-    ));
+    )));
+    let sidebar_close = gtk::Button::from_icon_name("window-close-symbolic");
+    accessible_name(&sidebar_close, "بستن فهرست صفحه‌ها");
+    sidebar_close.set_tooltip_text(Some("بستن فهرست صفحه‌ها"));
+    sidebar_close.set_visible(body.is_collapsed());
+    let close_button = sidebar_close.clone();
+    body.connect_collapsed_notify(move |split| close_button.set_visible(split.is_collapsed()));
+    let split = body.downgrade();
+    sidebar_close.connect_clicked(move |_| {
+        if let Some(split) = split.upgrade() {
+            split.set_show_sidebar(false);
+        }
+    });
+    sidebar_header.pack_start(&sidebar_close);
+    sidebar_toolbar.add_top_bar(&sidebar_header);
+    sidebar_toolbar.set_content(Some(&nav));
     let stack = gtk::Stack::new();
     // Hidden workspaces must not impose their minimum height on this page.
     stack.set_vhomogeneous(false);
     stack.set_hexpand(true);
     stack.set_vexpand(true);
     stack.set_transition_type(gtk::StackTransitionType::Crossfade);
-    body.set_sidebar(Some(&adw::NavigationPage::new(&nav, "صفحه‌ها")));
-    let content_page = adw::NavigationPage::new(&stack, "پیشنهاد قیمت");
-    body.set_content(Some(&content_page));
-    root.set_content(Some(&body));
-    let status = label("آماده • قیمت‌ها تنها از فهرست تأییدشده می‌آیند");
+    body.set_sidebar(Some(&sidebar_toolbar));
+    root.set_content(Some(&stack));
+    body.set_content(Some(&root));
+    let status = label("آماده • فضای کار محلی");
     status.add_css_class("status");
     root.add_bottom_bar(&status);
     let order_shell = column();
@@ -1523,12 +1565,13 @@ fn build(app: &gtk::Application, store: Store) {
     }
     for list in [&destinations, &utilities] {
         let st = stack.clone();
-        let split = body.clone();
+        let split = body.downgrade();
         list.connect_row_activated(move |_, item| {
+            let Some(split) = split.upgrade() else { return };
             if let Some(name) = item.widget_name().strip_prefix("navigation-") {
                 st.set_visible_child_name(name);
-                split.set_show_content(true);
                 if split.is_collapsed() {
+                    split.set_show_sidebar(false);
                     st.child_focus(gtk::DirectionType::TabForward);
                 }
             }
@@ -1538,6 +1581,7 @@ fn build(app: &gtk::Application, store: Store) {
     let primary = destinations.clone();
     let secondary = utilities.clone();
     let title = window_title.clone();
+    let shell_window = window.downgrade();
     stack.connect_visible_child_name_notify(move |st| {
         let Some(name) = st.visible_child_name() else {
             return;
@@ -1555,7 +1599,9 @@ fn build(app: &gtk::Application, store: Store) {
                 item.add_css_class("current-page");
                 list.select_row(Some(item));
                 title.set_title(caption);
-                content_page.set_title(caption);
+                if let Some(window) = shell_window.upgrade() {
+                    window.set_title(Some(&format!("سرو | {caption}")));
+                }
             } else {
                 item.remove_css_class("current-page");
             }
@@ -1577,12 +1623,13 @@ fn build(app: &gtk::Application, store: Store) {
     local.append(&label("داده‌ها روی این رایانه"));
     footer.append(&local);
     nav.append(&footer);
-    let split = body.clone();
+    let split = body.downgrade();
     let rows = nav_rows.clone();
     let st = stack.clone();
     navigation.connect_clicked(move |_| {
-        split.set_show_content(!split.shows_content());
-        if !split.shows_content() {
+        let Some(split) = split.upgrade() else { return };
+        split.set_show_sidebar(!split.shows_sidebar());
+        if split.shows_sidebar() {
             if let Some((_, _, item, _)) = rows
                 .iter()
                 .find(|(name, _, _, _)| Some(*name) == st.visible_child_name().as_deref())
@@ -1871,8 +1918,12 @@ fn build(app: &gtk::Application, store: Store) {
         if u.active_dialog.borrow().is_some() {
             return glib::Propagation::Proceed;
         }
-        if key == gtk::gdk::Key::Escape && u.split.is_collapsed() && !u.split.shows_content() {
-            u.split.set_show_content(true);
+        if key == gtk::gdk::Key::F9 {
+            navigation_toggle.emit_clicked();
+            return glib::Propagation::Stop;
+        }
+        if key == gtk::gdk::Key::Escape && u.split.is_collapsed() && u.split.shows_sidebar() {
+            u.split.set_show_sidebar(false);
             navigation_toggle.grab_focus();
             return glib::Propagation::Stop;
         }
@@ -1953,7 +2004,7 @@ fn build(app: &gtk::Application, store: Store) {
                 _ => return glib::Propagation::Proceed,
             };
             u.stack.set_visible_child_name(page);
-            u.split.set_show_content(true);
+            u.show_workspace_content();
             return glib::Propagation::Stop;
         }
         glib::Propagation::Proceed
@@ -2010,7 +2061,7 @@ fn build(app: &gtk::Application, store: Store) {
                         }
                         "save" => {
                             ui.stack.set_visible_child_name("settings");
-                            ui.split.set_show_content(true);
+                            ui.show_workspace_content();
                             if let Some(page) = ui.stack.child_by_name("settings") {
                                 activate_named_button(&page, "save-settings");
                             }
@@ -2027,7 +2078,7 @@ fn build(app: &gtk::Application, store: Store) {
         }
         glib::Propagation::Proceed
     });
-    adw_window.set_content(Some(&root));
+    adw_window.set_content(Some(&body));
     window.present();
     ui.customer.grab_focus();
     accounting::schedule(&ui);

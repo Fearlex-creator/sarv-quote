@@ -84,15 +84,15 @@ fn actual_schema5_histories_preserve_exact_state_recovery_restore_and_one_upgrad
     ] {
         let envelope:serde_json::Value=serde_json::from_slice(bytes).unwrap();let old:State=serde_json::from_value(envelope["state"].clone()).unwrap();assert_eq!(old.schema,5);assert_eq!(hash(&serde_json::to_vec(&old).unwrap()),envelope["checksum"].as_str().unwrap());old.validate().unwrap();
         let dir=tempfile::tempdir().unwrap();seed(dir.path(),&old);let st=Store::open(dir.path()).unwrap();let mut expected=old.clone();expected.schema=CURRENT_SCHEMA;assert_eq!(serde_json::to_vec(&st.state).unwrap(),serde_json::to_vec(&expected).unwrap());assert_eq!(st.local_generation(),92);
-        let recovery=fs::read_dir(dir.path()).unwrap().map(|e|e.unwrap().path()).find(|p|p.file_name().unwrap().to_string_lossy().starts_with("before-schema6-")).unwrap();let recovery_bytes=fs::read(&recovery).unwrap();let re:serde_json::Value=serde_json::from_slice(&recovery_bytes).unwrap();assert_eq!(re["format"],"sarv-accounting-backup-v5");assert_eq!(re["state"],envelope["state"]);
-        let backup=dir.path().join("current-v6.json");st.backup(&backup).unwrap();let current=fs::read(&backup).unwrap();let parsed:serde_json::Value=serde_json::from_slice(&current).unwrap();assert_eq!(parsed["format"],"sarv-accounting-backup-v6");
-        let fresh=tempfile::tempdir().unwrap();let mut restored=Store::open(fresh.path()).unwrap();restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();assert_eq!(serde_json::to_vec(&restored.state).unwrap(),serde_json::to_vec(&expected).unwrap());drop(st);let st=Store::open(dir.path()).unwrap();assert_eq!(st.local_generation(),92);assert_eq!(fs::read_dir(dir.path()).unwrap().filter(|e|e.as_ref().unwrap().file_name().to_string_lossy().starts_with("before-schema6-")).count(),1);
-        output(&format!("{label}-original-v5.json"),bytes);output(&format!("{label}-before-schema6-v5.json"),&recovery_bytes);output(&format!("{label}-current-v6.json"),&current);
+        let recovery=fs::read_dir(dir.path()).unwrap().map(|e|e.unwrap().path()).find(|p|p.file_name().unwrap().to_string_lossy().starts_with(&format!("before-schema{}-", sarv_quote::domain::CURRENT_SCHEMA))).unwrap();let recovery_bytes=fs::read(&recovery).unwrap();let re:serde_json::Value=serde_json::from_slice(&recovery_bytes).unwrap();assert_eq!(re["format"],"sarv-accounting-backup-v5");assert_eq!(re["state"],envelope["state"]);
+        let backup=dir.path().join("current-v7.json");st.backup(&backup).unwrap();let current=fs::read(&backup).unwrap();let parsed:serde_json::Value=serde_json::from_slice(&current).unwrap();assert_eq!(parsed["format"],"sarv-accounting-backup-v7");
+        let fresh=tempfile::tempdir().unwrap();let mut restored=Store::open(fresh.path()).unwrap();restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();assert_eq!(serde_json::to_vec(&restored.state).unwrap(),serde_json::to_vec(&expected).unwrap());drop(st);let st=Store::open(dir.path()).unwrap();assert_eq!(st.local_generation(),92);assert_eq!(fs::read_dir(dir.path()).unwrap().filter(|e|e.as_ref().unwrap().file_name().to_string_lossy().starts_with(&format!("before-schema{}-", sarv_quote::domain::CURRENT_SCHEMA))).count(),1);
+        output(&format!("{label}-original-v5.json"),bytes);output(&format!("{label}-before-schema7-v5.json"),&recovery_bytes);output(&format!("{label}-current-v7.json"),&current);
     }
 }
 #[test]
 #[ignore = "requires retained immutable M4 executable in SARV_M4_COMPAT_BINARY"]
-fn actual_m4_binary_refuses_schema6_without_changing_row() {
+fn actual_m4_binary_refuses_current_schema_without_changing_row() {
     let binary = std::env::var("SARV_M4_COMPAT_BINARY").unwrap();
     let dir = tempfile::tempdir().unwrap();
     seed(dir.path(), &original());
@@ -106,7 +106,7 @@ fn actual_m4_binary_refuses_schema6_without_changing_row() {
     let diagnostic = String::from_utf8_lossy(&result.stderr);
     assert!(diagnostic.contains("نسخه") || diagnostic.contains("schema"));
     assert_eq!(row(dir.path()), before);
-    output("actual-m4-rejection.json",&serde_json::to_vec_pretty(&serde_json::json!({"result":"passed","old_binary":binary,"rejected_schema":6,"exit_code":result.status.code(),"stderr":diagnostic,"exact_row_unchanged":true})).unwrap());
+    output("actual-m4-rejection.json",&serde_json::to_vec_pretty(&serde_json::json!({"result":"passed","old_binary":binary,"rejected_schema":sarv_quote::domain::CURRENT_SCHEMA,"exit_code":result.status.code(),"stderr":diagnostic,"exact_row_unchanged":true})).unwrap());
 }
 #[test]
 fn sales_process_child() {

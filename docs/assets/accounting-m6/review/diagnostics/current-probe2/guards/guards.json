@@ -1,0 +1,280 @@
+[
+  {
+    "case": "negativequantity",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "zeroquantity",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "overflowquantity",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "overreturn",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "wrongoriginalcost",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "wrongdoctotal",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "unknownreceipt",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "openingGRNI",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "wrongreceiptcorrespondence",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "unknownbill",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "openAPsource",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "wrongsupplier",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "missingcreditid",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "missingcreditreference",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "creditreturnIDcollision",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "knowninvoiceIDcollision",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "knownrequestcollision",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": false
+  },
+  {
+    "case": "beforematching",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "beforeglobalstock",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "outsideperiod",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "futurepaperdate",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "wrongcompany",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "wrongsetup",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "unbilled mode fully matched receipt",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "per-line wrong costs offset to correct total60",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "two original bills in one return",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "generic return reversal",
+    "rejected": true,
+    "unchanged": true
+  },
+  {
+    "case": "return does not replenish PO receiving quantity",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "same-key identical retry",
+    "same_effect_and_state": true
+  },
+  {
+    "case": "samekeychangedreason",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "freshkeychangedrevision",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "freshkeychangedreference",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "freshkeychangedquantity",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "fresh source duplicate return paper reference",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "fresh source duplicate credit paper reference",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "locked new effect",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "tamper-creditstate",
+    "replay_rejected": true
+  },
+  {
+    "case": "tamper-creditid",
+    "replay_rejected": true
+  },
+  {
+    "case": "tamper-allocationvalue",
+    "replay_rejected": true
+  },
+  {
+    "case": "tamper-movementvalue",
+    "replay_rejected": true
+  },
+  {
+    "case": "tamper-sequence",
+    "replay_rejected": true
+  },
+  {
+    "billed_return_values": [
+      0,
+      0
+    ],
+    "case": "tiny-shared-receipt-and-zero-credit",
+    "consumed_values": [
+      0,
+      1,
+      0
+    ],
+    "exact_baseline_restored": true
+  },
+  {
+    "case": "quantity sufficient original value insufficient",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "specific-bill-tiny-split-full-depletion",
+    "no_orphan": true,
+    "values": [
+      0,
+      1,
+      0
+    ]
+  },
+  {
+    "case": "explicit-freegoods",
+    "full_pool_zero": true,
+    "journals": 0
+  },
+  {
+    "case": "full quantity leaves orphan value5",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  },
+  {
+    "case": "value sufficient quantity insufficient",
+    "full_state_unchanged": true,
+    "post_rejected": true,
+    "preview_rejected": true
+  }
+]

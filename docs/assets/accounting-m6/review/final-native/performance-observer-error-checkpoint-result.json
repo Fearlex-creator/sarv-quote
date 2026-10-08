@@ -1,0 +1,51 @@
+{
+  "reviewer": "m6_final_native_review",
+  "source_sha256": "39409332a7caae630d45cf94858df7dc4baf9c0f56b377f47fbbe757b505fc0c",
+  "isolated_current_AST_execution": "Scoped classification/callback/check and atomic checkpoint methods only; no native imports/GUI",
+  "classification_cases": [
+    {
+      "case": "exact-retired-window",
+      "passed": true
+    },
+    {
+      "case": "wrong-error",
+      "passed": true
+    },
+    {
+      "case": "wrong-request",
+      "passed": true
+    },
+    {
+      "case": "wrong-minor",
+      "passed": true
+    },
+    {
+      "case": "wrong-resource",
+      "passed": true
+    },
+    {
+      "case": "other-display",
+      "passed": true
+    },
+    {
+      "case": "root-list-property",
+      "passed": true
+    },
+    {
+      "case": "outside-discovery",
+      "passed": true
+    },
+    {
+      "case": "missing-owned-pid",
+      "passed": true
+    }
+  ],
+  "exact_callback_record_and_expected_rejection": true,
+  "unexpected_error_Python_failure": true,
+  "atomic_partial_interruption_keeps_prior_complete_file": true,
+  "full_raw_arrays_survive_checkpoint": true,
+  "startup_checkpoint_not_inside_active_sampler_try_finally": true,
+  "all_passed": true,
+  "native_error_trap_exercised": false,
+  "performance_gate_accepted": false
+}

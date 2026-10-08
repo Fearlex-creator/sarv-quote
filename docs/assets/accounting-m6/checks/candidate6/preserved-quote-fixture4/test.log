@@ -1,0 +1,18 @@
+dbus-daemon[361984]: [session uid=1000 pid=361984 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=361994 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[361984]: [session uid=1000 pid=361984 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[362020]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=361994 comm="/workspace/sarv-quote/target/release/sarv-quote" label="kernel")
+dbus-daemon[362020]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+X connection to :10 broken (explicit kill or server shutdown).
+{"result": "failed", "checks": 46, "profile": "/workspace/sarv-quote/artifacts/independent-native/run-c9etwonp"}
+Traceback (most recent call last):
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 569, in <module>
+    main()
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 526, in main
+    press('Up', 'Control_L', focus='row99-quantity')
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 293, in press
+    target = wait_for(lambda: next((e for e in events(profile)[count:]
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/sarv-quote/scripts/qa-native.py", line 34, in wait_for
+    raise RuntimeError(f'Timed out waiting for {label}')
+RuntimeError: Timed out waiting for Up moved focus

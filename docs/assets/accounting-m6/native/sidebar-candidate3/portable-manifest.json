@@ -1,0 +1,27 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/sidebar-native/run-rkxgps05",
+  "binary_sha256": "9856176d68d99555249ee969b13e7dbced8329dc2441db226a1fc0385b3254a0",
+  "production_source_sha256": "fb425a75263719f798b42970eab91b7e22ea1a9550be8f77f5eda67b1754be95",
+  "files": {
+    "accounting-narrow-dark.png": "6c22bd777f96bcc137e03e5426a2af82ccc033bf9e0f98d3ef000f336b45c1a5",
+    "accounting-narrow-history-light.png": "32b81c1baff70c0a00f07e777da3a093b3abf55b413bf56e124397ab285bb60d",
+    "accounting-narrow-light.png": "34e2e7a1d95974c7a8d158ee1db0cfc0ff6b3417fef0f05e7da1f4aa455521e1",
+    "initial.png": "758e6252086b4570f231d370b8c5c692bc7b94b594e30279bebec7ecfb0d1385",
+    "keyboard-events.jsonl": "46eea30c24acc4cbcad2f2df9405c0cb062c7d138b54570ac165c9bf0176d240",
+    "native-sidebar-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-sidebar.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "restart.png": "60420a15db878b4d63e5fea0d016a87353b7c35b65f6ee11eb0c9e60f31773f1",
+    "sidebar-narrow-dark-focus.png": "179959f2469fa6ef8b6449318549ff09402d6ff77d2eec89cd6b7765fff993c4",
+    "sidebar-narrow-light-focus.png": "02cbdbd6b92c7dacc4982ce36ac304944f5f0ddfb65bed9686c7c884e7fa15ba",
+    "sidebar-standard-dark.png": "a9122b40c5cf9b98d39a67829df290f243be2e6919fe877993fdb1fbfbfd6e02",
+    "sidebar-standard-light-focus.png": "dd34e8c3a395de54394ec1c6cc9461470b69592f6c2767b44be5dd742504160c",
+    "sidebar-standard-light.png": "dd34e8c3a395de54394ec1c6cc9461470b69592f6c2767b44be5dd742504160c",
+    "sidebar-verification.json": "c570bf6226aa68ed7de4b68e2733cd588abcc8b87ecb2c7b921d0e4787e9af7a",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "checks": 26,
+  "result": "passed",
+  "observer_sha256": "ade0f5fe2379a31d03c9cb6d8302585343e1d6ea6bda7d62752d40dc5eb18193",
+  "scope": "Sequential actual native sidebar keyboard/adaptive/appearance/restart; source observer frozen before in candidate3 runtime-verification1, and current source/binary hashes verified after."
+}

@@ -1889,7 +1889,7 @@ pub(super) fn start_core_smoke(ui: &Rc<Ui>) {
             match stage {
                 0 => {
                     ui.stack.set_visible_child_name("accounting");
-                    ui.split.set_show_content(true);
+                    ui.show_workspace_content();
                 }
                 1 => {
                     smoke::capture(&ui.window, &directory.join("core-before.png"))?;

@@ -1,0 +1,36 @@
+{
+  "purpose": "Explicit root-authorized graceful cleanup of only runtime5 pilot1 owned leftovers",
+  "historical_processes_touched": false,
+  "records": [
+    {
+      "pid": 364134,
+      "comm": "Xvfb",
+      "state": "S",
+      "ppid": 1,
+      "pgid": 364134,
+      "starttime_ticks": 7746459,
+      "start_offset_seconds": 0.34825634956359863,
+      "cmdline": "Xvfb -displayfd 3 -screen 0 1450x1050x24 -nolisten tcp -xkbdir /workspace/sarv-environment/sysroot/usr/share/X11/xkb "
+    },
+    {
+      "pid": 364138,
+      "comm": "openbox",
+      "state": "S",
+      "ppid": 1,
+      "pgid": 364138,
+      "starttime_ticks": 7746464,
+      "start_offset_seconds": 0.3982565402984619,
+      "cmdline": "openbox --sm-disable --config-file /workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml "
+    },
+    {
+      "pid": 364364,
+      "comm": "sarv-M6-candida",
+      "state": "S",
+      "ppid": 1,
+      "pgid": 364364,
+      "starttime_ticks": 7751872,
+      "start_offset_seconds": 54.47825646400452,
+      "cmdline": "/workspace/sarv-evidence/bin/sarv-M6-candidate6 "
+    }
+  ]
+}

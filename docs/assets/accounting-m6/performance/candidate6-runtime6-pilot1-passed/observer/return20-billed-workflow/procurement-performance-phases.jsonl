@@ -1,0 +1,2 @@
+{"boundary":"dispatch through completed UI result rendering","elapsed_ms":53.032644,"gaps_ms":[16.103054,16.090639,16.087681,4.75127],"interval_ms":16,"max_gap_ms":16.103054,"operation":"return","phase":"preview","result":"verified","ticks":3}
+{"boundary":"dispatch through observed persistence busy release; durable state independently checked","elapsed_ms":56.656195,"gaps_ms":[18.208141,16.065271,22.382303,0.00047999999999999996],"interval_ms":16,"max_gap_ms":22.382303,"operation":"return","phase":"post","result":"worker_finished","ticks":3}

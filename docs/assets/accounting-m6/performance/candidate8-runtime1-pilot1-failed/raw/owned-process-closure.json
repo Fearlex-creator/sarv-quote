@@ -1,0 +1,57 @@
+{
+  "all_new_owned_processes_inactive": true,
+  "processes": [
+    {
+      "record": {
+        "name": "xvfb",
+        "pid": 372306,
+        "pgid": 372306,
+        "starttime_ticks": 8311461,
+        "command": [
+          "Xvfb",
+          "-displayfd",
+          "3",
+          "-screen",
+          "0",
+          "1450x1050x24",
+          "-nolisten",
+          "tcp",
+          "-xkbdir",
+          "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+        ]
+      },
+      "current": null,
+      "owned_identity_active": false
+    },
+    {
+      "record": {
+        "name": "openbox",
+        "pid": 372310,
+        "pgid": 372310,
+        "starttime_ticks": 8311471,
+        "command": [
+          "openbox",
+          "--sm-disable",
+          "--config-file",
+          "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+        ]
+      },
+      "current": null,
+      "owned_identity_active": false
+    },
+    {
+      "record": {
+        "name": "source120-billed-search",
+        "pid": 372329,
+        "pgid": 372329,
+        "starttime_ticks": 8311476,
+        "command": [
+          "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+        ]
+      },
+      "current": null,
+      "owned_identity_active": false
+    }
+  ],
+  "historical_processes_untouched": true
+}

@@ -1,0 +1,57 @@
+dbus-daemon[364886]: [session uid=1000 pid=364886 pidfd=5] Activating service name='org.a11y.Bus' requested by ':1.1' (uid=1000 pid=364887 comm="/usr/bin/python3 /workspace/sarv-quote/scripts/nat" label="kernel")
+dbus-daemon[364886]: [session uid=1000 pid=364886 pidfd=5] Successfully activated service 'org.a11y.Bus'
+dbus-daemon[364914]: Activating service name='org.a11y.atspi.Registry' requested by ':1.0' (uid=1000 pid=364887 comm="/usr/bin/python3 /workspace/sarv-quote/scripts/nat" label="kernel")
+dbus-daemon[364914]: Successfully activated service 'org.a11y.atspi.Registry'
+SpiRegistry daemon is running with well-known name - org.a11y.atspi.Registry
+
+(process:364887): dbind-WARNING **: 13:21:01.416: AT-SPI: Error in GetItems, sender=:1.2, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"source_picker": "source120-billed", "focused": {"n": 2, "p50": 933.3302099985303, "p95": 988.1215670029633, "p99": 988.1215670029633, "worst": 988.1215670029633, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:21:12.318: AT-SPI: Error in GetItems, sender=:1.3, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"source_picker": "source120-unbilled", "focused": {"n": 2, "p50": 944.0003729978343, "p95": 1037.8474019962596, "p99": 1037.8474019962596, "worst": 1037.8474019962596, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:21:23.734: AT-SPI: Error in GetItems, sender=:1.4, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:21:38.933: AT-SPI: Error in GetItems, sender=:1.5, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"workflow": "return20-billed", "pages": {"next": {"visible": {"n": 0, "status": "unmeasured"}, "focused": {"n": 0, "status": "unmeasured"}}, "previous": {"visible": {"n": 0, "status": "unmeasured"}, "focused": {"n": 0, "status": "unmeasured"}}}, "phases": [{"boundary": "dispatch through completed UI result rendering", "elapsed_ms": 53.032644, "gaps_ms": [16.103054, 16.090639, 16.087681, 4.75127], "interval_ms": 16, "max_gap_ms": 16.103054, "operation": "return", "phase": "preview", "result": "verified", "ticks": 3, "max_gap_recomputed_ms": 16.103054, "terminal_gap_ms": 4.75127, "budget_ms": 50, "measurable_accepted": true, "strict_status": "pass"}, {"boundary": "dispatch through observed persistence busy release; durable state independently checked", "elapsed_ms": 56.656195, "gaps_ms": [18.208141, 16.065271, 22.382303, 0.00047999999999999996], "interval_ms": 16, "max_gap_ms": 22.382303, "operation": "return", "phase": "post", "result": "worker_finished", "ticks": 3, "max_gap_recomputed_ms": 22.382303, "terminal_gap_ms": 0.00047999999999999996, "budget_ms": 50, "measurable_accepted": true, "strict_status": "pass"}]}
+
+(process:364887): dbind-WARNING **: 13:21:40.199: AT-SPI: Error in GetItems, sender=:1.6, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:21:54.648: AT-SPI: Error in GetItems, sender=:1.7, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"workflow": "return20-unbilled", "pages": {"next": {"visible": {"n": 0, "status": "unmeasured"}, "focused": {"n": 0, "status": "unmeasured"}}, "previous": {"visible": {"n": 0, "status": "unmeasured"}, "focused": {"n": 0, "status": "unmeasured"}}}, "phases": [{"boundary": "dispatch through completed UI result rendering", "elapsed_ms": 52.61452, "gaps_ms": [22.286212, 20.3212, 10.007108], "interval_ms": 16, "max_gap_ms": 22.286212, "operation": "return", "phase": "preview", "result": "verified", "ticks": 2, "max_gap_recomputed_ms": 22.286212, "terminal_gap_ms": 10.007108, "budget_ms": 50, "measurable_accepted": true, "strict_status": "pass"}, {"boundary": "dispatch through observed persistence busy release; durable state independently checked", "elapsed_ms": 66.46178499999999, "gaps_ms": [24.518689, 16.069174, 25.873401, 0.000521], "interval_ms": 16, "max_gap_ms": 25.873401, "operation": "return", "phase": "post", "result": "worker_finished", "ticks": 3, "max_gap_recomputed_ms": 25.873401, "terminal_gap_ms": 0.000521, "budget_ms": 50, "measurable_accepted": true, "strict_status": "pass"}]}
+
+(process:364887): dbind-WARNING **: 13:21:56.002: AT-SPI: Error in GetItems, sender=:1.8, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:23:57.062: AT-SPI: Error in GetItems, sender=:1.9, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"workflow": "return200-billed", "pages": {"next": {"visible": {"n": 7, "p50": 1190.3670449974015, "p95": 1398.0829860083759, "p99": 1398.0829860083759, "worst": 1398.0829860083759, "method": "nearest rank"}, "focused": {"n": 7, "p50": 1466.3473049877211, "p95": 1733.4033060033107, "p99": 1733.4033060033107, "worst": 1733.4033060033107, "method": "nearest rank"}}, "previous": {"visible": {"n": 7, "p50": 1323.2953889964847, "p95": 1413.3353950019227, "p99": 1413.3353950019227, "worst": 1413.3353950019227, "method": "nearest rank"}, "focused": {"n": 7, "p50": 1621.9258839992108, "p95": 1704.8551340121776, "p99": 1704.8551340121776, "worst": 1704.8551340121776, "method": "nearest rank"}}}, "phases": [{"boundary": "dispatch through completed UI result rendering", "elapsed_ms": 56.996987, "gaps_ms": [16.084768999999998, 16.081414, 16.066912, 8.763892], "interval_ms": 16, "max_gap_ms": 16.084768999999998, "operation": "return", "phase": "preview", "result": "verified", "ticks": 3, "max_gap_recomputed_ms": 16.084768999999998, "terminal_gap_ms": 8.763892, "budget_ms": 50, "measurable_accepted": true, "strict_status": "pass"}, {"boundary": "dispatch through observed persistence busy release; durable state independently checked", "elapsed_ms": 150.58923399999998, "gaps_ms": [16.090989, 25.515271, 16.04555, 16.075515, 16.002295, 17.517097999999997, 16.248175, 27.093449, 0.000892], "interval_ms": 16, "max_gap_ms": 27.093449, "operation": "return", "phase": "post", "result": "worker_finished", "ticks": 8, "max_gap_recomputed_ms": 27.093449, "terminal_gap_ms": 0.000892, "budget_ms": 50, "measurable_accepted": true, "strict_status": "pass"}]}
+
+(process:364887): dbind-WARNING **: 13:23:58.467: AT-SPI: Error in GetItems, sender=:1.10, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:24:00.115: AT-SPI: Error in GetItems, sender=:1.11, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"startup": "main-seed", "latency": {"n": 1, "p50": 1106.9358500099042, "p95": 1106.9358500099042, "p99": 1106.9358500099042, "worst": 1106.9358500099042, "method": "nearest rank"}, "rss": {"n": 1, "p50": 100652, "p95": 100652, "p99": 100652, "worst": 100652, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:24:01.685: AT-SPI: Error in GetItems, sender=:1.12, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:24:03.237: AT-SPI: Error in GetItems, sender=:1.13, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"startup": "main-posted", "latency": {"n": 1, "p50": 1008.7234600068768, "p95": 1008.7234600068768, "p99": 1008.7234600068768, "worst": 1008.7234600068768, "method": "nearest rank"}, "rss": {"n": 1, "p50": 99612, "p95": 99612, "p99": 99612, "worst": 99612, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:24:05.713: AT-SPI: Error in GetItems, sender=:1.14, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:24:08.275: AT-SPI: Error in GetItems, sender=:1.15, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"startup": "source120-billed", "latency": {"n": 1, "p50": 2000.219269990339, "p95": 2000.219269990339, "p99": 2000.219269990339, "worst": 2000.219269990339, "method": "nearest rank"}, "rss": {"n": 1, "p50": 126984, "p95": 126984, "p99": 126984, "worst": 126984, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:24:10.202: AT-SPI: Error in GetItems, sender=:1.16, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:24:12.157: AT-SPI: Error in GetItems, sender=:1.17, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"startup": "source120-unbilled", "latency": {"n": 1, "p50": 1394.6306139987428, "p95": 1394.6306139987428, "p99": 1394.6306139987428, "worst": 1394.6306139987428, "method": "nearest rank"}, "rss": {"n": 1, "p50": 122532, "p95": 122532, "p99": 122532, "worst": 122532, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:24:13.725: AT-SPI: Error in GetItems, sender=:1.18, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:24:15.129: AT-SPI: Error in GetItems, sender=:1.19, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"startup": "return20-unbilled", "latency": {"n": 1, "p50": 907.8784640005324, "p95": 907.8784640005324, "p99": 907.8784640005324, "worst": 907.8784640005324, "method": "nearest rank"}, "rss": {"n": 1, "p50": 100428, "p95": 100428, "p99": 100428, "worst": 100428, "method": "nearest rank"}}
+
+(process:364887): dbind-WARNING **: 13:24:16.562: AT-SPI: Error in GetItems, sender=:1.20, error=Object does not exist at path “/org/a11y/atspi/cache”
+
+(process:364887): dbind-WARNING **: 13:24:18.116: AT-SPI: Error in GetItems, sender=:1.21, error=Object does not exist at path “/org/a11y/atspi/cache”
+{"startup": "return200-billed", "latency": {"n": 1, "p50": 1059.1564499918604, "p95": 1059.1564499918604, "p99": 1059.1564499918604, "worst": 1059.1564499918604, "method": "nearest rank"}, "rss": {"n": 1, "p50": 104992, "p95": 104992, "p99": 104992, "worst": 104992, "method": "nearest rank"}}
+X connection to :10 broken (explicit kill or server shutdown).

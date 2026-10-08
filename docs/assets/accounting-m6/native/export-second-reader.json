@@ -1,0 +1,28 @@
+{
+  "scope": "independent second Persian typography/readability review of existing rendered pages; no GUI/build run",
+  "result": "no material readability or clipping defect observed",
+  "page_count": 10,
+  "pages": {
+    "billed-physical-return-page-1.png": "cbb4b9f736df60f85e802acebecaa1de8e94b88add6d56d9227cf5225e61cca9",
+    "billed-supplier-credit-page-1.png": "252df139644aabfa06295b47d7bf96e14f1704adbfbc69eb93b1aceff4e40d8b",
+    "long-physical-return-page-1.png": "fb757e0ce495b8d204b1e8d9249fedc1fbc29e879becf21e09702e394d60c4a0",
+    "long-physical-return-page-2.png": "9dc8ff5160bde845c19ef68ef48e7c14b278a30ddbb83771096fc3b8590e9276",
+    "long-physical-return-page-3.png": "9f6a6fd0869e298baeb700077d8a2d39f51a5650605e9d7f58404f224d0ced2c",
+    "long-physical-return-page-4.png": "6ec487a044c5b447e65a8c7f0f25ce6a9c53f956f713a02b44713be209343bde",
+    "long-physical-return-page-5.png": "90953b88b36051500ba7b69430b09d2908257eedd941d8005344f4bfde4b78e1",
+    "long-physical-return-page-6.png": "d61b4325a5ba02f481ef8c3770b680778da776cc07417956e5a81cd0e2c974e6",
+    "unbilled-return-one-rial-page-1.png": "ac660f915f133aeb9cb69e71f6ad304664938bee26be958caa1d4f8984d84384",
+    "zero-supplier-credit-page-1.png": "4566af167d2a5eb86fe141e5a8376d16700c6155d1ea0b47d43b36585a2246cb"
+  },
+  "observations": [
+    "Billed physical return and supplier credit headings/states are visibly distinct with original source and reciprocal identities.",
+    "Unbilled return explicitly has no supplier credit. One-rial amount remains visible as0.1toman.",
+    "Zero credit retains its posted identity/state and visibly discloses no monetary ledger effect.",
+    "All six long pages repeat source/date/currency/policy headings; complete rows and before/after pools fit within printable area.",
+    "Vazirmatn Persian shaping, mixed codes/dates, original quantities and canonical/display amounts remain legible."
+  ],
+  "limits": [
+    "These rendered synthetic PDF pages are separate export-owner fixtures, not the future frozen native release proof.",
+    "Physical printing, screen-reader PDF use and professional-accountant acceptance untested."
+  ]
+}

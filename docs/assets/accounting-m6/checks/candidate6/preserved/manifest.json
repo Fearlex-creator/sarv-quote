@@ -1,0 +1,81 @@
+{
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate6",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "production_source_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "wrapper_hashes_before": {
+    "/tmp/sarv-M6-preserved.py": "6e591d4455a6b0726df7f75b27092037020cffe1a19587ed3574bda288098e1a",
+    "/tmp/sarv-M6-preserved-quote.py": "5f918a6ee1d846b6246d32fc50136d93f39c54f6b3d8d4499aecc2235c91f573"
+  },
+  "helper_hashes_before": {
+    "core-qa.py": "d117f430f7e31267cc595a11a7e2c9619ea8ba13ceb4716e5e7eb900ce78b1dd",
+    "jalali-qa.py": "c88b58cdda1b989d3d84d5c30c85c695c410d697870231d9f658771c85269bfb",
+    "native-sidebar-qa.py": "d271ba2d603ba05addf424cd6006ee34e7ba08871e230804a000edc9635182e7",
+    "accounting-qa.py": "eab22c14474e97bd0d672f33b45ed5c69d33a1d0bbac9483eefeb175306186ae",
+    "procurement-qa.py": "953240de5f520eb1973acaa8d0a44b50e5bc85e4d4dd71a54e81195287746f9f",
+    "sales-qa.py": "742ee492da5e9d2fac6d47f56a88e50bdea9f60c87a0a0f817045cb7c8c55d01",
+    "qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+    "qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4",
+    "native-save-close.py": "4bf70626a7c82e7d2054809c717391fcaa6c1d586194ba8018307c40ede554d9"
+  },
+  "checks": [
+    {
+      "label": "core",
+      "command": "dbus-run-session -- python3 scripts/core-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 52.76900828999351,
+      "log_sha256": "bbe4247ade7490588e08b69019831a74ee56220bf855135f90cd9efd06800d20"
+    },
+    {
+      "label": "jalali",
+      "command": "dbus-run-session -- python3 scripts/jalali-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 49.050637398002436,
+      "log_sha256": "74b1d920ea0e75eac2ae69bb3435c5ababfdc69e8e4f5a42da6af089d303b401"
+    },
+    {
+      "label": "ledger",
+      "command": "dbus-run-session -- python3 scripts/accounting-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 33.61390632999246,
+      "log_sha256": "e9ae5422e20d35c5200127170d3ffd594556af7b5d0b655bc1c21d9094a46737"
+    },
+    {
+      "label": "procurement",
+      "command": "dbus-run-session -- python3 scripts/procurement-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 113.6354697850038,
+      "log_sha256": "a58000299d89f7dba1da1ad82c9d88f797de5f7cee510d550e4ae8b5bc8487df"
+    },
+    {
+      "label": "sales",
+      "command": "SARV_SALES_QA_FATAL_CRITICAL=1 SARV_SALES_SOURCE_MANIFEST=/workspace/sarv-quote/docs/assets/accounting-m6/checks/candidate6/manifest.json dbus-run-session -- python3 scripts/sales-qa.py",
+      "exit_code": 0,
+      "elapsed_seconds": 313.2102218200016,
+      "log_sha256": "14421415f97fafa9a15f104b2c060c8be1d6eb4436fb8fbc2feea6a6312ed45e"
+    },
+    {
+      "label": "quote",
+      "command": "dbus-run-session -- python3 /tmp/sarv-M6-preserved-quote.py /workspace/sarv-evidence/bin/sarv-M6-candidate6 6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2 /workspace/sarv-quote/docs/assets/accounting-m6/checks/candidate6/preserved/quote-source.json",
+      "exit_code": 0,
+      "elapsed_seconds": 8.989245960008702,
+      "log_sha256": "6a4512035b8224080d2ef3b8f7c0dc1d53704468998e134a6a2133e3ebb47863"
+    },
+    {
+      "label": "held-save-close",
+      "command": "SARV_CLOSE_TEST_BINARY=/workspace/sarv-evidence/bin/sarv-M6-candidate6 SARV_CLOSE_TEST_DIR=/workspace/sarv-quote/artifacts/m6-preserved/held-save-close-candidate6 dbus-run-session -- python3 scripts/native-save-close.py",
+      "exit_code": 0,
+      "elapsed_seconds": 1.269435035996139,
+      "log_sha256": "e582b0a79de9e4bedae3f518aad3bc994dbdbfdc93109868ff1f1cdb464d7b19"
+    },
+    {
+      "label": "quote-real-key-stress",
+      "command": "dbus-run-session -- python3 scripts/qa-native.py --stress --profile /workspace/sarv-quote/artifacts/m6-preserved/quote-b9hhntuc",
+      "exit_code": 1,
+      "elapsed_seconds": 18.671079065999947,
+      "log_sha256": "d7ebd87ce9962b9cdfa411337d9e995ab042f1b1754ebe472adaac57a55aafb7"
+    }
+  ],
+  "passed": false,
+  "separate_sidebar_receipt": "docs/assets/accounting-m6/native/sidebar-candidate6/sidebar-verification.json",
+  "separate_sidebar_checks": 34
+}

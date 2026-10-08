@@ -636,6 +636,7 @@ impl ReviewedCommand for ProcurementCommand {
             ProcurementCommand::Receive(_) => "receipt",
             ProcurementCommand::Bill(_) => "bill",
             ProcurementCommand::Transfer(_) => "transfer",
+            ProcurementCommand::Return(_) => "return",
         }
     }
 }
@@ -664,8 +665,10 @@ impl<C: ReviewedCommand + Clone + PartialEq + Send + 'static, P: Send + 'static>
     fn invalidate(&self) {
         self.revision.set(self.revision.get() + 1);
         self.verified.borrow_mut().take();
+        detach_focus(&self.save);
         self.save.set_sensitive(false);
         self.footer_total.set_visible(false);
+        detach_focus(&self.output);
         clear(&self.output);
         self.output.append(&label(
             "ورودی تغییر کرده است؛ نسخهٔ فعلی را دوباره بازبینی کنید.",
@@ -1125,6 +1128,83 @@ fn friendly_receipt(state: &AccountingState, id: &str) -> String {
     }
     isolate(id)
 }
+struct ReturnPreviewRows {
+    lines: Vec<String>,
+    rows: Vec<gtk::Label>,
+    body: gtk::Box,
+    page: Cell<usize>,
+    status: gtk::Label,
+}
+impl ReturnPreviewRows {
+    fn append(body: &gtk::Box, lines: Vec<String>) {
+        let status = label("");
+        status.set_widget_name("procurement-return-preview-page-status");
+        body.append(&status);
+        let rows_body = gtk::Box::new(gtk::Orientation::Vertical, 8);
+        body.append(&rows_body);
+        let mut rows = Vec::new();
+        for slot in 0..lines.len().min(PAGE_SIZE) {
+            let row = label("");
+            row.set_widget_name(&format!("procurement-return-preview-slot-{slot}"));
+            rows_body.append(&row);
+            rows.push(row);
+        }
+        let view = Rc::new(Self {
+            lines,
+            rows,
+            body: rows_body,
+            page: Cell::new(0),
+            status,
+        });
+        view.bind(0);
+        if view.lines.len() > PAGE_SIZE {
+            let bar = actions();
+            for (caption, name, delta) in [
+                (
+                    "جزئیات برگشت پیشین",
+                    "procurement-return-preview-previous",
+                    -1i64,
+                ),
+                ("جزئیات برگشت بعد", "procurement-return-preview-next", 1),
+            ] {
+                let b = action(caption, name);
+                let current = view.clone();
+                b.connect_clicked(move |_| {
+                    let last = (current.lines.len() - 1) / PAGE_SIZE;
+                    let page = (current.page.get() as i64 + delta).max(0) as usize;
+                    if page <= last && page != current.page.get() {
+                        current.bind(page);
+                    }
+                });
+                insert_action(&bar, &b);
+            }
+            body.append(&bar);
+        }
+        // Pager callbacks own this view but the view owns no pager. Removing
+        // an invalidated preview releases its immutable strings and row widgets.
+    }
+    fn bind(&self, page: usize) {
+        detach_focus(&self.body);
+        self.page.set(page);
+        let start = page * PAGE_SIZE;
+        self.status.set_text(&format!(
+            "جزئیات برگشت {} تا {} از {} • صفحهٔ {}",
+            start + 1,
+            (start + PAGE_SIZE).min(self.lines.len()),
+            self.lines.len(),
+            page + 1
+        ));
+        for (slot, row) in self.rows.iter().enumerate() {
+            if let Some(line) = self.lines.get(start + slot) {
+                row.set_text(line);
+                row.set_visible(true);
+            } else {
+                row.set_visible(false);
+            }
+        }
+    }
+}
+
 fn render_preview(body: &gtk::Box, p: &ProcurementPreview, s: &Settings, state: &AccountingState) {
     body.append(&label(if p.nonfinancial {
         "این رویداد غیرمالی است؛ سند مالی خالی ایجاد نمی‌شود."
@@ -1137,6 +1217,63 @@ fn render_preview(body: &gtk::Box, p: &ProcurementPreview, s: &Settings, state: 
         p.journal_lines.len(),
         p.movements.len()
     )));
+    if let ProcurementData::Return(r) = &p.data {
+        body.append(&label(if r.credit_id.is_some() {
+            "برگشت کالا ثبت می‌شود؛ بستانکار مرتبط، ماندهٔ همان صورتحساب را کاهش می‌دهد."
+        } else {
+            "برگشت رسید صورتحساب‌نشده ثبت می‌شود؛ ماندهٔ کالای دریافت‌شدهٔ تطبیق‌نشده کاهش می‌یابد."
+        }));
+        let total = label(&format!(
+            "خروج موجودی با بهای اصلی {} • کاهش {} {}",
+            display_money(s, p.total, MoneyUnit::Rial),
+            if r.credit_id.is_some() {
+                "بدهی همان صورتحساب"
+            } else {
+                "کالای دریافت‌شدهٔ تطبیق‌نشده"
+            },
+            display_money(s, p.total, MoneyUnit::Rial)
+        ));
+        total.set_widget_name("procurement-return-preview-control-total");
+        body.append(&total);
+        let mut details = Vec::with_capacity(r.lines.len() + p.movements.len());
+        for l in &r.lines {
+            details.push(format!(
+                "{} • انبار اصلی {} • مقدار پایه {} • بهای اصلی {} • منبع {} • ردیف صورتحساب {}",
+                friendly_resource(state, "item", &l.item_id),
+                friendly_resource(state, "warehouse", &l.warehouse_id),
+                isolate(&quantity_text(l.quantity_thousandths)),
+                display_money(s, l.value, MoneyUnit::Rial),
+                friendly_receipt(state, &l.receipt_line_id),
+                isolate(l.bill_line_id.as_deref().unwrap_or("ندارد"))
+            ));
+        }
+        for m in &p.movements {
+            details.push(format!(
+                "انبار {} • منبع {} • مقدار قبل {} • مقدار بعد {} • ارزش قبل {} • ارزش بعد {}",
+                friendly_resource(state, "warehouse", &m.warehouse_id),
+                isolate(&m.source_line_id),
+                isolate(&quantity_text(m.before.quantity_thousandths)),
+                isolate(&quantity_text(m.after.quantity_thousandths)),
+                display_money(s, m.before.value, MoneyUnit::Rial),
+                display_money(s, m.after.value, MoneyUnit::Rial)
+            ));
+        }
+        ReturnPreviewRows::append(body, details);
+        for l in &p.journal_lines {
+            body.append(&label(&format!(
+                "حساب {} • بدهکار {} • بستانکار {}",
+                state
+                    .accounts
+                    .iter()
+                    .find(|a| a.id == l.account_id)
+                    .map(|a| format!("{} • {}", a.code, a.name))
+                    .unwrap_or_else(|| isolate(&l.account_id)),
+                display_money(s, l.debit, MoneyUnit::Rial),
+                display_money(s, l.credit, MoneyUnit::Rial)
+            )));
+        }
+        return;
+    }
     match &p.data {
         ProcurementData::Order(o) => {
             for l in &o.lines {
@@ -1564,6 +1701,10 @@ impl Page {
         let revision = self.revision.get();
         let weak = Rc::downgrade(self);
         self.status.set_text("خواندن منابع و کنترل پایان روز…");
+        let page_name = match self.kind {
+            PageKind::Purchases => "procurement",
+            PageKind::Inventory => "inventory",
+        };
         let _ = ui.run_background(
             "خواندن منابع و کنترل پایان روز…",
             move || {
@@ -1587,6 +1728,7 @@ impl Page {
                         ProcurementCommand::Order(x) => &x.reference,
                         ProcurementCommand::Receive(x) => &x.reference,
                         ProcurementCommand::Bill(x) => &x.reference,
+                        ProcurementCommand::Return(x) => &x.return_reference,
                         _ => &ctx.reason,
                     };
                     let supplier = match &record.data {
@@ -1595,6 +1737,7 @@ impl Page {
                             resource_name(&r, "supplier", &x.supplier_id)
                         }
                         ProcurementData::Bill(x) => resource_name(&r, "supplier", &x.supplier_id),
+                        ProcurementData::Return(x) => resource_name(&r, "supplier", &x.supplier_id),
                         _ => String::new(),
                     };
                     format!(
@@ -1633,13 +1776,19 @@ impl Page {
             },
             move |ui, result| {
                 let Some(p) = weak.upgrade() else {
-                    ui.message(Ok("خواندن منابع پایان یافت؛ صفحه بسته شده است."));
+                    ui.page_load_message(
+                        page_name,
+                        "خواندن منابع و کنترل پایان روز…",
+                        Ok("خواندن منابع پایان یافت؛ صفحه بسته شده است."),
+                    );
                     return;
                 };
                 if p.revision.get() != revision {
-                    ui.message(Ok(
-                        "خواندن نسخهٔ قبلی منابع پایان یافت؛ گزارش جاری تغییر کرده است.",
-                    ));
+                    ui.page_load_message(
+                        page_name,
+                        "خواندن منابع و کنترل پایان روز…",
+                        Ok("خواندن نسخهٔ قبلی منابع پایان یافت؛ گزارش جاری تغییر کرده است."),
+                    );
                     return;
                 }
                 match result {
@@ -1652,7 +1801,11 @@ impl Page {
                         *p.records.borrow_mut() = records;
                         p.status.set_text("منابع و گزارش پایان روز آماده است.");
                         p.render();
-                        ui.message(Ok("منابع و گزارش پایان روز آماده است."));
+                        ui.page_load_message(
+                            page_name,
+                            "خواندن منابع و کنترل پایان روز…",
+                            Ok("منابع و گزارش پایان روز آماده است."),
+                        );
                     }
                     Err(e) => {
                         p.resources.borrow_mut().take();
@@ -1681,6 +1834,7 @@ impl Page {
         let query = self.search.text().to_lowercase();
         *self.rendered_document_query.borrow_mut() = query.clone();
         self.first_document_action.borrow_mut().take();
+        detach_focus(&self.documents);
         clear(&self.documents);
         let bar = actions();
         self.documents.append(&bar);
@@ -1688,6 +1842,7 @@ impl Page {
             vec![
                 ("سفارش خرید تازه", "procurement-new-order", 0),
                 ("صورتحساب و تطبیق رسید", "procurement-new-bill", 1),
+                ("برگشت خرید با بهای اصلی", "procurement-new-return", 5),
             ]
         } else {
             vec![("انتقال بین انبارها", "procurement-new-transfer", 2)]
@@ -1757,6 +1912,20 @@ impl Page {
                     }
                 });
             }
+            if matches!(
+                record.data,
+                ProcurementData::Receive(_) | ProcurementData::Bill(_)
+            ) {
+                let b = action("برگشت از این منبع", "procurement-source-return");
+                row.add_suffix(&b);
+                let id = record.id.clone();
+                let weak = Rc::downgrade(self);
+                b.connect_clicked(move |_| {
+                    if let Some(p) = weak.upgrade() {
+                        p.open_return_source(&id);
+                    }
+                });
+            }
             row.set_activatable(false);
             row.set_selectable(false);
             if matches!(record.data, ProcurementData::Resources(_)) {
@@ -1801,6 +1970,7 @@ impl Page {
         if total > PAGE_SIZE {
             self.documents.append(&paging);
         }
+        detach_focus(&self.controls);
         clear(&self.controls);
         if let Some(c) = self.reconciliation.borrow().as_ref() {
             self.controls.append(&label(&format!(
@@ -1890,6 +2060,7 @@ impl Page {
                 c.stock.len().max(c.receipts.len()).max(c.payables.len()),
             );
         }
+        detach_focus(&self.masters);
         clear(&self.masters);
         let add = action("تعریف طرف، کالا، واحد یا انبار", "procurement-new-resource");
         let weak = Rc::downgrade(self);
@@ -1971,6 +2142,7 @@ fn report_rows(body: &gtk::Box, lines: Vec<String>) {
     let slot: RowRefresh = Rc::new(RefCell::new(None));
     let update_slot = Rc::downgrade(&slot);
     let update: Rc<dyn Fn()> = Rc::new(move || {
+        detach_focus(&rows);
         clear(&rows);
         let start = page.get() * PAGE_SIZE;
         rows.append(&label(&format!(
@@ -2049,6 +2221,44 @@ pub(super) fn open_document(ui: &Rc<Ui>, record_id: &str) {
         p.detail(record_id);
     }
 }
+fn return_document_links(state: &AccountingState, id: &str) -> Result<Vec<(String, String)>> {
+    let record = state.procurement_document(id)?;
+    let mut targets = Vec::new();
+    if let ProcurementData::Return(ret) = &record.data {
+        if let Some(id) = ret.bill_id.as_ref() {
+            targets.push(("صورتحساب اصلی", id.clone()));
+        }
+        if let Some(id) = ret.receipt_id.as_ref() {
+            targets.push(("رسید اصلی", id.clone()));
+        }
+        for line in &ret.lines {
+            if let Some(receipt)=state.procurement.records.iter().find(|r|matches!(&r.data,ProcurementData::Receive(r) if r.lines.iter().any(|l|l.id==line.receipt_line_id)))
+                && !targets.iter().any(|(_,id)|id==&receipt.id) {targets.push(("رسید اصلی",receipt.id.clone()));}
+        }
+    }
+    for returned in &state.procurement.records {
+        if let ProcurementData::Return(ret) = &returned.data
+            && (ret.bill_id.as_deref() == Some(id)
+                || ret.receipt_id.as_deref() == Some(id)
+                || matches!(&record.data,ProcurementData::Receive(receipt) if ret.lines.iter().any(|line|receipt.lines.iter().any(|l|l.id==line.receipt_line_id))))
+        {
+            targets.push(("برگشت و بستانکار مرتبط", returned.id.clone()));
+        }
+    }
+    targets
+        .into_iter()
+        .map(|(title, id)| {
+            let target = state.procurement_document(&id)?;
+            let reference = match &target.command {
+                ProcurementCommand::Return(c) => &c.return_reference,
+                ProcurementCommand::Bill(c) => &c.reference,
+                ProcurementCommand::Receive(c) => &c.reference,
+                _ => &id,
+            };
+            Ok((format!("{title} • {}", isolate(reference)), id.clone()))
+        })
+        .collect()
+}
 fn yes_no(value: bool) -> &'static str {
     if value { "بله" } else { "خیر" }
 }
@@ -2081,6 +2291,7 @@ fn record_title(d: &ProcurementData) -> &'static str {
         ProcurementData::Receive(_) => "رسید انبار",
         ProcurementData::Bill(_) => "صورتحساب تطبیق‌شده",
         ProcurementData::Transfer(_) => "انتقال غیرمالی انبار",
+        ProcurementData::Return(_) => "برگشت خرید • ثبت‌شده",
     }
 }
 fn record_summary(r: &ProcurementRecord, resources: &RegisterResources, ui: &Ui) -> String {
@@ -2106,6 +2317,14 @@ fn record_summary(r: &ProcurementRecord, resources: &RegisterResources, ui: &Ui)
         ProcurementData::Bill(x) => (
             match &r.command {
                 ProcurementCommand::Bill(c) => c.reference.clone(),
+                _ => String::new(),
+            },
+            resource_name(resources, "supplier", &x.supplier_id),
+            Some(x.total),
+        ),
+        ProcurementData::Return(x) => (
+            match &r.command {
+                ProcurementCommand::Return(c) => c.return_reference.clone(),
                 _ => String::new(),
             },
             resource_name(resources, "supplier", &x.supplier_id),
@@ -2259,6 +2478,7 @@ impl Page {
                         .ok_or_else(|| anyhow::anyhow!("سفارش پیدا نشد"))?;
                     receive_dialog(&ui, &company, &date, resources, record, self.run.clone())
                 }
+                5 => return_sources(&ui, &company, &date, resources, self.run.clone()),
                 _ => resource_dialog(&ui, &company, &date, resources, self.run.clone()),
             }?;
             Ok(())
@@ -2288,6 +2508,10 @@ impl Page {
             }
         };
         let company = record.command.context().company_id.clone();
+        let supplier_credit_id = match &record.data {
+            ProcurementData::Return(ret) => ret.credit_id.clone(),
+            _ => None,
+        };
         let id = id.to_string();
         let (dialog, body, error, save) =
             form_dialog(&ui, "منبع ثبت‌شده • فقط خواندنی", "procurement-detail");
@@ -2297,11 +2521,15 @@ impl Page {
         let unit = money_unit(&self.unit);
         let weak_page = Rc::downgrade(self);
         let document = id.clone();
-        let _=ui.run_background("خواندن منبع ثبت‌شده…",move||{let concise=concise_document(&snapshot.accounting,&company,&id,unit,&snapshot.settings)?;let report=sarv_quote::procurement_export::document_preview(&snapshot.accounting,&company,&id,unit,snapshot.settings.date_display,snapshot.settings.display_digits)?;Ok((report,concise))},move|ui,result|{
+        let _=ui.run_background("خواندن منبع ثبت‌شده…",move||{let concise=concise_document(&snapshot.accounting,&company,&id,unit,&snapshot.settings)?;let report=sarv_quote::procurement_export::document_preview(&snapshot.accounting,&company,&id,unit,snapshot.settings.date_display,snapshot.settings.display_digits)?;let linked=return_document_links(&snapshot.accounting,&id)?;Ok((report,concise,linked))},move|ui,result|{
             if !weak_dialog.upgrade().is_some_and(|d|d.is_visible()){ui.message(Ok("نمایش منبع لغو شد؛ ثبت‌ها تغییر نکردند."));return;}clear(&body);
-            match result{Ok((report,concise))=>{body.append(&heading(&report.title));body.append(&label(&format!("{} • {} • {}",report.company,isolate(&report.as_of),report.status)));body.append(&label("نسخهٔ ثبت‌شده ثابت است؛ بازبینی مجدد یا ثبت دیگری از این پنجره انجام نمی‌شود."));
-                report_rows(&body,concise);let trace=gtk::Box::new(gtk::Orientation::Vertical,8);report_rows(&trace,report.lines);body.append(&disclosure("جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده",&trace));
-                let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}body.append(&bar);ui.message(Ok("منبع ثبت‌شده آماده است • فقط خواندنی"));
+            match result{Ok((report,concise,linked))=>{body.append(&heading(&report.title));body.append(&label(&format!("{} • {} • {}",report.company,isolate(&report.as_of),report.status)));body.append(&label("نسخهٔ ثبت‌شده ثابت است؛ بازبینی مجدد یا ثبت دیگری از این پنجره انجام نمی‌شود."));
+                report_rows(&body,concise);
+                let links=actions();for (caption,id) in linked {let b=action(&caption,"procurement-linked-document");let weak=weak_page.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.detail(&id);}});insert_action(&links,&b);}body.append(&links);
+                let trace=gtk::Box::new(gtk::Orientation::Vertical,8);report_rows(&trace,report.lines);body.append(&disclosure("جزئیات کامل منبع، شناسه‌ها و اثر ثبت‌شده",&trace));
+                let bar=actions();for pdf in[false,true]{let b=action(if pdf{"خروجی سند PDF"}else{"خروجی سند CSV"},"procurement-export-document");let weak=weak_page.clone();let id=document.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}
+                if let Some(credit_id)=supplier_credit_id {for pdf in [false,true] {let b=action(if pdf {"خروجی اعتبار تأمین‌کننده PDF"}else{"خروجی اعتبار تأمین‌کننده CSV"},"procurement-export-supplier-credit");let weak=weak_page.clone();let id=credit_id.clone();b.connect_clicked(move |_|{if let Some(p)=weak.upgrade(){p.export(Some(id.clone()),pdf);}});insert_action(&bar,&b);}}
+                body.append(&bar);ui.message(Ok("منبع ثبت‌شده آماده است • فقط خواندنی"));
             },Err(e)=>{show_error(&error,&e);ui.message(Err::<String,_>(e));}}
         });
     }
@@ -2320,13 +2548,23 @@ impl Page {
         let state = ui.store.borrow().state.accounting.clone();
         let settings = ui.store.borrow().state.settings.clone();
         let unit = money_unit(&self.unit);
+        let supplier_credit=document.as_deref().is_some_and(|id|state.procurement.records.iter().any(|record|matches!(&record.data,ProcurementData::Return(ret) if ret.credit_id.as_deref()==Some(id))));
+        let physical_return=document.as_deref().is_some_and(|id|state.procurement.records.iter().any(|record|matches!(&record.data,ProcurementData::Return(ret) if record.id==id || ret.return_id==id)));
+        let filename = match (supplier_credit, physical_return, pdf) {
+            (true, _, true) => "supplier-credit.pdf",
+            (true, _, false) => "supplier-credit.csv",
+            (_, true, true) => "purchase-return.pdf",
+            (_, true, false) => "purchase-return.csv",
+            (_, _, true) => "procurement.pdf",
+            (_, _, false) => "procurement.csv",
+        };
         let file = gtk::FileDialog::builder()
-            .title("ذخیرهٔ گزارش خرید و انبار")
-            .initial_name(if pdf {
-                "procurement.pdf"
+            .title(if supplier_credit {
+                "ذخیرهٔ اعتبار تأمین‌کننده"
             } else {
-                "procurement.csv"
+                "ذخیرهٔ گزارش خرید و انبار"
             })
+            .initial_name(filename)
             .build();
         let weak = Rc::downgrade(&ui);
         file.save(Some(&ui.window), gio::Cancellable::NONE, move |result| {
@@ -2679,6 +2917,777 @@ fn bill_dialog(
     }
     Ok(())
 }
+#[derive(Clone)]
+struct ReturnSource {
+    record_id: String,
+    title: String,
+    search_text: String,
+    lines: Vec<PurchaseReturnableLine>,
+}
+fn returnable_sources(state: &AccountingState, company: &str) -> Result<Vec<ReturnSource>> {
+    let mut sources = Vec::new();
+    for record in state
+        .procurement
+        .records
+        .iter()
+        .rev()
+        .filter(|r| r.command.context().company_id == company)
+    {
+        let mut lines = Vec::new();
+        let reference = match (&record.command, &record.data) {
+            (ProcurementCommand::Receive(c), ProcurementData::Receive(r)) => {
+                for l in &r.lines {
+                    let source = state.procurement_receipt_returnable(company, &l.id)?;
+                    if source.remaining_quantity_thousandths > 0 {
+                        lines.push(source);
+                    }
+                }
+                format!("رسید صورتحساب‌نشده {}", isolate(&c.reference))
+            }
+            (ProcurementCommand::Bill(c), ProcurementData::Bill(b)) => {
+                for l in &b.lines {
+                    // Opening-only GRNI has no physical operational receipt to return.
+                    if state.procurement.records.iter().any(|r| matches!(&r.data, ProcurementData::Receive(receipt) if receipt.lines.iter().any(|x| x.id == l.receipt_line_id))) {
+                        let source = state.procurement_bill_returnable(company, &l.id)?;
+                        if source.remaining_quantity_thousandths > 0 { lines.push(source); }
+                    }
+                }
+                format!("صورتحساب {} • بستانکار مرتبط", isolate(&c.reference))
+            }
+            _ => continue,
+        };
+        if !lines.is_empty() {
+            let title = format!(
+                "{} • {} • {}",
+                reference,
+                friendly_resource(state, "supplier", &lines[0].supplier_id),
+                record.command.context().date
+            );
+            let search_text = format!(
+                "{} {} {}",
+                title,
+                record.id,
+                lines
+                    .iter()
+                    .map(|l| format!(
+                        "{} {} {} {}",
+                        friendly_resource(state, "item", &l.item_id),
+                        friendly_resource(state, "warehouse", &l.warehouse_id),
+                        friendly_receipt(state, &l.receipt_line_id),
+                        l.bill_line_id.as_deref().unwrap_or("")
+                    ))
+                    .collect::<Vec<_>>()
+                    .join(" ")
+            );
+            sources.push(ReturnSource {
+                record_id: record.id.clone(),
+                title,
+                search_text,
+                lines,
+            });
+        }
+    }
+    Ok(sources)
+}
+impl Page {
+    fn open_return_source(self: &Rc<Self>, id: &str) {
+        let Some(ui) = self.ui.upgrade() else { return };
+        if ui.background_busy.get() || ui.persistence_busy.get() {
+            self.status.set_text(
+                "عملیات دیگری در حال انجام است؛ پس از آماده‌شدن دوباره منبع برگشت را انتخاب کنید.",
+            );
+            return;
+        }
+        let result = (|| -> Result<()> {
+            let company = self.company_id()?;
+            let date = date_value(&self.as_of)?;
+            let resources = self
+                .resources
+                .borrow()
+                .clone()
+                .ok_or_else(|| anyhow::anyhow!("منابع آماده نیست"))?;
+            let state = ui.store.borrow().state.accounting.clone();
+            let id = id.to_string();
+            let run = self.run.clone();
+            let queried_company = company.clone();
+            let weak_page = Rc::downgrade(self);
+            ui.run_background(
+                "خواندن مانده و بهای اصلی منبع برگشت…",
+                move || {
+                    returnable_sources(&state, &queried_company)?
+                        .into_iter()
+                        .find(|s| s.record_id == id)
+                        .ok_or_else(|| anyhow::anyhow!("این منبع ماندهٔ عملیاتی قابل برگشت ندارد"))
+                },
+                move |ui, result| {
+                    if !weak_page.upgrade().is_some_and(|p| p.company_id().ok().as_deref()==Some(company.as_str()) && date_value(&p.as_of).ok().as_deref()==Some(date.as_str()) && ui.stack.visible_child_name().as_deref()==Some(if p.kind==PageKind::Purchases {"procurement"}else{"inventory"})) {
+                        ui.message(Ok("خواندن منبع قبلی پایان یافت؛ انتخاب یا صفحه تغییر کرده است. دوباره منبع برگشت را انتخاب کنید."));
+                        return;
+                    }
+                    match result.and_then(|source| {
+                    return_dialog(ui, &company, &date, resources.as_ref().clone(), source, run)
+                }) {
+                    Ok(()) => {
+                        ui.message(Ok("منبع و بهای اصلی برگشت آماده است؛ هنوز ثبت نشده است."))
+                    }
+                    Err(e) => ui.message(Err::<String, _>(e)),
+                }
+                },
+            );
+            Ok(())
+        })();
+        if let Err(e) = result {
+            self.status.set_text(&e.to_string());
+        }
+    }
+}
+fn return_sources(
+    ui: &Rc<Ui>,
+    company: &str,
+    date: &str,
+    resources: RegisterResources,
+    run: RunCommand,
+) -> Result<()> {
+    anyhow::ensure!(
+        !ui.background_busy.get() && !ui.persistence_busy.get(),
+        "عملیات دیگری در حال انجام است؛ انتخاب منبع حفظ می‌شود"
+    );
+    let (dialog, body, error, save) =
+        form_dialog(ui, "انتخاب منبع برگشت خرید", "procurement-return-sources");
+    save.set_visible(false);
+    body.append(&label("یک رسید صورتحساب‌نشده یا یک صورتحساب مشخص انتخاب کنید. بهای اصلی و انبار منبع ثابت می‌ماند؛ پرداخت یا بازگشایی سفارش انجام نمی‌شود."));
+    let search = search_entry(
+        "جست‌وجوی منبع، تأمین‌کننده، کالا یا انبار",
+        "procurement-return-source-search",
+    );
+    body.append(&search);
+    let rows = gtk::Box::new(gtk::Orientation::Vertical, 8);
+    body.append(&rows);
+    rows.append(&label("خواندن مانده‌های عملیاتی و بهای اصلی…"));
+    let state = ui.store.borrow().state.accounting.clone();
+    let company = company.to_string();
+    let query_company = company.clone();
+    let date = date.to_string();
+    let weak_dialog = dialog.downgrade();
+    ui.run_background("خواندن منابع برگشت خرید…",move||{
+        let sources=returnable_sources(&state,&query_company)?;
+        let index=SearchIndex::new(sources.iter().map(|s|s.search_text.clone()));
+        Ok((sources,index))
+    },move|ui,result|{
+        let Some(dialog)=weak_dialog.upgrade().filter(|d|d.is_visible()) else { ui.message(Ok("انتخاب منبع بسته شد؛ ثبت‌ها تغییر نکردند."));return };
+        match result {
+            Err(e)=>{clear(&rows);show_error(&error,&e);ui.message(Err::<String,_>(e));}
+            Ok((sources,index))=>{
+                let page=Rc::new(Cell::new(0usize));let slot:RowRefresh=Rc::new(RefCell::new(None));let weak_slot=Rc::downgrade(&slot);
+                let render_page=page.clone();
+                let weak_ui=Rc::downgrade(ui);let search_rows=search.clone();let row_body=rows.clone();let source_dialog=dialog.clone();
+                let update:Rc<dyn Fn()>=Rc::new(move||{
+                    detach_focus(&row_body);
+                    clear(&row_body);
+                    let start=render_page.get()*PAGE_SIZE;let (found,total)=index.search_page(&search_rows.text(),start,PAGE_SIZE);
+                    row_body.append(&label(&format!("{} منبع قابل برگشت • صفحهٔ {}",total,render_page.get()+1)));
+                    for i in found {
+                        let source=sources[i].clone();let b=action(&source.title,"procurement-return-source");
+                        let weak=weak_ui.clone();let company=company.clone();let date=date.clone();let resources=resources.clone();let run=run.clone();let dialog=source_dialog.clone();
+                        b.connect_clicked(move |_|{if let Some(ui)=weak.upgrade(){
+                            if ui.background_busy.get() || ui.persistence_busy.get(){ui.message(Ok("عملیات دیگری در حال انجام است؛ دوباره منبع را انتخاب کنید."));return;}
+                            // Close the picker before opening the editor to keep one active modal workspace.
+                            dialog.close();
+                            if let Err(e)=return_dialog(&ui,&company,&date,resources.clone(),source.clone(),run.clone()){ui.message(Err::<String,_>(e));}
+                        }});row_body.append(&b);
+                    }
+                    let bar=actions();for (caption,delta) in [("منابع پیشین",-1i64),("منابع بعد",1)]{
+                        if (delta<0 && start==0)||(delta>0 && start+PAGE_SIZE>=total){continue;}
+                        let b=action(caption,"procurement-return-source-page");let p=render_page.clone();let weak=weak_slot.clone();
+                        b.connect_clicked(move |_|{p.set((p.get() as i64+delta).max(0) as usize);if let Some(slot)=weak.upgrade() && let Some(update)=slot.borrow().as_ref(){update();}});insert_action(&bar,&b);
+                    }row_body.append(&bar);
+                });
+                *slot.borrow_mut()=Some(update.clone());update();
+                let p=page.clone();let weak=Rc::downgrade(&slot);search.connect_search_changed(move |_|{p.set(0);if let Some(slot)=weak.upgrade() && let Some(update)=slot.borrow().as_ref(){update();}});
+                dialog.connect_closed(move |_|{slot.borrow_mut().take();});
+                ui.message(Ok("منابع برگشت خرید آماده است؛ انتخاب منبع هیچ سندی ثبت نمی‌کند."));
+            }
+        }
+    });
+    Ok(())
+}
+// Exact positive half-up cumulative original-cost allocation. Cursor is shared
+// by unbilled returns/bills; billed returns use only their frozen bill-line cursor.
+fn return_value(source: &PurchaseReturnableLine, quantity: i64) -> Result<Money> {
+    anyhow::ensure!(
+        quantity > 0 && quantity <= source.remaining_quantity_thousandths,
+        "مقدار برگشت باید مثبت و حداکثر ماندهٔ قابل برگشت باشد"
+    );
+    anyhow::ensure!(
+        source.original_quantity_thousandths > 0,
+        "مقدار اصلی منبع نامعتبر است"
+    );
+    if quantity == source.remaining_quantity_thousandths {
+        return Ok(source.remaining_value);
+    }
+    let original_q = i128::from(source.original_quantity_thousandths);
+    let consumed_q = source.original_quantity_thousandths - source.remaining_quantity_thousandths;
+    let consumed_v = source.original_value.rials() - source.remaining_value.rials();
+    let numerator = i128::from(source.original_value.rials())
+        .checked_mul(i128::from(consumed_q + quantity))
+        .ok_or_else(|| anyhow::anyhow!("بهای برگشت خارج از دامنه است"))?;
+    let allocated = (numerator + original_q / 2) / original_q - i128::from(consumed_v);
+    let value = i64::try_from(allocated)?;
+    anyhow::ensure!(
+        value >= 0 && value <= source.remaining_value.rials(),
+        "ماندهٔ بهای اصلی نامعتبر است"
+    );
+    Ok(Money::from_rials(value))
+}
+struct ReturnDraftLine {
+    id: String,
+    source: PurchaseReturnableLine,
+    raw_quantity: String,
+    quantity: Option<i64>,
+    value: Money,
+    error: Option<String>,
+}
+struct ReturnRow {
+    box_: gtk::Box,
+    source: gtk::Label,
+    quantity: gtk::Entry,
+    quantity_caption: gtk::Label,
+    cost: gtk::Label,
+    bound: Cell<Option<usize>>,
+}
+struct ReturnRows {
+    draft: RefCell<Vec<ReturnDraftLine>>,
+    rows: Vec<ReturnRow>,
+    body: gtk::Box,
+    page: Cell<usize>,
+    updating: Cell<bool>,
+    total_rials: Cell<i128>,
+    invalid_count: Cell<usize>,
+    total: gtk::Label,
+    status: gtk::Label,
+    unit: gtk::DropDown,
+    resources: RegisterResources,
+    settings: Settings,
+}
+impl ReturnRows {
+    fn new(
+        body: &gtk::Box,
+        sources: Vec<PurchaseReturnableLine>,
+        resources: RegisterResources,
+        settings: Settings,
+        unit: &gtk::DropDown,
+    ) -> Rc<Self> {
+        let status = label("");
+        status.set_widget_name("procurement-return-page-status");
+        body.append(&status);
+        let rows_body = gtk::Box::new(gtk::Orientation::Vertical, 12);
+        rows_body.set_widget_name("procurement-return-visible-rows");
+        body.append(&rows_body);
+        let mut rows = Vec::new();
+        for slot in 0..sources.len().min(PAGE_SIZE) {
+            let box_ = gtk::Box::new(gtk::Orientation::Vertical, 6);
+            let source = label("");
+            box_.append(&source);
+            let quantity = named_entry(
+                "مقدار برگشت در واحد پایه",
+                &format!("procurement-return-slot-{slot}"),
+                "",
+                true,
+            );
+            let quantity_field = column();
+            quantity_field.add_css_class("field");
+            let quantity_caption = label("مقدار برگشت در واحد پایه");
+            quantity_caption.add_css_class("field-label");
+            quantity_caption.add_css_class("caption-heading");
+            quantity_caption.set_mnemonic_widget(Some(&quantity));
+            quantity.update_relation(&[gtk::accessible::Relation::LabelledBy(&[
+                quantity_caption.upcast_ref()
+            ])]);
+            quantity_field.append(&quantity_caption);
+            quantity_field.append(&quantity);
+            box_.append(&quantity_field);
+            let cost = label("");
+            cost.set_widget_name("procurement-return-original-cost");
+            cost.set_selectable(true);
+            box_.append(&cost);
+            rows_body.append(&box_);
+            rows.push(ReturnRow {
+                box_,
+                source,
+                quantity,
+                quantity_caption,
+                cost,
+                bound: Cell::new(None),
+            });
+        }
+        let total = label("");
+        total.set_widget_name("procurement-return-total");
+        body.append(&total);
+        let view = Rc::new(Self {
+            draft: RefCell::new(
+                sources
+                    .into_iter()
+                    .map(|source| ReturnDraftLine {
+                        id: Uuid::new_v4().to_string(),
+                        source,
+                        raw_quantity: String::new(),
+                        quantity: None,
+                        value: Money::ZERO,
+                        error: None,
+                    })
+                    .collect(),
+            ),
+            rows,
+            body: rows_body,
+            page: Cell::new(0),
+            updating: Cell::new(false),
+            total_rials: Cell::new(0),
+            invalid_count: Cell::new(0),
+            total,
+            status,
+            unit: unit.clone(),
+            resources,
+            settings,
+        });
+        for slot in 0..view.rows.len() {
+            let weak = Rc::downgrade(&view);
+            view.rows[slot].quantity.connect_changed(move |entry| {
+                if let Some(view) = weak.upgrade()
+                    && !view.updating.get()
+                {
+                    view.edit(slot, entry.text().as_str());
+                }
+            });
+        }
+        let weak = Rc::downgrade(&view);
+        unit.connect_selected_notify(move |_| {
+            if let Some(view) = weak.upgrade() {
+                view.render_costs();
+            }
+        });
+        if view.draft.borrow().len() > PAGE_SIZE {
+            let bar = actions();
+            // Persistent enabled pagers: a boundary activation is a no-op.
+            // Neither the focused pager nor a focused GtkText is destroyed.
+            for (caption, name, delta) in [
+                ("ردیف‌های برگشت پیشین", "procurement-return-previous", -1i64),
+                ("ردیف‌های برگشت بعد", "procurement-return-next", 1),
+            ] {
+                let b = action(caption, name);
+                let weak = Rc::downgrade(&view);
+                b.connect_clicked(move |_| {
+                    if let Some(view) = weak.upgrade() {
+                        let last = (view.draft.borrow().len() - 1) / PAGE_SIZE;
+                        let page = (view.page.get() as i64 + delta).max(0) as usize;
+                        if page <= last && page != view.page.get() {
+                            view.bind(page);
+                        }
+                    }
+                });
+                insert_action(&bar, &b);
+            }
+            body.append(&bar);
+        }
+        view.bind(0);
+        view
+    }
+    fn bind(&self, page: usize) {
+        detach_focus(&self.body);
+        self.updating.set(true);
+        self.page.set(page);
+        let start = page * PAGE_SIZE;
+        let draft = self.draft.borrow();
+        self.status.set_text(&format!(
+            "ردیف‌های برگشت {} تا {} از {} • صفحهٔ {}",
+            start + 1,
+            (start + PAGE_SIZE).min(draft.len()),
+            draft.len(),
+            page + 1
+        ));
+        for (slot, row) in self.rows.iter().enumerate() {
+            let index = start + slot;
+            if let Some(line) = draft.get(index) {
+                let l = &line.source;
+                row.bound.set(Some(index));
+                row.box_.set_visible(true);
+                self.render_source(row, line);
+                row.quantity.set_widget_name(&format!(
+                    "procurement-return-quantity-{}",
+                    l.bill_line_id.as_deref().unwrap_or(&l.receipt_line_id)
+                ));
+                row.quantity_caption.set_text(&format!(
+                    "مقدار برگشت در واحد پایه • ردیف {} • {}",
+                    index + 1,
+                    isolate(&l.reference)
+                ));
+                // LabelledBy wins over an Entry Label property. Give the actual
+                // caption a stable unique accessible name while keeping its
+                // visible text a friendly row/paper reference.
+                let accessible_quantity =
+                    format!("مقدار برگشت در واحد پایه • {}", l.receipt_line_id);
+                accessible_name(&row.quantity_caption, &accessible_quantity);
+                accessible_name(&row.quantity, &accessible_quantity);
+                row.quantity.set_text(&line.raw_quantity);
+                entry_validity(
+                    &row.quantity,
+                    line.error.as_deref(),
+                    "مقدار مثبت در واحد پایه؛ حداکثر ماندهٔ منبع",
+                );
+            } else {
+                row.bound.set(None);
+                row.box_.set_visible(false);
+            }
+        }
+        drop(draft);
+        self.updating.set(false);
+        self.render_costs();
+    }
+    fn edit(&self, slot: usize, text: &str) {
+        let Some(index) = self.rows[slot].bound.get() else {
+            return;
+        };
+        let mut draft = self.draft.borrow_mut();
+        let line = &mut draft[index];
+        self.total_rials
+            .set(self.total_rials.get() - i128::from(line.value.rials()));
+        if line.error.is_some() {
+            self.invalid_count.set(self.invalid_count.get() - 1);
+        }
+        line.raw_quantity = text.to_string();
+        line.quantity = None;
+        line.value = Money::ZERO;
+        line.error = None;
+        if !text.trim().is_empty() {
+            match quantities(text)
+                .and_then(|q| return_value(&line.source, q).map(|value| (q, value)))
+            {
+                Ok((q, value)) => {
+                    line.quantity = Some(q);
+                    line.value = value;
+                }
+                Err(e) => {
+                    line.error = Some(e.to_string());
+                    self.invalid_count.set(self.invalid_count.get() + 1);
+                }
+            }
+        }
+        self.total_rials
+            .set(self.total_rials.get() + i128::from(line.value.rials()));
+        entry_validity(
+            &self.rows[slot].quantity,
+            line.error.as_deref(),
+            "مقدار مثبت در واحد پایه؛ حداکثر ماندهٔ منبع",
+        );
+        self.render_cost(&self.rows[slot], line);
+        drop(draft);
+        self.render_total();
+    }
+    fn render_source(&self, row: &ReturnRow, line: &ReturnDraftLine) {
+        let l = &line.source;
+        row.source.set_text(&format!("{} • انبار اصلی {} • منبع {} • ردیف صورتحساب {}\nاصل مقدار {} • اصل بها {} • ماندهٔ مقدار {} • ماندهٔ بها {}",resource_name(&self.resources,"item",&l.item_id),resource_name(&self.resources,"warehouse",&l.warehouse_id),isolate(&l.receipt_line_id),isolate(l.bill_line_id.as_deref().unwrap_or("ندارد")),isolate(&quantity_text(l.original_quantity_thousandths)),display_money(&self.settings,l.original_value,money_unit(&self.unit)),isolate(&quantity_text(l.remaining_quantity_thousandths)),display_money(&self.settings,l.remaining_value,money_unit(&self.unit))));
+    }
+    fn render_cost(&self, row: &ReturnRow, line: &ReturnDraftLine) {
+        row.cost.set_text(&if let Some(error) = &line.error {
+            error.clone()
+        } else if line.quantity.is_some() {
+            format!(
+                "بهای اصلی برگشت: {}",
+                display_money(&self.settings, line.value, money_unit(&self.unit))
+            )
+        } else {
+            "بهای اصلی برگشت: مقدار را وارد کنید".into()
+        });
+    }
+    fn render_total(&self) {
+        self.total.set_text(&if self.invalid_count.get() > 0 {
+            "جمع قابل بازبینی نیست؛ مقدارها را اصلاح کنید".into()
+        } else if let Ok(total) = i64::try_from(self.total_rials.get()) {
+            format!(
+                "جمع بهای اصلی برگشت: {}",
+                display_money(
+                    &self.settings,
+                    Money::from_rials(total),
+                    money_unit(&self.unit)
+                )
+            )
+        } else {
+            "جمع خارج از دامنه است؛ مقدارها را اصلاح کنید".into()
+        });
+    }
+    fn render_costs(&self) {
+        let draft = self.draft.borrow();
+        for row in &self.rows {
+            if let Some(line) = row.bound.get().and_then(|i| draft.get(i)) {
+                self.render_source(row, line);
+                self.render_cost(row, line);
+            }
+        }
+        self.render_total();
+    }
+    fn collect(&self, dialog: &adw::Dialog) -> Result<(String, Vec<PurchaseReturnLine>, Money)> {
+        let invalid = self
+            .draft
+            .borrow()
+            .iter()
+            .enumerate()
+            .find_map(|(i, l)| l.error.as_ref().map(|e| (i, e.clone())));
+        if let Some((index, error)) = invalid {
+            self.bind(index / PAGE_SIZE);
+            let quantity = &self.rows[index % PAGE_SIZE].quantity;
+            if quantity.grab_focus() {
+                reveal_dialog_field(quantity, dialog);
+            }
+            anyhow::bail!("{error}");
+        }
+        let draft = self.draft.borrow();
+        let mut lines = Vec::new();
+        for line in draft.iter() {
+            if let Some(quantity) = line.quantity {
+                lines.push(PurchaseReturnLine {
+                    id: line.id.clone(),
+                    receipt_line_id: line.source.receipt_line_id.clone(),
+                    bill_line_id: line.source.bill_line_id.clone(),
+                    quantity_thousandths: quantity,
+                    supplied_value: line.value,
+                });
+            }
+        }
+        anyhow::ensure!(!lines.is_empty(), "حداقل یک مقدار برگشت وارد کنید");
+        Ok((
+            draft[0].source.supplier_id.clone(),
+            lines,
+            Money::from_rials(
+                i64::try_from(self.total_rials.get())
+                    .map_err(|_| anyhow::anyhow!("جمع خارج از دامنه است"))?,
+            ),
+        ))
+    }
+    fn connect_review(
+        self: &Rc<Self>,
+        review: &Rc<Review<ProcurementCommand, ProcurementPreview>>,
+    ) {
+        for row in &self.rows {
+            let weak = Rc::downgrade(self);
+            let weak_review = Rc::downgrade(review);
+            row.quantity.connect_changed(move |_| {
+                if let (Some(view), Some(review)) = (weak.upgrade(), weak_review.upgrade())
+                    && !view.updating.get()
+                {
+                    review.invalidate();
+                }
+            });
+        }
+    }
+}
+
+fn return_dialog(
+    ui: &Rc<Ui>,
+    company: &str,
+    date: &str,
+    resources: RegisterResources,
+    source: ReturnSource,
+    run: RunCommand,
+) -> Result<()> {
+    anyhow::ensure!(!source.lines.is_empty(), "منبع ماندهٔ قابل برگشت ندارد");
+    let billed = source.lines[0].bill_line_id.is_some();
+    let (dialog, body, error, save) =
+        form_dialog(ui, "برگشت خرید با بهای اصلی", "procurement-return");
+    body.append(&heading(&source.title));
+    body.append(&label(if billed {
+        "برگشت از یک صورتحساب • بستانکار همان صورتحساب • انبار و بهای اصلی ثابت • بدون پرداخت"
+    } else {
+        "برگشت از یک رسید صورتحساب‌نشده • کاهش ماندهٔ تطبیق‌نشده • بدون بستانکار تأمین‌کننده"
+    }));
+    let common = Common::new(ui, &body, company, date, "procurement-return")?;
+    let credit = named_entry(
+        "مرجع بستانکار تأمین‌کننده",
+        "procurement-return-credit-reference",
+        "",
+        true,
+    );
+    if billed {
+        body.append(&field("مرجع بستانکار تأمین‌کننده", &credit));
+    }
+    let unit = gtk::DropDown::from_strings(&["نمایش ریال", "نمایش تومان • ۱۰ ریال"]);
+    unit.set_widget_name("procurement-return-money-unit");
+    accessible_name(&unit, "واحد نمایش بهای اصلی برگشت");
+    body.append(&unit);
+    body.append(&label("مقدار را در واحد پایه وارد کنید؛ ردیف خالی برگشت نمی‌شود. بهای قابل برگشت از سهم اصلی منبع محاسبه می‌شود و قابل ویرایش نیست. ردیف‌های منبع دیگری در این سند پذیرفته نمی‌شوند."));
+    let rows = ReturnRows::new(
+        &body,
+        source.lines,
+        resources,
+        ui.store.borrow().state.settings.clone(),
+        &unit,
+    );
+    let c = common.clone();
+    let collected_rows = rows.clone();
+    let credit_field = credit.clone();
+    let return_id = Uuid::new_v4().to_string();
+    let credit_id = billed.then(|| Uuid::new_v4().to_string());
+    let weak_dialog = dialog.downgrade();
+    let collect = Rc::new(move || {
+        let dialog = weak_dialog
+            .upgrade()
+            .ok_or_else(|| anyhow::anyhow!("پنجرهٔ برگشت بسته شده است"))?;
+        let (supplier_id, lines, total) = collected_rows.collect(&dialog)?;
+        Ok(ProcurementCommand::Return(ReturnPurchase {
+            context: c.collect()?,
+            supplier_id,
+            return_id: return_id.clone(),
+            return_reference: required(&c.reference, "مرجع برگشت خرید")?,
+            credit_id: credit_id.clone(),
+            credit_reference: if billed {
+                Some(required(&credit_field, "مرجع بستانکار تأمین‌کننده")?)
+            } else {
+                None
+            },
+            document_date: date_value(&c.document_date)?,
+            lines,
+            supplied_total: total,
+        }))
+    });
+    let review = review(&body, ui, &dialog, &error, &save, run, collect);
+    common.connect(&review);
+    if billed {
+        review.text(&credit);
+    }
+    rows.connect_review(&review);
+    // Display-unit changes change no canonical values or verified command.
+    Ok(())
+}
+// Rebinding a paged form changes its allocation after focus has already moved.
+// Reveal the whole invalid field after layout; later user focus or a new binding
+// owns the scroll position immediately. A modal Dialog owns its own focus.
+fn reveal_dialog_field(widget: &impl IsA<gtk::Widget>, dialog: &adw::Dialog) {
+    let weak_dialog = dialog.downgrade();
+    let name = widget.as_ref().widget_name();
+    let frames = Cell::new(0);
+    widget.as_ref().add_tick_callback(move |widget, _| {
+        let Some(dialog) = weak_dialog.upgrade().filter(|dialog| dialog.is_visible()) else {
+            return glib::ControlFlow::Break;
+        };
+        let Some(focus) = dialog.focus() else {
+            return glib::ControlFlow::Break;
+        };
+        if !widget.is_mapped()
+            || widget.widget_name() != name
+            || (focus != *widget && !focus.is_ancestor(widget))
+        {
+            return glib::ControlFlow::Break;
+        }
+        frames.set(frames.get() + 1);
+        if frames.get() == 1 {
+            return glib::ControlFlow::Continue;
+        }
+        let mut parent = widget.parent();
+        while let Some(ancestor) = parent {
+            parent = ancestor.parent();
+            if let Some(scroller) = ancestor.downcast_ref::<gtk::ScrolledWindow>()
+                && let Some(viewport) = scroller.child()
+                && let Some(bounds) = widget.compute_bounds(&viewport)
+            {
+                for (adjustment, start, extent) in [
+                    (scroller.vadjustment(), bounds.y(), bounds.height()),
+                    (scroller.hadjustment(), bounds.x(), bounds.width()),
+                ] {
+                    let size = adjustment.page_size();
+                    if size <= 0.0 {
+                        continue;
+                    }
+                    let start = f64::from(start);
+                    let end = start + f64::from(extent);
+                    let delta = if start < 4.0 {
+                        start - 4.0
+                    } else if end > size - 4.0 {
+                        end - size + 4.0
+                    } else {
+                        0.0
+                    };
+                    let value = (adjustment.value() + delta).clamp(
+                        adjustment.lower(),
+                        (adjustment.upper() - size).max(adjustment.lower()),
+                    );
+                    if (value - adjustment.value()).abs() > 0.5 {
+                        adjustment.set_value(value);
+                    }
+                }
+            }
+        }
+        if frames.get() < 5 {
+            glib::ControlFlow::Continue
+        } else {
+            glib::ControlFlow::Break
+        }
+    });
+}
+// Clear focus before replacing a live result/pager subtree. A newer focus or
+// dialog always wins; only a surviving mapped control may regain focus.
+fn detach_focus(body: &impl IsA<gtk::Widget>) {
+    let body = body.as_ref();
+    let Some(root) = body.root() else { return };
+    let Some(focus) = root.focus() else { return };
+    if focus == *body || focus.is_ancestor(body) {
+        let name = focus.widget_name().to_string();
+        let caption = focus
+            .clone()
+            .downcast::<gtk::Button>()
+            .ok()
+            .and_then(|b| b.label());
+        let weak_focus = focus.downgrade();
+        let weak_body = body.downgrade();
+        let weak_root = root.downgrade();
+        root.set_focus(None::<&gtk::Widget>);
+        glib::idle_add_local_once(move || {
+            let (Some(root), Some(body)) = (weak_root.upgrade(), weak_body.upgrade()) else {
+                return;
+            };
+            if root.focus().is_some() || !body.is_mapped() {
+                return;
+            }
+            let surviving = weak_focus
+                .upgrade()
+                .filter(|w| w.is_mapped() && w.is_sensitive());
+            let replacement = surviving.or_else(|| {
+                find_focus_replacement(&body, &name, caption.as_deref()).or_else(|| {
+                    name.ends_with("page")
+                        .then(|| find_focus_replacement(&body, &name, None))
+                        .flatten()
+                })
+            });
+            if let Some(widget) = replacement
+                .filter(|w| w.is_mapped() && w.is_sensitive() && w.native() == body.native())
+            {
+                widget.grab_focus();
+            }
+        });
+    }
+}
+fn find_focus_replacement(
+    body: &gtk::Widget,
+    name: &str,
+    caption: Option<&str>,
+) -> Option<gtk::Widget> {
+    let matches = body.widget_name() == name
+        && caption.is_none_or(|caption| {
+            body.clone()
+                .downcast::<gtk::Button>()
+                .ok()
+                .is_some_and(|b| b.label().as_deref() == Some(caption))
+        });
+    if matches {
+        return Some(body.clone());
+    }
+    let mut child = body.first_child();
+    while let Some(w) = child {
+        child = w.next_sibling();
+        if let Some(found) = find_focus_replacement(&w, name, caption) {
+            return Some(found);
+        }
+    }
+    None
+}
+
 fn resource_dialog(
     ui: &Rc<Ui>,
     company: &str,
@@ -4083,6 +5092,34 @@ fn concise_document(
                     isolate(&quantity_text(l.quantity_thousandths)),
                     money(l.value)
                 ));
+            }
+        }
+        (ProcurementCommand::Return(c), ProcurementData::Return(r)) => {
+            out.push(format!(
+                "برگشت {} • {} • تاریخ سند {} • بهای اصلی {} • وضعیت کالا ثبت‌شده",
+                isolate(&c.return_reference),
+                resource_name(&resources, "supplier", &r.supplier_id),
+                date(&c.document_date),
+                money(r.total)
+            ));
+            out.push(format!(
+                "شناسهٔ برگشت {} • بستانکار {} • شناسهٔ بستانکار {} • وضعیت {}",
+                isolate(&r.return_id),
+                isolate(c.credit_reference.as_deref().unwrap_or("ندارد")),
+                isolate(r.credit_id.as_deref().unwrap_or("ندارد")),
+                if r.credit_state.is_some() {
+                    "بستانکار ثبت‌شده"
+                } else {
+                    "رسید صورتحساب‌نشده"
+                }
+            ));
+            out.push(format!(
+                "منبع عملیاتی رسید {} • صورتحساب {}",
+                isolate(r.receipt_id.as_deref().unwrap_or("ندارد")),
+                isolate(r.bill_id.as_deref().unwrap_or("ندارد"))
+            ));
+            for l in &r.lines {
+                out.push(format!("{} • انبار اصلی {} • مقدار پایه {} • بهای اصلی {} • رسید {} • ردیف صورتحساب {}", resource_name(&resources,"item",&l.item_id), resource_name(&resources,"warehouse",&l.warehouse_id), isolate(&quantity_text(l.quantity_thousandths)), money(l.value), isolate(&receipt_reference(state,&l.receipt_line_id)), isolate(l.bill_line_id.as_deref().unwrap_or("ندارد"))));
             }
         }
         (ProcurementCommand::Transfer(c), ProcurementData::Transfer(t)) => {

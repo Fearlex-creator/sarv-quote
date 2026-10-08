@@ -71,6 +71,16 @@ record!(BillLine {
     supplied_value: Money
 });
 record!(MatchBill{context:ProcurementContext,supplier_id:String,reference:String,document_date:String,due_date:String,lines:Vec<BillLine>,supplied_total:Money});
+record!(PurchaseReturnLine { id:String, receipt_line_id:String, bill_line_id:Option<String>, quantity_thousandths:i64, supplied_value:Money });
+record!(ReturnPurchase { context:ProcurementContext, supplier_id:String, return_id:String, return_reference:String, credit_id:Option<String>, credit_reference:Option<String>, document_date:String, lines:Vec<PurchaseReturnLine>, supplied_total:Money });
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum PurchaseReturnState {
+    Returned,
+}
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum SupplierCreditState {
+    Posted,
+}
 record!(TransferStock {
     context: ProcurementContext,
     item_id: String,
@@ -86,6 +96,7 @@ pub enum ProcurementCommand {
     Receive(ReceiveOrder),
     Bill(MatchBill),
     Transfer(TransferStock),
+    Return(ReturnPurchase),
 }
 impl ProcurementCommand {
     pub fn context(&self) -> &ProcurementContext {
@@ -95,6 +106,7 @@ impl ProcurementCommand {
             Self::Receive(c) => &c.context,
             Self::Bill(c) => &c.context,
             Self::Transfer(c) => &c.context,
+            Self::Return(c) => &c.context,
         }
     }
     fn context_mut(&mut self) -> &mut ProcurementContext {
@@ -104,6 +116,7 @@ impl ProcurementCommand {
             Self::Receive(c) => &mut c.context,
             Self::Bill(c) => &mut c.context,
             Self::Transfer(c) => &mut c.context,
+            Self::Return(c) => &mut c.context,
         }
     }
     pub fn event(&self) -> &'static str {
@@ -113,6 +126,7 @@ impl ProcurementCommand {
             Self::Receive(_) => "procurement.receive.v1",
             Self::Bill(_) => "procurement.bill.v1",
             Self::Transfer(_) => "procurement.transfer.v1",
+            Self::Return(_) => "procurement.return.v1",
         }
     }
 }
@@ -141,6 +155,9 @@ record!(PostedBillLine {
     value: Money
 });
 record!(PostedBill{supplier_id:String,lines:Vec<PostedBillLine>,total:Money});
+record!(PostedPurchaseReturnLine { id:String, receipt_line_id:String, bill_line_id:Option<String>, item_id:String, warehouse_id:String, quantity_thousandths:i64, value:Money });
+record!(PostedPurchaseReturn { supplier_id:String, return_id:String, return_state:PurchaseReturnState, credit_id:Option<String>, credit_state:Option<SupplierCreditState>, receipt_id:Option<String>, bill_id:Option<String>, lines:Vec<PostedPurchaseReturnLine>, total:Money });
+record!(PurchaseReturnableLine { receipt_line_id:String, bill_line_id:Option<String>, bill_id:Option<String>, supplier_id:String, item_id:String, warehouse_id:String, original_quantity_thousandths:i64, original_value:Money, remaining_quantity_thousandths:i64, remaining_value:Money, date:String, reference:String });
 record!(StockPool {
     item_id: String,
     warehouse_id: String,
@@ -175,6 +192,7 @@ pub enum ProcurementData {
     Receive(PostedReceipt),
     Bill(PostedBill),
     Transfer(PostedTransfer),
+    Return(PostedPurchaseReturn),
 }
 record!(ProcurementRecord{id:String,command:ProcurementCommand,command_sha256:String,frozen_setup:CoreSetup,sequence:u64,journal_id:Option<String>,data:ProcurementData,movements:Vec<StockMovement>});
 impl ProcurementRecord {
@@ -529,6 +547,25 @@ impl AccountingState {
                         );
                     }
                 }
+                ProcurementData::Return(v) if v.bill_id.is_none() => {
+                    for x in &v.lines {
+                        let receipt = receipts
+                            .get_mut(&x.receipt_line_id)
+                            .ok_or_else(|| anyhow::anyhow!("رسید برگشت پیدا نشد"))?;
+                        receipt.quantity_thousandths = receipt
+                            .quantity_thousandths
+                            .checked_sub(x.quantity_thousandths)
+                            .ok_or_else(|| anyhow::anyhow!("سرریز مقدار برگشت"))?;
+                        receipt.value = receipt.value.checked_sub(x.value)?;
+                        ensure!(
+                            receipt.quantity_thousandths >= 0
+                                && receipt.value.rials() >= 0
+                                && (receipt.quantity_thousandths != 0
+                                    || receipt.value == Money::ZERO),
+                            "برگشت از ماندهٔ رسید بیشتر است"
+                        );
+                    }
+                }
                 _ => {}
             }
         }
@@ -569,6 +606,137 @@ impl AccountingState {
                 });
             }
         }
+        for r in self.procurement.records.iter().filter(|r| {
+            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
+        }) {
+            if let ProcurementData::Return(v) = &r.data
+                && let Some(bill_id) = &v.bill_id
+            {
+                if v.total == Money::ZERO {
+                    continue;
+                }
+                let payable = out
+                    .iter_mut()
+                    .find(|p| &p.id == bill_id)
+                    .ok_or_else(|| anyhow::anyhow!("ماندهٔ صورتحساب برگشت پیدا نشد"))?;
+                payable.remaining = payable.remaining.checked_sub(v.total)?;
+                ensure!(
+                    payable.remaining.rials() >= 0,
+                    "اعتبار برگشت از ماندهٔ صورتحساب بیشتر است"
+                );
+            }
+        }
+        Ok(out)
+    }
+    fn operational_receipt_record(&self, company: &str, line: &str) -> Result<&ProcurementRecord> {
+        self.procurement.records.iter().find(|r| r.command.context().company_id == company
+            && matches!(&r.data, ProcurementData::Receive(v) if v.lines.iter().any(|l| l.id == line)))
+            .ok_or_else(|| anyhow::anyhow!("برگشت فقط از رسید عملیاتی دارای سابقهٔ اصلی مجاز است؛ رسید افتتاحیه قابل برگشت نیست"))
+    }
+    fn receipt_allocation_date<'a>(
+        &'a self,
+        company: &str,
+        line: &str,
+        original: &'a str,
+    ) -> &'a str {
+        self.procurement
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company)
+            .filter(|r| match &r.data {
+                ProcurementData::Bill(v) => v.lines.iter().any(|l| l.receipt_line_id == line),
+                ProcurementData::Return(v) => v.lines.iter().any(|l| l.receipt_line_id == line),
+                _ => false,
+            })
+            .map(|r| r.command.context().date.as_str())
+            .chain(std::iter::once(original))
+            .max()
+            .unwrap()
+    }
+    pub fn procurement_receipt_returnable(
+        &self,
+        company: &str,
+        line: &str,
+    ) -> Result<PurchaseReturnableLine> {
+        let source = self.operational_receipt_record(company, line)?;
+        let r = self
+            .procurement_receipts(company, "9999-12-31")?
+            .into_iter()
+            .find(|r| r.id == line)
+            .ok_or_else(|| anyhow::anyhow!("ماندهٔ رسید پیدا نشد"))?;
+        Ok(PurchaseReturnableLine {
+            receipt_line_id: r.id,
+            bill_line_id: None,
+            bill_id: None,
+            supplier_id: r.supplier_id,
+            item_id: r.item_id,
+            warehouse_id: r.warehouse_id,
+            original_quantity_thousandths: r.original_quantity_thousandths,
+            original_value: r.original_value,
+            remaining_quantity_thousandths: r.quantity_thousandths,
+            remaining_value: r.value,
+            date: self
+                .receipt_allocation_date(company, line, &source.command.context().date)
+                .into(),
+            reference: r.reference,
+        })
+    }
+    pub fn procurement_bill_returnable(
+        &self,
+        company: &str,
+        line: &str,
+    ) -> Result<PurchaseReturnableLine> {
+        let source = self.procurement.records.iter().find(|r| r.command.context().company_id == company
+            && matches!(&r.data, ProcurementData::Bill(v) if v.lines.iter().any(|l| l.id == line)))
+            .ok_or_else(|| anyhow::anyhow!("ردیف صورتحساب عملیاتی پیدا نشد"))?;
+        let (ProcurementData::Bill(b), ProcurementCommand::Bill(c)) =
+            (&source.data, &source.command)
+        else {
+            anyhow::bail!("منبع صورتحساب نامعتبر است")
+        };
+        let orig = b.lines.iter().find(|l| l.id == line).unwrap();
+        let mut out = self.procurement_receipt_returnable(company, &orig.receipt_line_id)?;
+        // Credits consume the frozen bill-line cursor without reopening GRNI.
+        let mut q = 0i64;
+        let mut v = Money::ZERO;
+        for r in self
+            .procurement
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company)
+        {
+            if let ProcurementData::Return(ret) = &r.data {
+                for l in ret
+                    .lines
+                    .iter()
+                    .filter(|l| l.bill_line_id.as_deref() == Some(line))
+                {
+                    q = q
+                        .checked_add(l.quantity_thousandths)
+                        .ok_or_else(|| anyhow::anyhow!("سرریز مقدار برگشت"))?;
+                    v = v.checked_add(l.value)?;
+                }
+            }
+        }
+        out.bill_line_id = Some(line.into());
+        out.bill_id = Some(source.id.clone());
+        out.original_quantity_thousandths = orig.quantity_thousandths;
+        out.original_value = orig.value;
+        out.remaining_quantity_thousandths = orig
+            .quantity_thousandths
+            .checked_sub(q)
+            .ok_or_else(|| anyhow::anyhow!("سرریز ماندهٔ برگشت"))?;
+        out.remaining_value = orig.value.checked_sub(v)?;
+        ensure!(
+            out.remaining_quantity_thousandths >= 0
+                && out.remaining_value.rials() >= 0
+                && (out.remaining_quantity_thousandths != 0 || out.remaining_value == Money::ZERO),
+            "برگشت از ردیف صورتحساب بیشتر است"
+        );
+        out.date = self
+            .receipt_allocation_date(company, &orig.receipt_line_id, &c.context.date)
+            .into();
+        out.reference = c.reference.clone();
         Ok(out)
     }
     pub fn procurement_reconcile(
@@ -728,6 +896,11 @@ impl AccountingState {
                 ProcurementData::Order(x) => out.extend(x.lines.iter().map(|x| x.input.id.clone())),
                 ProcurementData::Receive(x) => out.extend(x.lines.iter().map(|x| x.id.clone())),
                 ProcurementData::Bill(x) => out.extend(x.lines.iter().map(|x| x.id.clone())),
+                ProcurementData::Return(x) => {
+                    out.insert(x.return_id.clone());
+                    out.extend(x.credit_id.clone());
+                    out.extend(x.lines.iter().map(|l| l.id.clone()));
+                }
                 _ => {}
             }
         }
@@ -1108,23 +1281,16 @@ impl AccountingState {
                             && (!resources_item.indivisible || l.quantity_thousandths % 1000 == 0),
                         "مقدار صورتحساب واحد پایه نامعتبر است"
                     );
-                    for old in self
-                        .procurement
-                        .records
-                        .iter()
-                        .filter(|old| old.command.context().company_id == c.company_id)
-                    {
-                        if let ProcurementData::Bill(b) = &old.data
-                            && b.lines
-                                .iter()
-                                .any(|old| old.receipt_line_id == l.receipt_line_id)
-                        {
-                            ensure!(
-                                c.date >= old.command.context().date,
-                                "تاریخ صورتحساب پیش از آخرین تخصیص همین رسید است"
-                            );
-                        }
-                    }
+                    ensure!(
+                        c.date.as_str()
+                            >= self.receipt_allocation_date(
+                                &c.company_id,
+                                &l.receipt_line_id,
+                                &r.date
+                            ),
+                        "تاریخ صورتحساب پیش از آخرین تخصیص یا برگشت همین رسید است"
+                    );
+                    // Bills and unbilled returns consume one original receipt cursor.
                     let value = allocation(
                         r.original_value,
                         r.original_quantity_thousandths,
@@ -1159,6 +1325,188 @@ impl AccountingState {
                 (
                     ProcurementData::Bill(PostedBill {
                         supplier_id: x.supplier_id.clone(),
+                        lines,
+                        total,
+                    }),
+                    total,
+                )
+            }
+            ProcurementCommand::Return(x) => {
+                supplier(&x.supplier_id)?;
+                text(&x.return_reference)?;
+                doc_date(&x.document_date, &c.date)?;
+                money(x.supplied_total)?;
+                ensure!(
+                    (1..=10_000).contains(&x.lines.len()),
+                    "تعداد ردیف برگشت نامعتبر است"
+                );
+                let billed = x.lines[0].bill_line_id.is_some();
+                ensure!(
+                    x.lines.iter().all(|l| l.bill_line_id.is_some() == billed)
+                        && x.credit_id.is_some() == billed
+                        && x.credit_reference.is_some() == billed,
+                    "برگشت صورتحساب‌شده و صورتحساب‌نشده قابل ترکیب نیست؛ شناسه و مرجع اعتبار الزامی است"
+                );
+                claim(&x.return_id, &mut ids)?;
+                if let Some(credit) = &x.credit_id {
+                    claim(credit, &mut ids)?;
+                }
+                if let Some(reference) = &x.credit_reference {
+                    text(reference)?;
+                }
+                ensure!(!self.procurement.records.iter().any(|r| matches!(&r.command, ProcurementCommand::Return(old)
+                    if old.context.company_id == c.company_id && old.supplier_id == x.supplier_id
+                    && old.document_date == x.document_date && normalize(&old.return_reference) == normalize(&x.return_reference))),
+                    "مرجع برگشت این تأمین‌کننده قبلاً ثبت شده است");
+                if let Some(reference) = &x.credit_reference {
+                    ensure!(!self.procurement.records.iter().any(|r| matches!(&r.command, ProcurementCommand::Return(old)
+                        if old.context.company_id == c.company_id && old.supplier_id == x.supplier_id
+                        && old.document_date == x.document_date && old.credit_reference.as_ref().is_some_and(|v| normalize(v) == normalize(reference)))),
+                        "مرجع اعتبار این تأمین‌کننده قبلاً ثبت شده است");
+                }
+                ensure!(
+                    c.date.as_str() >= self.operational_stock_date(&c.company_id)?,
+                    "ثبت برگشت پیش از آخرین تاریخ موجودی شرکت ممنوع است"
+                );
+                let mut pools = self.operational_stock_pools(&c.company_id, "9999-12-31")?;
+                let mut source_ids = HashSet::new();
+                let mut receipt_id: Option<String> = None;
+                let mut bill_id: Option<String> = None;
+                let mut lines = Vec::new();
+                for l in &x.lines {
+                    claim(&l.id, &mut ids)?;
+                    money(l.supplied_value)?;
+                    ensure!(
+                        source_ids.insert(&l.receipt_line_id),
+                        "ردیف رسید در برگشت تکراری است"
+                    );
+                    let source =
+                        self.operational_receipt_record(&c.company_id, &l.receipt_line_id)?;
+                    let eligible = if let Some(bill_line) = &l.bill_line_id {
+                        let e = self.procurement_bill_returnable(&c.company_id, bill_line)?;
+                        ensure!(
+                            e.receipt_line_id == l.receipt_line_id,
+                            "ردیف صورتحساب به این رسید تعلق ندارد"
+                        );
+                        if let Some(prior) = &bill_id {
+                            ensure!(
+                                e.bill_id.as_ref() == Some(prior),
+                                "برگشت باید به یک صورتحساب تعلق داشته باشد"
+                            );
+                        }
+                        bill_id = e.bill_id.clone();
+                        e
+                    } else {
+                        if let Some(prior) = &receipt_id {
+                            ensure!(
+                                *prior == source.id,
+                                "برگشت صورتحساب‌نشده باید به یک رسید تعلق داشته باشد"
+                            );
+                        }
+                        receipt_id = Some(source.id.clone());
+                        self.procurement_receipt_returnable(&c.company_id, &l.receipt_line_id)?
+                    };
+                    ensure!(
+                        eligible.supplier_id == x.supplier_id && c.date >= eligible.date,
+                        "شخص یا تاریخ برگشت با منبع و آخرین تخصیص سازگار نیست"
+                    );
+                    let item = resources
+                        .items
+                        .iter()
+                        .find(|i| i.id == eligible.item_id)
+                        .ok_or_else(|| anyhow::anyhow!("کالای رسید برگشت پیدا نشد"))?;
+                    ensure!(
+                        l.quantity_thousandths > 0
+                            && (!item.indivisible || l.quantity_thousandths % 1000 == 0),
+                        "مقدار برگشت واحد پایه نامعتبر است"
+                    );
+                    let value = allocation(
+                        eligible.original_value,
+                        eligible.original_quantity_thousandths,
+                        eligible.original_quantity_thousandths
+                            - eligible.remaining_quantity_thousandths,
+                        eligible
+                            .original_value
+                            .checked_sub(eligible.remaining_value)?,
+                        l.quantity_thousandths,
+                    )?;
+                    ensure!(
+                        value == l.supplied_value,
+                        "بهای اصلی برگشت برابر نیست: انتظار {} ریال، ارائه {} ریال",
+                        value.rials(),
+                        l.supplied_value.rials()
+                    );
+                    let pool = pools
+                        .entry((eligible.item_id.clone(), eligible.warehouse_id.clone()))
+                        .or_insert_with(|| empty_pool(&eligible.item_id, &eligible.warehouse_id));
+                    let before = pool.clone();
+                    let after = move_pool(pool, StockDirection::Out, l.quantity_thousandths, value)
+                        .map_err(|error| anyhow::anyhow!("برگشت با بهای اصلی از موجودی فعلی ممکن نیست؛ اصلاح بهای جداگانه لازم است: {error}"))?;
+                    let movement_id = movement_id(c, &l.id, "return-out")?;
+                    movements.push(StockMovement {
+                        id: movement_id,
+                        item_id: eligible.item_id.clone(),
+                        warehouse_id: eligible.warehouse_id.clone(),
+                        direction: StockDirection::Out,
+                        quantity_thousandths: l.quantity_thousandths,
+                        value,
+                        source_line_id: l.id.clone(),
+                        before,
+                        after: after.clone(),
+                    });
+                    *pool = after;
+                    lines.push(PostedPurchaseReturnLine {
+                        id: l.id.clone(),
+                        receipt_line_id: l.receipt_line_id.clone(),
+                        bill_line_id: l.bill_line_id.clone(),
+                        item_id: eligible.item_id,
+                        warehouse_id: eligible.warehouse_id,
+                        quantity_thousandths: l.quantity_thousandths,
+                        value,
+                    });
+                }
+                let total = sum(lines.iter().map(|l| l.value))?;
+                money(total)?;
+                ensure!(total == x.supplied_total, "جمع مستقل برگشت برابر نیست");
+                if let Some(bill) = &bill_id
+                    && total != Money::ZERO
+                {
+                    let payables = self.procurement_payables(&c.company_id, "9999-12-31")?;
+                    let payable = payables
+                        .iter()
+                        .find(|p| &p.id == bill)
+                        .ok_or_else(|| anyhow::anyhow!("ماندهٔ پرداختنی صورتحساب پیدا نشد"))?;
+                    ensure!(
+                        total.rials() <= payable.remaining.rials(),
+                        "اعتبار از ماندهٔ پرداخت‌نشدهٔ صورتحساب بیشتر است"
+                    );
+                }
+                if total != Money::ZERO {
+                    journal_lines = pair(
+                        setup,
+                        if billed {
+                            CoreRole::Payables
+                        } else {
+                            CoreRole::Grni
+                        },
+                        CoreRole::Inventory,
+                        total,
+                        &x.return_reference,
+                    )?;
+                }
+                (
+                    ProcurementData::Return(PostedPurchaseReturn {
+                        supplier_id: x.supplier_id.clone(),
+                        return_id: x.return_id.clone(),
+                        return_state: PurchaseReturnState::Returned,
+                        credit_id: x.credit_id.clone(),
+                        credit_state: if billed {
+                            Some(SupplierCreditState::Posted)
+                        } else {
+                            None
+                        },
+                        receipt_id,
+                        bill_id,
                         lines,
                         total,
                     }),
@@ -1543,6 +1891,17 @@ fn record_journal_lines(record: &ProcurementRecord) -> Result<Vec<JournalLineInp
             b.total,
             &c.reference,
         ),
+        (ProcurementCommand::Return(c), ProcurementData::Return(r)) => pair(
+            &record.frozen_setup,
+            if r.bill_id.is_some() {
+                CoreRole::Payables
+            } else {
+                CoreRole::Grni
+            },
+            CoreRole::Inventory,
+            r.total,
+            &c.return_reference,
+        ),
         _ => anyhow::bail!("رویداد خرید فاقد سند مالی است"),
     }
 }
@@ -1560,6 +1919,10 @@ fn data_ids(data: &ProcurementData) -> Vec<&str> {
         ProcurementData::Order(x) => x.lines.iter().map(|x| x.input.id.as_str()).collect(),
         ProcurementData::Receive(x) => x.lines.iter().map(|x| x.id.as_str()).collect(),
         ProcurementData::Bill(x) => x.lines.iter().map(|x| x.id.as_str()).collect(),
+        ProcurementData::Return(x) => std::iter::once(x.return_id.as_str())
+            .chain(x.credit_id.as_deref())
+            .chain(x.lines.iter().map(|l| l.id.as_str()))
+            .collect(),
         ProcurementData::Transfer(_) => Vec::new(),
     }
 }

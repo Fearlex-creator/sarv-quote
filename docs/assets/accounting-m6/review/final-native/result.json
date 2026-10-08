@@ -1,0 +1,43 @@
+{
+  "reviewer": "m6_final_native_review",
+  "scope": "read-only native/sidebar/export/a11y independent inspection; static PDF raster only; no Cargo or GUI",
+  "candidate": "candidate3",
+  "binary_sha256": "9856176d68d99555249ee969b13e7dbced8329dc2441db226a1fc0385b3254a0",
+  "production_source_sha256": "fb425a75263719f798b42970eab91b7e22ea1a9550be8f77f5eda67b1754be95",
+  "sidebar": {
+    "all_16_portable_hashes_match": true,
+    "all_26_raw_checks_pass": true,
+    "observer_sha256": "ade0f5fe2379a31d03c9cb6d8302585343e1d6ea6bda7d62752d40dc5eb18193",
+    "material_findings": []
+  },
+  "purchase_return_execution": {
+    "run": "/workspace/sarv-quote/artifacts/purchase-returns-native/run-i41jh8ii",
+    "checks_passed": 28,
+    "checks_failed": 1,
+    "result": "failed",
+    "observed_defect": "C3-R01 P2: Persian digit preference changes source IDs/reference code characters in v2 human PDF labels",
+    "actual_reference": "SC-M۶-NATIVE-۱",
+    "expected_reference": "SC-M6-NATIVE-1",
+    "original_credit_reference_present_as_ascii": false,
+    "financial_data_corruption_claim": false,
+    "artifacts": {
+      "M6-actual-physical-return.pdf": "675785d5e79842c51e0d872e7397db1e6a387553d179622ce84fbecb2e98c1ac",
+      "M6-actual-physical-return.txt": "9694dcf581a2ead082df18a068c92dfcb2cec02954beee87e0479c5545bc38a7",
+      "M6-actual-physical-return.csv": "9a9e4e5cbb82a5a5c12c64cf2a8e641122911f78e91a1efaae24b54e6a2c821d",
+      "purchase-returns-independent-native.json": "f0e2e914ebd38259f1427c8aa8b30b380e9f1e1ee042651d7f02c6fff99345b5"
+    }
+  },
+  "review_artifacts": {
+    "candidate3-failed-physical-return.png": "22cbc378f7d7aaad0a947999946916c116cff0a9603fb511f20f75547c71e5b5",
+    "candidate3-failed-physical-return.txt": "9694dcf581a2ead082df18a068c92dfcb2cec02954beee87e0479c5545bc38a7",
+    "review.md": "03870730667d4920fa2731e61aad4aa830394e57dfccb98c7b882f06a1c46c4c"
+  },
+  "acceptance": "withheld for final candidate3 native/export; repair and actual immutable rerun required",
+  "limits": [
+    "Wayland",
+    "high contrast/enlarged text",
+    "screen-reader speech",
+    "physical printing",
+    "full performance/professional/production/statutory gates"
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "development_pilot": true,
+  "performance_acceptance": "qualification only",
+  "strict_measured_gate": "PARTIAL",
+  "epoch_complete_and_guarded": false,
+  "checks": [],
+  "misses": [],
+  "unmeasured_or_incomplete_required_scopes": [
+    "source120-billed:query:correct_visible_ms",
+    "source120-billed:filtered-page:correct_visible_ms",
+    "source120-billed:query:focused_usable_ms",
+    "source120-billed:filtered-page:focused_usable_ms",
+    "source120-billed:complete-declared-query-samples",
+    "startup:missing-declared-cohort",
+    "source_picker_search:missing-declared-cohort",
+    "return_workflows:missing-declared-cohort"
+  ],
+  "all_native_phase_records_with_terminal_gaps": [],
+  "application_warnings": [],
+  "warning_count": 0,
+  "historical_M5_strict_misses_retained": {
+    "pages_ms": [
+      51.488974,
+      51.002871,
+      51.9046
+    ],
+    "choice_ms": 73.664108,
+    "internal_PDF_ms": 80.439368,
+    "global_ms": 289.749728,
+    "PDF_busy_ms": 107.151621,
+    "persistence_busy_ms": 96.58612
+  },
+  "always_unmeasured": [
+    "Read-only page/edit continuous GTK heartbeat",
+    "Dedicated reference hardware and real OS-cold",
+    "Full reference five-year dataset",
+    "Typical invoice/annual report/import budgets",
+    "Production, tax/statutory and competitor acceptance"
+  ],
+  "limits": [
+    "Shared virtual hardware: no dedicated4core8GBSSD, genuine physical-cache-cold or causal Rust-speed/competitor/production/statutory claim.",
+    "No full five-year100k-doc/million-journal/50k-item/10k-party reference profile;200line returns do not establish1000line or posted-ledger capacity.",
+    "n10/n20 p99 equals worst; sequential page samples and n1 commands/memory are descriptive, not independent tail estimates.",
+    "Read-only page/edit GTK heartbeat unmeasured; latency and accessibility readiness do not prove pixels or isolated CPU.",
+    "Typical20line INVOICE, annual reports/import, Windows/Wayland/physical print/screen readers/hardware loss/leaks/professional review remain unmeasured."
+  ]
+}

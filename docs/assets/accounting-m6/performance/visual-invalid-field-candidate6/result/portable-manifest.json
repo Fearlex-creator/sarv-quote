@@ -1,0 +1,66 @@
+{
+  "raw_source": "/workspace/sarv-quote/artifacts/performance-m6/candidate6-hidden-invalid-visual1",
+  "copied_raw_files": {
+    "openbox.log": {
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+      "bytes": 207
+    },
+    "owned-process-closure.json": {
+      "sha256": "6b56291a299b8440d3cff58535e36717693b1dac48f0280d26d23601b4fe284c",
+      "bytes": 1025
+    },
+    "performance.partial.json": {
+      "sha256": "a63960606049245702a220ffd649e1e5c11098e70df13cebcf660e6a1ea25474",
+      "bytes": 39579
+    },
+    "runtime/dconf/user": {
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+      "bytes": 2
+    },
+    "visual-app.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "visual-diagnostic.json": {
+      "sha256": "f3e2e1153b37c1fecaf6321e8b23aa05450e1ed70d6d68157558662ac45345ad",
+      "bytes": 61250
+    },
+    "visual-profile/invalid-immediate.png": {
+      "sha256": "3dbf99061a84a5802c29c09eb4e3f2831efb05d91eed04321e5de21aad8abcf2",
+      "bytes": 222771
+    },
+    "visual-profile/invalid-settled-min0.5s.png": {
+      "sha256": "dfbbaa0636f5a0f98e9ca62245b509ea5bf5d2ca7719d7f7c891ecd3b1188265",
+      "bytes": 220019
+    },
+    "visual-profile/invalid-settled-min1s.png": {
+      "sha256": "dfbbaa0636f5a0f98e9ca62245b509ea5bf5d2ca7719d7f7c891ecd3b1188265",
+      "bytes": 220019
+    },
+    "visual-profile/invalid-settled-min2s.png": {
+      "sha256": "87c6573b9b1b1fc3ca47887dc9eed87a2e347a13a4314289ba2d1de2e74a6992",
+      "bytes": 219973
+    },
+    "visual-profile/keyboard-events.jsonl": {
+      "sha256": "c16b1674bab52b88f0d4ceb327a275a893cbfdc8c29d0497ea3b0c8b4a1d668d",
+      "bytes": 4856
+    },
+    "visual-profile/visual-initial.png": {
+      "sha256": "635956bb8808a8b4acbbc0a0cc686d4e3c7dab4d83eec39fa37ef5732c958208",
+      "bytes": 147930
+    },
+    "xvfb.log": {
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+      "bytes": 1384
+    }
+  },
+  "excluded_SQLite_files": [
+    "visual-profile/sarv.sqlite3",
+    "visual-profile/sarv.sqlite3-shm",
+    "visual-profile/sarv.sqlite3-wal"
+  ],
+  "canonical_pilot_preserved": true,
+  "new_GUI_invocations": 1,
+  "source_binary_runtime_dataset_sidecar_guards": true,
+  "all3ownedprocesses_inactive": true
+}

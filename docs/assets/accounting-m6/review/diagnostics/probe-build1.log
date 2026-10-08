@@ -1,0 +1,20 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+   Compiling sarv-independent-m6-probe v0.0.0 (/workspace/sarv-quote/docs/assets/accounting-m6/review/probe)
+warning: unused import: `procurement::*`
+ --> src/main.rs:5:18
+  |
+5 | use sarv_quote::{procurement::*,store::Store};
+  |                  ^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `empty_pool` is never used
+  --> src/common.rs:38:8
+   |
+38 | pub fn empty_pool()->Result<(AccountingState,OpeningCommand)>{
+   |        ^^^^^^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: `sarv-independent-m6-probe` (bin "sarv-independent-m6-probe") generated 2 warnings (run `cargo fix --bin "sarv-independent-m6-probe" -p sarv-independent-m6-probe` to apply 1 suggestion)
+    Finished `dev` profile [unoptimized] target(s) in 10.22s

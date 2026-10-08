@@ -1,0 +1,17 @@
+{
+  "passed": false,
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "production_source_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "observer_sha256": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e",
+  "wrapper_sha256": "3592577ed0830789078d1167cdc2d0bb2d991da4ac2cafecd8eb79367e9bb36b",
+  "fixture_recipe": "/workspace/sarv-quote/docs/assets/accounting-m6/checks/candidate6/preserved-quote-fixture2/fixture-recipe.json",
+  "preserved_prior_failure": "docs/assets/accounting-m6/checks/candidate6/preserved/quote-real-key-stress.log",
+  "prior_failed_run": "artifacts/independent-native/run-o5kjxvkv",
+  "scope": "One real-key stress invocation with explicit current four-row synthetic draft; previously failed empty-draft run retained",
+  "command": "source /workspace/sarv-environment/activate.sh\ndbus-run-session -- python3 scripts/qa-native.py --stress --profile /workspace/sarv-quote/artifacts/m6-preserved/quote-rows-r8la8apr",
+  "exit_code": 1,
+  "elapsed_seconds": 4.5663988960004644,
+  "source_state_unchanged": true,
+  "source_binary_observer_wrapper_unchanged": true,
+  "test_log_sha256": "fc1ba9b24713fd4695fb927902c20ab4f73eb48442bd33813ba26b3c5c9f315d"
+}

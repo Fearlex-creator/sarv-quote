@@ -1,0 +1,48 @@
+{
+  "all_owned_processes_inactive": true,
+  "historical_processes_touched": false,
+  "records": [
+    {
+      "name": "xvfb",
+      "pid": 366145,
+      "pgid": 366145,
+      "starttime_ticks": 8009263,
+      "command": [
+        "Xvfb",
+        "-displayfd",
+        "3",
+        "-screen",
+        "0",
+        "1450x1050x24",
+        "-nolisten",
+        "tcp",
+        "-xkbdir",
+        "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+      ],
+      "after": "absent"
+    },
+    {
+      "name": "openbox",
+      "pid": 366149,
+      "pgid": 366149,
+      "starttime_ticks": 8009273,
+      "command": [
+        "openbox",
+        "--sm-disable",
+        "--config-file",
+        "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+      ],
+      "after": "absent"
+    },
+    {
+      "name": "visual-app",
+      "pid": 366168,
+      "pgid": 366168,
+      "starttime_ticks": 8009278,
+      "command": [
+        "/workspace/sarv-evidence/bin/sarv-M6-candidate6"
+      ],
+      "after": "absent"
+    }
+  ]
+}

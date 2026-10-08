@@ -1458,20 +1458,30 @@ impl Page {
             },
             move |ui, result| {
                 let Some(p) = weak.upgrade() else {
-                    ui.message(result.map(|_| "خواندن اسناد فروش پایان یافت."));
+                    ui.page_load_message(
+                        "sales",
+                        "خواندن اسناد فروش…",
+                        result.map(|_| "خواندن اسناد فروش پایان یافت."),
+                    );
                     return;
                 };
                 if p.current_ui().is_none() || p.revision.get() != revision {
-                    ui.message(Ok(
-                        "خواندن نسخهٔ قبلی پایان یافت؛ نتیجه برای فیلتر فعلی نمایش داده نشد.",
-                    ));
+                    ui.page_load_message(
+                        "sales",
+                        "خواندن اسناد فروش…",
+                        Ok("خواندن نسخهٔ قبلی پایان یافت؛ نتیجه برای فیلتر فعلی نمایش داده نشد."),
+                    );
                     return;
                 }
                 match result {
                     Ok(snapshot) => {
                         *p.snapshot.borrow_mut() = Some(snapshot);
                         p.render();
-                        ui.message(Ok("اسناد فروش آماده‌اند."));
+                        ui.page_load_message(
+                            "sales",
+                            "خواندن اسناد فروش…",
+                            Ok("اسناد فروش آماده‌اند."),
+                        );
                     }
                     Err(e) => {
                         p.invalidate_rows();

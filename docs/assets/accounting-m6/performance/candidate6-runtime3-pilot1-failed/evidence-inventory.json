@@ -1,0 +1,66 @@
+{
+  "files": {
+    "README.md": {
+      "sha256": "c98af0875bb4a0ac8545ba009f9b0b0dcb3a1cebc8a6db22d32f99ac7b859483",
+      "bytes": 2323
+    },
+    "analysis.json": {
+      "sha256": "88ea65ca84416f7d88e016094ed50cb687e8011f1d8a69c41233b89450fd5616",
+      "bytes": 2047
+    },
+    "analyze.py": {
+      "sha256": "fa2d1a891df12900f26e2af337587197b6dd987e8c6dcfaa3f4beef510a45a26",
+      "bytes": 5863
+    },
+    "candidate6-runtime3-coordinator-receipt.json": {
+      "sha256": "0462e53d209fd27c02fcc8b5ef065585b4ba03628b2a48c820463b6c1844a3eb",
+      "bytes": 2130
+    },
+    "coordinator-observer.log": {
+      "sha256": "6d0e893ab675abf499911582088d55548046242e8a25da14a9a1323ce4730c82",
+      "bytes": 2114
+    },
+    "coordinator.json": {
+      "sha256": "1a606e7fec600c3de4395433bfceed332773d0bb796eb1488c8c22110265ae8a",
+      "bytes": 46420
+    },
+    "coordinator.py": {
+      "sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+      "bytes": 6985
+    },
+    "observer/openbox.log": {
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+      "bytes": 207
+    },
+    "observer/performance.json": {
+      "sha256": "57d6b29e5920b1c38fe35861aef68b4301ba8c57f3f538d1d46f3364f3b92470",
+      "bytes": 47369
+    },
+    "observer/runtime/dconf/user": {
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7",
+      "bytes": 2
+    },
+    "observer/source120-billed-search.log": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "observer/xvfb.log": {
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f",
+      "bytes": 1384
+    },
+    "portable-manifest.json": {
+      "sha256": "54f6529d91635b97ac61eaaa8786bb27cbb5942b49405e538edb0c54fc1f3447",
+      "bytes": 1418
+    },
+    "source120-billed-stopped-state.json": {
+      "sha256": "5b4ca69824b781301465c9030596be8ddf4451e675b22d68873f79bbdb491956",
+      "bytes": 3000409
+    },
+    "stopped-profile-check.json": {
+      "sha256": "3cda98542c2d6b20276da4aa3a380cfba00efc2c0310123657cf0de5564b311a",
+      "bytes": 357
+    }
+  },
+  "contains_sqlite_or_executable": false,
+  "result": "Incomplete failed functional pilot, no performance acceptance"
+}

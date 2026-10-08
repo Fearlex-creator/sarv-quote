@@ -1,0 +1,832 @@
+{
+  "result": "passed",
+  "method": "standard-library JSON/CSV/SQLite arithmetic; no Sarv imports",
+  "checks": [
+    {
+      "name": "main raw SQLite matches final portable State",
+      "passed": true,
+      "actual": 32
+    },
+    {
+      "name": "main preserves catalogs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves customers",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves quotes",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves draft",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting companies",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting periods",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting accounts",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting core",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting sales",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting prefix journals",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting prefix requests",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves accounting prefix audit",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves procurement prefix records",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main preserves procurement prefix requests",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main exact new Return count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 65ee0bbf-1c28-4fed-82be-4cbe49cf3749",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal c2c4fe5f-f60b-49d0-b304-1b34056ad86f",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 956cce86-3e89-4a86-a321-2332ac9842d6",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal acd65db0-a247-4f42-8cb8-2d3087c4a3bb",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 885d6be1-3bad-46f7-8499-d61a966a5407",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 26b1cc4b-8586-4b0b-ab87-23fd9bb6136e",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 006785aa-92ef-45e7-bd29-b61838c5367d",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 410d0598-a8d6-4fba-8e78-e65e9e0bcede",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 0065d74f-22b3-4d31-9052-57efc42575a0",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced net controls 2026-03-31",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main literal controls 2026-03-31",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 422,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB": 1630
+      }
+    },
+    {
+      "name": "balanced journal 65ee0bbf-1c28-4fed-82be-4cbe49cf3749",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal c2c4fe5f-f60b-49d0-b304-1b34056ad86f",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 956cce86-3e89-4a86-a321-2332ac9842d6",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal acd65db0-a247-4f42-8cb8-2d3087c4a3bb",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 885d6be1-3bad-46f7-8499-d61a966a5407",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 26b1cc4b-8586-4b0b-ab87-23fd9bb6136e",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 006785aa-92ef-45e7-bd29-b61838c5367d",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 410d0598-a8d6-4fba-8e78-e65e9e0bcede",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 0065d74f-22b3-4d31-9052-57efc42575a0",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal c0701536-078a-406e-bc75-1143bedc6688",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced net controls 2026-04-01",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main literal controls 2026-04-01",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 377,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -284,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB": 1585
+      }
+    },
+    {
+      "name": "balanced journal 65ee0bbf-1c28-4fed-82be-4cbe49cf3749",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal c2c4fe5f-f60b-49d0-b304-1b34056ad86f",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 956cce86-3e89-4a86-a321-2332ac9842d6",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal acd65db0-a247-4f42-8cb8-2d3087c4a3bb",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 885d6be1-3bad-46f7-8499-d61a966a5407",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 26b1cc4b-8586-4b0b-ab87-23fd9bb6136e",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 006785aa-92ef-45e7-bd29-b61838c5367d",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 410d0598-a8d6-4fba-8e78-e65e9e0bcede",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 0065d74f-22b3-4d31-9052-57efc42575a0",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal c0701536-078a-406e-bc75-1143bedc6688",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal c051d38a-8b56-463c-a00d-a5a7e0753374",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced net controls 2026-04-02",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main literal controls 2026-04-02",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 317,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -224,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB": 1525
+      }
+    },
+    {
+      "name": "main exact return total/line",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main original warehouse movement",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main exact original-cost journal",
+      "passed": true,
+      "actual": [
+        [
+          "Payables",
+          45,
+          0
+        ],
+        [
+          "Inventory",
+          0,
+          45
+        ]
+      ]
+    },
+    {
+      "name": "billed lineage and separate credit states",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main exact return total/line",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main original warehouse movement",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main exact original-cost journal",
+      "passed": true,
+      "actual": [
+        [
+          "Payables",
+          60,
+          0
+        ],
+        [
+          "Inventory",
+          0,
+          60
+        ]
+      ]
+    },
+    {
+      "name": "billed lineage and separate credit states",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled raw SQLite matches final portable State",
+      "passed": true,
+      "actual": 2
+    },
+    {
+      "name": "unbilled preserves catalogs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves customers",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves quotes",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves draft",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting companies",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting periods",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting accounts",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting core",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting sales",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting prefix journals",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting prefix requests",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves accounting prefix audit",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves procurement prefix records",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled preserves procurement prefix requests",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled exact new Return count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal ee19d2c0-aad5-400e-8c98-dc911a97f455",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 65c6131d-c9ee-41d6-ad41-4ae3d0193b2f",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 7ce440d5-5002-42a3-b266-5c728fa4a65c",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 677302eb-22ed-4808-b117-7374fdd396d8",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal f502cf81-a146-4bcd-9c96-225b35dc7639",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 771fc15f-94ad-4f5c-80de-bf0c74eab7f2",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 57577a28-9807-44a8-8fbf-e2bb00353a09",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 88024497-1664-4747-b48b-2e12c19bef06",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 0fdd5880-91d4-465c-8a60-b5055239ddcf",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal a3a3eba1-b6a7-4397-a530-8d726fc0db39",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 89fd3cfe-cbee-4bc5-90c8-6821241573f0",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced net controls 2026-04-02",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled literal controls 2026-04-02",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 512,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -359,
+        "ChequesPayable": -100,
+        "Grni": -110,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB": 1720
+      }
+    },
+    {
+      "name": "balanced journal ee19d2c0-aad5-400e-8c98-dc911a97f455",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 65c6131d-c9ee-41d6-ad41-4ae3d0193b2f",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 7ce440d5-5002-42a3-b266-5c728fa4a65c",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 677302eb-22ed-4808-b117-7374fdd396d8",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal f502cf81-a146-4bcd-9c96-225b35dc7639",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 771fc15f-94ad-4f5c-80de-bf0c74eab7f2",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 57577a28-9807-44a8-8fbf-e2bb00353a09",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 88024497-1664-4747-b48b-2e12c19bef06",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 0fdd5880-91d4-465c-8a60-b5055239ddcf",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal a3a3eba1-b6a7-4397-a530-8d726fc0db39",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 89fd3cfe-cbee-4bc5-90c8-6821241573f0",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced journal 43c6141f-ffe1-4d35-b0af-c1ecdbacb1d5",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "balanced net controls 2026-04-03",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled literal controls 2026-04-03",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 497,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -359,
+        "ChequesPayable": -100,
+        "Grni": -95,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB": 1705
+      }
+    },
+    {
+      "name": "unbilled exact return total/line",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled original warehouse movement",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled exact original-cost journal",
+      "passed": true,
+      "actual": [
+        [
+          "Grni",
+          15,
+          0
+        ],
+        [
+          "Inventory",
+          0,
+          15
+        ]
+      ]
+    },
+    {
+      "name": "unbilled receipt lineage and no credit/bill",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main final W1 literal18/187",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main unchanged W2 literal12/130",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-physical-return distinct source identity",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-physical-return metadata contains exact persisted record",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-physical-return complete snapshot contains exact persisted record",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-physical-return exact frozen original allocation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-physical-return raw PDF preserves all exposed ASCII source identities",
+      "passed": true,
+      "actual": [
+        "b52c6683-f12c-4c6d-8833-556a93a40541",
+        "82ed70cd-c974-4f1c-8551-cb58d64259e9",
+        "43b95842-b603-4d44-8942-e18f36f6e206",
+        "e3371d03-cb37-4d86-9d48-f193ad368da0",
+        "d7d1ee89-c5d9-485d-80e2-a17b9e2354de",
+        "c0701536-078a-406e-bc75-1143bedc6688",
+        "f47b4602-6f1b-4afa-a45d-bdca0e54af48",
+        "60541001-0b26-4a29-b545-8e3ef507c852",
+        "ea16af10-b102-4265-8d4b-9c326ca14862",
+        "66b0fc14-55dc-46ec-900f-0fc30d10d4d2",
+        "PR-M6-NATIVE-1",
+        "SC-M6-NATIVE-1",
+        "SKU-A",
+        "BILL-B",
+        "REC-B"
+      ]
+    },
+    {
+      "name": "M6-actual-physical-return localized numeric amount retained",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-supplier-credit distinct source identity",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-supplier-credit metadata contains exact persisted record",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-supplier-credit complete snapshot contains exact persisted record",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-supplier-credit exact frozen original allocation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "M6-actual-supplier-credit raw PDF preserves all exposed ASCII source identities",
+      "passed": true,
+      "actual": [
+        "b52c6683-f12c-4c6d-8833-556a93a40541",
+        "82ed70cd-c974-4f1c-8551-cb58d64259e9",
+        "43b95842-b603-4d44-8942-e18f36f6e206",
+        "e3371d03-cb37-4d86-9d48-f193ad368da0",
+        "d7d1ee89-c5d9-485d-80e2-a17b9e2354de",
+        "c0701536-078a-406e-bc75-1143bedc6688",
+        "f47b4602-6f1b-4afa-a45d-bdca0e54af48",
+        "60541001-0b26-4a29-b545-8e3ef507c852",
+        "ea16af10-b102-4265-8d4b-9c326ca14862",
+        "66b0fc14-55dc-46ec-900f-0fc30d10d4d2",
+        "PR-M6-NATIVE-1",
+        "SC-M6-NATIVE-1",
+        "SKU-A",
+        "BILL-B",
+        "REC-B"
+      ]
+    },
+    {
+      "name": "M6-actual-supplier-credit localized numeric amount retained",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "current Return observer exact to closed receipt",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "closed native receipt all78 PASS",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "closed native production before/after equal",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "new native immutable binary hash exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "allcurrent production files exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "protected fixture still exact /workspace/sarv-quote/artifacts/sales-native/run-yji_0ewe/full",
+      "passed": true,
+      "actual": "4aee30d63f27f99d91407ff9fd98b76d562c2362805d998133b96c555e3e5fc5"
+    },
+    {
+      "name": "protected fixture still exact /workspace/sarv-quote/docs/assets/accounting-m6/review/diagnostics/current-probe2/literal/native-unbilled-stage/profile",
+      "passed": true,
+      "actual": "696c79a2fd5ff7e503d9632d0f5445c771893ad053a04b675daf954f0566ed45"
+    },
+    {
+      "name": "all48 portable hashes exact",
+      "passed": true,
+      "actual": null
+    }
+  ],
+  "limits": "Native specific billed and unbilled synthetic cases only; no full PUR/INV/G4/PERF acceptance"
+}

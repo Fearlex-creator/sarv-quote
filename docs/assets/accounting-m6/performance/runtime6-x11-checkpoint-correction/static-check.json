@@ -1,0 +1,161 @@
+{
+  "result": "PASS syntax and isolated ctypes error classification/Python-failure/atomic-checkpoint exercises; no GUI/native infrastructure imported",
+  "old_observer_sha256": "38063e556740904a129b659f57b49a4cdd010a02385063c469ac0407d4bac6a1",
+  "observer_sha256": "39409332a7caae630d45cf94858df7dc4baf9c0f56b377f47fbbe757b505fc0c",
+  "observer_bytes": 56587,
+  "protocol": "m6-scoped-v1.2",
+  "diff_sha256": "32a60045c55deb9a91af1176bf076f31098bbe1ca9a2305d3793347508e16b3d",
+  "x11_cases": [
+    {
+      "case": "exact-retired-window",
+      "reject_retired_window": true,
+      "expected": true
+    },
+    {
+      "case": "wrong-error",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "wrong-request",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "wrong-minor",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "wrong-resource",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "other-display",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "root-list-property",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "outside-discovery",
+      "reject_retired_window": false,
+      "expected": false
+    },
+    {
+      "case": "missing-owned-pid",
+      "reject_retired_window": false,
+      "expected": false
+    }
+  ],
+  "callback_preserves_exact_error_record": true,
+  "unexpected_error_becomes_Python_failure": true,
+  "atomic_checkpoints_preserve_prior_complete_file_on_interruption": true,
+  "checkpoint_full_raw_arrays_retained": true,
+  "checkpoint_call_sites": [
+    {
+      "line": 888,
+      "event_expression": "'initial-guarded-report-before-GUI'"
+    },
+    {
+      "line": 496,
+      "event_expression": "name + ':exact-zero-result-warmup'"
+    },
+    {
+      "line": 541,
+      "event_expression": "name + ':completed-source-picker'"
+    },
+    {
+      "line": 662,
+      "event_expression": "name + ':completed-source-opening'"
+    },
+    {
+      "line": 724,
+      "event_expression": "name + ':completed-preview-endpoint'"
+    },
+    {
+      "line": 741,
+      "event_expression": "name + ':completed-durable-visible-post'"
+    },
+    {
+      "line": 749,
+      "event_expression": "name + ':completed-exact-literal-and-phase-proof'"
+    },
+    {
+      "line": 760,
+      "event_expression": "name + ':completed-exact-restart'"
+    },
+    {
+      "line": 816,
+      "event_expression": "name + ':completed-startup-cohort'"
+    },
+    {
+      "line": 513,
+      "event_expression": "f'{name}:completed-query:{index}'"
+    },
+    {
+      "line": 526,
+      "event_expression": "f'{name}:completed-filtered-page:{page}'"
+    },
+    {
+      "line": 649,
+      "event_expression": "f'{name}:completed-preview-detail-page:{page}'"
+    },
+    {
+      "line": 696,
+      "event_expression": "name + ':completed-hidden-invalid-focus'"
+    },
+    {
+      "line": 703,
+      "event_expression": "name + ':completed-input-retention-after-correction'"
+    },
+    {
+      "line": 811,
+      "event_expression": "f'{name}:completed-startup:{index}'"
+    },
+    {
+      "line": 673,
+      "event_expression": "f'{name}:completed-next-page:{page}'"
+    },
+    {
+      "line": 682,
+      "event_expression": "f\"{name}:completed-input:{len(result['input_samples'])}\""
+    },
+    {
+      "line": 690,
+      "event_expression": "f'{name}:completed-previous-page:{page}'"
+    }
+  ],
+  "GUI_started": false,
+  "build_started": false,
+  "root_review_freeze_and_new_GO": "pending",
+  "final_change": "Raw boundary/limits text explicitly discloses XSync and inter-action checkpoint I/O; executable logic unchanged after isolated exercises",
+  "startup_checkpoint_after_sampler_join_and_exact_payload_check": true,
+  "startup_raw_samples_count_settled_before_checkpoint": true,
+  "review_fix": "Independent reviewer identified sampler alias race; stopped/joined sampler and settled copied array/count before startup checkpoint",
+  "startup_lifecycle_isolated_exercise": {
+    "result": "PASS with fake late sampler append during join; settled copied arrays/count before all startup checkpoints",
+    "real_GUI_or_profile_opened": false,
+    "checkpoint_events": [
+      "test:completed-startup:0",
+      "test:completed-startup:1",
+      "test:completed-startup-cohort"
+    ],
+    "event_order": [
+      "sampler-started",
+      "capture-finished",
+      "sampler-stopped",
+      "sampler-joined",
+      "application-stopped",
+      "sampler-started",
+      "capture-finished",
+      "sampler-stopped",
+      "sampler-joined",
+      "application-stopped"
+    ]
+  }
+}

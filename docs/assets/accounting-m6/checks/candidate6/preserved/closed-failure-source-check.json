@@ -1,0 +1,16 @@
+{
+  "failed_run_preserved": true,
+  "original_wrapper_helpers_production_binary_current_exact": true,
+  "script_epochs_passed": [
+    "core",
+    "jalali",
+    "ledger",
+    "procurement",
+    "sales",
+    "quote",
+    "held-save-close"
+  ],
+  "failed_epoch": "quote-real-key-stress",
+  "failure": "Empty draft has no row0/row1; first key went to phone. Source receipt remains an actual23-check programmatic pass. Follow-up has explicitly derived synthetic four-row draft and a separate receipt.",
+  "passed": false
+}

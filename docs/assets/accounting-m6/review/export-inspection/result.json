@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "focused_manifest_artifact_hashes_match": true,
+  "source_hash_comparison_to_focused_after_capture": {
+    "src/procurement_export.rs": true,
+    "tests/purchase_return_exports.rs": true,
+    "src/procurement.rs": true,
+    "src/accounting.rs": true,
+    "src/core.rs": true,
+    "Cargo.toml": true,
+    "Cargo.lock": true,
+    "assets/fonts/Vazirmatn-Regular.ttf": true,
+    "assets/fonts/Vazirmatn-Bold.ttf": true,
+    "assets/fonts/OFL.txt": true
+  },
+  "documents": [
+    {
+      "document": "billed-physical-return",
+      "canonical_total": 45,
+      "lines": 1,
+      "stock_rows": 1,
+      "pdf_pages": 1,
+      "csv_snapshot_exact": true,
+      "fonts_embedded_subset_unicode": true,
+      "pdf_sha256": "ae9da77747ef9954d580bf0994adc1678509e400517e3fecc13e80ca00b1de34"
+    },
+    {
+      "document": "billed-supplier-credit",
+      "canonical_total": 45,
+      "lines": 1,
+      "stock_rows": 0,
+      "pdf_pages": 1,
+      "csv_snapshot_exact": true,
+      "fonts_embedded_subset_unicode": true,
+      "pdf_sha256": "915838b105a4960500b40b940c639c2a4dbdffb145eb5cc4477e533a2b452291"
+    },
+    {
+      "document": "unbilled-return-one-rial",
+      "canonical_total": 1,
+      "lines": 1,
+      "stock_rows": 1,
+      "pdf_pages": 1,
+      "csv_snapshot_exact": true,
+      "fonts_embedded_subset_unicode": true,
+      "pdf_sha256": "2de6d37e40da4bdc103e0f1d4611703bb8b11afdf9963d6ba69c8e960c276c35"
+    },
+    {
+      "document": "zero-supplier-credit",
+      "canonical_total": 0,
+      "lines": 1,
+      "stock_rows": 0,
+      "pdf_pages": 1,
+      "csv_snapshot_exact": true,
+      "fonts_embedded_subset_unicode": true,
+      "pdf_sha256": "c98cec812ad11d5947e36a6fd3a766912d4885fd1e49472acadd66da69f547d6"
+    },
+    {
+      "document": "long-physical-return",
+      "canonical_total": 180,
+      "lines": 12,
+      "stock_rows": 12,
+      "pdf_pages": 6,
+      "csv_snapshot_exact": true,
+      "fonts_embedded_subset_unicode": true,
+      "pdf_sha256": "b99f1509197f21bb1af10c18b84cfe77788ac8eeb2e08a9a892b09c262b0e62f"
+    }
+  ],
+  "actual_visual_pages_independently_viewed": 10,
+  "visual_observation": "All ten provided Poppler pages were personally opened. Readable Persian and mixed codes/dates; original-cost totals45/1/0/180 IRR and4.5/0.1/0/18toman agree; long pages1–6 retain all12 source rows and12 stock rows with repeated identity/date/unit/policy headings and no observed clipping.",
+  "limits": "Focused export epoch, not native or final build qualification. PDFs untagged; physical printing and screen readers untested."
+}

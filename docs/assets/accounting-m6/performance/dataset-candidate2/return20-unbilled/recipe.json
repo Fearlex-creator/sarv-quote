@@ -1,0 +1,513 @@
+{
+  "expected": {
+    "ap": 329,
+    "ar": 299,
+    "cogs": 58,
+    "earnings": 41,
+    "grni": 350,
+    "inventory": 722,
+    "reconciliation": {
+      "as_of": "2026-04-03",
+      "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+      "controls": [
+        {
+          "account_id": "cd74b336-de34-4af4-b77b-8aec7fff838b",
+          "detail": 251,
+          "difference": 0,
+          "ledger": 251,
+          "role": "Cash"
+        },
+        {
+          "account_id": "47b27ee6-844f-4474-b0f7-f0bdaebb1ded",
+          "detail": 300,
+          "difference": 0,
+          "ledger": 300,
+          "role": "Bank"
+        },
+        {
+          "account_id": "16cf2fbc-9189-4800-9fb1-13cf4ae96451",
+          "detail": 299,
+          "difference": 0,
+          "ledger": 299,
+          "role": "Receivables"
+        },
+        {
+          "account_id": "90f0411c-199a-4d69-aed7-bf4dcaa209cd",
+          "detail": 200,
+          "difference": 0,
+          "ledger": 200,
+          "role": "ChequesReceivable"
+        },
+        {
+          "account_id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410",
+          "detail": 722,
+          "difference": 0,
+          "ledger": 722,
+          "role": "Inventory"
+        },
+        {
+          "account_id": "1b3243eb-30e6-4c53-a773-6df75ea39800",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "SupplierAdvances"
+        },
+        {
+          "account_id": "1cc84f6d-1574-463c-b7ab-80a970276f6a",
+          "detail": 329,
+          "difference": 0,
+          "ledger": 329,
+          "role": "Payables"
+        },
+        {
+          "account_id": "cd7505ed-64cb-4eba-917b-ebac9d067b6f",
+          "detail": 100,
+          "difference": 0,
+          "ledger": 100,
+          "role": "ChequesPayable"
+        },
+        {
+          "account_id": "cac0dcee-4a73-4e43-a8af-59fc4af9e0fc",
+          "detail": 350,
+          "difference": 0,
+          "ledger": 350,
+          "role": "Grni"
+        },
+        {
+          "account_id": "faa4c392-3cc0-4ffb-a705-3114f4e10715",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "CustomerAdvances"
+        },
+        {
+          "account_id": "5cd9bec6-5628-4d8e-ba72-1edb638b4bd4",
+          "detail": 58,
+          "difference": 0,
+          "ledger": 58,
+          "role": "Cogs"
+        },
+        {
+          "account_id": "2458b496-a74e-4980-be83-ce105fd881f1",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "InventoryLoss"
+        }
+      ],
+      "payables": [
+        {
+          "document_date": "2026-03-21",
+          "due_date": "2026-03-21",
+          "id": "AP-100",
+          "party_id": "SU-A",
+          "reference": "DOC-AP-100",
+          "remaining": 100,
+          "source_id": "OPEN-F2-2026"
+        },
+        {
+          "document_date": "2026-03-21",
+          "due_date": "2026-03-21",
+          "id": "AP-49",
+          "party_id": "SU-B",
+          "reference": "DOC-AP-49",
+          "remaining": 49,
+          "source_id": "OPEN-F2-2026"
+        },
+        {
+          "document_date": "2026-03-25",
+          "due_date": "2026-04-01",
+          "id": "163c42fc-7dcd-48c7-95a9-4e7e6acb8f06",
+          "party_id": "SU-A",
+          "reference": "BILL-A",
+          "remaining": 30,
+          "source_id": "f51d6425-0d10-4897-af46-7faaf72197aa"
+        },
+        {
+          "document_date": "2026-03-26",
+          "due_date": "2026-04-02",
+          "id": "f47b4602-6f1b-4afa-a45d-bdca0e54af48",
+          "party_id": "SU-A",
+          "reference": "BILL-B",
+          "remaining": 150,
+          "source_id": "5ab266ac-4b08-4493-aa1e-4a07cdb228ae"
+        }
+      ],
+      "receipts": [
+        {
+          "date": "2026-03-23",
+          "id": "4f680d89-f18a-4022-b41c-d486da2da783",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 5000,
+          "original_value": 75,
+          "quantity_thousandths": 0,
+          "reference": "REC-A",
+          "source_id": "fc528d36-7465-4d88-85f1-d21f56e14f2b",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L001",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L002",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L003",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L004",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L005",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L006",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L007",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L008",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L009",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L010",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L011",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L012",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L013",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L014",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L015",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L016",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L017",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L018",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L019",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-04-01",
+          "id": "M6-PERF-return20-unbilled-GR-L020",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 1000,
+          "original_value": 15,
+          "quantity_thousandths": 1000,
+          "reference": "M6-PERF-return20-unbilled-GR",
+          "source_id": "M6-PERF-return20-unbilled-GR",
+          "supplier_id": "SU-A",
+          "value": 15,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-03-21",
+          "id": "R1",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 5000,
+          "original_value": 50,
+          "quantity_thousandths": 5000,
+          "reference": "RECEIPT-R1",
+          "source_id": "OPEN-F2-2026",
+          "supplier_id": "SU-A",
+          "value": 50,
+          "warehouse_id": "W2"
+        },
+        {
+          "date": "2026-03-24",
+          "id": "ea16af10-b102-4265-8d4b-9c326ca14862",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 7000,
+          "original_value": 105,
+          "quantity_thousandths": 0,
+          "reference": "REC-B",
+          "source_id": "53e308f0-0012-44e8-9e93-b0bd2bf94334",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        }
+      ],
+      "reconciled": true,
+      "stock": [
+        {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 45000,
+          "value": 592,
+          "warehouse_id": "W1"
+        },
+        {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 12000,
+          "value": 130,
+          "warehouse_id": "W2"
+        }
+      ],
+      "total_credit": 1930,
+      "total_debit": 1930
+    },
+    "sales": 199,
+    "sales_returns": 100,
+    "tb_credit": 1930,
+    "tb_debit": 1930,
+    "w1_quantity_thousandths": 45000,
+    "w1_value": 592,
+    "w2_quantity_thousandths": 12000,
+    "w2_value": 130
+  },
+  "generator": "sarv-m6-performance-dataset-v1",
+  "old_prefix_preserved": true,
+  "quotation_count": 1,
+  "recipe": {
+    "bill_line_ids": [],
+    "bill_record_id": null,
+    "full_return_expected": {
+      "ap": 329,
+      "grni": 50,
+      "inventory": 422,
+      "tb_credit": 1630,
+      "tb_debit": 1630,
+      "w1_quantity_thousandths": 25000,
+      "w1_value": 292
+    },
+    "kind": "unbilled",
+    "line_count": 20,
+    "order_record_id": "d200c382-3daa-427b-9609-652ed15b39cc",
+    "original_total_irr": 300,
+    "original_value_per_line_irr": 15,
+    "quantity_per_line_thousandths": 1000,
+    "receipt_line_ids": [
+      "M6-PERF-return20-unbilled-GR-L001",
+      "M6-PERF-return20-unbilled-GR-L002",
+      "M6-PERF-return20-unbilled-GR-L003",
+      "M6-PERF-return20-unbilled-GR-L004",
+      "M6-PERF-return20-unbilled-GR-L005",
+      "M6-PERF-return20-unbilled-GR-L006",
+      "M6-PERF-return20-unbilled-GR-L007",
+      "M6-PERF-return20-unbilled-GR-L008",
+      "M6-PERF-return20-unbilled-GR-L009",
+      "M6-PERF-return20-unbilled-GR-L010",
+      "M6-PERF-return20-unbilled-GR-L011",
+      "M6-PERF-return20-unbilled-GR-L012",
+      "M6-PERF-return20-unbilled-GR-L013",
+      "M6-PERF-return20-unbilled-GR-L014",
+      "M6-PERF-return20-unbilled-GR-L015",
+      "M6-PERF-return20-unbilled-GR-L016",
+      "M6-PERF-return20-unbilled-GR-L017",
+      "M6-PERF-return20-unbilled-GR-L018",
+      "M6-PERF-return20-unbilled-GR-L019",
+      "M6-PERF-return20-unbilled-GR-L020"
+    ],
+    "receipt_record_id": "6d7d4772-b2ad-4aa9-b9ad-150daa0c4d3b",
+    "return_date": "2026-04-03",
+    "source_reference": "M6-PERF-return20-unbilled-GR"
+  },
+  "seed": "M5-C12-authentic-quote-main199",
+  "synthetic_only": true
+}

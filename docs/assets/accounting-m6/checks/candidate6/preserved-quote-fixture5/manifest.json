@@ -1,0 +1,25 @@
+{
+  "passed": true,
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "production_source_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "observer_sha256": "3989989f0063ad1df02b6f5db23fce64b4ff4ac511dbc4943ebcd1f5021cc558",
+  "wrapper_sha256": "5300c7764d1aa7878d718200f68bb566aaa56700295f4b47bcfb462bfa198b21",
+  "fixture_recipe": "/workspace/sarv-quote/docs/assets/accounting-m6/checks/candidate6/preserved-quote-fixture5/fixture-recipe.json",
+  "preserved_prior_failure": "docs/assets/accounting-m6/checks/candidate6/preserved/quote-real-key-stress.log",
+  "prior_failed_runs": [
+    "artifacts/independent-native/run-o5kjxvkv",
+    "artifacts/independent-native/run-ca8mvfpn"
+  ],
+  "scope": "One real-key stress invocation with explicit current four-row synthetic draft; previously failed empty-draft run retained",
+  "fixture_helper_hashes": {
+    "/workspace/sarv-quote/target/debug/libsarv_quote.rlib": "bac6f5d5824a7c8b6a46b54e7e97d735fed334cbc756772294acc6d7dbe5962b",
+    "/tmp/sarv-M6-prepare-quote": "cd3e7ad618e1830e8c6f07c9f7b8d33cd68335505de0836a88bdb6a792aaacf4",
+    "/tmp/sarv-M6-prepare-quote.rs": "60b99f39d3f769a5224dd46d2250bbce92c5b4acf5d27e2f30ae430aff5e6d18"
+  },
+  "command": "source /workspace/sarv-environment/activate.sh\ndbus-run-session -- python3 scripts/qa-native.py --stress --profile /workspace/sarv-quote/artifacts/m6-preserved/quote-rows-tab_yq82",
+  "exit_code": 0,
+  "elapsed_seconds": 55.32293373500579,
+  "source_state_unchanged": true,
+  "source_binary_observer_wrapper_unchanged": true,
+  "test_log_sha256": "1fc146923d90c4528111128539e374b60994d7ad0537955664a1911c90282571"
+}

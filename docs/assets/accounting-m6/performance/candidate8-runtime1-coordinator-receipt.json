@@ -1,0 +1,76 @@
+{
+  "coordinator_sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+  "source_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate8/manifest.json",
+    "sha256": "565aaf9bed82fffac305c7eb5fd430a48033a55cde6840bfc84f31bf3be74f81"
+  },
+  "verification_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate8/runtime-verification1.json",
+    "sha256": "c828dee8d5df12c478f36cb5777726c4139debc93ba48811bb5301ea58f17e5a"
+  },
+  "dataset_manifest": {
+    "path": "docs/assets/accounting-m6/performance/dataset-candidate2/dataset-manifest.json",
+    "sha256": "23099547410ef1215d25d5cab9aa935b4f1c1d77cb48fa461873bc20d75e6e72"
+  },
+  "production_sha256": "11b48de2e85b9465a22f4a618e4675801b1db08a5a2c35b35cb892e8ea381cf3",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate8",
+  "binary_sha256": "4c552b8812c48630778e185ed52616ed0b5356d9beef91837adccefc01ba4e9d",
+  "candidate": "candidate8",
+  "synthetic_only": true,
+  "purpose": "One functional pilot then one separately authorized quiet final epoch; no timing acceptance from stamping",
+  "superseded_qualified_candidates": [
+    "docs/assets/accounting-m6/checks/candidate4/manifest.json",
+    "docs/assets/accounting-m6/checks/candidate5/manifest.json",
+    "docs/assets/accounting-m6/checks/candidate6/manifest.json",
+    "docs/assets/accounting-m6/checks/candidate7/manifest.json"
+  ],
+  "epoch": "candidate8-runtime1",
+  "superseded_receipts": [
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-coordinator-receipt.json",
+      "sha256": "6686215533ceadc24b501a4a21d06ad56556c03e6a4a82afc828e53f1d716352",
+      "reason": "Root separately corrected sidebar pointer observer after preserved Overlay AT-SPI geometry diagnostic; production/binary and performance observer unchanged"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime2-coordinator-receipt.json",
+      "sha256": "6265becd18b6181d77b4162cfd99affb208cff0df6e3400363ce1488a4407866",
+      "reason": "Root separately corrected Return QA orchestration to require both fixture paths before GUI and guard both original States; previous64-check main native run remains incomplete after missing UNBILLED_PROFILE KeyError"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime3-coordinator-receipt.json",
+      "sha256": "0462e53d209fd27c02fcc8b5ef065585b4ba03628b2a48c820463b6c1844a3eb",
+      "reason": "Preserved runtime3 pilot1 failed at zero warmup current-row membership assertion. Authorized bounded observer-only correction rejects stale observations and retries fresh current subtree with exact predicates/per-event diagnostics; product/binary unchanged",
+      "failed_pilot": "docs/assets/accounting-m6/performance/candidate6-runtime3-pilot1-failed/README.md",
+      "correction": "docs/assets/accounting-m6/performance/runtime4-observer-membership-correction/README.md"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime4-coordinator-receipt.json",
+      "sha256": "8011ee63585eb3e82ae3123b00a37cf4fa0e83aa2cac621b0d9cede21e39658c",
+      "reason": "Runtime4 receipt prepared but no GUI invocation. Root separately hardened qa-native current-parent/DEFUNCT/final-focused-name fallback after preserved extra quotation stress and review; product/binary/performance observer unchanged"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime5-coordinator-receipt.json",
+      "sha256": "1b653983052dba32ad2dde7ced111ded8f15cb9e720130e1a895b465be94cfc6",
+      "reason": "Runtime5 pilot1 fatalC-level BadWindow interrupted unbilled restart and lost in-memory arrays. Reviewed observer-only scoped XError handling and terminal atomic checkpoints; product/binary/search predicates unchanged",
+      "failed_pilot": "docs/assets/accounting-m6/performance/candidate6-runtime5-pilot1-failed/README.md",
+      "correction": "docs/assets/accounting-m6/performance/runtime6-x11-checkpoint-correction/README.md"
+    },
+    {
+      "path": "docs/assets/accounting-m6/performance/candidate6-runtime6-coordinator-receipt.json",
+      "sha256": "bb670b463efc208723e18f3e915e089e0a4774d092be294202d868fbf8146104",
+      "reason": "C6 v1.2 pilot full raw200/400/post/restart logical qualification and12 strict misses retained; settled visual diagnostic confirmed clipped invalid field. C7 separately fixed bounded postlayout reveal; C8 scopes read-only completion status to active page. New protocol v2 RPC method separately reviewed; timings never pooled/subtracted or causally attributed to product changes.",
+      "historical_pilot": "docs/assets/accounting-m6/performance/candidate6-runtime6-pilot1-passed/README.md",
+      "visual_defect": "docs/assets/accounting-m6/performance/visual-invalid-field-candidate6/README.md",
+      "method": "docs/assets/accounting-m6/performance/runtime7-rpc-refinement/README.md"
+    }
+  ],
+  "protocol": "m6-scoped-v2",
+  "performance_observer_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+  "environment_quiet_boundary": "No newly active GUI/build/test/render/heavy-curation worker by the team; older uncontrolled desktop/user processes remain. Root process audit identified idle PPID1 sarv-M3-candidate-2 PIDs94853/95338 with0.0percent CPU and17h age; no process kill authorized or performed.",
+  "independent_observer_static_review": {
+    "isolated_AST_cases": 46,
+    "reviewer_receipt_sha256": "8d5482cf9909361794ff86ae497dda4b4d587f14242aca1f2e7dbff4657ea8ae",
+    "method_diff_sha256": "7d805f1b710d0d3c8748c803d8e2f64ebd10d685cccd43861a64e0e869b3bf24"
+  },
+  "required_functional_qualification": "Actual source direct hierarchy/action child shapes, stable editor topology/current binding, all200 inputs/400 details, passive invalid2 settled pixel captures, immediate Space/Tab actual settled focus retention (no instrumented frame cancellation claim), exact post/restart; separate pilot GO required after native Return/Sales/Shell scopes close."
+}

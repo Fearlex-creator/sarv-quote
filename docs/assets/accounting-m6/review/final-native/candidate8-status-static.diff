@@ -1,0 +1,107 @@
+--- candidate7/src/ui.rs
++++ candidate8/src/ui.rs
+@@ -259,6 +259,16 @@
+                 self.status.add_css_class("error");
+                 self.status.set_text(&format!("{e:#}"));
+             }
++        }
++    }
++    // A read-only page load may finish after navigation. Keep its result in the
++    // page, and clear only the loading message that this worker still owns.
++    // Errors and financial/persistence completion messages remain global.
++    fn page_load_message(&self, page: &str, working: &str, r: Result<impl ToString>) {
++        if r.is_err() || self.stack.visible_child_name().as_deref() == Some(page) {
++            self.message(r);
++        } else if self.status.text() == working {
++            self.message(Ok("آماده • فضای کار محلی"));
+         }
+     }
+     fn form_draft(&self) -> Result<(Draft, bool)> {
+--- candidate7/src/ui/procurement.rs
++++ candidate8/src/ui/procurement.rs
+@@ -1701,6 +1701,10 @@
+         let revision = self.revision.get();
+         let weak = Rc::downgrade(self);
+         self.status.set_text("خواندن منابع و کنترل پایان روز…");
++        let page_name = match self.kind {
++            PageKind::Purchases => "procurement",
++            PageKind::Inventory => "inventory",
++        };
+         let _ = ui.run_background(
+             "خواندن منابع و کنترل پایان روز…",
+             move || {
+@@ -1772,13 +1776,19 @@
+             },
+             move |ui, result| {
+                 let Some(p) = weak.upgrade() else {
+-                    ui.message(Ok("خواندن منابع پایان یافت؛ صفحه بسته شده است."));
++                    ui.page_load_message(
++                        page_name,
++                        "خواندن منابع و کنترل پایان روز…",
++                        Ok("خواندن منابع پایان یافت؛ صفحه بسته شده است."),
++                    );
+                     return;
+                 };
+                 if p.revision.get() != revision {
+-                    ui.message(Ok(
+-                        "خواندن نسخهٔ قبلی منابع پایان یافت؛ گزارش جاری تغییر کرده است.",
+-                    ));
++                    ui.page_load_message(
++                        page_name,
++                        "خواندن منابع و کنترل پایان روز…",
++                        Ok("خواندن نسخهٔ قبلی منابع پایان یافت؛ گزارش جاری تغییر کرده است."),
++                    );
+                     return;
+                 }
+                 match result {
+@@ -1791,7 +1801,11 @@
+                         *p.records.borrow_mut() = records;
+                         p.status.set_text("منابع و گزارش پایان روز آماده است.");
+                         p.render();
+-                        ui.message(Ok("منابع و گزارش پایان روز آماده است."));
++                        ui.page_load_message(
++                            page_name,
++                            "خواندن منابع و کنترل پایان روز…",
++                            Ok("منابع و گزارش پایان روز آماده است."),
++                        );
+                     }
+                     Err(e) => {
+                         p.resources.borrow_mut().take();
+--- candidate7/src/ui/sales.rs
++++ candidate8/src/ui/sales.rs
+@@ -1458,20 +1458,30 @@
+             },
+             move |ui, result| {
+                 let Some(p) = weak.upgrade() else {
+-                    ui.message(result.map(|_| "خواندن اسناد فروش پایان یافت."));
++                    ui.page_load_message(
++                        "sales",
++                        "خواندن اسناد فروش…",
++                        result.map(|_| "خواندن اسناد فروش پایان یافت."),
++                    );
+                     return;
+                 };
+                 if p.current_ui().is_none() || p.revision.get() != revision {
+-                    ui.message(Ok(
+-                        "خواندن نسخهٔ قبلی پایان یافت؛ نتیجه برای فیلتر فعلی نمایش داده نشد.",
+-                    ));
++                    ui.page_load_message(
++                        "sales",
++                        "خواندن اسناد فروش…",
++                        Ok("خواندن نسخهٔ قبلی پایان یافت؛ نتیجه برای فیلتر فعلی نمایش داده نشد."),
++                    );
+                     return;
+                 }
+                 match result {
+                     Ok(snapshot) => {
+                         *p.snapshot.borrow_mut() = Some(snapshot);
+                         p.render();
+-                        ui.message(Ok("اسناد فروش آماده‌اند."));
++                        ui.page_load_message(
++                            "sales",
++                            "خواندن اسناد فروش…",
++                            Ok("اسناد فروش آماده‌اند."),
++                        );
+                     }
+                     Err(e) => {
+                         p.invalidate_rows();

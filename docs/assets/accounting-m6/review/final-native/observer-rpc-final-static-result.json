@@ -1,0 +1,20 @@
+{
+  "reviewer": "m6_final_native_review",
+  "static_pass": true,
+  "actual_ast_cases_reexecuted": 46,
+  "additional_original_nested_action_reproduction_rejected": true,
+  "source_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+  "diff_sha256": "7d805f1b710d0d3c8748c803d8e2f64ebd10d685cccd43861a64e0e869b3bf24",
+  "old_observer_archive_sha256": "39409332a7caae630d45cf94858df7dc4baf9c0f56b377f47fbbe757b505fc0c",
+  "no_gui_build_nativeimports": true,
+  "native_hierarchy_qualified": false,
+  "settled200_visibility_accepted": false,
+  "native_user_focus_wins_accepted": false,
+  "quiet_final_performance_accepted": false,
+  "limits": [
+    "Separateobserverprotocolv2; preservedv1.2 misses remain",
+    "Sourceaction <=12child role/path shapes qualifiedoutside dispatch thenfreshowned/DEFUNCT/currentedges/allnames/shapes beforeafter; arbitrarynewnesting rejected",
+    "NativeSpaceTab proves currentandsettledactualfocusretention ifpass; no instrumented callback/tick cancellationordering claim",
+    "Readonly/edit heartbeat unmeasured; budgets3000/200/150ms250000000bytes50ms unchanged"
+  ]
+}

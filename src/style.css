@@ -55,12 +55,12 @@
 /* Native navigation separates everyday work from persistent app utilities.
  * GTK owns selection, hover, focus and high-contrast outlines. */
 .sarv-app .sidebar { padding: 0; }
-.sarv-app .workspace-brand { padding: 24px 22px 18px; }
-.sarv-app .workspace-brand .title-3 { font-size: 24px; font-weight: 700; }
+.sarv-app .workspace-brand { padding: 4px 8px; }
+.sarv-app .workspace-brand .title-3 { font-size: 18px; font-weight: 700; }
 .sarv-app list.navigation-sidebar { background: transparent; padding: 0 12px; }
 .sarv-app row.navigation-section { background: transparent; padding: 0; }
 .sarv-app .navigation-group {
-  padding: 18px 12px 8px;
+  padding: 12px 12px 8px;
   font-size: 11px;
   color: var(--window-fg-color);
   opacity: var(--dim-opacity);

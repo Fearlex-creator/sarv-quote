@@ -1,0 +1,34 @@
+[
+  {
+    "final_one_financial_effect": true,
+    "full_state_fresh_restore_exact": true,
+    "hardware_power_loss": false,
+    "old_or_complete": true,
+    "phase": "prepared",
+    "software_SIGKILL_only": true
+  },
+  {
+    "final_one_financial_effect": true,
+    "full_state_fresh_restore_exact": true,
+    "hardware_power_loss": false,
+    "old_or_complete": true,
+    "phase": "committed",
+    "software_SIGKILL_only": true
+  },
+  {
+    "CAS_rejection": 1,
+    "full_state_fresh_restore_exact": true,
+    "reopened_fresh_key_alias_same_effect": true,
+    "same_key": true,
+    "simultaneous_detached_writers": 2,
+    "success": 1
+  },
+  {
+    "CAS_rejection": 1,
+    "full_state_fresh_restore_exact": true,
+    "reopened_fresh_key_alias_same_effect": true,
+    "same_key": false,
+    "simultaneous_detached_writers": 2,
+    "success": 1
+  }
+]

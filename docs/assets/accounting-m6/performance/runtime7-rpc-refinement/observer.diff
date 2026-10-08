@@ -1,0 +1,484 @@
+--- observer-v1.2-394093.py
++++ scripts/native-performance-M6.py
+@@ -29,7 +29,7 @@
+ legacy = module_from_spec(SPEC)
+ SPEC.loader.exec_module(legacy)
+ helper, native = legacy.helper, legacy.native
+-PROTOCOL = 'm6-scoped-v1.2'
++PROTOCOL = 'm6-scoped-v2'
+ QUANTITY_PREFIX = 'مقدار برگشت در واحد پایه • '
+ PREVIEW = 'بازبینی مقدار و اثر سند'
+ POST = 'تأیید و ثبت نسخهٔ بازبینی‌شده'
+@@ -143,6 +143,67 @@
+ def ready(access, row, root, focus=False):
+     return bool(row and member(access, row, root) and legacy.ready(access, row, focus))
+ 
++
++
++def current_node(access, node):
++    """Fresh owned live node metadata; state/name/role/parent are never cached."""
++    access.a.atspi_accessible_clear_cache(node)
++    states = access.a.atspi_accessible_get_state_set(node)
++    if not states or access.a.atspi_state_set_contains(states, 6):
++        return None
++    if access.a.atspi_accessible_get_process_id(node, None) != access.pid:
++        return None
++    return {'node': node, 'role': access.string(access.a.atspi_accessible_get_role_name, node, None),
++            'name': access.string(access.a.atspi_accessible_get_name, node, None),
++            'parent': access.a.atspi_accessible_get_parent(node, None)}
++
++
++class CurrentPaths:
++    """Qualified identity paths only; all state/edges are refreshed each poll.
++
++    Shared parents are read once per snapshot, never shared between snapshots.
++    The root's current attachment and owned PID are checked as well as leaves.
++    """
++    def __init__(self, access, root, nodes):
++        self.root, self.edges, self.roles = root, {}, {}
++        for leaf in [root, *nodes]:
++            node = leaf
++            for _ in range(40):
++                row = current_node(access, node)
++                assert row and row['parent'], 'Cannot qualify detached/unowned identity path'
++                parent = row['parent']
++                old = self.edges.setdefault(node, parent)
++                assert old == parent, 'Identity path changed during qualification'
++                self.roles[node] = row['role']
++                if node == root:
++                    parent_row = current_node(access, parent)
++                    assert parent_row, 'Owned modal parent is not current'
++                    self.roles[parent] = parent_row['role']
++                    break
++                node = parent
++            else:
++                raise RuntimeError('Qualified identity path exceeded bound')
++        self.stable_children = None
++        assert self.snapshot(access) is not None, 'Identity qualification failed current edges'
++
++    def snapshot(self, access):
++        rows = {node: current_node(access, node) for node in self.roles}
++        if any(not row or row['role'] != self.roles[node] for node, row in rows.items()):
++            return None
++        children = {}
++        for parent in dict.fromkeys(self.edges.values()):
++            access.a.atspi_accessible_clear_cache(parent)
++            children[parent] = tuple(access.children(parent))
++        if self.stable_children is not None and children != self.stable_children:
++            return None
++        if any(rows[node]['parent'] != parent or node not in children[parent]
++               for node, parent in self.edges.items()):
++            return None
++        return {'rows': rows, 'children': children}
++
++    def coherent(self, before, after):
++        # Labels can legitimately rebind between polls, never during an accepted poll.
++        return bool(before and after and before == after)
+ 
+ def modal(access, anchor):
+     node, fallback = anchor['node'], None
+@@ -366,6 +427,7 @@
+         self.args, self.report, self.dataset = args, report, dataset
+         self.processes, self.logs = [], []
+         self.display, self.env, self.x11 = None, None, None
++        self.source_paths, self.editor_paths = {}, {}
+ 
+     def checkpoint(self, event):
+         """Atomic partial raw report, called only after a declared timing endpoint."""
+@@ -439,41 +501,124 @@
+         status = observe(lambda: next((row for row in walk(access, root)
+                          if re.fullmatch(r'\d+ منبع قابل برگشت • صفحهٔ \d+', normalize(row['name']))), None), 'source ready status')
+         rows = access.a.atspi_accessible_get_parent(status['node'], None)
++        # Qualify the actual hierarchy outside query/page dispatch intervals.
++        discovered = walk(access, rows, 500)
++        direct = tuple(access.children(rows))
++        source_nodes = [row['node'] for row in discovered if self.source_kind(row)]
++        assert source_nodes and all(node in direct for node in source_nodes), 'Source hierarchy is not direct-child qualified'
++        paths = CurrentPaths(access, root, [rows, search['node']])
++        bar = current_node(access, direct[-1])
++        assert bar and bar['role'] not in ('entry', 'text', 'label', 'button', 'push button'), 'Unknown source pager-bar role'
++        paths.bar_role = bar['role']
++        qualified_shapes = [self.source_action_shape(access, row) for row in discovered if self.source_kind(row) == 'action']
++        assert qualified_shapes and all(shape is not None for shape in qualified_shapes), 'Unknown nested source action hierarchy during qualification'
++        paths.action_shapes = {tuple((item['path'], item['role']) for item in shape['records']) for shape in qualified_shapes}
++        self.source_paths[rows] = paths
++        current = observe(lambda: self.source_rows(access, rows, root, 'outside-timer-direct-hierarchy-qualification'), 'qualified direct source rows')
++        self.report.setdefault('identity_path_qualifications', []).append({
++            'scope': 'source', 'rows_node': hex(rows), 'root_node': hex(root),
++            'direct_source_children': len(source_nodes), 'qualified_path_edges': len(paths.edges),
++            'outside_dispatch_interval': True})
+         return search, root, rows
+ 
+-    def source_rows(self, access, rows, root, event):
+-        result = walk(access, rows, 500)
+-        statuses = [row for row in result if re.fullmatch(r'\d+ منبع قابل برگشت • صفحهٔ \d+', normalize(row['name']))]
+-        actions = [row for row in result if row['role'] in ('button', 'push button')
+-                   and (normalize(row['name']).startswith('صورتحساب ') or normalize(row['name']).startswith('رسید صورتحساب‌نشده '))]
++    @staticmethod
++    def source_kind(row):
++        name = normalize(row['name'])
++        if row['role'] == 'label' and re.fullmatch(r'\d+ منبع قابل برگشت • صفحهٔ \d+', name):
++            return 'status'
++        if row['role'] in ('button', 'push button') and (name.startswith('صورتحساب ') or name.startswith('رسید صورتحساب‌نشده ')):
++            return 'action'
++        return None
++
++    def source_action_shape(self, access, action):
++        """Bounded fresh button child topology; nested actions never disappear."""
++        parent = action.get('parent')
++        if parent is None:
++            initial = current_node(access, action['node'])
++            if not initial:
++                return None
++            parent = initial['parent']
++        queue, records, children, seen = deque([(action['node'], (), parent)]), [], [], set()
++        while queue:
++            node, path, parent = queue.popleft()
++            if not node or node in seen or len(seen) >= 12:
++                return None
++            seen.add(node)
++            row = current_node(access, node)
++            if not row or row['parent'] != parent or (path and self.source_kind(row)):
++                return None
++            records.append({**row, 'path': path})
++            access.a.atspi_accessible_clear_cache(node)
++            direct = tuple(access.children(node))
++            children.append((node, direct))
++            queue.extend((child, (*path, index), node) for index, child in enumerate(direct))
++        return {'records': records, 'children': children}
++
++    def reject_source(self, event, rows, root, reason):
++        self.report['rejected_source_observations'].append({
++            'event': event, 'monotonic_ns': time.monotonic_ns(), 'reason': reason,
++            'root_node': hex(root), 'rows_node': hex(rows)})
++        return None
++
++    def source_rows(self, access, rows, root, event, validate=None):
++        paths = self.source_paths[rows]
++        before = paths.snapshot(access)
++        access.a.atspi_accessible_clear_cache(rows)
++        direct = tuple(access.children(rows))
++        records = [current_node(access, node) for node in direct]
++        if not before or any(not row or row['parent'] != rows for row in records):
++            return self.reject_source(event, rows, root, 'Retired/unowned source child or common path')
++        # Actual GTK rows are status, up-to25 direct actions, then one pager bar.
++        # Unknown nesting cannot silently hide a source action from this inventory.
++        if len(records) < 2 or self.source_kind(records[0]) != 'status' or any(self.source_kind(row) != 'action' for row in records[1:-1]) or self.source_kind(records[-1]):
++            return self.reject_source(event, rows, root, 'Direct source hierarchy changed')
++        bar = records[-1]
++        if bar['role'] != paths.bar_role:
++            return self.reject_source(event, rows, root, 'Pager-bar role differs from qualified hierarchy')
++        access.a.atspi_accessible_clear_cache(bar['node'])
++        pagers = tuple(access.children(bar['node']))
++        pager_rows = [current_node(access, node) for node in pagers]
++        if len(pagers) > 2 or any(not row or row['parent'] != bar['node'] or row['role'] not in ('button', 'push button') or normalize(row['name']) not in ('منابع پیشین', 'منابع بعد') for row in pager_rows):
++            return self.reject_source(event, rows, root, 'Unknown nested source/pager hierarchy')
++        actions = records[1:-1]
+         assert len(actions) <= 25
+-        membership = [{'name': row['name'], 'role': row['role'], 'node': hex(row['node']),
+-                       'current_member': member(access, row, root)} for row in [*statuses, *actions]]
+-        if not all(row['current_member'] for row in membership):
+-            # Search/pager updates replace children asynchronously. Reject this
+-            # observation; callers must retry a fresh walk, never use stale rows.
+-            self.report['rejected_source_observations'].append({
+-                'event': event, 'monotonic_ns': time.monotonic_ns(),
+-                'reason': 'Source-picker row retired during bounded current-subtree observation',
+-                'root_node': hex(root), 'rows_node': hex(rows), 'membership': membership})
++        shapes = [self.source_action_shape(access, row) for row in actions]
++        if any(shape is None or tuple((item['path'], item['role']) for item in shape['records']) not in paths.action_shapes for shape in shapes):
++            return self.reject_source(event, rows, root, 'Unknown/retired source-action child topology or nested source action')
++        if validate is not None and not validate([records[0]], actions):
+             return None
+-        return statuses, actions
+-
+-    def source_result(self, access, search, root, rows, query, expected_ref, page=1):
++        pager_names = [normalize(row['name']) for row in pager_rows]
++        if pager_names not in ([], ['منابع پیشین'], ['منابع بعد'], ['منابع پیشین', 'منابع بعد']):
++            return self.reject_source(event, rows, root, 'Pager ordering differs from qualified hierarchy')
++        # Re-read every name/role/parent and both child lists after readiness.
++        final_records = [current_node(access, node) for node in direct]
++        final_pagers = [current_node(access, node) for node in pagers]
++        final_shapes = [self.source_action_shape(access, row) for row in actions]
++        access.a.atspi_accessible_clear_cache(rows)
++        final_direct = tuple(access.children(rows))
++        access.a.atspi_accessible_clear_cache(bar['node'])
++        final_bar_children = tuple(access.children(bar['node']))
++        after = paths.snapshot(access)
++        if shapes != final_shapes or direct != final_direct or records != final_records or pagers != final_bar_children or pager_rows != final_pagers or not paths.coherent(before, after):
++            return self.reject_source(event, rows, root, 'Source/query/status/children changed during observation')
++        actions = records[1:-1]
++        assert len(actions) <= 25
++        return [records[0]], actions
++
++    def source_result(self, access, search, root, rows, query, expected_ref, page=1, focused=False):
+         if access.text(search) != query or not ready(access, search, root):
+             return None
+-        current = self.source_rows(access, rows, root, f'query={query};page={page};reference={expected_ref}')
+-        if current is None:
++        def exact(statuses, actions):
++            if len(statuses) != 1 or normalize(statuses[0]['name']) != f'60 منبع قابل برگشت • صفحهٔ {page}':
++                return False
++            if len(actions) != min(25, 60 - 25 * (page - 1)):
++                return False
++            references = re.findall('\u2068([^\u2069]+)\u2069', actions[0]['name'])
++            return expected_ref in references and ready(access, actions[0], root, focused) and access.text(search) == query
++        current = self.source_rows(access, rows, root, f'query={query};page={page};reference={expected_ref};focused={focused}', exact)
++        if current is None or access.text(search) != query:
+             return None
+-        statuses, actions = current
+-        if len(statuses) != 1 or normalize(statuses[0]['name']) != f'60 منبع قابل برگشت • صفحهٔ {page}':
+-            return None
+-        if len(actions) != min(25, 60 - 25 * (page - 1)):
+-            return None
+-        references = re.findall('\u2068([^\u2069]+)\u2069', actions[0]['name'])
+-        if expected_ref not in references or not ready(access, actions[0], root):
+-            return None
+-        return actions[0]
++        return current[1][0]
+ 
+     def searches(self, name):
+         profile, recipe = self.copied(name, name + '-search')
+@@ -505,7 +650,7 @@
+             action = observe(lambda: self.source_result(access, search, root, rows, query, expected_groups[query][0]), 'exact first current source')
+             visible = (time.perf_counter() - begin) * 1000
+             focus(access, action, self.x11)
+-            observe(lambda: ready(access, action, root, True), 'current source action usable focus')
++            observe(lambda: self.source_result(access, search, root, rows, query, expected_groups[query][0], focused=True), 'current exact source action usable focus')
+             result['samples'].append({'index': index, 'query': query, 'expected_reference': expected_groups[query][0],
+                                       'key_dispatch_ms': dispatch, 'correct_visible_ms': visible,
+                                       'focused_usable_ms': (time.perf_counter() - begin) * 1000})
+@@ -521,7 +666,7 @@
+             action = observe(lambda: self.source_result(access, search, root, rows, query, expected_groups[query][page - 1], page), 'exact filtered source page')
+             visible = (time.perf_counter() - begin) * 1000
+             focus(access, action, self.x11)
+-            observe(lambda: ready(access, action, root, True), 'filtered source focus')
++            observe(lambda: self.source_result(access, search, root, rows, query, expected_groups[query][page - 1], page, True), 'current exact filtered source focus')
+             result['filtered_pages'].append({'page': page, 'expected_reference': expected_groups[query][page - 1], 'correct_visible_ms': visible, 'focused_usable_ms': (time.perf_counter() - begin) * 1000})
+             self.checkpoint(f'{name}:completed-filtered-page:{page}')
+             assert payload(profile) == baseline
+@@ -553,7 +698,10 @@
+             if len(statuses) != 1 or normalize(statuses[0]['name']) != '1 منبع قابل برگشت • صفحهٔ 1' or len(actions) != 1:
+                 return None
+             refs = re.findall('\u2068([^\u2069]+)\u2069', actions[0]['name'])
+-            return actions[0] if reference in refs and ready(access, actions[0], root) else None
++            if reference not in refs or not ready(access, actions[0], root) or access.text(search) != reference:
++                return None
++            final = self.source_rows(access, rows, root, 'final-one-original-source')
++            return actions[0] if final == current and access.text(search) == reference else None
+         action = observe(chosen, 'exact one original return source')
+         focus(access, action, self.x11)
+         begin = time.perf_counter()
+@@ -564,18 +712,50 @@
+         observe(lambda: ready(access, quantity, editor, True), 'first source quantity focus')
+         return quantity, editor, (time.perf_counter() - begin) * 1000
+ 
+-    def page_state(self, access, editor, receipt_ids, page, expected_text=None):
++    def qualify_editor(self, access, editor, receipt_ids):
+         rows = walk(access, editor)
++        quantities = [row for row in rows if row['role'] in ('entry', 'text') and row['name'].startswith(QUANTITY_PREFIX)]
++        markers = [row for row in rows if re.fullmatch(r'ردیف‌های برگشت \d+ تا \d+ از \d+ • صفحهٔ \d+', normalize(row['name']))]
++        assert len(markers) == 1 and len(quantities) == min(25, len(receipt_ids))
++        assert [row['name'] for row in quantities] == [QUANTITY_PREFIX + identity for identity in receipt_ids[:25]]
++        nodes = [row['node'] for row in quantities]
++        paths = CurrentPaths(access, editor, [markers[0]['node'], *nodes])
++        paths.stable_children = paths.snapshot(access)['children']
++        self.editor_paths[editor] = {'paths': paths, 'nodes': nodes, 'marker': markers[0]['node'],
++                                    'expected': dict.fromkeys(receipt_ids, '')}
++        assert self.page_state(access, editor, receipt_ids, 1) is not None, 'Initial editor binding is not coherent'
++        self.report.setdefault('identity_path_qualifications', []).append({
++            'scope': 'editor', 'root_node': hex(editor), 'stable_entry_nodes': [hex(node) for node in nodes],
++            'qualified_path_edges': len(paths.edges), 'outside_dispatch_interval': True})
++
++    def page_state(self, access, editor, receipt_ids, page, expected_text=None, require_ready=False, focused=False):
++        cache = self.editor_paths[editor]
++        paths, nodes, marker = cache['paths'], cache['nodes'], cache['marker']
++        before = paths.snapshot(access)
++        def rejected(reason, **diagnostic):
++            self.report.setdefault('rejected_editor_observations', []).append({
++                'event': f'page={page};focused={focused}', 'monotonic_ns': time.monotonic_ns(),
++                'reason': reason, 'root_node': hex(editor), **diagnostic})
++            return None
++        if before is None:
++            return rejected('Persistent identity path retired/reparented/unowned/DEFUNCT or ordered topology changed')
++        current = receipt_ids[25 * (page - 1):25 * page]
+         marker_text = f'ردیف‌های برگشت {25 * (page - 1) + 1} تا {min(25 * page, len(receipt_ids))} از {len(receipt_ids)} • صفحهٔ {page}'
+-        markers = [row for row in rows if normalize(row['name']) == marker_text]
+-        quantities = [row for row in rows if row['role'] in ('entry', 'text') and row['name'].startswith(QUANTITY_PREFIX)]
+-        current = receipt_ids[25 * (page - 1):25 * page]
+-        if len(markers) != 1 or len(quantities) != len(current) or [row['name'] for row in quantities] != [QUANTITY_PREFIX + identity for identity in current]:
++        quantities = [before['rows'][node] for node in nodes]
++        if normalize(before['rows'][marker]['name']) != marker_text or len(quantities) != len(current) or [row['name'] for row in quantities] != [QUANTITY_PREFIX + identity for identity in current]:
++            return rejected('Page marker or ordered source identity rebinding incomplete', marker=before['rows'][marker]['name'], names=[row['name'] for row in quantities])
++        texts = [access.text(row) for row in quantities]
++        wanted = [cache['expected'][identity] for identity in current]
++        if texts != wanted or (expected_text is not None and any(text != expected_text for text in texts)):
++            return rejected('Current raw text differs from retained per-source input', observed_text=texts, expected_text=wanted)
++        if require_ready and not legacy.ready(access, quantities[0], focused):
+             return None
+-        if not all(member(access, row, editor) for row in [*markers, *quantities]):
+-            return None
+-        if expected_text is not None and any(access.text(row) != expected_text for row in quantities):
+-            return None
++        final_texts = [access.text(row) for row in quantities]
++        after = paths.snapshot(access)
++        if not paths.coherent(before, after) or texts != final_texts:
++            return rejected('Marker/names/text/current edges changed during page observation', observed_text=texts, final_text=final_texts)
++        # Exact ordered identities plus per-parent ordered child lists reject mixed
++        # persistent widget rebinding; correct complete rebinding is expected.
+         return quantities
+ 
+     def turn(self, access, editor, receipt_ids, target_page, direction, expected_text=None):
+@@ -587,12 +767,71 @@
+         first = quantities[0]
+         if not legacy.ready(access, first):
+             access.focus(first)
+-        observe(lambda: ready(access, first, editor), 'visible current quantity')
++        observe(lambda: self.page_state(access, editor, receipt_ids, target_page, expected_text, True), 'visible exact current quantity page')
+         visible = (time.perf_counter() - begin) * 1000
+         focus(access, first, self.x11)
+-        observe(lambda: ready(access, first, editor, True), 'current quantity focused')
++        observe(lambda: self.page_state(access, editor, receipt_ids, target_page, expected_text, True, True), 'exact current quantity page focused')
+         return {'page': target_page, 'direction': direction, 'first_receipt_line_id': receipt_ids[25 * (target_page - 1)], 'attached_quantity_entries': len(quantities),
+                 'correct_visible_ms': visible, 'focused_usable_ms': (time.perf_counter() - begin) * 1000}
++
++    def focused_control(self, access, editor):
++        focused = [row for row in walk(access, editor) if access.focused(row) and member(access, row, editor)]
++        if len(focused) != 1:
++            return None
++        row = current_node(access, focused[0]['node'])
++        if not row or not access.focused(row):
++            return None
++        ancestry, node = [], row['node']
++        for _ in range(40):
++            current = current_node(access, node)
++            if not current:
++                return None
++            ancestry.append({'node': hex(node), 'parent': hex(current['parent'] or 0),
++                             'name': current['name'], 'role': current['role']})
++            if node == editor:
++                break
++            node = current['parent']
++        else:
++            raise RuntimeError('Focused control ownership exceeded bound')
++        if not member(access, row, editor) or not access.focused(row):
++            return None
++        return {'node': row['node'], 'name': row['name'], 'role': row['role'],
++                'parent': row['parent'], 'ancestry': ancestry}
++
++    def user_wins_invalid_reveal(self, access, editor, receipt_ids, pages, window, profile, baseline, result, name):
++        """Functional real-key cancellation probe; excluded from timing sample arrays."""
++        probe = {'result': 'incomplete', 'outside_timing_arrays': True, 'retained_invalid_receipt_id': receipt_ids[-1]}
++        result['hidden_invalid_user_focus_wins'] = probe
++        try:
++            for page in range(pages - 1, 0, -1):
++                press(access, PREVIOUS, self.x11, editor)
++                observe(lambda: self.page_state(access, editor, receipt_ids, page, '1'), 'user-wins preparation exact page')
++            preview = find(access, PREVIEW, editor, ('button', 'push button'))
++            focus(access, preview, self.x11)
++            dispatch_begin = time.perf_counter()
++            # XTest.key has no sleeps: actual Tab follows actual Space immediately.
++            self.x11.key('space')
++            self.x11.key('Tab')
++            probe['space_tab_dispatch_ms'] = (time.perf_counter() - dispatch_begin) * 1000
++            control = observe(lambda: self.focused_control(access, editor), 'actual unique owned focus after immediate Tab')
++            probe['initial_focus'] = {**control, 'node': hex(control['node']), 'parent': hex(control['parent'] or 0)}
++            assert all(edge['name'] != QUANTITY_PREFIX + receipt_ids[-1] for edge in control['ancestry']), 'Immediate Tab did not move from invalid quantity'
++            time.sleep(.2)
++            settled = self.focused_control(access, editor)
++            assert settled and settled == control, 'Deferred invalid reveal stole user-selected focus'
++            invalid = find(access, QUANTITY_PREFIX + receipt_ids[-1], editor, ('entry', 'text'))
++            assert invalid and member(access, invalid, editor) and access.text(invalid) == '2'
++            assert self.page_state(access, editor, receipt_ids, pages) is not None and payload(profile) == baseline
++            image = profile / 'invalid-user-tab-focus-retained.png'
++            self.capture(window, image)
++            probe.update(result='qualified', settled_focus={**settled, 'node': hex(settled['node']), 'parent': hex(settled['parent'] or 0)},
++                         no_jump_back_after_minimum_s=.2, raw_invalid_text='2', durable_state_unchanged=True, screenshot=str(image),
++                         geometry='Actual current accessibility identity; modal window-key GTK geometry unavailable')
++            self.checkpoint(name + ':completed-user-wins-invalid-reveal')
++        except Exception as error:
++            probe.update(result='failed_or_untested', error=repr(error))
++            self.checkpoint(name + ':failed-user-wins-invalid-reveal')
++            raise
+ 
+     def preview_pages(self, access, editor, recipe, result, name):
+         total_lines = len(recipe['receipt_line_ids'])
+@@ -659,6 +898,7 @@
+         receipt_ids = recipe['receipt_line_ids']
+         quantity, editor, opening = self.open_source(access, recipe['source_reference'], receipt_ids[0])
+         result['source_to_first_focused_quantity_ms'] = opening
++        self.qualify_editor(access, editor, receipt_ids)
+         self.checkpoint(name + ':completed-source-opening')
+         fill(access, 'تاریخ مؤثر مدنی', '2026-04-03', self.x11, editor)
+         fill(access, 'تاریخ سند طرف', '2026-04-03', self.x11, editor)
+@@ -678,13 +918,18 @@
+                 self.x11.key('a', 'Control_L')
+                 self.x11.type_ascii('1')
+                 observe(lambda: access.text(row) == '1' and ready(access, row, editor, True), 'exact current quantity input')
+-                result['input_samples'].append({'receipt_line_id': row['name'][len(QUANTITY_PREFIX):], 'input_ready_ms': (time.perf_counter() - begin) * 1000})
++                input_ready_ms = (time.perf_counter() - begin) * 1000
++                self.editor_paths[editor]['expected'][row['name'][len(QUANTITY_PREFIX):]] = '1'
++                assert self.page_state(access, editor, receipt_ids, page) is not None, 'Full current page changed after exact input'
++                result['input_samples'].append({'receipt_line_id': row['name'][len(QUANTITY_PREFIX):], 'input_ready_ms': input_ready_ms})
+                 self.checkpoint(f'{name}:completed-input:{len(result["input_samples"])}')
+             assert payload(profile) == baseline
+         # Deliberately invalid hidden final row: preview must reveal/focus that actual row.
+         if pages > 1:
+             last = find(access, QUANTITY_PREFIX + receipt_ids[-1], editor, ('entry', 'text'))
+             fill(access, last['name'], '2', self.x11, editor)
++            self.editor_paths[editor]['expected'][receipt_ids[-1]] = '2'
++            assert self.page_state(access, editor, receipt_ids, pages) is not None
+             for page in range(pages - 1, 0, -1):
+                 result['page_samples'].append(self.turn(access, editor, receipt_ids, page, 'previous', '1'))
+                 self.checkpoint(f'{name}:completed-previous-page:{page}')
+@@ -694,8 +939,31 @@
+             assert payload(profile) == baseline
+             result['hidden_invalid_last_row_retained_focused'] = True
+             self.checkpoint(name + ':completed-hidden-invalid-focus')
++            settled_begin = time.perf_counter()
+             self.capture(window, profile / 'invalid-last-row-focused.png')
++            result['hidden_invalid_passive_settled_observations'] = []
++            for minimum in (.5, 1., 2.):
++                remaining = minimum - (time.perf_counter() - settled_begin)
++                if remaining > 0:
++                    time.sleep(remaining)
++                # Passive only: no keys, focus request or scroll mutation before correction.
++                fields = self.page_state(access, editor, receipt_ids, pages)
++                assert fields and fields[-1]['name'] == QUANTITY_PREFIX + receipt_ids[-1]
++                assert access.text(fields[-1]) == '2' and ready(access, fields[-1], editor, True)
++                assert payload(profile) == baseline
++                image = profile / f'invalid-last-row-settled-min{minimum:g}s.png'
++                self.capture(window, image)
++                result['hidden_invalid_passive_settled_observations'].append({
++                    'minimum_delay_s': minimum, 'capture_completion_delay_s': time.perf_counter() - settled_begin,
++                    'receipt_line_id': receipt_ids[-1], 'raw_text': '2', 'actual_focus': True,
++                    'current_membership': True, 'durable_state_unchanged': True,
++                    'no_focus_scroll_or_key_mutation': True, 'screenshot': str(image),
++                    'pixel_visibility': 'requires independent settled screenshot review; modal GTK geometry unavailable'})
++                self.checkpoint(f'{name}:passive-hidden-invalid-settled:{minimum:g}s')
++            self.user_wins_invalid_reveal(access, editor, receipt_ids, pages, window, profile, baseline, result, name)
+             fill(access, invalid['name'], '1', self.x11, editor)
++            self.editor_paths[editor]['expected'][receipt_ids[-1]] = '1'
++            assert self.page_state(access, editor, receipt_ids, pages) is not None
+             # Verify every raw input retained after error and correction, separately from latency samples.
+             for page in range(pages - 1, 0, -1):
+                 self.turn(access, editor, receipt_ids, page, 'previous', '1')
+@@ -872,8 +1140,8 @@
+                            'screen': '1450x1050x24 private Xvfb/Openbox, X11/Cairo, scale1',
+                            'rust': helper.command('rustc', '--version'), 'gtk_libadwaita': helper.command('pkg-config', '--modversion', 'gtk4', 'libadwaita-1')},
+               'boundaries': {'startup': 'Popen to owned mapped window, usable Save, real Tab focus response and completed PNG; pre-PNG/capture separate. Initial stopped-backup launch n1 separately; repeated n10 new processes with warm/uncontrolled OS pages. No physical OS-cold claim.',
+-                             'source_picker': 'Actual Ctrl+A/ASCII query to exact first current reference/count/page/action, allocated visible sensitive then actual focus. Current bounded25-row subtree traversal, fresh parent-child membership, debounce/layout/AT-SPI5ms poll included. Initial picker/index discovery and zero warmup outside timer.',
+-                             'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 current entries. Main-thread read-only continuous heartbeat unmeasured.',
++                             'source_picker': 'Actual Ctrl+A/ASCII query to exact first current reference/count/page/action, allocated visible sensitive then actual focus. Qualified direct source-child snapshots before/after every observation, fresh parent-child membership, debounce/layout/AT-SPI5ms poll included. Initial picker/index discovery and zero warmup outside timer.',
++                             'long_editor': 'Actual native pager dispatch through exact page marker/all current source quantity names/text and visible/sensitive allocated first quantity, separately actual focus. At most25 persistent identity paths qualified outside dispatch, all roles/names/text/marker/current edges refreshed before/after each poll. Passive invalid2 settled captures require independent pixel review; modal GTK window-key geometry unavailable. Main-thread read-only continuous heartbeat unmeasured.',
+                              'preview_post': 'Actual real-key preview/post dispatch through usable Post or durable return and visible result. Existing native16ms dispatch-to-render/busy-release phases independently retain every tick/terminal gap; zero-tick/rejected/absent unmeasured. n1 per20billed/20unbilled/200billed workflow.',
+                              'lifecycle_and_partial_checkpoints': 'm6-scoped-v1.2: private owned-PID window discovery drains X11 requests with XSync and rejects only exact retired-window PID-property BadWindow. Full raw partial JSON is atomically checkpointed after completed endpoints/native terminal phases, outside active intervals; inter-action disk/cache effects remain possible.',
+                              'memory': 'Application PID only; /proc10ms startup sampling +500ms idle; later search/editor/preview/post RSS/HWM points separate. Helpers excluded.'},
+@@ -882,7 +1150,7 @@
+                          'No full five-year100k-doc/million-journal/50k-item/10k-party reference profile;200line returns do not establish1000line or posted-ledger capacity.',
+                          'n10/n20 p99 equals worst; sequential page samples and n1 commands/memory are descriptive, not independent tail estimates.',
+                          'Read-only page/edit GTK heartbeat unmeasured; latency and accessibility readiness do not prove pixels or isolated CPU.',
+-                         'Observer XSync contributes to lifecycle discovery; per-completed-observation atomic checkpoint I/O occurs between actions and may affect subsequent caches/work. Search still includes full25-action descendant/ancestry RPC and50ms debounce; no isolated product/causal speed inference.',
++                         'Observer XSync contributes to lifecycle discovery; per-completed-observation atomic checkpoint I/O occurs between actions and may affect subsequent caches/work. Protocol v2 qualifies direct source hierarchy and stable editor identity paths before dispatch; every poll refreshes ownership/DEFUNCT/current edges and all names/roles/text before/after. Reduced discovery RPC is a new observer method, never subtracted from or causally compared with preserved v1.2 misses. Search still includes native input,50ms debounce, rendering and RPC; no isolated product speed inference.',
+                          'Typical20line INVOICE, annual reports/import, Windows/Wayland/physical print/screen readers/hardware loss/leaks/professional review remain unmeasured.']}
+     observer = Observer(args, report, dataset)
+     observer.checkpoint('initial-guarded-report-before-GUI')

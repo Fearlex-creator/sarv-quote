@@ -1,5 +1,8 @@
 # Decision register — 2026-10-07
 
+Latest Git authorization — **2026-10-08**: the user explicitly instructed, “good commit all and make sure all prs are on merged with main too.” This supersedes the earlier no-push/no-merge boundary for this Sarv repository. Commit all current project work, publish it through a reviewable PR, and merge relevant Sarv PRs into `main` while preserving existing history/data. Deployment, paid services/billing, credential creation, security-setting changes, customer messages, live financial data and license changes remain outside the authorization. Technical checkpoint acceptance and professional production approval remain distinct. Older authorization statements below are historical.
+
+
 Only explicit user choices and delegation are confirmed. The latest delegation permits visible, versioned guide-based core accounting defaults; the documents alone do not authorize external actions, live data, credentials, paid services or license changes. Accounting fixtures are synthetic technical expectations; professional production acceptance remains pending.
 
 | ID | Status | Facts / proposal | Dependency and next decision owner |
@@ -154,3 +157,8 @@ allocations are0/1/0, discounts0/1/0 and allocated gross0/2/0; all remain
 nonnegative and conserve the source exactly. The final remaining portion does
 not receive an invented rial. This is a bounded engineering policy documented
 for accountant review, without a statutory invoice claim.
+
+
+## M6 bounded original-cost purchase returns (2026-10-08)
+
+Uses the already versioned core-policy-v1 and user-delegated guide defaults. A billed return reduces the eligible original bill liability and original-warehouse inventory; an unbilled return reduces original operational-receipt GRNI and inventory. Operational return and supplier credit keep separate linked IDs/states and commit atomically. Original cumulative quantity/value allocation with final residual is exact; unbilled returns consume the same receipt cursor as bills, while billed credits consume their specific frozen bill-line cursor. No invented variance/refund/damage account or tax/legal policy is selected. Unsupported original-cost stock/value pools are rejected with no effects. Opening-only/unlinked/mixed-source returns remain unavailable, and professional production review remains a release gate. Schema7 adds only these typed states and keeps genuine original recovery/history. Full acceptance evidence is tracked in [M6](requirements/milestone-M6.md).

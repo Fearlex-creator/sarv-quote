@@ -1,0 +1,139 @@
+{
+  "result": "failed",
+  "profile": "/workspace/sarv-quote/artifacts/sidebar-native/run-1t5cu6ua",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate6",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "backend": "private X11/Xvfb/Openbox; real XTest keys; AT-SPI observation",
+  "synthetic_only": true,
+  "checks": [
+    {
+      "name": "Alt+1 opens order",
+      "passed": true
+    },
+    {
+      "name": "Alt+2 opens catalog",
+      "passed": true
+    },
+    {
+      "name": "Alt+3 opens customers",
+      "passed": true
+    },
+    {
+      "name": "Alt+4 opens quotes",
+      "passed": true
+    },
+    {
+      "name": "Alt+5 opens backup",
+      "passed": true
+    },
+    {
+      "name": "Alt+6 opens settings",
+      "passed": true
+    },
+    {
+      "name": "Alt+7 opens accounting",
+      "passed": true
+    },
+    {
+      "name": "Alt+0 opens sales",
+      "passed": true
+    },
+    {
+      "name": "Alt+8 opens procurement",
+      "passed": true
+    },
+    {
+      "name": "Alt+9 opens inventory",
+      "passed": true
+    },
+    {
+      "name": "Navigation preserves entire saved payload",
+      "passed": true
+    },
+    {
+      "name": "Native hierarchy exposes all three work groups",
+      "passed": true
+    },
+    {
+      "name": "F9 wide collapse preserves current page and full payload",
+      "passed": true
+    },
+    {
+      "name": "Wide collapsed shell retains reachable native navigation button",
+      "passed": true
+    },
+    {
+      "name": "Titlebar button restores wide sidebar and current-row focus",
+      "passed": true
+    },
+    {
+      "name": "Hidden desktop sidebar permits normal page shortcuts without data writes",
+      "passed": true
+    },
+    {
+      "name": "F9 restores current destination after a hidden page change",
+      "passed": true
+    },
+    {
+      "name": "Tab reaches selected Inventory sidebar row",
+      "passed": true
+    },
+    {
+      "name": "Standard sidebar Up/Enter opens Purchases",
+      "passed": true
+    },
+    {
+      "name": "Standard sidebar Up/Enter opens Sales",
+      "passed": true
+    },
+    {
+      "name": "Standard sidebar Up/Enter opens Accounting",
+      "passed": true
+    },
+    {
+      "name": "Narrow history tab is fully inside native window",
+      "passed": true,
+      "native_focus_bounds": [
+        21.0,
+        186.0,
+        105.0,
+        34.0
+      ],
+      "native_viewport": [
+        640,
+        750
+      ]
+    },
+    {
+      "name": "Narrow keyboard activates history tab",
+      "passed": true
+    },
+    {
+      "name": "History navigation preserves saved payload",
+      "passed": true
+    },
+    {
+      "name": "Opening narrow sidebar focuses current page",
+      "passed": true
+    },
+    {
+      "name": "Narrow overlay exposes a positive native close-button allocation",
+      "passed": true,
+      "native_rect": {
+        "x": 0,
+        "y": 0,
+        "width": 34,
+        "height": 58
+      }
+    },
+    {
+      "name": "Actual close-button pointer activation restores toggle focus and preserves payload",
+      "passed": false
+    }
+  ],
+  "limits": [
+    "Wayland and screen reader speech untested",
+    "High contrast and enlarged text untested"
+  ],
+  "error": "AssertionError('Actual close-button pointer activation restores toggle focus and preserves payload')"
+}

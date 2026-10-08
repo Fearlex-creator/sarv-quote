@@ -95,7 +95,7 @@ fn company_name(state: &AccountingState, company_id: &str) -> Result<String> {
         .clone())
 }
 fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
-    let fields = [
+    let mut fields = vec![
         "role",
         "account_id",
         "account_code",
@@ -131,6 +131,36 @@ fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
         "price_date",
         "override_reason",
     ];
+    let return_format = report
+        .rows
+        .iter()
+        .any(|row| row.fields.contains_key("return_id"));
+    if return_format {
+        fields.extend([
+            "record_id",
+            "return_id",
+            "return_state",
+            "credit_id",
+            "credit_state",
+            "return_reference",
+            "credit_reference",
+            "receipt_id",
+            "receipt_line_id",
+            "bill_id",
+            "bill_line_id",
+            "financial_date",
+            "remaining_value_irr",
+            "remaining_payable_irr",
+            "allocation_basis",
+            "display_digits",
+            "receipt_reference",
+            "receipt_document_date",
+            "receipt_financial_date",
+            "bill_reference",
+            "bill_document_date",
+            "bill_financial_date",
+        ]);
+    }
     let mut writer = csv::Writer::from_writer(Vec::new());
     let mut headers = vec![
         "format_version",
@@ -165,11 +195,16 @@ fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
         "display_detail",
         "display_difference",
     ];
-    headers.extend(fields);
+    headers.extend(fields.iter().copied());
     headers.push("snapshot_json");
     writer.write_record(headers)?;
     let common = vec![
-        "sarv-procurement-report-v1".into(),
+        if return_format {
+            "sarv-procurement-report-v2"
+        } else {
+            "sarv-procurement-report-v1"
+        }
+        .into(),
         safe_cell(&report.company_id),
         safe_cell(&report.company),
         report.as_of.clone(),
@@ -229,11 +264,17 @@ fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
             display(row.detail),
             display(row.difference),
         ]);
-        cells.extend(
-            fields
-                .iter()
-                .map(|key| safe_cell(row.fields.get(key).map_or("", String::as_str))),
-        );
+        cells.extend(fields.iter().map(|key| {
+            if *key == "display_digits" {
+                match prefs.digits {
+                    DisplayDigits::Latin => "latin",
+                    DisplayDigits::Persian => "persian",
+                }
+                .into()
+            } else {
+                safe_cell(row.fields.get(key).map_or("", String::as_str))
+            }
+        }));
         cells.push(safe_cell(&row.snapshot));
         writer.write_record(cells)?;
     }
@@ -265,14 +306,42 @@ fn draw(cr: &cairo::Context, map: &pango::FontMap, value: &str, y: f64, size: u3
     cr.status()?;
     Ok(f64::from(layout.pixel_size().1))
 }
+// Only the new return/credit renderer marks source identities this way. Keep
+// their characters exact, including numeric-only references, while localizing
+// surrounding quantities, dates and amounts. The emitted code remains LTR.
+fn source_code(value: &str) -> String {
+    format!("\u{2068}{value}\u{2069}")
+}
+fn localized_label(value: &str, digits: DisplayDigits) -> String {
+    let mut chunks = value.split('\u{2068}');
+    let mut result = digits.format(chunks.next().unwrap_or_default());
+    for chunk in chunks {
+        if let Some((code, rest)) = chunk.split_once('\u{2069}') {
+            result.push_str(&ltr(code));
+            result.push_str(&digits.format(rest));
+        } else {
+            result.push_str(&digits.format(chunk));
+        }
+    }
+    result
+}
 fn human_line(row: &Row, prefs: Preferences) -> String {
     let mut line = if matches!(
         row.kind.as_str(),
-        "order_line" | "receipt_line" | "bill_match" | "receipt_remaining"
+        "order_line"
+            | "receipt_line"
+            | "bill_match"
+            | "receipt_remaining"
+            | "purchase_return_line"
+            | "supplier_credit_line"
     ) {
-        format!("{} • {}", ltr(&row.id), prefs.digits.format(&row.label))
+        format!(
+            "{} • {}",
+            ltr(&row.id),
+            localized_label(&row.label, prefs.digits)
+        )
     } else {
-        prefs.digits.format(&row.label)
+        localized_label(&row.label, prefs.digits)
     };
     if let Some(q) = row.quantity {
         line.push_str(&format!(
@@ -321,6 +390,79 @@ fn human_line(row: &Row, prefs: Preferences) -> String {
     }
     line
 }
+// A fresh Pango/Fontconfig map confines the bundled fonts to this PDF operation.
+// The private files stay alive through lazy shaping and PDF font embedding.
+#[link(name = "fontconfig")]
+unsafe extern "C" {
+    fn FcConfigCreate() -> *mut std::ffi::c_void;
+    fn FcConfigParseAndLoad(config: *mut std::ffi::c_void, file: *const u8, complain: i32) -> i32;
+    fn FcConfigAppFontAddFile(config: *mut std::ffi::c_void, file: *const u8) -> i32;
+    fn FcConfigDestroy(config: *mut std::ffi::c_void);
+}
+#[link(name = "pangoft2-1.0")]
+unsafe extern "C" {
+    fn pango_fc_font_map_set_config(map: *mut std::ffi::c_void, config: *mut std::ffi::c_void);
+}
+struct PdfFonts(std::path::PathBuf);
+impl Drop for PdfFonts {
+    fn drop(&mut self) {
+        let _ = std::fs::remove_dir_all(&self.0);
+    }
+}
+fn pdf_fonts(map: &pango::FontMap) -> Result<PdfFonts> {
+    use gtk::glib::translate::ToGlibPtr;
+    use std::{ffi::CString, os::unix::fs::DirBuilderExt};
+    let dir = std::env::temp_dir().join(format!(
+        "sarv-purchase-return-pdf-fonts-{}",
+        crate::domain::id()
+    ));
+    std::fs::DirBuilder::new().mode(0o700).create(&dir)?;
+    let guard = PdfFonts(dir);
+    let fonts: &[(&str, &[u8])] = &[
+        (
+            "Vazirmatn-Regular.ttf",
+            include_bytes!("../assets/fonts/Vazirmatn-Regular.ttf"),
+        ),
+        (
+            "Vazirmatn-Bold.ttf",
+            include_bytes!("../assets/fonts/Vazirmatn-Bold.ttf"),
+        ),
+    ];
+    for &(name, bytes) in fonts {
+        write_new(&guard.0.join(name), bytes)?;
+    }
+    write_new(
+        &guard.0.join("OFL.txt"),
+        include_bytes!("../assets/fonts/OFL.txt"),
+    )?;
+    // Fontconfig owns the config; Pango takes its own reference when assigned.
+    let config = unsafe { FcConfigCreate() };
+    ensure!(!config.is_null(), "پیکربندی قلم PDF در دسترس نیست");
+    let result = (|| -> Result<()> {
+        ensure!(
+            unsafe { FcConfigParseAndLoad(config, std::ptr::null(), 1) } != 0,
+            "خواندن پیکربندی قلم PDF به پایان نرسید"
+        );
+        for &(name, _) in fonts {
+            let path = CString::new(guard.0.join(name).as_os_str().as_encoded_bytes())?;
+            ensure!(
+                unsafe { FcConfigAppFontAddFile(config, path.as_ptr().cast()) } != 0,
+                "ثبت قلم PDF به پایان نرسید"
+            );
+        }
+        unsafe {
+            let pointer: *mut pango::ffi::PangoFontMap = map.to_glib_none().0;
+            pango_fc_font_map_set_config(pointer.cast(), config);
+        }
+        Ok(())
+    })();
+    unsafe {
+        FcConfigDestroy(config);
+    }
+    result?;
+    Ok(guard)
+}
+
 fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
     let displayed = date(&report.as_of, prefs.dates)?;
     let jalali = date(&report.as_of, DateDisplay::Jalali)
@@ -328,6 +470,17 @@ fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
     let map = pangocairo::FontMap::new();
+    // Preserve historical v1 procurement rendering while v2 return documents
+    // use their own bundled OFL fonts even in a headless worker process.
+    let _fonts = if report
+        .rows
+        .iter()
+        .any(|row| row.fields.contains_key("return_id"))
+    {
+        Some(pdf_fonts(&map)?)
+    } else {
+        None
+    };
     let heading = |page: usize| -> Result<f64> {
         cr.set_source_rgb(0.08, 0.12, 0.16);
         let mut y = 32.0;
@@ -369,6 +522,27 @@ fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
         ];
         for header in header_lines {
             y += draw(&cr, &map, &header, y, 9)? + 3.0;
+        }
+        if matches!(report.kind.as_str(), "purchase_return" | "supplier_credit") {
+            y += draw(
+                &cr,
+                &map,
+                &format!(
+                    "تقویم نمایش {} • شیوهٔ رقم {}",
+                    if prefs.dates == DateDisplay::Jalali {
+                        "شمسی"
+                    } else {
+                        "میلادی"
+                    },
+                    if prefs.digits == DisplayDigits::Persian {
+                        "فارسی"
+                    } else {
+                        "لاتین"
+                    }
+                ),
+                y,
+                9,
+            )? + 3.0;
         }
         y += 7.0;
         y += draw(
@@ -612,20 +786,339 @@ fn selected_master_snapshot(resources: &RegisterResources, rows: &[Row]) -> serd
     }
     serde_json::json!({"parties":resources.parties.iter().filter(|x|parties.contains(&x.id)).collect::<Vec<_>>(),"items":resources.items.iter().filter(|x|items.contains(&x.id)).collect::<Vec<_>>(),"warehouses":resources.warehouses.iter().filter(|x|warehouses.contains(&x.id)).collect::<Vec<_>>(),"units":resources.units.iter().filter(|x|units.contains(&x.id)).collect::<Vec<_>>()})
 }
+/// A credit identity selects its own presentation; resolving a physical return never
+/// guesses a credit, and an unbilled return never acquires one.
+fn resolve_document<'a>(
+    state: &'a AccountingState,
+    company: &str,
+    id: &str,
+) -> Result<(&'a ProcurementRecord, bool)> {
+    let record = state
+        .procurement
+        .records
+        .iter()
+        .find(|record| {
+            record.id == id
+                || matches!(&record.data, ProcurementData::Return(value)
+            if value.return_id == id || value.credit_id.as_deref() == Some(id))
+        })
+        .ok_or_else(|| anyhow::anyhow!("سند خرید، برگشت یا اعتبار پیدا نشد"))?;
+    ensure!(
+        record.command.context().company_id == company,
+        "سند متعلق به شرکت انتخاب‌شده نیست"
+    );
+    let credit = matches!(&record.data, ProcurementData::Return(value) if value.credit_id.as_deref() == Some(id));
+    Ok((record, credit))
+}
+#[allow(clippy::too_many_arguments)]
+fn return_rows<'a>(
+    state: &'a AccountingState,
+    record: &'a ProcurementRecord,
+    input: &ReturnPurchase,
+    posted: &PostedPurchaseReturn,
+    credit_view: bool,
+    resources: &RegisterResources,
+    metadata: &mut Row,
+    report: &mut Report,
+    related: &mut Vec<&'a ProcurementRecord>,
+) -> Result<()> {
+    let company = &input.context.company_id;
+    let identity = if credit_view {
+        posted
+            .credit_id
+            .as_deref()
+            .ok_or_else(|| anyhow::anyhow!("شناسهٔ اعتبار موجود نیست"))?
+    } else {
+        &posted.return_id
+    };
+    report.source_id = identity.into();
+    report.status = if posted.credit_id.is_some() {
+        "physical_return_returned;supplier_credit_posted"
+    } else {
+        "physical_return_returned;no_supplier_credit"
+    }
+    .into();
+    report.status_label = if posted.credit_id.is_some() {
+        "برگشت فیزیکی: برگشت‌شده • اعتبار تأمین‌کننده: ثبت‌شده؛ پرداخت یا بازپرداخت نیست"
+    } else {
+        "برگشت فیزیکی: برگشت‌شده • بدون اعتبار تأمین‌کننده؛ دریافت صورتحساب‌نشده"
+    }
+    .into();
+    metadata.id = identity.into();
+    metadata.reference = if credit_view {
+        input.credit_reference.clone().unwrap_or_default()
+    } else {
+        input.return_reference.clone()
+    };
+    field(metadata, "record_id", &record.id);
+    field(metadata, "document_id", identity);
+    field(metadata, "financial_date", &input.context.date);
+    field(metadata, "document_date", &input.document_date);
+    field(metadata, "return_id", &posted.return_id);
+    field(metadata, "return_state", "returned");
+    field(metadata, "return_reference", &input.return_reference);
+    if let Some(id) = &posted.credit_id {
+        ensure!(
+            posted.credit_state == Some(SupplierCreditState::Posted),
+            "وضعیت اعتبار منبع ناسازگار است"
+        );
+        field(metadata, "credit_id", id);
+        field(metadata, "credit_state", "posted");
+        field(
+            metadata,
+            "credit_reference",
+            input.credit_reference.as_deref().unwrap_or(""),
+        );
+    }
+    ensure!(
+        posted.return_state == PurchaseReturnState::Returned,
+        "وضعیت برگشت منبع ناسازگار است"
+    );
+    let name = party(metadata, resources, &posted.supplier_id)?;
+    metadata.label.push_str(&format!(
+        "\nتأمین‌کننده {} • تاریخ سند میلادی {} • برگشت فیزیکی {} • وضعیت برگشت‌شده\nمرجع برگشت {}",
+        name,
+        ltr(&input.document_date),
+        source_code(&posted.return_id),
+        source_code(&input.return_reference)
+    ));
+    if let Some(id) = &posted.credit_id {
+        metadata.label.push_str(&format!(
+            "\nاعتبار تأمین‌کننده {} • وضعیت ثبت‌شده\nمرجع اعتبار {}",
+            source_code(id),
+            source_code(input.credit_reference.as_deref().unwrap_or(""))
+        ));
+    } else {
+        metadata
+            .label
+            .push_str("\nبدون اعتبار تأمین‌کننده • بدهکار دریافت صورتحساب‌نشده / بستانکار موجودی");
+    }
+    // Evaluate original allocation cursors at this record, never at today's cursor.
+    let mut at_record = state.clone();
+    at_record
+        .procurement
+        .records
+        .retain(|r| r.sequence <= record.sequence);
+    let mut remaining_payable = None;
+    if let Some(bill_id) = &posted.bill_id {
+        let bill = state.procurement_document(bill_id)?;
+        let ProcurementData::Bill(source) = &bill.data else {
+            anyhow::bail!("منبع اعتبار صورتحساب نیست")
+        };
+        let mut remaining = source.total;
+        for r in &at_record.procurement.records {
+            if let ProcurementData::Return(ret) = &r.data
+                && ret.bill_id.as_deref() == Some(bill_id)
+            {
+                remaining = remaining.checked_sub(ret.total)?;
+            }
+        }
+        remaining_payable = Some(remaining);
+        field(metadata, "bill_id", bill_id);
+        field(metadata, "remaining_payable_irr", remaining.rials());
+        metadata.label.push_str(&format!("\nصورتحساب اصلی {} • ماندهٔ همان صورتحساب پس از این رویداد {} IRR • بدهکار پرداختنی / بستانکار موجودی", source_code(bill_id), ltr(&remaining.rials().to_string())));
+        related.push(bill);
+    }
+    for line in &posted.lines {
+        let (original_item, wh_id, supplier, receipt_id) =
+            source_receipt(state, company, &line.receipt_line_id)?;
+        ensure!(
+            original_item.id == line.item_id
+                && wh_id == line.warehouse_id
+                && supplier == posted.supplier_id,
+            "نسب برگشت با رسید اصلی ناسازگار است"
+        );
+        let source = state.procurement_document(&receipt_id)?;
+        let ProcurementData::Receive(receipt) = &source.data else {
+            anyhow::bail!("برگشت فقط از رسید عملیاتی مجاز است")
+        };
+        related.push(source);
+        related.push(state.procurement_document(&receipt.order_id)?);
+        let cursor = if let Some(id) = &line.bill_line_id {
+            at_record.procurement_bill_returnable(company, id)?
+        } else {
+            at_record.procurement_receipt_returnable(company, &line.receipt_line_id)?
+        };
+        let mut row = source_row(
+            record,
+            if credit_view {
+                "supplier_credit_line"
+            } else {
+                "purchase_return_line"
+            },
+            &line.id,
+        );
+        item_row(&mut row, resources, original_item)?;
+        let wh = warehouse(&mut row, resources, &line.warehouse_id, false)?;
+        let base = unit(&mut row, resources, &original_item.base_unit_id)?;
+        row.label = format!(
+            "{} • کد {} • انبار اصلی {} • واحد پایه {}\nرسید اصلی {} • ردیف رسید {} • بهای اصلی منجمد؛ بدون قیمت میانگین جاری",
+            original_item.name,
+            source_code(&original_item.sku),
+            wh,
+            base,
+            source_code(&receipt_id),
+            source_code(&line.receipt_line_id)
+        );
+        row.label.push_str(&format!(
+            "\nمقدار اولیهٔ تخصیص {} • ارزش اولیه {} IRR • ارزش باقی‌مانده پس از این رویداد {} IRR",
+            ltr(&qty(cursor.original_quantity_thousandths)),
+            ltr(&cursor.original_value.rials().to_string()),
+            ltr(&cursor.remaining_value.rials().to_string())
+        ));
+        if let Some(id) = &line.bill_line_id {
+            row.label.push_str(&format!(
+                "\nردیف خاص صورتحساب {} • برگشت فقط از تخصیص همان ردیف",
+                source_code(id)
+            ));
+            field(&mut row, "bill_line_id", id);
+        }
+        row.quantity = Some(line.quantity_thousandths);
+        row.base_quantity = Some(line.quantity_thousandths);
+        row.remaining_quantity = Some(cursor.remaining_quantity_thousandths);
+        row.amount = Some(line.value);
+        row.reference = metadata.reference.clone();
+        for key in [
+            "record_id",
+            "document_id",
+            "financial_date",
+            "document_date",
+            "return_id",
+            "return_state",
+            "return_reference",
+            "credit_id",
+            "credit_state",
+            "credit_reference",
+            "bill_id",
+            "remaining_payable_irr",
+        ] {
+            if let Some(value) = metadata.fields.get(key) {
+                field(&mut row, key, value);
+            }
+        }
+        field(&mut row, "receipt_id", &receipt_id);
+        let ProcurementCommand::Receive(source_input) = &source.command else {
+            anyhow::bail!("فرمان رسید اصلی ناسازگار است")
+        };
+        field(&mut row, "receipt_reference", &source_input.reference);
+        field(
+            &mut row,
+            "receipt_document_date",
+            &source_input.document_date,
+        );
+        field(
+            &mut row,
+            "receipt_financial_date",
+            &source_input.context.date,
+        );
+        row.label.push_str(&format!(
+            "\nمرجع رسید {} • تاریخ سند رسید میلادی {} • تاریخ مالی رسید میلادی {}",
+            source_code(&source_input.reference),
+            ltr(&source_input.document_date),
+            ltr(&source_input.context.date)
+        ));
+        if let Some(bill_id) = &posted.bill_id {
+            let bill = state.procurement_document(bill_id)?;
+            let ProcurementCommand::Bill(bill_input) = &bill.command else {
+                anyhow::bail!("فرمان صورتحساب اصلی ناسازگار است")
+            };
+            field(&mut row, "bill_reference", &bill_input.reference);
+            field(&mut row, "bill_document_date", &bill_input.document_date);
+            field(&mut row, "bill_financial_date", &bill_input.context.date);
+            row.label.push_str(&format!(
+                "\nمرجع صورتحساب {} • تاریخ سند صورتحساب میلادی {} • تاریخ مالی صورتحساب میلادی {}",
+                source_code(&bill_input.reference),
+                ltr(&bill_input.document_date),
+                ltr(&bill_input.context.date)
+            ));
+        }
+        field(&mut row, "receipt_line_id", &line.receipt_line_id);
+        field(&mut row, "source_line_id", &line.receipt_line_id);
+        field(
+            &mut row,
+            "original_quantity_thousandths",
+            cursor.original_quantity_thousandths,
+        );
+        field(
+            &mut row,
+            "original_value_irr",
+            cursor.original_value.rials(),
+        );
+        field(
+            &mut row,
+            "remaining_value_irr",
+            cursor.remaining_value.rials(),
+        );
+        field(
+            &mut row,
+            "allocation_basis",
+            if posted.bill_id.is_some() {
+                "specific_frozen_bill_line_cumulative_half_up_final_residual"
+            } else {
+                "shared_receipt_bill_return_cursor_cumulative_half_up_final_residual"
+            },
+        );
+        row.snapshot = serde_json::to_string(
+            &serde_json::json!({"line":line,"original_item":original_item,"cursor_after_event":cursor,"receipt_record_id":receipt_id,"remaining_bill_payable":remaining_payable}),
+        )?;
+        report.rows.push(row);
+    }
+    report.rows.push(Row {
+        kind: "document_total".into(),
+        id: "TOTAL".into(),
+        label: if credit_view {
+            "جمع اعتبار تأمین‌کننده در بهای اصلی؛ سند اعتباری مرتبط با برگشت فیزیکی"
+        } else {
+            "جمع ارزش برگشت فیزیکی در بهای اصلی؛ مقدار و ارزش خروج از انبار اصلی"
+        }
+        .into(),
+        amount: Some(posted.total),
+        ..Row::default()
+    });
+    report.rows.push(Row { kind: "return_policy".into(), id: "ORIGINAL-COST-POLICY".into(), label: "بهای اصلی و تخصیص منجمد • کمبود مقدار یا ارزش در انبار اصلی و ارزش یتیم مانع ثبت است؛ نیازمند تعدیل بررسی‌شدهٔ جداگانه • اختلاف بها، مالیات، پرداخت و بازپرداخت در این مسیر پشتیبانی نمی‌شود".into(), ..Row::default() });
+    Ok(())
+}
+
 fn document_report(state: &AccountingState, company_id: &str, document_id: &str) -> Result<Report> {
-    let record = state.procurement_document(document_id)?;
+    let (record, credit_view) = resolve_document(state, company_id, document_id)?;
     let context = record.command.context();
     ensure!(
         context.company_id == company_id,
         "سند متعلق به شرکت انتخاب‌شده نیست"
     );
-    let resources = state.procurement_resources(company_id)?;
+    let mut resources = state.procurement_resources(company_id)?;
+    if let ProcurementData::Return(posted) = &record.data {
+        for line in &posted.lines {
+            let (original, _, _, receipt_id) =
+                source_receipt(state, company_id, &line.receipt_line_id)?;
+            if let Some(item) = resources
+                .items
+                .iter_mut()
+                .find(|item| item.id == original.id)
+            {
+                *item = original.clone();
+            }
+            let receipt = state.procurement_document(&receipt_id)?;
+            if let ProcurementData::Receive(receipt) = &receipt.data
+                && let ProcurementData::Order(order) =
+                    &state.procurement_document(&receipt.order_id)?.data
+                && let Some(party) = resources
+                    .parties
+                    .iter_mut()
+                    .find(|party| party.id == order.supplier.id)
+            {
+                *party = order.supplier.clone();
+            }
+        }
+    }
     let (kind, title) = match &record.data {
         ProcurementData::Resources(_) => ("resources", "تعریف منابع خرید و انبار"),
         ProcurementData::Order(_) => ("purchase_order", "سفارش خرید"),
         ProcurementData::Receive(_) => ("goods_receipt", "رسید کالا"),
         ProcurementData::Bill(_) => ("supplier_bill", "صورتحساب تأمین‌کننده"),
         ProcurementData::Transfer(_) => ("warehouse_transfer", "انتقال داخلی انبار"),
+        ProcurementData::Return(_) if credit_view => ("supplier_credit", "اعتبار تأمین‌کننده"),
+        ProcurementData::Return(_) => ("purchase_return", "برگشت فیزیکی خرید"),
     };
     let mut report = Report {
         company_id: company_id.into(),
@@ -658,7 +1151,14 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
         record
             .journal_id
             .as_ref()
-            .map(|j| format!("سند مالی ثبت‌شده\nشناسهٔ سند حسابداری {}\n", ltr(j)))
+            .map(|j| {
+                let identity = if matches!(record.data, ProcurementData::Return(_)) {
+                    source_code(j)
+                } else {
+                    ltr(j)
+                };
+                format!("سند مالی ثبت‌شده\nشناسهٔ سند حسابداری {}\n", identity)
+            })
             .unwrap_or_else(|| "بدون اثر مالی دفتر کل".into()),
         context.reason
     );
@@ -912,11 +1412,33 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             row.snapshot = serde_json::to_string(posted)?;
             report.rows.push(row);
         }
+        (ProcurementCommand::Return(input), ProcurementData::Return(posted)) => {
+            return_rows(
+                state,
+                record,
+                input,
+                posted,
+                credit_view,
+                &resources,
+                &mut metadata,
+                &mut report,
+                &mut related,
+            )?;
+        }
         _ => anyhow::bail!("نوع سند و تصویر ثبت‌شده سازگار نیست"),
     }
     report.rows.insert(0, metadata);
-    for movement in &record.movements {
-        let i = item(&resources, &movement.item_id)?;
+    for movement in record.movements.iter().filter(|_| !credit_view) {
+        let i = if let ProcurementData::Return(posted) = &record.data {
+            let line = posted
+                .lines
+                .iter()
+                .find(|line| line.id == movement.source_line_id)
+                .ok_or_else(|| anyhow::anyhow!("ردیف برگشت منبع حرکت پیدا نشد"))?;
+            source_receipt(state, company_id, &line.receipt_line_id)?.0
+        } else {
+            item(&resources, &movement.item_id)?
+        };
         let mut row = source_row(record, "stock_movement", &movement.id);
         item_row(&mut row, &resources, i)?;
         let wh = warehouse(&mut row, &resources, &movement.warehouse_id, false)?;
@@ -924,7 +1446,11 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
         row.label = format!(
             "{} • کد {} • انبار {} • {} • واحد پایه {}\nپیش از رویداد {} / {} IRR • پس از رویداد {} / {} IRR • نسبت دقیق پیشین {}",
             i.name,
-            ltr(&i.sku),
+            if matches!(record.data, ProcurementData::Return(_)) {
+                source_code(&i.sku)
+            } else {
+                ltr(&i.sku)
+            },
             wh,
             if movement.direction == StockDirection::In {
                 "ورود"
@@ -1245,6 +1771,39 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         );
         field(&mut row, "sequence", record.sequence);
         field(&mut row, "document_date", &context.date);
+        if let (ProcurementCommand::Return(input), ProcurementData::Return(posted)) =
+            (&record.command, &record.data)
+        {
+            field(&mut row, "record_id", &record.id);
+            field(&mut row, "financial_date", &context.date);
+            field(&mut row, "document_date", &input.document_date);
+            field(&mut row, "return_id", &posted.return_id);
+            field(&mut row, "return_state", "returned");
+            field(&mut row, "return_reference", &input.return_reference);
+            row.label.push_str(&format!(
+                " • برگشت فیزیکی {} • وضعیت برگشت‌شده",
+                source_code(&posted.return_id)
+            ));
+            if let Some(id) = &posted.credit_id {
+                field(&mut row, "credit_id", id);
+                field(&mut row, "credit_state", "posted");
+                field(
+                    &mut row,
+                    "credit_reference",
+                    input.credit_reference.as_deref().unwrap_or(""),
+                );
+                row.label.push_str(&format!(
+                    " • اعتبار تأمین‌کننده {} • وضعیت ثبت‌شده",
+                    source_code(id)
+                ));
+            }
+            if let Some(id) = &posted.receipt_id {
+                field(&mut row, "receipt_id", id);
+            }
+            if let Some(id) = &posted.bill_id {
+                field(&mut row, "bill_id", id);
+            }
+        }
         field(
             &mut row,
             "financial_effect_kind",
@@ -1270,7 +1829,11 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
             row.label = format!(
                 "{} • کد {} • انبار {} • {} • قبل {} / {} IRR • بعد {} / {} IRR",
                 i.name,
-                ltr(&i.sku),
+                if matches!(record.data, ProcurementData::Return(_)) {
+                    source_code(&i.sku)
+                } else {
+                    ltr(&i.sku)
+                },
                 wh,
                 if movement.direction == StockDirection::In {
                     "ورود"

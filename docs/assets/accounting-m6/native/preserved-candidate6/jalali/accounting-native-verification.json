@@ -1,0 +1,21 @@
+{
+  "calendar": "jalali",
+  "checks": [
+    "company/period/user-defined chart via native forms",
+    "unbalanced input rejected and preserved",
+    "balanced opening 1251 IRR; duplicate click once",
+    "manual 349 IRR; expected cumulative 1600",
+    "linked reversal preserving original; expected 1251",
+    "lock blocks native posting and reopen reason audited",
+    "trial exact toman 125.1; PDF/CSV snapshots",
+    "original restart and fresh-profile backup restore retain accounting aggregate"
+  ],
+  "mode": "GTK real widgets and signals; keyboard not implied",
+  "result": "passed",
+  "screenshots": [
+    "accounting-before.png",
+    "accounting-trial-before-reversal.png",
+    "accounting-after.png",
+    "accounting-narrow.png"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "state_exact_prepared_fixture": true,
+  "sqlite_integrity": "ok",
+  "generation": 1,
+  "expected_state_source": "/workspace/sarv-quote/artifacts/performance-m6/dataset-candidate2/source120-billed/state.json",
+  "expected_state_source_sha256": "324f11f832cfece56647e77d4643940a6242a73d7f6fbdf5f09c0e4338a68dda",
+  "copied_database_not_published": true
+}

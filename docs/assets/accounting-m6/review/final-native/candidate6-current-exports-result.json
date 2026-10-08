@@ -1,0 +1,303 @@
+{
+  "reviewer": "m6_final_native_review",
+  "scope": "Read-only current export sample hashes, raw CSV/PDF identities and personal all-page visual inspection; no Cargo/GUI",
+  "manifest_sha256": "e3995c96e63ef2f54262918a3c132e6371aab126f08c241b72cb25475e92b343",
+  "all_checks_pass": true,
+  "checks": [
+    {
+      "name": "sealed manifest PASS and paired guard sets equal",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "current frozen_source_provenance exact",
+      "passed": true,
+      "actual": 36
+    },
+    {
+      "name": "current verification_source_provenance exact",
+      "passed": true,
+      "actual": 35
+    },
+    {
+      "name": "current compile_input_provenance exact",
+      "passed": true,
+      "actual": 19
+    },
+    {
+      "name": "immutable release binary exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "all artifact hashes exact",
+      "passed": true,
+      "actual": 34
+    },
+    {
+      "name": "billed-physical-return.pdf all pages have repeated policy/source headings",
+      "passed": true,
+      "actual": 1
+    },
+    {
+      "name": "billed-physical-return.pdf exact exposed IDs/codes in actual PDF extraction",
+      "passed": true,
+      "actual": {
+        "468731eb-fd1f-40f9-8567-f4397ebd0608": "default",
+        "4b0033fd-a43b-4b6f-989e-4698fcaf2292": "default",
+        "631e85db-70f9-4f24-8043-575e05e6febd": "default",
+        "90b4cdb4-bf2f-456d-8f85-52d5e1c78004": "default",
+        "=CREDIT-PDF()": "raw",
+        "=RETURN-PDF()": "raw",
+        "BILL-B-LINE-B": "default",
+        "CREDIT-PDF": "default",
+        "LINE-PDF": "default",
+        "R-B-LINE": "default",
+        "RETURN-PDF": "default",
+        "SKU-A": "default",
+        "f9dd433f-0f95-4354-b3b2-017178f13b96": "default"
+      }
+    },
+    {
+      "name": "billed-physical-return.pdf complete snapshot document exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "billed-supplier-credit.pdf all pages have repeated policy/source headings",
+      "passed": true,
+      "actual": 1
+    },
+    {
+      "name": "billed-supplier-credit.pdf exact exposed IDs/codes in actual PDF extraction",
+      "passed": true,
+      "actual": {
+        "468731eb-fd1f-40f9-8567-f4397ebd0608": "default",
+        "4b0033fd-a43b-4b6f-989e-4698fcaf2292": "default",
+        "631e85db-70f9-4f24-8043-575e05e6febd": "default",
+        "90b4cdb4-bf2f-456d-8f85-52d5e1c78004": "default",
+        "=CREDIT-PDF()": "raw",
+        "=RETURN-PDF()": "raw",
+        "BILL-B-LINE-B": "default",
+        "CREDIT-PDF": "default",
+        "LINE-PDF": "default",
+        "R-B-LINE": "default",
+        "RETURN-PDF": "default",
+        "SKU-A": "default",
+        "f9dd433f-0f95-4354-b3b2-017178f13b96": "default"
+      }
+    },
+    {
+      "name": "billed-supplier-credit.pdf complete snapshot document exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "long-physical-return.pdf all pages have repeated policy/source headings",
+      "passed": true,
+      "actual": 6
+    },
+    {
+      "name": "long-physical-return.pdf exact exposed IDs/codes in actual PDF extraction",
+      "passed": true,
+      "actual": {
+        "1803c406-56c4-4cd1-99d8-0cbdaff2fd39": "default",
+        "1b6eb1a0-115b-4eaa-9f9a-1f7ceea03abd": "default",
+        "2d60d2f3-5bba-4a92-8894-04a9e266e2db": "default",
+        "631e85db-70f9-4f24-8043-575e05e6febd": "default",
+        "LONG-PHYSICAL-RETURN": "default",
+        "LONG-R-0": "default",
+        "LONG-R-1": "default",
+        "LONG-R-10": "default",
+        "LONG-R-11": "default",
+        "LONG-R-2": "default",
+        "LONG-R-3": "default",
+        "LONG-R-4": "default",
+        "LONG-R-5": "default",
+        "LONG-R-6": "default",
+        "LONG-R-7": "default",
+        "LONG-R-8": "default",
+        "LONG-R-9": "default",
+        "LONG-RETURN-LINE-0": "default",
+        "LONG-RETURN-LINE-1": "default",
+        "LONG-RETURN-LINE-10": "default",
+        "LONG-RETURN-LINE-11": "default",
+        "LONG-RETURN-LINE-2": "default",
+        "LONG-RETURN-LINE-3": "default",
+        "LONG-RETURN-LINE-4": "default",
+        "LONG-RETURN-LINE-5": "default",
+        "LONG-RETURN-LINE-6": "default",
+        "LONG-RETURN-LINE-7": "default",
+        "LONG-RETURN-LINE-8": "default",
+        "LONG-RETURN-LINE-9": "default",
+        "LONG-RETURN-REFERENCE": "default",
+        "SKU-A": "default"
+      }
+    },
+    {
+      "name": "long-physical-return.pdf complete snapshot document exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "all12 original source allocations and movements remain exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "persian-identities-reconciliation.pdf all pages have repeated policy/source headings",
+      "passed": true,
+      "actual": 4
+    },
+    {
+      "name": "reconciliation exact new Return codes and Persian amount/date",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "unbilled-return-one-rial.pdf all pages have repeated policy/source headings",
+      "passed": true,
+      "actual": 1
+    },
+    {
+      "name": "unbilled-return-one-rial.pdf exact exposed IDs/codes in actual PDF extraction",
+      "passed": true,
+      "actual": {
+        "582e25c1-1d61-4c64-afbf-d7a5c08efb93": "default",
+        "688b3b17-1544-4604-b0bc-675422180cf0": "default",
+        "7b34385a-ff31-4570-ab33-fad38700368c": "default",
+        "=RETURN-UNBILLED()": "raw",
+        "LINE-UNBILLED": "default",
+        "RETURN-UNBILLED": "default",
+        "SKU-A": "default",
+        "TINY-R-0": "default",
+        "fdda72e1-06b1-43ba-a2b6-4da1794002e2": "default"
+      }
+    },
+    {
+      "name": "unbilled-return-one-rial.pdf complete snapshot document exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "one rial exact fractional toman no credit",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "zero-supplier-credit.pdf all pages have repeated policy/source headings",
+      "passed": true,
+      "actual": 1
+    },
+    {
+      "name": "zero-supplier-credit.pdf exact exposed IDs/codes in actual PDF extraction",
+      "passed": true,
+      "actual": {
+        "00db7be7-e5f2-4ca4-be70-0de5e02e0ec7": "default",
+        "582e25c1-1d61-4c64-afbf-d7a5c08efb93": "default",
+        "=CREDIT-ZERO-CREDIT()": "raw",
+        "=RETURN-ZERO-CREDIT()": "raw",
+        "CREDIT-ZERO-CREDIT": "default",
+        "LINE-ZERO-CREDIT": "default",
+        "RETURN-ZERO-CREDIT": "default",
+        "SKU-A": "default",
+        "TINY-R-0": "default",
+        "ZERO-FIRST-LINE": "default",
+        "ce5a7e84-e91d-42a9-aa07-9bd9f73eb38c": "default",
+        "fdda72e1-06b1-43ba-a2b6-4da1794002e2": "default"
+      }
+    },
+    {
+      "name": "zero-supplier-credit.pdf complete snapshot document exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "zero credit staysPosted without journal and keeps one physical movement",
+      "passed": true,
+      "actual": null
+    }
+  ],
+  "page_counts": {
+    "billed-physical-return.pdf": 1,
+    "billed-supplier-credit.pdf": 1,
+    "long-physical-return.pdf": 6,
+    "persian-identities-reconciliation.pdf": 4,
+    "unbilled-return-one-rial.pdf": 1,
+    "zero-supplier-credit.pdf": 1
+  },
+  "total_pdf_pages_personally_viewed": 14,
+  "personally_viewed": [
+    "billed-physical-return-page-1.png",
+    "billed-supplier-credit-page-1.png",
+    "long-physical-return-page-1.png",
+    "long-physical-return-page-2.png",
+    "long-physical-return-page-3.png",
+    "long-physical-return-page-4.png",
+    "long-physical-return-page-5.png",
+    "long-physical-return-page-6.png",
+    "unbilled-return-one-rial-page-1.png",
+    "zero-supplier-credit-page-1.png",
+    "candidate6-reconciliation-1.png",
+    "candidate6-reconciliation-2.png",
+    "candidate6-reconciliation-3.png",
+    "candidate6-reconciliation-4.png"
+  ],
+  "artifact_hashes": {
+    "billed-physical-return-fonts.txt": "f35dd263d150c0128acd1c6961115fe774401efd03656900887148f19f8ab56f",
+    "billed-physical-return-page-1.png": "2aa40e600125ee151266d2b466dd8c9002d4db207ee868daac61e4ee921bf093",
+    "billed-physical-return-text.txt": "73eadc5e2960e759917a16e21f30c46d68c821891dba43f62ac889f85d8b4592",
+    "billed-physical-return.csv": "d163ad3babf75a2415916b5330d084a6b59d80489163ecae9f7b4c922053924b",
+    "billed-physical-return.pdf": "9950c6c7a28f99e17f9157078ac648acac402fdf82355c230b094b1f78d6d697",
+    "billed-supplier-credit-fonts.txt": "2694dcbd5b39bd3d5089920ceb33344c1daa3588370ce0226a6ad86087b12ad9",
+    "billed-supplier-credit-page-1.png": "e468dffa5e553481c70292128774b7d8e381f637a5f2019622d1cbee7a542002",
+    "billed-supplier-credit-text.txt": "c9b77f7ad7e5582c08842ebb850cbeb176c2ad3e7e355106838006f7a042db49",
+    "billed-supplier-credit.csv": "e065be4563a7c67ebb1ae220810d3064890ce01b41d411f2aa1e6a0832b83a0c",
+    "billed-supplier-credit.pdf": "88f54cddf46fe423dbb43496ee7592d54e497ce9a56c8a808061b7be7407ba3b",
+    "long-physical-return-fonts.txt": "5684bb02f82d638b1540de407949370b47735fa5d9d16b0eaf1218e0ec96b0fe",
+    "long-physical-return-page-1.png": "15d854ec0694e776e74f1ebb643f49fd573f208e18f24d0bf010f2af6c2b0e84",
+    "long-physical-return-page-2.png": "be4a70dbd71b5339f4fc19c810768560874677d907a8650cf02d3f4b3e2e72ed",
+    "long-physical-return-page-3.png": "eaf7a69629e7efd5e028efb7473571eb538bcd3d2a23b4e990f5f05aa0dc4c48",
+    "long-physical-return-page-4.png": "a9c39d22c39aad777910fa3f5bbdac45a2752420491dc245111362508bb4434b",
+    "long-physical-return-page-5.png": "c2a3bdb93c48e14adfefa1bb6ca0a9375a8369fed5298cb8973e67e1be02ea0f",
+    "long-physical-return-page-6.png": "c30f0574be1c470b4afac2256b3684534eae33c93fdf8cf2594e922049d15ab9",
+    "long-physical-return-text.txt": "65cf1ff683ba6e7d2547ef45a69dc1d998b77cceb969641585fbf4d78eca17e5",
+    "long-physical-return.csv": "7d220c886f4c492bccfb22e12e3965d02068a41682eefe60be3aee93acf92767",
+    "long-physical-return.pdf": "6961d7dca70a0e9d6741c3447f3691e03d867671399ba8f3a7c3517501744dda",
+    "persian-identities-reconciliation.pdf": "353f33841cf54ace52e81ac07d84330da7ee948f518676692efd78e9d427533e",
+    "persian-identities-reconciliation.txt": "02b37ee62932df7a3a494a62b89cf7cbbb00a1b410263f9fd5eb862e7a7f46dd",
+    "sarv-M6-export-samples.py": "0d52e7601e390b803eff86bcfd25b491703e4fcaa55b1e05172753118096b7a8",
+    "test.log": "e90f3b81bd643b86f3d9b105d3bcb136bce22a4e67ddc6fee0d463617dba9031",
+    "unbilled-return-one-rial-fonts.txt": "800c986fd6054c8af842640ea0fba06d88fc2cb7419056912ca8d0d2ca6c699d",
+    "unbilled-return-one-rial-page-1.png": "0cf0c17289672144e8c4ce28457fc7c94a4d8a7aaaec78ff939fb3dad4e83dc6",
+    "unbilled-return-one-rial-text.txt": "8e20c0649f445378bc89bf0fb184b6d4437a5d13982520571cb95bbb61c66ac9",
+    "unbilled-return-one-rial.csv": "08cb635d676e90f4594b1cb6228155ae731ce8768b4a9c80b3168b67c86ae719",
+    "unbilled-return-one-rial.pdf": "145611a8c7be5602a4f0fa6f1ebe41cd1a5028501014aa8aa35885d37d34f5f2",
+    "zero-supplier-credit-fonts.txt": "e3d9b3bc212d35c86e5c44fb9a1b6a7571191892ba61bbe33d543368eeb65a81",
+    "zero-supplier-credit-page-1.png": "9e6acb605577516c3cc539ba10d83a93ae2998d499c12b73eb07819ee9984149",
+    "zero-supplier-credit-text.txt": "1d92845faff6af9ee327562e7b528bb4e8095fa3d6c4a4c386f6a6dee24b1d24",
+    "zero-supplier-credit.csv": "5572fdaeb007b073e572a9ee366973cd60ac9a77739d09bfe4674257e26c6ab7",
+    "zero-supplier-credit.pdf": "9dab6266bfae5d0b274de146f6791b5658fd442b93900b3f1b0b4956358fc4c5"
+  },
+  "owned_reconciliation_raster_hashes": {
+    "candidate6-reconciliation-1.png": "6a2cb949f477910f44ee665ea00f24044144b96c03e853b6f764df8011469862",
+    "candidate6-reconciliation-2.png": "a7848d0820cbcb7298ac73441fc3afc10cda43eb34cbc0b46311d698e28feda9",
+    "candidate6-reconciliation-3.png": "a1033b09e20bdbb072f3d37b636d167f983c085f21a58f10dfae90eb73009b18",
+    "candidate6-reconciliation-4.png": "6f16b6631e42f9b9d2242a04a4b94ee7a94b456c52286556930b89af01ba4236"
+  },
+  "owned_raw_extract_hashes": {
+    "candidate6-current-billed-physical-return-raw.txt": "880ad99060b28a968481deb08c6864b60d85996f8988c9e88256ec7763749186",
+    "candidate6-current-billed-supplier-credit-raw.txt": "a69de0d0092f9a9b00d7b66061e010aafa3247112091c301415a8997d30362d8",
+    "candidate6-current-long-physical-return-raw.txt": "17a193c06359378e68a45a3ea718f78dac1cbda70de765e28261dbe9eef608c3",
+    "candidate6-current-unbilled-return-one-rial-raw.txt": "5aaff158e254a4f3f972cf5508ad92c89e59638943d83ebd12ff21a8ba731530",
+    "candidate6-current-zero-supplier-credit-raw.txt": "a6926a14e9bf7ee231e964dc901749e8e268d48f54827db9f84bf770a97691ec"
+  },
+  "extraction_method": "Exact code substring in default or pdftotext -raw actual PDF output. No digit, punctuation, whitespace or bidi normalization. Raw preserves formula-reference parentheses reordered by default extraction.",
+  "remaining_material_defects": [],
+  "limits": [
+    "historical v1 numeric SKU localization remains documented",
+    "numeric-only paper references are covered by preview regression; actual reconciliation rows expose mixed IDs/numeric SKU",
+    "PDFs untagged; screen-reader/physical-printing/statutory acceptance untested",
+    "sample12lines does not establish200line/PERF budget acceptance"
+  ]
+}

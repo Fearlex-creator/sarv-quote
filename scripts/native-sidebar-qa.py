@@ -98,6 +98,25 @@ def main():
         check('Navigation preserves entire saved payload', payload(profile) == original)
         names = [row['name'] for row in access.tree()]
         check('Native hierarchy exposes all three work groups', all(name in names for name in ['پیشنهادها', 'کالا و مشتری', 'حسابداری']))
+        # A desktop user can hide the sidebar without entering the narrow mode.
+        # Both the standard keyboard shortcut and the native titlebar button
+        # must preserve the current workspace and all stored records.
+        key('F9')
+        capture('shell-wide-sidebar-hidden.png')
+        check('F9 wide collapse preserves current page and full payload', native.events(profile)[-1]['page']=='inventory' and payload(profile)==original)
+        toggle = tab_to('فهرست صفحه‌ها')
+        check('Wide collapsed shell retains reachable native navigation button', access.focused(toggle))
+        key('Return')
+        current = native.wait_for(lambda: access.find('موجودی و انتقال',['list item']),label='wide restored sidebar current row')
+        check('Titlebar button restores wide sidebar and current-row focus', access.focused(current))
+        capture('shell-wide-sidebar-restored.png')
+        key('F9'); page(7,'accounting')
+        capture('shell-wide-hidden-page-change.png')
+        check('Hidden desktop sidebar permits normal page shortcuts without data writes', native.events(profile)[-1]['page']=='accounting' and payload(profile)==original)
+        key('F9')
+        current = native.wait_for(lambda: access.find('دفتر حسابداری',['list item']),label='restored current accounting row')
+        check('F9 restores current destination after a hidden page change',access.focused(current))
+        page(9,'inventory')
         # Tab enters a native ListBox at its selected row. Other destinations
         # use the standard arrow-key route, including the M4 inventory/purchase and M5 sales additions.
         current = tab_to('موجودی و انتقال', roles=['list item'])
@@ -131,6 +150,24 @@ def main():
         current = native.wait_for(lambda: access.find('دفتر حسابداری', ['list item']), label='collapsed menu destination')
         check('Opening narrow sidebar focuses current page', access.focused(current))
         capture('sidebar-narrow-light-focus.png')
+        close = native.wait_for(lambda: access.find('بستن فهرست صفحه‌ها',['button','push button']),label='native narrow sidebar close button')
+        close_rect = access.rect(close)
+        check('Narrow overlay exposes a positive native close-button allocation',bool(close_rect and close_rect['width']>0 and close_rect['height']>0),native_rect=close_rect)
+        # This GTK/AT-SPI stack reports the animated overlay's component origin
+        # as0,0. Use the focused real widget's GTK bounds, corroborated by its
+        # actual AT-SPI identity, rather than clicking that incorrect origin.
+        close = tab_to('بستن فهرست صفحه‌ها',roles=['button','push button'])
+        key('Shift_L')
+        focus_event=native.events(profile)[-1]
+        bounds=focus_event['focus_bounds'];viewport=focus_event['window_size']
+        check('Close-button pointer target uses actual focused GTK window bounds',access.focused(close) and bounds and bounds[0]>=0 and bounds[1]>=0 and bounds[2]>0 and bounds[3]>0 and bounds[0]+bounds[2]<=viewport[0] and bounds[1]+bounds[3]<=viewport[1],atspi_rect=close_rect,gtk_bounds=bounds,native_viewport=viewport)
+        origin=x.origin(window)
+        x.pointer(round(origin[0]+bounds[0]+bounds[2]/2),round(origin[1]+bounds[1]+bounds[3]/2))
+        time.sleep(.3)
+        toggle = native.wait_for(lambda: access.find('فهرست صفحه‌ها'),label='toggle after actual pointer close')
+        check('Actual close-button pointer activation restores toggle focus and preserves payload',access.focused(toggle) and payload(profile)==original)
+        capture('shell-narrow-close-restored-focus.png')
+        key('Return')
         key('Escape')
         toggle = native.wait_for(lambda: access.find('فهرست صفحه‌ها'), label='menu toggle after Escape')
         check('Escape closes menu and restores toggle focus', access.focused(toggle))

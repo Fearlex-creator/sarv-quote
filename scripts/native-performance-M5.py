@@ -653,7 +653,7 @@ def seed_sales_profile(source, destination, long=False):
     copy_database(source, destination)
     generation, serialized = helper.payload(destination)
     state = json.loads(serialized)
-    assert state['schema'] == 6, 'M5 fixture must be initialized by the actual schema6 binary'
+    assert state['schema'] == 7, 'Fixture must be initialized by the actual current schema7 binary'
     accounting_before = json.dumps(state['accounting'], sort_keys=True, ensure_ascii=False)
     setup = state['accounting']['core']['setups'][0]
     dates = [row['command']['as_of'] for row in state['accounting']['core']['openings']]

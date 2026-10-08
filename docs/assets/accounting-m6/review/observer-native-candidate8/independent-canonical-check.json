@@ -1,0 +1,460 @@
+{
+  "result": "pass",
+  "reviewer": "m6_observer_native_reviewer",
+  "observer_sha256": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408",
+  "canonical_installed_AST": true,
+  "actual_ast": true,
+  "no_native_imports_gui_build_network": true,
+  "cases": [
+    {
+      "case": "exact distinct ordered source captions and FSI first reference",
+      "result": "pass",
+      "expected": "accept"
+    },
+    {
+      "case": "modal defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "modal pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "modal parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "rows parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label defunct rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label pid rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label parent rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bar unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "cell unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label unknown role rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under status rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under pager label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden button under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden label under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "hidden panel under source label rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under cell rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under pager rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "extra same-named child under source rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "literal full name mismatch node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "third wrapper rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "bare direct pager rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source button hidden in pager wrapper rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness visible false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness visible false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness sensitive false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness sensitive false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness allocated false node 5 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "readiness allocated false node 10 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "focused source required and false rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "coherent missing FSI rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact count rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact query rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "wrong exact page rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 8 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 9 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 90 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after defunct mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after pid mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after parent mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after role mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "before/after name mutation node 1000 rejected",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "status gains hidden child at final child read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "pager label gains hidden child at final read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "source label gains hidden child at final read",
+      "result": "pass",
+      "expected": "reject"
+    },
+    {
+      "case": "actual 56-node recorded GTK subtree accepted through actual AST",
+      "result": "pass",
+      "expected": "accept"
+    }
+  ],
+  "total": 88,
+  "changed_existing_functions": [
+    "source_action_shape",
+    "source_rows"
+  ],
+  "new_function": "source_pager_shape",
+  "preserved_query_count_page_FSI_readiness_focus": true,
+  "recorded_hierarchy_nodes": 56,
+  "common_path_replay_limit": "Sidecar-qualified common modal path; recorded subtree replay only",
+  "no_native_or_performance_acceptance_claim": true
+}

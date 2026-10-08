@@ -1,0 +1,33 @@
+{
+  "raw_run": "/workspace/sarv-quote/artifacts/sidebar-native/run-m9i_4k9f",
+  "files": {
+    "accounting-narrow-dark.png": "57bb362b434ef527b0358787f23efb864d1ab8e02512d1186363027b9d8f6511",
+    "accounting-narrow-history-light.png": "32b81c1baff70c0a00f07e777da3a093b3abf55b413bf56e124397ab285bb60d",
+    "accounting-narrow-light.png": "34e2e7a1d95974c7a8d158ee1db0cfc0ff6b3417fef0f05e7da1f4aa455521e1",
+    "initial.png": "35428a3b2055114c27ef8e0bcd723e4ca2fb9eea1ae19cd1d8a4b5b13bbdf039",
+    "keyboard-events.jsonl": "e9d6d5b9f7dda37251e82f53245227fc169b5b3de8d4be2017bedad39560e4bc",
+    "native-sidebar-restart.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-sidebar.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "openbox.log": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd",
+    "restart.png": "5854a4e8f9796004d89626a5fcb85b320b1c13b354d33f1e240d835452b71709",
+    "shell-narrow-close-restored-focus.png": "4a19983d92518f5358e2dccd7719bbe2c1a76e14553822b280d2fa2cb8ff5fb2",
+    "shell-wide-hidden-page-change.png": "9d1425877878a629cd36a6b71bce060ca199ce6ae3b15e99eb6fefa11d7f450c",
+    "shell-wide-sidebar-hidden.png": "0774e8952f4db9e3e1d0aafe00c8269e019447e62f027a7d0683064b83fbebf5",
+    "shell-wide-sidebar-restored.png": "5ad25f9fa0fa8971f4abf45182d25039e41bd5465f54452a57f34760c39d23b3",
+    "sidebar-narrow-dark-focus.png": "7083a110e52fbebd573abfe4dce67b7198191cd318b2aea7eecde240fe1422e1",
+    "sidebar-narrow-light-focus.png": "d4d3528e10ec2cfc7b518fb2e96a652baa960128a4ba897d66507fa5e69dca34",
+    "sidebar-standard-dark.png": "edba6c5ec304793a226af3a418fcaf448ca907d85998638e68bcfdd3f597e015",
+    "sidebar-standard-light-focus.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-standard-light.png": "714e284b7afcce6a1b4b26962f396c5ec54a470a0c28307f9f7690023b177e68",
+    "sidebar-verification.json": "d4e4df9a79adfe79c646d4ad95c71a4da7977c2199bae837827114b312021b56",
+    "xvfb.log": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+  },
+  "checks": 34,
+  "result": "passed",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "production_source_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "runtime_manifest": "docs/assets/accounting-m6/checks/candidate6/runtime-verification2.json",
+  "runtime_manifest_sha256": "81d476e1cf3ea53e328a433f40d3c3c16efb40b65b3f51f5a03e091fc5dfae46",
+  "observer_sha256": "d271ba2d603ba05addf424cd6006ee34e7ba08871e230804a000edc9635182e7",
+  "scope": "Actual native F9/titlebar wide manual collapse+hidden page navigation, narrow overlay, propercloseicon+real pointer activation withcorroboratedGTKbounds, focus/light/dark/settings/restart. AT-SPIanimatedoverlay componentorigin0,0 remains an explicitly recorded limitation."
+}

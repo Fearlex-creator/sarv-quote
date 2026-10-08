@@ -1,0 +1,130 @@
+{
+  "all_checkpointed_owned_processes_inactive": true,
+  "no_active_exact_C8_binary_command": true,
+  "lost_uncheckpointed_new_app_record": "First20billed app launched after final checkpoint; no live exactC8command remains. PID/frame unavailable from retained checkpoint; no guessed identity or kill.",
+  "processes": [
+    {
+      "record": {
+        "name": "xvfb",
+        "pid": 374119,
+        "pgid": 374119,
+        "starttime_ticks": 9055974,
+        "command": [
+          "Xvfb",
+          "-displayfd",
+          "3",
+          "-screen",
+          "0",
+          "1450x1050x24",
+          "-nolisten",
+          "tcp",
+          "-xkbdir",
+          "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+        ]
+      },
+      "before": {
+        "state": "S",
+        "comm": "Xvfb",
+        "ppid": 1,
+        "pgid": 374119,
+        "starttime_ticks": 9055974,
+        "command": [
+          "Xvfb",
+          "-displayfd",
+          "3",
+          "-screen",
+          "0",
+          "1450x1050x24",
+          "-nolisten",
+          "tcp",
+          "-xkbdir",
+          "/workspace/sarv-environment/sysroot/usr/share/X11/xkb"
+        ],
+        "same_identity": true
+      },
+      "action": "SIGTERM exact owned identity",
+      "after": {
+        "state": "Z",
+        "comm": "Xvfb",
+        "ppid": 1,
+        "pgid": 374119,
+        "starttime_ticks": 9055974,
+        "command": [],
+        "same_identity": true
+      },
+      "owned_identity_active": false
+    },
+    {
+      "record": {
+        "name": "openbox",
+        "pid": 374123,
+        "pgid": 374123,
+        "starttime_ticks": 9055984,
+        "command": [
+          "openbox",
+          "--sm-disable",
+          "--config-file",
+          "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+        ]
+      },
+      "before": {
+        "state": "S",
+        "comm": "openbox",
+        "ppid": 1,
+        "pgid": 374123,
+        "starttime_ticks": 9055984,
+        "command": [
+          "openbox",
+          "--sm-disable",
+          "--config-file",
+          "/workspace/sarv-environment/sysroot/etc/xdg/openbox/rc.xml"
+        ],
+        "same_identity": true
+      },
+      "action": "SIGTERM exact owned identity",
+      "after": {
+        "state": "Z",
+        "comm": "openbox",
+        "ppid": 1,
+        "pgid": 374123,
+        "starttime_ticks": 9055984,
+        "command": [],
+        "same_identity": true
+      },
+      "owned_identity_active": false
+    },
+    {
+      "record": {
+        "name": "source120-billed-search",
+        "pid": 374142,
+        "pgid": 374142,
+        "starttime_ticks": 9055989,
+        "command": [
+          "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+        ]
+      },
+      "before": null,
+      "action": "already inactive",
+      "after": null,
+      "owned_identity_active": false
+    },
+    {
+      "record": {
+        "name": "source120-unbilled-search",
+        "pid": 374182,
+        "pgid": 374182,
+        "starttime_ticks": 9057135,
+        "command": [
+          "/workspace/sarv-evidence/bin/sarv-M6-candidate8"
+        ]
+      },
+      "before": null,
+      "action": "already inactive",
+      "after": null,
+      "owned_identity_active": false
+    }
+  ],
+  "historical_processes_untouched": true,
+  "no_environment_read_or_escalation": true,
+  "signals_only_recorded_xvfb_openbox": true
+}

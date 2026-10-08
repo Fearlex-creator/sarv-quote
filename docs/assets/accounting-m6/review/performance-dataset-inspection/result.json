@@ -1,0 +1,92 @@
+{
+  "status": "PASS",
+  "sarv_reports_used": false,
+  "datasets": [
+    {
+      "dataset": "main-seed",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 422,
+      "ap": 329,
+      "grni": 50,
+      "tb": 1630,
+      "w1_q": 25,
+      "w1_v": 292,
+      "state_sha256": "b5e757f8c8cb7a68d116c7e60fa7afa51b90621bc19b41945fbce8f1b96b61fd"
+    },
+    {
+      "dataset": "main-posted",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 317,
+      "ap": 224,
+      "grni": 50,
+      "tb": 1525,
+      "w1_q": 18,
+      "w1_v": 187,
+      "state_sha256": "fc31ad14033b3beaaa9bd3b69ad70f32656ce44033c8d8a90112dd26c6cd5198"
+    },
+    {
+      "dataset": "return20-billed",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 722,
+      "ap": 629,
+      "grni": 50,
+      "tb": 1930,
+      "w1_q": 45,
+      "w1_v": 592,
+      "state_sha256": "1c969a4cf38ae1c0d9bcc0d1c53bf7e32c1d9e77fde86b48963a79dc3c4b4c17"
+    },
+    {
+      "dataset": "return20-unbilled",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 722,
+      "ap": 329,
+      "grni": 350,
+      "tb": 1930,
+      "w1_q": 45,
+      "w1_v": 592,
+      "state_sha256": "ab38074c96b3e3be8552500cac043eea9be0282cf385a8f101ec1d74614d94fd"
+    },
+    {
+      "dataset": "return200-billed",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 3422,
+      "ap": 3329,
+      "grni": 50,
+      "tb": 4630,
+      "w1_q": 225,
+      "w1_v": 3292,
+      "state_sha256": "106cf4946239f6c7626158be81443767ff7c7120556f35f18fef11976c6d32d7"
+    },
+    {
+      "dataset": "source120-billed",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 2222,
+      "ap": 2129,
+      "grni": 50,
+      "tb": 3430,
+      "w1_q": 145,
+      "w1_v": 2092,
+      "state_sha256": "324f11f832cfece56647e77d4643940a6242a73d7f6fbdf5f09c0e4338a68dda"
+    },
+    {
+      "dataset": "source120-unbilled",
+      "whole_original_state_prefix": true,
+      "raw_journal_stock_source_bounds": true,
+      "inventory": 2222,
+      "ap": 329,
+      "grni": 1850,
+      "tb": 3430,
+      "w1_q": 145,
+      "w1_v": 2092,
+      "state_sha256": "ac036bd0afadd4fabf54d04823e2c0ea86a0e2610488ab56662d3f4fa3c6285b"
+    }
+  ],
+  "all38_manifest_hashes_match": true,
+  "original_genuine6_and_only_schema7_migration": true
+}

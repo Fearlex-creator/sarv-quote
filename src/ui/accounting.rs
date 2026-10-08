@@ -2262,7 +2262,7 @@ pub(super) fn schedule(ui: &Rc<Ui>) {
                         );
                     }
                     ui.stack.set_visible_child_name("accounting");
-                    ui.split.set_show_content(true);
+                    ui.show_workspace_content();
                 }
                 1 => {
                     smoke::capture(&ui.window, &directory.join("accounting-before.png"))?;

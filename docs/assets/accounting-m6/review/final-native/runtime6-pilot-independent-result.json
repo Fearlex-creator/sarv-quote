@@ -1,0 +1,991 @@
+{
+  "reviewer": "m6_final_native_review",
+  "all_checks_pass": true,
+  "checks": [
+    {
+      "name": "closed guarded pilot, not quiet final",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "paired production/observer/binary guards exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "current source_files hash exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "current verification_files hash exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "immutable binary hash exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "protected dataset byte hashes exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed stopped raw SQLite/JSON exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed restart closed",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed independent all-role before literal",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 722,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -629,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB_debit": 1930,
+        "TB_credit": 1930
+      }
+    },
+    {
+      "name": "return20-billed independent all-role after literal",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 422,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB_debit": 1630,
+        "TB_credit": 1630
+      }
+    },
+    {
+      "name": "return20-billed unchanged whole-State schema",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged whole-State catalogs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged whole-State customers",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged whole-State quotes",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged whole-State draft",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged whole-State settings",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged accounting companies",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged accounting periods",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged accounting accounts",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged accounting core",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unchanged accounting sales",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed immutable journals prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed immutable requests prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed immutable audit prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed immutable procurement records prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed immutable procurement requests prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed exactly one new return",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed correct return/credit identities",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed exact original cost/count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed exact all source receipt/bill lines",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed exact all real input observations",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed unique generated line/movement IDs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed every original pool transition exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed exact source journal",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed exact detail page markers/count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed every source and movement detail exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed preview raw phase recomputation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed post raw phase recomputation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled stopped raw SQLite/JSON exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled restart closed",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled independent all-role before literal",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 722,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -350,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB_debit": 1930,
+        "TB_credit": 1930
+      }
+    },
+    {
+      "name": "return20-unbilled independent all-role after literal",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 422,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB_debit": 1630,
+        "TB_credit": 1630
+      }
+    },
+    {
+      "name": "return20-unbilled unchanged whole-State schema",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged whole-State catalogs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged whole-State customers",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged whole-State quotes",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged whole-State draft",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged whole-State settings",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged accounting companies",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged accounting periods",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged accounting accounts",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged accounting core",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unchanged accounting sales",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled immutable journals prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled immutable requests prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled immutable audit prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled immutable procurement records prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled immutable procurement requests prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled exactly one new return",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled correct return/credit identities",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled exact original cost/count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled exact all source receipt/bill lines",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled exact all real input observations",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled unique generated line/movement IDs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled every original pool transition exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled exact source journal",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled exact detail page markers/count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled every source and movement detail exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled preview raw phase recomputation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled post raw phase recomputation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed stopped raw SQLite/JSON exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed restart closed",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed independent all-role before literal",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 3422,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -3329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB_debit": 4630,
+        "TB_credit": 4630
+      }
+    },
+    {
+      "name": "return200-billed independent all-role after literal",
+      "passed": true,
+      "actual": {
+        "Cash": 251,
+        "Bank": 300,
+        "Receivables": 299,
+        "ChequesReceivable": 200,
+        "Inventory": 422,
+        "SupplierAdvances": 0,
+        "FixedAssets": 0,
+        "Payables": -329,
+        "ChequesPayable": -100,
+        "Grni": -50,
+        "CustomerAdvances": 0,
+        "Loans": 0,
+        "OwnerCapital": -952,
+        "OwnerDrawings": 0,
+        "RetainedEarnings": 0,
+        "Sales": -199,
+        "SalesReturns": 100,
+        "Cogs": 58,
+        "OperatingExpense": 0,
+        "BankFees": 0,
+        "InventoryLoss": 0,
+        "TB_debit": 1630,
+        "TB_credit": 1630
+      }
+    },
+    {
+      "name": "return200-billed unchanged whole-State schema",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged whole-State catalogs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged whole-State customers",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged whole-State quotes",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged whole-State draft",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged whole-State settings",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged accounting companies",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged accounting periods",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged accounting accounts",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged accounting core",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unchanged accounting sales",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed immutable journals prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed immutable requests prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed immutable audit prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed immutable procurement records prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed immutable procurement requests prefix",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed exactly one new return",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed correct return/credit identities",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed exact original cost/count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed exact all source receipt/bill lines",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed exact all real input observations",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed unique generated line/movement IDs",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed every original pool transition exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed exact source journal",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed exact detail page markers/count",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed every source and movement detail exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "200 exact next/previous pager samples",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "200 hidden invalid input/focus retained and later corrected",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed preview raw phase recomputation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed post raw phase recomputation",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-billed complete retained raw search arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-billed independent search quantiles",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-unbilled complete retained raw search arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-unbilled independent search quantiles",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main-seed complete pilot startup raw arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main-posted complete pilot startup raw arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-billed complete pilot startup raw arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-unbilled complete pilot startup raw arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled complete pilot startup raw arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed complete pilot startup raw arrays",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "two exact retired-window errors recorded, no unexpected",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "322 complete-boundary checkpoints retained",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "portable raw inventory exact",
+      "passed": true,
+      "actual": 58
+    },
+    {
+      "name": "all80 portable inventory hashes exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "all11 stopped SQLite/portable States exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-billed-startup stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-billed-workflow stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled-workflow stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed-workflow stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main-seed-startup stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return20-unbilled-startup stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-unbilled-startup stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "main-posted-startup stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-unbilled-search stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "source120-billed-search stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "return200-billed-startup stopped State/integrity exact",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "all22 owned process records inactive",
+      "passed": true,
+      "actual": null
+    },
+    {
+      "name": "all12 descriptive strict misses independently reproduced",
+      "passed": true,
+      "actual": null
+    }
+  ],
+  "raw_receipt_sha256": "fd9852a207959176c7f4d83cddaf9064df75a6f6727804603822c2f10769dd82",
+  "personally_viewed_200_images": {
+    "return200-billed-workflow/invalid-last-row-focused.png": "dfbbaa0636f5a0f98e9ca62245b509ea5bf5d2ca7719d7f7c891ecd3b1188265",
+    "return200-billed-workflow/last-preview-page.png": "734e8e37e9bec2aa995a7a17288df04305135730947208b0ac35b359474c5165",
+    "return200-billed-workflow/posted.png": "f883aae446f5ecfb42692474288ffbf35968c5422c01569d5036ede49c89033d"
+  },
+  "independent_descriptive_misses": [
+    {
+      "scope": "source120-billed:query:correct_visible_ms",
+      "observed": 927.4765220034169,
+      "limit": 200,
+      "quantiles": {
+        "n": 2,
+        "p50": 872.0895790029317,
+        "p95": 927.4765220034169,
+        "p99": 927.4765220034169,
+        "worst": 927.4765220034169,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:query:focused_usable_ms",
+      "observed": 988.1215670029633,
+      "limit": 200,
+      "quantiles": {
+        "n": 2,
+        "p50": 933.3302099985303,
+        "p95": 988.1215670029633,
+        "p99": 988.1215670029633,
+        "worst": 988.1215670029633,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:filtered-page:correct_visible_ms",
+      "observed": 874.93539499701,
+      "limit": 150,
+      "quantiles": {
+        "n": 2,
+        "p50": 296.05066700605676,
+        "p95": 874.93539499701,
+        "p99": 874.93539499701,
+        "worst": 874.93539499701,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-billed:filtered-page:focused_usable_ms",
+      "observed": 960.1530770014506,
+      "limit": 150,
+      "quantiles": {
+        "n": 2,
+        "p50": 371.9732730096439,
+        "p95": 960.1530770014506,
+        "p99": 960.1530770014506,
+        "worst": 960.1530770014506,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:query:correct_visible_ms",
+      "observed": 977.9788169980748,
+      "limit": 200,
+      "quantiles": {
+        "n": 2,
+        "p50": 894.0317419910571,
+        "p95": 977.9788169980748,
+        "p99": 977.9788169980748,
+        "worst": 977.9788169980748,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:query:focused_usable_ms",
+      "observed": 1037.8474019962596,
+      "limit": 200,
+      "quantiles": {
+        "n": 2,
+        "p50": 944.0003729978343,
+        "p95": 1037.8474019962596,
+        "p99": 1037.8474019962596,
+        "worst": 1037.8474019962596,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:correct_visible_ms",
+      "observed": 1007.1118199994089,
+      "limit": 150,
+      "quantiles": {
+        "n": 2,
+        "p50": 407.07192999252584,
+        "p95": 1007.1118199994089,
+        "p99": 1007.1118199994089,
+        "worst": 1007.1118199994089,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "source120-unbilled:filtered-page:focused_usable_ms",
+      "observed": 1100.7686679949984,
+      "limit": 150,
+      "quantiles": {
+        "n": 2,
+        "p50": 492.0773490011925,
+        "p95": 1100.7686679949984,
+        "p99": 1100.7686679949984,
+        "worst": 1100.7686679949984,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:next:correct_visible_ms",
+      "observed": 1398.0829860083759,
+      "limit": 150,
+      "quantiles": {
+        "n": 7,
+        "p50": 1190.3670449974015,
+        "p95": 1398.0829860083759,
+        "p99": 1398.0829860083759,
+        "worst": 1398.0829860083759,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:next:focused_usable_ms",
+      "observed": 1733.4033060033107,
+      "limit": 150,
+      "quantiles": {
+        "n": 7,
+        "p50": 1466.3473049877211,
+        "p95": 1733.4033060033107,
+        "p99": 1733.4033060033107,
+        "worst": 1733.4033060033107,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:previous:correct_visible_ms",
+      "observed": 1413.3353950019227,
+      "limit": 150,
+      "quantiles": {
+        "n": 7,
+        "p50": 1323.2953889964847,
+        "p95": 1413.3353950019227,
+        "p99": 1413.3353950019227,
+        "worst": 1413.3353950019227,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    },
+    {
+      "scope": "return200-billed:editor:previous:focused_usable_ms",
+      "observed": 1704.8551340121776,
+      "limit": 150,
+      "quantiles": {
+        "n": 7,
+        "p50": 1621.9258839992108,
+        "p95": 1704.8551340121776,
+        "p99": 1704.8551340121776,
+        "worst": 1704.8551340121776,
+        "method": "nearest rank"
+      },
+      "status": "MISS"
+    }
+  ],
+  "functional_scope": "Exact retained native20/20/200 inputs, details, post, source lineage, old prefixes, pager, restart and pilot startup arrays",
+  "performance_accepted": false,
+  "invalid_field_settled_visibility_accepted": false,
+  "invalid_visibility_limit": "L200 quantity text is hidden at fixed footer in immediate captured image; FOCUSED/text state does not establish settled pixels/clip",
+  "quiet_final": false
+}

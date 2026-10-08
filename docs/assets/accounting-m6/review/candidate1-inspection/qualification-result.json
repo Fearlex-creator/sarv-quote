@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "qualification_counts": {
+    "production": 36,
+    "rust_tests": 35,
+    "static_include_inputs": 19,
+    "ordinary_passed": 236,
+    "ordinary_failed": 0,
+    "ordinary_ignored": 5,
+    "ordinary_suite_summaries": 38,
+    "optins_passed": 5
+  },
+  "actual_current_and_archived_fingerprints_match": true,
+  "binary_sha256": "0641336b78a4e38fa725d5a41f3961d1a3ce6241e5df28531e27dbbbcb26b8ac",
+  "earlier_independent_financial_probe_source_matches_frozen_business_files": {
+    "Cargo.toml": true,
+    "Cargo.lock": true,
+    "src/domain.rs": true,
+    "src/export.rs": true,
+    "src/imports.rs": true,
+    "src/lib.rs": true,
+    "src/store.rs": true,
+    "src/calendar.rs": true,
+    "src/accounting_export.rs": true,
+    "src/accounting.rs": true,
+    "src/core.rs": true,
+    "src/procurement.rs": true,
+    "src/sales.rs": true,
+    "src/procurement_export.rs": true,
+    "src/sales_export.rs": true,
+    "src/sales_draft.rs": true,
+    "src/core_export.rs": true,
+    "src/core_import.rs": true
+  },
+  "real_original_M5_executable_refuses7": {
+    "exact_row_unchanged": true,
+    "exit_code": 1,
+    "old_binary": "/workspace/sarv-evidence/bin/sarv-M5-candidate12",
+    "rejected_schema": 7,
+    "result": "passed",
+    "stderr": "Error: \u0646\u0633\u062e\u0647\u0654 \u062f\u0627\u062f\u0647 \u067e\u0634\u062a\u06cc\u0628\u0627\u0646\u06cc \u0646\u0645\u06cc\u200c\u0634\u0648\u062f\n"
+  },
+  "gtk_optin_initial_X11_socket_retries": "Recorded in gtk-owned.log; actual owned-display test subsequently passed; not new native workflow qualification.",
+  "native_and_performance_pending": true
+}

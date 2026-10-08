@@ -294,7 +294,7 @@ pub(super) fn build(ui: &Rc<Ui>) -> gtk::Widget {
     open_recovery.connect_clicked(move |_| {
         if let Some(ui) = weak.upgrade() {
             ui.stack.set_visible_child_name("backup");
-            ui.split.set_show_content(true);
+            ui.show_workspace_content();
         }
     });
     local_data.add(&recovery);

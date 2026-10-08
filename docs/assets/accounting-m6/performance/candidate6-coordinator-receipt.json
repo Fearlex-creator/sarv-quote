@@ -1,0 +1,25 @@
+{
+  "coordinator_sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+  "source_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate6/manifest.json",
+    "sha256": "f2f6cf45ac7ebca7bd806c16045b02fc8eb3ec37fe2c5cdc120de2a8aaecaa93"
+  },
+  "verification_manifest": {
+    "path": "docs/assets/accounting-m6/checks/candidate6/runtime-verification1.json",
+    "sha256": "2c749dea332b257038eb661d0cc0fef82c6d0e0e1ea46f715fb9a1f6741d613c"
+  },
+  "dataset_manifest": {
+    "path": "docs/assets/accounting-m6/performance/dataset-candidate2/dataset-manifest.json",
+    "sha256": "23099547410ef1215d25d5cab9aa935b4f1c1d77cb48fa461873bc20d75e6e72"
+  },
+  "production_sha256": "39f5706031a0207f817c30978330f9e471db8863ae94a7d0e741b4cdbcfade4a",
+  "binary": "/workspace/sarv-evidence/bin/sarv-M6-candidate6",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "candidate": "candidate6",
+  "synthetic_only": true,
+  "purpose": "One functional pilot then one separately authorized quiet final epoch; no timing acceptance from stamping",
+  "superseded_qualified_candidates": [
+    "docs/assets/accounting-m6/checks/candidate4/manifest.json",
+    "docs/assets/accounting-m6/checks/candidate5/manifest.json"
+  ]
+}

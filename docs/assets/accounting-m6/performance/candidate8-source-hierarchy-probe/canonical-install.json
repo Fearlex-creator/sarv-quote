@@ -1,0 +1,31 @@
+{
+  "installed_verbatim": true,
+  "protocol": "m6-scoped-v2.1",
+  "canonical_observer_sha256": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408",
+  "proposal_source_sha256": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408",
+  "old_observer_preserved_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+  "canonical_actual_AST_cases_PASS": 63,
+  "independent_proposal_cases_PASS": 88,
+  "independent_review": "docs/assets/accounting-m6/review/observer-native-candidate8/proposal-review.md",
+  "py_compile": "PASS",
+  "GUI_started": false,
+  "production_changed": false,
+  "C8production_sha256": "11b48de2e85b9465a22f4a618e4675801b1db08a5a2c35b35cb892e8ea381cf3",
+  "binary_sha256": "4c552b8812c48630778e185ed52616ed0b5356d9beef91837adccefc01ba4e9d",
+  "historical_runtime1_manifest_sha256": "c828dee8d5df12c478f36cb5777726c4139debc93ba48811bb5301ea58f17e5a",
+  "runtime1_to_current_exact_change": {
+    "scripts/native-performance-M6.py": {
+      "before": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+      "after": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408"
+    }
+  },
+  "runtime1_other73_files_exact": true,
+  "coordinator_sha256": "c0c17f8d2d714477d20cfa03a1a8f5a2ff17df4e9697fa6e7e0d7ebacba5c841",
+  "dataset38_exact": true,
+  "protected_seeds_exact": {
+    "seed_state": "44e92be3ab033be21f4ee4a3e99f8695ec4b7eebc4530f8836638c7d9644da6b",
+    "seed_backup": "f8f6408027d559a0f6d28cb8972e1975de8785a4d2c462a1898e532bd208b9d8"
+  },
+  "fresh_runtime2_receipt": "pending root freeze",
+  "utc": "2026-10-08T16:30:19Z"
+}

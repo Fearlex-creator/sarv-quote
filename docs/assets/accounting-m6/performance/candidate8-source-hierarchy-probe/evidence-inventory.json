@@ -1,0 +1,85 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 6614,
+      "sha256": "4f86df16adfec5fac36188c76e1a9a614794d7caeb967a947ae34681ee98aa84"
+    },
+    "adapter-proposal.json": {
+      "bytes": 870,
+      "sha256": "2c0cb9c3065e05f0e649f5abbc66bc46d37739a04b0afc53cd714e68d2300c0b"
+    },
+    "adapter-static-check.py": {
+      "bytes": 15793,
+      "sha256": "e811cc4cd242517d7b5f578193777be7cec0c0f109c3c04e492610ca60c98935"
+    },
+    "canonical-install.json": {
+      "bytes": 1627,
+      "sha256": "d56c66808be19ba717078d91948731d13947a2d2d91e58318e8a40513479447a"
+    },
+    "canonical-static-check.py": {
+      "bytes": 15788,
+      "sha256": "56fba92e7379ed90d79ac71dc124d268366fef268d1f9979f688c74508cd70e0"
+    },
+    "observer-proposal.py": {
+      "bytes": 76320,
+      "sha256": "cb145aed5a13d289f8222083f3d23e67ef9c95759745c2d4aea9ecc391945408"
+    },
+    "observer-v2-930730.py": {
+      "bytes": 75050,
+      "sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2"
+    },
+    "pager-adapter.diff": {
+      "bytes": 8183,
+      "sha256": "99d358a93c11ac81a6a7a06720590a93e0b148603b2647f05d729e59a90633e1"
+    },
+    "probe.py": {
+      "bytes": 6887,
+      "sha256": "85f860d41ec6e84b34300a6eac95c6496699dfc267e0010c941e4d790d91c9df"
+    },
+    "result/actual-source-picker-hierarchy.png": {
+      "bytes": 253499,
+      "sha256": "18aa7bed2e6d8b04755e8751b28166af69e8be031f53ccb9cfa4ee788b2866b7"
+    },
+    "result/hierarchy-probe.json": {
+      "bytes": 131201,
+      "sha256": "7b6890bb83b12063e3bf8bcf8fa220d7188ad0d9493223afbfed8a226c34be5c"
+    },
+    "result/openbox.log": {
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    "result/portable-manifest.json": {
+      "bytes": 1111,
+      "sha256": "d5a63c75e3adffa161519eb943222a8fae65af41a17f7cf9a61c6cce1a9f52c8"
+    },
+    "result/probe.py": {
+      "bytes": 6887,
+      "sha256": "85f860d41ec6e84b34300a6eac95c6496699dfc267e0010c941e4d790d91c9df"
+    },
+    "result/readonly-source-app.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "result/runtime/dconf/user": {
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    "result/stopped-profile-check.json": {
+      "bytes": 261,
+      "sha256": "947df1957e75747100ced6d855eae4d187f43654dcc001003724f7cb088631c8"
+    },
+    "result/stopped-state.json": {
+      "bytes": 1802555,
+      "sha256": "e22c1d8c9975265f15e913fd9e45cd2804e2c533d584ab047aecf391b9420d54"
+    },
+    "result/xvfb.log": {
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    "static-check.json": {
+      "bytes": 5996,
+      "sha256": "e20d825b3f9fb015aa8fa91a5ff610e383307d5b5873f23c7cb5aa644e155f41"
+    }
+  },
+  "contains_SQLite_or_executable": false
+}

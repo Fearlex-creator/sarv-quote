@@ -1,0 +1,31 @@
+{
+  "Return": {
+    "context": {
+      "company_id": "eb78b312-5b30-4d32-b64a-70d36606b125",
+      "period_id": "548eb7b8-6240-440e-8ec7-5cd1c801335c",
+      "setup_id": "9197c9f7-4d95-403d-a150-f9c741b68715",
+      "source_id": "fault-financial-return",
+      "source_revision": 1,
+      "date": "2026-04-01",
+      "request_key": "fault-financial-key",
+      "actor": "Independent financial fault reviewer",
+      "reason": "Original R-B three-piece45IRR supplier credit after M5 baseline"
+    },
+    "supplier_id": "party-a",
+    "return_id": "fault-return",
+    "return_reference": "FAULT-RETURN",
+    "credit_id": "fault-credit",
+    "credit_reference": "FAULT-CREDIT",
+    "document_date": "2026-04-01",
+    "lines": [
+      {
+        "id": "fault-return-line",
+        "receipt_line_id": "receipt105-line",
+        "bill_line_id": "bill150-line-1",
+        "quantity_thousandths": 3000,
+        "supplied_value": 45
+      }
+    ],
+    "supplied_total": 45
+  }
+}

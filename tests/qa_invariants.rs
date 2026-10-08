@@ -196,7 +196,7 @@ fn correctly_checksummed_bad_revision_chain_is_rejected_on_restore() {
     state.approve().unwrap();
     state.quotes[0].version = 2;
     let bytes = serde_json::to_vec(&state).unwrap();
-    let backup = serde_json::json!({"format":"sarv-accounting-backup-v6", "checksum":hash(&bytes), "state":state});
+    let backup = serde_json::json!({"format":"sarv-accounting-backup-v7", "checksum":hash(&bytes), "state":state});
     let dir = tempfile::tempdir().unwrap();
     let target = dir.path().join("forged.json");
     std::fs::write(&target, serde_json::to_vec(&backup).unwrap()).unwrap();

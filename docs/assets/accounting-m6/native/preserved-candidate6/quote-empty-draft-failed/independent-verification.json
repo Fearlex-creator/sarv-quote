@@ -1,0 +1,9 @@
+{
+  "result": "failed",
+  "profile": "/workspace/sarv-quote/artifacts/independent-native/run-o5kjxvkv",
+  "source": "/workspace/sarv-quote/artifacts/m6-preserved/quote-b9hhntuc",
+  "binary_sha256": "6951a758c0f60f8bfce84abf42b399ffe06c5105fda0dbc9978ac2b7262147b2",
+  "backend": "X11 Xvfb + Openbox + real XTest key events",
+  "checks": [],
+  "error": "Timed out waiting for Tab moved focus"
+}

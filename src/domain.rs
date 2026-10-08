@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use uuid::Uuid;
 
-pub const CURRENT_SCHEMA: u32 = 6;
+pub const CURRENT_SCHEMA: u32 = 7;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
 pub const MAX_QUOTE_LINES: usize = 10_000;
 const MAX_REFERENCE_CHARS: usize = 160;
@@ -1290,7 +1290,20 @@ impl State {
     }
     pub fn validate(&self) -> Result<()> {
         self.settings.validate()?;
-        ensure!(matches!(self.schema, 1..=6), "نسخهٔ داده پشتیبانی نمی‌شود");
+        ensure!(
+            (1..=CURRENT_SCHEMA).contains(&self.schema),
+            "نسخهٔ داده پشتیبانی نمی‌شود"
+        );
+        ensure!(
+            self.schema >= 7
+                || !self.accounting.procurement.records.iter().any(|record| {
+                    matches!(
+                        record.command,
+                        crate::procurement::ProcurementCommand::Return(_)
+                    ) || matches!(record.data, crate::procurement::ProcurementData::Return(_))
+                }),
+            "برگشت خرید در نسخهٔ قدیمی داده پشتیبانی نمی‌شود"
+        );
         ensure!(
             self.schema >= 5 || self.accounting.procurement.is_empty(),
             "گردش خرید و موجودی نیازمند نسخهٔ دادهٔ ۵ است"

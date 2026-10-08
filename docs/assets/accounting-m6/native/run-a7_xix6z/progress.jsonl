@@ -1,0 +1,24 @@
+{"name": "frozen source files/aggregate exact", "passed": true}
+{"name": "frozen native binary exact", "passed": true}
+{"name": "observer unchanged", "passed": true}
+{"name": "imported native helpers and licensed font assets unchanged", "passed": true, "files": {"scripts/qa-native.py": "d34299269c82ddfa30e8fd97759d8ef7e1d0fd13014f580792a3ed627592f82e", "scripts/qa_access.py": "226640c5a1f9fcf8298f3a0aff52cbf1b43974db1ced79f55c55affd9ea9fde4", "assets/fonts/Vazirmatn-Regular.ttf": "b69fd4c680b8f3f225feabcc655a2c585d97627b8f5f5c0f9985e894069f3a56", "assets/fonts/Vazirmatn-Bold.ttf": "f635fdbea28f265de395ba83b4b1570dcf2f58d13c65469e61903b1c2d2ae723", "assets/fonts/OFL.txt": "17e355067c8284f47743a1ee3b1ef7ff684ff0601eda357f9353b10b3016ab31"}}
+{"name": "independent literal M5 March31 seed", "passed": true, "actual": {"Cash": 251, "Bank": 300, "Receivables": 299, "ChequesReceivable": 200, "Inventory": 422, "SupplierAdvances": 0, "FixedAssets": 0, "Payables": -329, "ChequesPayable": -100, "Grni": -50, "CustomerAdvances": 0, "Loans": 0, "OwnerCapital": -952, "OwnerDrawings": 0, "RetainedEarnings": 0, "Sales": -199, "SalesReturns": 100, "Cogs": 58, "OperatingExpense": 0, "BankFees": 0, "InventoryLoss": 0, "TB": 1630}}
+{"name": "literal frozen R-B billed7/105 in bill150", "passed": true}
+{"name": "literal original warehouse25/292 and other warehouse12/130", "passed": true}
+{"name": "genuine old M5 lacks new purchase return action", "passed": true}
+{"name": "genuine M5 before view preserves source profile whole state", "passed": true}
+{"name": "genuine old M5 binary unchanged", "passed": true}
+{"name": "actual bound source quantity fields have unique AT-SPI names", "passed": true}
+{"name": "native overreturn retains safe quantity and source; no financial write", "passed": true}
+{"name": "Escape cancellation leaves aggregate unchanged", "passed": true}
+{"name": "actual bound source quantity fields have unique AT-SPI names", "passed": true}
+{"name": "return1 Jalali conversion retains canonical April date", "passed": true}
+{"name": "return1 exact readonly toman cost", "passed": true}
+{"name": "return1 original and remaining source amounts follow selected toman display", "passed": true}
+{"name": "preview1 is read-only original cost", "passed": true}
+{"name": "literal native return1 all controls and TB", "passed": true, "actual": {"Cash": 251, "Bank": 300, "Receivables": 299, "ChequesReceivable": 200, "Inventory": 377, "SupplierAdvances": 0, "FixedAssets": 0, "Payables": -284, "ChequesPayable": -100, "Grni": -50, "CustomerAdvances": 0, "Loans": 0, "OwnerCapital": -952, "OwnerDrawings": 0, "RetainedEarnings": 0, "Sales": -199, "SalesReturns": 100, "Cogs": 58, "OperatingExpense": 0, "BankFees": 0, "InventoryLoss": 0, "TB": 1585}}
+{"name": "return1 exact original source/cost/states/credit", "passed": true}
+{"name": "return1 original warehouse literal and others unchanged", "passed": true}
+{"name": "return1 preserves opening/sales/quotation and old procurement prefix", "passed": true}
+{"name": "return1 native linked states/source lineage", "passed": true}
+{"name": "return1 reciprocal original bill return links", "passed": true}

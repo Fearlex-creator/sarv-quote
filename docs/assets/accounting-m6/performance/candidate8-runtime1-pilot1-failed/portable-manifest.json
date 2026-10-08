@@ -1,0 +1,51 @@
+{
+  "raw_root": "/workspace/sarv-quote/artifacts/performance-m6/candidate8-runtime1-pilot1",
+  "raw_files": {
+    "analysis.json": {
+      "bytes": 2628,
+      "sha256": "3a27ba4d85ec58a86358a531b9e9caa0c30d55e4c34c5c007e15c9ea43ef9bb6"
+    },
+    "coordinator-observer.log": {
+      "bytes": 1993,
+      "sha256": "8c1ffb6ac0bbf7a010793ae4fd269a756aed317505a752b991dfb9a904d35db9"
+    },
+    "coordinator.json": {
+      "bytes": 50406,
+      "sha256": "1d04e03cfcf28299ed14385379bddb04d87e8d87339c3a2b3a6672e8fd503922"
+    },
+    "observer/openbox.log": {
+      "bytes": 207,
+      "sha256": "ad0c86a8afcc1ec5fb33448a2e712339fdfd98ace642398ff680c5e257ed9dbd"
+    },
+    "observer/performance.json": {
+      "bytes": 170237,
+      "sha256": "a50eca97cd4fb6ffe8d9f7e6a00de345fd1cdac16915e2ce15d3f5b8a4164bb9"
+    },
+    "observer/performance.partial.json": {
+      "bytes": 29138,
+      "sha256": "718e8160d3f6e928c57b161c8710da0274db676e4d18eefe9cc6e0bf7b3a14d6"
+    },
+    "observer/runtime/dconf/user": {
+      "bytes": 2,
+      "sha256": "96a296d224f285c67bee93c30f8a309157f0daa35dc5b87e410b78630a09cfc7"
+    },
+    "observer/source120-billed-search.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "observer/xvfb.log": {
+      "bytes": 1384,
+      "sha256": "ef4e8fa08744d7cfed069a96d7171d4904d7b528c8dae091895a3978d9f4b96f"
+    },
+    "owned-process-closure.json": {
+      "bytes": 1297,
+      "sha256": "abe193a3fd4be026fb12af0ae2d65132b2951f13be9ffb43182491faeb0be6a7"
+    }
+  },
+  "raw_files_count": 10,
+  "excluded": [
+    "SQLite database/WAL/SHM; stopped raw State and integrity receipt substituted"
+  ],
+  "observer_sha256": "930730bf94714ebb6370d4eba041afba286bce1ea11c3f3050214ff0dfc475e2",
+  "no_executable_or_SQLite_copied": true
+}

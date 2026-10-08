@@ -1,0 +1,42 @@
+{
+  "actual_original_schema_confirmed": 6,
+  "original_release_library_sha256": "1ceec2f3087dc8ef6926f69a2ce08992adbf4ae552c08ed95695a75c3d93cb93",
+  "direct_rustc": true,
+  "cargo_used": false,
+  "first_attempt": "Failed dependency-variant mismatch; log retained",
+  "corrected_attempt": "Original library with matching initial anyhow/serde_json dependency variants compiled and genuine6 quotation-bearing seed passed",
+  "files": {
+    "/tmp/independent-old-m5-helper": {
+      "sha256": "388e693fc0ff42800ed9462b59ad2378e07d22112d3dc1b53e58b4a4b60a4b2c",
+      "size": 18103856
+    },
+    "/workspace/sarv-evidence/m5-immutable-library/libsarv_quote-68450ce97b0ef1cf.rlib": {
+      "sha256": "1ceec2f3087dc8ef6926f69a2ce08992adbf4ae552c08ed95695a75c3d93cb93",
+      "size": 28199464
+    },
+    "/workspace/sarv-quote/target/release/deps/libanyhow-daeb41b16a81618f.rlib": {
+      "sha256": "86b8780666e3b5e1c9b9bc71f57aca11cd5cbae3acc41d8b644ed9ac63aa2064",
+      "size": 615680
+    },
+    "/workspace/sarv-quote/target/release/deps/libserde_json-fc30d27046300012.rlib": {
+      "sha256": "a3df185130083fadf5be61b7b45f63bad528d077573b17a319e7df435f31ca58",
+      "size": 2186754
+    },
+    "/workspace/sarv-quote/docs/assets/accounting-m6/review/probe/src/old_m5.rs": {
+      "sha256": "c8c5623d8a88d80faa8375fcc46f0fc0602b8f29fcd576c1726b790a841cd803",
+      "size": 1615
+    },
+    "/workspace/sarv-quote/docs/assets/accounting-m6/review/probe/src/common.rs": {
+      "sha256": "41552f641d8e5ea0f3974ed21724c80e6a1f7e3be171ad4e617223320993f303",
+      "size": 7279
+    },
+    "/workspace/sarv-quote/docs/assets/accounting-m6/review/probe/src/opening.rs": {
+      "sha256": "975776d3c32f21459239bf82302831262dd1ab068fabb2f946ae98922f25c56e",
+      "size": 4054
+    },
+    "/workspace/sarv-quote/docs/assets/accounting-m5/review/candidate12-inspection/native-full-state.json": {
+      "sha256": "4b271561f1082e38262f0a87b7c27ad06edbe9eef0ace7eaaa57dc7f4a745332",
+      "size": 230193
+    }
+  }
+}

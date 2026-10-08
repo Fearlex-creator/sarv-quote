@@ -1,0 +1,214 @@
+{
+  "expected": {
+    "ap": 224,
+    "ar": 299,
+    "cogs": 58,
+    "earnings": 41,
+    "grni": 50,
+    "inventory": 317,
+    "reconciliation": {
+      "as_of": "2026-04-03",
+      "company_id": "b52c6683-f12c-4c6d-8833-556a93a40541",
+      "controls": [
+        {
+          "account_id": "cd74b336-de34-4af4-b77b-8aec7fff838b",
+          "detail": 251,
+          "difference": 0,
+          "ledger": 251,
+          "role": "Cash"
+        },
+        {
+          "account_id": "47b27ee6-844f-4474-b0f7-f0bdaebb1ded",
+          "detail": 300,
+          "difference": 0,
+          "ledger": 300,
+          "role": "Bank"
+        },
+        {
+          "account_id": "16cf2fbc-9189-4800-9fb1-13cf4ae96451",
+          "detail": 299,
+          "difference": 0,
+          "ledger": 299,
+          "role": "Receivables"
+        },
+        {
+          "account_id": "90f0411c-199a-4d69-aed7-bf4dcaa209cd",
+          "detail": 200,
+          "difference": 0,
+          "ledger": 200,
+          "role": "ChequesReceivable"
+        },
+        {
+          "account_id": "d6ce34bb-3b49-43eb-ab22-cffde6bea410",
+          "detail": 317,
+          "difference": 0,
+          "ledger": 317,
+          "role": "Inventory"
+        },
+        {
+          "account_id": "1b3243eb-30e6-4c53-a773-6df75ea39800",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "SupplierAdvances"
+        },
+        {
+          "account_id": "1cc84f6d-1574-463c-b7ab-80a970276f6a",
+          "detail": 224,
+          "difference": 0,
+          "ledger": 224,
+          "role": "Payables"
+        },
+        {
+          "account_id": "cd7505ed-64cb-4eba-917b-ebac9d067b6f",
+          "detail": 100,
+          "difference": 0,
+          "ledger": 100,
+          "role": "ChequesPayable"
+        },
+        {
+          "account_id": "cac0dcee-4a73-4e43-a8af-59fc4af9e0fc",
+          "detail": 50,
+          "difference": 0,
+          "ledger": 50,
+          "role": "Grni"
+        },
+        {
+          "account_id": "faa4c392-3cc0-4ffb-a705-3114f4e10715",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "CustomerAdvances"
+        },
+        {
+          "account_id": "5cd9bec6-5628-4d8e-ba72-1edb638b4bd4",
+          "detail": 58,
+          "difference": 0,
+          "ledger": 58,
+          "role": "Cogs"
+        },
+        {
+          "account_id": "2458b496-a74e-4980-be83-ce105fd881f1",
+          "detail": 0,
+          "difference": 0,
+          "ledger": 0,
+          "role": "InventoryLoss"
+        }
+      ],
+      "payables": [
+        {
+          "document_date": "2026-03-21",
+          "due_date": "2026-03-21",
+          "id": "AP-100",
+          "party_id": "SU-A",
+          "reference": "DOC-AP-100",
+          "remaining": 100,
+          "source_id": "OPEN-F2-2026"
+        },
+        {
+          "document_date": "2026-03-21",
+          "due_date": "2026-03-21",
+          "id": "AP-49",
+          "party_id": "SU-B",
+          "reference": "DOC-AP-49",
+          "remaining": 49,
+          "source_id": "OPEN-F2-2026"
+        },
+        {
+          "document_date": "2026-03-25",
+          "due_date": "2026-04-01",
+          "id": "163c42fc-7dcd-48c7-95a9-4e7e6acb8f06",
+          "party_id": "SU-A",
+          "reference": "BILL-A",
+          "remaining": 30,
+          "source_id": "f51d6425-0d10-4897-af46-7faaf72197aa"
+        },
+        {
+          "document_date": "2026-03-26",
+          "due_date": "2026-04-02",
+          "id": "f47b4602-6f1b-4afa-a45d-bdca0e54af48",
+          "party_id": "SU-A",
+          "reference": "BILL-B",
+          "remaining": 45,
+          "source_id": "5ab266ac-4b08-4493-aa1e-4a07cdb228ae"
+        }
+      ],
+      "receipts": [
+        {
+          "date": "2026-03-23",
+          "id": "4f680d89-f18a-4022-b41c-d486da2da783",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 5000,
+          "original_value": 75,
+          "quantity_thousandths": 0,
+          "reference": "REC-A",
+          "source_id": "fc528d36-7465-4d88-85f1-d21f56e14f2b",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        },
+        {
+          "date": "2026-03-21",
+          "id": "R1",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 5000,
+          "original_value": 50,
+          "quantity_thousandths": 5000,
+          "reference": "RECEIPT-R1",
+          "source_id": "OPEN-F2-2026",
+          "supplier_id": "SU-A",
+          "value": 50,
+          "warehouse_id": "W2"
+        },
+        {
+          "date": "2026-03-24",
+          "id": "ea16af10-b102-4265-8d4b-9c326ca14862",
+          "item_id": "ITEM-A",
+          "original_quantity_thousandths": 7000,
+          "original_value": 105,
+          "quantity_thousandths": 0,
+          "reference": "REC-B",
+          "source_id": "53e308f0-0012-44e8-9e93-b0bd2bf94334",
+          "supplier_id": "SU-A",
+          "value": 0,
+          "warehouse_id": "W1"
+        }
+      ],
+      "reconciled": true,
+      "stock": [
+        {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 18000,
+          "value": 187,
+          "warehouse_id": "W1"
+        },
+        {
+          "item_id": "ITEM-A",
+          "quantity_thousandths": 12000,
+          "value": 130,
+          "warehouse_id": "W2"
+        }
+      ],
+      "total_credit": 1525,
+      "total_debit": 1525
+    },
+    "sales": 199,
+    "sales_returns": 100,
+    "tb_credit": 1525,
+    "tb_debit": 1525,
+    "w1_quantity_thousandths": 18000,
+    "w1_value": 187,
+    "w2_quantity_thousandths": 12000,
+    "w2_value": 130
+  },
+  "generator": "sarv-m6-performance-dataset-v1",
+  "old_prefix_preserved": true,
+  "quotation_count": 1,
+  "recipe": {
+    "bill_line_id": "66b0fc14-55dc-46ec-900f-0fc30d10d4d2",
+    "kind": "M6-billed-main45-plus60",
+    "receipt_line_id": "ea16af10-b102-4265-8d4b-9c326ca14862"
+  },
+  "seed": "M5-C12-authentic-quote-main199",
+  "synthetic_only": true
+}

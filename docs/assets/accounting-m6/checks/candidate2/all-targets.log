@@ -1,0 +1,471 @@
+   Compiling sarv-quote v0.1.0 (/workspace/sarv-quote)
+    Finished `test` profile [unoptimized] target(s) in 2.82s
+     Running unittests src/lib.rs (target/debug/deps/sarv_quote-6ffe6f92abf9115c)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/debug/deps/sarv_quote-d06047d5ef32788b)
+
+running 11 tests
+test ui::background::tests::four_row_business_quote_with_native_fonts_fits_one_a4_page ... ignored, registers application fonts; run alone before any concurrent font rendering
+test ui::catalog_preview::tests::catalogue_preview_handles_last_page_and_out_of_range_offsets ... ok
+test ui::catalog_editor::tests::native_catalog_snapshot_roundtrips_exact_source_units_and_prices ... ok
+test ui::background::tests::failed_worker_render_removes_only_its_owned_directory ... ok
+test ui::catalog_preview::tests::filtered_catalogue_review_matches_persian_aliases_without_mutating_prices ... ok
+test ui::catalog_preview::tests::catalogue_preview_reaches_every_product_without_more_than_100_rows ... ok
+test ui::editor::presentation_tests::ambiguous_invalid_choice_and_older_generation_are_never_approved ... ok
+test ui::editor::presentation_tests::prepared_review_preserves_explicit_choice_and_exact_total ... ok
+test ui::managers::tests::manager_dates_obey_preferences_without_exposing_storage_timestamp ... ok
+test ui::managers::tests::restored_catalogue_row_order_cannot_reuse_wrong_search_indices ... ok
+test ui::background::tests::worker_preview_owns_and_releases_temporary_files ... ok
+
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+     Running tests/accounting_exports.rs (target/debug/deps/accounting_exports-6113bcbf3a1343d9)
+
+running 1 test
+test exact_report_units_pagination_and_no_overwrite_are_visible_in_exports ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+
+     Running tests/accounting_kernel.rs (target/debug/deps/accounting_kernel-bb68a4f052ff333d)
+
+running 12 tests
+test cumulative_books_reject_reimported_opening_in_later_year ... ok
+test company_dates_hierarchy_and_control_restrictions ... ok
+test archived_accounts_allow_only_exact_original_reversal_snapshots ... ok
+test backdated_post_checks_every_affected_cutoff_not_only_current_balance ... ok
+test exact_money_units_digits_range_and_serialization ... ok
+test failed_post_is_atomic_for_invalid_lines_unbalance_and_overflow ... ok
+test locks_reopen_and_reversal_cross_period_preserve_history ... ok
+test post_rejects_cumulative_account_and_report_overflow_atomically ... ok
+test independent_opening_adjustment_and_reversal_fixture ... ok
+test retry_identity_and_business_identity_survive_restore_and_lock ... ok
+test restored_state_and_generic_store_transition_reject_history_tampering ... ok
+test many_exact_synthetic_postings_have_independent_expected_totals ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/accounting_migration.rs (target/debug/deps/accounting_migration-48114e80131a5aad)
+
+running 3 tests
+test unsupported_or_corrupt_upgrade_never_rewrites_legacy_row ... ok
+test schema_one_upgrade_preserves_quotation_bytes_and_verifies_recovery_before_upgrade ... ok
+test schema_two_upgrade_verifies_m1_recovery_and_preserves_full_ledger_and_quote_history ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/calendar.rs (target/debug/deps/calendar-ca7a13cd465dd978)
+
+running 9 tests
+test explicit_input_calendar_never_guesses_the_year ... ok
+test jalali_leap_and_every_month_validate_without_rollover ... ok
+test known_nowruz_and_independent_esfand_fixtures ... ok
+test malformed_inputs_and_gregorian_leap_centuries_reject_cleanly ... ok
+test persian_arabic_and_mixed_digits_produce_identical_canonical_dates ... ok
+test presentation_mode_serializes_explicitly_and_errors_explain_limits ... ok
+test range_endpoints_and_outside_dates_are_explicit ... ok
+test fiscal_boundaries_are_inclusive_and_preserve_chronology ... ok
+test all_supported_days_roundtrip_and_calendar_switch_keeps_canonical_date ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.53s
+
+     Running tests/calendar_workflow.rs (target/debug/deps/calendar_workflow-e85b1cebe1e8cabe)
+
+running 2 tests
+test jalali_preference_survives_recovery_and_preserves_approved_document_dates_and_output ... ok
+test jalali_trial_exports_name_both_dates_and_preserve_exact_money ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+
+     Running tests/core_exports.rs (target/debug/deps/core_exports-dde3964f9b22ed24)
+
+running 6 tests
+test exact_csv_controls_details_snapshots_and_formula_guards ... ok
+test reviewed_explicit_zero_initialization_exports_without_fake_financial_journal ... ok
+test uninitialized_books_never_export_verified_zero ... ok
+test backup_restores_identical_usable_opening_exports ... ok
+test gregorian_outside_jalali_range_exports_without_false_conversion ... ok
+test persian_pdf_repeats_headers_includes_every_detail_exact_units_dates_and_pages ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.15s
+
+     Running tests/core_import.rs (target/debug/deps/core_import-33c7ef39941ff9f0)
+
+running 7 tests
+test crlf_source_diagnostics_and_original_refs_point_to_actual_data_row ... ok
+test independent_literal_opening_stages_without_mutation_and_preserves_provenance ... ok
+test bounded_read_and_exact_original_values ... ok
+test explicit_units_safe_digits_duplicates_unknown_columns_and_empty_files ... ok
+test one_rial_difference_remains_reviewable_and_post_rejects ... ok
+test invalid_content_reports_row_and_column_and_never_writes ... ok
+test reference_pack_role_and_historical_errors_identify_their_source_columns ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/core_migration.rs (target/debug/deps/core_migration-006bfac9e339286c)
+
+running 4 tests
+test core_migration_child ... ok
+test mismatched_backup_versions_and_future_schema_never_replace_state ... ok
+test schema_three_upgrade_preserves_jalali_and_exact_history_with_v3_recovery_and_current_restore ... ok
+test interrupted_upgrade_waiting_for_startup_write_retains_exact_legacy_row ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/core_opening.rs (target/debug/deps/core_opening-0c9b174a544f049a)
+
+running 9 tests
+test guided_setup_is_atomic_customizable_and_preserves_other_books ... ok
+test rational_quantity_and_half_up_are_exact_checked ... ok
+test errors_and_mismatches_leave_direct_command_state_unchanged ... ok
+test nonzero_advances_reconcile_separately_for_dual_role_party ... ok
+test literal_1251_opening_reconciles_and_survives_replay ... ok
+test zero_and_financial_request_keys_share_one_collision_boundary ... ok
+test zero_valued_stock_keeps_exact_quantity_and_provenance_without_fake_gl ... ok
+test retries_freeze_detail_and_do_not_second_initialize ... ok
+test zero_opening_initializes_without_financial_journal_and_replays_aliases ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+
+     Running tests/core_store.rs (target/debug/deps/core_store-15840e2c770491d4)
+
+running 4 tests
+test immutable_details_policy_and_recomputed_backup_checksum_cannot_bypass_restore_validation ... ok
+test complete_core_backup_fresh_restore_and_restart_keep_all_financial_and_source_snapshots ... ok
+test concurrent_prepared_opening_has_one_durable_effect_then_different_key_retry_reuses_it ... ok
+test zero_value_initialization_and_its_retry_restore_without_an_empty_financial_journal ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.07s
+
+     Running tests/customer_details.rs (target/debug/deps/customer_details-5981cdad56ec9bc8)
+
+running 7 tests
+test optional_customer_details_keep_legacy_serialized_bytes ... ok
+test conflicting_customer_creation_is_rejected_without_silently_discarding_details ... ok
+test browsing_cache_normalizes_scripts_and_tokens_but_never_changes_exact_matching ... ok
+test selection_archival_and_editing_preserve_historical_customer_snapshots ... ok
+test revising_after_master_customer_edits_keeps_identity_without_recreating_old_customer ... ok
+test typed_customer_auto_linking_is_idempotent_and_legacy_history_is_not_rewritten ... ok
+test invalid_customer_details_are_atomic_and_all_fields_survive_restart_and_backup ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/detached_save.rs (target/debug/deps/detached_save-e25412426aebf833)
+
+running 4 tests
+test detached_failures_release_reservation_without_losing_state ... ok
+test detached_save_never_recreates_a_missing_database_or_adopts_another_profile ... ok
+test detached_save_reserves_owner_and_durably_survives_unacknowledged_restart ... ok
+test concurrent_detached_saves_have_one_winner_and_keep_stale_owner_input ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/domain_hardening.rs (target/debug/deps/domain_hardening-86479ecdd8368aa1)
+
+running 8 tests
+test exact_money_boundaries_and_sum_overflow_never_mutate_approval ... ok
+test dates_require_real_iso_dates_and_ordered_expiry ... ok
+test metadata_snapshots_and_metadata_only_revisions_are_idempotent ... ok
+test malformed_inputs_cannot_bypass_review_using_a_chosen_code ... ok
+test optional_metadata_preserves_legacy_serialization_bytes ... ok
+test stale_ack_is_required_at_approval_but_archives_do_not_age_invalid ... ok
+test revision_chains_reject_missing_versions_and_reversed_approval_time ... ok
+test preview_and_archive_line_count_limits_are_consistent ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/export_hardening.rs (target/debug/deps/export_hardening-aa76a5f430d9a338)
+
+running 15 tests
+test business_snapshot_csv_fields_are_formula_safe ... ok
+test csv_neutralizes_all_untrusted_text_and_keeps_exact_rial_numbers ... ok
+test customer_snapshot_csv_is_formula_safe_and_legacy_defaults_remain_absent ... ok
+test export_refuses_existing_symlink ... ok
+test exports_never_overwrite_and_failed_render_leaves_no_file ... ok
+test customer_snapshot_exports_keep_exact_fields_and_paginate_long_addresses ... ok
+test legacy_quote_deserializes_without_settings_and_keeps_zero_tax ... ok
+test largest_supported_amount_and_rial_unit_render_without_float_rounding ... ok
+test configured_business_number_tax_and_digits_are_in_real_pdf_and_csv ... ok
+test saved_date_display_changes_pdf_but_keeps_csv_canonical_iso ... ok
+test tax_errors_and_maximum_total_fail_before_any_export_file_is_created ... ok
+test unreasonably_tall_row_is_an_explicit_error_not_clipped_output ... ok
+test long_valid_business_blocks_are_paginated_without_losing_content ... ok
+test final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster ... ok
+test multipage_pdf_matches_native_preview_and_long_notes_continue ... ok
+
+test result: ok. 15 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.73s
+
+     Running tests/import_diagnostics.rs (target/debug/deps/import_diagnostics-38fc19bca0a2dd7e)
+
+running 3 tests
+test catalog_errors_identify_all_bad_columns_and_never_return_partial_catalog ... ok
+test order_diagnostics_are_bounded_and_repeated_valid_rows_remain_separate ... ok
+test malformed_structure_and_headers_have_explicit_diagnostics ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/index_matching.rs (target/debug/deps/index_matching-8a2ad1b94c379d3c)
+
+running 3 tests
+test normalization_code_collisions_preserve_multiple_candidates_in_order ... ok
+test index_matches_legacy_semantics_across_scripts_and_exact_priority ... ok
+test indexed_preview_still_requires_human_choice_and_exact_selected_code ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/manager_workflow.rs (target/debug/deps/manager_workflow-4a4114f4ce624542)
+
+running 7 tests
+test customer_save_is_idempotent_across_script_and_whitespace ... ok
+test duplicate_clears_expired_validity_and_updates_date ... ok
+test customer_edit_and_use_leave_approved_snapshot_unchanged ... ok
+test catalog_selection_resets_only_when_source_changes ... ok
+test revision_keeps_number_duplicate_gets_new_series_and_number ... ok
+test rejected_manager_actions_are_atomic ... ok
+test managed_data_restarts_backs_up_and_exports_the_archived_quote ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+
+     Running tests/process_recovery.rs (target/debug/deps/process_recovery-b918b559a65e5661)
+
+running 9 tests
+test kill_inside_store_candidate_does_not_leak_to_committed_state ... ok
+test killed_public_restore_after_commit_retains_restored_state_and_original_safety ... ok
+test interrupted_detached_journal_before_commit_or_before_receipt_has_exact_complete_books ... ok
+test recovery_worker_entry ... ok
+test sigkill_after_public_store_commit_keeps_complete_state ... ok
+test killed_public_restore_after_safety_before_commit_retains_original_and_valid_backup ... ok
+test sigkill_spilled_uncommitted_wal_recovers_previous_state ... ok
+test interrupted_staging_protocol_is_absent_before_link_and_complete_after_link ... ok
+test interrupted_public_export_is_absent_or_complete_and_never_overwrites ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.90s
+
+     Running tests/procurement.rs (target/debug/deps/procurement-7bc8cd9bb647da68)
+
+running 12 tests
+test document_discount_uses_independent_largest_remainder_and_receipt_cost_is_frozen ... ok
+test invalid_overreceipt_overbill_variance_transfer_backdate_and_lock_are_atomic ... ok
+test namespace_and_malformed_source_failures_leave_every_record_unchanged ... ok
+test matched_frozen_receipt_from_locked_prior_period_posts_only_in_current_unlocked_period ... ok
+test literal_partial_order_receipts_bills_and_transfer_reconcile_at_every_cutoff ... ok
+test opening_invoice_and_receipt_sources_cannot_be_recreated_with_new_operational_ids ... ok
+test new_company_opening_cannot_reuse_operational_line_movement_or_resource_id ... ok
+test restored_event_identity_cannot_alias_its_own_source_line_or_resource ... ok
+test opening_grni_is_matched_without_receiving_historical_stock_again ... ok
+test exact_retry_aliases_and_changed_source_revision_dates_cost_or_provenance_reject ... ok
+test zero_and_residual_costs_preserve_full_original_allocation_and_empty_pool ... ok
+test recomputed_backup_checksum_cannot_hide_zero_initialization_procurement_key_collisions ... ok
+
+test result: ok. 12 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.67s
+
+     Running tests/procurement_exports.rs (target/debug/deps/procurement_exports-2628451a6be69114)
+
+running 4 tests
+test literal_end_of_day_controls_and_partial_sources_remain_exact_and_read_only ... ok
+test frozen_documents_full_source_reconstruction_formula_guards_and_no_overwrite ... ok
+test actual_persian_pdf_canonical_dates_codes_units_source_markers_and_repeated_headers ... ok
+test restored_procurement_exports_remain_identical_and_uninitialized_or_foreign_books_reject ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.19s
+
+     Running tests/procurement_migration.rs (target/debug/deps/procurement_migration-5afb56766d59e579)
+
+running 6 tests
+test actual_m3_binary_rejects_current_schema_without_modifying_committed_row ... ignored, requires retained immutable M3 executable in SARV_M3_COMPAT_BINARY
+test procurement_migration_child ... ok
+test legacy_namespace_can_reverse_but_new_reserved_manual_append_cannot_commit ... ok
+test legacy_procurement_named_manual_and_linked_reversal_migrate_with_exact_history ... ok
+test interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_once ... ok
+test retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recovery ... ok
+
+test result: ok. 5 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.20s
+
+     Running tests/procurement_store.rs (target/debug/deps/procurement_store-aefeb3872728d5f4)
+
+running 2 tests
+test durable_competing_receipts_have_one_winner_and_losing_different_key_retry_resolves_it ... ok
+test complete_operational_snapshot_fresh_restore_and_mutated_posted_cost_rejection ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.18s
+
+     Running tests/product_qa.rs (target/debug/deps/product_qa-10502eb62dc6703f)
+
+running 2 tests
+test conflicting_duplicate_customer_and_diagnostic_import_never_partially_commit ... ok
+test complete_customer_catalog_revision_export_and_restore_preserve_exact_snapshots ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/purchase_return_exports.rs (target/debug/deps/purchase_return_exports-df2cd442749b2237)
+
+running 3 tests
+test billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historical_snapshot ... ok
+test unbilled_interleaving_tiny_zero_credit_and_final_residual_remain_operational_and_exact ... ok
+test physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_on_every_page ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+
+     Running tests/purchase_return_migration.rs (target/debug/deps/purchase_return_migration-6e0339dc5abc74f0)
+
+running 5 tests
+test actual_m5_binary_refuses_schema7_without_modifying_committed_row ... ignored, requires retained immutable M5 executable in SARV_M5_COMPAT_BINARY
+test migration_process_child ... ok
+test old_envelope_cannot_claim_current_schema_even_with_a_valid_checksum ... ok
+test killed_startup_behind_owned_writer_preserves_schema6_and_recovers_once ... ok
+test genuine_schema6_prefix_recovery_one_upgrade_and_fresh_restores_are_exact ... ok
+
+test result: ok. 4 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.97s
+
+     Running tests/purchase_returns.rs (target/debug/deps/purchase_returns-0201c5b1f1bb47f9)
+
+running 9 tests
+test free_unbilled_return_retains_source_state_and_blocks_an_earlier_bill_allocation ... ok
+test incompatible_original_cost_quantity_value_and_zero_quantity_orphan_are_atomic ... ok
+test billed_multiple_receipts_keep_each_original_warehouse_and_reject_mixed_bills_or_unbilled_receipts ... ok
+test invalid_source_mode_identity_quantity_cost_and_dates_are_failure_atomic ... ok
+test tiny_shared_receipt_cursor_is_distinct_from_specific_bill_credit_cursor ... ok
+test unbilled_return_then_bill_and_linked_partial_final_credits_preserve_historical_controls_and_po ... ok
+test two_rial_interleaving_finishes_exactly_without_denominator_rebasing ... ok
+test unchanged_same_and_different_key_retries_work_after_lock_but_changed_identity_never_does ... ok
+test m5_literal_original_rb_cost_reduces_only_stock_and_linked_bill_ap ... ok
+
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.26s
+
+     Running tests/qa_invariants.rs (target/debug/deps/qa_invariants-067141eab0214531)
+
+running 11 tests
+test exact_code_wins_over_alias_and_ambiguity_never_approves ... ok
+test correctly_checksummed_bad_revision_chain_is_rejected_on_restore ... ok
+test abort_after_approval_does_not_leak_customer_quote_or_draft ... ok
+test exported_user_fields_are_formula_safe_and_target_is_never_overwritten ... ok
+test native_widget_lifecycle_does_not_synthesize_new_or_empty_edit_actions ... ignored, requires graphical GTK/libadwaita initialization; creates no windows
+test conflict_during_approval_does_not_publish_unsaved_quote ... ok
+test historical_fresh_price_approval_remains_restorable_when_price_ages ... ok
+test restore_invalid_candidate_leaves_memory_disk_and_directory_unchanged ... ok
+test revising_old_version_appends_without_rewriting_any_snapshot ... ok
+test restore_safety_backup_contains_exact_pre_restore_state ... ok
+test exact_rial_toman_roundtrip_including_sub_toman_amounts ... ok
+
+test result: ok. 10 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.02s
+
+     Running tests/sales.rs (target/debug/deps/sales-6d00d891c5728e49)
+
+running 10 tests
+test invalid_quantities_dates_prices_duplicates_and_locks_are_atomic ... ok
+test divisible_quantity_uses_original_net_and_discount_before_derived_gross ... ok
+test full_content_aliases_retry_after_lock_and_changed_revision_are_safe ... ok
+test ordinary_sales_adjustments_remain_distinct_from_invoice_provenance_and_reversible ... ok
+test one_rial_discount_and_zero_cost_quantities_conserve_original_components_without_empty_journals ... ok
+test oversell_cross_module_keys_and_original_opening_invoice_duplicates_reject ... ok
+test stable_discount_line_id_tiebreak_and_checked_limits ... ok
+test sales_and_procurement_share_audit_stock_order_and_original_return_cost ... ok
+test partial_sale_and_original_cost_returns_match_literal_controls_and_cutoffs ... ok
+test tampered_source_cost_state_lineage_and_duplicate_requests_fail_complete_replay ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.63s
+
+     Running tests/sales_drafts.rs (target/debug/deps/sales_drafts-bc3d379e15978c07)
+
+running 5 tests
+test day_month_year_raw_draft_and_quote_conversion_keep_explicit_date_semantics ... ok
+test raw_jalali_dates_exact_toman_conversion_and_fractional_rial_rejection ... ok
+test incomplete_raw_input_survives_restart_backup_and_failed_post_unchanged ... ok
+test authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_changed_source ... ok
+test draft_revision_cas_noop_atomic_submit_and_lost_receipt_retries_after_lock ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.17s
+
+     Running tests/sales_exports.rs (target/debug/deps/sales_exports-7415ffcbb2c340b2)
+
+running 8 tests
+test divisible_partial_allocations_disclose_derived_gross_and_original_price ... ok
+test ordinary_sales_adjustments_have_journal_lineage_separate_from_typed_invoice_totals ... ok
+test literal_controls_asof_receivables_and_original_cost_returns ... ok
+test paired_identities_exact_allocations_formula_guards_and_immutable_snapshots ... ok
+test zero_price_and_zero_cost_keep_operational_quantity_without_invented_financial_effect ... ok
+test real_persian_pdf_embeds_licensed_font_repeated_headings_and_exact_lineage ... ok
+test authentic_approved_quote_provenance_exports_full_hash_and_line_mapping ... ok
+test restored_exports_are_identical_foreign_missing_and_early_books_fail ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
+     Running tests/sales_migration.rs (target/debug/deps/sales_migration-172a406308a4f2a5)
+
+running 4 tests
+test actual_m4_binary_refuses_current_schema_without_changing_row ... ignored, requires retained immutable M4 executable in SARV_M4_COMPAT_BINARY
+test sales_process_child ... ok
+test actual_schema5_histories_preserve_exact_state_recovery_restore_and_one_upgrade ... ok
+test killed_sales_before_commit_and_after_lost_adoption_recovers_old_or_complete_and_retries_once ... ok
+
+test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out; finished in 0.48s
+
+     Running tests/settings.rs (target/debug/deps/settings-d57ebb8d1a86c508)
+
+running 8 tests
+test invalid_settings_and_digit_preferences_have_meaningful_behavior ... ok
+test configured_tax_is_exact_and_quote_tampering_is_rejected ... ok
+test defaults_are_real_new_draft_snapshots ... ok
+test legacy_settings_and_snapshot_defaults_are_omitted ... ok
+test repeated_number_and_counter_exhaustion_fail_safely ... ok
+test numbers_survive_revision_and_failed_approval_never_consumes_number ... ok
+test tax_total_overflow_and_equivalent_document_numbers_are_rejected ... ok
+test every_setting_persists_and_backup_restore_keeps_quote_snapshots ... ok
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/storage_financial_guards.rs (target/debug/deps/storage_financial_guards-6dc12ba0be2d0a80)
+
+running 2 tests
+test explicit_replacement_requires_the_exact_committed_recovery_snapshot ... ok
+test cached_state_cannot_bypass_committed_history_in_any_save_path ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/storage_hardening.rs (target/debug/deps/storage_hardening-e96fc63df6bb7b88)
+
+running 16 tests
+test concurrent_export_never_overwrites_and_leaves_no_staging_files ... ok
+test backup_envelope_and_legacy_optional_fields_are_validated ... ok
+test export_does_not_follow_or_replace_destination_symlink ... ok
+test equivalent_csv_is_duplicate_without_changing_legacy_fingerprint ... ok
+test changed_price_or_source_is_a_new_catalog ... ok
+test failed_changes_leave_memory_and_disk_unchanged ... ok
+test oversized_and_non_file_inputs_are_rejected ... ok
+test invalid_catalog_approval_is_atomic_and_success_clears_resolutions ... ok
+test prepared_candidate_becomes_stale_after_a_regular_change_without_losing_either_snapshot ... ok
+test lightweight_generation_checks_do_not_write_and_reject_stale_windows ... ok
+test repeated_noop_does_not_invalidate_another_window_but_stale_noop_fails ... ok
+test prepared_worker_changes_are_validated_and_commit_only_to_the_original_generation ... ok
+test csv_limits_utf8_bom_controls_and_row_errors ... ok
+test restore_is_validated_and_retains_the_committed_safety_snapshot ... ok
+test simultaneous_windows_have_one_winner_and_no_lost_update ... ok
+test state_that_cannot_fit_a_restorable_backup_is_not_committed ... ok
+
+test result: ok. 16 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.51s
+
+     Running tests/workflow.rs (target/debug/deps/workflow-7b6441a68b90f6ee)
+
+running 10 tests
+test digits_and_persian_normalization ... ok
+test csv_injection ... ok
+test csv_validation_and_duplicates ... ok
+test money_and_rounding ... ok
+test approval_idempotency_and_revisions ... ok
+test malicious_backup_valid_hash_rejected ... ok
+test only_exact_codes_or_approved_aliases ... ok
+test old_catalog_snapshot_and_new_catalog_revision ... ok
+test persistence_restart_backup_restore_and_conflicts ... ok
+test export_real_pdf_and_no_overwrite ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s
+
+     Running unittests examples/scale_probe.rs (target/debug/examples/scale_probe-0dee12bd3a78b969)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

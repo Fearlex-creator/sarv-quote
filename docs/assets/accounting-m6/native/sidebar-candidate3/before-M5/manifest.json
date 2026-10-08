@@ -1,0 +1,10 @@
+{
+  "scope": "Actual M5 candidate12 sidebar baseline from earlier retained native26PASS; not a new M5 rerun",
+  "binary_sha256": "bf88451beb7873ccfa334b2e5471c808d8fb9907397bafdfc50bd44abfea731e",
+  "raw_run": "/workspace/sarv-quote/artifacts/sidebar-native/run-wyqftne9",
+  "files": {
+    "sidebar-standard-dark.png": "54cdcb1d0d7e57987b4f48b67ddefb97f1007c72025956acfdfe281667fc6349",
+    "sidebar-standard-light.png": "3f2576d56f64867186d55fb54d80d5f68adb9b8cc2b7d532ec5aa3e64ccb0dfc",
+    "sidebar-verification.json": "26771728c2c35292d81b847434376a3426dadf716cfa0979fdf70ad2ec1d14c7"
+  }
+}

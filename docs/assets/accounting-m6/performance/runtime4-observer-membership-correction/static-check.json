@@ -1,0 +1,39 @@
+{
+  "result": "PASS static syntax and isolated source_rows retry/rejection/bound checks; no GUI/import of native infrastructure",
+  "old_observer_sha256": "540cd09dc0ee2c00267ccf39e90e66ed110bffb5ab37b5bde0be82ce61620197",
+  "observer_sha256": "38063e556740904a129b659f57b49a4cdd010a02385063c469ac0407d4bac6a1",
+  "observer_bytes": 49726,
+  "protocol": "m6-scoped-v1.1",
+  "diff_sha256": "23457b9a3e9eea2479d15077600dda3ecde1a245f1f44976f4a3d13d6fd16f03",
+  "retired_observation_rejected": true,
+  "fresh_bounded_walk_retried": true,
+  "per_event_rejection_diagnostics_retained": [
+    {
+      "event": "static-retired-row",
+      "monotonic_ns": 75808687947279,
+      "reason": "Source-picker row retired during bounded current-subtree observation",
+      "root_node": "0x1e",
+      "rows_node": "0x14",
+      "membership": [
+        {
+          "name": "60 منبع قابل برگشت • صفحهٔ 1",
+          "role": "label",
+          "node": "0x65",
+          "current_member": true
+        },
+        {
+          "name": "صورتحساب ⁨PERF-A-060⁩",
+          "role": "button",
+          "node": "0x66",
+          "current_member": false
+        }
+      ]
+    }
+  ],
+  "25_action_limit_unchanged": true,
+  "call_sites_explicit_event_count": 3,
+  "coordinator_and_analyzer_unchanged": true,
+  "GUI_started": false,
+  "build_started": false,
+  "root_freeze_and_new_pilot_GO": "pending"
+}

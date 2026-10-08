@@ -1,4 +1,12 @@
-# Current schema 6 sales checkpoint
+# Current schema 7 purchase-return migration
+
+M6 adds typed original-receipt-linked purchase returns and linked supplier credits inside the existing procurement aggregate. Schemas1–6 are validated in their original representation before upgrade; schema6 cannot claim these new typed return records. No receipt, bill, quotation, stock movement or posted journal is inferred or rewritten.
+
+Store publishes and verifies a unique `before-schema7-<uuid>.json` containing the original logical state and original backup format/checksum before the conditional generation update. Genuine M5 recovery remains `sarv-accounting-backup-v6`; current backups are `sarv-accounting-backup-v7`. Repeat open does not upgrade again. A v6 envelope containing schema7 is rejected even with a recomputed checksum. Current backups and original v6 recovery both restore to the exact upgraded state in fresh profiles.
+
+Development tests against the preserved actual M5 library's quotation-bearing history pass original-prefix preservation, verified recovery, one upgrade, fresh restores and an owned-child interruption before migration while waiting behind a writer. The actual M5 executable refusal opt-in passes unchanged-row/schema7 rejection; independent same/fresh-key CAS and prepared/committed Return process-interruption checks pass at recorded development components. Final native/release acceptance remains pending. Physical power loss and disk-full are untested. [M6 checklist](requirements/milestone-M6.md) records final source-bound qualification; diagnostic passes do not establish production recovery acceptance.
+
+# Historical schema 6 sales checkpoint
 
 M5 adds optional immutable goods sales records and durable raw editor drafts.
 Quotations, orders, paired deliveries/invoices and paired returns/credits retain
