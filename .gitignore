@@ -1,5 +1,10 @@
 /target/
 /data/
+/web/node_modules/
+/web/dist/
+/node_modules/
+src-tauri/gen/
+src-tauri/target/
 /artifacts/
 *.sqlite*
 *.tmp
@@ -15,3 +20,6 @@
 # Native QA Python helpers
 __pycache__/
 *.pyc
+
+# pnpm download cache (dependencies are reproducible from lockfiles)
+/.pnpm-store/

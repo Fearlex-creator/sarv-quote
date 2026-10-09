@@ -1,0 +1,26 @@
+{
+  "name": "sarv",
+  "private": true,
+  "engines": {
+    "node": ">=20.9.0"
+  },
+  "scripts": {
+    "dev": "tauri dev",
+    "build": "pnpm --dir web typecheck && pnpm --dir web build",
+    "web:dev": "pnpm --dir web dev",
+    "web:build": "pnpm --dir web build",
+    "web:lint": "pnpm --dir web lint",
+    "web:typecheck": "pnpm --dir web typecheck",
+    "gtk": "cargo run -p sarv-quote-gtk --release",
+    "tauri": "tauri",
+    "lint": "pnpm --dir web lint",
+    "typecheck": "pnpm --dir web typecheck",
+    "test:core": "cargo test -p free-accounting-core",
+    "desktop:build": "tauri build",
+    "preview:dev": "node scripts/accounting-preview.mjs"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.1"
+  },
+  "packageManager": "pnpm@12.5.1"
+}

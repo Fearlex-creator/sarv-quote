@@ -1,0 +1,468 @@
+/* Sarv — shadcn-inspired tokens for GTK4/libadwaita. Scoped to `.sarv-app` only. */
+
+/* --- Design tokens (light) --- */
+.sarv-app {
+  --sarv-bg: #fafafa;
+  --sarv-fg: #18181b;
+  --sarv-muted: #f4f4f5;
+  --sarv-muted-fg: #71717a;
+  --sarv-card: #ffffff;
+  --sarv-card-fg: #18181b;
+  --sarv-border: #e4e4e7;
+  --sarv-input: #ffffff;
+  --sarv-ring: #0d9488;
+  --sarv-primary: #0f766e;
+  --sarv-primary-fg: #f0fdfa;
+  --sarv-destructive: #dc2626;
+  --sarv-destructive-fg: #fef2f2;
+  --sarv-radius: 8px;
+  --sarv-space-1: 4px;
+  --sarv-space-2: 8px;
+  --sarv-space-3: 12px;
+  --sarv-space-4: 16px;
+
+  font-family: "Vazirmatn", sans-serif;
+  font-size: 14px;
+  color: var(--sarv-fg);
+  background-color: var(--sarv-bg);
+}
+
+/* --- Design tokens (dark) --- */
+.dark.sarv-app,
+.sarv-app.dark {
+  --sarv-bg: #09090b;
+  --sarv-fg: #fafafa;
+  --sarv-muted: #27272a;
+  --sarv-muted-fg: #a1a1aa;
+  --sarv-card: #18181b;
+  --sarv-card-fg: #fafafa;
+  --sarv-border: #3f3f46;
+  --sarv-input: #27272a;
+  --sarv-ring: #2dd4bf;
+  --sarv-primary: #14b8a6;
+  --sarv-primary-fg: #042f2e;
+  --sarv-destructive: #ef4444;
+  --sarv-destructive-fg: #450a0a;
+}
+
+/* --- Typography --- */
+.sarv-app .sarv-label {
+  color: var(--sarv-fg);
+  font-weight: 400;
+}
+
+.sarv-app .sarv-label-muted,
+.sarv-app .muted,
+.sarv-app .dimmed,
+.sarv-app .badge,
+.sarv-app .row-description {
+  color: var(--sarv-muted-fg);
+}
+
+.sarv-app .sarv-label-heading,
+.sarv-app .page-title {
+  color: var(--sarv-card-fg);
+  font-weight: 600;
+}
+
+.sarv-app .field-label {
+  color: var(--sarv-fg);
+  font-weight: 500;
+}
+
+.sarv-app .caption {
+  font-size: 12px;
+}
+
+.sarv-app .heading {
+  font-weight: 600;
+}
+
+/* --- Surfaces --- */
+.sarv-app .sarv-card,
+.sarv-app .card,
+.sarv-app .component-card {
+  background-color: var(--sarv-card);
+  color: var(--sarv-card-fg);
+  border: 1px solid var(--sarv-border);
+  border-radius: var(--sarv-radius);
+  padding: var(--sarv-space-3);
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.sarv-app .sarv-section,
+.sarv-app .section {
+  padding: var(--sarv-space-2) 0;
+}
+
+/* --- Buttons (utility classes) --- */
+.sarv-app button {
+  font-weight: 500;
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+.sarv-app .sarv-btn {
+  font-weight: 500;
+  border-radius: calc(var(--sarv-radius) - 2px);
+  background-color: var(--sarv-muted);
+  color: var(--sarv-fg);
+  border: 1px solid var(--sarv-border);
+  transition: background-color 120ms ease, border-color 120ms ease, color 120ms ease, box-shadow 120ms ease;
+}
+
+.sarv-app .sarv-btn:hover {
+  background-color: alpha(var(--sarv-muted-fg), 0.12);
+}
+
+.sarv-app .sarv-btn:focus-visible,
+.sarv-app button.suggested-action:focus-visible,
+.sarv-app button.destructive-action:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--sarv-bg), 0 0 0 4px alpha(var(--sarv-ring), 0.45);
+}
+
+.sarv-app .sarv-btn-primary,
+.sarv-app button.suggested-action {
+  background-color: var(--sarv-primary);
+  color: var(--sarv-primary-fg);
+  border: 1px solid alpha(var(--sarv-primary), 0.85);
+  font-weight: 600;
+}
+
+.sarv-app .sarv-btn-primary:hover,
+.sarv-app button.suggested-action:hover {
+  background-color: alpha(var(--sarv-primary), 0.92);
+  border-color: var(--sarv-primary);
+}
+
+.sarv-app .sarv-btn-outline {
+  background-color: transparent;
+  color: var(--sarv-fg);
+  border: 1px solid var(--sarv-border);
+}
+
+.sarv-app .sarv-btn-outline:hover {
+  background-color: var(--sarv-muted);
+}
+
+.sarv-app .sarv-btn-ghost {
+  background-color: transparent;
+  border: 1px solid transparent;
+  color: var(--sarv-fg);
+}
+
+.sarv-app .sarv-btn-ghost:hover {
+  background-color: var(--sarv-muted);
+}
+
+.sarv-app .sarv-btn-destructive,
+.sarv-app button.destructive-action {
+  background-color: var(--sarv-destructive);
+  color: var(--sarv-destructive-fg);
+  border: 1px solid alpha(var(--sarv-destructive), 0.85);
+  font-weight: 600;
+}
+
+.sarv-app .sarv-btn-destructive:hover,
+.sarv-app button.destructive-action:hover {
+  background-color: alpha(var(--sarv-destructive), 0.92);
+}
+
+/* --- Inputs --- */
+.sarv-app .sarv-input,
+.sarv-app entry.sarv-entry,
+.sarv-app entry.sarv-input {
+  min-height: 36px;
+  padding: var(--sarv-space-1) var(--sarv-space-2);
+  background-color: var(--sarv-input);
+  color: var(--sarv-fg);
+  border: 1px solid var(--sarv-border);
+  border-radius: calc(var(--sarv-radius) - 2px);
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.sarv-app .sarv-input:focus-within,
+.sarv-app entry.sarv-entry:focus-within,
+.sarv-app entry.sarv-input:focus-within {
+  border-color: alpha(var(--sarv-ring), 0.65);
+  box-shadow: 0 0 0 2px alpha(var(--sarv-ring), 0.25);
+  outline: none;
+}
+
+.sarv-app entry.error {
+  border-color: var(--sarv-destructive);
+  box-shadow: 0 0 0 2px alpha(var(--sarv-destructive), 0.2);
+}
+
+/* --- Page layout --- */
+.sarv-app .page {
+  padding: var(--sarv-space-4);
+}
+
+.sarv-app .workspace-page-header {
+  margin-bottom: var(--sarv-space-3);
+}
+
+.sarv-app .metadata {
+  padding: var(--sarv-space-1) 0 var(--sarv-space-2);
+}
+
+.sarv-app .document-toolbar {
+  padding-bottom: var(--sarv-space-2);
+}
+
+.sarv-app .document-actions {
+  padding: var(--sarv-space-3) var(--sarv-space-4);
+  border-bottom: 1px solid var(--sarv-border);
+  background-color: var(--sarv-card);
+}
+
+/* --- Data table --- */
+.sarv-app .table {
+  border: 1px solid var(--sarv-border);
+  border-radius: var(--sarv-radius);
+  background-color: var(--sarv-card);
+  transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.sarv-app .table-header {
+  background-color: var(--sarv-muted);
+  color: var(--sarv-muted-fg);
+  border-bottom: 1px solid var(--sarv-border);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.sarv-app .table-row {
+  border-bottom: 1px solid var(--sarv-border);
+  min-height: 36px;
+  transition: background-color 120ms ease;
+}
+
+.sarv-app .table-row:hover {
+  background-color: alpha(var(--sarv-muted-fg), 0.06);
+}
+
+.sarv-app .table-cell {
+  padding: var(--sarv-space-1) var(--sarv-space-2);
+}
+
+.sarv-app .cell-editor {
+  min-height: 20px;
+  padding: var(--sarv-space-1) var(--sarv-space-2);
+  border-radius: calc(var(--sarv-radius) - 2px);
+  background-color: var(--sarv-input);
+  border: 1px solid transparent;
+  transition: background-color 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.sarv-app .cell-editor:focus-within {
+  border-color: alpha(var(--sarv-ring), 0.65);
+  box-shadow: 0 0 0 2px alpha(var(--sarv-ring), 0.2);
+}
+
+.sarv-app .numeric {
+  font-feature-settings: "tnum";
+}
+
+/* --- Quote / totals --- */
+.sarv-app .quote-summary {
+  padding: var(--sarv-space-2) 0;
+}
+
+.sarv-app .totals-row {
+  padding: var(--sarv-space-1) 0;
+}
+
+.sarv-app .total {
+  padding: var(--sarv-space-3) 0;
+  border-top: 1px solid var(--sarv-border);
+  font-weight: 600;
+}
+
+/* --- Status & validation --- */
+.sarv-app .status {
+  padding: var(--sarv-space-1) var(--sarv-space-4);
+  font-size: 12px;
+  color: var(--sarv-muted-fg);
+}
+
+.sarv-app .status-label {
+  padding: var(--sarv-space-1) var(--sarv-space-2);
+  border-radius: calc(var(--sarv-radius) - 2px);
+  background-color: var(--sarv-muted);
+  color: var(--sarv-muted-fg);
+}
+
+.sarv-app .status-label.success {
+  background-color: alpha(#059669, 0.12);
+  color: #047857;
+}
+
+.dark.sarv-app .status-label.success,
+.sarv-app.dark .status-label.success {
+  background-color: alpha(#34d399, 0.15);
+  color: #6ee7b7;
+}
+
+.sarv-app .status-label.warning {
+  background-color: alpha(#d97706, 0.12);
+  color: #b45309;
+}
+
+.dark.sarv-app .status-label.warning,
+.sarv-app.dark .status-label.warning {
+  background-color: alpha(#fbbf24, 0.15);
+  color: #fcd34d;
+}
+
+.sarv-app .status-label.error {
+  background-color: alpha(var(--sarv-destructive), 0.12);
+  color: var(--sarv-destructive);
+}
+
+.sarv-app .validation {
+  padding: var(--sarv-space-2) var(--sarv-space-3);
+  border-radius: var(--sarv-radius);
+  border: 1px solid var(--sarv-border);
+  background-color: var(--sarv-muted);
+}
+
+.sarv-app .validation.error {
+  border-color: alpha(var(--sarv-destructive), 0.35);
+  background-color: alpha(var(--sarv-destructive), 0.08);
+  color: var(--sarv-destructive);
+}
+
+.sarv-app .validation.success {
+  border-color: alpha(#059669, 0.35);
+  background-color: alpha(#059669, 0.08);
+  color: #047857;
+}
+
+.dark.sarv-app .validation.success,
+.sarv-app.dark .validation.success {
+  color: #6ee7b7;
+}
+
+.sarv-app .validation.warning {
+  border-color: alpha(#d97706, 0.35);
+  background-color: alpha(#d97706, 0.08);
+  color: #b45309;
+}
+
+.sarv-app .empty-state {
+  color: var(--sarv-muted-fg);
+}
+
+/* --- Sidebar & navigation --- */
+.sarv-app .sidebar {
+  padding: 0;
+  background-color: var(--sarv-bg);
+}
+
+.sarv-app .workspace-brand {
+  padding: var(--sarv-space-1) var(--sarv-space-2);
+}
+
+.sarv-app .workspace-brand .title-3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--sarv-fg);
+}
+
+.sarv-app list.navigation-sidebar {
+  background: transparent;
+  padding: 0 var(--sarv-space-3);
+}
+
+.sarv-app row.navigation-section {
+  background: transparent;
+  padding: 0;
+}
+
+.sarv-app .navigation-group {
+  padding: var(--sarv-space-3) var(--sarv-space-3) var(--sarv-space-2);
+  font-size: 11px;
+  color: var(--sarv-muted-fg);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.sarv-app row.sarv-navigation-row {
+  padding: var(--sarv-space-3);
+  margin: 2px 0;
+  border-radius: calc(var(--sarv-radius) + 1px);
+  min-height: 22px;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+
+.sarv-app row.sarv-navigation-row:hover {
+  background-color: alpha(var(--sarv-muted-fg), 0.08);
+}
+
+.sarv-app row.sarv-navigation-row:selected {
+  background-color: transparent;
+  color: var(--sarv-fg);
+}
+
+.sarv-app row.sarv-navigation-row.current-page {
+  background-color: alpha(var(--sarv-primary), 0.14);
+  color: var(--sarv-fg);
+}
+
+.sarv-app row.sarv-navigation-row.current-page .navigation-icon {
+  color: var(--sarv-primary);
+}
+
+.sarv-app .navigation-icon {
+  opacity: 0.85;
+  color: var(--sarv-muted-fg);
+}
+
+.sarv-app .navigation-label {
+  font-weight: 500;
+}
+
+.sarv-app row.sarv-navigation-row.current-page .navigation-label {
+  font-weight: 600;
+}
+
+.sarv-app .navigation-description {
+  font-size: 11px;
+  color: var(--sarv-muted-fg);
+}
+
+.sarv-app .navigation-count {
+  min-width: 18px;
+  padding: 2px 6px;
+  border-radius: calc(var(--sarv-radius) - 2px);
+  font-size: 11px;
+  color: var(--sarv-muted-fg);
+  background-color: alpha(var(--sarv-muted-fg), 0.12);
+}
+
+.sarv-app .navigation-footer {
+  padding: var(--sarv-space-3) 0 var(--sarv-space-4);
+  border-top: 1px solid var(--sarv-border);
+}
+
+.sarv-app .navigation-local {
+  padding: var(--sarv-space-2) 24px 0;
+  font-size: 11px;
+  color: var(--sarv-muted-fg);
+}
+
+/* --- Managers --- */
+.sarv-app .manager-list row {
+  min-height: 44px;
+}
+
+.sarv-app .manager-list row .subtitle {
+  font-size: 12px;
+  color: var(--sarv-muted-fg);
+}
+
+.sarv-app .manager-toolbar {
+  margin-bottom: var(--sarv-space-2);
+}

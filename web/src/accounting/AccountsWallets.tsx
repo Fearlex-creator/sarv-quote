@@ -1,0 +1,47 @@
+import {useState} from 'react'
+import {useQuery} from '@tanstack/react-query'
+import {Plus,Landmark,Wallet,CreditCard,ArrowUpRight,ArrowRightLeft,CheckCheck,Archive} from 'lucide-react'
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog'
+import {Sheet,SheetContent,SheetHeader,SheetTitle,SheetDescription} from '@/components/ui/sheet'
+import {commands,type Account,type AccountInput,type Filters} from '@/lib/commands'
+import {date,decimalInput,money,today} from '@/lib/exact-format'
+import {useAccounting} from './context'
+import {Form,Button,Input,Select,Field,PageHeading,Panel,Empty,ErrorMessage} from './common'
+
+export function AccountsWallets({onLedger,onTransfer}:{onLedger:(filters:Filters)=>void;onTransfer:(account:string)=>void}){
+  const {data,t,run,busy}=useAccounting();const s=data.settings
+  const [filter,setFilter]=useState('active');const [editing,setEditing]=useState<Account|null|undefined>();const [selected,setSelected]=useState<string|null>(null);const [error,setError]=useState<unknown>()
+  const accounts=data.accounts.filter(a=>filter==='all'||filter==='archived'?filter==='all'||!!a.archived:!a.archived)
+  const detail=data.accounts.find(a=>a.id===selected)
+  const history=useQuery({queryKey:['detail','account',selected],queryFn:()=>commands.getAccount(selected!),enabled:!!selected})
+  const [reconcile,setReconcile]=useState(false);const [statement,setStatement]=useState('');const [statementDate,setStatementDate]=useState(today())
+  const archive=async(a:Account)=>{try{await run(()=>commands.saveAccount({id:a.id,name:a.name,kind:a.kind,currency:a.currency,group:a.group,archived:!a.archived,sortOrder:a.sortOrder}));setError(undefined)}catch(err){setError(err)}}
+  return <div className="screen">
+    <PageHeading title={t('Accounts & wallets')} description={t('Manage your accounts, balances, and reconciliation.')} actions={<Button onClick={()=>setEditing(null)}><Plus data-icon="inline-start"/>{t('Add account')}</Button>}/>
+    <div className="account-summary"><div><span className="muted">{t('Net worth')}</span><strong>{money(data.totals.find(a=>a.currency===s.currency)?.minor||'0',s.currency,s)}</strong><small>{t('Balances are grouped by currency; no exchange rate is assumed.')}</small></div><div className="currency-totals">{data.totals.filter(a=>a.currency!==s.currency).map(a=><span key={a.currency}>{money(a.minor,a.currency,s)}</span>)}<span>{data.accounts.filter(a=>!a.archived).length} {t('active accounts')}</span></div></div>
+    <div className="section-toolbar"><h2>{t('Your accounts')}</h2><Select aria-label={t('Account status')} value={filter} onChange={e=>setFilter(e.target.value)}><option value="active">{t('Active')}</option><option value="archived">{t('Archived')}</option><option value="all">{t('All')}</option></Select></div>
+    <ErrorMessage error={error}/>
+    {accounts.length?<div className="account-grid">{accounts.map(a=>{
+      const Icon=a.kind==='bank'||a.kind==='savings'?Landmark:a.kind==='card'?CreditCard:Wallet
+      return <section className="account-card" key={a.id}><div className="account-card-top"><span className={`account-icon ${a.kind}`}><Icon aria-hidden="true"/></span><span className="muted">{t(a.kind)} · {a.currency}</span><Button variant="ghost" size="icon" aria-label={`${t('Edit account')} ${a.name}`} onClick={()=>setEditing(a)}><ArrowUpRight/></Button></div>
+        <button className="account-open" onClick={()=>{setSelected(a.id);setReconcile(false);setError(undefined)}}><span>{a.name}</span><strong>{money(a.balanceMinor,a.currency,s)}</strong></button><p className="account-group">{a.group||t('Ungrouped')} {!!a.archived&&`· ${t('Archived')}`}</p><footer><span><CheckCheck aria-hidden="true"/>{a.reconciledThrough?`${t('Reconciled through')} ${date(a.reconciledThrough,s)}`:t('Not reconciled')}</span><Button variant="ghost" size="icon" aria-label={`${t(a.archived?'Restore':'Archive')} ${a.name}`} onClick={()=>void archive(a)}><Archive/></Button></footer></section>
+    })}</div>:<Panel><Empty title={t('Add your first account')} description={t('A bank account, a cash wallet, or a little of both.')} action={<Button onClick={()=>setEditing(null)}>{t('Add account')}</Button>}/></Panel>}
+    <Dialog open={editing!==undefined} onOpenChange={open=>{if(!open)setEditing(undefined)}}><DialogContent className="account-dialog"><DialogTitle>{t(editing?'Edit account':'Add account')}</DialogTitle><DialogDescription>{t('Opening balances post to the same ledger as your transactions.')}</DialogDescription>{editing!==undefined&&<AccountForm key={editing?.id||'new'} account={editing} onDone={()=>setEditing(undefined)}/>}</DialogContent></Dialog>
+    <Sheet open={!!detail} onOpenChange={open=>{if(!open)setSelected(null)}}><SheetContent className="detail-sheet" side={s.direction==='rtl'?'left':'right'}><SheetHeader><SheetTitle>{detail?.name}</SheetTitle><SheetDescription>{detail&&`${t(detail.kind)} · ${detail.currency}`}</SheetDescription></SheetHeader>{detail&&<div className="drawer-body form-stack"><div className="detail-amount">{money(detail.balanceMinor,detail.currency,s)}<small>{t('Opening balance')}: {money(detail.openingMinor,detail.currency,s)}</small></div><div className="actions"><Button variant="outline" onClick={()=>onLedger({account:detail.id,currency:detail.currency})}>{t('View transactions')}</Button><Button variant="outline" disabled={!!detail.archived} onClick={()=>onTransfer(detail.id)}><ArrowRightLeft data-icon="inline-start"/>{t('Transfer')}</Button><Button variant="outline" disabled={!!detail.archived} onClick={()=>{setStatement(decimalInput(detail.balanceMinor,detail.currency));setReconcile(v=>!v)}}>{t('Reconcile')}</Button></div>
+      {reconcile&&<Form className="form-stack" onSubmit={async e=>{e.preventDefault();try{await run(()=>commands.mutate('reconcile',{accountId:detail.id,date:statementDate,balance:statement}));setReconcile(false);setError(undefined)}catch(err){setError(err)}}}><Field label={t('Date')}><Input required type="date" max={today()} value={statementDate} onChange={e=>setStatementDate(e.target.value)}/></Field><Field label={t('Statement balance')}><Input required inputMode="decimal" dir="ltr" value={statement} onChange={e=>setStatement(e.target.value)}/></Field><Button disabled={busy} type="submit">{t('Confirm reconciliation')}</Button></Form>}
+      <ErrorMessage error={error||history.error}/><section><h3>{t('Balance history')}</h3><div className="balance-history">{history.data?.history.slice(-30).map(point=><div key={point.date}><time>{date(point.date,s)}</time><strong>{money(point.minor,detail.currency,s)}</strong></div>)}</div></section><section><h3>{t('Recent activity')}</h3>{history.data?.recent.rows.slice(0,8).map(row=><div key={row.id} className="simple-row"><div><strong>{row.payee}</strong><small>{date(row.date,s)}</small></div><span>{money(row.amountMinor,row.currency,s,true)}</span></div>)}</section>
+    </div>}</SheetContent></Sheet>
+  </div>
+}
+
+function AccountForm({account,onDone}:{account:Account|null;onDone:()=>void}){
+  const {data,t,run,busy}=useAccounting();const [error,setError]=useState<unknown>()
+  const [form,setForm]=useState<AccountInput>({name:account?.name||'',kind:account?.kind||'bank',currency:account?.currency||data.settings.currency,group:account?.group||'',openingBalance:'',sortOrder:account?.sortOrder??data.accounts.length,archived:!!account?.archived,id:account?.id})
+  return <Form className="form-stack" onSubmit={async e=>{e.preventDefault();try{await run(()=>commands.saveAccount(form));onDone()}catch(err){setError(err)}}}>
+    <Field label={t('Account name')}><Input required autoFocus maxLength={160} value={form.name} onChange={e=>setForm({...form,name:e.target.value})}/></Field><div className="form-grid"><Field label={t('Type')}><Select value={form.kind} onChange={e=>setForm({...form,kind:e.target.value})}>{['cash','bank','card','wallet','savings','loan'].map(kind=><option key={kind} value={kind}>{t(kind)}</option>)}</Select></Field><Field label={t('Currency')}><Select value={form.currency} disabled={!!account&&account.openingMinor!=='0'} onChange={e=>setForm({...form,currency:e.target.value})}>{data.currencies.map(c=><option key={c.code} value={c.code}>{c.code}</option>)}</Select></Field></div>
+    {!account&&<div className="form-grid"><Field label={t('Opening balance')} hint={t('Use a negative amount for a loan or card balance you owe.')}><Input inputMode="decimal" dir="ltr" value={form.openingBalance} onChange={e=>setForm({...form,openingBalance:e.target.value})}/></Field><Field label={t('Date')}><Input type="date" value={form.openingDate||today()} onChange={e=>setForm({...form,openingDate:e.target.value})}/></Field></div>}
+    <div className="form-grid"><Field label={t('Group')}><Input maxLength={100} value={form.group} onChange={e=>setForm({...form,group:e.target.value})}/></Field><Field label={t('Order')}><Input type="number" value={form.sortOrder} onChange={e=>setForm({...form,sortOrder:Number(e.target.value)})}/></Field></div>
+    {account&&<label className="checkbox-label"><input type="checkbox" checked={form.archived} onChange={e=>setForm({...form,archived:e.target.checked})}/>{t('Archived')}</label>}
+    <ErrorMessage error={error}/><div className="actions"><Button variant="outline" type="button" onClick={onDone}>{t('Cancel')}</Button><Button type="submit" disabled={busy}>{t('Save')}</Button></div>
+  </Form>
+}

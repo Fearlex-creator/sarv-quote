@@ -1,0 +1,50 @@
+import {useState} from 'react'
+import {useQuery} from '@tanstack/react-query'
+import {ArrowUpRight,ArrowDownLeft,SlidersHorizontal,ArrowUp,ArrowDown,Wallet,TrendingUp,TrendingDown,ArrowRight} from 'lucide-react'
+import {Dialog,DialogContent,DialogTitle,DialogDescription} from '@/components/ui/dialog'
+import {commands,type Filters,type LedgerRow} from '@/lib/commands'
+import {date,money,monthLabel} from '@/lib/exact-format'
+import {useAccounting} from './context'
+import {Button,Select,Input,Field,PageHeading,Panel,Empty,Future,ErrorMessage} from './common'
+
+export function Dashboard({onQuickAdd,onLedger,onAccounts,onContacts}:{onQuickAdd:()=>void;onLedger:(filters?:Filters)=>void;onAccounts:()=>void;onContacts:()=>void}){
+  const {data,t,run,busy}=useAccounting();const s=data.settings
+  const [range,setRange]=useState('30');const [custom,setCustom]=useState({from:'',to:''});const [compare,setCompare]=useState(true);const [customize,setCustomize]=useState(false);const [error,setError]=useState<unknown>()
+  const query=useQuery({queryKey:['dashboard-range',range,custom],queryFn:()=>commands.getWorkspace(range==='custom'?custom:{range:Number(range)}),staleTime:30_000})
+  const dashboard=query.data?.dashboard||data.dashboard
+  const widgets=s.widgets.filter(w=>!s.hiddenWidgets.includes(w))
+  const isEmpty=data.accounts.length===0
+  const changeWidget=async(name:string,action:'up'|'down'|'toggle')=>{
+    const widgets=[...s.widgets];const index=widgets.indexOf(name);const hidden=[...s.hiddenWidgets]
+    if(action==='toggle'){if(hidden.includes(name))hidden.splice(hidden.indexOf(name),1);else hidden.push(name)}else{const next=index+(action==='up'?-1:1);if(next<0||next>=widgets.length)return;[widgets[index],widgets[next]]=[widgets[next],widgets[index]]}
+    try{await run(()=>commands.updateSettings({...s,widgets,hiddenWidgets:hidden}));setError(undefined)}catch(err){setError(err)}
+  }
+  const widgetTitle=(name:string)=>t(name==='trend'?'Income & expenses':name==='balances'?'Outstanding balances':name==='recent'?'Recent transactions':'Upcoming')
+  return <div className="screen dashboard-screen">
+    <PageHeading title={t('Overview')} description={t('Your balances and activity, at a glance.')} actions={<><Select aria-label={t('Date range')} value={range} onChange={e=>setRange(e.target.value)}><option value="30">{t('Last 30 days')}</option><option value="90">{t('Last 90 days')}</option><option value="365">{t('Last year')}</option><option value="custom">{t('Custom range')}</option></Select></>}/>
+    {range==='custom'&&<div className="custom-range"><Field label={t('From')}><Input type="date" value={custom.from} onChange={e=>setCustom({...custom,from:e.target.value})}/></Field><Field label={t('To')}><Input type="date" value={custom.to} onChange={e=>setCustom({...custom,to:e.target.value})}/></Field></div>}
+    <ErrorMessage error={error||query.error}/>
+    {isEmpty&&<Panel><Empty title={t('Start with a clear ledger')} description={t('Add your first account or explore the sample workspace.')} action={<div className="actions"><Button onClick={onAccounts}>{t('Add account')}</Button><Button variant="outline" disabled={busy} onClick={async()=>{try{await run(()=>commands.mutate('demo',{}));setError(undefined)}catch(err){setError(err)}}}>{t('Load sample workspace')}</Button></div>}/></Panel>}
+    <div className="kpi-grid">
+      {[{label:'Cash on hand',minor:dashboard.cashMinor,icon:Wallet,change:null},{label:'Income',minor:dashboard.incomeMinor,icon:ArrowDownLeft,change:dashboard.incomeChange},{label:'Expenses',minor:dashboard.expenseMinor,icon:ArrowUpRight,change:dashboard.expenseChange},{label:s.mode==='business'?'Profit':'Net income',minor:dashboard.profitMinor,icon:TrendingUp,change:dashboard.profitChange}].map((kpi,index)=><section className="kpi" key={kpi.label}><div className="kpi-label"><span>{t(kpi.label)}</span><kpi.icon aria-hidden="true"/></div><strong>{money(kpi.minor,s.currency,s)}</strong><div className="kpi-foot">{kpi.change&&compare?<><span className={kpi.change.startsWith('-')?'neutral-change':'positive-change'}>{s.digits==='persian'?t(kpi.change).replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[Number(d)]):t(kpi.change)}</span><small>{t('vs. previous period')}</small></>:<small>{index===0?t('Cash and spending accounts today'):date(dashboard.from,s)+' – '+date(dashboard.to,s)}</small>}</div></section>)}
+    </div>
+    <div className="dashboard-controls"><label className="checkbox-label"><input type="checkbox" checked={compare} onChange={e=>setCompare(e.target.checked)}/>{t('Compare previous period')}</label><Button variant="ghost" onClick={()=>setCustomize(true)}><SlidersHorizontal data-icon="inline-start"/>{t('Customize dashboard')}</Button></div>
+    <div className="dashboard-widgets">{widgets.map(widget=>{
+      if(widget==='trend')return <Panel key={widget} title={widgetTitle(widget)} className="trend-panel" actions={<span className="muted">{s.currency}</span>}><div className="chart-legend"><span><i className="income-dot"/>{t('Income')}</span><span><i className="expense-dot"/>{t('Expenses')}</span></div>
+        {dashboard.trend.length?<div className="money-chart" role="img" aria-label={t('Income and expense trend for the selected period')}><div className="chart-grid" aria-hidden="true"><i/><i/><i/><i/></div><div className="chart-bars">{dashboard.trend.map(point=><div className="chart-period" key={point.month}><div className="bar-pair" title={`${point.month} · ${t('Income')} ${money(point.incomeMinor,s.currency,s)} · ${t('Expenses')} ${money(point.expenseMinor,s.currency,s)}`}><div className="income-bar" style={{height:`${point.incomeHeight}%`}}>{point.incomeHeight>0&&<span className="bar-value">{money(point.incomeMinor,s.currency,s)}</span>}</div><div className="expense-bar" style={{height:`${point.expenseHeight}%`}}>{point.expenseHeight>0&&<span className="bar-value">{money(point.expenseMinor,s.currency,s)}</span>}</div></div><span>{monthLabel(point.month.length===7?point.month+'-01':point.month,s)}</span></div>)}</div></div>:<div className="chart-empty">{t('No activity in this period')}</div>}
+        <div className="trend-footer"><span><TrendingDown aria-hidden="true"/>{t('Expenses')} <strong>{money(dashboard.expenseMinor,s.currency,s)}</strong></span><span><TrendingUp aria-hidden="true"/>{t('Income')} <strong>{money(dashboard.incomeMinor,s.currency,s)}</strong></span></div>
+      </Panel>
+      if(widget==='balances')return <Panel key={widget} title={widgetTitle(widget)} className="balances-panel" actions={<Button variant="ghost" size="icon" aria-label={t('Contacts')} onClick={onContacts}><ArrowUpRight/></Button>}>
+        {(['receivables','payables'] as const).map(direction=><section className="party-balances" key={direction}><div className="party-heading"><h3>{t(direction==='receivables'?(s.mode==='business'?'Receivables':'Money owed to you'):(s.mode==='business'?'Payables':'Money you owe'))}</h3><span>{dashboard[direction].length}</span></div>{dashboard[direction].length?dashboard[direction].slice(0,4).map(p=><button className="balance-party" key={p.id} onClick={()=>onLedger({contact:p.id,currency:p.currency})}><span className="small-avatar" aria-hidden="true">{p.name[0]}</span><span>{p.name}</span><strong>{money(p.minor,p.currency,s)}</strong></button>):<p className="no-balances">{t('No outstanding balances')}</p>}</section>)}
+      </Panel>
+      if(widget==='recent')return <Panel key={widget} title={widgetTitle(widget)} className="recent-panel" actions={<Button variant="ghost" onClick={()=>onLedger()}>{t('View all')}<ArrowRight data-icon="inline-end"/></Button>}><div className="recent-table"><div className="recent-column-headings" aria-hidden="true"><span/ ><span>{t('Payee')}</span><span>{t('Category')}</span><span>{t('Date')}</span><span>{t('Amount')}</span></div>{dashboard.recent.length?dashboard.recent.slice(0,5).map(row=><RecentRow key={row.id} row={row} onClick={()=>onLedger({search:row.payee})}/>):<Empty title={t('No transactions yet')} action={<Button onClick={onQuickAdd}>{t('New transaction')}</Button>}/>}</div></Panel>
+      return <Panel key={widget} title={widgetTitle(widget)} className="upcoming-panel"><Future title="Cheques & bills"/>{s.mode==='business'&&<Future title="Low stock"/>}<Future title="Budgets"/><div className="local-note"><span className="status-dot"/>{t('Saved on this device')}</div></Panel>
+    })}</div>
+    <Dialog open={customize} onOpenChange={setCustomize}><DialogContent className="account-dialog"><DialogTitle>{t('Customize dashboard')}</DialogTitle><DialogDescription>{t('Arrange the widgets that matter to you.')}</DialogDescription><div className="form-stack">{s.widgets.map((name,index)=><div className="widget-control" key={name}><label className="checkbox-label"><input type="checkbox" checked={!s.hiddenWidgets.includes(name)} disabled={busy} onChange={()=>void changeWidget(name,'toggle')}/>{widgetTitle(name)}</label><div className="actions"><Button variant="ghost" size="icon" disabled={busy||index===0} aria-label={`${t('Move up')} ${widgetTitle(name)}`} onClick={()=>void changeWidget(name,'up')}><ArrowUp/></Button><Button variant="ghost" size="icon" disabled={busy||index===s.widgets.length-1} aria-label={`${t('Move down')} ${widgetTitle(name)}`} onClick={()=>void changeWidget(name,'down')}><ArrowDown/></Button></div></div>)}<ErrorMessage error={error}/></div></DialogContent></Dialog>
+  </div>
+}
+
+function RecentRow({row,onClick}:{row:LedgerRow;onClick:()=>void}){
+  const {data}=useAccounting();const s=data.settings;const negative=row.amountMinor.startsWith('-')
+  return <button className="recent-row" onClick={onClick}><span className={`movement-icon ${negative?'outgoing':'incoming'}`}>{negative?<ArrowUpRight aria-hidden="true"/>:<ArrowDownLeft aria-hidden="true"/>}</span><span className="recent-payee"><strong>{row.payee}</strong></span><span className="recent-category">{row.category}</span><time>{date(row.date,s)}</time><span className={`numeric ${negative?'':'positive'}`}>{money(row.amountMinor,row.currency,s,true)}</span></button>
+}
