@@ -97,12 +97,15 @@ fn main() -> anyhow::Result<()> {
     if std::env::var("SARV_QA_SEED").as_deref() == Ok("1") {
         sarv_quote::desktop::seed_fixture(&dir)?;
     }
-    let listener = TcpListener::bind("127.0.0.1:1421")?;
+    let port: u16 = std::env::var("SARV_QA_PORT")
+        .unwrap_or_else(|_| "1421".into())
+        .parse()?;
+    let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port))?;
     let agents = std::sync::Arc::new(sarv_quote::agent::AgentService::start(
         &dir,
         std::env::current_dir()?.join("target/release/sarv-agent"),
     )?);
-    println!("Rust QA adapter listening on 127.0.0.1:1421; isolated profile");
+    println!("Rust QA adapter listening on 127.0.0.1:{port}; isolated profile");
     for s in listener.incoming().flatten() {
         let agents = agents.clone();
         let token = token.clone();

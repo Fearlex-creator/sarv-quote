@@ -7,9 +7,16 @@ import {
   TableHead,
   TableCell,
 } from "./table";
-import { Input } from "./input";
+import { InputGroup, InputGroupInput, InputGroupAddon } from "./input-group";
+import { Button } from "./button";
 import { useTranslation } from "../../lib/i18n";
-import { useContext, useMemo, useState, type ReactNode } from "react";
+import {
+  useContext,
+  useDeferredValue,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -19,7 +26,9 @@ import {
   type SortingState,
 } from "@tanstack/react-table";
 import { BooksContext } from "../../app/books";
-import { ArrowDown, ArrowUp, Search } from "lucide-react";
+import { ArrowDownIcon as ArrowDown } from "@phosphor-icons/react/dist/csr/ArrowDown";
+import { ArrowUpIcon as ArrowUp } from "@phosphor-icons/react/dist/csr/ArrowUp";
+import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
 export function DataGrid<T>({
   data,
   columns,
@@ -41,15 +50,19 @@ export function DataGrid<T>({
   const books = useContext(BooksContext);
   const [query, setQuery] = useState("");
   const [sorting, setSorting] = useState<SortingState>([]);
-  const filtered = useMemo(
+  const deferredQuery = useDeferredValue(query);
+  const searchIndex = useMemo(
     () =>
-      data.filter(
-        (x) =>
-          !searchText ||
-          searchText(x).toLocaleLowerCase().includes(query.toLocaleLowerCase()),
-      ),
-    [data, query, searchText],
+      searchText
+        ? data.map((row) => searchText(row).toLocaleLowerCase())
+        : null,
+    [data, searchText],
   );
+  const filtered = useMemo(() => {
+    if (!deferredQuery || !searchIndex) return data;
+    const term = deferredQuery.toLocaleLowerCase();
+    return data.filter((_, index) => searchIndex[index].includes(term));
+  }, [data, deferredQuery, searchIndex]);
   const identifiedColumns = useMemo(
     () =>
       columns.map((column, index) => ({
@@ -76,15 +89,17 @@ export function DataGrid<T>({
       {(searchText || toolbar) && (
         <div className="grid-toolbar">
           {searchText && (
-            <label className="search-field">
-              <Search />
-              <Input
+            <InputGroup className="w-56">
+              <InputGroupAddon>
+                <Search />
+              </InputGroupAddon>
+              <InputGroupInput
                 aria-label={t("Search records")}
                 placeholder={t("Search records…")}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
               />
-            </label>
+            </InputGroup>
           )}
           <div className="toolbar-actions">{toolbar}</div>
           <span className="muted count">
@@ -96,7 +111,7 @@ export function DataGrid<T>({
           </span>
         </div>
       )}
-      <div className="table-scroll">
+      <div className="table-scroll" aria-busy={query !== deferredQuery}>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((g) => (
@@ -123,7 +138,9 @@ export function DataGrid<T>({
                     }
                   >
                     {h.column.getCanSort() ? (
-                      <button
+                      <Button
+                        variant="ghost"
+                        size="sm"
                         className="sort-button"
                         onClick={h.column.getToggleSortingHandler()}
                       >
@@ -133,7 +150,7 @@ export function DataGrid<T>({
                         ) : h.column.getIsSorted() === "desc" ? (
                           <ArrowDown />
                         ) : null}
-                      </button>
+                      </Button>
                     ) : (
                       flexRender(h.column.columnDef.header, h.getContext())
                     )}

@@ -1,3 +1,4 @@
+import { FieldGroup } from "../components/ui/field";
 import {
   NativeSelect,
   NativeSelectOption,
@@ -9,7 +10,7 @@ import { toast } from "sonner";
 import { useBooks } from "../app/books";
 import { command, today, uid } from "../lib/client";
 import type { Preview } from "../lib/types";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { Button } from "../components/ui/button";
 import { Field, ErrorState, Note } from "../components/ui/shared";
 import { Money } from "../components/finance/money";
@@ -90,7 +91,7 @@ export function TransferDialog({ onClose }: { onClose: () => void }) {
         }}
       >
         {error && <ErrorState error={error} />}
-        <div className="form-grid">
+        <FieldGroup className="form-grid">
           <Field label={t("Product")}>
             <NativeSelect
               required
@@ -162,7 +163,7 @@ export function TransferDialog({ onClose }: { onClose: () => void }) {
               onChange={(e) => setReason(e.target.value)}
             />
           </Field>
-        </div>
+        </FieldGroup>
         {preview && (
           <Note>
             {t("Value:")} <Money value={preview.total} currency />

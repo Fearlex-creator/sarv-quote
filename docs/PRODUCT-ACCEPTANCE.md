@@ -1,5 +1,7 @@
 # Product acceptance — current improvement cycle
 
+Historical milestone record. The GTK application has been removed. Current architecture and commands are in [the handoff](CLOUD-HANDOFF.md) and [desktop development](../desktop/README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+
 User goal: a coherent professional quotation tool in the existing Rust + GTK4 + stable libadwaita app, with a polished Persian RTL workspace and searchable indexed customers/products. Preserve exact rial/toman calculations, existing data and immutable history. Improve actual daily interaction rather than marking prior test reports as UX acceptance. No web rewrite, deployment, credentials, paid services or real customer data.
 
 Baseline: local commit `4a1dbf7`, release SHA `7ae06aab0d74bf819e79adb547c068a8d6695da88229058dede2ec5cd99915d2`. Freshly rendered synthetic profile `artifacts/cloud-onboarding/native-s391yylu`: 50 native checks and restart pass. Editor/customers/products/history/settings captures were opened on this cycle; they establish the starting experience, not final acceptance.

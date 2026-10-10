@@ -410,7 +410,7 @@ impl Drop for PdfFonts {
     }
 }
 fn pdf_fonts(map: &pango::FontMap) -> Result<PdfFonts> {
-    use glib::translate::ToGlibPtr;
+    use pango::glib::translate::ToGlibPtr;
     use std::{ffi::CString, os::unix::fs::DirBuilderExt};
     let dir = std::env::temp_dir().join(format!(
         "sarv-purchase-return-pdf-fonts-{}",

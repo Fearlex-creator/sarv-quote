@@ -1,3 +1,4 @@
+#![cfg(feature = "pdf-export")]
 use sarv_quote::{
     accounting::{Money, MoneyUnit, TrialBalance, TrialBalanceRow},
     accounting_export::{trial_csv_with_dates, trial_pdf_with_dates},

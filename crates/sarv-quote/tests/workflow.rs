@@ -177,6 +177,7 @@ fn malicious_backup_valid_hash_rejected() {
     assert!(Store::restore_preview(&p).is_err());
     assert!(Store::restore_preview(Path::new("/no-such-backup")).is_err());
 }
+#[cfg(feature = "pdf-export")]
 #[test]
 fn export_real_pdf_and_no_overwrite() {
     let mut s = prepared();

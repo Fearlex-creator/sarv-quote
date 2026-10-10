@@ -4,6 +4,14 @@ export type Locale = "en" | "fa";
 export const I18nContext = createContext<Locale>("en");
 export type MessageValues = Record<string, string | number>;
 const messages: Record<string, string> = {
+  "App language": "زبان برنامه",
+  "Welcome to Sarv": "به سرو خوش آمدید",
+  "First-time setup": "راه‌اندازی اولیه",
+  "Setup progress": "مراحل راه‌اندازی",
+  Company: "کسب‌وکار",
+  "Opening balances": "مانده‌های آغازین",
+  Continue: "ادامه",
+  Back: "بازگشت",
   "Close notification": "بستن اعلان",
   "The interface encountered a problem. Saved records remain in your local books. {error}":
     "رابط برنامه با مشکل روبه‌رو شد. رکوردهای ذخیره‌شده در دفاتر محلی شما باقی می‌مانند. {error}",
@@ -326,7 +334,7 @@ const messages: Record<string, string> = {
   "Start date": "تاریخ شروع",
   "Start with zero balances": "شروع با مانده‌های صفر",
   State: "وضعیت",
-  "Strict core opening CSV; amounts in integer IRR. Existing GTK templates and import documentation apply.":
+  "Strict core opening CSV; amounts in integer IRR. Opening import documentation applies.":
     "CSV افتتاحیهٔ هسته؛ مبالغ به ریال صحیح. از قالب‌های موجود GTK و راهنمای ورود داده استفاده کنید.",
   Subledger: "دفتر معین",
   "Subledger control reconciliation": "تطبیق حساب‌های کنترلی و دفتر معین",

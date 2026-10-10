@@ -92,7 +92,9 @@ test("native layout preserves exact amounts and review does not post", async ({
         .click();
     await nav("Accounting");
     await expect(page.locator(".topbar h1")).toHaveText("Accounting");
-    await expect(page.locator(".topbar .button-primary")).toHaveCount(1);
+    await expect(
+      page.locator(".topbar [data-slot=button][data-variant=default]"),
+    ).toHaveCount(1);
     await expect(
       page.getByRole("columnheader", { name: "Debit · IRR", exact: true }),
     ).toBeVisible();

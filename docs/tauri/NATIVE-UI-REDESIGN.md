@@ -1,3 +1,5 @@
+> The visual comparison below records the earlier native-style pass. The current UI uses the user-selected official shadcn preset `b6TqdhPcaf`; see [current handoff](../CLOUD-HANDOFF.md). Financial, RTL and keyboard behaviors are retained and rechecked.
+
 # Native UI redesign
 
 The UI keeps its existing Button, Modal, Field, DataGrid, Status, Sidebar, and loading composition. The Persian follow-up adds official shadcn source primitives for Input, Textarea, NativeSelect, Table, Skeleton, and Badge, adapted to the shared native theme without adding dependencies. The final instruction was used for ordering and width: Settings first, then the shell and data views, with a `max-w-4xl` equivalent of 896 px throughout.

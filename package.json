@@ -6,23 +6,14 @@
   },
   "scripts": {
     "dev": "npm --prefix desktop run tauri -- dev",
-    "build": "npm --prefix desktop run build:desktop",
-    "web:dev": "pnpm --dir web dev",
-    "web:build": "pnpm --dir web build",
-    "web:lint": "pnpm --dir web lint",
-    "web:typecheck": "pnpm --dir web typecheck",
-    "gtk": "cargo run -p sarv-quote-gtk --release",
     "tauri": "npm --prefix desktop run tauri --",
+    "build": "npm --prefix desktop run build:desktop",
     "lint": "npm --prefix desktop run lint",
     "typecheck": "npm --prefix desktop run check",
-    "test:core": "cargo test -p free-accounting-core",
+    "test:core": "cargo test -p sarv-quote",
     "desktop:build": "npm --prefix desktop run tauri -- build",
-    "preview:dev": "node scripts/accounting-preview.mjs",
     "test:desktop": "npm --prefix desktop test",
-    "legacy:tauri": "tauri"
-  },
-  "devDependencies": {
-    "@tauri-apps/cli": "^2.12.1"
-  },
-  "packageManager": "pnpm@12.5.1"
+    "preview:dev": "npm --prefix desktop run dev",
+    "test:pdf": "cargo test -p sarv-quote --features pdf-export"
+  }
 }

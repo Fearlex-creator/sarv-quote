@@ -1,29 +1,33 @@
 import * as React from "react";
-import { cn } from "../../lib/utils";
-import { ChevronDownIcon } from "lucide-react";
+import { cn } from "cn";
+import { CaretDownIcon } from "@phosphor-icons/react/dist/csr/CaretDown";
+
+type NativeSelectProps = Omit<React.ComponentProps<"select">, "size"> & {
+  size?: "sm" | "default";
+};
 
 function NativeSelect({
   className,
   size = "default",
   ...props
-}: Omit<React.ComponentProps<"select">, "size"> & { size?: "sm" | "default" }) {
+}: NativeSelectProps) {
   return (
     <div
-      className="native-select-wrapper relative w-full has-[select:disabled]:opacity-50"
+      className={cn(
+        "group/native-select relative w-fit has-[select:disabled]:opacity-50",
+        className,
+      )}
       data-slot="native-select-wrapper"
+      data-size={size}
     >
       <select
         data-slot="native-select"
         data-size={size}
-        className={cn(
-          "w-full min-w-0 appearance-none rounded-md border border-border/60 bg-transparent px-3 py-2 pe-9 text-sm transition-colors disabled:cursor-not-allowed disabled:opacity-50",
-          "focus-visible:outline-2 focus-visible:outline-ring aria-invalid:border-destructive",
-          className,
-        )}
+        className="h-9 w-full min-w-0 appearance-none rounded-3xl border border-transparent bg-input/50 py-1 pe-8 ps-3 text-sm transition-[color,box-shadow,background-color] outline-none select-none selection:bg-primary selection:text-primary-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/30 disabled:pointer-events-none disabled:cursor-not-allowed aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 data-[size=sm]:h-8 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40"
         {...props}
       />
-      <ChevronDownIcon
-        className="pointer-events-none absolute top-1/2 end-3.5 size-4 -translate-y-1/2 text-muted-foreground opacity-50 select-none"
+      <CaretDownIcon
+        className="pointer-events-none absolute top-1/2 end-2.5 size-4 -translate-y-1/2 text-muted-foreground select-none"
         aria-hidden="true"
         data-slot="native-select-icon"
       />
@@ -38,7 +42,6 @@ function NativeSelectOption({
   return (
     <option
       data-slot="native-select-option"
-      dir="auto"
       className={cn("bg-[Canvas] text-[CanvasText]", className)}
       {...props}
     />

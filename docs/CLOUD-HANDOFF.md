@@ -1,53 +1,31 @@
-# Sarv cloud handoff — 2026-10-10
+# Sarv current handoff — 2026-10-10
 
-The newer desktop integration makes `desktop/` the primary launch target. Root `dev`, `tauri`, `build`, `lint`, and `typecheck` scripts target that app. The earlier `web/` and root `src-tauri/` remain available through `legacy:tauri` and the existing web/preview scripts. The earlier handoff below describes the preserved interface; see [the primary desktop documentation](../desktop/README.md) for current development commands.
+The application has one frontend (`desktop/src`, React/TypeScript/shadcn) and one Rust accounting backend (`crates/sarv-quote`). The only native shell is `desktop/src-tauri` (Tauri 2). Root npm scripts launch, build and check this application.
 
-Both desktop adapters now live in `crates/sarv-quote`: the earlier `DesktopHost` is preserved, and `desktop_bridge.rs` supplies the complete desktop/agent dispatch surface. Settings transport decodes the upstream `fiscal_year_start_month` string, preserving its value. The GTK lifecycle test moved to the GTK crate, without changing the test, so the engine tests no longer depend on GTK widgets.
+The GTK4/libadwaita app, duplicate `web/` and root `src-tauri/` shells, experimental `free-accounting-core`, retired preview host, old launch commands and GTK QA scripts have been removed. Their history remains available in Git. Accounting migrations, fixtures, stored preference DTOs, exact money rules, CSV exports and financial history compatibility are retained.
 
-Integration checks found inherited problems in commit `caefee7`: `optional_customer_details_keep_legacy_serialized_bytes`, `retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recovery`, and `genuine_schema6_prefix_recovery_one_upgrade_and_fresh_restores_are_exact` fail. The relevant domain/store implementations and those tests match that commit. Legacy GTK also fails to compile because of stale fixture paths, missing `rusqlite`/`tempfile` dependencies, and an incomplete Settings initializer. These issues are flagged without changing the accounting logic, persisted data, or migration expectations.
+## Build and tests
 
-Final integration validation: TypeScript, ESLint, frontend production build, and Tauri release build (`--no-bundle`) pass. All seven desktop Playwright workflows pass, as do all 18 bridge/agent Rust tests and all 12 experimental-core tests. The full original engine suite reports 246 passed, three inherited failures, and three ignored tests. These results supersede the earlier snapshot's unverified status for the primary desktop; they do not establish that the inherited compatibility or GTK issues are resolved.
+Install the frontend with `npm ci --prefix desktop`. Run `npm run dev`, `npm run lint`, `npm run typecheck`, `npm run build`, or `npm run desktop:build -- --no-bundle` from the root.
 
-The integrated release also starts and closes in the real native WebKitGTK window with the saved Persian interface. The complete serialized SQLite state matches the pre-launch snapshot afterward. Temporary startup evidence is `/tmp/sarv-integrated-native-startup.png` in the verification environment.
+The Rust engine and `sarv-agent` CLI have no GUI dependencies in their default build. Existing PDF rendering is optional: `cargo test -p sarv-quote --features pdf-export`. Linux Tauri still uses GTK3/WebKitGTK for its native webview; this is a platform dependency, not a second application. Windows uses WebView2 and macOS uses WKWebView.
 
-The user requested committing and pushing all current work for cloud continuation, without further tests. This snapshot includes the preexisting crate reorganization and earlier Tauri implementation. Do not treat the rebuild as finished or undo the preserved Rust workflows.
+Use `npm run test:core` for Rust and [desktop QA instructions](../desktop/README.md) for the nine browser workflows using the real isolated Rust adapter. See [agent access](tauri/AGENT-ACCESS.md) and [UI verification](tauri/NATIVE-UI-REDESIGN.md).
 
-## Confirmed product choices
+## Shadcn preset, React performance and first run
 
-- Sarv / سرو branding; official shadcn components throughout the frontend.
-- Persian RTL and Jalali input/display by default; English/LTR available.
-- Tailored individual/service/trading onboarding plus a resumable setup checklist.
-- Existing / new / import paths; preview before imports; preserve original books.
-- Restore products, quotations, procurement, stock, sales, returns and reports using the original Rust core.
-- Exact Rial storage and Toman display first; multi-currency later.
-- Local desktop first; optional team server and enterprise permissions later.
-- pnpm throughout.
+The user-selected `b6TqdhPcaf` preset is applied through the official CLI with component reinstall. Configuration is Radix Luma, teal, IBM Plex Sans/Space Grotesk, Phosphor, inverted menu color and subtle menu accent. The old primitive styling is removed; official Sidebar/Tabs/Switch/Checkbox/Field/Command/Alert/Empty/Avatar/Separator compositions now join the reinstalled Button/Input/NativeSelect/Dialog/Table/Badge/Skeleton/Textarea. Radix DirectionProvider and bundled Vazirmatn keep Persian first-class. Existing financial/layout adapters remain app-specific.
 
-## Current code
+Feature screens/editors and command search are lazy-loaded with navigation preloading. Stable context/callbacks reduce unrelated page rendering. Grid search defers cached-label filtering, and international amount/date formatters are reused. The main entry chunk is 494.87 kB / 155.04 kB gzip versus the previous 527.52 kB / 156.64 kB gzip; this is not a startup latency measurement.
 
-- `crates/sarv-quote/src/desktop.rs`: original-store desktop adapter, independent workspace host, onboarding, exact string views, resource creation, combined purchase/receive/bill and sales/delivery/invoice commands, partial goods returns, stock transfers, wallets, manual reversals, period locks, import previews and open exports.
-- `src-tauri/src/{lib,commands}.rs`: active commands now use the original desktop host. The separate accounting database was removed from the active command surface.
-- `web/src/desktop/`: new official-shadcn shell, wizard, forms, virtual lists, charts, accounts and settings. Main/App now use this frontend.
-- Official shadcn RTL migration was run. The calendar adds the official DayPicker Persian package; core Rust validates Jalali civil dates.
-- Original GTK and Rust workflows remain in `crates/sarv-quote-gtk` and `crates/sarv-quote`; PDF code now imports Pango/GLib directly to keep the core independent of GTK.
-- Earlier six-screen experimental implementation remains inactive in `crates/free-accounting-core` and `web/src/accounting`.
+The first-run welcome and company/fiscal/opening steps are localized for English and Persian. CSS handles brief page/dialog/setup entry and control feedback; reduced-motion disables animation. Financial data remains stationary. Existing financial commands, preview/post safeguards and schema are unchanged. Dependencies are the official preset's requirements; the older Lucide/Inter and direct Radix dependencies were removed.
 
-## Verified before the handoff request
+## Known inherited issues
 
-An earlier revision of the adapter passed three integration tests: exact purchase → sale → partial sales return with balanced ledger and durable restart; Persian-digit wallet income, reversal and fiscal lock; and independent workspace preservation. Frontend lint and production build passed before the last workspace-host and import-validation follow-ups. Browser checks showed Persian RTL onboarding, a Jalali date picker, and a reviewed expense posting into the original ledger with updated dashboard balances.
+These tests already failed in upstream commit `caefee7` and remain flagged without changing accounting data or expectations:
 
-Full restored tests initially failed to compile because the preexisting crate move left relative fixture paths pointing at the former root. The docs/demo paths have been adjusted. No final all-suite, native launch, mobile or production verification is claimed. The most recent edits were not reverified after the user requested an immediate commit/push.
+- `optional_customer_details_keep_legacy_serialized_bytes`
+- `retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recovery`
+- `genuine_schema6_prefix_recovery_one_upgrade_and_fresh_restores_are_exact`
 
-## Continue here
-
-- Re-run compilation/lint/build and the restored Rust suite when authorized in the cloud. Validate the latest workspace selector, backup checksum handling, and purchase-return source mapping.
-- Update the debug-only native IPC smoke script: it still refers to the retired `accounting_view` / `accounting_mutate` commands.
-- Complete CSV catalog/contact imports, PDF exports in the new shell, quotation revision editing, partial order/receipt workflows, accounting setup/opening depth, and detailed contact history.
-- Finish personal-mode terminology, localized civil-date defaults, 320 px / keyboard / reduced-motion checks, error handling and performance measurement.
-- The combined buy/sell forms currently post complete goods chains; the original Rust partial operations remain available but need deeper UI wiring.
-- Existing quotation-only books without an accounting company need a smooth bridge in onboarding; preserve their catalogs and approved quotes.
-- The original snapshot store has a 64 MiB backup limit. Do not claim large-enterprise scale or simultaneous team access without a measured storage/migration/server design.
-
-## Local QA isolation
-
-Browser preview during the handoff used `/tmp/sarv-restored-qa-20261010`, web port 5182 and ledger port 4787. Do not confuse its synthetic records with real user books. Standard preview uses its own temporary directory. Product data and dependency/build caches are ignored by Git.
+The removed legacy GTK build is no longer part of the product or its checks. A quotation/PDF editor, custom chart editor, payments, banking reconciliation, attachments, team permissions and platform release qualification remain unfinished. Existing quotation and report APIs are retained in Rust; deleting the old UI does not complete these React screens.

@@ -163,6 +163,7 @@ fn duplicate_clears_expired_validity_and_updates_date() {
     assert_eq!(state.quotes[0].valid_until, "2020-01-03");
 }
 
+#[cfg(feature = "pdf-export")]
 #[test]
 fn managed_data_restarts_backs_up_and_exports_the_archived_quote() {
     let dir = tempfile::tempdir().unwrap();

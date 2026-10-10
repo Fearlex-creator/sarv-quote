@@ -1,3 +1,4 @@
+import { FieldGroup } from "../components/ui/field";
 import {
   Table,
   TableHeader,
@@ -14,17 +15,26 @@ import { Textarea } from "../components/ui/textarea";
 import { Input } from "../components/ui/input";
 import { useTranslation } from "../lib/i18n";
 import { useState } from "react";
-import { Plus, Trash2, FileText, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { TrashIcon as Trash2 } from "@phosphor-icons/react/dist/csr/Trash";
+import { FileTextIcon as FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { ArrowLeftIcon as ArrowLeft } from "@phosphor-icons/react/dist/csr/ArrowLeft";
+import { CheckCircleIcon as CheckCircle2 } from "@phosphor-icons/react/dist/csr/CheckCircle";
 import { toast } from "sonner";
 import { useUnsavedChanges } from "../lib/use-unsaved";
-import { tabKeyboard } from "../lib/tab-keyboard";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../components/ui/tabs";
 import { useBooks } from "../app/books";
 import { command, today, uid } from "../lib/client";
 import type { Draft, InputLine, Preview, RecordEntry } from "../lib/types";
 import { PageHeader, Field, ErrorState } from "../components/ui/shared";
 import { Button } from "../components/ui/button";
 import { DataGrid } from "../components/ui/data-grid";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { Money, Status, formatDate } from "../components/finance/money";
 import { Customers } from "./resources";
 export function recordKind(r: RecordEntry) {
@@ -70,7 +80,11 @@ export function Sales({
     }
   }
   return (
-    <>
+    <Tabs
+      value={tab}
+      onValueChange={setTab}
+      dir={b.locale === "fa" ? "rtl" : "ltr"}
+    >
       {tab !== "Customers" && (
         <PageHeader
           title={b.t("Sales")}
@@ -86,193 +100,193 @@ export function Sales({
           }
         />
       )}
-      <div className="tabs" role="tablist" onKeyDown={tabKeyboard}>
+      <TabsList>
         {["Orders", "Invoices", "Returns", "Drafts", "Customers"].map((x) => (
-          <button
-            className="tab"
-            role="tab"
-            aria-selected={tab === x}
-            tabIndex={tab === x ? 0 : -1}
-            key={x}
-            onClick={() => setTab(x)}
-          >
+          <TabsTrigger key={x} value={x}>
             {b.t(x)}
             {x === "Drafts" && b.workspace.drafts.length > 0
               ? ` (${b.workspace.drafts.length})`
               : ""}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
-      {error && <ErrorState error={error} />}{" "}
-      {tab === "Customers" ? (
-        <Customers />
-      ) : tab === "Drafts" ? (
-        <section className="panel">
-          <DataGrid
-            data={b.workspace.drafts}
-            id={(x) => x.id}
-            searchText={(x) => x.reference}
-            empty={t("No drafts")}
-            columns={[
-              {
-                header: t("Reference"),
-                accessorKey: "reference",
-                cell: ({ row }) => (
-                  <button
-                    className="text-link"
-                    onClick={() => onEdit(row.original)}
-                  >
-                    {row.original.reference || t("Untitled order")}
-                  </button>
-                ),
-              },
-              {
-                header: t("Customer"),
-                cell: ({ row }) =>
-                  b.workspace.resources?.parties.find(
-                    (x) => x.id === row.original.customer_id,
-                  )?.name ?? t("Not selected"),
-              },
-              {
-                header: t("Date"),
-                accessorKey: "document_date",
-                cell: ({ row }) =>
-                  formatDate(
-                    row.original.document_date,
-                    b.dateLocale,
-                    b.workspace.settings.date_display,
+      </TabsList>
+      <TabsContent value={tab}>
+        {error && <ErrorState error={error} />}{" "}
+        {tab === "Customers" ? (
+          <Customers />
+        ) : tab === "Drafts" ? (
+          <section className="panel">
+            <DataGrid
+              data={b.workspace.drafts}
+              id={(x) => x.id}
+              searchText={(x) => x.reference}
+              empty={t("No drafts")}
+              columns={[
+                {
+                  header: t("Reference"),
+                  accessorKey: "reference",
+                  cell: ({ row }) => (
+                    <Button
+                      variant="link"
+                      className="text-link h-auto justify-start p-0"
+                      onClick={() => onEdit(row.original)}
+                    >
+                      {row.original.reference || t("Untitled order")}
+                    </Button>
                   ),
-              },
-              { header: t("State"), cell: () => <Status>{t("Draft")}</Status> },
-              {
-                header: "",
-                cell: ({ row }) => (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onEdit(row.original)}
-                  >
-                    {t("Continue editing")}
-                  </Button>
-                ),
-              },
-            ]}
-          />
-        </section>
-      ) : (
-        <section className="panel">
-          <DataGrid
-            data={rows}
-            id={(x) => x.id}
-            searchText={(x) =>
-              (recordCommand(x).reference ??
-                recordCommand(x).invoice_reference ??
-                "") + (recordData(x).customer?.name ?? "")
-            }
-            empty={tab === "Invoices" ? t("No invoices") : t("No orders")}
-            columns={[
-              {
-                header: b.t("Reference"),
-                cell: ({ row }) => (
-                  <button
-                    className="text-link"
-                    onClick={() => onDetail(row.original)}
-                  >
-                    {recordCommand(row.original).reference ??
-                      recordCommand(row.original).invoice_reference ??
-                      recordCommand(row.original).return_reference}
-                  </button>
-                ),
-              },
-              {
-                header: b.t("Customer"),
-                cell: ({ row }) =>
-                  recordData(row.original).customer?.name ??
-                  b.workspace.resources?.parties.find(
-                    (x) => x.id === recordData(row.original).customer_id,
-                  )?.name,
-              },
-              {
-                header: b.t("Date"),
-                cell: ({ row }) =>
-                  formatDate(
-                    recordCommand(row.original).context.date,
-                    b.dateLocale,
-                    b.workspace.settings.date_display,
+                },
+                {
+                  header: t("Customer"),
+                  cell: ({ row }) =>
+                    b.workspace.resources?.parties.find(
+                      (x) => x.id === row.original.customer_id,
+                    )?.name ?? t("Not selected"),
+                },
+                {
+                  header: t("Date"),
+                  accessorKey: "document_date",
+                  cell: ({ row }) =>
+                    formatDate(
+                      row.original.document_date,
+                      b.dateLocale,
+                      b.workspace.settings.date_display,
+                    ),
+                },
+                {
+                  header: t("State"),
+                  cell: () => <Status>{t("Draft")}</Status>,
+                },
+                {
+                  header: "",
+                  cell: ({ row }) => (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onEdit(row.original)}
+                    >
+                      {t("Continue editing")}
+                    </Button>
                   ),
-              },
-              {
-                header: `${b.t("Amount")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
-                meta: { numeric: true },
-                cell: ({ row }) => (
-                  <Money
-                    value={recordData(row.original).total ?? "0"}
-                    unit={b.unit}
-                    locale={b.numberLocale}
-                  />
-                ),
-              },
-              {
-                header: b.t("Status"),
-                cell: ({ row }) => (
-                  <Status
-                    kind={
-                      recordKind(row.original) === "Fulfill"
-                        ? "positive"
-                        : "neutral"
-                    }
-                  >
-                    {recordKind(row.original) === "Fulfill"
-                      ? t("Posted · Delivered")
-                      : recordKind(row.original) === "Return"
-                        ? t("Posted · Restocked")
-                        : t("Recorded order")}
-                  </Status>
-                ),
-              },
-              {
-                header: "",
-                cell: ({ row }) => (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDetail(row.original)}
-                  >
-                    {t("Open")}
-                  </Button>
-                ),
-              },
-            ]}
-          />
-          <div className="pagination">
-            <span>
-              {t("Source records")}
-              {offset + 1}–
-              {Math.min(offset + 100, Number(b.workspace.sales_count))}{" "}
-              {t("of")} {b.workspace.sales_count}
-            </span>
-            <div className="toolbar-actions">
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={offset === 0}
-                onClick={() => page(Math.max(0, offset - 100))}
-              >
-                {t("Previous")}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={offset + 100 >= Number(b.workspace.sales_count)}
-                onClick={() => page(offset + 100)}
-              >
-                {t("Next")}
-              </Button>
+                },
+              ]}
+            />
+          </section>
+        ) : (
+          <section className="panel">
+            <DataGrid
+              data={rows}
+              id={(x) => x.id}
+              searchText={(x) =>
+                (recordCommand(x).reference ??
+                  recordCommand(x).invoice_reference ??
+                  "") + (recordData(x).customer?.name ?? "")
+              }
+              empty={tab === "Invoices" ? t("No invoices") : t("No orders")}
+              columns={[
+                {
+                  header: b.t("Reference"),
+                  cell: ({ row }) => (
+                    <Button
+                      variant="link"
+                      className="text-link h-auto justify-start p-0"
+                      onClick={() => onDetail(row.original)}
+                    >
+                      {recordCommand(row.original).reference ??
+                        recordCommand(row.original).invoice_reference ??
+                        recordCommand(row.original).return_reference}
+                    </Button>
+                  ),
+                },
+                {
+                  header: b.t("Customer"),
+                  cell: ({ row }) =>
+                    recordData(row.original).customer?.name ??
+                    b.workspace.resources?.parties.find(
+                      (x) => x.id === recordData(row.original).customer_id,
+                    )?.name,
+                },
+                {
+                  header: b.t("Date"),
+                  cell: ({ row }) =>
+                    formatDate(
+                      recordCommand(row.original).context.date,
+                      b.dateLocale,
+                      b.workspace.settings.date_display,
+                    ),
+                },
+                {
+                  header: `${b.t("Amount")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+                  meta: { numeric: true },
+                  cell: ({ row }) => (
+                    <Money
+                      value={recordData(row.original).total ?? "0"}
+                      unit={b.unit}
+                      locale={b.numberLocale}
+                    />
+                  ),
+                },
+                {
+                  header: b.t("Status"),
+                  cell: ({ row }) => (
+                    <Status
+                      kind={
+                        recordKind(row.original) === "Fulfill"
+                          ? "positive"
+                          : "neutral"
+                      }
+                    >
+                      {recordKind(row.original) === "Fulfill"
+                        ? t("Posted · Delivered")
+                        : recordKind(row.original) === "Return"
+                          ? t("Posted · Restocked")
+                          : t("Recorded order")}
+                    </Status>
+                  ),
+                },
+                {
+                  header: "",
+                  cell: ({ row }) => (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDetail(row.original)}
+                    >
+                      {t("Open")}
+                    </Button>
+                  ),
+                },
+              ]}
+            />
+            <div className="pagination">
+              <span>
+                {t("Source records")}
+                {offset + 1}–
+                {Math.min(offset + 100, Number(b.workspace.sales_count))}{" "}
+                {t("of")} {b.workspace.sales_count}
+              </span>
+              <div className="toolbar-actions">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={offset === 0}
+                  onClick={() => page(Math.max(0, offset - 100))}
+                >
+                  {t("Previous")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={offset + 100 >= Number(b.workspace.sales_count)}
+                  onClick={() => page(offset + 100)}
+                >
+                  {t("Next")}
+                </Button>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
-    </>
+          </section>
+        )}
+      </TabsContent>
+    </Tabs>
   );
 }
 function newLine(): InputLine {
@@ -447,7 +461,7 @@ export function OrderEditor({
               }}
             />
           </div>
-          <div className="editor-meta">
+          <FieldGroup className="editor-meta">
             <Field label={b.t("Customer")}>
               <NativeSelect
                 required
@@ -487,7 +501,7 @@ export function OrderEditor({
                 onChange={(e) => update("financial_date", e.target.value)}
               />
             </Field>
-          </div>
+          </FieldGroup>
           <div className="table-scroll">
             <Table className="editor-lines">
               <TableHeader>

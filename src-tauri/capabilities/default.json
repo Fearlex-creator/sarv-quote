@@ -1,7 +1,0 @@
-{
-  "$schema": "../gen/schemas/desktop-schema.json",
-  "identifier": "default",
-  "description": "Local ledger access from the main application window",
-  "windows": ["main"],
-  "permissions": ["core:default", "allow-accounting-view", "allow-accounting-mutate"]
-}

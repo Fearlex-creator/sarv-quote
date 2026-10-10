@@ -1,3 +1,4 @@
+import { Switch } from "../components/ui/switch";
 import {
   NativeSelect,
   NativeSelectOption,
@@ -91,15 +92,14 @@ export function Agents() {
               <label htmlFor="agent-access">
                 {status.enabled ? t("On") : t("Off")}
               </label>
-              <button
+              <Switch
                 id="agent-access"
-                className="agent-switch"
-                type="button"
-                role="switch"
                 aria-label={t("Agent access")}
-                aria-checked={status.enabled}
+                checked={status.enabled}
                 disabled={busy}
-                onClick={() => void configure(!status.enabled, status.access)}
+                onCheckedChange={(enabled) =>
+                  void configure(enabled, status.access)
+                }
               />
             </div>
             <div className="agent-row">

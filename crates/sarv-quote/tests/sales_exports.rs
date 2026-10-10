@@ -1,3 +1,4 @@
+#![cfg(feature = "pdf-export")]
 use sarv_quote::{
     accounting::{AccountingState, Money, MoneyUnit},
     core::*,

@@ -1,3 +1,4 @@
+import { FieldGroup } from "../components/ui/field";
 import {
   Table,
   TableHeader,
@@ -15,15 +16,22 @@ import { Textarea } from "../components/ui/textarea";
 import { Input } from "../components/ui/input";
 import { useTranslation } from "../lib/i18n";
 import { useState } from "react";
-import { Plus, LockKeyhole, LockKeyholeOpen } from "lucide-react";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { LockKeyIcon as LockKeyhole } from "@phosphor-icons/react/dist/csr/LockKey";
+import { LockKeyOpenIcon as LockKeyholeOpen } from "@phosphor-icons/react/dist/csr/LockKeyOpen";
 import { toast } from "sonner";
-import { tabKeyboard } from "../lib/tab-keyboard";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../components/ui/tabs";
 import { useBooks } from "../app/books";
 import { command, today, uid } from "../lib/client";
 import type { Journal, Period } from "../lib/types";
 import { PageHeader, Field, ErrorState, Note } from "../components/ui/shared";
 import { Button } from "../components/ui/button";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { DataGrid } from "../components/ui/data-grid";
 import { Money, Status, formatDate } from "../components/finance/money";
 export function Accounting({ onDetail }: { onDetail: (j: Journal) => void }) {
@@ -51,7 +59,11 @@ export function Accounting({ onDetail }: { onDetail: (j: Journal) => void }) {
     }
   }
   return (
-    <>
+    <Tabs
+      value={tab}
+      onValueChange={setTab}
+      dir={b.locale === "fa" ? "rtl" : "ltr"}
+    >
       <PageHeader
         title={b.t("Accounting")}
         syncedAt={tab === "Journals" && rows ? rowsSyncedAt : undefined}
@@ -62,254 +74,250 @@ export function Accounting({ onDetail }: { onDetail: (j: Journal) => void }) {
           </Button>
         }
       />
-      <div className="tabs" role="tablist" onKeyDown={tabKeyboard}>
+      <TabsList>
         {["Journals", "Chart of accounts", "Fiscal periods"].map((x) => (
-          <button
-            className="tab"
-            role="tab"
-            aria-selected={tab === x}
-            tabIndex={tab === x ? 0 : -1}
-            key={x}
-            onClick={() => setTab(x)}
-          >
+          <TabsTrigger key={x} value={x}>
             {b.t(x)}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
-      {error && <ErrorState error={error} />}
-      <section className="panel">
-        {tab === "Journals" ? (
-          <>
+      </TabsList>
+      <TabsContent value={tab}>
+        {error && <ErrorState error={error} />}
+        <section className="panel">
+          {tab === "Journals" ? (
+            <>
+              <DataGrid
+                data={rows ?? b.workspace.journals}
+                id={(x) => x.id}
+                searchText={(x) => x.reason + x.source_id}
+                empty={t("No journals")}
+                columns={[
+                  {
+                    header: t("Entry"),
+                    cell: ({ row }) => (
+                      <Button
+                        variant="link"
+                        className="text-link h-auto justify-start p-0"
+                        onClick={() => onDetail(row.original)}
+                      >
+                        #{row.original.id.slice(0, 8)}
+                      </Button>
+                    ),
+                  },
+                  {
+                    header: t("Date"),
+                    accessorKey: "date",
+                    cell: ({ row }) =>
+                      formatDate(
+                        row.original.date,
+                        b.dateLocale,
+                        b.workspace.settings.date_display,
+                      ),
+                  },
+                  { header: t("Reason"), accessorKey: "reason" },
+                  {
+                    header: t("Kind"),
+                    cell: ({ row }) =>
+                      typeof row.original.kind === "string"
+                        ? t(row.original.kind)
+                        : t("Reversal"),
+                  },
+                  {
+                    header: `${t("Debit")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+                    meta: { numeric: true },
+                    cell: ({ row }) => (
+                      <Money
+                        value={row.original.total_debit}
+                        unit={b.unit}
+                        locale={b.numberLocale}
+                      />
+                    ),
+                  },
+                  {
+                    header: `${t("Credit")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+                    meta: { numeric: true },
+                    cell: ({ row }) => (
+                      <Money
+                        value={row.original.total_credit}
+                        unit={b.unit}
+                        locale={b.numberLocale}
+                      />
+                    ),
+                  },
+                  {
+                    header: t("State"),
+                    cell: () => <Status kind="positive">{t("Posted")}</Status>,
+                  },
+                ]}
+              />
+              <div className="pagination">
+                <span>
+                  {t("{count} posted journals", {
+                    count: new Intl.NumberFormat(
+                      b.numberLocale === "fa" ? "fa-IR" : "en-US",
+                    ).format(BigInt(b.workspace.journal_count)),
+                  })}
+                </span>
+                <div className="toolbar-actions">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={!offset}
+                    onClick={() => page(Math.max(0, offset - 100))}
+                  >
+                    {t("Previous")}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={offset + 100 >= Number(b.workspace.journal_count)}
+                    onClick={() => page(offset + 100)}
+                  >
+                    {t("Next")}
+                  </Button>
+                </div>
+              </div>
+            </>
+          ) : tab === "Chart of accounts" ? (
             <DataGrid
-              data={rows ?? b.workspace.journals}
+              data={b.workspace.accounts}
               id={(x) => x.id}
-              searchText={(x) => x.reason + x.source_id}
-              empty={t("No journals")}
+              searchText={(x) => x.code + x.name}
+              empty={t("No accounts")}
               columns={[
+                { header: t("Code"), accessorKey: "code" },
+                { header: t("Account"), accessorKey: "name" },
+                { header: t("Classification"), accessorKey: "classification" },
+                { header: t("Normal side"), accessorKey: "normal_balance" },
                 {
-                  header: t("Entry"),
-                  cell: ({ row }) => (
-                    <button
-                      className="text-link"
-                      onClick={() => onDetail(row.original)}
-                    >
-                      #{row.original.id.slice(0, 8)}
-                    </button>
-                  ),
+                  header: t("Control"),
+                  cell: ({ row }) =>
+                    row.original.control
+                      ? t("Subledger required")
+                      : t("Manual posting allowed"),
                 },
                 {
-                  header: t("Date"),
-                  accessorKey: "date",
+                  header: t("State"),
+                  cell: ({ row }) =>
+                    row.original.archived ? t("Archived") : t("Active"),
+                },
+              ]}
+            />
+          ) : (
+            <DataGrid
+              data={b.workspace.periods}
+              id={(x) => x.id}
+              empty={t("No fiscal periods")}
+              columns={[
+                { header: t("Period"), accessorKey: "name" },
+                {
+                  header: t("Start"),
+                  accessorKey: "start_date",
                   cell: ({ row }) =>
                     formatDate(
-                      row.original.date,
+                      row.original.start_date,
                       b.dateLocale,
                       b.workspace.settings.date_display,
                     ),
                 },
-                { header: t("Reason"), accessorKey: "reason" },
                 {
-                  header: t("Kind"),
+                  header: t("End"),
+                  accessorKey: "end_date",
                   cell: ({ row }) =>
-                    typeof row.original.kind === "string"
-                      ? t(row.original.kind)
-                      : t("Reversal"),
-                },
-                {
-                  header: `${t("Debit")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
-                  meta: { numeric: true },
-                  cell: ({ row }) => (
-                    <Money
-                      value={row.original.total_debit}
-                      unit={b.unit}
-                      locale={b.numberLocale}
-                    />
-                  ),
-                },
-                {
-                  header: `${t("Credit")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
-                  meta: { numeric: true },
-                  cell: ({ row }) => (
-                    <Money
-                      value={row.original.total_credit}
-                      unit={b.unit}
-                      locale={b.numberLocale}
-                    />
-                  ),
+                    formatDate(
+                      row.original.end_date,
+                      b.dateLocale,
+                      b.workspace.settings.date_display,
+                    ),
                 },
                 {
                   header: t("State"),
-                  cell: () => <Status kind="positive">{t("Posted")}</Status>,
+                  cell: ({ row }) => (
+                    <Status kind={row.original.locked ? "warning" : "positive"}>
+                      {row.original.locked ? t("Locked") : t("Open")}
+                    </Status>
+                  ),
+                },
+                {
+                  header: "",
+                  cell: ({ row }) => (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setPeriod(row.original);
+                        setReason("");
+                      }}
+                    >
+                      {row.original.locked ? (
+                        <LockKeyholeOpen />
+                      ) : (
+                        <LockKeyhole />
+                      )}
+                      {row.original.locked ? t("Reopen") : t("Lock")}
+                    </Button>
+                  ),
                 },
               ]}
             />
-            <div className="pagination">
-              <span>
-                {t("{count} posted journals", {
-                  count: new Intl.NumberFormat(
-                    b.numberLocale === "fa" ? "fa-IR" : "en-US",
-                  ).format(BigInt(b.workspace.journal_count)),
-                })}
-              </span>
-              <div className="toolbar-actions">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={!offset}
-                  onClick={() => page(Math.max(0, offset - 100))}
-                >
-                  {t("Previous")}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  disabled={offset + 100 >= Number(b.workspace.journal_count)}
-                  onClick={() => page(offset + 100)}
-                >
-                  {t("Next")}
-                </Button>
-              </div>
-            </div>
-          </>
-        ) : tab === "Chart of accounts" ? (
-          <DataGrid
-            data={b.workspace.accounts}
-            id={(x) => x.id}
-            searchText={(x) => x.code + x.name}
-            empty={t("No accounts")}
-            columns={[
-              { header: t("Code"), accessorKey: "code" },
-              { header: t("Account"), accessorKey: "name" },
-              { header: t("Classification"), accessorKey: "classification" },
-              { header: t("Normal side"), accessorKey: "normal_balance" },
-              {
-                header: t("Control"),
-                cell: ({ row }) =>
-                  row.original.control
-                    ? t("Subledger required")
-                    : t("Manual posting allowed"),
-              },
-              {
-                header: t("State"),
-                cell: ({ row }) =>
-                  row.original.archived ? t("Archived") : t("Active"),
-              },
-            ]}
-          />
-        ) : (
-          <DataGrid
-            data={b.workspace.periods}
-            id={(x) => x.id}
-            empty={t("No fiscal periods")}
-            columns={[
-              { header: t("Period"), accessorKey: "name" },
-              {
-                header: t("Start"),
-                accessorKey: "start_date",
-                cell: ({ row }) =>
-                  formatDate(
-                    row.original.start_date,
-                    b.dateLocale,
-                    b.workspace.settings.date_display,
-                  ),
-              },
-              {
-                header: t("End"),
-                accessorKey: "end_date",
-                cell: ({ row }) =>
-                  formatDate(
-                    row.original.end_date,
-                    b.dateLocale,
-                    b.workspace.settings.date_display,
-                  ),
-              },
-              {
-                header: t("State"),
-                cell: ({ row }) => (
-                  <Status kind={row.original.locked ? "warning" : "positive"}>
-                    {row.original.locked ? t("Locked") : t("Open")}
-                  </Status>
-                ),
-              },
-              {
-                header: "",
-                cell: ({ row }) => (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => {
-                      setPeriod(row.original);
-                      setReason("");
-                    }}
-                  >
-                    {row.original.locked ? (
-                      <LockKeyholeOpen />
-                    ) : (
-                      <LockKeyhole />
-                    )}
-                    {row.original.locked ? t("Reopen") : t("Lock")}
-                  </Button>
-                ),
-              },
-            ]}
-          />
-        )}
-      </section>
-      <Modal
-        open={!!period}
-        onOpenChange={(v) => {
-          if (!v && !busy) setPeriod(null);
-        }}
-        title={
-          period?.locked ? t("Reopen fiscal period") : t("Lock fiscal period")
-        }
-        confirmation
-        description={t(
-          period?.locked
-            ? "Reopen {period}. Allows posting in this period and records an audit event."
-            : "Lock {period}. Prevents posting in this period and records an audit event.",
-          { period: period?.name ?? t("fiscal period") },
-        )}
-      >
-        <Field label={t("Reason")}>
-          <Textarea
-            required
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-          />
-        </Field>
-        <div className="form-actions">
-          <Button variant="outline" onClick={() => setPeriod(null)}>
-            {t("Cancel")}
-          </Button>
-          <Button
-            disabled={busy || !reason.trim()}
-            onClick={async () => {
-              setBusy(true);
-              setError("");
-              try {
-                await command("period_lock", {
-                  company_id: b.companyId,
-                  period_id: period!.id,
-                  locked: !period!.locked,
-                  reason,
-                });
-                await b.refresh();
-                setPeriod(null);
-                toast.success(t("Period state updated"));
-              } catch (e) {
-                setError((e as Error).message);
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            {t("Confirm")}
-            {period?.locked ? t("reopen") : t("lock")}
-          </Button>
-        </div>
-      </Modal>
-    </>
+          )}
+        </section>
+        <Modal
+          open={!!period}
+          onOpenChange={(v) => {
+            if (!v && !busy) setPeriod(null);
+          }}
+          title={
+            period?.locked ? t("Reopen fiscal period") : t("Lock fiscal period")
+          }
+          confirmation
+          description={t(
+            period?.locked
+              ? "Reopen {period}. Allows posting in this period and records an audit event."
+              : "Lock {period}. Prevents posting in this period and records an audit event.",
+            { period: period?.name ?? t("fiscal period") },
+          )}
+        >
+          <Field label={t("Reason")}>
+            <Textarea
+              required
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+          </Field>
+          <div className="form-actions">
+            <Button variant="outline" onClick={() => setPeriod(null)}>
+              {t("Cancel")}
+            </Button>
+            <Button
+              disabled={busy || !reason.trim()}
+              onClick={async () => {
+                setBusy(true);
+                setError("");
+                try {
+                  await command("period_lock", {
+                    company_id: b.companyId,
+                    period_id: period!.id,
+                    locked: !period!.locked,
+                    reason,
+                  });
+                  await b.refresh();
+                  setPeriod(null);
+                  toast.success(t("Period state updated"));
+                } catch (e) {
+                  setError((e as Error).message);
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              {t("Confirm")}
+              {period?.locked ? t("reopen") : t("lock")}
+            </Button>
+          </div>
+        </Modal>
+      </TabsContent>
+    </Tabs>
   );
 }
 export function JournalEditor({ onClose }: { onClose: () => void }) {
@@ -379,7 +387,7 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
       wide
     >
       {error && <ErrorState error={error} />}
-      <div className="form-grid">
+      <FieldGroup className="form-grid">
         <Field label={t("Financial date")}>
           <Input
             type="date"
@@ -399,7 +407,7 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
             }}
           />
         </Field>
-      </div>
+      </FieldGroup>
       <div className="table-scroll section-gap">
         <Table className="editor-lines">
           <TableHeader>
@@ -633,7 +641,7 @@ export function JournalDetail({
       )}
       {reverse && (
         <>
-          <div className="form-grid">
+          <FieldGroup className="form-grid">
             <Field label={t("Reversal date")}>
               <Input
                 type="date"
@@ -647,7 +655,7 @@ export function JournalDetail({
                 onChange={(e) => setReason(e.target.value)}
               />
             </Field>
-          </div>
+          </FieldGroup>
           <div className="form-actions">
             <Button variant="outline" onClick={() => setReverse(false)}>
               {t("Cancel")}

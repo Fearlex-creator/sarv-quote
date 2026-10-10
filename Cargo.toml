@@ -1,13 +1,8 @@
 [workspace]
 resolver = "2"
-members = [
-    "crates/free-accounting-core",
-    "crates/sarv-quote",
-    "crates/sarv-quote-gtk",
-    "src-tauri",
-]
+members = ["crates/sarv-quote"]
 exclude = ["desktop/src-tauri"]
-default-members = ["crates/sarv-quote", "src-tauri"]
+default-members = ["crates/sarv-quote"]
 
 [workspace.package]
 version = "0.1.0"

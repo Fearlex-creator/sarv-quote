@@ -1,11 +1,9 @@
 import { Input } from "../components/ui/input";
-import {
-  ArrowUpRight,
-  Banknote,
-  FileText,
-  ShoppingBag,
-  Plus,
-} from "lucide-react";
+import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
+import { MoneyIcon as Banknote } from "@phosphor-icons/react/dist/csr/Money";
+import { FileTextIcon as FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { ShoppingBagIcon as ShoppingBag } from "@phosphor-icons/react/dist/csr/ShoppingBag";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { useBooks } from "../app/books";
 import { Button } from "../components/ui/button";
 import { PageHeader, ErrorState, Loading } from "../components/ui/shared";
@@ -75,15 +73,15 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
       </div>
       {w.initialized && (
         <div className="overview-summary">
-          <button onClick={() => b.navigate("sales")}>
+          <Button variant="ghost" onClick={() => b.navigate("sales")}>
             {t("Drafts")}
             <strong>{w.drafts.length}</strong>
-          </button>
-          <button onClick={() => b.navigate("accounting")}>
+          </Button>
+          <Button variant="ghost" onClick={() => b.navigate("accounting")}>
             {t("Journals")}
             <strong>{w.journal_count}</strong>
-          </button>
-          <button onClick={() => b.navigate("reports")}>
+          </Button>
+          <Button variant="ghost" onClick={() => b.navigate("reports")}>
             {t("Controls")}{" "}
             <Status
               kind={r?.reconciliation?.reconciled ? "positive" : "neutral"}
@@ -94,7 +92,7 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
                   : t("Difference")
                 : "—"}
             </Status>
-          </button>
+          </Button>
         </div>
       )}
       <section className="panel section-gap">
@@ -127,12 +125,13 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
             {
               header: t("Reference"),
               cell: ({ row }) => (
-                <button
-                  className="text-link"
+                <Button
+                  variant="link"
+                  className="text-link h-auto justify-start p-0"
                   onClick={() => onDetail(row.original)}
                 >
                   #{row.original.id.slice(0, 8)}
-                </button>
+                </Button>
               ),
             },
             { header: t("Description"), accessorKey: "reason" },

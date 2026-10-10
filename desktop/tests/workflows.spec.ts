@@ -414,7 +414,9 @@ test("opening CSV presents reconciled controls and persists only after review", 
   await expect(
     dialog.getByRole("table", { name: "Opening control review" }),
   ).toBeVisible();
-  await expect(dialog.locator(".note .money")).toHaveText(/1,251\s*IRR/);
+  await expect(dialog.locator("[data-slot=alert] .money")).toHaveText(
+    /1,251\s*IRR/,
+  );
   expect(
     (await api("workspace", { company_id: created.company_id })).initialized,
   ).toBe(false);

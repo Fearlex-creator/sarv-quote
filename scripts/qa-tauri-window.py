@@ -19,7 +19,7 @@ from PIL import ImageGrab
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT/'scripts'))
-spec = importlib.util.spec_from_file_location('native_qa', ROOT/'scripts/qa-native.py')
+spec = importlib.util.spec_from_file_location('native_qa', ROOT/'scripts/qa-x11.py')
 native = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(native)
 

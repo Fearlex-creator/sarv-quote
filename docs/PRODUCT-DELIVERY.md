@@ -1,5 +1,7 @@
 # Native product delivery — 2026-10-07
 
+Historical milestone record. The GTK application has been removed. Current architecture and commands are in [the handoff](CLOUD-HANDOFF.md) and [desktop development](../desktop/README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+
 Sarv Quote remains the existing Rust + GTK4 + stable libadwaita application. This cycle improves the actual quotation workspace and adds useful customer/catalog tools; no web rewrite or deployment occurred. Requirements and their evidence are in [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md); public research, design decisions and viewing limits are in [PRODUCT-DESIGN.md](PRODUCT-DESIGN.md).
 
 ## Concrete changes

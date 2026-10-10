@@ -9,8 +9,8 @@ description = "Offline Persian accounting and quotation engine"
 anyhow.workspace = true
 chrono.workspace = true
 csv.workspace = true
-cairo-rs.workspace = true
-pangocairo.workspace = true
+cairo-rs = { workspace = true, optional = true }
+pangocairo = { workspace = true, optional = true }
 rusqlite.workspace = true
 rust_decimal.workspace = true
 serde.workspace = true
@@ -18,8 +18,11 @@ serde_json.workspace = true
 sha2.workspace = true
 uuid.workspace = true
 # pango used by export modules for RTL PDF text
-pango = "0.22"
-glib = "0.22"
+pango = { version = "0.22", optional = true }
+
+[features]
+default = []
+pdf-export = ["dep:cairo-rs", "dep:pangocairo", "dep:pango"]
 
 [dev-dependencies]
 tempfile.workspace = true

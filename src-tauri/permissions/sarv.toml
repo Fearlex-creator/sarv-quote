@@ -1,7 +1,0 @@
-[[permission]]
-identifier = "allow-accounting-view"
-commands.allow = ["accounting_view"]
-
-[[permission]]
-identifier = "allow-accounting-mutate"
-commands.allow = ["accounting_mutate"]

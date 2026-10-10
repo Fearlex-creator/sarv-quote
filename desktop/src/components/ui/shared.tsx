@@ -1,5 +1,5 @@
 import { useTranslation } from "../../lib/i18n";
-import { AlertCircle } from "lucide-react";
+import { WarningCircleIcon as AlertCircle } from "@phosphor-icons/react/dist/csr/WarningCircle";
 import {
   cloneElement,
   isValidElement,
@@ -12,6 +12,8 @@ import { createPortal } from "react-dom";
 import { BooksContext } from "../../app/books";
 import { Button } from "./button";
 import { Skeleton } from "./skeleton";
+import { Field as FieldPrimitive, FieldLabel } from "./field";
+import { Alert, AlertDescription, AlertTitle } from "./alert";
 export function PageHeader({
   title,
   actions,
@@ -69,15 +71,15 @@ export function Field({
       )
     : children;
   return (
-    <div className="field" data-slot="field">
-      <label htmlFor={id}>{label}</label>
+    <FieldPrimitive className="field">
+      <FieldLabel htmlFor={id}>{label}</FieldLabel>
       {control}
       {hint && (
-        <span className="sr-only" id={`${id}-hint`}>
+        <span className="sr-only w-px!" id={`${id}-hint`}>
           {hint}
         </span>
       )}
-    </div>
+    </FieldPrimitive>
   );
 }
 export function ErrorState({
@@ -89,17 +91,17 @@ export function ErrorState({
 }) {
   const t = useTranslation();
   return (
-    <div className="error-state" role="alert">
+    <Alert variant="destructive">
       <AlertCircle />
-      <div>
-        <p>{t(error)}</p>
+      <AlertTitle>{t(error)}</AlertTitle>
+      <AlertDescription>
         {retry && (
           <Button variant="outline" onClick={retry}>
             {t("Try again")}
           </Button>
         )}
-      </div>
-    </div>
+      </AlertDescription>
+    </Alert>
   );
 }
 export function Loading({ shape = "table" }: { shape?: "table" | "form" }) {
@@ -113,14 +115,18 @@ export function Loading({ shape = "table" }: { shape?: "table" | "form" }) {
       <span className="sr-only">{t("Loading…")}</span>
       {Array.from({ length: shape === "table" ? 6 : 4 }, (_, i) => (
         <div className="skeleton-row" aria-hidden="true" key={i}>
-          <Skeleton />
-          <Skeleton />
-          {shape === "table" && <Skeleton />}
+          <Skeleton className="h-3 w-full" />
+          <Skeleton className="h-3 w-full" />
+          {shape === "table" && <Skeleton className="h-3 w-full" />}
         </div>
       ))}
     </div>
   );
 }
 export function Note({ children }: { children: ReactNode }) {
-  return <div className="note">{children}</div>;
+  return (
+    <Alert>
+      <AlertDescription>{children}</AlertDescription>
+    </Alert>
+  );
 }

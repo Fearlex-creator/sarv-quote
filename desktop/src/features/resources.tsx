@@ -1,3 +1,4 @@
+import { FieldGroup } from "../components/ui/field";
 import {
   NativeSelect,
   NativeSelectOption,
@@ -5,9 +6,14 @@ import {
 import { Input } from "../components/ui/input";
 import { useTranslation } from "../lib/i18n";
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { toast } from "sonner";
-import { tabKeyboard } from "../lib/tab-keyboard";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../components/ui/tabs";
 import { useBooks } from "../app/books";
 import { command, uid, today } from "../lib/client";
 import {
@@ -18,7 +24,7 @@ import {
   Loading,
 } from "../components/ui/shared";
 import { Button } from "../components/ui/button";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { DataGrid } from "../components/ui/data-grid";
 import { Money, formatQuantity, formatDate } from "../components/finance/money";
 import type { Party } from "../lib/types";
@@ -81,7 +87,7 @@ export function ResourceDialog({
         }}
       >
         {error && <ErrorState error={error} />}
-        <div className="form-grid">
+        <FieldGroup className="form-grid">
           <Field label={b.t("Name")}>
             <Input
               required
@@ -118,7 +124,7 @@ export function ResourceDialog({
               </Field>
             </>
           )}
-        </div>
+        </FieldGroup>
         <div className="form-actions">
           <Button variant="outline" type="button" onClick={onClose}>
             {t("Cancel")}
@@ -173,12 +179,13 @@ export function Customers({ vendor = false }: { vendor?: boolean }) {
               header: b.t("Name"),
               accessorKey: "name",
               cell: ({ row }) => (
-                <button
-                  className="text-link"
+                <Button
+                  variant="link"
+                  className="text-link h-auto justify-start p-0"
                   onClick={() => setSelected(row.original)}
                 >
                   {row.original.name}
-                </button>
+                </Button>
               ),
             },
             {
@@ -271,7 +278,11 @@ export function Inventory() {
   );
   const r = b.workspace.resources;
   return (
-    <>
+    <Tabs
+      value={tab}
+      onValueChange={setTab}
+      dir={b.locale === "fa" ? "rtl" : "ltr"}
+    >
       <PageHeader
         title={b.t("Inventory")}
         actions={
@@ -307,97 +318,92 @@ export function Inventory() {
           )
         }
       />
-      <div className="tabs" role="tablist" onKeyDown={tabKeyboard}>
+      <TabsList>
         {["Stock", "Products", "Warehouses", "Units"].map((x) => (
-          <button
-            role="tab"
-            aria-selected={tab === x}
-            tabIndex={tab === x ? 0 : -1}
-            className="tab"
-            key={x}
-            onClick={() => setTab(x)}
-          >
+          <TabsTrigger key={x} value={x}>
             {b.t(x)}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
-      <div className="panel">
-        {tab === "Stock" ? (
-          b.companyId && !b.report && !b.reportError ? (
-            <Loading />
-          ) : (
-            <DataGrid
-              data={b.report?.reconciliation?.stock ?? []}
-              id={(x) => x.item_id + x.warehouse_id}
-              empty={t("No stock")}
-              columns={[
-                {
-                  header: t("Product"),
-                  cell: ({ row }) =>
-                    r?.items.find((x) => x.id === row.original.item_id)?.name ??
-                    row.original.item_id,
-                },
-                {
-                  header: t("Warehouse"),
-                  cell: ({ row }) =>
-                    r?.warehouses.find(
-                      (x) => x.id === row.original.warehouse_id,
-                    )?.name ?? row.original.warehouse_id,
-                },
-                {
-                  header: t("Quantity"),
-                  meta: { numeric: true },
-                  cell: ({ row }) =>
-                    formatQuantity(
-                      row.original.quantity_thousandths,
-                      b.numberLocale,
+      </TabsList>
+      <TabsContent value={tab}>
+        <div className="panel">
+          {tab === "Stock" ? (
+            b.companyId && !b.report && !b.reportError ? (
+              <Loading />
+            ) : (
+              <DataGrid
+                data={b.report?.reconciliation?.stock ?? []}
+                id={(x) => x.item_id + x.warehouse_id}
+                empty={t("No stock")}
+                columns={[
+                  {
+                    header: t("Product"),
+                    cell: ({ row }) =>
+                      r?.items.find((x) => x.id === row.original.item_id)
+                        ?.name ?? row.original.item_id,
+                  },
+                  {
+                    header: t("Warehouse"),
+                    cell: ({ row }) =>
+                      r?.warehouses.find(
+                        (x) => x.id === row.original.warehouse_id,
+                      )?.name ?? row.original.warehouse_id,
+                  },
+                  {
+                    header: t("Quantity"),
+                    meta: { numeric: true },
+                    cell: ({ row }) =>
+                      formatQuantity(
+                        row.original.quantity_thousandths,
+                        b.numberLocale,
+                      ),
+                  },
+                  {
+                    header: `${t("Carried value")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+                    meta: { numeric: true },
+                    cell: ({ row }) => (
+                      <Money
+                        value={row.original.value}
+                        unit={b.unit}
+                        locale={b.numberLocale}
+                      />
                     ),
-                },
+                  },
+                ]}
+              />
+            )
+          ) : tab === "Products" ? (
+            <DataGrid
+              data={r?.items ?? []}
+              id={(x) => x.id}
+              searchText={(x) => x.name + x.sku}
+              empty={t("No products")}
+              columns={[
+                { header: "SKU", accessorKey: "sku" },
+                { header: t("Product"), accessorKey: "name" },
                 {
-                  header: `${t("Carried value")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
-                  meta: { numeric: true },
-                  cell: ({ row }) => (
-                    <Money
-                      value={row.original.value}
-                      unit={b.unit}
-                      locale={b.numberLocale}
-                    />
-                  ),
+                  header: t("Base unit"),
+                  cell: ({ row }) =>
+                    r?.units.find((x) => x.id === row.original.base_unit_id)
+                      ?.name ?? "—",
                 },
               ]}
             />
-          )
-        ) : tab === "Products" ? (
-          <DataGrid
-            data={r?.items ?? []}
-            id={(x) => x.id}
-            searchText={(x) => x.name + x.sku}
-            empty={t("No products")}
-            columns={[
-              { header: "SKU", accessorKey: "sku" },
-              { header: t("Product"), accessorKey: "name" },
-              {
-                header: t("Base unit"),
-                cell: ({ row }) =>
-                  r?.units.find((x) => x.id === row.original.base_unit_id)
-                    ?.name ?? "—",
-              },
-            ]}
-          />
-        ) : (
-          <DataGrid
-            data={tab === "Units" ? (r?.units ?? []) : (r?.warehouses ?? [])}
-            id={(x) => x.id}
-            searchText={(x) => x.name}
-            empty={t("No records")}
-            columns={[{ header: t("Name"), accessorKey: "name" }]}
-          />
+          ) : (
+            <DataGrid
+              data={tab === "Units" ? (r?.units ?? []) : (r?.warehouses ?? [])}
+              id={(x) => x.id}
+              searchText={(x) => x.name}
+              empty={t("No records")}
+              columns={[{ header: t("Name"), accessorKey: "name" }]}
+            />
+          )}
+        </div>
+        {transfer && <TransferDialog onClose={() => setTransfer(false)} />}
+        {create && (
+          <ResourceDialog kind={create} onClose={() => setCreate(null)} />
         )}
-      </div>
-      {transfer && <TransferDialog onClose={() => setTransfer(false)} />}
-      {create && (
-        <ResourceDialog kind={create} onClose={() => setCreate(null)} />
-      )}
-    </>
+      </TabsContent>
+    </Tabs>
   );
 }

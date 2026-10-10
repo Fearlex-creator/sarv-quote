@@ -1,14 +1,12 @@
-import {
-  LayoutDashboard,
-  FileText,
-  ShoppingBag,
-  BookOpen,
-  Boxes,
-  ChartNoAxesCombined,
-  Users,
-  Settings,
-  Landmark,
-} from "lucide-react";
+import { SquaresFourIcon as LayoutDashboard } from "@phosphor-icons/react/dist/csr/SquaresFour";
+import { FileTextIcon as FileText } from "@phosphor-icons/react/dist/csr/FileText";
+import { ShoppingBagIcon as ShoppingBag } from "@phosphor-icons/react/dist/csr/ShoppingBag";
+import { BookOpenIcon as BookOpen } from "@phosphor-icons/react/dist/csr/BookOpen";
+import { StackIcon as Boxes } from "@phosphor-icons/react/dist/csr/Stack";
+import { ChartLineUpIcon as ChartNoAxesCombined } from "@phosphor-icons/react/dist/csr/ChartLineUp";
+import { UsersIcon as Users } from "@phosphor-icons/react/dist/csr/Users";
+import { GearIcon as Settings } from "@phosphor-icons/react/dist/csr/Gear";
+import { BankIcon as Landmark } from "@phosphor-icons/react/dist/csr/Bank";
 import type { Page } from "../lib/types";
 export const navigation: {
   page: Page;

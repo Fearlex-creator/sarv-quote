@@ -1,3 +1,4 @@
+import { FieldGroup } from "../components/ui/field";
 import {
   Table,
   TableHeader,
@@ -13,16 +14,22 @@ import {
 import { Input } from "../components/ui/input";
 import { useTranslation } from "../lib/i18n";
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { TrashIcon as Trash2 } from "@phosphor-icons/react/dist/csr/Trash";
 import { toast } from "sonner";
-import { tabKeyboard } from "../lib/tab-keyboard";
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../components/ui/tabs";
 import { useBooks } from "../app/books";
 import { command, today, uid } from "../lib/client";
 import type { Preview, RecordEntry } from "../lib/types";
 import { recordCommand, recordData, recordKind } from "./sales";
 import { PageHeader, Field, ErrorState, Note } from "../components/ui/shared";
 import { Button } from "../components/ui/button";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { DataGrid } from "../components/ui/data-grid";
 import { Money, Status, formatDate } from "../components/finance/money";
 import { Customers } from "./resources";
@@ -64,7 +71,11 @@ export function Purchases({
     }
   }
   return (
-    <>
+    <Tabs
+      value={tab}
+      onValueChange={setTab}
+      dir={b.locale === "fa" ? "rtl" : "ltr"}
+    >
       {tab !== "Vendors" && (
         <PageHeader
           title={b.t("Purchases")}
@@ -80,129 +91,125 @@ export function Purchases({
           }
         />
       )}
-      <div className="tabs" role="tablist" onKeyDown={tabKeyboard}>
+      <TabsList>
         {["Orders", "Receipts", "Bills", "Returns", "Vendors"].map((x) => (
-          <button
-            className="tab"
-            role="tab"
-            aria-selected={tab === x}
-            tabIndex={tab === x ? 0 : -1}
-            key={x}
-            onClick={() => setTab(x)}
-          >
+          <TabsTrigger key={x} value={x}>
             {b.t(x)}
-          </button>
+          </TabsTrigger>
         ))}
-      </div>
-      {error && <ErrorState error={error} />}{" "}
-      {tab === "Vendors" ? (
-        <Customers vendor />
-      ) : (
-        <section className="panel">
-          <DataGrid
-            data={rows}
-            id={(x) => x.id}
-            searchText={(x) =>
-              (recordCommand(x).reference ??
-                recordCommand(x).return_reference ??
-                "") + (recordData(x).supplier?.name ?? "")
-            }
-            empty={`No ${tab.toLowerCase()} yet.`}
-            columns={[
-              {
-                header: t("Reference"),
-                cell: ({ row }) => (
-                  <button
-                    className="text-link"
-                    onClick={() => onDetail(row.original)}
-                  >
-                    {recordCommand(row.original).reference ??
-                      recordCommand(row.original).return_reference}
-                  </button>
-                ),
-              },
-              {
-                header: t("Supplier"),
-                cell: ({ row }) =>
-                  recordData(row.original).supplier?.name ??
-                  b.workspace.resources?.parties.find(
-                    (x) => x.id === recordData(row.original).supplier_id,
-                  )?.name ??
-                  "—",
-              },
-              {
-                header: t("Date"),
-                cell: ({ row }) =>
-                  formatDate(
-                    recordCommand(row.original).context.date,
-                    b.dateLocale,
-                    b.workspace.settings.date_display,
+      </TabsList>
+      <TabsContent value={tab}>
+        {error && <ErrorState error={error} />}{" "}
+        {tab === "Vendors" ? (
+          <Customers vendor />
+        ) : (
+          <section className="panel">
+            <DataGrid
+              data={rows}
+              id={(x) => x.id}
+              searchText={(x) =>
+                (recordCommand(x).reference ??
+                  recordCommand(x).return_reference ??
+                  "") + (recordData(x).supplier?.name ?? "")
+              }
+              empty={`No ${tab.toLowerCase()} yet.`}
+              columns={[
+                {
+                  header: t("Reference"),
+                  cell: ({ row }) => (
+                    <Button
+                      variant="link"
+                      className="text-link h-auto justify-start p-0"
+                      onClick={() => onDetail(row.original)}
+                    >
+                      {recordCommand(row.original).reference ??
+                        recordCommand(row.original).return_reference}
+                    </Button>
                   ),
-              },
-              {
-                header: `${t("Amount")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
-                meta: { numeric: true },
-                cell: ({ row }) => (
-                  <Money
-                    value={recordData(row.original).total ?? "0"}
-                    unit={b.unit}
-                    locale={b.numberLocale}
-                  />
-                ),
-              },
-              {
-                header: t("State"),
-                cell: ({ row }) => (
-                  <Status
-                    kind={row.original.journal_id ? "positive" : "neutral"}
-                  >
-                    {row.original.journal_id
-                      ? t("Posted")
-                      : t("Recorded order")}
-                  </Status>
-                ),
-              },
-              {
-                header: "",
-                cell: ({ row }) => (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onDetail(row.original)}
-                  >
-                    {t("Open")}
-                  </Button>
-                ),
-              },
-            ]}
-          />
-          <div className="pagination">
-            <span>
-              {b.workspace.purchase_count} {t("source records")}{" "}
-            </span>
-            <div className="toolbar-actions">
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={!offset}
-                onClick={() => page(Math.max(0, offset - 100))}
-              >
-                {t("Previous")}
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                disabled={offset + 100 >= Number(b.workspace.purchase_count)}
-                onClick={() => page(offset + 100)}
-              >
-                {t("Next")}
-              </Button>
+                },
+                {
+                  header: t("Supplier"),
+                  cell: ({ row }) =>
+                    recordData(row.original).supplier?.name ??
+                    b.workspace.resources?.parties.find(
+                      (x) => x.id === recordData(row.original).supplier_id,
+                    )?.name ??
+                    "—",
+                },
+                {
+                  header: t("Date"),
+                  cell: ({ row }) =>
+                    formatDate(
+                      recordCommand(row.original).context.date,
+                      b.dateLocale,
+                      b.workspace.settings.date_display,
+                    ),
+                },
+                {
+                  header: `${t("Amount")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+                  meta: { numeric: true },
+                  cell: ({ row }) => (
+                    <Money
+                      value={recordData(row.original).total ?? "0"}
+                      unit={b.unit}
+                      locale={b.numberLocale}
+                    />
+                  ),
+                },
+                {
+                  header: t("State"),
+                  cell: ({ row }) => (
+                    <Status
+                      kind={row.original.journal_id ? "positive" : "neutral"}
+                    >
+                      {row.original.journal_id
+                        ? t("Posted")
+                        : t("Recorded order")}
+                    </Status>
+                  ),
+                },
+                {
+                  header: "",
+                  cell: ({ row }) => (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => onDetail(row.original)}
+                    >
+                      {t("Open")}
+                    </Button>
+                  ),
+                },
+              ]}
+            />
+            <div className="pagination">
+              <span>
+                {b.workspace.purchase_count} {t("source records")}{" "}
+              </span>
+              <div className="toolbar-actions">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={!offset}
+                  onClick={() => page(Math.max(0, offset - 100))}
+                >
+                  {t("Previous")}
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={offset + 100 >= Number(b.workspace.purchase_count)}
+                  onClick={() => page(offset + 100)}
+                >
+                  {t("Next")}
+                </Button>
+              </div>
             </div>
-          </div>
-        </section>
-      )}
-      {create && <PurchaseEditor onClose={() => setCreate(false)} />}
-    </>
+          </section>
+        )}
+        {create && <PurchaseEditor onClose={() => setCreate(false)} />}
+      </TabsContent>
+    </Tabs>
   );
 }
 function newLine() {
@@ -296,7 +303,7 @@ function PurchaseEditor({ onClose }: { onClose: () => void }) {
         wide
       >
         {error && <ErrorState error={error} />}
-        <div className="form-grid">
+        <FieldGroup className="form-grid">
           <Field label={t("Supplier")}>
             <NativeSelect
               value={supplier}
@@ -346,7 +353,7 @@ function PurchaseEditor({ onClose }: { onClose: () => void }) {
               }}
             />
           </Field>
-        </div>
+        </FieldGroup>
         <div className="table-scroll section-gap">
           <Table className="editor-lines">
             <TableHeader>

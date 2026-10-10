@@ -1,3 +1,4 @@
+#![cfg(feature = "pdf-export")]
 use sarv_quote::{domain::*, export};
 use std::{path::Path, process::Command};
 

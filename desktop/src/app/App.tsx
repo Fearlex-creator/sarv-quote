@@ -1,27 +1,35 @@
 import {
+  Empty,
+  EmptyHeader,
+  EmptyTitle,
+  EmptyContent,
+} from "../components/ui/empty";
+import { Avatar, AvatarFallback } from "../components/ui/avatar";
+import { Separator } from "../components/ui/separator";
+import {
   NativeSelect,
   NativeSelectOption,
 } from "../components/ui/native-select";
 import {
+  Suspense,
+  startTransition,
+  useMemo,
   useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
   useState,
 } from "react";
-import { Command } from "cmdk";
 import { Toaster, toast } from "sonner";
-import {
-  PanelLeftClose,
-  PanelLeftOpen,
-  Search,
-  Sun,
-  Moon,
-  CircleHelp,
-  Sprout,
-  Plus,
-  RefreshCw,
-} from "lucide-react";
+import { SidebarSimpleIcon as PanelLeftClose } from "@phosphor-icons/react/dist/csr/SidebarSimple";
+import { SidebarSimpleIcon as PanelLeftOpen } from "@phosphor-icons/react/dist/csr/SidebarSimple";
+import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { SunIcon as Sun } from "@phosphor-icons/react/dist/csr/Sun";
+import { MoonIcon as Moon } from "@phosphor-icons/react/dist/csr/Moon";
+import { QuestionIcon as CircleHelp } from "@phosphor-icons/react/dist/csr/Question";
+import { PlantIcon as Sprout } from "@phosphor-icons/react/dist/csr/Plant";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
+import { ArrowsClockwiseIcon as RefreshCw } from "@phosphor-icons/react/dist/csr/ArrowsClockwise";
 import { command, today } from "../lib/client";
 import { isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -33,7 +41,8 @@ import type {
   Report,
   Workspace,
 } from "../lib/types";
-import { BooksContext } from "./books";
+import { DirectionProvider } from "../components/ui/direction";
+import { BooksContext, type Books } from "./books";
 import { navigation } from "./navigation";
 import {
   I18nContext,
@@ -47,24 +56,34 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarProvider,
+  SidebarGroup,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
 } from "../components/ui/sidebar";
 import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { ErrorState, Loading, PageHeader } from "../components/ui/shared";
-import { Overview } from "../features/overview";
-import { SetupDialog } from "../features/setup";
-import { Sales, OrderEditor } from "../features/sales";
-import { RecordDetail } from "../features/records";
-import { Purchases } from "../features/purchases";
-import { Customers, Inventory } from "../features/resources";
 import {
+  Overview,
+  SetupDialog,
+  Sales,
+  OrderEditor,
+  RecordDetail,
+  Purchases,
+  Customers,
+  Inventory,
   Accounting,
   JournalDetail,
   JournalEditor,
-} from "../features/accounting";
-import { Reports } from "../features/reports";
-import { Settings } from "../features/settings";
+  Reports,
+  Settings,
+  Onboarding,
+  preloadPage,
+  CommandMenu,
+} from "./screens";
 export default function App() {
   const [page, setPage] = useState<Page>("overview");
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
@@ -91,6 +110,7 @@ export default function App() {
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
   const [setup, setSetup] = useState(false);
+  const [onboarding, setOnboarding] = useState(false);
   const [newCompany, setNewCompany] = useState(false);
   const [journalEditor, setJournalEditor] = useState(false);
   const [editor, setEditor] = useState<{ draft?: Draft } | null>(null);
@@ -215,7 +235,8 @@ export default function App() {
         );
         return;
       }
-      setPage(next);
+      preloadPage(next);
+      startTransition(() => setPage(next));
       setPalette(false);
     },
     [editor, t],
@@ -238,15 +259,21 @@ export default function App() {
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
   }, []);
-  async function openJournal(id: string) {
-    try {
-      const j = await command<Journal>("detail", { company_id: companyId, id });
-      setRecord(null);
-      setJournal(j);
-    } catch (e) {
-      toast.error((e as Error).message);
-    }
-  }
+  const openJournal = useCallback(
+    async (id: string) => {
+      try {
+        const j = await command<Journal>("detail", {
+          company_id: companyId,
+          id,
+        });
+        setRecord(null);
+        setJournal(j);
+      } catch (e) {
+        toast.error((e as Error).message);
+      }
+    },
+    [companyId],
+  );
   async function theme() {
     if (!workspace) return;
     try {
@@ -264,458 +291,520 @@ export default function App() {
   const companyName =
     workspace?.companies.find((x) => x.id === companyId)?.name ??
     t("Your business");
-  const content = workspace ? (
-    <BooksContext.Provider
-      value={{
-        workspace,
-        companyId,
-        periodId,
-        report,
-        reportError,
-        headerTarget,
-        lastSyncedAt:
-          page === "settings" || editor
-            ? null
-            : ["overview", "reports", "inventory", "customers"].includes(page)
-              ? report
-                ? reportSyncedAt
-                : null
-              : workspaceSyncedAt,
-        from: range.from,
-        to: range.to,
-        setRange: (from, to) => setRange({ from, to }),
-        refresh,
-        navigate,
-        unit: workspace.settings.default_currency,
-        locale,
-        numberLocale:
-          workspace.settings.display_digits === "Persian" ? "fa" : "en",
-        dateLocale: `${locale === "fa" ? "fa-IR" : workspace.settings.date_display === "DayMonthYear" ? "en-GB" : "en-US"}-u-ca-${workspace.settings.date_display === "Jalali" ? "persian" : "gregory"}-nu-${workspace.settings.display_digits === "Persian" ? "arabext" : "latn"}`,
-        t,
-        openSetup: () => {
-          setNewCompany(!companyId);
-          setSetup(true);
-        },
-        openJournal: () => setJournalEditor(true),
-      }}
-    >
-      {editor ? (
-        <OrderEditor initial={editor.draft} onClose={() => setEditor(null)} />
-      ) : page === "overview" ? (
-        <Overview onDetail={setJournal} />
-      ) : page === "sales" ? (
-        <Sales onEdit={(draft) => setEditor({ draft })} onDetail={setRecord} />
-      ) : page === "purchases" ? (
-        <Purchases onDetail={setRecord} />
-      ) : page === "accounting" ? (
-        <Accounting onDetail={setJournal} />
-      ) : page === "inventory" ? (
-        <Inventory />
-      ) : page === "reports" ? (
-        <Reports onJournal={(id) => void openJournal(id)} />
-      ) : page === "customers" ? (
-        <Customers />
-      ) : page === "settings" ? (
-        <Settings onLocale={setLocale} />
-      ) : (
-        <>
-          <PageHeader title={t("Banking")} />
-          <section className="panel empty-centered">
-            <h2>{t("Unavailable")}</h2>
-            <Button variant="outline" onClick={() => navigate("reports")}>
-              {t("Open financial reports")}
-            </Button>
-          </section>
-        </>
-      )}
-      <SetupDialog
-        newCompany={newCompany}
-        open={setup}
-        onClose={() => setSetup(false)}
-        onCreated={(id) => {
-          setCompanyId(id);
-          setNewCompany(false);
-          setSetup(true);
-        }}
-      />
-      {journalEditor && (
-        <JournalEditor onClose={() => setJournalEditor(false)} />
-      )}{" "}
-      {journal && (
-        <JournalDetail journal={journal} onClose={() => setJournal(null)} />
-      )}{" "}
-      {record && (
-        <RecordDetail
-          record={record}
-          onClose={() => setRecord(null)}
-          onJournal={(id) => void openJournal(id)}
-        />
-      )}{" "}
-    </BooksContext.Provider>
-  ) : null;
+  const editDraft = useCallback((draft?: Draft) => setEditor({ draft }), []);
+  const viewJournal = useCallback(
+    (id: string) => {
+      void openJournal(id);
+    },
+    [openJournal],
+  );
+  const books = useMemo<Books | null>(
+    () =>
+      workspace
+        ? {
+            workspace,
+            companyId,
+            periodId,
+            report,
+            reportError,
+            headerTarget,
+            lastSyncedAt:
+              page === "settings" || editor
+                ? null
+                : ["overview", "reports", "inventory", "customers"].includes(
+                      page,
+                    )
+                  ? report
+                    ? reportSyncedAt
+                    : null
+                  : workspaceSyncedAt,
+            from: range.from,
+            to: range.to,
+            setRange: (from, to) => setRange({ from, to }),
+            refresh,
+            navigate,
+            unit: workspace.settings.default_currency,
+            locale,
+            numberLocale:
+              workspace.settings.display_digits === "Persian" ? "fa" : "en",
+            dateLocale: `${locale === "fa" ? "fa-IR" : workspace.settings.date_display === "DayMonthYear" ? "en-GB" : "en-US"}-u-ca-${workspace.settings.date_display === "Jalali" ? "persian" : "gregory"}-nu-${workspace.settings.display_digits === "Persian" ? "arabext" : "latn"}`,
+            t,
+            openSetup: () => {
+              setNewCompany(!companyId);
+              setSetup(true);
+            },
+            openJournal: () => setJournalEditor(true),
+          }
+        : null,
+    [
+      workspace,
+      companyId,
+      periodId,
+      report,
+      reportError,
+      headerTarget,
+      page,
+      editor,
+      reportSyncedAt,
+      workspaceSyncedAt,
+      range,
+      refresh,
+      navigate,
+      locale,
+      t,
+    ],
+  );
+  const content =
+    workspace && books ? (
+      <BooksContext.Provider value={books}>
+        <div className="page-content" key={page}>
+          <Suspense
+            fallback={
+              <Loading
+                shape={page === "settings" || editor ? "form" : "table"}
+              />
+            }
+          >
+            {editor ? (
+              <OrderEditor
+                initial={editor.draft}
+                onClose={() => setEditor(null)}
+              />
+            ) : page === "overview" ? (
+              !workspace.companies.length ? (
+                <Onboarding
+                  onLocale={setLocale}
+                  onStart={() => {
+                    setOnboarding(true);
+                    setNewCompany(true);
+                    setSetup(true);
+                  }}
+                />
+              ) : (
+                <Overview onDetail={setJournal} />
+              )
+            ) : page === "sales" ? (
+              <Sales onEdit={editDraft} onDetail={setRecord} />
+            ) : page === "purchases" ? (
+              <Purchases onDetail={setRecord} />
+            ) : page === "accounting" ? (
+              <Accounting onDetail={setJournal} />
+            ) : page === "inventory" ? (
+              <Inventory />
+            ) : page === "reports" ? (
+              <Reports onJournal={viewJournal} />
+            ) : page === "customers" ? (
+              <Customers />
+            ) : page === "settings" ? (
+              <Settings onLocale={setLocale} />
+            ) : (
+              <>
+                <PageHeader title={t("Banking")} />
+                <Empty>
+                  <EmptyHeader>
+                    <EmptyTitle>{t("Unavailable")}</EmptyTitle>
+                  </EmptyHeader>
+                  <EmptyContent>
+                    <Button
+                      variant="outline"
+                      onClick={() => navigate("reports")}
+                    >
+                      {t("Open financial reports")}
+                    </Button>
+                  </EmptyContent>
+                </Empty>
+              </>
+            )}
+          </Suspense>
+        </div>
+        <Suspense fallback={null}>
+          {setup && (
+            <SetupDialog
+              firstRun={onboarding}
+              newCompany={newCompany}
+              open={setup}
+              onClose={() => {
+                setSetup(false);
+                setOnboarding(false);
+              }}
+              onCreated={(id) => {
+                setCompanyId(id);
+                setNewCompany(false);
+                setSetup(true);
+              }}
+            />
+          )}
+          {journalEditor && (
+            <JournalEditor onClose={() => setJournalEditor(false)} />
+          )}{" "}
+          {journal && (
+            <JournalDetail journal={journal} onClose={() => setJournal(null)} />
+          )}{" "}
+          {record && (
+            <RecordDetail
+              record={record}
+              onClose={() => setRecord(null)}
+              onJournal={viewJournal}
+            />
+          )}{" "}
+        </Suspense>
+      </BooksContext.Provider>
+    ) : null;
   return (
     <I18nContext.Provider value={locale}>
-      <SidebarProvider collapsed={collapsed}>
-        <div
-          className={`app-shell ${workspace?.settings.density === "Compact" ? "compact" : ""}`}
+      <DirectionProvider dir={locale === "fa" ? "rtl" : "ltr"}>
+        <SidebarProvider
+          open={!collapsed}
+          onOpenChange={(open) => setCollapsed(!open)}
         >
-          <Sidebar>
-            <SidebarHeader>
-              <div className="brand-row">
-                <div className="brand">
-                  <span className="brand-mark">
-                    <Sprout />
-                  </span>
-                  <span className="brand-text">SARV</span>
+          <div
+            className={`app-shell ${workspace?.settings.density === "Compact" ? "compact" : ""}`}
+          >
+            <Sidebar
+              side={locale === "fa" ? "right" : "left"}
+              dir={locale === "fa" ? "rtl" : "ltr"}
+              collapsible="icon"
+              className={collapsed ? "sidebar sidebar-collapsed" : "sidebar"}
+            >
+              <SidebarHeader>
+                <div className="brand-row">
+                  <div className="brand">
+                    <span className="brand-mark">
+                      <Sprout />
+                    </span>
+                    <span className="brand-text">SARV</span>
+                  </div>
+                  <Button
+                    className="collapse-button"
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t("Collapse sidebar")}
+                    onClick={() => setCollapsed(true)}
+                  >
+                    <PanelLeftClose className="directional-icon" />
+                  </Button>
                 </div>
-                <Button
-                  className="collapse-button"
-                  variant="ghost"
-                  size="icon"
-                  aria-label={t("Collapse sidebar")}
-                  onClick={() => setCollapsed(true)}
+                <NativeSelect
+                  className="workspace-select w-full"
+                  aria-label={t("Organization")}
+                  value={companyId}
+                  disabled={!!editor}
+                  onChange={(e) => {
+                    setCompanyId(e.target.value);
+                    setPage("overview");
+                  }}
                 >
-                  <PanelLeftClose className="directional-icon" />
-                </Button>
-              </div>
-              <NativeSelect
-                className="workspace-select"
-                aria-label={t("Organization")}
-                value={companyId}
-                disabled={!!editor}
-                onChange={(e) => {
-                  setCompanyId(e.target.value);
-                  setPage("overview");
-                }}
-              >
-                <NativeSelectOption value="">
-                  {t("Your business")}
-                </NativeSelectOption>
-                {workspace?.companies.map((c) => (
-                  <NativeSelectOption key={c.id} value={c.id}>
-                    {c.name}
+                  <NativeSelectOption value="">
+                    {t("Your business")}
                   </NativeSelectOption>
-                ))}
-              </NativeSelect>
-            </SidebarHeader>
-            <SidebarContent>
-              <div className="nav-section-label">{t("Books")}</div>
-              <nav aria-label={t("Main navigation")}>
-                {navigation.slice(0, 7).map((n) => (
-                  <button
-                    key={n.page}
-                    className="nav-item"
-                    aria-current={page === n.page ? "page" : undefined}
-                    title={collapsed ? t(n.label) : undefined}
-                    onClick={() => navigate(n.page)}
-                  >
-                    <n.icon />
-                    <span className="nav-label">{t(n.label)}</span>
-                  </button>
-                ))}
-              </nav>
-              {!collapsed && (
-                <div className="nav-section-label">
-                  {companyId ? t("Organization") : t("Get started")}
+                  {workspace?.companies.map((c) => (
+                    <NativeSelectOption key={c.id} value={c.id}>
+                      {c.name}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              </SidebarHeader>
+              <SidebarContent>
+                <SidebarGroup>
+                  <SidebarGroupLabel>{t("Books")}</SidebarGroupLabel>
+                  <SidebarMenu aria-label={t("Main navigation")}>
+                    {navigation.slice(0, 7).map((n) => (
+                      <SidebarMenuItem key={n.page}>
+                        <SidebarMenuButton
+                          isActive={page === n.page}
+                          aria-current={page === n.page ? "page" : undefined}
+                          tooltip={t(n.label)}
+                          onPointerEnter={() => preloadPage(n.page)}
+                          onFocus={() => preloadPage(n.page)}
+                          onClick={() => navigate(n.page)}
+                        >
+                          <n.icon />
+                          <span>{t(n.label)}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                  </SidebarMenu>
+                </SidebarGroup>
+                <SidebarGroup>
+                  <SidebarGroupLabel>
+                    {companyId ? t("Organization") : t("Get started")}
+                  </SidebarGroupLabel>
+                  <SidebarMenu>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={t("Add company")}
+                        title={t("Create another company")}
+                        onClick={() => {
+                          if (editor) {
+                            toast.info(
+                              t(
+                                "Save or discard the current sales draft first.",
+                              ),
+                            );
+                            return;
+                          }
+                          setNewCompany(true);
+                          setSetup(true);
+                        }}
+                      >
+                        <Plus />
+                        <span>{t("Add company")}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroup>
+              </SidebarContent>
+              <SidebarFooter>
+                <SidebarGroup>
+                  <SidebarGroupLabel>{t("Workspace")}</SidebarGroupLabel>
+                  <SidebarMenu>
+                    {navigation.slice(7).map((n) => (
+                      <SidebarMenuItem key={n.page}>
+                        <SidebarMenuButton
+                          isActive={page === n.page}
+                          aria-current={page === n.page ? "page" : undefined}
+                          tooltip={t(n.label)}
+                          onPointerEnter={() => preloadPage(n.page)}
+                          onFocus={() => preloadPage(n.page)}
+                          onClick={() => navigate(n.page)}
+                        >
+                          <n.icon />
+                          <span>{t(n.label)}</span>
+                        </SidebarMenuButton>
+                      </SidebarMenuItem>
+                    ))}
+                    <SidebarMenuItem>
+                      <SidebarMenuButton
+                        tooltip={t("Help & shortcuts")}
+                        onClick={() => setHelp(true)}
+                      >
+                        <CircleHelp />
+                        <span>{t("Help & shortcuts")}</span>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </SidebarMenu>
+                </SidebarGroup>
+                <div className="profile-row">
+                  <Avatar>
+                    <AvatarFallback>
+                      {companyName.slice(0, 1).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <span className="truncate">{companyName}</span>
                 </div>
-              )}
-              <button
-                className="nav-item"
-                onClick={() => {
-                  if (editor) {
-                    toast.info(
-                      t("Save or discard the current sales draft first."),
-                    );
-                    return;
-                  }
-                  setNewCompany(true);
-                  setSetup(true);
-                }}
-                title={t("Create another company")}
-              >
-                <Plus />
-                <span className="nav-label">{t("Add company")}</span>
-              </button>
-            </SidebarContent>
-            <SidebarFooter>
-              <div className="nav-section-label">{t("Workspace")}</div>
-              {navigation.slice(7).map((n) => (
-                <button
-                  key={n.page}
-                  className="nav-item"
-                  aria-current={page === n.page ? "page" : undefined}
-                  title={collapsed ? t(n.label) : undefined}
-                  onClick={() => navigate(n.page)}
-                >
-                  <n.icon />
-                  <span className="nav-label">{t(n.label)}</span>
-                </button>
-              ))}
-              <button
-                className="nav-item"
-                onClick={() => setHelp(true)}
-                title={t("Help & shortcuts")}
-              >
-                <CircleHelp />
-                <span className="nav-label">{t("Help & shortcuts")}</span>
-              </button>
-              <div className="profile-row">
-                <span className="avatar">
-                  {companyName.slice(0, 1).toUpperCase()}
-                </span>
-                <div style={{ overflow: "hidden" }}>
-                  <div
-                    style={{
-                      fontSize: 14,
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                      whiteSpace: "nowrap",
-                    }}
-                  >
-                    {companyName}
+              </SidebarFooter>
+            </Sidebar>
+            <div className="main-shell">
+              <header className="topbar">
+                <div className="topbar-title">
+                  {collapsed && (
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      aria-label={t("Expand sidebar")}
+                      onClick={() => setCollapsed(false)}
+                    >
+                      <PanelLeftOpen className="directional-icon" />
+                    </Button>
+                  )}
+                  <div className="topbar-page" ref={setHeaderTarget}>
+                    {!workspace && (
+                      <h1>
+                        {t(
+                          navigation.find((n) => n.page === page)?.label ??
+                            "Overview",
+                        )}
+                      </h1>
+                    )}
                   </div>
                 </div>
-              </div>
-            </SidebarFooter>
-          </Sidebar>
-          <div className="main-shell">
-            <header className="topbar">
-              <div className="topbar-title">
-                {collapsed && (
+                <div className="topbar-actions">
+                  {refreshing && workspace && (
+                    <span className="refreshing">
+                      <Skeleton aria-label={t("Refreshing")} />
+                    </span>
+                  )}
                   <Button
                     variant="ghost"
                     size="icon"
-                    aria-label={t("Expand sidebar")}
-                    onClick={() => setCollapsed(false)}
+                    className="command-trigger"
+                    aria-label={t("Search anything…")}
+                    title={t("Search · Ctrl/⌘ K")}
+                    onClick={() => setPalette(true)}
                   >
-                    <PanelLeftOpen className="directional-icon" />
+                    <Search />
                   </Button>
-                )}
-                <div className="topbar-page" ref={setHeaderTarget}>
-                  {!workspace && (
-                    <h1>
-                      {t(
-                        navigation.find((n) => n.page === page)?.label ??
-                          "Overview",
-                      )}
-                    </h1>
-                  )}
+                  <Separator orientation="vertical" className="h-6" />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="theme-toggle"
+                    aria-label={t("Toggle theme")}
+                    onClick={() => void theme()}
+                  >
+                    {workspace?.settings.appearance === "Dark" ? (
+                      <Sun />
+                    ) : (
+                      <Moon />
+                    )}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label={t("Refresh books")}
+                    onClick={() => void refresh()}
+                  >
+                    <RefreshCw />
+                  </Button>
                 </div>
-              </div>
-              <div className="topbar-actions">
-                {refreshing && workspace && (
-                  <span className="refreshing">
-                    <Skeleton aria-label={t("Refreshing")} />
-                  </span>
-                )}
-                <button
-                  className="command-trigger"
-                  aria-label={t("Search anything…")}
-                  title={t("Search · Ctrl/⌘ K")}
-                  onClick={() => setPalette(true)}
-                >
-                  <Search />
-                </button>
-                <span className="topbar-divider" />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="theme-toggle"
-                  aria-label={t("Toggle theme")}
-                  onClick={() => void theme()}
-                >
-                  {workspace?.settings.appearance === "Dark" ? (
-                    <Sun />
-                  ) : (
-                    <Moon />
+              </header>
+              <main className="page-scroll" ref={scroll}>
+                <div className="page" data-page={page}>
+                  {error && (
+                    <ErrorState error={error} retry={() => void refresh()} />
+                  )}{" "}
+                  {!workspace && !error && (
+                    <Loading shape={page === "settings" ? "form" : "table"} />
                   )}
-                </Button>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  aria-label={t("Refresh books")}
-                  onClick={() => void refresh()}
-                >
-                  <RefreshCw />
-                </Button>
-              </div>
-            </header>
-            <main className="page-scroll" ref={scroll}>
-              <div className="page">
-                {error && (
-                  <ErrorState error={error} retry={() => void refresh()} />
-                )}{" "}
-                {!workspace && !error && (
-                  <Loading shape={page === "settings" ? "form" : "table"} />
-                )}
-                {content}
-              </div>
-            </main>
-          </div>
-          <nav
-            className="mobile-navigation"
-            aria-label={t("Mobile navigation")}
-          >
-            {navigation
-              .filter((n) => ["overview", "sales", "reports"].includes(n.page))
-              .map((n) => (
-                <button
-                  key={n.page}
-                  className="nav-item"
-                  aria-current={page === n.page ? "page" : undefined}
-                  onClick={() => navigate(n.page)}
-                >
-                  <n.icon />
-                  <span>{t(n.label)}</span>
-                </button>
-              ))}
-            <button
-              className="nav-item"
-              aria-label={t("More pages")}
-              onClick={() => setMobileNavigation(true)}
+                  {content}
+                </div>
+              </main>
+            </div>
+            <nav
+              className="mobile-navigation"
+              aria-label={t("Mobile navigation")}
             >
-              <PanelLeftOpen className="directional-icon" />
-              <span>{t("More")}</span>
-            </button>
-          </nav>
-        </div>
-      </SidebarProvider>
-      <Modal
-        open={mobileNavigation}
-        onOpenChange={setMobileNavigation}
-        title={t("Navigate")}
-      >
-        <NativeSelect
-          className="workspace-select"
-          aria-label={t("Mobile organization")}
-          value={companyId}
-          disabled={!!editor}
-          onChange={(e) => {
-            setCompanyId(e.target.value);
-            setPage("overview");
-            setMobileNavigation(false);
-          }}
+              {navigation
+                .filter((n) =>
+                  ["overview", "sales", "reports"].includes(n.page),
+                )
+                .map((n) => (
+                  <Button
+                    variant="ghost"
+                    key={n.page}
+                    className="nav-item"
+                    aria-current={page === n.page ? "page" : undefined}
+                    onPointerEnter={() => preloadPage(n.page)}
+                    onFocus={() => preloadPage(n.page)}
+                    onClick={() => navigate(n.page)}
+                  >
+                    <n.icon />
+                    <span>{t(n.label)}</span>
+                  </Button>
+                ))}
+              <Button
+                variant="ghost"
+                className="nav-item"
+                aria-label={t("More pages")}
+                onClick={() => setMobileNavigation(true)}
+              >
+                <PanelLeftOpen className="directional-icon" />
+                <span>{t("More")}</span>
+              </Button>
+            </nav>
+          </div>
+        </SidebarProvider>
+        <Modal
+          open={mobileNavigation}
+          onOpenChange={setMobileNavigation}
+          title={t("Navigate")}
         >
-          <NativeSelectOption value="">{t("Your business")}</NativeSelectOption>
-          {workspace?.companies.map((c) => (
-            <NativeSelectOption key={c.id} value={c.id}>
-              {c.name}
+          <NativeSelect
+            className="workspace-select w-full"
+            aria-label={t("Mobile organization")}
+            value={companyId}
+            disabled={!!editor}
+            onChange={(e) => {
+              setCompanyId(e.target.value);
+              setPage("overview");
+              setMobileNavigation(false);
+            }}
+          >
+            <NativeSelectOption value="">
+              {t("Your business")}
             </NativeSelectOption>
-          ))}
-        </NativeSelect>
-        <nav className="mobile-pages" aria-label={t("All pages")}>
-          {navigation.map((n) => (
-            <button
-              key={n.page}
-              className="nav-item"
-              aria-current={page === n.page ? "page" : undefined}
-              onClick={() => {
-                navigate(n.page);
-                setMobileNavigation(false);
+            {workspace?.companies.map((c) => (
+              <NativeSelectOption key={c.id} value={c.id}>
+                {c.name}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+          <nav className="mobile-pages" aria-label={t("All pages")}>
+            {navigation.map((n) => (
+              <Button
+                variant="ghost"
+                key={n.page}
+                className="nav-item"
+                aria-current={page === n.page ? "page" : undefined}
+                onClick={() => {
+                  navigate(n.page);
+                  setMobileNavigation(false);
+                }}
+              >
+                <n.icon />
+                <span>{t(n.label)}</span>
+              </Button>
+            ))}
+          </nav>
+        </Modal>
+        {palette && (
+          <Suspense fallback={null}>
+            <CommandMenu
+              onClose={() => setPalette(false)}
+              onNavigate={navigate}
+              canPost={!!workspace?.initialized}
+              onSetup={() => {
+                setPalette(false);
+                setSetup(true);
               }}
-            >
-              <n.icon />
-              <span>{t(n.label)}</span>
-            </button>
-          ))}
-        </nav>
-      </Modal>
-      <Modal
-        open={palette}
-        onOpenChange={setPalette}
-        title={t("Command menu")}
-        description={t(
-          "Search pages and actions. Use arrow keys and Enter to select.",
+              onJournal={() => {
+                setPalette(false);
+                setJournalEditor(true);
+              }}
+              onToggleSidebar={() => {
+                setCollapsed((v) => !v);
+                setPalette(false);
+              }}
+            />
+          </Suspense>
         )}
-      >
-        <Command className="command-menu" label={t("Search commands")}>
-          <Command.Input
-            data-autofocus="true"
-            placeholder={t("Type a command…")}
-            aria-label={t("Search commands")}
-          />
-          <Command.List aria-label={t("Search results")}>
-            <Command.Empty>{t("No matching commands.")}</Command.Empty>
-            <Command.Group heading={t("Navigate")}>
-              {navigation.map((n) => (
-                <Command.Item
-                  key={n.page}
-                  value={t(n.label)}
-                  keywords={[n.label]}
-                  onSelect={() => navigate(n.page)}
-                >
-                  <n.icon />
-                  {t(n.label)}
-                </Command.Item>
-              ))}
-            </Command.Group>
-            <Command.Group heading={t("Actions")}>
-              <Command.Item
-                onSelect={() => {
-                  setPalette(false);
-                  setSetup(true);
-                }}
-              >
-                {t("Set up company")}
-              </Command.Item>
-              <Command.Item
-                disabled={!workspace?.initialized}
-                onSelect={() => {
-                  setPalette(false);
-                  setJournalEditor(true);
-                }}
-              >
-                {t("New journal")}
-              </Command.Item>
-              <Command.Item
-                onSelect={() => {
-                  setCollapsed((v) => !v);
-                  setPalette(false);
-                }}
-              >
-                {t("Toggle sidebar")}
-                <kbd>F9</kbd>
-              </Command.Item>
-            </Command.Group>
-          </Command.List>
-        </Command>
-      </Modal>
-      <Modal
-        open={help}
-        onOpenChange={setHelp}
-        title={t("Help & shortcuts")}
-        description={t(
-          "Local, offline accounting with exact amounts and traceable sources.",
-        )}
-      >
-        <div className="setup-steps">
-          <div className="summary-line">
-            <span>{t("Command menu")}</span>
-            <kbd>Ctrl / ⌘ K</kbd>
+        <Modal
+          open={help}
+          onOpenChange={setHelp}
+          title={t("Help & shortcuts")}
+          description={t(
+            "Local, offline accounting with exact amounts and traceable sources.",
+          )}
+        >
+          <div className="setup-steps">
+            <div className="summary-line">
+              <span>{t("Command menu")}</span>
+              <kbd>Ctrl / ⌘ K</kbd>
+            </div>
+            <div className="summary-line">
+              <span>{t("Toggle sidebar")}</span>
+              <kbd>F9</kbd>
+            </div>
+            <div className="summary-line">
+              <span>{t("Help")}</span>
+              <kbd>F1</kbd>
+            </div>
+            <div className="summary-line">
+              <span>{t("Close dialog")}</span>
+              <kbd>Esc</kbd>
+            </div>
           </div>
-          <div className="summary-line">
-            <span>{t("Toggle sidebar")}</span>
-            <kbd>F9</kbd>
-          </div>
-          <div className="summary-line">
-            <span>{t("Help")}</span>
-            <kbd>F1</kbd>
-          </div>
-          <div className="summary-line">
-            <span>{t("Close dialog")}</span>
-            <kbd>Esc</kbd>
-          </div>
-        </div>
-      </Modal>
-      <Toaster
-        visibleToasts={1}
-        duration={2500}
-        dir={locale === "fa" ? "rtl" : "ltr"}
-        position={locale === "fa" ? "bottom-left" : "bottom-right"}
-        toastOptions={{ closeButtonAriaLabel: t("Close notification") }}
-        containerAriaLabel={t("Notifications")}
-        closeButton
-      />
+        </Modal>
+        <Toaster
+          visibleToasts={1}
+          duration={2500}
+          dir={locale === "fa" ? "rtl" : "ltr"}
+          position={locale === "fa" ? "bottom-left" : "bottom-right"}
+          toastOptions={{ closeButtonAriaLabel: t("Close notification") }}
+          containerAriaLabel={t("Notifications")}
+          closeButton
+        />
+      </DirectionProvider>
     </I18nContext.Provider>
   );
 }

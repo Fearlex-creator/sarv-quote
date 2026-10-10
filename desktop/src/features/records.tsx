@@ -18,7 +18,7 @@ import { useBooks } from "../app/books";
 import { command, today, uid } from "../lib/client";
 import type { Preview, RecordEntry } from "../lib/types";
 import { recordCommand, recordData, recordKind } from "./sales";
-import { Modal } from "../components/ui/dialog";
+import { Modal } from "../components/layout/modal";
 import { Button } from "../components/ui/button";
 import { Field, ErrorState, Note, Loading } from "../components/ui/shared";
 import {
