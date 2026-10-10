@@ -1,0 +1,39 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": [
+    "react",
+    "typescript",
+    "oxc"
+  ],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    "react/only-export-components": [
+      "warn",
+      {
+        "allowConstantExport": true,
+        "allowExportNames": [
+          "useAccounting",
+          "readReceipt",
+          "buttonVariants",
+          "badgeVariants",
+          "tabsVariants",
+          "tabsListVariants",
+          "useDirection",
+          "useSidebar",
+          "toggleVariants",
+          "useWorkspace",
+          "useText",
+          "useMoney",
+          "useWrite",
+          "useScreenNames"
+        ]
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "src/screens/**",
+    "src/components/block/**",
+    "src/components/CommandPalette.tsx",
+    "src/lib/settings.tsx"
+  ]
+}

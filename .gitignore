@@ -1,10 +1,13 @@
 /target/
 /data/
+/web/node_modules/
+/web/dist/
+/node_modules/
+src-tauri/gen/
+src-tauri/target/
 /artifacts/
 *.sqlite*
 *.tmp
-.agent-access.json
-.agent-connection.json
 .env
 .env.*
 .aws/
@@ -18,6 +21,11 @@
 __pycache__/
 *.pyc
 
+# pnpm download cache (dependencies are reproducible from lockfiles)
+/.pnpm-store/
+
+.agent-access.json
+.agent-connection.json
 /desktop/node_modules/
 /desktop/dist/
 /desktop/src-tauri/target/

@@ -1,6 +1,6 @@
 # Sarv Tauri desktop interface
 
-Tauri 2 + React 19 + TypeScript + Vite 7 + Tailwind 4, Radix/shadcn-style shared components, Lucide and TanStack Table 8. Financial services come from the existing `sarv-quote` Rust crate. The default GTK app remains available. No schema migration or frontend accounting engine was added.
+Tauri 2 + React 19 + TypeScript + Vite 7 + Tailwind 4, Radix/shadcn-style shared components, Lucide and TanStack Table 8. Financial services come from the existing `sarv-quote` Rust crate. The preserved GTK app remains available in `crates/sarv-quote-gtk`. No schema migration or frontend accounting engine was added.
 
 From this directory, with Node >=20.19 (or >=22.12), Rust and the platform's Tauri prerequisites installed:
 
@@ -29,7 +29,7 @@ A normal browser preview does not contain a mock financial backend. It displays 
 ```sh
 SARV_QA_DATA_DIR=/absolute/temporary/profile \
 SARV_QA_TOKEN=a-test-token-with-at-least-24-characters \
-SARV_QA_SEED=1 cargo run --no-default-features --example desktop_qa
+SARV_QA_SEED=1 cargo run -p sarv-quote --example desktop_qa
 ```
 
 Seed only an empty test profile; it imports the repository's clearly synthetic opening fixture. In another shell, start Vite from this directory with the matching QA token:
@@ -42,4 +42,4 @@ SARV_QA_TOKEN=a-test-token-with-at-least-24-characters npm test
 
 The example binds only to loopback, restricts origins and requires an explicit token. It is not bundled in the product. Production code has no HTTP adapter. The browser test creates a separate synthetic company and checks purchasing, invoice posting, invalid journals, reporting, CSV export, preferences, keyboard commands, dark/RTL and four window sizes. Browser CSV download is separate from the verified native save dialog. QA file watching is disabled to keep posting reviews stable; restart Vite and the Rust adapter after source changes before testing.
 
-Supported: core company/chart/opening, operational contacts/resources, durable goods sales drafts/orders, paired delivery/invoice, purchasing/receiving/billing, stock inspection, manual journals/reversals, period lock/reopen, P&L/trial/control reports and CSV. Partial receipt/bill/delivery selection, original-cost customer and supplier returns, and warehouse transfers are also connected. Original quotation/PDF workflows remain in GTK. Missing: service invoices, payments/refunds, bank statements/reconciliation, attachments, approvals/projects, authentication/roles and complete translation. This is a verified implementation checkpoint, not a production release.
+Supported: core company/chart/opening, operational contacts/resources, durable goods sales drafts/orders, paired delivery/invoice, purchasing/receiving/billing, stock inspection, manual journals/reversals, period lock/reopen, P&L/trial/control reports and CSV. Partial receipt/bill/delivery selection, original-cost customer and supplier returns, and warehouse transfers are also connected. Original quotation/PDF workflows remain in GTK. Missing: service invoices, payments/refunds, bank statements/reconciliation, attachments, approvals/projects, authentication/roles and translation of arbitrary imported/backend messages. This is a verified implementation checkpoint, not a production release.

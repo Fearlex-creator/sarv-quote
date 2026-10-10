@@ -5,7 +5,7 @@ Open **Settings → Agents**, choose **Read only** or **Full access**, and turn 
 Native dev/build commands compile `sarv-agent` too. For a standalone distribution, put `sarv-agent` (`sarv-agent.exe` on Windows) next to the desktop executable or set `SARV_AGENT_BIN` to its absolute path. Source builds find the root `target/debug` or `target/release` binary. Packaging/signing remain separate release work.
 
 ```sh
-cargo build --release --no-default-features --bin sarv-agent
+cargo build -p sarv-quote --release --bin sarv-agent
 sarv-agent --connection /absolute/profile/.agent-connection.json status
 sarv-agent --connection /absolute/profile/.agent-connection.json tools
 sarv-agent --connection /absolute/profile/.agent-connection.json schema journal_post
