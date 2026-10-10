@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'tests',workers:1,timeout:90000,use:{baseURL:'http://localhost:1420',viewport:{width:1440,height:900},launchOptions:{executablePath:'/usr/bin/chromium',args:['--no-sandbox']},trace:'retain-on-failure'},reporter:[['list'],['json',{outputFile:'../artifacts/tauri-ui/results.json'}]],outputDir:'../artifacts/tauri-ui/test-results'});

@@ -296,7 +296,7 @@ fn sum<I: IntoIterator<Item = Money>>(values: I) -> Result<Money> {
         .into_iter()
         .try_fold(Money::ZERO, |a, b| a.checked_add(b))
 }
-fn allocation(
+pub(crate) fn allocation(
     v: Money,
     original_q: i64,
     previous_q: i64,

@@ -1,0 +1,14 @@
+{
+  "identifier": "main",
+  "description": "Main accounting window. Native save/open dialogs only; no shell or general filesystem access.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "dialog:allow-save",
+    "dialog:allow-open",
+    "dialog:allow-message",
+    "core:window:allow-destroy"
+  ]
+}

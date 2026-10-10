@@ -247,7 +247,13 @@ fn base(i: &CoreItem, u: &str, q: i64) -> Result<i64> {
     );
     Ok(v)
 }
-fn allocation(v: Money, q: i64, priorq: i64, priorv: Money, nextq: i64) -> Result<Money> {
+pub(crate) fn allocation(
+    v: Money,
+    q: i64,
+    priorq: i64,
+    priorv: Money,
+    nextq: i64,
+) -> Result<Money> {
     ensure!(
         q > 0 && priorq >= 0 && nextq > 0 && v.rials() >= 0 && priorv.rials() >= 0,
         "مقدار تخصیص نامعتبر است"

@@ -3,6 +3,8 @@
 /artifacts/
 *.sqlite*
 *.tmp
+.agent-access.json
+.agent-connection.json
 .env
 .env.*
 .aws/
@@ -15,3 +17,9 @@
 # Native QA Python helpers
 __pycache__/
 *.pyc
+
+/desktop/node_modules/
+/desktop/dist/
+/desktop/src-tauri/target/
+/desktop/src-tauri/gen/
+/desktop/*.tsbuildinfo
