@@ -379,6 +379,39 @@ impl Store {
                 })?;
         self.check_generation(generation)
     }
+    /// Reload the committed snapshot when another window or the local agent
+    /// advanced the generation. In the common case this is one indexed lookup
+    /// instead of re-reading and parsing the whole book for every command.
+    pub fn refresh_if_stale(&mut self) -> Result<()> {
+        self.ensure_idle()?;
+        let generation: i64 =
+            self.conn
+                .query_row("SELECT generation FROM state WHERE id=1", [], |row| {
+                    row.get(0)
+                })?;
+        if generation == self.generation {
+            return Ok(());
+        }
+        ensure!(
+            generation > self.generation,
+            "نسخهٔ ذخیره‌سازی عقب افتاده است؛ برنامه را دوباره باز کنید"
+        );
+        let payload: String =
+            self.conn
+                .query_row("SELECT payload FROM state WHERE id=1", [], |row| {
+                    row.get(0)
+                })?;
+        let state: State =
+            serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
+        state.validate()?;
+        ensure!(
+            state.schema == CURRENT_SCHEMA,
+            "نسخهٔ داده در پنجرهٔ دیگری ارتقا یافته است؛ برنامه را دوباره باز کنید"
+        );
+        self.state = state;
+        self.generation = generation;
+        Ok(())
+    }
     /// Check an unchanged UI draft against the committed generation without
     /// cloning or serializing the state. A stale window still must be reopened.
     pub fn verify_current(&self) -> Result<()> {

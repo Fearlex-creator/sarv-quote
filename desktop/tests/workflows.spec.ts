@@ -26,16 +26,14 @@ test("complete native accounting presentation against the real Rust dispatcher",
   }
   async function resource(kind: string, name: string) {
     if (kind === "customer") {
-      await page
-        .getByRole("button", { name: "Customers", exact: true })
-        .first()
-        .click();
+      await nav("Contacts");
+      await page.getByRole("tab", { name: "Customers", exact: true }).click();
       await page
         .getByRole("button", { name: "New customer", exact: true })
         .click();
     } else if (kind === "vendor") {
-      await nav("Purchases");
-      await page.getByRole("tab", { name: "Vendors", exact: true }).click();
+      await nav("Contacts");
+      await page.getByRole("tab", { name: "Suppliers", exact: true }).click();
       await page
         .getByRole("button", { name: "New vendor", exact: true })
         .click();
@@ -62,8 +60,10 @@ test("complete native accounting presentation against the real Rust dispatcher",
     const dialog = page.getByRole("dialog");
     await dialog.getByLabel("Name", { exact: true }).fill(name);
     if (kind === "item") {
-      await dialog.getByLabel("SKU").fill("QA-ITEM");
-      await dialog.getByLabel("Base unit").selectOption({ label: "Piece" });
+      await dialog.getByLabel("Product code (optional)").fill("QA-ITEM");
+      await dialog
+        .getByLabel("Base unit", { exact: true })
+        .selectOption({ label: "Piece" });
     }
     await dialog
       .getByRole("button", { name: "Create record", exact: true })
@@ -71,6 +71,11 @@ test("complete native accounting presentation against the real Rust dispatcher",
     await expect(dialog).toHaveCount(0);
     await expect(page.getByRole("cell", { name, exact: true })).toBeVisible();
   }
+  await page.addInitScript(() => {
+    if (!localStorage.getItem("sarv.sidebar"))
+      localStorage.setItem("sarv.sidebar", "expanded");
+  });
+  await page.clock.setFixedTime(new Date("2026-10-10T09:00:00Z"));
   await page.goto("/");
   await expect(
     page.getByRole("heading", { name: "Overview", exact: true }),
@@ -318,7 +323,7 @@ test("complete native accounting presentation against the real Rust dispatcher",
       "Inventory",
       "Accounting",
       "Reports",
-      "Customers",
+      "Contacts",
       "Settings",
     ]) {
       await nav(route);

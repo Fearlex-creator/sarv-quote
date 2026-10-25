@@ -22,10 +22,6 @@ The first-run welcome and company/fiscal/opening steps are localized for English
 
 ## Known inherited issues
 
-These tests already failed in upstream commit `caefee7` and remain flagged without changing accounting data or expectations:
+The three legacy-compat tests that failed in upstream commit `caefee7` now pass: optional `Customer.is_customer`, `Settings.app_mode`/`fiscal_year_start_month`/`text_direction` serialize conditionally again, so schema-4 states round-trip byte-exactly.
 
-- `optional_customer_details_keep_legacy_serialized_bytes`
-- `retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recovery`
-- `genuine_schema6_prefix_recovery_one_upgrade_and_fresh_restores_are_exact`
-
-The removed legacy GTK build is no longer part of the product or its checks. A quotation/PDF editor, custom chart editor, payments, banking reconciliation, attachments, team permissions and platform release qualification remain unfinished. Existing quotation and report APIs are retained in Rust; deleting the old UI does not complete these React screens.
+Completed since the previous handoff: typed payments (customer receipts and supplier payments with exact open-item allocation, surplus advances, typed reversal, control reconciliation), a banking statement-matching reconciliation dialog, and quotations issued from the sales editor (stable numbering, printable A4 PDF, exact conversion to orders). A custom chart editor, attachments, team permissions and platform release qualification remain unfinished.

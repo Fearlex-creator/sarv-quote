@@ -27,6 +27,60 @@ async fn save_report(
     payload: Value,
 ) -> Result<bool, String> {
     use tauri_plugin_dialog::DialogExt;
+    if action == "backup_export" {
+        let dir = state.0.clone();
+        return tauri::async_runtime::spawn_blocking(move || {
+            let store = sarv_quote::store::Store::open(&dir).map_err(|e| e.to_string())?;
+            let stamp = sarv_quote::domain::now().replace(':', "").replace('+', "-");
+            let Some(file) = app
+                .dialog()
+                .file()
+                .set_file_name(format!("sarv-backup-{stamp}.json"))
+                .add_filter("Sarv backup", &["json"])
+                .blocking_save_file()
+            else {
+                return Ok(false);
+            };
+            let path = file.into_path().map_err(|e| e.to_string())?;
+            store.backup(&path).map_err(|e| e.to_string())?;
+            Ok(true)
+        })
+        .await
+        .map_err(|e| e.to_string())?;
+    }
+    if action == "sales_pdf" {
+        let dir = state.0.clone();
+        return tauri::async_runtime::spawn_blocking(move || {
+            let company_id = payload["company_id"].as_str().ok_or("Missing company")?;
+            let document_id = payload["document_id"].as_str().ok_or("Missing document")?;
+            let Some(file) = app.dialog().file().set_file_name("sales-document.pdf").add_filter("PDF", &["pdf"]).blocking_save_file() else { return Ok(false); };
+            let path = file.into_path().map_err(|e| e.to_string())?;
+            let store = sarv_quote::store::Store::open(&dir).map_err(|e| e.to_string())?;
+            sarv_quote::sales_export::printable_document_pdf(&store.state, company_id, document_id, payload["locale"].as_str().unwrap_or("en"), &path).map_err(|e| e.to_string())?;
+            Ok(true)
+        }).await.map_err(|e| e.to_string())?;
+    }
+    if action == "quotation_pdf" {
+        let dir = state.0.clone();
+        return tauri::async_runtime::spawn_blocking(move || {
+            let company_id = payload["company_id"].as_str().ok_or("Missing company")?;
+            let draft_id = payload["draft_id"].as_str().ok_or("Missing quotation")?;
+            let store = sarv_quote::store::Store::open(&dir).map_err(|e| e.to_string())?;
+            let number = store
+                .state
+                .sales_drafts
+                .iter()
+                .find(|d| d.id == draft_id)
+                .and_then(|d| d.quote_issue.as_ref())
+                .map(|i| i.number.clone())
+                .unwrap_or_else(|| "quotation".into());
+            let file_name = format!("{}.pdf", number.replace('/', "-"));
+            let Some(file) = app.dialog().file().set_file_name(file_name).add_filter("PDF", &["pdf"]).blocking_save_file() else { return Ok(false); };
+            let path = file.into_path().map_err(|e| e.to_string())?;
+            sarv_quote::sales_export::printable_quotation_pdf(&store.state, company_id, draft_id, payload["locale"].as_str().unwrap_or("en"), &path).map_err(|e| e.to_string())?;
+            Ok(true)
+        }).await.map_err(|e| e.to_string())?;
+    }
     if action != "report_csv" && action != "profit_csv" {
         return Err("Unsupported export".into());
     }
@@ -63,6 +117,14 @@ async fn save_report(
     .map_err(|e| e.to_string())?
 }
 fn main() {
+    // WebKit's DMA-BUF transport can fail with GBM allocation errors and
+    // Wayland protocol errors on Linux graphics drivers. Keep an explicit
+    // user choice, otherwise use its compatible rendering path.
+    #[cfg(target_os = "linux")]
+    if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() {
+        // This runs before GTK, Tauri or application worker threads start.
+        unsafe { std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1") };
+    }
     tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .setup(|app| {

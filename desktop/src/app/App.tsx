@@ -1,9 +1,3 @@
-import {
-  Empty,
-  EmptyHeader,
-  EmptyTitle,
-  EmptyContent,
-} from "../components/ui/empty";
 import { Avatar, AvatarFallback } from "../components/ui/avatar";
 import { Separator } from "../components/ui/separator";
 import {
@@ -20,17 +14,26 @@ import {
   useRef,
   useState,
 } from "react";
-import { Toaster, toast } from "sonner";
+import { toast } from "sonner";
+import {
+  creationShortcuts,
+  isTyping,
+  type ResourceKind,
+  type QuickAction,
+} from "../lib/shortcuts";
+import { ShortcutList } from "../components/finance/shortcut-list";
+import { Toaster } from "../components/ui/sonner";
 import { SidebarSimpleIcon as PanelLeftClose } from "@phosphor-icons/react/dist/csr/SidebarSimple";
 import { SidebarSimpleIcon as PanelLeftOpen } from "@phosphor-icons/react/dist/csr/SidebarSimple";
 import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
+import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { SunIcon as Sun } from "@phosphor-icons/react/dist/csr/Sun";
 import { MoonIcon as Moon } from "@phosphor-icons/react/dist/csr/Moon";
 import { QuestionIcon as CircleHelp } from "@phosphor-icons/react/dist/csr/Question";
 import { PlantIcon as Sprout } from "@phosphor-icons/react/dist/csr/Plant";
-import { PlusIcon as Plus } from "@phosphor-icons/react/dist/csr/Plus";
 import { ArrowsClockwiseIcon as RefreshCw } from "@phosphor-icons/react/dist/csr/ArrowsClockwise";
 import { command, today } from "../lib/client";
+import { installEnterAdvance } from "../lib/enter-advance";
 import { isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import type {
@@ -43,7 +46,7 @@ import type {
 } from "../lib/types";
 import { DirectionProvider } from "../components/ui/direction";
 import { BooksContext, type Books } from "./books";
-import { navigation } from "./navigation";
+import { navigation, navigationGroups } from "./navigation";
 import {
   I18nContext,
   initialLocale,
@@ -65,15 +68,23 @@ import {
 import { Button } from "../components/ui/button";
 import { Skeleton } from "../components/ui/skeleton";
 import { Modal } from "../components/layout/modal";
-import { ErrorState, Loading, PageHeader } from "../components/ui/shared";
+import { ErrorState, Loading } from "../components/ui/shared";
 import {
   Overview,
   SetupDialog,
   Sales,
   OrderEditor,
+  QuickSale,
   RecordDetail,
   Purchases,
+  PurchaseEditor,
+  Payments,
+  ResourceDialog,
+  TransferDialog,
   Customers,
+  ContactProfile,
+  ProductProfile,
+  Banking,
   Inventory,
   Accounting,
   JournalDetail,
@@ -82,6 +93,7 @@ import {
   Settings,
   Onboarding,
   preloadPage,
+  preloadAll,
   CommandMenu,
 } from "./screens";
 export default function App() {
@@ -105,7 +117,7 @@ export default function App() {
   });
   const [locale, setLocale] = useState<"en" | "fa">(initialLocale);
   const [collapsed, setCollapsed] = useState(
-    () => localStorage.getItem("sarv.sidebar") === "collapsed",
+    () => localStorage.getItem("sarv.sidebar") !== "expanded",
   );
   const [palette, setPalette] = useState(false);
   const [help, setHelp] = useState(false);
@@ -113,9 +125,24 @@ export default function App() {
   const [onboarding, setOnboarding] = useState(false);
   const [newCompany, setNewCompany] = useState(false);
   const [journalEditor, setJournalEditor] = useState(false);
-  const [editor, setEditor] = useState<{ draft?: Draft } | null>(null);
+  const [editor, setEditor] = useState<{
+    draft?: Draft;
+    invoice?: boolean;
+  } | null>(null);
+  const [resource, setResource] = useState<{
+    kind: ResourceKind;
+    onCreated?: (id: string) => void;
+  } | null>(null);
+  const [purchaseEditor, setPurchaseEditor] = useState(false);
+  const [purchaseSeed, setPurchaseSeed] = useState<
+    { item_id: string; quantity: string }[]
+  >([]);
+  const [transferEditor, setTransferEditor] = useState(false);
+  const [pendingAction, setPendingAction] = useState<QuickAction | null>(null);
   const [journal, setJournal] = useState<Journal | null>(null);
   const [record, setRecord] = useState<RecordEntry | null>(null);
+  const [productId, setProductId] = useState<string | null>(null);
+  const [contactId, setContactId] = useState<string | null>(null);
   const scroll = useRef<HTMLElement>(null);
   useLayoutEffect(() => {
     scroll.current?.scrollTo({ top: 0 });
@@ -159,6 +186,14 @@ export default function App() {
   useEffect(() => {
     void refresh();
   }, [refresh]);
+  useEffect(() => installEnterAdvance(), []);
+  useEffect(() => {
+    // Warm every screen once the shell is idle so navigation never waits on a
+    // chunk download or parse.
+    const warm = () => preloadAll();
+    const id = window.setTimeout(warm, 300);
+    return () => window.clearTimeout(id);
+  }, []);
   useEffect(() => {
     if (!isTauri()) return;
     let active = true;
@@ -183,6 +218,7 @@ export default function App() {
     localStorage.setItem("sarv.company", companyId);
     setWorkspace(null);
     setReport(null);
+    setReportError("");
     setRecord(null);
     setJournal(null);
   }, [companyId]);
@@ -207,9 +243,9 @@ export default function App() {
     return () => media.removeEventListener("change", apply);
   }, [workspace?.settings.appearance]);
   useEffect(() => {
+    // Keep the previous report on screen while the next one loads; the company
+    // effect clears it when the books themselves change.
     const version = ++reportRequest.current;
-    setReport(null);
-    setReportError("");
     if (!workspace || !companyId) return;
     command<Report>("report", {
       company_id: companyId,
@@ -219,6 +255,7 @@ export default function App() {
       .then((r) => {
         if (version === reportRequest.current) {
           setReport(r);
+          setReportError("");
           setReportSyncedAt(new Date());
         }
       })
@@ -241,24 +278,108 @@ export default function App() {
     },
     [editor, t],
   );
+  const openResource = useCallback(
+    (kind: ResourceKind, onCreated?: (id: string) => void) => {
+      if (!workspace || (!companyId && workspace.companies.length)) return;
+      setResource({ kind, onCreated });
+      if (!workspace?.initialized) {
+        toast.info(
+          t(
+            "Confirm your starting balances first. New shops can start with zero balances.",
+          ),
+        );
+        setNewCompany(!companyId);
+        setSetup(true);
+      }
+    },
+    [workspace, companyId, t],
+  );
+  const runAction = useCallback(
+    (action: QuickAction) => {
+      if (!workspace || (!companyId && workspace.companies.length)) return;
+      setPalette(false);
+      if (editor) {
+        toast.info(
+          t("Use Back to sales to save or discard your current draft."),
+        );
+        return;
+      }
+      if (
+        ["customer", "vendor", "item", "warehouse", "unit"].includes(action)
+      ) {
+        openResource(action as ResourceKind);
+        return;
+      }
+      if (!workspace?.initialized) {
+        setPendingAction(action);
+        setNewCompany(!companyId);
+        setSetup(true);
+        toast.info(
+          t(
+            "Confirm your starting balances first. New shops can start with zero balances.",
+          ),
+        );
+        return;
+      }
+      if (action === "invoice" || action === "order") {
+        navigate("sales");
+        setEditor({ invoice: action === "invoice" });
+      } else if (action === "purchase") {
+        setPurchaseSeed([]);
+        setPurchaseEditor(true);
+      }
+      else if (action === "journal") setJournalEditor(true);
+      else if (action === "transfer") setTransferEditor(true);
+    },
+    [editor, openResource, workspace, companyId, navigate, t],
+  );
+  useEffect(() => {
+    if (pendingAction && workspace?.initialized && !setup) {
+      setPendingAction(null);
+      runAction(pendingAction);
+    }
+  }, [pendingAction, workspace?.initialized, setup, runAction]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+      if (e.repeat || e.isComposing || e.getModifierState("AltGraph")) return;
+      const modalOpen = !!document.querySelector(
+        '[role="dialog"][data-state="open"]',
+      );
+      if (
+        (e.ctrlKey || e.metaKey) &&
+        !e.altKey &&
+        !e.shiftKey &&
+        e.code === "KeyK"
+      ) {
+        if (modalOpen && !palette) return;
         e.preventDefault();
         setPalette((v) => !v);
+        return;
       }
-      if (e.key === "F9") {
-        e.preventDefault();
-        setCollapsed((v) => !v);
-      }
-      if (e.key === "F1") {
-        e.preventDefault();
-        setHelp(true);
+      if (modalOpen || isTyping(e.target)) return;
+      if ((e.ctrlKey || e.metaKey) && e.altKey && !e.shiftKey) {
+        const shortcut = creationShortcuts.find((s) => s.code === e.code);
+        if (shortcut) {
+          e.preventDefault();
+          runAction(shortcut.action);
+        } else if (e.code === "KeyS") {
+          e.preventDefault();
+          navigate("settings");
+        }
+      } else if (!e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        if (e.key === "F9") {
+          e.preventDefault();
+          setCollapsed((v) => !v);
+        }
+        if (e.key === "F1") {
+          e.preventDefault();
+          setHelp(true);
+        }
       }
     };
     window.addEventListener("keydown", key);
     return () => window.removeEventListener("keydown", key);
-  }, []);
+  }, [runAction, navigate, palette]);
   const openJournal = useCallback(
     async (id: string) => {
       try {
@@ -276,18 +397,46 @@ export default function App() {
   );
   async function theme() {
     if (!workspace) return;
+    const next = document.documentElement.classList.contains("dark")
+      ? "Light"
+      : "Dark";
+    // Switch instantly; the saved setting catches up in the background.
+    document.documentElement.classList.toggle("dark", next === "Dark");
+    setWorkspace({
+      ...workspace,
+      settings: { ...workspace.settings, appearance: next },
+    });
     try {
       await command("settings", {
         ...workspace.settings,
-        appearance: document.documentElement.classList.contains("dark")
-          ? "Light"
-          : "Dark",
+        appearance: next,
       });
-      await refresh();
     } catch (e) {
       toast.error((e as Error).message);
     }
   }
+  const navItem = (n: (typeof navigation)[number]) => {
+    const active = page === n.page;
+    return (
+      <SidebarMenuItem key={n.page}>
+        <SidebarMenuButton
+          isActive={active}
+          aria-current={active ? "page" : undefined}
+          tooltip={t(n.label)}
+          onPointerEnter={() => preloadPage(n.page)}
+          onFocus={() => preloadPage(n.page)}
+          onClick={() => navigate(n.page)}
+        >
+          <n.icon
+            data-nav-icon={n.page}
+            weight="duotone"
+            className="sidebar-nav-icon"
+          />
+          <span>{t(n.label)}</span>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
+  };
   const companyName =
     workspace?.companies.find((x) => x.id === companyId)?.name ??
     t("Your business");
@@ -329,11 +478,24 @@ export default function App() {
               workspace.settings.display_digits === "Persian" ? "fa" : "en",
             dateLocale: `${locale === "fa" ? "fa-IR" : workspace.settings.date_display === "DayMonthYear" ? "en-GB" : "en-US"}-u-ca-${workspace.settings.date_display === "Jalali" ? "persian" : "gregory"}-nu-${workspace.settings.display_digits === "Persian" ? "arabext" : "latn"}`,
             t,
+            openCompanySetup: () => {
+              setNewCompany(true);
+              setSetup(true);
+            },
             openSetup: () => {
               setNewCompany(!companyId);
               setSetup(true);
             },
             openJournal: () => setJournalEditor(true),
+            openResource,
+            runAction,
+            openPurchase: (seed) => {
+              setPurchaseSeed(seed);
+              setPurchaseEditor(true);
+            },
+            openContact: setContactId,
+            openProduct: setProductId,
+            openRecord: setRecord,
           }
         : null,
     [
@@ -352,6 +514,8 @@ export default function App() {
       navigate,
       locale,
       t,
+      openResource,
+      runAction,
     ],
   );
   const content =
@@ -365,9 +529,12 @@ export default function App() {
               />
             }
           >
-            {editor ? (
+            {editor?.invoice ? (
+              <QuickSale onClose={() => setEditor(null)} />
+            ) : editor ? (
               <OrderEditor
                 initial={editor.draft}
+                invoice={false}
                 onClose={() => setEditor(null)}
               />
             ) : page === "overview" ? (
@@ -387,6 +554,8 @@ export default function App() {
               <Sales onEdit={editDraft} onDetail={setRecord} />
             ) : page === "purchases" ? (
               <Purchases onDetail={setRecord} />
+            ) : page === "payments" ? (
+              <Payments onJournal={viewJournal} />
             ) : page === "accounting" ? (
               <Accounting onDetail={setJournal} />
             ) : page === "inventory" ? (
@@ -398,34 +567,41 @@ export default function App() {
             ) : page === "settings" ? (
               <Settings onLocale={setLocale} />
             ) : (
-              <>
-                <PageHeader title={t("Banking")} />
-                <Empty>
-                  <EmptyHeader>
-                    <EmptyTitle>{t("Unavailable")}</EmptyTitle>
-                  </EmptyHeader>
-                  <EmptyContent>
-                    <Button
-                      variant="outline"
-                      onClick={() => navigate("reports")}
-                    >
-                      {t("Open financial reports")}
-                    </Button>
-                  </EmptyContent>
-                </Empty>
-              </>
+              <Banking onJournal={viewJournal} />
             )}
           </Suspense>
         </div>
         <Suspense fallback={null}>
+          {productId && (
+            <ProductProfile
+              key={productId}
+              id={productId}
+              onClose={() => setProductId(null)}
+            />
+          )}
+          {contactId && (
+            <ContactProfile
+              key={contactId}
+              id={contactId}
+              onClose={() => setContactId(null)}
+            />
+          )}
           {setup && (
             <SetupDialog
               firstRun={onboarding}
+              onInitialized={() => {
+                setSetup(false);
+                setOnboarding(false);
+              }}
               newCompany={newCompany}
               open={setup}
               onClose={() => {
                 setSetup(false);
                 setOnboarding(false);
+                if (!workspace.initialized) {
+                  setResource(null);
+                  setPendingAction(null);
+                }
               }}
               onCreated={(id) => {
                 setCompanyId(id);
@@ -437,6 +613,22 @@ export default function App() {
           {journalEditor && (
             <JournalEditor onClose={() => setJournalEditor(false)} />
           )}{" "}
+          {resource && workspace.initialized && !setup && (
+            <ResourceDialog
+              kind={resource.kind}
+              onCreated={resource.onCreated}
+              onClose={() => setResource(null)}
+            />
+          )}
+          {purchaseEditor && (
+            <PurchaseEditor
+              seed={purchaseSeed}
+              onClose={() => setPurchaseEditor(false)}
+            />
+          )}
+          {transferEditor && (
+            <TransferDialog onClose={() => setTransferEditor(false)} />
+          )}
           {journal && (
             <JournalDetail journal={journal} onClose={() => setJournal(null)} />
           )}{" "}
@@ -447,6 +639,28 @@ export default function App() {
               onJournal={viewJournal}
             />
           )}{" "}
+          {palette && (
+            <Suspense fallback={null}>
+              <CommandMenu
+                onClose={() => setPalette(false)}
+                onNavigate={navigate}
+                canPost={!!workspace?.initialized}
+                onAction={runAction}
+                onSetup={() => {
+                  setPalette(false);
+                  setSetup(true);
+                }}
+                onJournal={() => {
+                  setPalette(false);
+                  setJournalEditor(true);
+                }}
+                onToggleSidebar={() => {
+                  setCollapsed((v) => !v);
+                  setPalette(false);
+                }}
+              />
+            </Suspense>
+          )}
         </Suspense>
       </BooksContext.Provider>
     ) : null;
@@ -459,6 +673,9 @@ export default function App() {
         >
           <div
             className={`app-shell ${workspace?.settings.density === "Compact" ? "compact" : ""}`}
+            data-first-run={
+              workspace?.companies.length === 0 && page === "overview"
+            }
           >
             <Sidebar
               side={locale === "fa" ? "right" : "left"}
@@ -505,80 +722,43 @@ export default function App() {
                 </NativeSelect>
               </SidebarHeader>
               <SidebarContent>
-                <SidebarGroup>
-                  <SidebarGroupLabel>{t("Books")}</SidebarGroupLabel>
-                  <SidebarMenu aria-label={t("Main navigation")}>
-                    {navigation.slice(0, 7).map((n) => (
-                      <SidebarMenuItem key={n.page}>
-                        <SidebarMenuButton
-                          isActive={page === n.page}
-                          aria-current={page === n.page ? "page" : undefined}
-                          tooltip={t(n.label)}
-                          onPointerEnter={() => preloadPage(n.page)}
-                          onFocus={() => preloadPage(n.page)}
-                          onClick={() => navigate(n.page)}
-                        >
-                          <n.icon />
-                          <span>{t(n.label)}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
-                  </SidebarMenu>
-                </SidebarGroup>
-                <SidebarGroup>
-                  <SidebarGroupLabel>
-                    {companyId ? t("Organization") : t("Get started")}
-                  </SidebarGroupLabel>
-                  <SidebarMenu>
-                    <SidebarMenuItem>
-                      <SidebarMenuButton
-                        tooltip={t("Add company")}
-                        title={t("Create another company")}
-                        onClick={() => {
-                          if (editor) {
-                            toast.info(
-                              t(
-                                "Save or discard the current sales draft first.",
-                              ),
-                            );
-                            return;
-                          }
-                          setNewCompany(true);
-                          setSetup(true);
-                        }}
-                      >
-                        <Plus />
-                        <span>{t("Add company")}</span>
-                      </SidebarMenuButton>
-                    </SidebarMenuItem>
-                  </SidebarMenu>
-                </SidebarGroup>
+                <Button
+                  className="sidebar-primary-action"
+                  aria-label={t("New sales invoice")}
+                  title={t("New sales invoice")}
+                  onClick={() => runAction("invoice")}
+                  disabled={!workspace?.companies.length}
+                >
+                  <Plus />
+                  <span>{t("New sales invoice")}</span>
+                </Button>
+                {navigationGroups
+                  .filter((g) => g.id !== "workspace")
+                  .map((g) => (
+                    <SidebarGroup key={g.id}>
+                      <SidebarGroupLabel>{t(g.label)}</SidebarGroupLabel>
+                      <SidebarMenu aria-label={t(g.label)}>
+                        {navigation
+                          .filter((n) => n.group === g.id)
+                          .map(navItem)}
+                      </SidebarMenu>
+                    </SidebarGroup>
+                  ))}
               </SidebarContent>
               <SidebarFooter>
                 <SidebarGroup>
-                  <SidebarGroupLabel>{t("Workspace")}</SidebarGroupLabel>
                   <SidebarMenu>
-                    {navigation.slice(7).map((n) => (
-                      <SidebarMenuItem key={n.page}>
-                        <SidebarMenuButton
-                          isActive={page === n.page}
-                          aria-current={page === n.page ? "page" : undefined}
-                          tooltip={t(n.label)}
-                          onPointerEnter={() => preloadPage(n.page)}
-                          onFocus={() => preloadPage(n.page)}
-                          onClick={() => navigate(n.page)}
-                        >
-                          <n.icon />
-                          <span>{t(n.label)}</span>
-                        </SidebarMenuButton>
-                      </SidebarMenuItem>
-                    ))}
+                    {navigation.filter((n) => n.group === "workspace").map(navItem)}
                     <SidebarMenuItem>
                       <SidebarMenuButton
                         tooltip={t("Help & shortcuts")}
                         onClick={() => setHelp(true)}
                       >
-                        <CircleHelp />
+                        <CircleHelp
+                          data-nav-icon="help"
+                          weight="duotone"
+                          className="sidebar-nav-icon"
+                        />
                         <span>{t("Help & shortcuts")}</span>
                       </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -747,27 +927,6 @@ export default function App() {
             ))}
           </nav>
         </Modal>
-        {palette && (
-          <Suspense fallback={null}>
-            <CommandMenu
-              onClose={() => setPalette(false)}
-              onNavigate={navigate}
-              canPost={!!workspace?.initialized}
-              onSetup={() => {
-                setPalette(false);
-                setSetup(true);
-              }}
-              onJournal={() => {
-                setPalette(false);
-                setJournalEditor(true);
-              }}
-              onToggleSidebar={() => {
-                setCollapsed((v) => !v);
-                setPalette(false);
-              }}
-            />
-          </Suspense>
-        )}
         <Modal
           open={help}
           onOpenChange={setHelp}
@@ -776,28 +935,16 @@ export default function App() {
             "Local, offline accounting with exact amounts and traceable sources.",
           )}
         >
-          <div className="setup-steps">
-            <div className="summary-line">
-              <span>{t("Command menu")}</span>
-              <kbd>Ctrl / ⌘ K</kbd>
-            </div>
-            <div className="summary-line">
-              <span>{t("Toggle sidebar")}</span>
-              <kbd>F9</kbd>
-            </div>
-            <div className="summary-line">
-              <span>{t("Help")}</span>
-              <kbd>F1</kbd>
-            </div>
-            <div className="summary-line">
-              <span>{t("Close dialog")}</span>
-              <kbd>Esc</kbd>
-            </div>
-          </div>
+          <ShortcutList />
         </Modal>
         <Toaster
-          visibleToasts={1}
-          duration={2500}
+          theme={
+            workspace?.settings.appearance === "Dark"
+              ? "dark"
+              : workspace?.settings.appearance === "Light"
+                ? "light"
+                : "system"
+          }
           dir={locale === "fa" ? "rtl" : "ltr"}
           position={locale === "fa" ? "bottom-left" : "bottom-right"}
           toastOptions={{ closeButtonAriaLabel: t("Close notification") }}

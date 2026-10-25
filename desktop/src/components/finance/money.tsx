@@ -90,9 +90,13 @@ export function formatDate(
   if (!formatter) {
     formatter = new Intl.DateTimeFormat(
       locale === "fa"
-        ? "fa-IR-u-ca-gregory"
+        ? display === "Jalali"
+          ? "fa-IR-u-ca-persian"
+          : "fa-IR-u-ca-gregory"
         : locale === "en"
-          ? "en-US"
+          ? display === "Jalali"
+            ? "en-US-u-ca-persian"
+            : "en-US-u-ca-gregory"
           : locale,
       {
         year: "numeric",

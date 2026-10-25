@@ -18,18 +18,29 @@ import {
   type ReactNode,
 } from "react";
 import {
-  useReactTable,
-  getCoreRowModel,
-  getSortedRowModel,
+  useTable,
+  tableFeatures,
+  rowSortingFeature,
+  createSortedRowModel,
   flexRender,
+  type CellData,
   type ColumnDef,
+  type RowData,
   type SortingState,
 } from "@tanstack/react-table";
 import { BooksContext } from "../../app/books";
 import { ArrowDownIcon as ArrowDown } from "@phosphor-icons/react/dist/csr/ArrowDown";
 import { ArrowUpIcon as ArrowUp } from "@phosphor-icons/react/dist/csr/ArrowUp";
 import { MagnifyingGlassIcon as Search } from "@phosphor-icons/react/dist/csr/MagnifyingGlass";
-export function DataGrid<T>({
+
+// Sorting is the only table feature this grid uses; declaring it explicitly
+// keeps the bundle at the v9 modular surface instead of the stock bundle.
+const features = tableFeatures({
+  rowSortingFeature,
+  sortedRowModel: createSortedRowModel(),
+});
+
+export function DataGrid<T extends RowData>({
   data,
   columns,
   id,
@@ -39,7 +50,7 @@ export function DataGrid<T>({
   totals,
 }: {
   data: T[];
-  columns: ColumnDef<T>[];
+  columns: ColumnDef<typeof features, T, CellData>[];
   id: (row: T) => string;
   empty: string;
   searchText?: (row: T) => string;
@@ -72,17 +83,16 @@ export function DataGrid<T>({
           ("accessorKey" in column
             ? String(column.accessorKey)
             : `column-${index}`),
-      })),
+      })) as ColumnDef<typeof features, T, CellData>[],
     [columns],
   );
-  const table = useReactTable({
+  const table = useTable({
+    features,
     data: filtered,
     columns: identifiedColumns,
     getRowId: id,
     state: { sorting },
     onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
   return (
     <div className="data-grid">
@@ -162,7 +172,7 @@ export function DataGrid<T>({
           <TableBody>
             {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
+                {row.getAllCells().map((cell) => (
                   <TableCell
                     key={cell.id}
                     className={
@@ -202,7 +212,20 @@ export function DataGrid<T>({
             <TableFooter>
               <TableRow>
                 {totals.map((value, i) => (
-                  <TableCell key={i}>{value}</TableCell>
+                  <TableCell
+                    key={i}
+                    className={
+                      (
+                        table.getAllLeafColumns()[i]?.columnDef.meta as
+                          | { numeric?: boolean }
+                          | undefined
+                      )?.numeric
+                        ? "numeric tabular-nums"
+                        : undefined
+                    }
+                  >
+                    {value}
+                  </TableCell>
                 ))}
               </TableRow>
             </TableFooter>

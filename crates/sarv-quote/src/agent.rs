@@ -38,6 +38,13 @@ const READ: &[&str] = &[
     "transfer_preview",
     "journal_preview",
     "journal_reverse_preview",
+    "payment_options",
+    "payment_preview",
+    "payment_reverse_preview",
+    "banking",
+    "banking_preview",
+    "contact_detail",
+    "product_detail",
 ];
 const WRITE: &[&str] = &[
     "setup_company",
@@ -57,6 +64,7 @@ const WRITE: &[&str] = &[
     "journal_post",
     "period_lock",
     "journal_reverse",
+    "payment_post",
     "settings",
 ];
 
@@ -100,9 +108,23 @@ struct Inner {
     directory: PathBuf,
     cli: PathBuf,
     state: Mutex<State>,
+    /// One owner per process: the GUI keeps the book in memory between
+    /// commands and only reloads it when another writer advances the
+    /// generation. This removes a full SQLite read + JSON parse per action.
+    accounting: Mutex<crate::store::Store>,
     shutdown: AtomicBool,
     connections: AtomicUsize,
     on_change: Mutex<Option<Arc<dyn Fn() + Send + Sync>>>,
+}
+impl Inner {
+    fn dispatch(&self, action: &str, payload: Value) -> Result<Value> {
+        let mut store = self
+            .accounting
+            .lock()
+            .map_err(|_| anyhow!("Accounting state interrupted"))?;
+        store.refresh_if_stale()?;
+        crate::desktop::dispatch_in(&mut store, action, payload)
+    }
 }
 pub struct AgentService {
     inner: Arc<Inner>,
@@ -161,7 +183,7 @@ fn shell_quote(s: &str) -> String {
 
 impl AgentService {
     pub fn start(directory: &Path, cli: PathBuf) -> Result<Self> {
-        crate::store::Store::open(directory)?;
+        let accounting = crate::store::Store::open(directory)?;
         let policy = load_policy(directory)?;
         let service = Self {
             inner: Arc::new(Inner {
@@ -174,6 +196,7 @@ impl AgentService {
                     },
                     token: String::new(),
                 }),
+                accounting: Mutex::new(accounting),
                 shutdown: AtomicBool::new(false),
                 connections: AtomicUsize::new(0),
                 on_change: Mutex::new(None),
@@ -266,7 +289,7 @@ impl AgentService {
                 let access = serde_json::from_value(p["access"].clone())?;
                 self.configure(enabled, access)
             }
-            _ => crate::desktop::dispatch(&self.inner.directory, action, p),
+            _ => self.inner.dispatch(action, p),
         }
     }
 }
@@ -376,7 +399,7 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
         );
         let mut payload = request.payload;
         payload["_actor"] = json!("local-agent");
-        let result = crate::desktop::dispatch(&inner.directory, &request.action, payload);
+        let result = inner.dispatch(&request.action, payload);
         changed = result.is_ok() && !readonly;
         result
     })();

@@ -571,23 +571,36 @@ impl AccountingState {
         }
         Ok(receipts.into_values().collect())
     }
+    /// Open supplier payables as-of a date, net of posted payments.
+    pub fn procurement_open_payables(
+        &self,
+        company: &str,
+        asof: &str,
+    ) -> Result<Vec<PayableRemainder>> {
+        self.procurement_payables(company, asof)
+    }
     fn procurement_payables(&self, company: &str, asof: &str) -> Result<Vec<PayableRemainder>> {
         let o = self.procurement_opening(company)?;
+        let settled = self.payment_allocation_map(company, asof)?;
         let mut out: Vec<_> = o
             .command
             .open_items
             .iter()
             .filter(|x| x.side == crate::core::OpenItemSide::Payable)
-            .map(|x| PayableRemainder {
-                id: x.id.clone(),
-                source_id: o.command.source_id.clone(),
-                party_id: x.party_id.clone(),
-                reference: x.document_reference.clone(),
-                document_date: x.document_date.clone(),
-                due_date: x.due_date.clone(),
-                remaining: x.remaining,
+            .map(|x| -> Result<PayableRemainder> {
+                Ok(PayableRemainder {
+                    id: x.id.clone(),
+                    source_id: o.command.source_id.clone(),
+                    party_id: x.party_id.clone(),
+                    reference: x.document_reference.clone(),
+                    document_date: x.document_date.clone(),
+                    due_date: x.due_date.clone(),
+                    remaining: x.remaining.checked_add(
+                        settled.get(x.id.as_str()).copied().unwrap_or(Money::ZERO),
+                    )?,
+                })
             })
-            .collect();
+            .collect::<Result<Vec<_>>>()?;
         for r in self.procurement.records.iter().filter(|r| {
             r.command.context().company_id == company && r.command.context().date.as_str() <= asof
         }) {
@@ -602,7 +615,9 @@ impl AccountingState {
                     reference: input.reference.clone(),
                     document_date: input.document_date.clone(),
                     due_date: input.due_date.clone(),
-                    remaining: b.total,
+                    remaining: b.total.checked_add(
+                        settled.get(r.id.as_str()).copied().unwrap_or(Money::ZERO),
+                    )?,
                 });
             }
         }
@@ -762,12 +777,19 @@ impl AccountingState {
         let mut controls = Vec::new();
         for r in opening.controls {
             let detail = match r.role {
+                CoreRole::Cash | CoreRole::Bank => r
+                    .detail
+                    .checked_add(self.banking_delta(company, &r.account_id, asof)?)?
+                    .checked_add(self.payment_fund_delta(company, &r.account_id, asof)?)?,
                 CoreRole::Inventory => sum(stock.iter().map(|x| x.value))?,
                 CoreRole::Grni => sum(receipts.iter().map(|x| x.value))?,
                 CoreRole::Payables => sum(payables.iter().map(|x| x.remaining))?,
                 CoreRole::Receivables | CoreRole::Cogs => {
                     self.sales_control_detail(r.role, company, asof)?
                 }
+                CoreRole::CustomerAdvances | CoreRole::SupplierAdvances => r
+                    .detail
+                    .checked_add(self.payment_advance_delta(company, r.role, asof)?)?,
                 _ => r.detail,
             };
             let ledger = if let Some(t) = tb.rows.iter().find(|t| t.account_id == r.account_id) {
@@ -905,6 +927,9 @@ impl AccountingState {
             }
         }
         out.extend(self.sales_entity_ids().into_iter().map(str::to_owned));
+        for r in &self.payments.records {
+            out.insert(r.id.clone());
+        }
         out
     }
     pub(crate) fn operational_stock_date(&self, company: &str) -> Result<&str> {

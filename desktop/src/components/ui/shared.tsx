@@ -14,6 +14,7 @@ import { Button } from "./button";
 import { Skeleton } from "./skeleton";
 import { Field as FieldPrimitive, FieldLabel } from "./field";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
+import { DatePicker } from "./date-picker";
 export function PageHeader({
   title,
   actions,
@@ -58,10 +59,12 @@ export function Field({
   label,
   children,
   hint,
+  action,
 }: {
   label: string;
   children: ReactNode;
   hint?: string;
+  action?: ReactNode;
 }) {
   const id = useId();
   const control = isValidElement(children)
@@ -74,6 +77,7 @@ export function Field({
     <FieldPrimitive className="field">
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       {control}
+      {action}
       {hint && (
         <span className="sr-only w-px!" id={`${id}-hint`}>
           {hint}
@@ -128,5 +132,31 @@ export function Note({ children }: { children: ReactNode }) {
     <Alert>
       <AlertDescription>{children}</AlertDescription>
     </Alert>
+  );
+}
+
+/** From / Through pickers on one compact row, with an optional trailing note. */
+export function DateRange({
+  from,
+  to,
+  onChange,
+  children,
+}: {
+  from: string;
+  to: string;
+  onChange: (from: string, to: string) => void;
+  children?: ReactNode;
+}) {
+  const t = useTranslation();
+  return (
+    <div className="date-range">
+      <Field label={t("From")}>
+        <DatePicker value={from} onChange={(v) => onChange(v, to)} />
+      </Field>
+      <Field label={t("Through")}>
+        <DatePicker value={to} onChange={(v) => onChange(from, v)} />
+      </Field>
+      {children && <span className="date-range-note">{children}</span>}
+    </div>
   );
 }

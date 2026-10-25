@@ -5,9 +5,9 @@ Tauri 2 + React 19 + TypeScript + Vite 7 + Tailwind 4, official shadcn Radix Lum
 From this directory, with Node >=20.19 (or >=22.12), Rust and the platform's Tauri prerequisites installed:
 
 ```sh
-npm ci
-npm run tauri dev
-npm run tauri build -- --no-bundle
+pnpm install
+pnpm exec tauri dev
+pnpm exec tauri build --no-bundle
 ```
 
 Persian is supported throughout the UI with RTL layout and keyboard navigation. In Settings, interface language, display digits, and Gregorian/Jalali display are independent. Date-entry controls preserve Gregorian ISO values and LTR reading order. A fresh installation follows the system language; the user's saved language takes precedence. The official components use preset `b6TqdhPcaf` (Radix Luma, teal, IBM Plex Sans/Space Grotesk and Phosphor), applied with `pnpm dlx shadcn@latest apply --preset b6TqdhPcaf --yes`. Vazirmatn remains bundled for Persian. Buttons, inputs, native selects, tables, badges, dialogs, sidebar, tabs, switches, checkboxes, command search, fields, alerts, avatars, separators, skeletons and tooltips use the registry components. Application adapters preserve localized labels, financial review scrolling and editor autofocus without restyling the primitives.
@@ -25,9 +25,9 @@ For Linux, Tauri needs the distribution's GTK3, WebKitGTK 4.1, libsoup 3 and the
 Default Tauri storage is the application data directory under `ir.sarv.accounting/books`. Set `SARV_DATA_DIR` to an existing Sarv profile to open the same SQLite books; financial writes use the existing generation guards. Keep backups and avoid simultaneous editing across interfaces. Stored-data compatibility is retained; the old GTK application has been removed.
 
 ```sh
-npm run check
-npm run lint
-npm run build
+pnpm check
+pnpm lint
+pnpm build
 ```
 
 A normal browser preview does not contain a mock financial backend. It displays a desktop-required error. For **isolated browser QA only**, use the opt-in Rust example from the repository root:
@@ -42,10 +42,10 @@ Seed only an empty test profile; it imports the repository's clearly synthetic o
 
 ```sh
 VITE_QA_URL=http://127.0.0.1:1421 \
-VITE_QA_TOKEN=a-test-token-with-at-least-24-characters npm run dev
-SARV_QA_TOKEN=a-test-token-with-at-least-24-characters npm test
+VITE_QA_TOKEN=a-test-token-with-at-least-24-characters pnpm dev
+SARV_QA_TOKEN=a-test-token-with-at-least-24-characters pnpm test
 ```
 
 The example binds only to loopback, restricts origins and requires an explicit token. `SARV_QA_PORT` optionally selects another loopback port for isolated tests; it defaults to 1421. Compile the example before running Playwright: `cargo build -p sarv-quote --example desktop_qa`. The two first-run tests launch their own empty profiles on port 1422 and cover English/Persian, desktop/mobile, back navigation, reduced motion, explicit opening confirmation and restart persistence. It is not bundled in the product. Production code has no HTTP adapter. The browser test creates a separate synthetic company and checks purchasing, invoice posting, invalid journals, reporting, CSV export, preferences, keyboard commands, dark/RTL and four window sizes. Browser CSV download is separate from the verified native save dialog. QA file watching is disabled to keep posting reviews stable; restart Vite and the Rust adapter after source changes before testing.
 
-Supported: core company/chart/opening, operational contacts/resources, durable goods sales drafts/orders, paired delivery/invoice, purchasing/receiving/billing, stock inspection, manual journals/reversals, period lock/reopen, P&L/trial/control reports and CSV. Partial receipt/bill/delivery selection, original-cost customer and supplier returns, and warehouse transfers are also connected. The quotation engine and optional PDF APIs remain in Rust; a quotation/PDF editor has not yet been added to React. Missing: service invoices, payments/refunds, bank statements/reconciliation, attachments, approvals/projects, authentication/roles and translation of arbitrary imported/backend messages. This is a verified implementation checkpoint, not a production release.
+Supported: core company/chart/opening, operational contacts/resources, durable goods sales drafts/orders, paired delivery/invoice, purchasing/receiving/billing, stock inspection, manual journals/reversals, period lock/reopen, P&L/trial/control reports and CSV. Partial receipt/bill/delivery selection, original-cost customer and supplier returns, and warehouse transfers are also connected. Customer receipts and supplier payments allocate exact amounts to open invoices and bills, with surplus advances, typed reversal, and full control reconciliation. Banking offers a statement-matching reconciliation dialog per cash/bank account. Quotations are issued from the sales editor with stable series numbering, printable A4 PDFs, and exact conversion into sales orders. Missing: service invoices, attachments, approvals/projects, authentication/roles and translation of arbitrary imported/backend messages. This is a verified implementation checkpoint, not a production release.

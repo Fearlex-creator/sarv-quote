@@ -1,3 +1,23 @@
+export interface BusinessProfile {
+  phone: string;
+  address: string;
+  registration_id: string;
+  tax_id: string;
+  invoice_prefix: string;
+  terms: string;
+  footer: string;
+  bank_details: string;
+}
+export const emptyBusinessProfile: BusinessProfile = {
+  phone: "",
+  address: "",
+  registration_id: "",
+  tax_id: "",
+  invoice_prefix: "",
+  terms: "",
+  footer: "",
+  bank_details: "",
+};
 export type Integer = string;
 export interface Company {
   id: string;
@@ -50,6 +70,78 @@ export interface Party {
   customer: boolean;
   supplier: boolean;
 }
+export interface PartyProfile {
+  company_id: string;
+  display_name: string;
+  first_name: string;
+  last_name: string;
+  organization: string;
+  phone: string;
+  mobile: string;
+  email: string;
+  address: string;
+  city: string;
+  postal_code: string;
+  national_id: string;
+  tax_id: string;
+  website: string;
+  notes: string;
+}
+export const emptyPartyProfile: PartyProfile = {
+  company_id: "",
+  display_name: "",
+  first_name: "",
+  last_name: "",
+  organization: "",
+  phone: "",
+  mobile: "",
+  email: "",
+  address: "",
+  city: "",
+  postal_code: "",
+  national_id: "",
+  tax_id: "",
+  website: "",
+  notes: "",
+};
+export interface ContactDetail {
+  _generation: string;
+  party: Party;
+  profile: PartyProfile;
+  as_of: string;
+  stats: {
+    orders: Integer;
+    invoices: Integer;
+    returns: Integer;
+    gross_sales: Integer;
+    returns_value: Integer;
+    net_sales: Integer;
+    gross_profit: Integer;
+    outstanding: Integer;
+    overdue: Integer;
+    last_activity: string | null;
+  };
+  records: RecordEntry[];
+  record_count: Integer;
+  receivables: OpenItem[];
+  payables: OpenItem[];
+  monthly: { month: string; net: Integer }[];
+  products: { id: string; name: string; quantity: Integer; revenue: Integer }[];
+}
+export interface BankingData {
+  _generation: string;
+  accounts: {
+    account: Account;
+    role: "Cash" | "Bank";
+    opening: Integer;
+    incoming: Integer;
+    outgoing: Integer;
+    balance: Integer;
+  }[];
+  movements: Journal[];
+  movement_count: Integer;
+  counterparts: Account[];
+}
 export interface Unit {
   id: string;
   company_id: string;
@@ -69,17 +161,6 @@ export interface Resources {
   items: Item[];
   warehouses: Unit[];
 }
-export interface Context {
-  company_id: string;
-  period_id: string;
-  setup_id: string;
-  source_id: string;
-  source_revision: Integer;
-  date: string;
-  request_key: string;
-  actor: string;
-  reason: string;
-}
 export interface InputLine {
   id: string;
   item_id: string;
@@ -91,6 +172,12 @@ export interface InputLine {
   price_reference: string;
   price_date: string;
   override_reason: string;
+}
+export interface QuoteIssue {
+  series: string;
+  number: string;
+  issued: string;
+  valid_until: string;
 }
 export interface Draft {
   id: string;
@@ -108,6 +195,7 @@ export interface Draft {
   supplied_total: string;
   reason: string;
   quotation: null;
+  quote_issue?: QuoteIssue | null;
   lines: InputLine[];
 }
 export interface FrozenLine {
@@ -127,8 +215,15 @@ export interface FrozenLine {
   net: Integer;
 }
 export interface Data {
+  credit_id?: string;
   total?: Integer;
   cost?: Integer;
+  applied?: Integer;
+  advance_amount?: Integer;
+  payment_id?: string;
+  reference?: string;
+  party?: Party;
+  allocations?: { open_item_id: string; amount: Integer }[];
   lines?: FrozenLine[];
   customer?: Party;
   supplier?: Party;
@@ -138,9 +233,23 @@ export interface Data {
   delivery_id?: string;
   invoice_id?: string;
 }
+export interface Context {
+  company_id: string;
+  period_id: string;
+  setup_id: string;
+  source_id: string;
+  source_revision: Integer;
+  date: string;
+  request_key: string;
+  actor: string;
+  reason: string;
+  party_id?: string;
+}
 export interface RecordCommand {
   context: Context;
   reference?: string;
+  party_id?: string;
+  funds_role?: string;
   invoice_reference?: string;
   return_reference?: string;
   delivery_reference?: string;
@@ -184,6 +293,9 @@ export interface Setup {
   };
 }
 export interface Workspace {
+  product_profiles: Record<string, ProductProfile>;
+  party_profiles: Record<string, PartyProfile>;
+  business_profile: BusinessProfile;
   companies: Company[];
   periods: Period[];
   accounts: Account[];
@@ -196,6 +308,8 @@ export interface Workspace {
   sales_count: Integer;
   purchases: RecordEntry[];
   purchase_count: Integer;
+  payments: PaymentRecordEntry[];
+  payment_count: Integer;
   drafts: Draft[];
   audit: {
     id: string;
@@ -278,9 +392,143 @@ export type Page =
   | "overview"
   | "sales"
   | "purchases"
+  | "payments"
   | "accounting"
   | "inventory"
   | "reports"
   | "customers"
   | "settings"
   | "banking";
+
+export type PaymentSide = "receive" | "make";
+export interface PaymentOpenItem {
+  id: string;
+  party_id: string;
+  reference: string;
+  document_date: string;
+  due_date: string;
+  remaining: Integer;
+}
+export interface PaymentAllocationInput {
+  open_item_id: string;
+  amount: Integer;
+}
+export interface PaymentRecordEntry {
+  id: string;
+  sequence: Integer;
+  journal_id: string;
+  command: Record<
+    string,
+    {
+      context: Context;
+      side?: "Receive" | "Make";
+      party_id?: string;
+      funds_role?: "Cash" | "Bank";
+      reference?: string;
+      payment_id?: string;
+    }
+  >;
+  data: Record<
+    string,
+    {
+      side?: "Receive" | "Make";
+      payment_id?: string;
+      party?: Party;
+      reference?: string;
+      allocations?: {
+        open_item_id: string;
+        party_id: string;
+        reference: string;
+        amount: Integer;
+      }[];
+      applied?: Integer;
+      advance_amount?: Integer;
+      total?: Integer;
+    }
+  >;
+}
+export interface PaymentOptions {
+  items: PaymentOpenItem[];
+}
+export interface PaymentPreviewData {
+  _generation?: string;
+  data: Record<string, unknown>;
+  journal_lines: {
+    account_id: string;
+    debit: Integer;
+    credit: Integer;
+    description: string;
+  }[];
+  total: Integer;
+}
+
+export interface ProductProfile {
+  company_id: string;
+  purchase_price: Integer | null;
+  sale_price: Integer | null;
+  barcode: string;
+  category: string;
+  brand: string;
+  minimum_stock_thousandths: Integer;
+  minimum_stock?: string;
+  preferred_supplier_id: string;
+  notes: string;
+}
+export const emptyProductProfile: ProductProfile = {
+  company_id: "",
+  purchase_price: null,
+  sale_price: null,
+  barcode: "",
+  category: "",
+  brand: "",
+  minimum_stock_thousandths: "0",
+  preferred_supplier_id: "",
+  notes: "",
+};
+export interface ProductDetail {
+  _generation: Integer;
+  item: Item;
+  profile: ProductProfile;
+  as_of: string;
+  stock: {
+    item_id: string;
+    warehouse_id: string;
+    quantity_thousandths: Integer;
+    value: Integer;
+  }[];
+  stats: {
+    stock_quantity: Integer;
+    stock_value: Integer;
+    average_stock_cost: Integer | null;
+    low_stock: boolean;
+    sold_quantity: Integer;
+    returned_quantity: Integer;
+    net_sales: Integer;
+    cost_of_goods_sold: Integer;
+    gross_profit: Integer;
+    returns_value: Integer;
+    purchased_quantity: Integer;
+    purchase_returns_quantity: Integer;
+    net_purchase_value: Integer;
+    last_purchase_price: Integer | null;
+    last_sale_price: Integer | null;
+    estimated_unit_profit: Integer | null;
+    margin_basis_points: Integer | null;
+    markup_basis_points: Integer | null;
+  };
+  monthly: {
+    month: string;
+    net_sales: Integer;
+    cost: Integer;
+    profit: Integer;
+  }[];
+  customers: {
+    id: string;
+    quantity: Integer;
+    net_sales: Integer;
+    profit: Integer;
+  }[];
+  suppliers: { id: string; quantity: Integer; value: Integer }[];
+  records: RecordEntry[];
+  record_count: Integer;
+}

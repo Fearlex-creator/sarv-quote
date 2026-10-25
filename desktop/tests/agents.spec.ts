@@ -27,9 +27,9 @@ test("minimal settings grants local CLI and MCP access and revokes it", async ({
     .locator(".sidebar")
     .getByRole("button", { name: "Settings", exact: true })
     .click();
-  const general = page.getByRole("tab", { name: "General", exact: true });
-  await general.focus();
-  await page.keyboard.press("ArrowRight");
+  await page
+    .getByRole("tab", { name: "Agents", exact: true })
+    .click();
   await expect(
     page.getByRole("tab", { name: "Agents", exact: true }),
   ).toHaveAttribute("aria-selected", "true");

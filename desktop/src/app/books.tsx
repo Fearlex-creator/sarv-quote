@@ -1,6 +1,7 @@
 import { createContext, useContext } from "react";
 import type { MessageValues } from "../lib/i18n";
-import type { Page, Report, Workspace } from "../lib/types";
+import type { Page, Report, Workspace, RecordEntry } from "../lib/types";
+import type { ResourceKind, QuickAction } from "../lib/shortcuts";
 export interface Books {
   workspace: Workspace;
   companyId: string;
@@ -20,7 +21,14 @@ export interface Books {
   dateLocale: string;
   t: (s: string, values?: MessageValues) => string;
   openSetup: () => void;
+  openCompanySetup: () => void;
   openJournal: () => void;
+  openResource: (kind: ResourceKind, onCreated?: (id: string) => void) => void;
+  runAction: (action: QuickAction) => void;
+  openPurchase: (seed: { item_id: string; quantity: string }[]) => void;
+  openContact: (id: string) => void;
+  openProduct: (id: string) => void;
+  openRecord: (record: RecordEntry) => void;
 }
 export const BooksContext = createContext<Books | null>(null);
 export function useBooks() {

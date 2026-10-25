@@ -243,6 +243,8 @@ pub struct PostRequestRecord {
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct AccountingState {
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub banking: Vec<PostRequestRecord>,
     pub companies: Vec<Company>,
     pub periods: Vec<FiscalPeriod>,
     pub accounts: Vec<Account>,
@@ -258,6 +260,11 @@ pub struct AccountingState {
     pub procurement: crate::procurement::ProcurementState,
     #[serde(default, skip_serializing_if = "crate::sales::SalesState::is_empty")]
     pub sales: crate::sales::SalesState,
+    #[serde(
+        default,
+        skip_serializing_if = "crate::payments::PaymentsState::is_empty"
+    )]
+    pub payments: crate::payments::PaymentsState,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct TrialBalanceRow {
@@ -309,11 +316,13 @@ impl AccountingState {
             && self.periods.is_empty()
             && self.accounts.is_empty()
             && self.journals.is_empty()
+            && self.banking.is_empty()
             && self.requests.is_empty()
             && self.audit.is_empty()
             && self.core.is_empty()
             && self.procurement.is_empty()
             && self.sales.is_empty()
+            && self.payments.is_empty()
     }
     /// Validate a restored snapshot by replaying its complete command/audit history.
     /// This is integrity validation, not authentication against a file owner.
@@ -338,6 +347,7 @@ impl AccountingState {
             .map(String::as_str)
             .chain(self.procurement_entity_ids())
             .chain(self.sales_entity_ids())
+            .chain(self.payment_entity_ids())
         {
             text(entity_id)?;
             ensure!(ids.insert(entity_id), "شناسهٔ حسابداری تکراری است");
@@ -570,10 +580,18 @@ impl AccountingState {
                         .records
                         .iter()
                         .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
+                    let payment = self
+                        .payments
+                        .records
+                        .iter()
+                        .find(|r| r.journal_id == j.id);
+                    let banking = self.banking.iter().find(|r| r.journal_id == j.id);
                     ensure!(
                         usize::from(opening.is_some())
                             + usize::from(procurement.is_some())
                             + usize::from(sales.is_some())
+                            + usize::from(payment.is_some())
+                            + usize::from(banking.is_some())
                             <= 1,
                         "منبع سند مالی تکراری است"
                     );
@@ -616,6 +634,28 @@ impl AccountingState {
                             "تصویر یا بهای رویداد فروش نامعتبر است"
                         );
                         generated
+                    } else if let Some(record) = payment {
+                        let context = record.command.context();
+                        ensure!(
+                            context.company_id == event.company_id
+                                && context.actor == event.actor
+                                && context.reason == event.reason,
+                            "رویداد پرداخت و سوابق تغییرات سند مالی سازگار نیستند"
+                        );
+                        let generated = replay.replay_payment_record(record)?;
+                        let mut expected = record.clone();
+                        expected.journal_id = generated.clone();
+                        ensure!(
+                            replay.payments.records.last() == Some(&expected),
+                            "تصویر یا تخصیص‌های رویداد پرداخت نامعتبر است"
+                        );
+                        generated
+                    } else if let Some(record) = banking {
+                        ensure!(
+                            record.command == request.command,
+                            "Banking source and journal request differ"
+                        );
+                        replay.post_banking(record.command.clone())?
                     } else {
                         // Event text was unrestricted in older manual ledgers.
                         // Replay their existing namespace without granting the
@@ -648,6 +688,12 @@ impl AccountingState {
                     if sales.is_some() {
                         replay.sales.records.last_mut().unwrap().journal_id = Some(j.id.clone());
                     }
+                    if payment.is_some() {
+                        replay.payments.records.last_mut().unwrap().journal_id = j.id.clone();
+                    }
+                    if banking.is_some() {
+                        replay.banking.last_mut().unwrap().journal_id = j.id.clone();
+                    }
                 }
             }
             ensure!(
@@ -662,7 +708,15 @@ impl AccountingState {
         let audit_count = replay.audit.len();
         for request in &self.requests {
             ensure!(
-                replay.post(request.command.clone())? == request.journal_id,
+                (if self
+                    .banking
+                    .iter()
+                    .any(|r| r.journal_id == request.journal_id)
+                {
+                    replay.post_banking(request.command.clone())?
+                } else {
+                    replay.post(request.command.clone())?
+                }) == request.journal_id,
                 "درخواست به سند دیگری اشاره می‌کند"
             );
         }
@@ -688,11 +742,20 @@ impl AccountingState {
                 "درخواست خرید یا انبار به رویداد دیگری اشاره می‌کند"
             );
         }
+        let payments_count = replay.payments.records.len();
+        for request in &self.payments.requests {
+            let result = replay.replay_payment_request(request)?;
+            ensure!(
+                result.record_id == request.record_id,
+                "درخواست پرداخت به رویداد دیگری اشاره می‌کند"
+            );
+        }
         ensure!(
             replay.journals.len() == journal_count
                 && replay.audit.len() == audit_count
                 && replay.procurement.records.len() == procurement_count
-                && replay.sales.records.len() == sales_count,
+                && replay.sales.records.len() == sales_count
+                && replay.payments.records.len() == payments_count,
             "درخواست بدون سوابق تغییرات ثبت وجود دارد"
         );
         // Original request order includes retry aliases between journal commands.
@@ -718,6 +781,11 @@ impl AccountingState {
         );
         replay.sales.requests = self.sales.requests.clone();
         ensure!(
+            replay.payments.requests.len() == self.payments.requests.len(),
+            "کلید درخواست پرداخت تکراری است"
+        );
+        replay.payments.requests = self.payments.requests.clone();
+        ensure!(
             replay == *self,
             "دادهٔ حسابداری با سوابق تغییرات کامل آن سازگار نیست"
         );
@@ -727,9 +795,14 @@ impl AccountingState {
     /// circumvent locks by editing a historical period/account definition.
     pub fn validate_transition(&self, next: &Self) -> Result<()> {
         next.validate()?;
+        ensure!(
+            next.banking.starts_with(&self.banking),
+            "Posted banking sources cannot be changed or deleted"
+        );
         self.core.validate_transition(&next.core)?;
         self.procurement.validate_transition(&next.procurement)?;
         self.sales.validate_transition(&next.sales)?;
+        self.payments.validate_transition(&next.payments)?;
         ensure!(
             next.journals.starts_with(&self.journals),
             "سند ثبت‌شده قابل تغییر یا حذف نیست؛ برگشت مرتبط ثبت کنید"
@@ -740,6 +813,9 @@ impl AccountingState {
                     .event
                     .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
                 || journal.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
+                || journal
+                    .event
+                    .starts_with(crate::payments::PAYMENTS_EVENT_PREFIX)
             {
                 ensure!(
                     next.has_typed_journal_source(&journal.id),
@@ -986,6 +1062,132 @@ impl AccountingState {
     pub fn post(&mut self, command: PostCommand) -> Result<String> {
         self.post_internal(command, false, false)
     }
+    /// Cash/bank capability is constrained to a two-line movement, never to
+    /// receivables, payables, inventory or other operational control accounts.
+    pub fn post_banking(&mut self, command: PostCommand) -> Result<String> {
+        use crate::core::CoreRole;
+        // Historical retries are checked by the posting kernel before account
+        // archival and period locks; they must never create another effect.
+        if self.requests.iter().any(|r| {
+            (r.command.request_key == command.request_key || same_business(&r.command, &command))
+                && self.banking.iter().any(|b| b.journal_id == r.journal_id)
+        }) {
+            return self.post_internal(command, true, false);
+        }
+        ensure!(
+            command.lines.len() == 2,
+            "Banking movement requires two lines"
+        );
+        let opening = self
+            .core
+            .openings
+            .iter()
+            .find(|o| o.command.company_id == command.company_id)
+            .ok_or_else(|| anyhow::anyhow!("Confirm opening balances first"))?;
+        ensure!(
+            command.date >= opening.command.as_of,
+            "Banking date precedes opening"
+        );
+        let funds: Vec<_> = opening
+            .frozen_setup
+            .command
+            .mappings
+            .iter()
+            .filter(|m| matches!(m.role, CoreRole::Cash | CoreRole::Bank))
+            .map(|m| m.account_id.as_str())
+            .collect();
+        if let JournalKind::Reversal { journal_id } = &command.kind {
+            ensure!(
+                self.banking
+                    .iter()
+                    .any(|r| &r.journal_id == journal_id && r.command.kind == JournalKind::Manual),
+                "Only a banking movement can be reversed here"
+            );
+        } else {
+            ensure!(
+                command.kind == JournalKind::Manual,
+                "Invalid banking journal kind"
+            );
+            let accounts = command
+                .lines
+                .iter()
+                .map(|l| {
+                    self.accounts
+                        .iter()
+                        .find(|a| {
+                            a.id == l.account_id
+                                && a.company_id == command.company_id
+                                && a.postable
+                                && !a.archived
+                        })
+                        .ok_or_else(|| anyhow::anyhow!("Invalid banking account"))
+                })
+                .collect::<Result<Vec<_>>>()?;
+            ensure!(
+                accounts[0].id != accounts[1].id,
+                "Choose different accounts"
+            );
+            let fund_lines: Vec<_> = command
+                .lines
+                .iter()
+                .filter(|l| funds.contains(&l.account_id.as_str()))
+                .collect();
+            let count = fund_lines.len();
+            match command.event.as_str() {
+                "banking.transfer.v1" => {
+                    ensure!(count == 2, "Transfer must be between cash and bank")
+                }
+                "banking.deposit.v1" | "banking.withdrawal.v1" => {
+                    ensure!(
+                        count == 1
+                            && accounts
+                                .iter()
+                                .filter(|a| !funds.contains(&a.id.as_str()))
+                                .all(|a| !a.control),
+                        "Use a non-control counterpart account"
+                    );
+                    if command.event == "banking.deposit.v1" {
+                        ensure!(
+                            fund_lines[0].debit.rials() > 0 && fund_lines[0].credit == Money::ZERO,
+                            "Deposit must debit the cash/bank account"
+                        );
+                    } else {
+                        ensure!(
+                            fund_lines[0].credit.rials() > 0 && fund_lines[0].debit == Money::ZERO,
+                            "Withdrawal must credit the cash/bank account"
+                        );
+                    }
+                }
+                _ => anyhow::bail!("Unsupported banking movement"),
+            }
+        }
+        let id = self.post_internal(command.clone(), true, false)?;
+        if !self.banking.iter().any(|r| r.journal_id == id) {
+            self.banking.push(PostRequestRecord {
+                command,
+                journal_id: id.clone(),
+            });
+        }
+        Ok(id)
+    }
+    pub(crate) fn banking_delta(&self, company: &str, account: &str, asof: &str) -> Result<Money> {
+        let mut total = Money::ZERO;
+        for source in self
+            .banking
+            .iter()
+            .filter(|r| r.command.company_id == company && r.command.date.as_str() <= asof)
+        {
+            for line in source
+                .command
+                .lines
+                .iter()
+                .filter(|l| l.account_id == account)
+            {
+                total = total.checked_add(line.debit)?.checked_sub(line.credit)?;
+            }
+        }
+        Ok(total)
+    }
     pub(crate) fn post_core_opening(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
             command.event == crate::core::CORE_OPENING_EVENT
@@ -1013,7 +1215,7 @@ impl AccountingState {
         );
         self.post_internal(command, true, false)
     }
-    fn post_internal(
+    pub(crate) fn post_internal(
         &mut self,
         command: PostCommand,
         control_allowed: bool,
@@ -1071,7 +1273,11 @@ impl AccountingState {
                     && !command
                         .event
                         .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
-                    && !command.event.starts_with(crate::sales::SALES_EVENT_PREFIX)),
+                    && !command.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
+                    && !command
+                        .event
+                        .starts_with(crate::payments::PAYMENTS_EVENT_PREFIX)
+                    && !command.event.starts_with("banking.")),
             "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است"
         );
         ensure!(
@@ -1335,6 +1541,11 @@ impl AccountingState {
                 .records
                 .iter()
                 .any(|record| record.journal_id.as_deref() == Some(journal_id))
+            || self
+                .payments
+                .records
+                .iter()
+                .any(|record| record.journal_id == journal_id)
     }
     #[allow(clippy::too_many_arguments)]
     pub fn reverse(
@@ -1351,6 +1562,14 @@ impl AccountingState {
             .iter()
             .find(|j| j.id == journal_id)
             .ok_or_else(|| anyhow::anyhow!("سند اصلی پیدا نشد"))?;
+        ensure!(
+            !self
+                .payments
+                .records
+                .iter()
+                .any(|r| r.journal_id == journal_id),
+            "برگشت پرداخت فقط از گردش کار پرداخت مجاز است"
+        );
         let command = PostCommand {
             company_id: original.company_id.clone(),
             period_id: period_id.into(),
@@ -1375,7 +1594,11 @@ impl AccountingState {
                 })
                 .collect(),
         };
-        self.post(command)
+        if self.banking.iter().any(|r| r.journal_id == journal_id) {
+            self.post_banking(command)
+        } else {
+            self.post(command)
+        }
     }
     pub fn trial_balance(&self, company_id: &str, as_of: &str) -> Result<TrialBalance> {
         self.company(company_id)?;

@@ -1,4 +1,4 @@
-import { Input } from "../components/ui/input";
+import { TabHint } from "../components/ui/tab-hint";
 import { useTranslation } from "../lib/i18n";
 import { useState } from "react";
 import { DownloadSimpleIcon as Download } from "@phosphor-icons/react/dist/csr/DownloadSimple";
@@ -13,10 +13,10 @@ import { useBooks } from "../app/books";
 import { command, exportReport } from "../lib/client";
 import {
   PageHeader,
-  Field,
   ErrorState,
   Loading,
   Note,
+  DateRange,
 } from "../components/ui/shared";
 import { Button } from "../components/ui/button";
 import { Modal } from "../components/layout/modal";
@@ -106,37 +106,34 @@ export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
         }
       />
       <TabsList>
-        {["Profit & Loss", "Trial balance", "Control reconciliation"].map(
-          (x) => (
-            <TabsTrigger key={x} value={x}>
-              {b.t(x)}
-            </TabsTrigger>
-          ),
-        )}
+        {[
+          "Profit & Loss",
+          "Trial balance",
+          "Customers & Suppliers",
+          "Control reconciliation",
+        ].map((x) => (
+          <TabsTrigger key={x} value={x}>
+            {b.t(x)}
+          </TabsTrigger>
+        ))}
       </TabsList>
+      <TabHint>
+        {
+          {
+            "Profit & Loss": "How much you earned and spent in this period.",
+            "Trial balance": "Every account's balance — debits equal credits.",
+            "Customers & Suppliers": "Who owes you and who you owe.",
+            "Control reconciliation": "Checks that the books and the detail agree.",
+          }[tab] ?? ""
+        }
+      </TabHint>
       <TabsContent value={tab}>
-        <div className="period-context">
-          <Field label={t("From")}>
-            <Input
-              type="date"
-              value={b.from}
-              onChange={(e) => b.setRange(e.target.value, b.to)}
-            />
-          </Field>
-          <Field label={t("Through")}>
-            <Input
-              type="date"
-              value={b.to}
-              onChange={(e) => b.setRange(b.from, e.target.value)}
-            />
-          </Field>
-          <span>
-            · {b.unit === "Rial" ? "IRR" : t("toman")} ·{" "}
-            {tab === "Trial balance"
-              ? t("Cumulative through cutoff")
-              : t("Posted entries")}
-          </span>
-        </div>
+        <DateRange from={b.from} to={b.to} onChange={b.setRange}>
+          {b.unit === "Rial" ? "IRR" : t("toman")} ·{" "}
+          {tab === "Trial balance"
+            ? t("Cumulative through cutoff")
+            : t("Posted entries")}
+        </DateRange>
         {(error || b.reportError) && (
           <ErrorState error={error || b.reportError} />
         )}{" "}
@@ -305,6 +302,8 @@ export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
                     ]}
                   />
                 </>
+              ) : tab === "Customers & Suppliers" ? (
+                <PartyBalances />
               ) : r.reconciliation ? (
                 <>
                   <div className="panel-heading">
@@ -495,5 +494,121 @@ export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
         </Modal>
       </TabsContent>
     </Tabs>
+  );
+}
+
+/**
+ * Who the business trades with: every party with an outstanding balance,
+ * plus the full contact directory. Answers "who am I selling to / buying
+ * from" straight from the posted books.
+ */
+function PartyBalances() {
+  const b = useBooks();
+  const t = b.t;
+  const balances = b.report?.party_balances ?? {};
+  const parties = b.workspace.resources?.parties ?? [];
+  const profile = (id: string) => b.workspace.party_profiles?.[id];
+  const rows = [
+    ...parties.map((p) => ({
+      party: p,
+      outstanding:
+        balances[`customer:${p.id}`] ?? balances[`vendor:${p.id}`] ?? "0",
+      phone: profile(p.id)?.phone || profile(p.id)?.mobile || "",
+      city: profile(p.id)?.city || "",
+    })),
+  ];
+  const traders = rows
+    .filter((x) => x.outstanding !== "0")
+    .sort((a, z) => (BigInt(z.outstanding) > BigInt(a.outstanding) ? 1 : -1));
+  const money = (v: string) => (
+    <Money value={v} unit={b.unit} locale={b.numberLocale} />
+  );
+  return (
+    <>
+      <div className="panel-heading">
+        <h2>{t("Outstanding by contact")}</h2>
+        <span className="muted">
+          {t(
+            "Positive amounts are owed to you by customers; negative are owed to suppliers.",
+          )}
+        </span>
+      </div>
+      <DataGrid
+        data={traders}
+        id={(x) => x.party.id}
+        searchText={(x) =>
+          x.party.name + " " + x.phone + " " + x.city
+        }
+        empty={t("No outstanding balances — everything is settled.")}
+        columns={[
+          {
+            header: t("Name"),
+            cell: ({ row }) => (
+              <Button
+                variant="link"
+                className="text-link h-auto justify-start p-0"
+                onClick={() => b.openContact(row.original.party.id)}
+              >
+                {row.original.party.name}
+              </Button>
+            ),
+          },
+          {
+            header: t("Role"),
+            cell: ({ row }) =>
+              row.original.party.customer && row.original.party.supplier
+                ? t("Customer + Vendor")
+                : row.original.party.customer
+                  ? t("Customer")
+                  : t("Vendor"),
+          },
+          { header: t("Phone"), cell: ({ row }) => row.original.phone },
+          { header: t("City"), cell: ({ row }) => row.original.city },
+          {
+            header: `${t("Outstanding")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+            meta: { numeric: true },
+            cell: ({ row }) => money(row.original.outstanding),
+          },
+        ]}
+      />
+      <div className="panel-heading">
+        <h2>{t("All contacts")}</h2>
+      </div>
+      <DataGrid
+        data={rows}
+        id={(x) => "all-" + x.party.id}
+        searchText={(x) => x.party.name + " " + x.phone + " " + x.city}
+        empty={t("No contacts")}
+        columns={[
+          {
+            header: t("Name"),
+            cell: ({ row }) => (
+              <Button
+                variant="link"
+                className="text-link h-auto justify-start p-0"
+                onClick={() => b.openContact(row.original.party.id)}
+              >
+                {row.original.party.name}
+              </Button>
+            ),
+          },
+          {
+            header: t("Role"),
+            cell: ({ row }) =>
+              row.original.party.customer && row.original.party.supplier
+                ? t("Customer + Vendor")
+                : row.original.party.customer
+                  ? t("Customer")
+                  : t("Vendor"),
+          },
+          { header: t("Phone"), cell: ({ row }) => row.original.phone },
+          {
+            header: `${t("Outstanding")} · ${b.unit === "Rial" ? "IRR" : "toman"}`,
+            meta: { numeric: true },
+            cell: ({ row }) => money(row.original.outstanding),
+          },
+        ]}
+      />
+    </>
   );
 }

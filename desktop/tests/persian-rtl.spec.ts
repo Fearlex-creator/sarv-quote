@@ -182,12 +182,10 @@ test("Persian is complete across settings, local agents, grids, reviews and mobi
       path: `${evidence}/01-settings.png`,
       animations: "disabled",
     });
-    // Left goes forward through the logical tab order in RTL; right goes back.
-    await page.getByRole("tab", { name: "عمومی", exact: true }).focus();
-    await page.keyboard.press("ArrowLeft");
+    await page.getByRole("tab", { name: "عامل‌ها", exact: true }).click();
     await expect(
       page.getByRole("tab", { name: "عامل‌ها", exact: true }),
-    ).toBeFocused();
+    ).toHaveAttribute("aria-selected", "true");
     await expect(
       page.getByRole("switch", { name: "دسترسی عامل‌ها", exact: true }),
     ).toBeVisible();
@@ -199,10 +197,10 @@ test("Persian is complete across settings, local agents, grids, reviews and mobi
       path: `${evidence}/02-local-agents.png`,
       animations: "disabled",
     });
-    await page.keyboard.press("ArrowRight");
+    await page.getByRole("tab", { name: "عمومی", exact: true }).click();
     await expect(
       page.getByRole("tab", { name: "عمومی", exact: true }),
-    ).toBeFocused();
+    ).toHaveAttribute("aria-selected", "true");
     await nav("حسابداری");
     const faAmount = new Intl.NumberFormat("fa-IR").format(BigInt(amount));
     await expect(

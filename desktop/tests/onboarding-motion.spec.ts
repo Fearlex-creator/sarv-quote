@@ -29,6 +29,9 @@ for (const locale of ["en", "fa"] as const) {
     });
     const errors: string[] = [];
     page.on("pageerror", (e) => errors.push(e.message));
+    page.on("console", (e) => {
+      if (e.type() === "error") errors.push(e.text());
+    });
     const api = async (action: string, payload: unknown = {}) => {
       const response = await request.post(backend, {
         headers: { "x-sarv-qa-token": token },
@@ -59,6 +62,7 @@ for (const locale of ["en", "fa"] as const) {
         (l) => localStorage.setItem("sarv.language", l),
         locale,
       );
+      await page.clock.setFixedTime(new Date("2026-10-10T12:00:00Z"));
       await page.goto("/");
       await expect(page).toHaveTitle(/Sarv/);
       await expect(
@@ -73,6 +77,17 @@ for (const locale of ["en", "fa"] as const) {
       await expect(
         page.getByLabel(fa ? "زبان برنامه" : "App language", { exact: true }),
       ).toBeVisible();
+      await expect(page.locator(".mobile-navigation")).not.toBeVisible();
+      const language = page.getByLabel(fa ? "زبان برنامه" : "App language", {
+        exact: true,
+      });
+      await language.selectOption(fa ? "en" : "fa");
+      await expect(page.locator(".welcome-calendar")).toContainText(
+        fa ? "Gregorian" : "جلالی",
+      );
+      await page
+        .getByLabel(fa ? "App language" : "زبان برنامه", { exact: true })
+        .selectOption(locale);
       expect((await api("workspace")).companies).toEqual([]);
       expect(
         await page
@@ -111,9 +126,57 @@ for (const locale of ["en", "fa"] as const) {
         .getByRole("button", { name: fa ? "ادامه" : "Continue", exact: true })
         .click();
       await expect(dialog.locator('[aria-current="step"]')).toContainText(
+        fa ? "اطلاعات کسب‌وکار" : "Business details",
+      );
+      await dialog
+        .getByLabel(fa ? "تلفن کسب‌وکار" : "Business phone", { exact: true })
+        .fill("021-12345678");
+      await dialog
+        .getByLabel(
+          fa ? "شماره ثبت / شناسه ملی" : "Registration / national ID",
+          { exact: true },
+        )
+        .fill("REG-123");
+      await dialog
+        .getByLabel(fa ? "نشانی کسب‌وکار" : "Business address", { exact: true })
+        .fill(fa ? "تهران، خیابان سرو" : "12 Sarv Street");
+      await dialog
+        .getByRole("button", { name: fa ? "ادامه" : "Continue", exact: true })
+        .click();
+      await expect(dialog.locator('[aria-current="step"]')).toContainText(
         fa ? "دورهٔ مالی" : "Fiscal period",
       );
+      const fiscalName = dialog.getByLabel(
+        fa ? "دورهٔ مالی" : "Fiscal period",
+        { exact: true },
+      );
+      await expect(fiscalName).toHaveValue(fa ? "۱۴۰۵" : "2026");
+      const startDate = dialog.getByLabel(fa ? "تاریخ شروع" : "Start date", {
+        exact: true,
+      });
+      await expect(startDate).toContainText(fa ? "فروردین" : "January");
+      await startDate.click();
+      const calendar = page.locator('[data-slot="calendar"]');
+      await expect(calendar).toBeVisible();
+      await expect(calendar).toHaveAttribute("dir", fa ? "rtl" : "ltr");
+      await expect(calendar).toContainText(fa ? "۱۴۰۵" : "2026");
+      // Pick another day and verify it persists as an ISO accounting date.
+      await calendar
+        .locator("button[data-day]")
+        .filter({ hasText: fa ? /^۲$/ : /^2$/ })
+        .first()
+        .click();
+      await expect(calendar).not.toBeVisible();
       expect((await api("workspace")).companies).toEqual([]);
+      await dialog
+        .getByRole("button", { name: fa ? "بازگشت" : "Back", exact: true })
+        .click();
+      await expect(
+        dialog.getByLabel(
+          fa ? "شماره ثبت / شناسه ملی" : "Registration / national ID",
+          { exact: true },
+        ),
+      ).toHaveValue("REG-123");
       await dialog
         .getByRole("button", { name: fa ? "بازگشت" : "Back", exact: true })
         .click();
@@ -123,8 +186,28 @@ for (const locale of ["en", "fa"] as const) {
       await dialog
         .getByRole("button", { name: fa ? "ادامه" : "Continue", exact: true })
         .click();
+      await dialog
+        .getByRole("button", { name: fa ? "ادامه" : "Continue", exact: true })
+        .click();
       await page.screenshot({
         path: `${evidence}/period-mobile-${locale}.png`,
+      });
+      await dialog
+        .getByRole("button", { name: fa ? "ادامه" : "Continue", exact: true })
+        .click();
+      await expect(dialog.locator(".setup-review")).toContainText(
+        fa ? "کسب‌وکار تازه" : "Fresh business",
+      );
+      expect((await api("workspace")).companies).toEqual([]);
+      await dialog
+        .getByRole("button", { name: fa ? "بازگشت" : "Back", exact: true })
+        .click();
+      await expect(fiscalName).toHaveValue(fa ? "۱۴۰۵" : "2026");
+      await dialog
+        .getByRole("button", { name: fa ? "ادامه" : "Continue", exact: true })
+        .click();
+      await page.screenshot({
+        path: `${evidence}/review-mobile-${locale}.png`,
       });
       await dialog
         .getByRole("button", {
@@ -135,6 +218,14 @@ for (const locale of ["en", "fa"] as const) {
       await expect(dialog.getByRole("checkbox")).toBeVisible();
       const companyId = (await api("workspace")).companies[0].id;
       const before = await api("workspace", { company_id: companyId });
+      expect(before.periods[0].start_date).toBe(
+        fa ? "2026-03-22" : "2026-01-02",
+      );
+      expect(before.periods[0].end_date).toBe(fa ? "2027-03-20" : "2026-12-31");
+      expect(before.settings.date_display ?? "Iso").toBe(fa ? "Jalali" : "Iso");
+      expect(before.settings.display_digits).toBe(fa ? "Persian" : "Latin");
+      expect(before.business_profile.phone).toBe("021-12345678");
+      expect(before.business_profile.registration_id).toBe("REG-123");
       expect(before.initialized).toBe(false);
       expect(before.journal_count).toBe("0");
       const start = dialog.getByRole("button", {

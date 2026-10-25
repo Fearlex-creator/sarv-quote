@@ -1170,3 +1170,48 @@ fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
         0
     );
 }
+
+#[test]
+fn printable_sales_invoice_is_a4_exact_and_embeds_persian_fonts() {
+    let f = fixture();
+    let mut state = State::default();
+    state.accounting = f.state.clone();
+    state.settings.date_display = DateDisplay::Jalali;
+    state.settings.display_digits = DisplayDigits::Persian;
+    state.business_profiles.insert(f.company.clone(), sarv_quote::domain::BusinessProfile {
+        phone: "021-12345678".into(), address: "تهران، خیابان سرو".into(), registration_id: "REG-2026".into(), tax_id: "TAX-123".into(), invoice_prefix: "INV".into(), terms: "پرداخت در زمان تحویل کالا".into(), footer: "سپاس از خرید شما".into(),
+    });
+    let out = Path::new("/tmp/sarv-printable-pdf");
+    fs::create_dir_all(out).unwrap();
+    for (language, id) in [("fa", &f.fulfillment), ("en", &f.sale_order), ("fa-credit", &f.returned)] {
+        let pdf = out.join(format!("{language}.pdf"));
+        let _ = fs::remove_file(&pdf);
+        printable_document_pdf(&state, &f.company, id, if language.starts_with("fa") { "fa" } else { "en" }, &pdf).unwrap();
+        let info = Command::new("pdfinfo").arg(&pdf).output().unwrap();
+        let info = String::from_utf8_lossy(&info.stdout);
+        assert!(info.contains("595 x 842"), "{info}");
+        let fonts = Command::new("pdffonts").arg(&pdf).output().unwrap();
+        assert!(String::from_utf8_lossy(&fonts.stdout).contains("Vazirmatn"));
+        let text = Command::new("pdftotext").args(["-layout"]).arg(&pdf).arg("-").output().unwrap();
+        let text = String::from_utf8_lossy(&text.stdout);
+        assert!(text.contains("REG-2026"), "{text}");
+        assert!(text.contains("021-12345678"), "{text}");
+        assert!(!text.contains("source_line_id"));
+        assert!(printable_document_pdf(&state, "foreign-company", id, "en", &out.join("foreign.pdf")).is_err());
+    }
+    state.business_profiles.get_mut(&f.company).unwrap().terms = "Payment terms line\n".repeat(80) + "TERMS-END";
+    let pdf = out.join("multipage.pdf");
+    let _ = fs::remove_file(&pdf);
+    printable_document_pdf(&state, &f.company, &f.fulfillment, "en", &pdf).unwrap();
+    let info = Command::new("pdfinfo").arg(&pdf).output().unwrap();
+    let info = String::from_utf8_lossy(&info.stdout);
+    let pages: usize = info.lines().find(|line| line.starts_with("Pages:")).unwrap().split_whitespace().last().unwrap().parse().unwrap();
+    assert!(pages > 1);
+    let text = Command::new("pdftotext").arg("-bbox").arg(&pdf).arg("-").output().unwrap();
+    let text = String::from_utf8_lossy(&text.stdout);
+    assert!(text.contains("TERMS-END"));
+    for segment in text.split("yMax=\"").skip(1) {
+        let y: f64 = segment.split('"').next().unwrap().parse().unwrap();
+        assert!(y <= 842.0, "Text overflows A4 page: {y}");
+    }
+}

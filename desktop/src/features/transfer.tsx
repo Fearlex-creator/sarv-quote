@@ -1,3 +1,4 @@
+import { DatePicker } from "../components/ui/date-picker";
 import { FieldGroup } from "../components/ui/field";
 import {
   NativeSelect,
@@ -149,12 +150,7 @@ export function TransferDialog({ onClose }: { onClose: () => void }) {
             </NativeSelect>
           </Field>
           <Field label={t("Financial date")}>
-            <Input
-              required
-              type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-            />
+            <DatePicker value={date} onChange={(value) => setDate(value)} />
           </Field>
           <Field label={t("Reason")}>
             <Input

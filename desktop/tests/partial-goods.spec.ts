@@ -92,6 +92,10 @@ test("partial receipts, billing, delivery, original-cost returns and transfer re
         },
       ],
     });
+    await page.addInitScript(() =>
+      localStorage.setItem("sarv.sidebar", "expanded"),
+    );
+    await page.clock.setFixedTime(new Date("2026-10-10T09:00:00Z"));
     await page.goto("/");
     await page.getByLabel("Organization").selectOption(company);
     const nav = async (name: string) =>
@@ -195,6 +199,7 @@ test("partial receipts, billing, delivery, original-cost returns and transfer re
     });
     await page.reload();
     await nav("Sales");
+    await page.getByRole("tab", { name: "Orders", exact: true }).click();
     await open(`${prefix}-so`);
     await post("inv1", "1", "partial-invoice-review");
     await open(`${prefix}-so`);

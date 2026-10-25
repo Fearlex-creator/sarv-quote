@@ -568,23 +568,28 @@ impl AccountingState {
             asof >= o.command.as_of.as_str(),
             "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود"
         );
+        let settled = self.payment_allocation_map(company, asof)?;
         let mut out: Vec<_> = o
             .command
             .open_items
             .iter()
             .filter(|x| x.side == OpenItemSide::Receivable)
-            .map(|x| ReceivableRemainder {
-                id: x.id.clone(),
-                source_id: o.command.source_id.clone(),
-                party_id: x.party_id.clone(),
-                reference: x.document_reference.clone(),
-                document_date: x.document_date.clone(),
-                due_date: x.due_date.clone(),
-                original: x.remaining,
-                remaining: x.remaining,
-                credit_ids: Vec::new(),
+            .map(|x| -> Result<ReceivableRemainder> {
+                Ok(ReceivableRemainder {
+                    id: x.id.clone(),
+                    source_id: o.command.source_id.clone(),
+                    party_id: x.party_id.clone(),
+                    reference: x.document_reference.clone(),
+                    document_date: x.document_date.clone(),
+                    due_date: x.due_date.clone(),
+                    original: x.remaining,
+                    remaining: x.remaining.checked_add(
+                        settled.get(&x.id).copied().unwrap_or(Money::ZERO),
+                    )?,
+                    credit_ids: Vec::new(),
+                })
             })
-            .collect();
+            .collect::<Result<Vec<_>>>()?;
         for r in self.sales.records.iter().filter(|r| {
             r.command.context().company_id == company && r.command.context().date.as_str() <= asof
         }) {
@@ -604,6 +609,12 @@ impl AccountingState {
                         credit_ids.push(ret.credit_id.clone());
                     }
                 }
+                remaining = remaining.checked_add(
+                    settled
+                        .get(f.invoice_id.as_str())
+                        .copied()
+                        .unwrap_or(Money::ZERO),
+                )?;
                 ensure!(remaining.rials() >= 0, "اعتبار از دریافتنی بیشتر است");
                 out.push(ReceivableRemainder {
                     id: f.invoice_id.clone(),

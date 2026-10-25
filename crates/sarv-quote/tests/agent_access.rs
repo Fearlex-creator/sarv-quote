@@ -387,7 +387,7 @@ fn mcp_supports_initialization_discovery_calls_notifications_and_protocol_errors
     assert_eq!(responses[0]["result"]["serverInfo"]["name"], "sarv");
     assert_eq!(
         responses[1]["result"]["tools"].as_array().unwrap().len(),
-        36
+        44
     );
     assert_eq!(responses[2]["result"]["isError"], false);
     assert_eq!(responses[3]["result"]["isError"], true);

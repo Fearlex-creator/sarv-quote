@@ -27,6 +27,14 @@ pub struct RawSalesLine {
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
+pub struct QuoteIssue {
+    pub series: String,
+    pub number: String,
+    pub issued: String,
+    pub valid_until: String,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
 pub struct RawSalesDraft {
     pub id: String,
     pub revision: u64,
@@ -43,6 +51,8 @@ pub struct RawSalesDraft {
     pub supplied_total: String,
     pub reason: String,
     pub quotation: Option<QuotationLink>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub quote_issue: Option<QuoteIssue>,
     pub lines: Vec<RawSalesLine>,
 }
 fn bounded(s: &str) -> Result<()> {
@@ -110,6 +120,15 @@ impl RawSalesDraft {
             ensure!(
                 q.source_line_indices.len() <= 10_000,
                 "پیوند ردیف‌های پیش‌فاکتور بیش از حد بزرگ است"
+            );
+        }
+        if let Some(issue) = &self.quote_issue {
+            for s in [&issue.series, &issue.number, &issue.issued, &issue.valid_until] {
+                bounded(s)?;
+            }
+            ensure!(
+                !issue.number.trim().is_empty() && !issue.series.trim().is_empty(),
+                "شماره یا سری پیش‌فاکتور نامعتبر است"
             );
         }
         ensure!(
@@ -548,6 +567,7 @@ impl State {
             document_discount: Money::from_rials(q.discount_rial).display(display_unit),
             supplied_total: Money::from_rials(q.total_rial).display(display_unit),
             reason: "تبدیل پیش‌فاکتور تأییدشده با قیمت و ردیف‌های اصلی".into(),
+            quote_issue: None,
             quotation: Some(QuotationLink {
                 quote_id: q.id.clone(),
                 quote_series: q.series.clone(),

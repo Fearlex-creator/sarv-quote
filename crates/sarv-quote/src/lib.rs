@@ -3,6 +3,8 @@ pub mod accounting;
 pub mod accounting_export;
 pub mod calendar;
 pub mod cashbook;
+pub mod contact_profile;
+pub mod product_profile;
 pub mod core;
 #[cfg(feature = "pdf-export")]
 pub mod core_export;
@@ -21,6 +23,7 @@ pub mod procurement_export;
 
 pub mod sales;
 pub mod sales_draft;
+pub mod payments;
 
 #[cfg(feature = "pdf-export")]
 pub mod sales_export;

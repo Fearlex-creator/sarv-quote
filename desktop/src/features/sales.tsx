@@ -1,3 +1,5 @@
+import { canonicalDraftDate } from "../lib/calendar";
+import { DatePicker } from "../components/ui/date-picker";
 import { FieldGroup } from "../components/ui/field";
 import {
   Table,
@@ -29,14 +31,14 @@ import {
   TabsContent,
 } from "../components/ui/tabs";
 import { useBooks } from "../app/books";
-import { command, today, uid } from "../lib/client";
-import type { Draft, InputLine, Preview, RecordEntry } from "../lib/types";
+import { command, exportReport, today, uid } from "../lib/client";
+import type { Draft, InputLine, Preview, RecordEntry, Workspace } from "../lib/types";
 import { PageHeader, Field, ErrorState } from "../components/ui/shared";
 import { Button } from "../components/ui/button";
 import { DataGrid } from "../components/ui/data-grid";
 import { Modal } from "../components/layout/modal";
 import { Money, Status, formatDate } from "../components/finance/money";
-import { Customers } from "./resources";
+import { TabHint } from "../components/ui/tab-hint";
 export function recordKind(r: RecordEntry) {
   return Object.keys(r.data)[0];
 }
@@ -55,7 +57,7 @@ export function Sales({
 }) {
   const t = useTranslation();
   const b = useBooks();
-  const [tab, setTab] = useState("Orders");
+  const [tab, setTab] = useState("Invoices");
   const [offset, setOffset] = useState(0);
   const [records, setRecords] = useState<RecordEntry[] | null>(null);
   const [recordsSyncedAt, setRecordsSyncedAt] = useState<Date | null>(null);
@@ -85,23 +87,26 @@ export function Sales({
       onValueChange={setTab}
       dir={b.locale === "fa" ? "rtl" : "ltr"}
     >
-      {tab !== "Customers" && (
+      {(
         <PageHeader
           title={b.t("Sales")}
           syncedAt={tab !== "Drafts" && records ? recordsSyncedAt : undefined}
           actions={
-            <Button
-              disabled={!b.workspace.initialized}
-              onClick={() => onEdit()}
-            >
-              <Plus />
-              {b.t("New order")}
-            </Button>
+            <div className="toolbar-actions">
+              <Button onClick={() => b.runAction("invoice")}>
+                <Plus data-icon="inline-start" />
+                {t("New sales invoice")}
+              </Button>
+              <Button variant="outline" onClick={() => b.runAction("order")}>
+                <Plus />
+                {b.t("New order")}
+              </Button>
+            </div>
           }
         />
       )}
       <TabsList>
-        {["Orders", "Invoices", "Returns", "Drafts", "Customers"].map((x) => (
+        {["Invoices", "Orders", "Returns", "Drafts"].map((x) => (
           <TabsTrigger key={x} value={x}>
             {b.t(x)}
             {x === "Drafts" && b.workspace.drafts.length > 0
@@ -110,11 +115,19 @@ export function Sales({
           </TabsTrigger>
         ))}
       </TabsList>
+      <TabHint>
+        {
+          {
+            Invoices: "Sales that are delivered and billed.",
+            Orders: "Orders waiting to be delivered and invoiced.",
+            Returns: "Goods customers sent back, with credit given.",
+            Drafts: "Unfinished sales you saved for later.",
+          }[tab] ?? ""
+        }
+      </TabHint>
       <TabsContent value={tab}>
         {error && <ErrorState error={error} />}{" "}
-        {tab === "Customers" ? (
-          <Customers />
-        ) : tab === "Drafts" ? (
+        {tab === "Drafts" ? (
           <section className="panel">
             <DataGrid
               data={b.workspace.drafts}
@@ -154,18 +167,42 @@ export function Sales({
                 },
                 {
                   header: t("State"),
-                  cell: () => <Status>{t("Draft")}</Status>,
+                  cell: ({ row }) =>
+                    row.original.quote_issue ? (
+                      <Status>
+                        {`${t("Quotation")} ${row.original.quote_issue.number}`}
+                      </Status>
+                    ) : (
+                      <Status>{t("Draft")}</Status>
+                    ),
                 },
                 {
                   header: "",
                   cell: ({ row }) => (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => onEdit(row.original)}
-                    >
-                      {t("Continue editing")}
-                    </Button>
+                    <div className="toolbar-actions">
+                      {row.original.quote_issue && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() =>
+                            void exportReport("quotation_pdf", {
+                              company_id: b.companyId,
+                              draft_id: row.original.id,
+                              locale: b.locale,
+                            })
+                          }
+                        >
+                          {t("Print quotation PDF")}
+                        </Button>
+                      )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => onEdit(row.original)}
+                      >
+                        {t("Continue editing")}
+                      </Button>
+                    </div>
                   ),
                 },
               ]}
@@ -259,10 +296,10 @@ export function Sales({
             />
             <div className="pagination">
               <span>
-                {t("Source records")}
-                {offset + 1}–
-                {Math.min(offset + 100, Number(b.workspace.sales_count))}{" "}
-                {t("of")} {b.workspace.sales_count}
+                {t("Source records")}{" "}
+                {Number(b.workspace.sales_count) === 0
+                  ? "0"
+                  : `${offset + 1}–${Math.min(offset + 100, Number(b.workspace.sales_count))} ${t("of")} ${b.workspace.sales_count}`}
               </span>
               <div className="toolbar-actions">
                 <Button
@@ -306,34 +343,59 @@ function newLine(): InputLine {
 export function OrderEditor({
   initial,
   onClose,
+  invoice = false,
+  onRecorded,
 }: {
   initial?: Draft;
   onClose: () => void;
+  invoice?: boolean;
+  onRecorded?: (id: string) => Promise<void>;
 }) {
   const t = useTranslation();
   const b = useBooks();
-  const [draft, setDraft] = useState<Draft>(
-    () =>
-      initial ?? {
-        id: uid(),
-        revision: "0",
-        company_id: b.companyId,
-        period_id: b.periodId,
-        setup_id: b.workspace.setups[0]?.id ?? "",
-        customer_id: "",
-        reference: "",
-        document_date: today(),
-        financial_date: today(),
-        date_display: "Iso",
-        display_unit: "Rial",
-        document_discount: "0",
-        supplied_total: "0",
-        reason: "Goods sales order",
-        quotation: null,
-        lines: [newLine()],
-      },
+  const [draft, setDraft] = useState<Draft>(() =>
+    initial
+      ? {
+          ...initial,
+          document_date: canonicalDraftDate(
+            initial.document_date,
+            initial.date_display,
+          ),
+          financial_date: canonicalDraftDate(
+            initial.financial_date,
+            initial.date_display,
+          ),
+          date_display: "Iso",
+          lines: initial.lines.map((line) => ({
+            ...line,
+            price_date: canonicalDraftDate(
+              line.price_date,
+              initial.date_display,
+            ),
+          })),
+        }
+      : {
+          id: uid(),
+          revision: "0",
+          company_id: b.companyId,
+          period_id: b.periodId,
+          setup_id: b.workspace.setups[0]?.id ?? "",
+          customer_id: "",
+          reference: b.workspace.business_profile?.invoice_prefix
+            ? `${b.workspace.business_profile.invoice_prefix}-${Number(b.workspace.sales_count) + 1}`
+            : "",
+          document_date: today(),
+          financial_date: today(),
+          date_display: "Iso",
+          display_unit: "Rial",
+          document_discount: "0",
+          supplied_total: "0",
+          reason: "Goods sales order",
+          quotation: null,
+          lines: [newLine()],
+        },
   );
-  const [saved, setSaved] = useState(initial ? JSON.stringify(initial) : "");
+  const [saved, setSaved] = useState(initial ? JSON.stringify(draft) : "");
   const [preview, setPreview] = useState<Preview | null>(null);
   const [review, setReview] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -358,6 +420,8 @@ export function OrderEditor({
               [k]: v,
               ...(k === "item_id"
                 ? {
+                    unit_price:
+                      b.workspace.product_profiles?.[v]?.sale_price ?? "",
                     unit_id:
                       r?.items.find((x) => x.id === v)?.base_unit_id ?? "",
                   }
@@ -369,12 +433,15 @@ export function OrderEditor({
     setPreview(null);
     setReview(false);
   }
-  async function save(d: Draft = draft) {
+  async function save(d: Draft = draft, issueQuotation = false) {
     const rev = await command<string>("draft_save", {
       draft: d,
       expected_revision: d.revision === "0" ? null : d.revision,
+      ...(issueQuotation && !d.quote_issue ? { issue_quotation: true } : {}),
     });
-    const next = { ...d, revision: rev };
+    const w = await command<Workspace>("workspace", { company_id: b.companyId });
+    const stored = w.drafts.find((x) => x.id === d.id);
+    const next = stored ?? { ...d, revision: rev };
     setDraft(next);
     setSaved(JSON.stringify(next));
     await b.refresh();
@@ -409,7 +476,7 @@ export function OrderEditor({
   return (
     <>
       <PageHeader
-        title={t("Sales order")}
+        title={t(invoice ? "New sales invoice" : "Sales order")}
         actions={
           <>
             <Button
@@ -433,6 +500,37 @@ export function OrderEditor({
               {b.t("Save draft")}
             </Button>
             <Button
+              variant="outline"
+              disabled={busy || !draft.lines.length}
+              onClick={() =>
+                run(async () => {
+                  await save(draft, true);
+                  toast.success(t("Quotation saved"));
+                })
+              }
+            >
+              {draft.quote_issue
+                ? `${t("Quotation")} ${draft.quote_issue.number}`
+                : t("Save as quotation")}
+            </Button>
+            {draft.quote_issue && (
+              <Button
+                variant="outline"
+                disabled={busy}
+                onClick={() =>
+                  run(async () => {
+                    await exportReport("quotation_pdf", {
+                      company_id: b.companyId,
+                      draft_id: draft.id,
+                      locale: b.locale,
+                    });
+                  })
+                }
+              >
+                {t("Print quotation PDF")}
+              </Button>
+            )}
+            <Button
               disabled={busy || !draft.lines.length}
               onClick={() => run(inspect)}
             >
@@ -442,6 +540,13 @@ export function OrderEditor({
         }
       />
       {error && <ErrorState error={error} />}
+      {invoice && (
+        <p className="text-muted-foreground">
+          {t(
+            "Enter sale details, then continue to delivery and invoice review.",
+          )}
+        </p>
+      )}
       <div className="editor">
         <section className="panel editor-document">
           <div className="editor-doc-header">
@@ -449,7 +554,7 @@ export function OrderEditor({
               <h2>
                 {b.workspace.companies.find((x) => x.id === b.companyId)?.name}
               </h2>
-              <p style={{ fontSize: 14, marginTop: 4 }}>
+              <p className="editor-doc-subtitle">
                 {t("Goods sales order · IRR")}
               </p>
             </div>
@@ -462,7 +567,24 @@ export function OrderEditor({
             />
           </div>
           <FieldGroup className="editor-meta">
-            <Field label={b.t("Customer")}>
+            <Field
+              label={b.t("Customer")}
+              action={
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() =>
+                    b.openResource("customer", (id) =>
+                      update("customer_id", id),
+                    )
+                  }
+                >
+                  <Plus data-icon="inline-start" />
+                  {t("New customer")}
+                </Button>
+              }
+            >
               <NativeSelect
                 required
                 value={draft.customer_id}
@@ -488,20 +610,39 @@ export function OrderEditor({
               />
             </Field>
             <Field label={t("Document date")}>
-              <Input
-                type="date"
+              <DatePicker
                 value={draft.document_date}
-                onChange={(e) => update("document_date", e.target.value)}
+                onChange={(value) => update("document_date", value)}
               />
             </Field>
             <Field label={t("Financial date")}>
-              <Input
-                type="date"
+              <DatePicker
                 value={draft.financial_date}
-                onChange={(e) => update("financial_date", e.target.value)}
+                onChange={(value) => update("financial_date", value)}
               />
             </Field>
           </FieldGroup>
+          <h3 className="editor-section-title">{t("Lines")}</h3>
+          <div className="toolbar-actions editor-quick-add">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => b.openResource("item")}
+            >
+              <Plus data-icon="inline-start" />
+              {t("New product")}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => b.openResource("warehouse")}
+            >
+              <Plus data-icon="inline-start" />
+              {t("New warehouse")}
+            </Button>
+          </div>
           <div className="table-scroll">
             <Table className="editor-lines">
               <TableHeader>
@@ -606,12 +747,19 @@ export function OrderEditor({
           <Button
             variant="ghost"
             size="sm"
-            style={{ marginTop: 12 }}
+            className="editor-add-line"
             onClick={() => update("lines", [...draft.lines, newLine()])}
           >
             <Plus />
             {t("Add line")}
           </Button>
+          <div className="editor-footer">
+          <Field label={t("Reason / internal note")}>
+            <Textarea
+              value={draft.reason}
+              onChange={(e) => update("reason", e.target.value)}
+            />
+          </Field>
           <div className="editor-summary">
             <Field label={t("Order discount · IRR")}>
               <Input
@@ -629,13 +777,7 @@ export function OrderEditor({
               )}
             </div>
           </div>
-          <Field label={t("Reason / internal note")}>
-            <Textarea
-              style={{ marginTop: 16 }}
-              value={draft.reason}
-              onChange={(e) => update("reason", e.target.value)}
-            />
-          </Field>
+          </div>
         </section>
         <aside className="panel inspector">
           <h3>{t("Order state")}</h3>
@@ -685,20 +827,25 @@ export function OrderEditor({
                 disabled={busy}
                 onClick={() =>
                   run(async () => {
-                    await command("draft_post", {
-                      id: draft.id,
-                      revision: draft.revision,
-                      request_key: key,
-                      expected_generation: preview?._generation,
-                    });
+                    const posted = await command<{ record_id: string }>(
+                      "draft_post",
+                      {
+                        id: draft.id,
+                        revision: draft.revision,
+                        request_key: key,
+                        expected_generation: preview?._generation,
+                      },
+                    );
                     await b.refresh();
                     toast.success(t("Sales order recorded"));
-                    onClose();
+                    if (invoice && onRecorded)
+                      await onRecorded(posted.record_id);
+                    else onClose();
                   })
                 }
               >
                 <CheckCircle2 />
-                {t("Record order")}
+                {t(invoice ? "Continue to invoice" : "Record order")}
               </Button>
             </div>
           </>

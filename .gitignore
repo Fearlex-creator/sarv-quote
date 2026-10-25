@@ -13,7 +13,13 @@ __pycache__/
 .agent-access.json
 .agent-connection.json
 node_modules/
+/.pnpm-store/
 /desktop/dist/
 /desktop/src-tauri/target/
 /desktop/src-tauri/gen/
 /desktop/*.tsbuildinfo
+/src-tauri/
+/web/
+/test-results/
+/desktop/test-results/
+/desktop/.preview-*.mjs

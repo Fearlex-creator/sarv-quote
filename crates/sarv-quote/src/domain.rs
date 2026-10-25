@@ -1,8 +1,9 @@
 use anyhow::{Result, bail, ensure};
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
-use std::collections::{HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap, HashSet};
 use uuid::Uuid;
+use crate::contact_profile::PartyProfile;
 
 pub const CURRENT_SCHEMA: u32 = 7;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
@@ -181,14 +182,30 @@ pub enum AppMode {
     Personal,
     Business,
 }
+impl AppMode {
+    pub fn is_default(&self) -> bool {
+        *self == Self::Personal
+    }
+}
 #[derive(Clone, Copy, Debug, Default, Serialize, Deserialize, PartialEq, Eq)]
 pub enum TextDirection {
     #[default]
     Rtl,
     Ltr,
 }
+impl TextDirection {
+    pub fn is_default(&self) -> bool {
+        *self == Self::Rtl
+    }
+}
+fn is_one(value: &u32) -> bool {
+    *value == 1
+}
 pub fn default_true() -> bool {
     true
+}
+fn is_true(value: &bool) -> bool {
+    *value
 }
 fn default_fiscal_month() -> u32 {
     1
@@ -250,11 +267,11 @@ pub struct Settings {
     pub display_digits: DisplayDigits,
     #[serde(default, skip_serializing_if = "DateDisplay::is_default")]
     pub date_display: DateDisplay,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "AppMode::is_default")]
     pub app_mode: AppMode,
-    #[serde(default = "default_fiscal_month")]
+    #[serde(default = "default_fiscal_month", skip_serializing_if = "is_one")]
     pub fiscal_year_start_month: u32,
-    #[serde(default)]
+    #[serde(default, skip_serializing_if = "TextDirection::is_default")]
     pub text_direction: TextDirection,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub accent: String,
@@ -643,7 +660,7 @@ pub struct Customer {
     pub address: String,
     #[serde(default, skip_serializing_if = "is_false")]
     pub archived: bool,
-    #[serde(default = "default_true")]
+    #[serde(default = "default_true", skip_serializing_if = "is_true")]
     pub is_customer: bool,
     #[serde(default, skip_serializing_if = "is_false")]
     pub is_supplier: bool,
@@ -856,9 +873,39 @@ pub struct Quote {
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub customer_address: String,
 }
+#[derive(Clone, Debug, Default, Serialize, Deserialize, PartialEq, Eq)]
+#[serde(default, deny_unknown_fields)]
+pub struct BusinessProfile {
+    pub phone: String,
+    pub address: String,
+    pub registration_id: String,
+    pub tax_id: String,
+    pub invoice_prefix: String,
+    pub terms: String,
+    pub footer: String,
+    pub bank_details: String,
+}
+impl BusinessProfile {
+    pub fn validate(&self) -> Result<()> {
+        for value in [&self.phone, &self.registration_id, &self.tax_id, &self.invoice_prefix] {
+            ensure!(value.chars().count() <= 160 && !value.chars().any(char::is_control), "Business identifier is too long or contains control characters");
+        }
+        for value in [&self.address, &self.terms, &self.footer, &self.bank_details] {
+            ensure!(value.chars().count() <= 2000, "Business text is too long");
+        }
+        Ok(())
+    }
+}
+
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct State {
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub product_profiles: BTreeMap<String, crate::product_profile::ProductProfile>,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub party_profiles: BTreeMap<String, PartyProfile>,
     pub schema: u32,
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub business_profiles: BTreeMap<String, BusinessProfile>,
     #[serde(default, skip_serializing_if = "crate::desktop::DesktopPreferences::is_empty")]
     pub desktop: crate::desktop::DesktopPreferences,
     pub catalogs: Vec<Catalog>,
@@ -883,7 +930,10 @@ pub struct State {
 impl Default for State {
     fn default() -> Self {
         Self {
+            party_profiles: BTreeMap::new(),
+            product_profiles: BTreeMap::new(),
             schema: CURRENT_SCHEMA,
+            business_profiles: BTreeMap::new(),
             desktop: crate::desktop::DesktopPreferences::default(),
             catalogs: vec![],
             customers: vec![],
@@ -1364,9 +1414,23 @@ impl State {
         Ok(())
     }
     pub fn validate(&self) -> Result<()> {
+        for (item_id, profile) in &self.product_profiles {
+            profile.validate()?;
+            let resources=self.accounting.procurement_resources(&profile.company_id)?;
+            ensure!(resources.items.iter().any(|i| &i.id == item_id), "Product profile does not belong to this business");
+            ensure!(profile.preferred_supplier_id.is_empty() || resources.parties.iter().any(|p| p.id == profile.preferred_supplier_id && p.supplier), "Preferred supplier does not belong to this business");
+        }
+        for (party_id, profile) in &self.party_profiles {
+            profile.validate()?;
+            ensure!(self.accounting.procurement_resources(&profile.company_id)?.parties.iter().any(|p| &p.id == party_id), "Contact profile does not belong to a registered party");
+        }
         self.desktop.validate()?;
         ensure!(self.desktop.active_company.is_empty() || self.accounting.companies.iter().any(|c|c.id==self.desktop.active_company), "فضای کاری فعال نامعتبر است");
         self.settings.validate()?;
+        for (company, profile) in &self.business_profiles {
+            ensure!(self.accounting.companies.iter().any(|c| &c.id == company), "Business profile company does not exist");
+            profile.validate()?;
+        }
         ensure!(
             (1..=CURRENT_SCHEMA).contains(&self.schema),
             "نسخهٔ داده پشتیبانی نمی‌شود"

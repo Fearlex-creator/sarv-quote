@@ -1,3 +1,4 @@
+import { DatePicker } from "../components/ui/date-picker";
 import {
   Table,
   TableHeader,
@@ -15,9 +16,10 @@ import { useTranslation } from "../lib/i18n";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useBooks } from "../app/books";
-import { command, today, uid } from "../lib/client";
+import { command, today, uid, exportReport } from "../lib/client";
 import type { Preview, RecordEntry } from "../lib/types";
 import { recordCommand, recordData, recordKind } from "./sales";
+import { PaymentDialog } from "./payments";
 import { Modal } from "../components/layout/modal";
 import { Button } from "../components/ui/button";
 import { Field, ErrorState, Note, Loading } from "../components/ui/shared";
@@ -49,7 +51,31 @@ export function RecordDetail({
   const [error, setError] = useState("");
   const [key] = useState(uid);
   const [success, setSuccess] = useState(false);
+  const [settle, setSettle] = useState(false);
   const sales = !!data.customer || !!data.customer_id || kind === "Fulfill";
+  // Outstanding balance of this exact document, when it can be settled.
+  const settleable =
+    kind === "Fulfill"
+      ? {
+          side: "receive" as const,
+          openItemId: data.invoice_id ?? "",
+          partyId: data.customer?.id ?? data.customer_id ?? "",
+          remaining:
+            b.report?.reconciliation?.receivables.find(
+              (i) => i.id === data.invoice_id,
+            )?.remaining ?? "0",
+        }
+      : kind === "Bill"
+        ? {
+            side: "make" as const,
+            openItemId: record.id,
+            partyId: data.supplier?.id ?? data.supplier_id ?? "",
+            remaining:
+              b.report?.reconciliation?.payables.find(
+                (i) => i.id === record.id,
+              )?.remaining ?? "0",
+          }
+        : null;
   const defaultAction = sales
     ? kind === "Order"
       ? "fulfill"
@@ -155,6 +181,7 @@ export function RecordDetail({
     }
   }
   return (
+    <>
     <Modal
       open
       onOpenChange={(v) => {
@@ -216,6 +243,33 @@ export function RecordDetail({
       }
     >
       <div className="toolbar-actions">
+        {sales && (
+          <Button
+            type="button"
+            variant="outline"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setError("");
+              try {
+                if (
+                  await exportReport("sales_pdf", {
+                    company_id: b.companyId,
+                    document_id: data.credit_id ?? data.invoice_id ?? record.id,
+                    locale: b.locale,
+                  })
+                )
+                  toast.success(t("PDF exported"));
+              } catch (e) {
+                setError((e as Error).message);
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {t("Save printable PDF")}
+          </Button>
+        )}
         <Status kind={record.journal_id ? "positive" : "neutral"}>
           {record.journal_id ? t("Posted") : t("Recorded · nonfinancial")}
         </Status>
@@ -226,6 +280,13 @@ export function RecordDetail({
             onClick={() => onJournal(record.journal_id!)}
           >
             {t("View linked journal")}
+          </Button>
+        )}
+        {settleable && BigInt(settleable.remaining) > 0n && (
+          <Button onClick={() => setSettle(true)}>
+            {settleable.side === "receive"
+              ? t("Receive payment")
+              : t("Pay bill")}
           </Button>
         )}
       </div>
@@ -242,6 +303,28 @@ export function RecordDetail({
         </div>
         <div>
           <small>{sales ? t("Customer") : t("Supplier")}</small>
+          <Button
+            variant="link"
+            onClick={() =>
+              b.openContact(
+                data.customer?.id ??
+                  data.supplier?.id ??
+                  data.customer_id ??
+                  data.supplier_id ??
+                  "",
+              )
+            }
+            disabled={
+              !(
+                data.customer?.id ??
+                data.supplier?.id ??
+                data.customer_id ??
+                data.supplier_id
+              )
+            }
+          >
+            {t("View contact profile")}
+          </Button>
           <strong>
             {data.customer?.name ??
               data.supplier?.name ??
@@ -279,7 +362,7 @@ export function RecordDetail({
             <TableBody>
               {data.lines.map((l, i) => {
                 const v = l as unknown as {
-                  item?: { name: string };
+                  item?: { id: string; name: string };
                   item_id?: string;
                   id?: string;
                   quantity_thousandths?: string;
@@ -290,11 +373,22 @@ export function RecordDetail({
                 return (
                   <TableRow key={v.id ?? i}>
                     <TableCell>
-                      {v.item?.name ??
-                        b.workspace.resources?.items.find(
-                          (x) => x.id === v.item_id,
-                        )?.name ??
-                        t("Line {index}", { index: i + 1 })}
+                      {v.item?.id || v.item_id ? (
+                        <Button
+                          variant="link"
+                          onClick={() =>
+                            b.openProduct(v.item?.id ?? v.item_id ?? "")
+                          }
+                        >
+                          {v.item?.name ??
+                            b.workspace.resources?.items.find(
+                              (x) => x.id === v.item_id,
+                            )?.name ??
+                            v.item_id}
+                        </Button>
+                      ) : (
+                        t("Line {index}", { index: i + 1 })
+                      )}
                     </TableCell>
                     <TableCell className="numeric">
                       {formatQuantity(
@@ -428,23 +522,21 @@ export function RecordDetail({
                 />
               </Field>
               <Field label={t("Financial date")}>
-                <Input
-                  type="date"
+                <DatePicker
                   value={date}
-                  onChange={(e) => {
-                    setDate(e.target.value);
+                  onChange={(value) => {
+                    setDate(value);
                     setPreview(null);
                   }}
                 />
               </Field>
               {(action === "bill" || action === "fulfill") && (
                 <Field label={t("Due date")}>
-                  <Input
-                    type="date"
+                  <DatePicker
                     value={due}
                     min={date}
-                    onChange={(e) => {
-                      setDue(e.target.value);
+                    onChange={(value) => {
+                      setDue(value);
                       setPreview(null);
                     }}
                   />
@@ -502,5 +594,18 @@ export function RecordDetail({
         )
       )}
     </Modal>
+    {settle && settleable && (
+      <PaymentDialog
+        side={settleable.side}
+        presetPartyId={settleable.partyId}
+        presetOpenItemId={settleable.openItemId}
+        onClose={() => setSettle(false)}
+        onPosted={async () => {
+          await b.refresh();
+          setSettle(false);
+        }}
+      />
+    )}
+    </>
   );
 }

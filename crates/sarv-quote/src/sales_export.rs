@@ -1541,3 +1541,8 @@ pub fn document_preview(
             .collect(),
     })
 }
+
+#[path = "sales_print.rs"]
+mod printable;
+pub use printable::printable_document_pdf;
+pub use printable::printable_quotation_pdf;

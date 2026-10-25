@@ -7,31 +7,43 @@ import { ChartLineUpIcon as ChartNoAxesCombined } from "@phosphor-icons/react/di
 import { UsersIcon as Users } from "@phosphor-icons/react/dist/csr/Users";
 import { GearIcon as Settings } from "@phosphor-icons/react/dist/csr/Gear";
 import { BankIcon as Landmark } from "@phosphor-icons/react/dist/csr/Bank";
+import { ArrowsLeftRightIcon as ArrowsLeftRight } from "@phosphor-icons/react/dist/csr/ArrowsLeftRight";
 import type { Page } from "../lib/types";
+export type NavGroup = "daily" | "people" | "books" | "workspace";
+export const navigationGroups: { id: NavGroup; label: string }[] = [
+  { id: "daily", label: "Daily work" },
+  { id: "people", label: "Stock & people" },
+  { id: "books", label: "Books" },
+  { id: "workspace", label: "Workspace" },
+];
 export const navigation: {
   page: Page;
   label: string;
   icon: typeof LayoutDashboard;
+  group: NavGroup;
 }[] = [
-  { page: "overview", label: "Overview", icon: LayoutDashboard },
-  { page: "sales", label: "Sales", icon: FileText },
-  { page: "purchases", label: "Purchases", icon: ShoppingBag },
-  { page: "accounting", label: "Accounting", icon: BookOpen },
-  { page: "inventory", label: "Inventory", icon: Boxes },
-  { page: "reports", label: "Reports", icon: ChartNoAxesCombined },
-  { page: "banking", label: "Banking", icon: Landmark },
-  { page: "customers", label: "Customers", icon: Users },
-  { page: "settings", label: "Settings", icon: Settings },
+  { page: "overview", label: "Overview", icon: LayoutDashboard, group: "daily" },
+  { page: "sales", label: "Sales", icon: FileText, group: "daily" },
+  { page: "purchases", label: "Purchases", icon: ShoppingBag, group: "daily" },
+  { page: "payments", label: "Payments", icon: ArrowsLeftRight, group: "daily" },
+  { page: "banking", label: "Banking", icon: Landmark, group: "daily" },
+  { page: "customers", label: "Contacts", icon: Users, group: "people" },
+  { page: "inventory", label: "Inventory", icon: Boxes, group: "people" },
+  { page: "accounting", label: "Accounting", icon: BookOpen, group: "books" },
+  { page: "reports", label: "Reports", icon: ChartNoAxesCombined, group: "books" },
+  { page: "settings", label: "Settings", icon: Settings, group: "workspace" },
 ];
 export const persian: Record<string, string> = {
   Overview: "نمای کلی",
   Sales: "فروش",
   Purchases: "خریدها",
+  Payments: "پرداخت‌ها",
   Accounting: "حسابداری",
   Inventory: "موجودی",
   Reports: "گزارش‌ها",
   Banking: "بانکداری",
   Customers: "مشتریان",
+  Suppliers: "تأمین‌کنندگان",
   Settings: "تنظیمات",
   "Help & shortcuts": "راهنما و میانبرها",
   Workspace: "فضای کاری",

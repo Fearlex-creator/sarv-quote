@@ -8,7 +8,13 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { command } from "../lib/client";
 import { Button } from "../components/ui/button";
-import { ErrorState, Field, Loading } from "../components/ui/shared";
+import { ErrorState, Loading } from "../components/ui/shared";
+import {
+  SettingsGroup,
+  SettingsItem,
+  SettingsPage,
+  SettingsRow,
+} from "../components/ui/settings";
 import { Status } from "../components/finance/money";
 
 type AgentStatus = {
@@ -80,34 +86,28 @@ export function Agents() {
     }
   }
   return (
-    <section className="settings-section agents-panel">
-      <h2>{t("Agent access")}</h2>
+    <SettingsPage className="agents-panel">
       {error && <ErrorState error={error} />}
       {!status ? (
         !error && <Loading shape="form" />
       ) : (
         <>
-          <div className="grouped-list">
-            <div className="agent-row">
-              <label htmlFor="agent-access">
-                {status.enabled ? t("On") : t("Off")}
-              </label>
+          <SettingsGroup title={t("Agent access")}>
+            <SettingsRow label={t("Agent access")}>
               <Switch
-                id="agent-access"
-                aria-label={t("Agent access")}
                 checked={status.enabled}
                 disabled={busy}
                 onCheckedChange={(enabled) =>
                   void configure(enabled, status.access)
                 }
               />
-            </div>
-            <div className="agent-row">
-              <span>{t("Connection")}</span>
+            </SettingsRow>
+            <SettingsItem label={t("Connection")}>
               <Status kind="neutral">{t("Local")}</Status>
-            </div>
-            <Field label={t("Access")}>
+            </SettingsItem>
+            <SettingsRow label={t("Access")}>
               <NativeSelect
+                className="w-full!"
                 value={status.access}
                 disabled={busy}
                 onChange={(e) =>
@@ -124,12 +124,13 @@ export function Agents() {
                   {t("Full access")}
                 </NativeSelectOption>
               </NativeSelect>
-            </Field>
+            </SettingsRow>
             {status.enabled && !status.cli_available && (
-              <div role="alert">{t("CLI unavailable")}</div>
+              <div role="alert" className="px-5 py-4 text-sm text-destructive">
+                {t("CLI unavailable")}
+              </div>
             )}
-            <div className="agent-row">
-              <span>CLI</span>
+            <SettingsItem label="CLI">
               <Button
                 variant="outline"
                 disabled={busy || !status.enabled || !status.cli_available}
@@ -137,9 +138,8 @@ export function Agents() {
               >
                 {t("Copy CLI")}
               </Button>
-            </div>
-            <div className="agent-row">
-              <span>MCP</span>
+            </SettingsItem>
+            <SettingsItem label="MCP">
               <Button
                 variant="outline"
                 disabled={busy || !status.enabled || !status.cli_available}
@@ -147,9 +147,9 @@ export function Agents() {
               >
                 {t("Copy MCP")}
               </Button>
-            </div>
-          </div>
-          <div className="agent-actions">
+            </SettingsItem>
+          </SettingsGroup>
+          <div className="flex justify-end">
             <Button
               variant="destructive"
               disabled={busy || !status.enabled}
@@ -160,6 +160,6 @@ export function Agents() {
           </div>
         </>
       )}
-    </section>
+    </SettingsPage>
   );
 }

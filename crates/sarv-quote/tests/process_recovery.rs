@@ -195,6 +195,42 @@ fn run_worker(mode: &str, directory: &Path) -> Result<()> {
             let _receipt = Store::commit_detached(directory.to_path_buf(), prepared)?;
             worker_ready("durable detached journal commit before owner adoption")?;
         }
+        "payment_before_commit" | "payment_after_commit" => {
+            use sarv_quote::core::CoreRole;
+            use sarv_quote::payments::{PaymentAllocation, PaymentCommand, PaymentInput, PaymentSide};
+            let mut store = Store::open(directory)?;
+            let opening = store.state.accounting.core.openings[0].command.clone();
+            let command = PaymentCommand::Payment(PaymentInput {
+                context: sarv_quote::procurement::ProcurementContext {
+                    company_id: opening.company_id.clone(),
+                    period_id: opening.period_id.clone(),
+                    setup_id: opening.setup_id.clone(),
+                    source_id: "kill-payment".into(),
+                    source_revision: 1,
+                    date: "2026-10-08".into(),
+                    request_key: "kill-payment-key".into(),
+                    actor: "local-desktop".into(),
+                    reason: "kill-window payment".into(),
+                },
+                side: PaymentSide::Receive,
+                party_id: "CU-A".into(),
+                funds_role: CoreRole::Bank,
+                reference: "RCP-KILL".into(),
+                allocations: vec![PaymentAllocation {
+                    open_item_id: "AR-125".into(),
+                    amount: sarv_quote::accounting::Money::from_rials(100),
+                }],
+                advance_amount: sarv_quote::accounting::Money::from_rials(25),
+            });
+            let (generation, mut candidate) = store.begin_detached()?;
+            candidate.accounting.post_payment_command(command)?;
+            let prepared = Store::prepare_candidate(generation, candidate)?;
+            if mode == "payment_before_commit" {
+                worker_ready("validated payment before detached commit")?;
+            }
+            Store::commit_detached(directory.to_path_buf(), prepared)?;
+            worker_ready("durable payment commit before owner adoption")?;
+        }
         "store_candidate" => {
             let mut store = Store::open(directory)?;
             store.change(|state| {
@@ -352,6 +388,69 @@ fn interrupted_detached_journal_before_commit_or_before_receipt_has_exact_comple
         evidence(
             mode,
             json!({"scope":"actual balanced accounting command, prepared validation and detached SQLite commit; SIGKILL before commit or before owner receipt", "sigkill":true,"journals":usize::from(committed),"trial_balance_irr":if committed {1251}else{0},"integrity_check":"ok"}),
+        );
+    }
+}
+
+#[test]
+fn kill_around_payment_commit_leaves_one_exact_durable_settlement() {
+    for mode in ["payment_before_commit", "payment_after_commit"] {
+        let dir = tempfile::tempdir().unwrap();
+        sarv_quote::desktop::seed_fixture(dir.path()).unwrap();
+        let mut worker = OwnedWorker::spawn(mode, dir.path());
+        worker.ready();
+        worker.kill();
+        let reopened = Store::open(dir.path()).unwrap();
+        let committed = mode == "payment_after_commit";
+        assert_eq!(
+            reopened.state.accounting.payments.records.len(),
+            usize::from(committed)
+        );
+        reopened.state.accounting.validate().unwrap();
+        integrity(dir.path());
+        // The identical retry converges to exactly one payment either way.
+        sarv_quote::desktop::dispatch(
+            dir.path(),
+            "payment_post",
+            serde_json::json!({
+                "company_id": reopened.state.accounting.companies[0].id,
+                "period_id": reopened.state.accounting.periods[0].id,
+                "source_id": "kill-payment", "request_key": "kill-payment-key",
+                "date": "2026-10-08", "reason": "kill-window payment",
+                "side": "receive", "party_id": "CU-A", "funds_role": "bank",
+                "reference": "RCP-KILL", "advance_amount": "25",
+                "allocations": [{"open_item_id": "AR-125", "amount": "100"}]
+            }),
+        )
+        .unwrap();
+        drop(reopened);
+        let after = Store::open(dir.path()).unwrap();
+        assert_eq!(after.state.accounting.payments.records.len(), 1);
+        after.state.accounting.validate().unwrap();
+        let company = after.state.accounting.companies[0].id.clone();
+        assert_eq!(
+            after
+                .state
+                .accounting
+                .sales_receivables(&company, "9999-12-31")
+                .unwrap()
+                .iter()
+                .find(|r| r.id == "AR-125")
+                .unwrap()
+                .remaining
+                .rials(),
+            25
+        );
+        integrity(dir.path());
+        evidence(
+            mode,
+            serde_json::json!({
+                "scope":"typed payment settlement through prepared candidate and detached SQLite commit; SIGKILL before commit or before owner receipt",
+                "sigkill": true,
+                "retry_converges_to_one_payment": true,
+                "receivable_after_settlement_irr": 25,
+                "integrity_check": "ok"
+            }),
         );
     }
 }

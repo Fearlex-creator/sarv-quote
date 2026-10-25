@@ -1,3 +1,5 @@
+import { TabHint } from "../components/ui/tab-hint";
+import { DatePicker } from "../components/ui/date-picker";
 import { FieldGroup } from "../components/ui/field";
 import {
   Table,
@@ -81,6 +83,15 @@ export function Accounting({ onDetail }: { onDetail: (j: Journal) => void }) {
           </TabsTrigger>
         ))}
       </TabsList>
+      <TabHint>
+        {
+          {
+            Journals: "Every entry behind your numbers.",
+            "Chart of accounts": "The list of accounts your books use.",
+            "Fiscal periods": "Your financial years.",
+          }[tab] ?? ""
+        }
+      </TabHint>
       <TabsContent value={tab}>
         {error && <ErrorState error={error} />}
         <section className="panel">
@@ -389,11 +400,10 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
       {error && <ErrorState error={error} />}
       <FieldGroup className="form-grid">
         <Field label={t("Financial date")}>
-          <Input
-            type="date"
+          <DatePicker
             value={date}
-            onChange={(e) => {
-              setDate(e.target.value);
+            onChange={(value) => {
+              setDate(value);
               setPreview(null);
             }}
           />
@@ -643,11 +653,7 @@ export function JournalDetail({
         <>
           <FieldGroup className="form-grid">
             <Field label={t("Reversal date")}>
-              <Input
-                type="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-              />
+              <DatePicker value={date} onChange={(value) => setDate(value)} />
             </Field>
             <Field label={t("Reason")}>
               <Input

@@ -53,6 +53,7 @@ fn raw(s: &State) -> RawSalesDraft {
         supplied_total: "199".into(),
         reason: "synthetic interrupted source".into(),
         quotation: None,
+        quote_issue: None,
         lines: vec![RawSalesLine {
             id: "interrupt-line".into(),
             item_id: "ITEM-A".into(),

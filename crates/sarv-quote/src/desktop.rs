@@ -24,4 +24,4 @@ impl DesktopPreferences {
 
 #[path = "desktop_bridge.rs"]
 mod bridge;
-pub use bridge::{dispatch, request_id, seed_fixture, wire};
+pub use bridge::{dispatch, dispatch_in, request_id, seed_fixture, wire};
