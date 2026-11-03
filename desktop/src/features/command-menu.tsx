@@ -11,17 +11,14 @@ import { Modal } from "../components/layout/modal";
 import { navigation } from "../app/navigation";
 import { useTranslation } from "../lib/i18n";
 import { useBooks } from "../app/books";
-import {
-  recordCommand,
-  recordData,
-  recordKind,
-} from "./sales";
+import { recordCommand, recordData, recordKind } from "./sales";
 import type { Page, RecordEntry } from "../lib/types";
 import {
   creationShortcuts,
   shortcutKeys,
   type QuickAction,
 } from "../lib/shortcuts";
+import { commandFilter } from "../lib/command-filter";
 import { UsersIcon as Users } from "@phosphor-icons/react/dist/csr/Users";
 import { PackageIcon as Package } from "@phosphor-icons/react/dist/csr/Package";
 import { FileTextIcon as FileText } from "@phosphor-icons/react/dist/csr/FileText";
@@ -58,10 +55,13 @@ export function CommandMenu({
     const balances = b.report?.party_balances ?? {};
     return (b.workspace.resources?.parties ?? []).map((p) => ({
       party: p,
-      balance: balances[`${p.customer && !p.supplier ? "customer" : "vendor"}:${p.id}`]
-        ?? balances[`customer:${p.id}`]
-        ?? balances[`vendor:${p.id}`]
-        ?? "0",
+      balance:
+        balances[
+          `${p.customer && !p.supplier ? "customer" : "vendor"}:${p.id}`
+        ] ??
+        balances[`customer:${p.id}`] ??
+        balances[`vendor:${p.id}`] ??
+        "0",
     }));
   }, [b.workspace.resources, b.report]);
   const items = b.workspace.resources?.items ?? [];
@@ -95,9 +95,9 @@ export function CommandMenu({
   };
   const money = (v: string) =>
     v
-      ? new Intl.NumberFormat(b.numberLocale === "fa" ? "fa-IR" : "en-US").format(
-          BigInt(v),
-        )
+      ? new Intl.NumberFormat(
+          b.numberLocale === "fa" ? "fa-IR" : "en-US",
+        ).format(BigInt(v))
       : "";
 
   return (
@@ -111,7 +111,7 @@ export function CommandMenu({
         "Search pages, actions, contacts, products and documents. Use arrow keys and Enter to select.",
       )}
     >
-      <Command label={t("Search commands")}>
+      <Command label={t("Search commands")} filter={commandFilter}>
         <CommandInput
           data-autofocus="true"
           placeholder={t("Type a command…")}
@@ -239,7 +239,8 @@ export function CommandMenu({
                   <FileText />
                   <span>{docLabel(r)}</span>
                   <span className="command-meta">
-                    {money(docTotal(r))} {b.unit === "Rial" ? "IRR" : t("toman")}
+                    {money(docTotal(r))}{" "}
+                    {b.unit === "Rial" ? "IRR" : t("toman")}
                   </span>
                 </CommandItem>
               ))}
@@ -260,7 +261,8 @@ export function CommandMenu({
                   <ShoppingBag />
                   <span>{docLabel(r)}</span>
                   <span className="command-meta">
-                    {money(docTotal(r))} {b.unit === "Rial" ? "IRR" : t("toman")}
+                    {money(docTotal(r))}{" "}
+                    {b.unit === "Rial" ? "IRR" : t("toman")}
                   </span>
                 </CommandItem>
               ))}
@@ -310,7 +312,8 @@ export function CommandMenu({
                   <BookOpen />
                   <span>{j.reason || `#${j.id.slice(0, 8)}`}</span>
                   <span className="command-meta">
-                    {money(j.total_debit)} {b.unit === "Rial" ? "IRR" : t("toman")}
+                    {money(j.total_debit)}{" "}
+                    {b.unit === "Rial" ? "IRR" : t("toman")}
                   </span>
                 </CommandItem>
               ))}

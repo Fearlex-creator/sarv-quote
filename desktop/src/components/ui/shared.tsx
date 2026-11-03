@@ -12,7 +12,7 @@ import { createPortal } from "react-dom";
 import { BooksContext } from "../../app/books";
 import { Button } from "./button";
 import { Skeleton } from "./skeleton";
-import { Field as FieldPrimitive, FieldLabel } from "./field";
+import { Field as FieldPrimitive, FieldDescription, FieldLabel } from "./field";
 import { Alert, AlertDescription, AlertTitle } from "./alert";
 import { DatePicker } from "./date-picker";
 export function PageHeader({
@@ -59,18 +59,27 @@ export function Field({
   label,
   children,
   hint,
+  advice,
   action,
 }: {
   label: string;
   children: ReactNode;
   hint?: string;
+  /** Visible, non-blocking note under the control (e.g. "this looks unusual"). */
+  advice?: string;
   action?: ReactNode;
 }) {
   const id = useId();
   const control = isValidElement(children)
     ? cloneElement(
         children as ReactElement<{ id: string; "aria-describedby"?: string }>,
-        { id, "aria-describedby": hint ? `${id}-hint` : undefined },
+        {
+          id,
+          "aria-describedby":
+            [hint && `${id}-hint`, advice && `${id}-advice`]
+              .filter(Boolean)
+              .join(" ") || undefined,
+        },
       )
     : children;
   return (
@@ -78,6 +87,11 @@ export function Field({
       <FieldLabel htmlFor={id}>{label}</FieldLabel>
       {control}
       {action}
+      {advice && (
+        <FieldDescription id={`${id}-advice`} role="note">
+          {advice}
+        </FieldDescription>
+      )}
       {hint && (
         <span className="sr-only w-px!" id={`${id}-hint`}>
           {hint}

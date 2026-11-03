@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useTranslation } from "../../lib/i18n";
 import type { BusinessProfile } from "../../lib/types";
+import { partyIdAdvice } from "../../lib/iran-ids";
 
 export function BusinessFields({
   value,
@@ -23,7 +24,13 @@ export function BusinessFields({
           onChange={(e) => onChange({ ...value, phone: e.target.value })}
         />
       </Field>
-      <Field label={t("Registration / national ID")}>
+      <Field
+        label={t("Registration / national ID")}
+        advice={(() => {
+          const a = partyIdAdvice(value.registration_id);
+          return a && t(a);
+        })()}
+      >
         <Input
           maxLength={160}
           value={value.registration_id}

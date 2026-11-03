@@ -33,6 +33,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "../components/ui/popove
 import { Modal } from "../components/layout/modal";
 import { ErrorState, Field, PageHeader } from "../components/ui/shared";
 import { Money, formatQuantity, formatDate } from "../components/finance/money";
+import { amountInWords } from "../lib/words-fa";
 
 type Method = "cash" | "bank" | "later";
 interface SaleLine {
@@ -1232,6 +1233,11 @@ function SaleForm({ onClose, onNew }: { onClose: () => void; onNew: () => void }
                     currency
                   />
                 </div>
+                {b.locale === "fa" && total > 0n && (
+                  <p className="summary-words" dir="rtl" aria-label={t("Total in words")}>
+                    {amountInWords(String(total), unit === "Toman" ? "toman" : "rial")}
+                  </p>
+                )}
               </div>
               <div className="facture-cta-stack">
                 <Button

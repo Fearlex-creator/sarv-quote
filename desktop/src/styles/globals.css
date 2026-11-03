@@ -956,6 +956,14 @@ h3 {
 .summary-total {
   font-size: 14px;
 }
+/* «مبلغ به حروف»: quiet secondary line under the total. */
+.summary-words {
+  margin: 0;
+  color: var(--muted-foreground);
+  font-size: 12px;
+  line-height: 1.7;
+  text-wrap: balance;
+}
 input[inputmode="decimal"],
 input[inputmode="numeric"] {
   text-align: right;

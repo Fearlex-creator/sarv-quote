@@ -4,6 +4,7 @@ import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import { useTranslation } from "../../lib/i18n";
 import type { PartyProfile } from "../../lib/types";
+import { partyIdAdvice, postalCodeAdvice } from "../../lib/iran-ids";
 
 export function ContactFields({
   value,
@@ -28,16 +29,24 @@ export function ContactFields({
   ];
   return (
     <FieldGroup className="form-grid">
-      {fields.map((f) => (
-        <Field key={f.key} label={t(f.label)}>
-          <Input
-            type={f.type ?? "text"}
-            maxLength={160}
-            value={value[f.key]}
-            onChange={(e) => onChange({ ...value, [f.key]: e.target.value })}
-          />
-        </Field>
-      ))}
+      {fields.map((f) => {
+        const advice =
+          f.key === "national_id"
+            ? partyIdAdvice(value.national_id)
+            : f.key === "postal_code"
+              ? postalCodeAdvice(value.postal_code)
+              : undefined;
+        return (
+          <Field key={f.key} label={t(f.label)} advice={advice && t(advice)}>
+            <Input
+              type={f.type ?? "text"}
+              maxLength={160}
+              value={value[f.key]}
+              onChange={(e) => onChange({ ...value, [f.key]: e.target.value })}
+            />
+          </Field>
+        );
+      })}
       <Field label={t("Address")}>
         <Textarea
           maxLength={2000}
