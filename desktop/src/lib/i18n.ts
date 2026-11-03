@@ -338,6 +338,8 @@ const messages: Record<string, string> = {
   City: "شهر",
   "Postal code": "کد پستی",
   "Total in words": "مبلغ کل به حروف",
+  "The integrity check found a problem": "بررسی صحت داده‌ها مشکلی پیدا کرد",
+  "Closing periods is blocked until this is resolved. Your data has not been changed.": "تا رفع این مشکل بستن دوره ممکن نیست. داده‌های شما تغییری نکرده است.",
   "This does not look like an Iranian national or legal ID. You can still save it.": "این مقدار شبیه کد ملی یا شناسه ملی معتبر نیست. همچنان می‌توانید ذخیره‌اش کنید.",
   "Iranian postal codes have exactly 10 digits. You can still save it.": "کد پستی ایران دقیقاً ۱۰ رقم است. همچنان می‌توانید ذخیره‌اش کنید.",
   "National / registration ID": "کد ملی / شماره ثبت",

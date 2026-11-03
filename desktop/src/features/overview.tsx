@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { IntegrityNotice } from "../components/finance/integrity-notice";
 import { DatePicker } from "../components/ui/date-picker";
 import { ArrowUpRightIcon as ArrowUpRight } from "@phosphor-icons/react/dist/csr/ArrowUpRight";
 import { MoneyIcon as Banknote } from "@phosphor-icons/react/dist/csr/Money";
@@ -255,16 +256,20 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
     r ? (key === "profit" ? r.profit_loss.profit : r.position[key]) : null;
   const quickActions = [
     { action: "invoice" as const, label: "New sales invoice", icon: FileText },
-    { action: "purchase" as const, label: "New purchase order", icon: ShoppingBag },
+    {
+      action: "purchase" as const,
+      label: "New purchase order",
+      icon: ShoppingBag,
+    },
     { action: "customer" as const, label: "New customer", icon: Users },
     { action: "item" as const, label: "New product", icon: Package },
   ];
 
   const hasProfileDetails = Boolean(
     w.business_profile?.phone ||
-      w.business_profile?.registration_id ||
-      w.business_profile?.tax_id ||
-      w.business_profile?.address,
+    w.business_profile?.registration_id ||
+    w.business_profile?.tax_id ||
+    w.business_profile?.address,
   );
   const warehousesCount = w.resources?.warehouses.length ?? 0;
   const unitsCount = w.resources?.units.length ?? 0;
@@ -406,8 +411,7 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
   const completedSteps = setupSteps.filter((s) => s.done).length;
   const allComplete = completedSteps === setupSteps.length;
   const guideExpanded =
-    guidePreference === "open" ||
-    (guidePreference === "auto" && !allComplete);
+    guidePreference === "open" || (guidePreference === "auto" && !allComplete);
 
   function toggleGuide() {
     const next = guideExpanded ? "closed" : "open";
@@ -442,6 +446,7 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
         <span>{b.unit === "Rial" ? "IRR" : t("toman")}</span>
       </div>
       {b.reportError && <ErrorState error={b.reportError} />}
+      <IntegrityNotice status={w.integrity} refresh={b.refresh} />
       {w.initialized && b.companyId && (
         <div className="quick-actions" aria-label={t("Quick actions")}>
           {quickActions.map(({ action, label, icon: Icon }) => (
@@ -566,7 +571,10 @@ export function Overview({ onDetail }: { onDetail: (j: Journal) => void }) {
                     key={step.id}
                     className={`setup-launchpad-item ${step.done ? "setup-launchpad-done" : ""}`}
                   >
-                    <div className="setup-launchpad-step-mark" aria-hidden="true">
+                    <div
+                      className="setup-launchpad-step-mark"
+                      aria-hidden="true"
+                    >
                       {step.done ? (
                         <Check />
                       ) : (

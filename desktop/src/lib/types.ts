@@ -292,7 +292,14 @@ export interface Setup {
     mappings: { role: string; account_id: string }[];
   };
 }
+/** Full-validation safety net that runs in the background after an import. */
+export type IntegrityStatus =
+  | { status: "unchecked" }
+  | { status: "running"; generation: Integer }
+  | { status: "ok"; generation: Integer }
+  | { status: "failed"; generation: Integer; message: string };
 export interface Workspace {
+  integrity?: IntegrityStatus;
   product_profiles: Record<string, ProductProfile>;
   party_profiles: Record<string, PartyProfile>;
   business_profile: BusinessProfile;
