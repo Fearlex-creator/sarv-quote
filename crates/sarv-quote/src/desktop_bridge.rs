@@ -1128,7 +1128,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             .zero_requests
             .iter()
             .any(|r| r.request_key == key);
-    if (action.ends_with("_post") || action == "journal_reverse")
+    if (action.ends_with("_post") || action == "journal_reverse" || action.starts_with("cheque_"))
         && !replay
         && p.get("expected_generation").is_some()
     {

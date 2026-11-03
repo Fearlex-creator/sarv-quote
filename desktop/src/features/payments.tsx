@@ -26,6 +26,9 @@ import { DatePicker } from "../components/ui/date-picker";
 import { DataGrid } from "../components/ui/data-grid";
 import { Money, formatDate } from "../components/finance/money";
 import { Modal } from "../components/layout/modal";
+import { ChequesPanel } from "./cheques";
+import { normalizeDigits } from "../lib/normalize-fa";
+import { sayadId } from "../lib/iran-ids";
 
 export function Payments({ onJournal }: { onJournal: (id: string) => void }) {
   const b = useBooks(),
@@ -236,6 +239,7 @@ export function Payments({ onJournal }: { onJournal: (id: string) => void }) {
               },
             ]}
           />
+          <ChequesPanel />
           <h2>{t("Payment history")}</h2>
           <DataGrid
             data={payments}
@@ -304,6 +308,11 @@ export function Payments({ onJournal }: { onJournal: (id: string) => void }) {
                 cell: ({ row }) => {
                   const key = Object.keys(row.original.data)[0];
                   if (key !== "Payment") return null;
+                  // Cheque payments are reversed from the cheque (bounce, return, void).
+                  const funds = Object.values(row.original.command)[0] as
+                    | { funds_role?: string }
+                    | undefined;
+                  if (funds?.funds_role?.startsWith("Cheques")) return null;
                   const reversed = payments.some((p) => {
                     const k = Object.keys(p.data)[0];
                     return (
@@ -373,7 +382,17 @@ export function PaymentDialog({
   const [key] = useState(uid),
     [date, setDate] = useState(today),
     [partyId, setPartyId] = useState(presetPartyId ?? ""),
-    [fundsRole, setFundsRole] = useState<"cash" | "bank">("bank"),
+    [fundsRole, setFundsRole] = useState<"cash" | "bank" | "cheque" | "endorse">(
+      "bank",
+    ),
+    [chq, setChq] = useState({
+      sayad_id: "",
+      number: "",
+      bank: "",
+      branch: "",
+      due_date: today(),
+    }),
+    [endorseId, setEndorseId] = useState(""),
     [reference, setReference] = useState(""),
     [reason, setReason] = useState(""),
     [advance, setAdvance] = useState(""),
@@ -410,12 +429,32 @@ export function PaymentDialog({
     };
   }, [partyId, side, b.companyId]);
   const rows = (items ?? []).filter((i) => i.remaining !== "0");
+  // Cheques: a received cheque is Dr cheques receivable; an issued one Cr cheques payable;
+  // endorsing hands a received cheque we hold to a supplier.
+  const funds =
+    fundsRole === "cheque"
+      ? side === "receive"
+        ? "cheques_receivable"
+        : "cheques_payable"
+      : fundsRole === "endorse"
+        ? "cheques_receivable"
+        : fundsRole;
+  const heldCheques = (b.workspace.cheques ?? []).filter(
+    (r) => r.cheque.direction === "Received" && r.status === "in_hand",
+  );
+  const endorsed = heldCheques.find((r) => r.cheque.id === endorseId);
   const allocated = rows.reduce(
     (sum, i) => sum + (BigInt(amounts[i.id] ?? "0") || 0n),
     0n,
   );
   const advanceValue = BigInt(advance || "0") || 0n;
   const total = allocated + advanceValue;
+  const chequeInvalid =
+    fundsRole === "cheque"
+      ? !sayadId(chq.sayad_id).ok || !chq.due_date
+      : fundsRole === "endorse"
+        ? !endorsed || BigInt(endorsed.cheque.amount) !== total
+        : false;
   const payload = {
     company_id: b.companyId,
     period_id: b.periodId,
@@ -425,7 +464,7 @@ export function PaymentDialog({
     reason: reason || t("Invoice settlement"),
     side,
     party_id: partyId,
-    funds_role: fundsRole,
+    funds_role: funds,
     reference,
     advance_amount: advance || "0",
     allocations: rows
@@ -438,10 +477,23 @@ export function PaymentDialog({
     setError("");
     try {
       if (post) {
-        await command("payment_post", {
-          ...payload,
-          expected_generation: review?._generation,
-        });
+        const guard = { ...payload, expected_generation: review?._generation };
+        if (fundsRole === "cheque") {
+          await command(side === "receive" ? "cheque_receive" : "cheque_issue", {
+            ...guard,
+            cheque: {
+              ...chq,
+              sayad_id: normalizeDigits(chq.sayad_id),
+              drawer_national_id: "",
+              purpose: "",
+              notes: "",
+            },
+          });
+        } else if (fundsRole === "endorse") {
+          await command("cheque_spend", { ...guard, cheque_id: endorseId });
+        } else {
+          await command("payment_post", guard);
+        }
         await onPosted();
         toast.success(t("Payment recorded"));
       } else {
@@ -511,14 +563,91 @@ export function PaymentDialog({
               <NativeSelect
                 value={fundsRole}
                 onChange={(e) => {
-                  setFundsRole(e.target.value as "cash" | "bank");
+                  setFundsRole(e.target.value as typeof fundsRole);
                   setReview(null);
                 }}
               >
                 <NativeSelectOption value="bank">{t("Bank")}</NativeSelectOption>
                 <NativeSelectOption value="cash">{t("Cash")}</NativeSelectOption>
+                <NativeSelectOption value="cheque">{t("Cheque")}</NativeSelectOption>
+                {side === "make" && (
+                  <NativeSelectOption value="endorse">
+                    {t("Endorse a cheque I hold")}
+                  </NativeSelectOption>
+                )}
               </NativeSelect>
             </Field>
+            {fundsRole === "endorse" && (
+              <Field
+                label={t("Cheque to endorse")}
+                advice={
+                  endorsed && BigInt(endorsed.cheque.amount) !== total
+                    ? t("The payment total must equal the cheque amount.")
+                    : undefined
+                }
+              >
+                <NativeSelect
+                  required
+                  value={endorseId}
+                  onChange={(e) => setEndorseId(e.target.value)}
+                >
+                  <NativeSelectOption value="">{t("Select cheque")}</NativeSelectOption>
+                  {heldCheques.map((r) => (
+                    <NativeSelectOption key={r.cheque.id} value={r.cheque.id}>
+                      {`${r.cheque.details.sayad_id || r.cheque.details.number} · ${r.cheque.amount}`}
+                    </NativeSelectOption>
+                  ))}
+                </NativeSelect>
+              </Field>
+            )}
+            {fundsRole === "cheque" && (
+              <>
+                <Field
+                  label={t("Sayad ID")}
+                  advice={
+                    chq.sayad_id && !sayadId(chq.sayad_id).ok
+                      ? t("A Sayad ID has exactly 16 digits.")
+                      : undefined
+                  }
+                >
+                  <Input
+                    required
+                    inputMode="numeric"
+                    dir="ltr"
+                    maxLength={24}
+                    value={chq.sayad_id}
+                    onChange={(e) => setChq({ ...chq, sayad_id: e.target.value })}
+                  />
+                </Field>
+                <Field label={t("Cheque number")}>
+                  <Input
+                    maxLength={160}
+                    value={chq.number}
+                    onChange={(e) => setChq({ ...chq, number: e.target.value })}
+                  />
+                </Field>
+                <Field label={t("Cheque bank")}>
+                  <Input
+                    maxLength={160}
+                    value={chq.bank}
+                    onChange={(e) => setChq({ ...chq, bank: e.target.value })}
+                  />
+                </Field>
+                <Field label={t("Branch")}>
+                  <Input
+                    maxLength={160}
+                    value={chq.branch}
+                    onChange={(e) => setChq({ ...chq, branch: e.target.value })}
+                  />
+                </Field>
+                <Field label={t("Cheque due date")}>
+                  <DatePicker
+                    value={chq.due_date}
+                    onChange={(v) => setChq({ ...chq, due_date: v })}
+                  />
+                </Field>
+              </>
+            )}
             <Field label={t("Financial date")}>
               <DatePicker
                 value={date}
@@ -632,7 +761,9 @@ export function PaymentDialog({
             </Button>
             <Button
               type="submit"
-              disabled={busy || !partyId || total <= 0n || !reference.trim()}
+              disabled={
+                busy || !partyId || total <= 0n || !reference.trim() || chequeInvalid
+              }
             >
               {t("Review payment")}
             </Button>

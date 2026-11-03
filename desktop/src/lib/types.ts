@@ -292,6 +292,42 @@ export interface Setup {
     mappings: { role: string; account_id: string }[];
   };
 }
+export type ChequeStatus =
+  | "in_hand"
+  | "in_collection"
+  | "cleared"
+  | "bounced"
+  | "spent"
+  | "returned"
+  | "issued"
+  | "voided";
+export type ChequeAction =
+  "deposit" | "clear" | "bounce" | "spend" | "return" | "void";
+export interface ChequeDetails {
+  sayad_id: string;
+  number: string;
+  bank: string;
+  branch: string;
+  due_date: string;
+  drawer_national_id: string;
+  purpose: string;
+  notes: string;
+}
+export interface ChequeRow {
+  cheque: {
+    id: string;
+    company_id: string;
+    direction: "Received" | "Issued";
+    amount: Integer;
+    party_id: string;
+    details: ChequeDetails;
+    opening_id: string | null;
+  };
+  status: ChequeStatus;
+  /** Next steps the engine's state machine allows for this cheque right now. */
+  allowed: ChequeAction[];
+  events: { id: string; action: string; date: string; reason: string }[];
+}
 /** Full-validation safety net that runs in the background after an import. */
 export type IntegrityStatus =
   | { status: "unchecked" }
@@ -300,6 +336,7 @@ export type IntegrityStatus =
   | { status: "failed"; generation: Integer; message: string };
 export interface Workspace {
   integrity?: IntegrityStatus;
+  cheques?: ChequeRow[];
   product_profiles: Record<string, ProductProfile>;
   party_profiles: Record<string, PartyProfile>;
   business_profile: BusinessProfile;
