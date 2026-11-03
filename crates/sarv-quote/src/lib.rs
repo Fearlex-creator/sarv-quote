@@ -10,6 +10,7 @@ pub mod core;
 pub mod core_export;
 pub mod core_import;
 pub mod domain;
+pub mod iran;
 pub mod export;
 pub mod imports;
 pub mod money;
