@@ -81,9 +81,12 @@ test("business creation belongs to Settings and every transaction uses the confi
       page.getByRole("dialog").getByLabel("Start date", { exact: true }),
     ).toContainText(/Farvardin|فروردین/);
     await page.getByRole("button", { name: "Cancel", exact: true }).click();
-    await page
-      .getByRole("button", { name: "Collapse sidebar", exact: true })
-      .click();
+    // The sidebar starts collapsed; only collapse it if a previous step expanded it.
+    const collapse = page.getByRole("button", {
+      name: "Collapse sidebar",
+      exact: true,
+    });
+    if (await collapse.isVisible()) await collapse.click();
     await expect.poll(async () => (await page.locator('[data-slot="sidebar-container"]').boundingBox())!.width).toBe(72);
     const settingsIcon = page
       .locator('[data-slot="sidebar"]')

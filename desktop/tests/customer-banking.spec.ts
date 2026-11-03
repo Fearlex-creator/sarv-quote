@@ -361,7 +361,7 @@ for (const flow of ["contacts", "banking"])
         .selectOption("fa");
       await page.getByRole("heading", { name: "تنظیمات", exact: true }).click();
       if (flow === "contacts") {
-        await nav("مشتریان");
+        await nav("طرف‌حساب‌ها");
         await page
           .getByRole("button", { name: "Sara Ahmadi", exact: true })
           .click();

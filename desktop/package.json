@@ -14,7 +14,7 @@
     "build:desktop": "pnpm run build && pnpm run build:agent",
     "dev:desktop": "cargo build --manifest-path ../Cargo.toml --no-default-features --bin sarv-agent && pnpm exec vite --host 0.0.0.0",
     "test:unit": "node --test src/lib/*.test.ts",
-    "build:qa": "cargo build --manifest-path ../Cargo.toml -p sarv-quote --example desktop_qa"
+    "build:qa": "cargo build --manifest-path ../Cargo.toml -p sarv-quote --example desktop_qa && cargo build --manifest-path ../Cargo.toml -p sarv-quote --no-default-features --bin sarv-agent"
   },
   "dependencies": {
     "@daypicker/persian": "^10.0.2",
