@@ -8,12 +8,13 @@
     "build": "tsc -b && vite build",
     "check": "tsc -b && tsc -p tsconfig.test.json",
     "lint": "eslint .",
-    "test": "playwright test",
+    "test": "pnpm run build:qa && playwright test",
     "tauri": "tauri",
     "build:agent": "cargo build --manifest-path ../Cargo.toml --release --no-default-features --bin sarv-agent",
     "build:desktop": "pnpm run build && pnpm run build:agent",
     "dev:desktop": "cargo build --manifest-path ../Cargo.toml --no-default-features --bin sarv-agent && pnpm exec vite --host 0.0.0.0",
-    "test:unit": "node --test src/lib/*.test.ts"
+    "test:unit": "node --test src/lib/*.test.ts",
+    "build:qa": "cargo build --manifest-path ../Cargo.toml -p sarv-quote --example desktop_qa"
   },
   "dependencies": {
     "@daypicker/persian": "^10.0.2",
