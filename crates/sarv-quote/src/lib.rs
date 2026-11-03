@@ -3,6 +3,7 @@ pub mod accounting;
 pub mod accounting_export;
 pub mod calendar;
 pub mod cashbook;
+pub mod cheques;
 pub mod contact_profile;
 pub mod product_profile;
 pub mod core;

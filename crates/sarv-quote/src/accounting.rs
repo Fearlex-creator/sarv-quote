@@ -1158,6 +1158,50 @@ impl AccountingState {
                         );
                     }
                 }
+                "banking.cheque_clear.v1" => {
+                    // One fund account and one cheque notes account, equal and opposite.
+                    // Received: Dr fund / Cr cheques-receivable. Issued: Dr cheques-payable / Cr fund.
+                    let notes_for = |role: CoreRole| {
+                        opening
+                            .frozen_setup
+                            .command
+                            .mappings
+                            .iter()
+                            .find(|m| m.role == role)
+                            .map(|m| m.account_id.as_str())
+                    };
+                    let (receivable, payable) = (
+                        notes_for(CoreRole::ChequesReceivable),
+                        notes_for(CoreRole::ChequesPayable),
+                    );
+                    ensure!(count == 1, "Cheque clearing needs one cash/bank line");
+                    let fund = fund_lines[0];
+                    let notes = command
+                        .lines
+                        .iter()
+                        .find(|l| !funds.contains(&l.account_id.as_str()))
+                        .ok_or_else(|| anyhow::anyhow!("Cheque clearing needs a notes line"))?;
+                    ensure!(
+                        fund.debit.rials() + fund.credit.rials() > 0
+                            && notes.debit.rials() + notes.credit.rials() > 0
+                            && fund.debit == notes.credit
+                            && fund.credit == notes.debit,
+                        "Cheque clearing lines must be equal and opposite"
+                    );
+                    if Some(notes.account_id.as_str()) == receivable {
+                        ensure!(
+                            fund.debit.rials() > 0,
+                            "A received cheque clears into the bank: debit cash/bank"
+                        );
+                    } else if Some(notes.account_id.as_str()) == payable {
+                        ensure!(
+                            fund.credit.rials() > 0,
+                            "An issued cheque clears out of the bank: credit cash/bank"
+                        );
+                    } else {
+                        anyhow::bail!("Cheque clearing must use a cheques notes account");
+                    }
+                }
                 _ => anyhow::bail!("Unsupported banking movement"),
             }
         }

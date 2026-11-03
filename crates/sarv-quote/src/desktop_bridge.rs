@@ -1012,7 +1012,9 @@ fn payment(s: &State, p: &Value) -> Result<PaymentCommand> {
     let funds_role = match string(p, "funds_role")? {
         "cash" => crate::core::CoreRole::Cash,
         "bank" => crate::core::CoreRole::Bank,
-        _ => return Err(anyhow!("Payment funds must be cash or bank")),
+        "cheques_receivable" => crate::core::CoreRole::ChequesReceivable,
+        "cheques_payable" => crate::core::CoreRole::ChequesPayable,
+        _ => return Err(anyhow!("Payment funds must be cash, bank or a cheques account")),
     };
     let lines = p["allocations"]
         .as_array()
@@ -1034,6 +1036,59 @@ fn payment(s: &State, p: &Value) -> Result<PaymentCommand> {
         allocations: lines,
         advance_amount: Money::parse(optional(p, "advance_amount", "0"), MoneyUnit::Rial)?,
     }))
+}
+
+fn cheque_payment(s: &State, p: &Value, side: &str, funds: &str) -> Result<PaymentInput> {
+    let mut q = p.clone();
+    q["side"] = json!(side);
+    q["funds_role"] = json!(funds);
+    match payment(s, &q)? {
+        PaymentCommand::Payment(input) => Ok(input),
+        PaymentCommand::Reversal(_) => Err(anyhow!("Cheque registration needs a payment, not a reversal")),
+    }
+}
+fn cheque_details(p: &Value) -> Result<crate::cheques::ChequeDetails> {
+    serde_json::from_value(p["cheque"].clone()).map_err(|e| anyhow!("Invalid cheque details: {e}"))
+}
+/// Cheques of one company with their derived status and the actions the state machine allows next.
+fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
+    use crate::iran::cheque::{Action, State as St, apply};
+    let mut rows = vec![];
+    for c in s.cheques.cheques.iter().filter(|c| company_id.is_empty() || c.company_id == company_id) {
+        let status = s.cheques.status(&c.id)?;
+        let dir = match c.direction {
+            crate::cheques::ChequeDir::Received => crate::iran::cheque::Direction::Received,
+            crate::cheques::ChequeDir::Issued => crate::iran::cheque::Direction::Issued,
+        };
+        let from_opening = c.opening_id.is_some();
+        let allowed: Vec<&str> = [
+            (Action::Deposit, "deposit"),
+            (Action::Clear, "clear"),
+            (Action::Bounce, "bounce"),
+            (Action::Spend, "spend"),
+            (Action::ReturnToCustomer, "return"),
+            (Action::Void, "void"),
+        ]
+        .into_iter()
+        // Opening cheques have no originating payment to reverse.
+        .filter(|(a, _)| !(from_opening && matches!(a, Action::Bounce | Action::ReturnToCustomer | Action::Void)))
+        .filter(|(a, _)| apply(dir, status, *a, c.amount.rials().max(1)).is_ok())
+        .map(|(_, name)| name)
+        .collect();
+        let key = match status {
+            St::InHand => "in_hand",
+            St::InCollection => "in_collection",
+            St::Cleared => "cleared",
+            St::Bounced => "bounced",
+            St::Spent => "spent",
+            St::Returned => "returned",
+            St::Issued => "issued",
+            St::Voided => "voided",
+        };
+        let events: Vec<_> = s.cheques.events.iter().filter(|e| e.cheque_id == c.id).collect();
+        rows.push(json!({"cheque": c, "status": key, "allowed": allowed, "events": events}));
+    }
+    Ok(json!(rows))
 }
 
 pub fn dispatch(directory: &Path, action: &str, p: Value) -> Result<Value> {
@@ -1157,10 +1212,64 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let mut w = workspace(&store.state, &p)?;
             if let Some(o) = w.as_object_mut() {
                 o.insert("integrity".into(), json!(store.integrity()));
+                o.insert(
+                    "cheques".into(),
+                    cheque_rows(&store.state, p["company_id"].as_str().unwrap_or(""))?,
+                );
             }
             w
         }
         "integrity" => json!(store.integrity()),
+        "cheque_receive" | "cheque_issue" => {
+            let receive = action == "cheque_receive";
+            let input = cheque_payment(
+                &store.state,
+                &p,
+                if receive { "receive" } else { "make" },
+                if receive { "cheques_receivable" } else { "cheques_payable" },
+            )?;
+            let details = cheque_details(&p)?;
+            let cheque_id = store.change(|s| {
+                if receive { s.receive_cheque(details, input) } else { s.issue_cheque(details, input) }
+            })?;
+            json!({"cheque_id": cheque_id})
+        }
+        "cheque_spend" => {
+            let input = cheque_payment(&store.state, &p, "make", "cheques_receivable")?;
+            let cheque_id = string(&p, "cheque_id")?.to_owned();
+            store.change(|s| s.spend_cheque(&cheque_id, input))?;
+            json!(true)
+        }
+        "cheque_register_opening" => {
+            let ctx = context(&store.state, &p)?;
+            let details = cheque_details(&p)?;
+            let opening_id = string(&p, "opening_cheque_id")?.to_owned();
+            let cheque_id = store.change(|s| s.register_opening_cheque(&ctx, &opening_id, details))?;
+            json!({"cheque_id": cheque_id})
+        }
+        "cheque_deposit" => {
+            let ctx = context(&store.state, &p)?;
+            let cheque_id = string(&p, "cheque_id")?.to_owned();
+            store.change(|s| s.deposit_cheque(&ctx, &cheque_id))?;
+            json!(true)
+        }
+        "cheque_clear" => {
+            let ctx = context(&store.state, &p)?;
+            let cheque_id = string(&p, "cheque_id")?.to_owned();
+            let fund = string(&p, "fund_account_id")?.to_owned();
+            json!({"journal_id": store.change(|s| s.clear_cheque(&ctx, &cheque_id, &fund))?})
+        }
+        "cheque_bounce" | "cheque_return" | "cheque_void" => {
+            let ctx = context(&store.state, &p)?;
+            let cheque_id = string(&p, "cheque_id")?.to_owned();
+            let act = match action {
+                "cheque_bounce" => crate::cheques::ChequeAct::Bounced,
+                "cheque_return" => crate::cheques::ChequeAct::Returned,
+                _ => crate::cheques::ChequeAct::Voided,
+            };
+            store.change(|s| s.reverse_cheque(&ctx, &cheque_id, act))?;
+            json!(true)
+        }
         "report" => report(&store.state, &p)?,
         "contact_detail" => contacts_banking::contact_detail(&store.state, &p)?,
         "banking" => contacts_banking::banking(&store.state, &p)?,

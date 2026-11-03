@@ -1179,7 +1179,7 @@ fn printable_sales_invoice_is_a4_exact_and_embeds_persian_fonts() {
     state.settings.date_display = DateDisplay::Jalali;
     state.settings.display_digits = DisplayDigits::Persian;
     state.business_profiles.insert(f.company.clone(), sarv_quote::domain::BusinessProfile {
-        phone: "021-12345678".into(), address: "تهران، خیابان سرو".into(), registration_id: "REG-2026".into(), tax_id: "TAX-123".into(), invoice_prefix: "INV".into(), terms: "پرداخت در زمان تحویل کالا".into(), footer: "سپاس از خرید شما".into(),
+        phone: "021-12345678".into(), address: "تهران، خیابان سرو".into(), registration_id: "REG-2026".into(), tax_id: "TAX-123".into(), invoice_prefix: "INV".into(), terms: "پرداخت در زمان تحویل کالا".into(), footer: "سپاس از خرید شما".into(), bank_details: String::new(),
     });
     let out = Path::new("/tmp/sarv-printable-pdf");
     fs::create_dir_all(out).unwrap();

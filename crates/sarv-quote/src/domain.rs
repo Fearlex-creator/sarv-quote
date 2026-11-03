@@ -897,7 +897,7 @@ impl BusinessProfile {
     }
 }
 
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct State {
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub product_profiles: BTreeMap<String, crate::product_profile::ProductProfile>,
@@ -926,6 +926,8 @@ pub struct State {
         skip_serializing_if = "crate::cashbook::Cashbook::is_empty"
     )]
     pub cashbook: crate::cashbook::Cashbook,
+    #[serde(default, skip_serializing_if = "crate::cheques::ChequeRegister::is_empty")]
+    pub cheques: crate::cheques::ChequeRegister,
 }
 impl Default for State {
     fn default() -> Self {
@@ -943,6 +945,7 @@ impl Default for State {
             accounting: crate::accounting::AccountingState::default(),
             sales_drafts: vec![],
             cashbook: crate::cashbook::Cashbook::default(),
+            cheques: crate::cheques::ChequeRegister::default(),
         }
     }
 }
@@ -1423,7 +1426,7 @@ impl State {
     /// Same verdict as `validate()` for a state that differs from an already fully
     /// validated `base`, doing only the work whose inputs changed. Each part is a pure
     /// function of the fields compared below (see ADR-0007):
-    /// - accounting group: accounting, profiles, desktop, settings, schema, sales drafts
+    /// - accounting group: accounting, cheques, profiles, desktop, settings, schema, sales drafts
     ///   and quotes (sales orders link to approved quotes); below schema 3 it also reads
     ///   the draft, so it always runs there;
     /// - approved quotation data: catalogs, customers, quotes;
@@ -1438,6 +1441,7 @@ impl State {
             || self.desktop != base.desktop
             || self.settings != base.settings
             || self.sales_drafts != base.sales_drafts
+            || self.cheques != base.cheques
             || self.quotes != base.quotes;
         let quotation_changed = self.catalogs != base.catalogs
             || self.customers != base.customers
@@ -1516,6 +1520,7 @@ impl State {
         );
         self.validate_sales_drafts_and_links()?;
         self.accounting.validate()?;
+        self.validate_cheques()?;
         Ok(())
     }
     fn validate_approved_quotation_data(&self) -> Result<()> {

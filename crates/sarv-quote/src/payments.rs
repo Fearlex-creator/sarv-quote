@@ -380,10 +380,20 @@ impl AccountingState {
         let c = &input.context;
         let setup = self.validate_operational_context(c)?;
         civil_date(&c.date)?;
-        ensure!(
-            matches!(input.funds_role, CoreRole::Cash | CoreRole::Bank),
-            "حساب تسویه باید صندوق یا بانک باشد"
-        );
+        // Cheques move through the notes accounts: a received cheque is Dr cheques-receivable,
+        // an issued one Cr cheques-payable, and a received cheque can be endorsed (spent) to a
+        // supplier. Clearing is posted separately as a banking movement (ADR-0005).
+        let funds_allowed = match input.side {
+            PaymentSide::Receive => matches!(
+                input.funds_role,
+                CoreRole::Cash | CoreRole::Bank | CoreRole::ChequesReceivable
+            ),
+            PaymentSide::Make => matches!(
+                input.funds_role,
+                CoreRole::Cash | CoreRole::Bank | CoreRole::ChequesPayable | CoreRole::ChequesReceivable
+            ),
+        };
+        ensure!(funds_allowed, "حساب تسویه باید صندوق، بانک یا اسناد مجاز باشد");
         text(&input.reference)?;
         let resources = self.procurement_resources(&c.company_id)?;
         let party = resources

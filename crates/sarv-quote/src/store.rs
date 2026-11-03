@@ -277,6 +277,7 @@ impl Store {
         persisted
             .accounting
             .validate_transition(&candidate.accounting)?;
+        persisted.cheques.validate_transition(&candidate.cheques)?;
         let changed = tx.execute(
             "UPDATE state SET generation=generation+1,payload=?1 WHERE id=1 AND generation=?2",
             params![payload, self.generation],
@@ -340,6 +341,7 @@ impl Store {
             current
                 .accounting
                 .validate_transition(&prepared.candidate.accounting)?;
+            current.cheques.validate_transition(&prepared.candidate.cheques)?;
         }
         Ok(())
     }

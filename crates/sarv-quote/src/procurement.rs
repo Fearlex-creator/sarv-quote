@@ -781,6 +781,19 @@ impl AccountingState {
                     .detail
                     .checked_add(self.banking_delta(company, &r.account_id, asof)?)?
                     .checked_add(self.payment_fund_delta(company, &r.account_id, asof)?)?,
+                // Cheque notes accounts move through cheque-funded payments and cheque clearing.
+                // Both deltas are debit-minus-credit; the payable is credit-normal, so flip it.
+                CoreRole::ChequesReceivable | CoreRole::ChequesPayable => {
+                    let moved = self
+                        .banking_delta(company, &r.account_id, asof)?
+                        .checked_add(self.payment_fund_delta(company, &r.account_id, asof)?)?;
+                    let moved = if r.role == CoreRole::ChequesPayable {
+                        Money::ZERO.checked_sub(moved)?
+                    } else {
+                        moved
+                    };
+                    r.detail.checked_add(moved)?
+                }
                 CoreRole::Inventory => sum(stock.iter().map(|x| x.value))?,
                 CoreRole::Grni => sum(receipts.iter().map(|x| x.value))?,
                 CoreRole::Payables => sum(payables.iter().map(|x| x.remaining))?,
