@@ -1,6 +1,6 @@
 # Decision register — 2026-10-07
 
-Spec adoption — **2026-11-03**: decisions taken while applying `docs/ACCOUNTING-SPEC.md` and `docs/FRONTEND-UI-GUIDE.md` are in [`docs/adr/`](docs/adr/README.md); coverage and open decisions are in [`docs/SPEC-COVERAGE.md`](docs/SPEC-COVERAGE.md). No licence, authorization or statutory-claim boundary above was changed.
+Spec adoption — **2026-11-03**: decisions taken while applying `docs/ACCOUNTING-SPEC.md` and `docs/FRONTEND-UI-GUIDE.md` are in [`docs/adr/`](docs/adr/README.md); coverage and open decisions are in [`docs/SPEC-COVERAGE.md`](docs/SPEC-COVERAGE.md). The owner explicitly chose AGPL-3.0 for the core on 2026-11-03 (ADR-0006), which resolves DEC-03; no other authorization or statutory-claim boundary above was changed.
 
 Latest verification continuation — **2026-10-08**: the user instructed, “do that full 200 line ui and stuff too push oeverythign.” This authorizes resolving the native observer failure, completing the bounded 200-line return UI and declared performance verification, fixing reproduced defects, and committing/pushing/merging the follow-up. The prior measurement HOLD and integration-first instruction describe the earlier checkpoint, not a current prohibition. Existing financial policies, budgets, immutable evidence and all non-Git external-action boundaries remain unchanged.
 

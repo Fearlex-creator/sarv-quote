@@ -10,5 +10,5 @@ The older register in `decisions.md` stays the record for earlier product decisi
 | [0003](0003-advisory-identifier-validation.md) | Iranian identifier checks are advisory; stored contact data stays free text |
 | [0004](0004-law-as-data-with-verify-flags.md) | Law values are effective-dated, flagged `verify`, and not wired into any calculation yet |
 | [0005](0005-cheque-lifecycle-and-ledger-integration.md) | Cheque lifecycle is a pure state machine; ledger integration needs a design pass first |
-| [0006](0006-licence-unchanged.md) | Licence stays MIT; the spec's AGPL-3.0 suggestion is the owner's decision |
+| [0006](0006-licence-unchanged.md) | Licence is AGPL-3.0-only for the core (owner decision); Apache-2.0 for future SDKs |
 | [0007](0007-save-cost-and-incremental-validation.md) | Saves cost O(total data); incremental validation is the recommended fix, pending approval |

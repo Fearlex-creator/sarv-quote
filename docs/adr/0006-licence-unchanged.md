@@ -1,8 +1,13 @@
-# 0006 — Licence unchanged
+# 0006 — Licence: AGPL-3.0-only for the core
 
-**Status:** accepted · **Date:** 2026-11-03
+**Status:** accepted (supersedes the earlier "unchanged" decision) · **Date:** 2026-11-03
 
-The spec recommends AGPL-3.0 for the core and Apache-2.0 for SDKs and says "decide with counsel".
-`decisions.md` DEC-03 records that licence changes need the owner's explicit decision and a
-dependency/font/SBOM review (Vazirmatn is SIL OFL 1.1). The repository stays **MIT**. No licence
-file or metadata was edited.
+The owner decided (2026-11-03) to license the core under AGPL-3.0, with Apache-2.0 for any SDK or
+plugin API, as the spec recommends. `decisions.md` DEC-03 had required that decision to be explicit.
+
+- `LICENSE` is the SPDX `AGPL-3.0-only` text; `Cargo.toml` (workspace and `desktop/src-tauri`) say
+  `AGPL-3.0-only`. "Only" rather than "or later" was chosen because it can be relaxed later but not
+  tightened; change it if you prefer "or later".
+- No SDK or plugin API exists yet, so no Apache-2.0 files were created.
+- Bundled Vazirmatn stays under SIL OFL 1.1. Earlier published snapshots remain MIT for those who
+  received them; a dependency/SBOM licence-compatibility review is still recommended before release.

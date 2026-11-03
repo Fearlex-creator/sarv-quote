@@ -68,3 +68,10 @@ The original store persists a validated versioned snapshot in SQLite, with a 64 
 4. Add multi-currency accounting with explicit exchange-rate postings. Rial/Toman comes first.
 
 Later phases add screens and services on top of the same ledger; they must preserve earlier books and history. Payroll, live bank feeds and payment processing remain outside the current scope.
+
+## Licence
+
+The core (the `sarv-quote` engine, the desktop app and the agent binary) is licensed under the
+**GNU Affero General Public License v3.0 only** (`AGPL-3.0-only`); see [LICENSE](LICENSE).
+Any future SDK or plugin API will be published separately under Apache-2.0. The bundled Vazirmatn font
+keeps its own SIL OFL 1.1 licence. Earlier snapshots of this repository were published under MIT.
