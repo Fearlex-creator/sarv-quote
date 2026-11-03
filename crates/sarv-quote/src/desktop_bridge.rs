@@ -1220,6 +1220,11 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             w
         }
         "integrity" => json!(store.integrity()),
+        "law_data" => json!({
+            "notice_en": crate::iran::law::NOT_REVIEWED_NOTICE_EN,
+            "notice_fa": crate::iran::law::NOT_REVIEWED_NOTICE_FA,
+            "entries": crate::iran::law::entries(),
+        }),
         "cheque_receive" | "cheque_issue" => {
             let receive = action == "cheque_receive";
             let input = cheque_payment(

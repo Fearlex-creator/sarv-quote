@@ -509,6 +509,24 @@ impl State {
             }
             ensure!(registered, "چک بدون رویداد ثبت");
         }
+        // A payment the register relies on may only be reversed through the register, so a
+        // cheque's status can never disagree with its ledger effect.
+        let relied_on: HashSet<&str> = reg
+            .events
+            .iter()
+            .filter(|e| matches!(e.action, ChequeAct::Registered | ChequeAct::Spent))
+            .filter_map(|e| e.payment_id.as_deref())
+            .collect();
+        for r in &self.accounting.payments.records {
+            if let PaymentData::Reversal(rev) = &r.data
+                && relied_on.contains(rev.payment_id.as_str())
+            {
+                ensure!(
+                    claimed.contains(r.id.as_str()),
+                    "پرداخت مربوط به چک باید از طریق چک برگشت یا ابطال شود"
+                );
+            }
+        }
         Ok(())
     }
 }

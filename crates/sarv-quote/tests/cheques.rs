@@ -401,3 +401,32 @@ fn ledger_rejects_malformed_cheque_clearing_movements() {
     assert!(post(cmd("bad5", vec![line(&bank, 50, 0), line(&cash, 0, 50)])).is_err());
     assert!(post(cmd("bad6", vec![line(&recv, 50, 0), line(&pay, 0, 50)])).is_err());
 }
+
+#[test]
+fn a_cheque_payment_cannot_be_reversed_behind_the_registers_back() {
+    use sarv_quote::payments::{PaymentCommand, PaymentReversalInput};
+    let mut s = fixture();
+    let cheque = s.receive_cheque(details("1234567800000001"), pay(&s, "Z1", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let payment_id = s.cheques.events[0].payment_id.clone().unwrap();
+    // The generic payment reversal posts fine at the accounting level…
+    let mut sneaky = s.clone();
+    sneaky
+        .accounting
+        .post_payment_command(PaymentCommand::Reversal(PaymentReversalInput { context: ctx(&s, "Z2", "2026-03-26"), payment_id }))
+        .unwrap();
+    // …but the book is no longer valid: the cheque would still claim to be in hand.
+    assert!(sneaky.validate().is_err());
+    // Through the register it is the supported, status-consistent path.
+    s.reverse_cheque(&ctx(&s, "Z3", "2026-03-26"), &cheque, ChequeAct::Returned).unwrap();
+    assert_sound(&s, "returned via register");
+}
+
+#[test]
+fn law_data_action_lists_every_value_as_unreviewed() {
+    let dir = tempfile::tempdir().unwrap();
+    let mut store = Store::open(dir.path()).unwrap();
+    let out = dispatch_in(&mut store, "law_data", json!({})).unwrap();
+    assert!(out["notice_en"].as_str().unwrap().starts_with("Not yet reviewed"));
+    let entries = out["entries"].as_array().unwrap();
+    assert!(!entries.is_empty() && entries.iter().all(|e| e["reviewed"] == false));
+}

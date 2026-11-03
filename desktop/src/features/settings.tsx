@@ -30,7 +30,8 @@ import {
   TabsTrigger,
   TabsContent,
 } from "../components/ui/tabs";
-type Tab = "general" | "backups" | "agents" | "shortcuts";
+import { LawData } from "./law-data";
+type Tab = "general" | "backups" | "agents" | "law" | "shortcuts";
 
 function Options<T extends string>({
   id,
@@ -109,6 +110,7 @@ export function Settings({
             ["general", "General"],
             ["backups", "Backups"],
             ["agents", "Agents"],
+            ["law", "Law data"],
             ["shortcuts", "Keyboard shortcuts"],
           ] as [Tab, string][]
         ).map(([value, label]) => (
@@ -126,6 +128,10 @@ export function Settings({
           <SettingsPage>
             <ShortcutList />
           </SettingsPage>
+        </TabsContent>
+      ) : tab === "law" ? (
+        <TabsContent value="law">
+          <LawData />
         </TabsContent>
       ) : tab === "agents" ? (
         <TabsContent value="agents">

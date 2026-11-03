@@ -224,3 +224,25 @@ fn bounced_and_spent_and_issued_postings() {
     assert_eq!((n["Bank"], n["AccountsPayable"], n["NotesPayable"]), (-a, a, 0));
     let _ = Role::Bank;
 }
+
+#[test]
+fn legal_values_stay_unreviewed_and_gated_until_the_owner_signs_off() {
+    // Every value in this build is unreviewed; the gate refuses all of them, including the
+    // VAT rate whose own verify flag is clear (it still lacks owner sign-off).
+    let vat = law::standard_vat(date(2026, 11, 3)).unwrap();
+    let salary = law::salary_brackets(1405).unwrap();
+    assert!(!vat.reviewed && !salary.reviewed);
+    assert_eq!(law::require_reviewed(&vat), Err(law::NotReviewed));
+    assert_eq!(law::require_reviewed(&salary), Err(law::NotReviewed));
+    let mut signed = vat;
+    signed.reviewed = true;
+    assert_eq!(law::require_reviewed(&signed), Ok(()), "sign-off alone passes a value with no open verify flag");
+    let mut signed_but_open = salary;
+    signed_but_open.reviewed = true;
+    assert_eq!(law::require_reviewed(&signed_but_open), Err(law::NotReviewed), "an open verify flag still blocks");
+
+    let entries = law::entries();
+    assert!(entries.len() >= 3 && entries.iter().all(|e| !e.reviewed));
+    assert!(entries.iter().filter(|e| e.verify).count() >= 2);
+    assert!(law::NOT_REVIEWED_NOTICE_EN.starts_with("Not yet reviewed"));
+}
