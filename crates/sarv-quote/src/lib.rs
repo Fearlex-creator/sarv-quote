@@ -16,6 +16,7 @@ pub mod export;
 pub mod imports;
 pub mod money;
 pub mod service;
+pub mod statements;
 pub mod store;
 pub mod views;
 

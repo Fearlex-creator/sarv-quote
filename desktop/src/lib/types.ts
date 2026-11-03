@@ -382,7 +382,42 @@ export interface OpenItem {
   remaining: Integer;
   source_id: string;
 }
+export interface StatementRow {
+  account_id: string;
+  code: string;
+  name: string;
+  amount: Integer;
+}
+export interface BalanceSheet {
+  as_of: string;
+  assets: StatementRow[];
+  liabilities: StatementRow[];
+  equity: StatementRow[];
+  current_earnings: Integer;
+  total_assets: Integer;
+  total_liabilities: Integer;
+  total_equity: Integer;
+  balanced: boolean;
+}
+export interface AgingRow {
+  party_id: string;
+  not_due: Integer;
+  days_1_30: Integer;
+  days_31_60: Integer;
+  days_61_90: Integer;
+  days_over_90: Integer;
+  total: Integer;
+}
+export interface Aging {
+  side: "receivable" | "payable";
+  as_of: string;
+  rows: AgingRow[];
+  totals: AgingRow;
+}
 export interface Report {
+  /** Present once the company has confirmed opening balances. */
+  balance_sheet?: BalanceSheet | null;
+  aging?: { receivable: Aging; payable: Aging } | null;
   party_balances: Record<string, Integer>;
   company_id: string;
   from: string;

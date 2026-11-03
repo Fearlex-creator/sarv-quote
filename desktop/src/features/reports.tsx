@@ -30,6 +30,7 @@ interface LedgerRow {
   debit: string;
   credit: string;
 }
+import { AgingPanel, BalanceSheetPanel } from "../components/finance/statements";
 export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
   const t = useTranslation();
   const b = useBooks();
@@ -109,6 +110,8 @@ export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
         {[
           "Profit & Loss",
           "Trial balance",
+          "Balance sheet",
+          "Aging",
           "Customers & Suppliers",
           "Control reconciliation",
         ].map((x) => (
@@ -122,6 +125,8 @@ export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
           {
             "Profit & Loss": "How much you earned and spent in this period.",
             "Trial balance": "Every account's balance — debits equal credits.",
+            "Balance sheet": "What you own and owe at the cutoff date.",
+            Aging: "Open invoices and bills by how overdue they are.",
             "Customers & Suppliers": "Who owes you and who you owe.",
             "Control reconciliation": "Checks that the books and the detail agree.",
           }[tab] ?? ""
@@ -302,6 +307,10 @@ export function Reports({ onJournal }: { onJournal: (id: string) => void }) {
                     ]}
                   />
                 </>
+              ) : tab === "Balance sheet" ? (
+                <BalanceSheetPanel sheet={r.balance_sheet} />
+              ) : tab === "Aging" ? (
+                <AgingPanel aging={r.aging} />
               ) : tab === "Customers & Suppliers" ? (
                 <PartyBalances />
               ) : r.reconciliation ? (

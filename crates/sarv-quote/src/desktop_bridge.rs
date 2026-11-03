@@ -951,8 +951,20 @@ fn report(s: &State, p: &Value) -> Result<Value> {
             *entry = entry.checked_add(item.remaining)?;
         }
     }
+    // Statements need an opening to define the starting balances; without one they are absent.
+    let (balance_sheet, aging) = if reconciliation.is_some() {
+        (
+            Some(crate::statements::balance_sheet(&s.accounting, &c.id, to)?),
+            Some(json!({
+                "receivable": crate::statements::aging(&s.accounting, &c.id, PaymentSide::Receive, to)?,
+                "payable": crate::statements::aging(&s.accounting, &c.id, PaymentSide::Make, to)?,
+            })),
+        )
+    } else {
+        (None, None)
+    };
     Ok(
-        json!({"company_id":c.id,"from":from,"to":to,"trial":tb,"profit_loss":{"rows":rows,"revenue":revenue,"expenses":expense,"profit":revenue.checked_sub(expense)?},"position":{"cash":balance(CoreRole::Cash)?.checked_add(balance(CoreRole::Bank)?)?,"receivables":balance(CoreRole::Receivables)?,"payables":balance(CoreRole::Payables)?},"party_balances":party_balances,"reconciliation":reconciliation}),
+        json!({"company_id":c.id,"from":from,"to":to,"balance_sheet":balance_sheet,"aging":aging,"trial":tb,"profit_loss":{"rows":rows,"revenue":revenue,"expenses":expense,"profit":revenue.checked_sub(expense)?},"position":{"cash":balance(CoreRole::Cash)?.checked_add(balance(CoreRole::Bank)?)?,"receivables":balance(CoreRole::Receivables)?,"payables":balance(CoreRole::Payables)?},"party_balances":party_balances,"reconciliation":reconciliation}),
     )
 }
 fn workspace(s: &State, p: &Value) -> Result<Value> {
