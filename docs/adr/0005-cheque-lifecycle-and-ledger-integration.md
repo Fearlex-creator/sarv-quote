@@ -1,28 +1,42 @@
-# 0005 — Cheque lifecycle: pure state machine now, ledger integration after a design pass
+# 0005 — Cheque register wired into the ledger and audit replay
 
-**Status:** partially implemented · **Date:** 2026-11-03
+**Status:** implemented (owner approval 2026-11-03) · **Date:** 2026-11-03
 
-## Implemented
-`iran::cheque` is a pure state machine (`open`, `apply`) returning the next state and balanced posting
-lines by account *role*, exactly per spec §3.6. Tests cover every direction × state × action
-combination (nine legal transitions; all others rejected; all postings balanced) and lifecycle nets.
+## Decision (as built)
+`iran::cheque` stays the single source of truth for legal transitions and posting shapes. The register
+(`cheques.rs`) is an append-only log on `State` (`ChequeRegister { cheques, events }`) that owns no
+money: every ledger effect comes from an existing audited source, and the register links to it.
 
-## Not implemented, and why
-Wiring it into the ledger touches the audited core:
-1. `payments.rs` only accepts `funds_role ∈ {Cash, Bank}` (line ~384). Receiving a cheque as payment
-   needs `ChequesReceivable` / `ChequesPayable` as funds, with matching reversal and reconciliation.
-2. Clearing a cheque is a new journal-producing event. Every such module is part of the audit replay in
-   `accounting.rs` and the control-account reconciliation (`procurement_reconcile`); an unreviewed
-   event type could break integrity checks on existing data.
-3. There is no `ChequesInCollection` `CoreRole`. Adding one changes the frozen role mapping of every
-   existing company. Spec §3.6 calls the deposit step optional, so the proposed policy is: *in
-   collection* shares the `ChequesReceivable` account and **deposit posts no journal**.
-4. A bounced or returned received cheque must re-open the customer's invoice items, so it should be
-   the existing payment reversal, not a free-standing `Dr AR / Cr Notes` entry (that would break
-   subledger = control account).
+| Step | Ledger effect |
+| --- | --- |
+| Receive / issue | a payment whose funds are the cheques notes account (`payments.receive.v1` / `payments.make.v1`), so invoice open items settle exactly as for cash |
+| Deposit | status only (spec §3.6: the in-collection step is optional). No `ChequesInCollection` role was added |
+| Clear | new `banking.cheque_clear.v1` movement: received = Dr bank / Cr cheques receivable; issued = Dr cheques payable / Cr bank. Lines are built from the state machine |
+| Bounce / return / void | reversal of the originating payment, so the invoice or bill re-opens and the subledger stays equal to the control account |
+| Spend (endorse) | a supplier payment funded by cheques receivable |
 
-## Proposed design (needs review before coding)
-Append-only `ChequesState { records, requests }` like `PaymentsState`: instruments and status events,
-state derived by folding. Only two new journals (clear received, clear issued); everything else reuses
-payments. Schema bump 7 → 8 through the recovery-backup path. Use the `diagnosing-bugs`/`tdd` skills:
-write the failing integrity test first.
+Opening cheques can be registered and then deposited, cleared or spent; they cannot be bounced, returned
+or voided because they have no originating payment to reverse.
+
+## Changes to the audited core
+- `payments.rs`: funds may be cheques receivable (receive, endorse) or cheques payable (issue).
+- `procurement_reconcile`: the two notes roles now reconcile against opening + cheque payments + clearing
+  (the payable is credit-normal, so its deltas are flipped).
+- `accounting.rs`: one new `post_banking` event with its own shape checks (also enforced on replay).
+- `State::validate` re-derives every cheque's status from its events and proves each claimed journal or
+  payment exists with the right accounts, sides and amount; a payment relied on by a cheque can only be
+  reversed through the register. `Store` rejects any save that rewrites cheque history.
+- **No schema bump**: the new field is additive and skipped when empty, like the cashbook and profiles.
+  Existing data loads and validates unchanged. (ADR draft proposed 7 → 8; it was unnecessary.)
+
+## Proof
+`tests/cheques.rs` (14): every lifecycle path posts balanced entries, keeps the trial balance equal and all
+control accounts reconciled, passes the full replay and a serialise/reload round trip unchanged; the
+posted clearing entry equals what the state machine prescribes; refused steps change nothing; retries
+are idempotent; seven kinds of tampering are detected; the ledger itself rejects malformed clearing
+movements. The sign handling and the clearing-direction rule were mutation-checked. A browser test
+(`tests/cheques.spec.ts`) receives, deposits and clears a cheque through the Payments screen.
+
+## Not built
+Cheque books and leaf ranges, batch operations, the due-date calendar, the Sayad bank-API plugin,
+guarantee cheques (spec §5.8 items beyond the lifecycle).

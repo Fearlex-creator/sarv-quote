@@ -1,6 +1,6 @@
-# 0004 — Law as data, flagged `verify`, not wired into calculations
+# 0004 — Law as data, flagged `verify`, gated until reviewed
 
-**Status:** accepted · **Date:** 2026-11-03
+**Status:** accepted; review gate added on the owner's instruction (2026-11-03) · **Date:** 2026-11-03
 
 ## Context
 Spec principle 10: tax rates, salary-tax brackets and insurance rates are effective-dated data, not
@@ -22,3 +22,13 @@ resolved through the engine's own calendar. It returns `None` outside listed yea
 ## Consequences
 Nothing in the app calls `iran::law` yet. It must not be used for a real invoice, payslip or tax
 filing until a professional has reviewed the `verify` items (spec §9 "Open verify items").
+
+## Review gate (owner decision, 2026-11-03)
+Every `LawValue` also carries `reviewed: bool`, **false for all values** until the owner says a value is
+reviewed. `law::require_reviewed(&value)` passes only when `reviewed && !verify`; any code path that
+would use a legal value for a real invoice, payslip or filing must call it. A read-only **Settings → Law
+data** tab (`law_data` action) lists every value with "Not reviewed" and "Needs verification" badges and
+the notice in English and Persian; `LawNotice` is the component to show wherever a legal value appears.
+Tests pin that all values are unreviewed and that the gate blocks sign-off without clearing `verify`.
+To record a review: flip `reviewed` for that value in `crates/sarv-quote/src/iran/law.rs` (and clear
+`verify` once the source is confirmed) in a reviewed commit.

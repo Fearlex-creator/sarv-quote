@@ -1,28 +1,30 @@
 # Spec coverage
 
 How `ACCOUNTING-SPEC.md` and `FRONTEND-UI-GUIDE.md` map onto Sarv today. Written 2026-11-03 from a
-code survey, not from exercising every screen. **No checklist box in the two spec files is ticked:**
+code survey, updated after the second pass. **No checklist box in the two spec files is ticked:**
 the spec says to tick an item only when it is merged with passing tests *and fully matches the item
 as worded*, and no item meets that bar yet. Partial work is listed here instead.
 
 Legend: **Done** = implemented and tested · **Partial** = some of the item · **Present** = exists in
 Sarv in its own form · **Not started** · **Deferred** = decided not to do now (ADR).
 
-## Delivered in this pass (all tested)
+## Delivered (all tested)
 
 | Item | Where | Tests |
 | --- | --- | --- |
-| National ID, legal ID, postal code, Sayad ID shape, Sheba mod-97 + bank name | `crates/sarv-quote/src/iran/{ids,sheba}.rs` | `tests/iran.rs` |
-| Same validators in the UI, advisory hints on contact + business forms | `desktop/src/lib/iran-ids.ts`, `components/finance/*-fields.tsx` | `src/lib/iran-ids.test.ts` against the **same fixtures** as Rust |
-| Moadian Tax ID (6 + 5 hex date + 10 hex serial + Verhoeff) and Verhoeff | `iran/tax_id.rs` | published Verhoeff vectors, tamper detection on every position |
-| Effective-dated law data: VAT 10 % 1403–1405, salary tax 1405, insurance 7/20/3, payroll calc | `iran/law.rs` (**unwired**, `verify` flags, ADR-0004) | hand-calculated goldens |
-| Cheque lifecycle state machine with balanced postings (spec §3.6) | `iran/cheque.rs` (**not in ledger yet**, ADR-0005) | every direction × state × action |
-| Amount in Persian words, exact to 10^18, never via JS `number` | `desktop/src/lib/words-fa.ts`, shown under the invoice total (fa) | `words-fa.test.ts` incl. sign-loss regression |
-| Persian search normalisation (ي/ك, ZWNJ, digits, diacritics) in the command menu | `lib/normalize-fa.ts`, `lib/command-filter.ts` | `normalize-fa.test.ts` |
-| Fast incremental desktop builds (`--profile fast`, 6 s vs 97 s) and one frontend build per release | `desktop/src-tauri/Cargo.toml`, `tauri.conf.json`, `package.json` | measured |
-| Save-latency probes | `crates/sarv-quote/examples/write_{latency,breakdown}.rs` | ADR-0007 |
+| Iranian ID validators (national, legal, postal, Sayad shape, Sheba mod-97 + bank name), advisory in the UI | `iran/{ids,sheba}.rs`, `desktop/src/lib/iran-ids.ts` | shared fixtures asserted by Rust and Node |
+| Moadian Tax ID (6 + 5 hex date + 10 hex serial + Verhoeff) | `iran/tax_id.rs` | published Verhoeff vectors, tamper detection |
+| Effective-dated law data with `verify` **and** an owner `reviewed` gate (all unreviewed); visible Settings → Law data tab | `iran/law.rs`, `features/law-data.tsx` (ADR-0004) | hand-calculated goldens, gate tests, browser test |
+| **Cheque register in the ledger**: receive, issue, deposit, clear, bounce, return, void, endorse, opening cheques | `cheques.rs`, `payments.rs`, `procurement.rs`, `accounting.rs`, Payments screen (ADR-0005) | 14 Rust tests + browser test |
+| **Incremental validation on save** with full validation at open, restore, backup, period close and a background check after imports (ADR-0007) | `domain.rs`, `store.rs`, `desktop_bridge.rs`, Overview `IntegrityNotice` | 7 agreement/safety-net tests, mutation-checked |
+| **Balance sheet** and **receivable/payable aging** (read-only) | `statements.rs`, Reports tabs | 6 hand-calculated tests + browser test |
+| Amount in Persian words under the invoice total; Persian search normalisation in the command menu | `lib/words-fa.ts`, `lib/normalize-fa.ts`, `lib/command-filter.ts` | 14 unit tests |
+| Fast desktop builds (`--profile fast`, 6 s vs 97 s); one frontend build per release | `desktop/src-tauri/Cargo.toml`, scripts | measured |
+| E2E harness that works out of the box (`pnpm --dir desktop test`) | `playwright.config.ts` | 25 of 25 pass |
+| Licence AGPL-3.0-only for the core (ADR-0006) | `LICENSE`, `Cargo.toml` | — |
 
-Run: `cargo test -p sarv-quote` (235 pass) · `pnpm --dir desktop run check` · `pnpm --dir desktop run test:unit` (14 pass).
+Run: `cargo test -p sarv-quote` (264 pass; 307 with `--features pdf-export`) · `pnpm --dir desktop run check` ·
+`run test:unit` (14) · `run lint` · `run test` (25 browser tests).
 
 ## Accounting spec
 
@@ -33,7 +35,7 @@ Run: `cargo test -p sarv-quote` (235 pass) · `pnpm --dir desktop run check` · 
 | 3.3 | VAT, effective-dated tax codes | **Partial**: rate data in `iran::law`; engine uses a per-quote basis-points setting |
 | 3.4 | Moadian e-invoicing | **Partial**: Tax ID only. No tax-invoice aggregate, outbox, provider, wizards |
 | 3.5 | Seasonal (TTMS) report | Not started |
-| 3.6 | Sayad cheques | **Partial**: state machine + ID shape. Opening cheques exist in the ledger. No register/lifecycle (ADR-0005) |
+| 3.6 | Sayad cheques | **Done for the lifecycle**: register, every transition posts balanced entries, replays identically (ADR-0005). Not built: cheque books/leaf ranges, batch actions, due calendar, bank-API plugin, guarantee cheques |
 | 3.7 | Payroll, insurance, salary tax | **Partial**: calculator only. No employees, runs, DISK `.dbf`, payslips |
 | 3.8 | ID validation | **Partial**: validators done; economic code not; advisory only (ADR-0003). Withholding, multi-rate FX not started |
 | 4.1–4.3 | 26-crate workspace, axum/sqlx/Postgres, specta | **Deferred** (ADR-0002) |
@@ -42,9 +44,9 @@ Run: `cargo test -p sarv-quote` (235 pass) · `pnpm --dir desktop run check` · 
 | 4.6–4.7 | HTTP API, roles, 2FA | Not started. Local agent access (MCP/CLI) exists |
 | 5.4–5.6 | Sales, purchases, inventory | **Present**: quotations/drafts, sales, returns, orders, bills, goods receipt, moving-average stock, transfers, partial billing. FIFO, batches/serials, multi-UoM not started |
 | 5.7 | Treasury, reconciliation | **Partial**: cash/bank/transfers/ledger-vs-statement review. Statement import with bank mappers not started |
-| 5.8–5.9 | Cheques, tax | see §3.4, §3.6 |
+| 5.8–5.9 | Cheques, tax | cheques: see §3.6. Tax: see §3.3–3.5 |
 | 5.10–5.17 | Payroll, assets, FX, projects, manufacturing, POS, budgets, consolidation | Not started (single currency) |
-| 5.18 | Reports | **Partial**: trial balance, profit & loss, position, party balances, control reconciliation, CSV. Balance sheet, cash flow, aging buckets, drill-down chain not verified/started |
+| 5.18 | Reports | **Partial**: trial balance, profit & loss, **balance sheet, AR/AP aging**, position, party balances, control reconciliation, CSV. Cash flow, drill-down chain, saved views, scheduled reports not started |
 | 5.19–5.20 | Approvals, OCR, AI | Not started (an AI-suggest component exists in the UI) |
 | 5.21 | Import / export | **Partial**: opening-balance CSV, JSON backup + restore preview, CSV/PDF export. Hesabfa/Sepidar/Holoo importers, ledger-text export not started |
 | 5.23 | Audit, backup | **Present**: audit events, rolling backups, restore preview, integrity checks |
@@ -65,9 +67,12 @@ Run: `cargo test -p sarv-quote` (235 pass) · `pnpm --dir desktop run check` · 
 | 11–12 | Offline/sync UX, accessibility, shortcuts | Shortcuts partial; sync UX not started; axe checks not set up |
 | 14 | Checklist | 0 of 81 ticked; see above for partial work |
 
-## Needs your decision before the next slice
-1. **Cheque register in the ledger** (ADR-0005): approve the proposed design, then it is built test-first.
-2. **Incremental validation** for save speed (ADR-0007).
-3. **Statutory values**: someone qualified must review every `verify = true` value and the spec's §9
-   "Open verify items" before any real invoice, payslip or filing relies on them.
-4. **Licence** (ADR-0006) and whether "Daftar" or "Sarv" is the long-term name (ADR-0001).
+## Open items and next slices
+1. **Statutory values**: someone qualified must review every `verify = true` value and the spec's §9 "Open verify
+   items", then the owner flips `reviewed` (ADR-0004). Until then nothing may feed a real invoice, payslip or filing.
+2. **Tafsili levels and dimensions** (spec §3.2): the largest structural gap and the foundation for most
+   Iranian reports. Needs its own design pass (it touches the chart, journal lines and the audited replay).
+3. **Accounting-heavy save cost** (ADR-0007 "Known limit"): the fast path still re-validates the whole accounting
+   group on an accounting write; validating only appended audit events needs replay-state caching.
+4. **Cheque extras**: cheque books, batch actions, due-date calendar, dashboard card.
+5. **Moadian tax-invoice aggregate** (outbox, provider adapters, wizards) and payroll runs, which build on `iran::*`.
