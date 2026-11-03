@@ -26,7 +26,10 @@ export default defineConfig({
     {
       // Real Rust accounting adapter, seeded with the synthetic fixture, on a fresh profile.
       // Build it first: `pnpm run build:qa` (the `test` script does).
-      command: `rm -rf "${qaProfile}" && mkdir -p "${qaProfile}" && exec ../target/debug/examples/desktop_qa`,
+      // Run from the repository root: the agent service finds `target/release/sarv-agent` relative
+      // to the working directory, exactly like the adapters the specs spawn themselves.
+      command: `rm -rf "${qaProfile}" && mkdir -p "${qaProfile}" && exec target/debug/examples/desktop_qa`,
+      cwd: "..",
       port: 1421,
       reuseExistingServer: false,
       env: {

@@ -86,6 +86,9 @@ test("minimal settings grants local CLI and MCP access and revokes it", async ({
   await page
     .getByRole("button", { name: "Refresh books", exact: true })
     .click();
+  // The sidebar starts collapsed and hides the organization switcher; open it to read the list.
+  const expand = page.getByRole("button", { name: "Expand sidebar", exact: true });
+  if (await expand.isVisible()) await expand.click();
   await expect(
     page.getByLabel("Organization").getByRole("option", { name, exact: true }),
   ).toHaveCount(1);
