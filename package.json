@@ -13,7 +13,7 @@
     "lint": "pnpm --dir desktop run lint",
     "typecheck": "pnpm --dir desktop run check",
     "test:core": "cargo test -p sarv-quote",
-    "desktop:build": "pnpm --dir desktop exec tauri build",
+    "desktop:build": "pnpm --dir desktop run build:agent && pnpm --dir desktop exec tauri build",
     "test:desktop": "pnpm --dir desktop test",
     "preview:dev": "pnpm --dir desktop run dev",
     "test:pdf": "cargo test -p sarv-quote --features pdf-export"

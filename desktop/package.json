@@ -6,12 +6,14 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
-    "check": "tsc -b",
+    "check": "tsc -b && tsc -p tsconfig.test.json",
     "lint": "eslint .",
     "test": "playwright test",
     "tauri": "tauri",
-    "build:desktop": "pnpm run build && cargo build --manifest-path ../Cargo.toml --release --no-default-features --bin sarv-agent",
-    "dev:desktop": "cargo build --manifest-path ../Cargo.toml --no-default-features --bin sarv-agent && pnpm exec vite --host 0.0.0.0"
+    "build:agent": "cargo build --manifest-path ../Cargo.toml --release --no-default-features --bin sarv-agent",
+    "build:desktop": "pnpm run build && pnpm run build:agent",
+    "dev:desktop": "cargo build --manifest-path ../Cargo.toml --no-default-features --bin sarv-agent && pnpm exec vite --host 0.0.0.0",
+    "test:unit": "node --test src/lib/*.test.ts"
   },
   "dependencies": {
     "@daypicker/persian": "^10.0.2",

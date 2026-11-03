@@ -223,7 +223,8 @@ impl Store {
         );
         candidate.validate()?;
         let payload = serde_json::to_string(&candidate)?;
-        if payload == serde_json::to_string(&self.state)? {
+        let base_payload = serde_json::to_string(&self.state)?;
+        if payload == base_payload {
             self.ensure_current()?;
             return Ok(result);
         }
@@ -247,7 +248,15 @@ impl Store {
             persisted_generation == self.generation,
             "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
         );
-        let persisted: State = serde_json::from_str(&persisted_payload)?;
+        // Byte-identical JSON is the same state: skip a full re-parse on the
+        // common path and only parse when the row differs from our snapshot.
+        let reparsed;
+        let persisted: &State = if persisted_payload == base_payload {
+            &self.state
+        } else {
+            reparsed = serde_json::from_str::<State>(&persisted_payload)?;
+            &reparsed
+        };
         persisted.desktop.validate_transition(&candidate.desktop)?;
         persisted
             .accounting

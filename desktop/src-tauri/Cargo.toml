@@ -12,3 +12,12 @@ tauri = { version = "2", features = [] }
 tauri-plugin-dialog = "2"
 serde_json = "1"
 sarv-quote = { path = "../../crates/sarv-quote", default-features = false, features = ["pdf-export"] }
+
+# Shipping build: `cargo build --release`.
+# Day-to-day build: `cargo build --profile fast` (incremental, many codegen units).
+[profile.fast]
+inherits = "release"
+incremental = true
+codegen-units = 256
+opt-level = 1
+debug = 0
