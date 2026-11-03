@@ -8,7 +8,7 @@ use crate::{
     procurement::*,
     sales::*,
     sales_draft::RawSalesDraft,
-    store::Store,
+    store::{IntegrityStatus, Store},
 };
 use anyhow::{Result, anyhow, ensure};
 use serde_json::{Value, json};
@@ -1153,7 +1153,14 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 json!({"restored": true, "safety_backup": safety.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default()})
             }
         }
-        "workspace" => workspace(&store.state, &p)?,
+        "workspace" => {
+            let mut w = workspace(&store.state, &p)?;
+            if let Some(o) = w.as_object_mut() {
+                o.insert("integrity".into(), json!(store.integrity()));
+            }
+            w
+        }
+        "integrity" => json!(store.integrity()),
         "report" => report(&store.state, &p)?,
         "contact_detail" => contacts_banking::contact_detail(&store.state, &p)?,
         "banking" => contacts_banking::banking(&store.state, &p)?,
@@ -1227,7 +1234,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 "Zero balances require explicit confirmation"
             );
             let cmd = opening_zero(&store.state, &p)?;
-            json!(store.change(|s| s.accounting.post_opening(cmd))?)
+            let out = store.change(|s| s.accounting.post_opening(cmd))?;
+            store.start_background_check();
+            json!(out)
         }
         "opening_csv_preview" | "opening_csv_post" => {
             let cmd = crate::core_import::opening_csv(
@@ -1240,7 +1249,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             if action.ends_with("preview") {
                 json!(store.state.accounting.opening_preview(&cmd)?)
             } else {
-                json!(store.change(|s| s.accounting.post_opening(cmd))?)
+                let out = store.change(|s| s.accounting.post_opening(cmd))?;
+                store.start_background_check();
+                json!(out)
             }
         }
         "resource" => {
@@ -1532,13 +1543,23 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                     .any(|x| x.id == p["period_id"] && x.company_id == p["company_id"]),
                 "Wrong company period"
             );
+            let closing = p["locked"] == true;
+            if closing && let IntegrityStatus::Failed { message, .. } = store.integrity() {
+                anyhow::bail!("Integrity check failed; the period cannot be closed: {message}");
+            }
             store.change(|s| {
                 s.accounting.set_period_lock(
                     string(&p, "period_id")?,
-                    p["locked"] == true,
+                    closing,
                     actor(&p),
                     string(&p, "reason")?,
-                )
+                )?;
+                // Closing a period is a safety point: prove the whole book is consistent with
+                // the full validator, not only the parts this save touched.
+                if closing {
+                    s.validate()?;
+                }
+                Ok(())
             })?;
             json!(true)
         }

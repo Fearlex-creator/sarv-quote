@@ -493,7 +493,7 @@ pub fn line_total(price: i64, qty: i64) -> Result<i64> {
     ensure!(n <= i128::from(MAX_MONEY), "سرریز جمع ردیف");
     Ok(n as i64)
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Product {
     pub code: String,
     pub name: String,
@@ -503,7 +503,7 @@ pub struct Product {
     pub source_at: String,
     pub aliases: Vec<String>,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Catalog {
     pub id: String,
     pub name: String,
@@ -725,13 +725,13 @@ pub fn customer_details(contact: &str, email: &str, address: &str) -> Result<()>
     );
     Ok(())
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct OrderLine {
     pub query: String,
     pub quantity_milli: i64,
     pub chosen_code: Option<String>,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Draft {
     pub series: String,
     pub catalog_id: String,
@@ -807,7 +807,7 @@ impl Default for Draft {
         }
     }
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct QuoteLine {
     pub query: String,
     pub code: String,
@@ -819,7 +819,7 @@ pub struct QuoteLine {
     pub source_at: String,
     pub source_unit: Unit,
 }
-#[derive(Clone, Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize, PartialEq)]
 pub struct Quote {
     pub id: String,
     pub series: String,
@@ -1413,7 +1413,50 @@ impl State {
         };
         Ok(())
     }
+    /// Full validation of every invariant. Used on open, restore, import, backup and
+    /// period close; `validate_changes` is the fast path for ordinary saves.
     pub fn validate(&self) -> Result<()> {
+        self.validate_accounting_group()?;
+        self.validate_approved_quotation_data()?;
+        self.validate_draft()
+    }
+    /// Same verdict as `validate()` for a state that differs from an already fully
+    /// validated `base`, doing only the work whose inputs changed. Each part is a pure
+    /// function of the fields compared below (see ADR-0007):
+    /// - accounting group: accounting, profiles, desktop, settings, schema, sales drafts
+    ///   and quotes (sales orders link to approved quotes); below schema 3 it also reads
+    ///   the draft, so it always runs there;
+    /// - approved quotation data: catalogs, customers, quotes;
+    /// - draft: draft, customers, catalogs.
+    pub fn validate_changes(&self, base: &State) -> Result<()> {
+        let accounting_changed = self.schema < 3
+            || self.schema != base.schema
+            || self.accounting != base.accounting
+            || self.product_profiles != base.product_profiles
+            || self.party_profiles != base.party_profiles
+            || self.business_profiles != base.business_profiles
+            || self.desktop != base.desktop
+            || self.settings != base.settings
+            || self.sales_drafts != base.sales_drafts
+            || self.quotes != base.quotes;
+        let quotation_changed = self.catalogs != base.catalogs
+            || self.customers != base.customers
+            || self.quotes != base.quotes;
+        let draft_changed = self.draft != base.draft
+            || self.customers != base.customers
+            || self.catalogs != base.catalogs;
+        if accounting_changed {
+            self.validate_accounting_group()?;
+        }
+        if quotation_changed {
+            self.validate_approved_quotation_data()?;
+        }
+        if draft_changed {
+            self.validate_draft()?;
+        }
+        Ok(())
+    }
+    fn validate_accounting_group(&self) -> Result<()> {
         for (item_id, profile) in &self.product_profiles {
             profile.validate()?;
             let resources=self.accounting.procurement_resources(&profile.company_id)?;
@@ -1473,6 +1516,9 @@ impl State {
         );
         self.validate_sales_drafts_and_links()?;
         self.accounting.validate()?;
+        Ok(())
+    }
+    fn validate_approved_quotation_data(&self) -> Result<()> {
         ensure!(
             self.catalogs.len() <= 1000
                 && self.customers.len() <= 100_000
@@ -1649,6 +1695,9 @@ impl State {
                 "مبالغ یا منبع پیش‌فاکتور ناسازگار است"
             );
         }
+        Ok(())
+    }
+    fn validate_draft(&self) -> Result<()> {
         Uuid::parse_str(&self.draft.series)?;
         customer_details(
             &self.draft.customer_contact,

@@ -9,6 +9,7 @@ use std::{
     fs::{self, OpenOptions},
     io::{Read, Write},
     path::{Path, PathBuf},
+    sync::{Arc, Mutex},
     time::Duration,
 };
 const MAX_BACKUP: u64 = 64 * 1024 * 1024;
@@ -53,12 +54,24 @@ impl Write for BackupSize {
         Ok(())
     }
 }
+/// Result of the full-validation safety net that runs in the background after an import.
+/// Ordinary saves validate only what changed (`State::validate_changes`); this proves the
+/// whole book still agrees. A `Failed` status is shown to the user and blocks period close.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "status", rename_all = "snake_case")]
+pub enum IntegrityStatus {
+    Unchecked,
+    Running { generation: i64 },
+    Ok { generation: i64 },
+    Failed { generation: i64, message: String },
+}
 pub struct Store {
     conn: Connection,
     pub state: State,
     generation: i64,
     write_pending: bool,
     pub directory: PathBuf,
+    integrity: Arc<Mutex<IntegrityStatus>>,
 }
 /// An immutable, owned candidate validated and serialized off the GTK thread.
 /// Private fields prevent changing either its data or generation after preparation.
@@ -211,6 +224,7 @@ impl Store {
             generation,
             write_pending: false,
             directory: directory.to_path_buf(),
+            integrity: Arc::new(Mutex::new(IntegrityStatus::Unchecked)),
         })
     }
     pub fn change<T>(&mut self, f: impl FnOnce(&mut State) -> Result<T>) -> Result<T> {
@@ -221,7 +235,9 @@ impl Store {
             candidate.schema == CURRENT_SCHEMA,
             "کاهش نسخهٔ داده مجاز نیست؛ از مسیر بازیابی استفاده کنید"
         );
-        candidate.validate()?;
+        // `self.state` was fully validated when it was opened, restored or last committed,
+        // so only the parts whose inputs changed need re-checking (ADR-0007).
+        candidate.validate_changes(&self.state)?;
         let payload = serde_json::to_string(&candidate)?;
         let base_payload = serde_json::to_string(&self.state)?;
         if payload == base_payload {
@@ -370,7 +386,41 @@ impl Store {
             |row| Ok((row.get(0)?, row.get(1)?)),
         )?;
         self.check_generation(generation)?;
-        backup_state(&serde_json::from_str::<State>(&payload)?, path)
+        let state = serde_json::from_str::<State>(&payload)?;
+        // A backup is the user's recovery path: never write one from data that fails the
+        // full check, even if every incremental save passed.
+        state.validate()?;
+        backup_state(&state, path)
+    }
+    /// Full validation of the committed book, for period close and other safety points.
+    pub fn validate_full(&self) -> Result<()> {
+        self.state.validate()
+    }
+    pub fn integrity(&self) -> IntegrityStatus {
+        self.integrity
+            .lock()
+            .map(|s| s.clone())
+            .unwrap_or(IntegrityStatus::Unchecked)
+    }
+    /// Validate a copy of the current book in the background and record the verdict.
+    /// Call after an import. Never blocks the caller; a newer check supersedes an older one.
+    pub fn start_background_check(&self) {
+        let (generation, state) = (self.generation, self.state.clone());
+        let slot = Arc::clone(&self.integrity);
+        if let Ok(mut s) = slot.lock() {
+            *s = IntegrityStatus::Running { generation };
+        }
+        std::thread::spawn(move || {
+            let verdict = match state.validate() {
+                Ok(()) => IntegrityStatus::Ok { generation },
+                Err(e) => IntegrityStatus::Failed { generation, message: e.to_string() },
+            };
+            if let Ok(mut s) = slot.lock()
+                && matches!(*s, IntegrityStatus::Running { generation: g } if g == generation)
+            {
+                *s = verdict;
+            }
+        });
     }
     fn check_generation(&self, generation: i64) -> Result<()> {
         ensure!(
