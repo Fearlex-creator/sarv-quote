@@ -35,7 +35,9 @@ Still not built, and not claimed: statutory filing, payroll runs, fixed assets, 
 manufacturing, budgets, consolidation, full tafsili levels, multi-shop, and a Windows or macOS
 signed installer. The version under test is `0.2.0-rc.1`, which is not the published `v0.1.0` release.
 
-## Delivered (all tested)
+## Earlier items with tests
+
+This table is not the 81 frontend boxes or the 156 accounting boxes. Those stay unticked. The full specification is not complete. The optional journal dimension is not a tafsili chart. There is no automated legal filing.
 
 | Item | Where | Tests |
 | --- | --- | --- |

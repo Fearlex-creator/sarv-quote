@@ -1,5 +1,7 @@
 # Retail guide
 
+This page is the shop lock, Excel workbooks, and the till. It is not the full accounting specification. An optional journal dimension is a line tag, not a kol/moein/tafsili chart. Sarv does not submit tax filings.
+
 Amounts in Excel and in the engine are rials. If the display unit is toman, the screen labels it as toman (10 rials).
 
 ## Lock the shop
