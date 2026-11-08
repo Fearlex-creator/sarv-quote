@@ -1,0 +1,103 @@
+name: Release (Windows)
+
+# Builds a portable Windows zip (Sarv.exe, sarv-agent.exe and the GTK/WebView2
+# DLLs PDF export needs) and attaches it to a GitHub release.
+# Run it by pushing a `v*` tag, or by hand from the Actions tab.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create or update (e.g. v0.1.0)"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      # cairo/pango/fontconfig come from MSYS2's MINGW64 environment (msvcrt, the
+      # same C runtime as Rust's x86_64-pc-windows-gnu target).
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          path-type: inherit
+          install: >-
+            zip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-cairo
+            mingw-w64-x86_64-pango
+            mingw-w64-x86_64-fontconfig
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-harfbuzz
+
+      - name: Rust (GNU toolchain)
+        run: |
+          rustup toolchain install stable-x86_64-pc-windows-gnu --profile minimal
+          rustup default stable-x86_64-pc-windows-gnu
+          rustc --version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+            desktop/src-tauri/target
+          key: windows-gnu-${{ hashFiles('Cargo.lock', 'desktop/src-tauri/Cargo.lock') }}
+
+      - name: Install JS dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir desktop install --frozen-lockfile
+
+      - name: Build agent and desktop app
+        run: |
+          pnpm --dir desktop run build:agent
+          pnpm --dir desktop exec tauri build --no-bundle
+
+      - name: Collect portable folder
+        run: |
+          set -euo pipefail
+          out="Sarv-${TAG}-windows-x64"
+          mkdir -p "$out"
+          cp desktop/src-tauri/target/release/sarv-desktop.exe "$out/Sarv.exe"
+          cp target/release/sarv-agent.exe "$out/"
+          # The GNU WebView2 build loads WebView2Loader.dll at runtime.
+          find desktop/src-tauri/target/release -name WebView2Loader.dll -path '*x64*' | head -n1 | xargs -I{} cp {} "$out/"
+          # Every MSYS2 DLL the binaries pull in (cairo, pango, glib, ...).
+          ldd "$out/Sarv.exe" "$out/sarv-agent.exe" \
+            | awk '/\/mingw64\// {print $3}' | sort -u \
+            | xargs -I{} cp {} "$out/"
+          cp LICENSE "$out/"
+          ls -l "$out"
+          zip -r "$out.zip" "$out"
+          echo "ASSET=$out.zip" >> "$GITHUB_ENV"
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$ASSET" --clobber
+          else
+            gh release create "$TAG" "$ASSET" --title "Sarv $TAG" --prerelease --target "$GITHUB_SHA" \
+              --notes "Portable Windows build. Unzip anywhere and run Sarv.exe (needs the Microsoft Edge WebView2 runtime, preinstalled on Windows 10/11)."
+          fi

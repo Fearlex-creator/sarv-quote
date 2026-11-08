@@ -359,83 +359,14 @@ fn human_line(row: &Row, prefs: Preferences) -> String {
     }
     line
 }
-// A fresh Pango/Fontconfig map confines the bundled fonts to this PDF operation.
-// The private files stay alive through lazy shaping and PDF font embedding.
-#[link(name = "fontconfig")]
-unsafe extern "C" {
-    fn FcConfigCreate() -> *mut std::ffi::c_void;
-    fn FcConfigParseAndLoad(config: *mut std::ffi::c_void, file: *const u8, complain: i32) -> i32;
-    fn FcConfigAppFontAddFile(config: *mut std::ffi::c_void, file: *const u8) -> i32;
-    fn FcConfigDestroy(config: *mut std::ffi::c_void);
-}
-#[link(name = "pangoft2-1.0")]
-unsafe extern "C" {
-    fn pango_fc_font_map_set_config(map: *mut std::ffi::c_void, config: *mut std::ffi::c_void);
-}
-struct PdfFonts(std::path::PathBuf);
-impl Drop for PdfFonts {
-    fn drop(&mut self) {
-        let _ = std::fs::remove_dir_all(&self.0);
-    }
-}
-fn pdf_fonts(map: &pango::FontMap) -> Result<PdfFonts> {
-    use pango::glib::translate::ToGlibPtr;
-    use std::{ffi::CString, os::unix::fs::DirBuilderExt};
-    let dir = std::env::temp_dir().join(format!("sarv-sales-pdf-fonts-{}", crate::domain::id()));
-    std::fs::DirBuilder::new().mode(0o700).create(&dir)?;
-    let guard = PdfFonts(dir);
-    let fonts: &[(&str, &[u8])] = &[
-        (
-            "Vazirmatn-Regular.ttf",
-            include_bytes!("../assets/fonts/Vazirmatn-Regular.ttf"),
-        ),
-        (
-            "Vazirmatn-Bold.ttf",
-            include_bytes!("../assets/fonts/Vazirmatn-Bold.ttf"),
-        ),
-    ];
-    for &(name, bytes) in fonts {
-        write_new(&guard.0.join(name), bytes)?;
-    }
-    write_new(
-        &guard.0.join("OFL.txt"),
-        include_bytes!("../assets/fonts/OFL.txt"),
-    )?;
-    // Fontconfig owns the config; Pango takes its own reference when assigned.
-    let config = unsafe { FcConfigCreate() };
-    ensure!(!config.is_null(), "پیکربندی قلم PDF در دسترس نیست");
-    let result = (|| -> Result<()> {
-        ensure!(
-            unsafe { FcConfigParseAndLoad(config, std::ptr::null(), 1) } != 0,
-            "خواندن پیکربندی قلم PDF به پایان نرسید"
-        );
-        for &(name, _) in fonts {
-            let path = CString::new(guard.0.join(name).as_os_str().as_encoded_bytes())?;
-            ensure!(
-                unsafe { FcConfigAppFontAddFile(config, path.as_ptr().cast()) } != 0,
-                "ثبت قلم PDF به پایان نرسید"
-            );
-        }
-        unsafe {
-            let pointer: *mut pango::ffi::PangoFontMap = map.to_glib_none().0;
-            pango_fc_font_map_set_config(pointer.cast(), config);
-        }
-        Ok(())
-    })();
-    unsafe {
-        FcConfigDestroy(config);
-    }
-    result?;
-    Ok(guard)
-}
 fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
     let displayed = date(&report.as_of, prefs.dates)?;
     let jalali = date(&report.as_of, DateDisplay::Jalali)
         .unwrap_or_else(|_| "خارج از دامنهٔ شمسی؛ میلادی معتبر است".into());
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
-    let map = pangocairo::FontMap::new();
-    let _fonts = pdf_fonts(&map)?;
+    let map = crate::pdf_fonts::font_map();
+    let _fonts = crate::pdf_fonts::private(&map, "sales")?;
     let heading = |page: usize| -> Result<f64> {
         cr.set_source_rgb(0.08, 0.12, 0.16);
         let mut y = 32.0;

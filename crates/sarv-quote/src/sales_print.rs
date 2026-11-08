@@ -50,8 +50,8 @@ pub fn printable_document_pdf(state: &State, company_id: &str, document_id: &str
     let money = |value: Money| ltr(&prefs.digits.format(value.display(prefs.unit)));
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
-    let map = pangocairo::FontMap::new();
-    let _fonts = pdf_fonts(&map)?;
+    let map = crate::pdf_fonts::font_map();
+    let _fonts = crate::pdf_fonts::private(&map, "sales")?;
     let widths = [24.0, 174.0, 65.0, 85.0, 80.0, 95.0];
     let x_for = |index: usize| -> f64 { if rtl { 559.0 - widths[..=index].iter().sum::<f64>() } else { 36.0 + widths[..index].iter().sum::<f64>() } };
     let draw = |text: &str, y: f64, size: u32, bold: bool| -> Result<f64> { paint(&cr, &text_layout(&map, &cr, text, 523.0, size, bold, rtl), 36.0, y) };
@@ -180,8 +180,8 @@ pub fn printable_quotation_pdf(state: &State, company_id: &str, draft_id: &str, 
     total = total.checked_sub(document_discount)?;
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
-    let map = pangocairo::FontMap::new();
-    let _fonts = pdf_fonts(&map)?;
+    let map = crate::pdf_fonts::font_map();
+    let _fonts = crate::pdf_fonts::private(&map, "sales")?;
     let widths = [24.0, 174.0, 65.0, 85.0, 80.0, 95.0];
     let x_for = |index: usize| -> f64 { if rtl { 559.0 - widths[..=index].iter().sum::<f64>() } else { 36.0 + widths[..index].iter().sum::<f64>() } };
     let draw = |text: &str, y: f64, size: u32, bold: bool| -> Result<f64> { paint(&cr, &text_layout(&map, &cr, text, 523.0, size, bold, rtl), 36.0, y) };

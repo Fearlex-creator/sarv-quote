@@ -29,6 +29,8 @@ pub mod sales_draft;
 pub mod payments;
 
 #[cfg(feature = "pdf-export")]
+pub mod pdf_fonts;
+#[cfg(feature = "pdf-export")]
 pub mod sales_export;
 
 pub use money::Money;
