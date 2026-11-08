@@ -930,13 +930,17 @@ fn ordinary_sales_adjustments_have_journal_lineage_separate_from_typed_invoice_t
                     debit: money(7),
                     credit: Money::ZERO,
                     description: "ordinary expense adjustment".into(),
-                },
+                
+                    dimension: String::new(),
+},
                 JournalLineInput {
                     account_id: sales,
                     debit: Money::ZERO,
                     credit: money(7),
                     description: "ordinary sales adjustment".into(),
-                },
+                
+                    dimension: String::new(),
+},
             ],
         })
         .unwrap();

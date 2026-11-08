@@ -3127,7 +3127,7 @@ dependencies = [
 
 [[package]]
 name = "sarv-desktop"
-version = "0.1.0"
+version = "0.2.0-rc.1"
 dependencies = [
  "sarv-quote",
  "serde_json",
@@ -3138,7 +3138,7 @@ dependencies = [
 
 [[package]]
 name = "sarv-quote"
-version = "0.1.0"
+version = "0.2.0-rc.1"
 dependencies = [
  "anyhow",
  "argon2",

@@ -1,11 +1,16 @@
 name: Windows build
 
-# Builds the portable Windows folder for this branch and uploads it as a
-# workflow artifact. It does not create a tag and it does not publish a GitHub
-# release. The release workflow remains release-windows.yml, which runs on a
-# v* tag or a manual dispatch that names a tag.
+# Builds the portable Windows folder and uploads it as a workflow artifact.
+# A push of this branch, and a pull request into main, both run the build.
+# It does not create a tag, publish a release, or use pull_request_target.
+# release-windows.yml remains the workflow that publishes on a v* tag.
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - cursor/retail-excel-pos-8dc2
+  pull_request:
+    branches:
+      - main
 
 permissions:
   contents: read

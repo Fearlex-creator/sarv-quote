@@ -269,10 +269,20 @@ fn backup_actions_create_list_preview_restore_with_safety_copy() {
     );
     assert_eq!(preview["backup"]["payments"], "1");
     assert_eq!(preview["current"]["payments"], "2");
+    let boot = call(
+        d.path(),
+        "auth_bootstrap",
+        json!({"name": "Owner", "password": "trust-shop-pass"}),
+    );
     let restored = call(
         d.path(),
         "backup_restore",
-        json!({"filename":name,"confirmed":true,"expected_generation":preview["_generation"]}),
+        json!({
+            "filename": name,
+            "confirmed": true,
+            "expected_generation": preview["_generation"],
+            "session_token": boot["session_token"]
+        }),
     );
     assert_eq!(restored["restored"], true);
     assert!(restored["safety_backup"]
@@ -287,7 +297,7 @@ fn backup_actions_create_list_preview_restore_with_safety_copy() {
     let back = call(
         d.path(),
         "backup_restore_preview",
-        json!({"filename":name}),
+        json!({"filename": name, "session_token": boot["session_token"]}),
     );
     assert_eq!(back["backup"]["payments"], "1");
     let _ = safety;

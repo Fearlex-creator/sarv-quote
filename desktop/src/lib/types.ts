@@ -47,6 +47,7 @@ export interface JournalLine {
   debit: Integer;
   credit: Integer;
   description: string;
+  dimension?: string;
 }
 export interface Journal {
   total_debit: Integer;

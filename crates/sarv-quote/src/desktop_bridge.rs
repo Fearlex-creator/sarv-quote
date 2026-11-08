@@ -4,7 +4,9 @@ use crate::{
     accounting::*,
     core::*,
     domain::{BusinessProfile, DateDisplay, DisplayDigits, Settings, State, id, quantity},
-    payments::{PaymentAllocation, PaymentCommand, PaymentInput, PaymentReversalInput, PaymentSide},
+    payments::{
+        PaymentAllocation, PaymentCommand, PaymentInput, PaymentReversalInput, PaymentSide,
+    },
     procurement::*,
     sales::*,
     sales_draft::RawSalesDraft,
@@ -186,6 +188,7 @@ fn manual(s: &State, p: &Value) -> Result<PostCommand> {
                 debit: amount(l, "debit")?,
                 credit: amount(l, "credit")?,
                 description: optional(l, "description", "").into(),
+                dimension: optional(l, "dimension", "").into(),
             })
         })
         .collect::<Result<Vec<_>>>()?;
@@ -892,7 +895,10 @@ fn report(s: &State, p: &Value) -> Result<Value> {
         .iter()
         .filter(|a| a.company_id == c.id)
     {
-        let net = nets.get(account.id.as_str()).copied().unwrap_or(Money::ZERO);
+        let net = nets
+            .get(account.id.as_str())
+            .copied()
+            .unwrap_or(Money::ZERO);
         if account.classification == AccountClass::Revenue {
             let v = Money::ZERO.checked_sub(net)?;
             revenue = revenue.checked_add(v)?;
@@ -975,7 +981,13 @@ fn workspace(s: &State, p: &Value) -> Result<Value> {
     let a = &s.accounting;
     let resources = if a.core.openings.iter().any(|o| o.command.company_id == c) {
         let mut resources = a.procurement_resources(c)?;
-        for party in &mut resources.parties { if let Some(profile) = s.party_profiles.get(&party.id) { if !profile.display_name.trim().is_empty() { party.name = profile.display_name.clone(); } } }
+        for party in &mut resources.parties {
+            if let Some(profile) = s.party_profiles.get(&party.id) {
+                if !profile.display_name.trim().is_empty() {
+                    party.name = profile.display_name.clone();
+                }
+            }
+        }
         Some(resources)
     } else {
         None
@@ -1026,7 +1038,11 @@ fn payment(s: &State, p: &Value) -> Result<PaymentCommand> {
         "bank" => crate::core::CoreRole::Bank,
         "cheques_receivable" => crate::core::CoreRole::ChequesReceivable,
         "cheques_payable" => crate::core::CoreRole::ChequesPayable,
-        _ => return Err(anyhow!("Payment funds must be cash, bank or a cheques account")),
+        _ => {
+            return Err(anyhow!(
+                "Payment funds must be cash, bank or a cheques account"
+            ));
+        }
     };
     let lines = p["allocations"]
         .as_array()
@@ -1056,7 +1072,9 @@ fn cheque_payment(s: &State, p: &Value, side: &str, funds: &str) -> Result<Payme
     q["funds_role"] = json!(funds);
     match payment(s, &q)? {
         PaymentCommand::Payment(input) => Ok(input),
-        PaymentCommand::Reversal(_) => Err(anyhow!("Cheque registration needs a payment, not a reversal")),
+        PaymentCommand::Reversal(_) => Err(anyhow!(
+            "Cheque registration needs a payment, not a reversal"
+        )),
     }
 }
 fn cheque_details(p: &Value) -> Result<crate::cheques::ChequeDetails> {
@@ -1066,7 +1084,12 @@ fn cheque_details(p: &Value) -> Result<crate::cheques::ChequeDetails> {
 fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
     use crate::iran::cheque::{Action, State as St, apply};
     let mut rows = vec![];
-    for c in s.cheques.cheques.iter().filter(|c| company_id.is_empty() || c.company_id == company_id) {
+    for c in s
+        .cheques
+        .cheques
+        .iter()
+        .filter(|c| company_id.is_empty() || c.company_id == company_id)
+    {
         let status = s.cheques.status(&c.id)?;
         let dir = match c.direction {
             crate::cheques::ChequeDir::Received => crate::iran::cheque::Direction::Received,
@@ -1083,7 +1106,9 @@ fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
         ]
         .into_iter()
         // Opening cheques have no originating payment to reverse.
-        .filter(|(a, _)| !(from_opening && matches!(a, Action::Bounce | Action::ReturnToCustomer | Action::Void)))
+        .filter(|(a, _)| {
+            !(from_opening && matches!(a, Action::Bounce | Action::ReturnToCustomer | Action::Void))
+        })
         .filter(|(a, _)| apply(dir, status, *a, c.amount.rials().max(1)).is_ok())
         .map(|(_, name)| name)
         .collect();
@@ -1097,7 +1122,12 @@ fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
             St::Issued => "issued",
             St::Voided => "voided",
         };
-        let events: Vec<_> = s.cheques.events.iter().filter(|e| e.cheque_id == c.id).collect();
+        let events: Vec<_> = s
+            .cheques
+            .events
+            .iter()
+            .filter(|e| e.cheque_id == c.id)
+            .collect();
         rows.push(json!({"cheque": c, "status": key, "allowed": allowed, "events": events}));
     }
     Ok(json!(rows))
@@ -1213,7 +1243,10 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             if action.ends_with("preview") {
                 json!({"backup": summary(&candidate), "current": summary(&store.state)})
             } else {
-                ensure!(p["confirmed"] == true, "Restoring requires explicit confirmation");
+                ensure!(
+                    p["confirmed"] == true,
+                    "Restoring requires explicit confirmation"
+                );
                 if let Some(expected) = p["expected_generation"].as_str() {
                     ensure!(
                         expected.parse::<i64>()? == store.local_generation(),
@@ -1256,11 +1289,19 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 &store.state,
                 &p,
                 if receive { "receive" } else { "make" },
-                if receive { "cheques_receivable" } else { "cheques_payable" },
+                if receive {
+                    "cheques_receivable"
+                } else {
+                    "cheques_payable"
+                },
             )?;
             let details = cheque_details(&p)?;
             let cheque_id = store.change(|s| {
-                if receive { s.receive_cheque(details, input) } else { s.issue_cheque(details, input) }
+                if receive {
+                    s.receive_cheque(details, input)
+                } else {
+                    s.issue_cheque(details, input)
+                }
             })?;
             json!({"cheque_id": cheque_id})
         }
@@ -1274,7 +1315,8 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let ctx = context(&store.state, &p)?;
             let details = cheque_details(&p)?;
             let opening_id = string(&p, "opening_cheque_id")?.to_owned();
-            let cheque_id = store.change(|s| s.register_opening_cheque(&ctx, &opening_id, details))?;
+            let cheque_id =
+                store.change(|s| s.register_opening_cheque(&ctx, &opening_id, details))?;
             json!({"cheque_id": cheque_id})
         }
         "cheque_deposit" => {
@@ -1305,20 +1347,40 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         "banking" => contacts_banking::banking(&store.state, &p)?,
         "product_detail" => products::detail(&store.state, &p)?,
         "product_profile" => {
-            let item=products::item(&store.state,&p)?;
-            let profile=products::profile(&p["profile"],&item.company_id)?;
-            if let Some(expected)=p["expected_generation"].as_str(){ensure!(expected.parse::<i64>()?==store.local_generation(),"Product changed since it was opened. Reopen before saving.");}
-            store.change(|s|{s.product_profiles.insert(item.id,profile);Ok(())})?;
+            let item = products::item(&store.state, &p)?;
+            let profile = products::profile(&p["profile"], &item.company_id)?;
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Product changed since it was opened. Reopen before saving."
+                );
+            }
+            store.change(|s| {
+                s.product_profiles.insert(item.id, profile);
+                Ok(())
+            })?;
             json!(true)
         }
         "party_profile" => {
             let party = contacts_banking::party(&store.state, &p)?;
-            let mut profile: crate::contact_profile::PartyProfile = serde_json::from_value(p["profile"].clone())?;
-            ensure!(profile.company_id.is_empty() || profile.company_id == party.company_id, "Wrong contact company");
+            let mut profile: crate::contact_profile::PartyProfile =
+                serde_json::from_value(p["profile"].clone())?;
+            ensure!(
+                profile.company_id.is_empty() || profile.company_id == party.company_id,
+                "Wrong contact company"
+            );
             profile.company_id = party.company_id;
             profile.validate()?;
-            if let Some(expected) = p["expected_generation"].as_str() { ensure!(expected.parse::<i64>()? == store.local_generation(), "Contact changed since it was opened. Refresh before saving."); }
-            store.change(|s| { s.party_profiles.insert(party.id, profile); Ok(()) })?;
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Contact changed since it was opened. Refresh before saving."
+                );
+            }
+            store.change(|s| {
+                s.party_profiles.insert(party.id, profile);
+                Ok(())
+            })?;
             json!(true)
         }
         "banking_preview" | "banking_post" => {
@@ -1327,7 +1389,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 let mut state = store.state.clone();
                 let id = state.accounting.post_banking(cmd)?;
                 json!(state.accounting.journals.iter().find(|j| j.id == id))
-            } else { json!(store.change(|s| s.accounting.post_banking(cmd))?) }
+            } else {
+                json!(store.change(|s| s.accounting.post_banking(cmd))?)
+            }
         }
         "setup_company" => {
             let result = store.change(|s| {
@@ -1346,9 +1410,11 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                     actor: actor(&p).into(),
                 })?;
                 if !p["business_profile"].is_null() {
-                    let profile: BusinessProfile = serde_json::from_value(p["business_profile"].clone())?;
+                    let profile: BusinessProfile =
+                        serde_json::from_value(p["business_profile"].clone())?;
                     profile.validate()?;
-                    s.business_profiles.insert(result.company_id.clone(), profile);
+                    s.business_profiles
+                        .insert(result.company_id.clone(), profile);
                 }
                 if first_company {
                     match p["locale"].as_str() {
@@ -1426,48 +1492,103 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 "item" => {
                     let resources = store.state.accounting.procurement_resources(&company)?;
                     let requested_unit = p["unit_id"].as_str().unwrap_or("").trim();
-                    let prior = store.state.accounting.procurement.records.iter().find_map(|record| {
-                        if record.command.context().company_id != company || record.command.context().source_id != cmd.context.source_id { return None; }
-                        if let crate::procurement::ProcurementData::Resources(data) = &record.data {
-                            data.items.iter().find(|item| item.id == rid).map(|item| (item.base_unit_id.clone(), data.units.clone()))
-                        } else { None }
-                    });
+                    let prior =
+                        store
+                            .state
+                            .accounting
+                            .procurement
+                            .records
+                            .iter()
+                            .find_map(|record| {
+                                if record.command.context().company_id != company
+                                    || record.command.context().source_id != cmd.context.source_id
+                                {
+                                    return None;
+                                }
+                                if let crate::procurement::ProcurementData::Resources(data) =
+                                    &record.data
+                                {
+                                    data.items
+                                        .iter()
+                                        .find(|item| item.id == rid)
+                                        .map(|item| (item.base_unit_id.clone(), data.units.clone()))
+                                } else {
+                                    None
+                                }
+                            });
                     let unit_id = if requested_unit.is_empty() {
-                        if let Some((unit_id, units)) = prior { cmd.units = units; unit_id }
-                        else if let Some(unit) = resources.units.first() { unit.id.clone() }
-                        else {
+                        if let Some((unit_id, units)) = prior {
+                            cmd.units = units;
+                            unit_id
+                        } else if let Some(unit) = resources.units.first() {
+                            unit.id.clone()
+                        } else {
                             let unit_id = format!("unit-{rid}");
-                            cmd.units.push(CoreUnit { id: unit_id.clone(), company_id: company.clone(), name: p["default_unit_name"].as_str().unwrap_or("Piece").to_owned() });
+                            cmd.units.push(CoreUnit {
+                                id: unit_id.clone(),
+                                company_id: company.clone(),
+                                name: p["default_unit_name"]
+                                    .as_str()
+                                    .unwrap_or("Piece")
+                                    .to_owned(),
+                            });
                             unit_id
                         }
-                    } else { requested_unit.to_owned() };
+                    } else {
+                        requested_unit.to_owned()
+                    };
                     let sku = p["sku"].as_str().unwrap_or("").trim();
                     cmd.items.push(CoreItem {
-                    sku: if sku.is_empty() { format!("P-{rid}") } else { sku.into() },
-                    id: rid,
-                    company_id: company,
-                    name,
-                    base_unit_id: unit_id,
-                    indivisible: p["indivisible"] == true,
-                    packs: vec![],
-                }); },
+                        sku: if sku.is_empty() {
+                            format!("P-{rid}")
+                        } else {
+                            sku.into()
+                        },
+                        id: rid,
+                        company_id: company,
+                        name,
+                        base_unit_id: unit_id,
+                        indivisible: p["indivisible"] == true,
+                        packs: vec![],
+                    });
+                }
                 _ => return Err(anyhow!("Unknown resource kind")),
             }
             json!(store.change(|s| {
-                let profile = if matches!(p["kind"].as_str(), Some("customer" | "vendor")) && !p["profile"].is_null() {
-                    let mut profile: crate::contact_profile::PartyProfile = serde_json::from_value(p["profile"].clone())?;
-                    ensure!(profile.company_id.is_empty() || profile.company_id == cmd.context.company_id, "Wrong contact company");
+                let profile = if matches!(p["kind"].as_str(), Some("customer" | "vendor"))
+                    && !p["profile"].is_null()
+                {
+                    let mut profile: crate::contact_profile::PartyProfile =
+                        serde_json::from_value(p["profile"].clone())?;
+                    ensure!(
+                        profile.company_id.is_empty()
+                            || profile.company_id == cmd.context.company_id,
+                        "Wrong contact company"
+                    );
                     profile.company_id = cmd.context.company_id.clone();
                     profile.display_name = cmd.parties[0].name.clone();
                     profile.validate()?;
                     Some((cmd.parties[0].id.clone(), profile))
-                } else { None };
+                } else {
+                    None
+                };
                 let product = if p["kind"] == "item" && !p["product_profile"].is_null() {
-                    Some((cmd.items[0].id.clone(),products::profile(&p["product_profile"], &cmd.context.company_id)?))
-                } else {None};
-                let result = s.accounting.post_procurement_command(ProcurementCommand::Resources(cmd))?;
-                if let Some((id,profile))=product{s.product_profiles.entry(id).or_insert(profile);}
-                if let Some((id, profile)) = profile { s.party_profiles.entry(id).or_insert(profile); }
+                    Some((
+                        cmd.items[0].id.clone(),
+                        products::profile(&p["product_profile"], &cmd.context.company_id)?,
+                    ))
+                } else {
+                    None
+                };
+                let result = s
+                    .accounting
+                    .post_procurement_command(ProcurementCommand::Resources(cmd))?;
+                if let Some((id, profile)) = product {
+                    s.product_profiles.entry(id).or_insert(profile);
+                }
+                if let Some((id, profile)) = profile {
+                    s.party_profiles.entry(id).or_insert(profile);
+                }
                 Ok(result)
             })?)
         }
@@ -1491,7 +1612,11 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             if p["issue_quotation"] == true && draft.quote_issue.is_none() {
                 json!(store.change(|s| {
                     let series = s.settings.quote_prefix.trim().to_owned();
-                    let series = if series.is_empty() { "Q-".to_owned() } else { series };
+                    let series = if series.is_empty() {
+                        "Q-".to_owned()
+                    } else {
+                        series
+                    };
                     let number = format!("{series}{}", s.settings.next_number.max(1));
                     s.settings.next_number = s.settings.next_number.saturating_add(1);
                     let issued = draft.document_date.clone();
@@ -1500,9 +1625,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                         chrono::NaiveDate::parse_from_str(&issued, "%Y-%m-%d")
                             .ok()
                             .and_then(|d| {
-                                d.checked_add_days(chrono::Days::new(
-                                    u64::from(s.settings.default_validity_days.max(1)),
-                                ))
+                                d.checked_add_days(chrono::Days::new(u64::from(
+                                    s.settings.default_validity_days.max(1),
+                                )))
                             })
                             .map(|d| d.format("%Y-%m-%d").to_string())
                             .unwrap_or_else(|| issued.clone())
@@ -1621,10 +1746,10 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         "payment_reverse_preview" => {
             let s = &store.state;
             let company_id = company(s, &p)?.id.clone();
-            json!(s.accounting.preview_payment_reversal(
-                &company_id,
-                string(&p, "payment_id")?
-            )?)
+            json!(
+                s.accounting
+                    .preview_payment_reversal(&company_id, string(&p, "payment_id")?)?
+            )
         }
         "operation_options" => {
             company(&store.state, &p)?;
@@ -1739,7 +1864,10 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let company_id = company(&store.state, &p)?.id.clone();
             let profile: BusinessProfile = serde_json::from_value(p["profile"].clone())?;
             profile.validate()?;
-            store.change(|s| { s.business_profiles.insert(company_id, profile); Ok(()) })?;
+            store.change(|s| {
+                s.business_profiles.insert(company_id, profile);
+                Ok(())
+            })?;
             json!(true)
         }
         "settings" => {
@@ -1863,11 +1991,18 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             ])?;
             json!({"filename":format!("profit-loss-{}.csv",string(&p,"to")?),"content":format!("\u{feff}{}",String::from_utf8(writer.into_inner()?)?)})
         }
-        "excel_template" | "excel_preview" | "excel_export" | "excel_commit" | "excel_graph_status"
-        | "excel_graph_sync" | "excel_graph_begin" | "excel_graph_complete" | "excel_graph_revoke"
-        | "excel_graph_preview" | "excel_graph_commit" | "excel_graph_push" => {
-            crate::excel::command(store, action, &p)?
-        }
+        "excel_template"
+        | "excel_preview"
+        | "excel_export"
+        | "excel_commit"
+        | "excel_graph_status"
+        | "excel_graph_sync"
+        | "excel_graph_begin"
+        | "excel_graph_complete"
+        | "excel_graph_revoke"
+        | "excel_graph_preview"
+        | "excel_graph_commit"
+        | "excel_graph_push" => crate::excel::command(store, action, &p)?,
         "pos_shift_open" | "pos_shift_close" | "pos_hold" | "pos_hold_delete" => {
             crate::retail::command(store, action, &p)?
         }

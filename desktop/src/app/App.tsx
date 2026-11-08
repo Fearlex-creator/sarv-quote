@@ -187,7 +187,14 @@ export default function App() {
             ""),
       );
     } catch (e) {
-      if (version === request.current) setError((e as Error).message);
+      if (version !== request.current) return;
+      const message = (e as Error).message;
+      // A restore replaces company ids. Drop the stale selection and load again.
+      if (companyId && message.includes("Company not found")) {
+        setCompanyId("");
+        return;
+      }
+      setError(message);
     } finally {
       if (version === request.current) setRefreshing(false);
     }

@@ -177,10 +177,7 @@ impl Store {
         let conn = Connection::open(directory.join("sarv.sqlite3"))?;
         conn.busy_timeout(Duration::from_secs(3))?;
         conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS app_security (id INTEGER PRIMARY KEY CHECK(id=1), payload TEXT NOT NULL);")?;
-        conn.execute(
-            "INSERT OR IGNORE INTO app_security VALUES(1,?1)",
-            ["{}"],
-        )?;
+        conn.execute("INSERT OR IGNORE INTO app_security VALUES(1,?1)", ["{}"])?;
         let json = serde_json::to_string(&State::default())?;
         conn.execute("INSERT OR IGNORE INTO state VALUES(1,0,?1)", [json])?;
         let (generation, payload): (i64, String) =
@@ -341,11 +338,15 @@ impl Store {
                 "نسخهٔ بازیابی متعلق به دادهٔ جاری نیست"
             );
         } else {
-            current.desktop.validate_transition(&prepared.candidate.desktop)?;
+            current
+                .desktop
+                .validate_transition(&prepared.candidate.desktop)?;
             current
                 .accounting
                 .validate_transition(&prepared.candidate.accounting)?;
-            current.cheques.validate_transition(&prepared.candidate.cheques)?;
+            current
+                .cheques
+                .validate_transition(&prepared.candidate.cheques)?;
         }
         Ok(())
     }
@@ -419,7 +420,10 @@ impl Store {
         std::thread::spawn(move || {
             let verdict = match state.validate() {
                 Ok(()) => IntegrityStatus::Ok { generation },
-                Err(e) => IntegrityStatus::Failed { generation, message: e.to_string() },
+                Err(e) => IntegrityStatus::Failed {
+                    generation,
+                    message: e.to_string(),
+                },
             };
             if let Ok(mut s) = slot.lock()
                 && matches!(*s, IntegrityStatus::Running { generation: g } if g == generation)
@@ -463,9 +467,7 @@ impl Store {
         );
         let payload: String =
             self.conn
-                .query_row("SELECT payload FROM state WHERE id=1", [], |row| {
-                    row.get(0)
-                })?;
+                .query_row("SELECT payload FROM state WHERE id=1", [], |row| row.get(0))?;
         let state: State =
             serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
         state.validate()?;
@@ -521,12 +523,17 @@ impl Store {
         self.ensure_idle()?;
         candidate.validate()?;
         candidate.schema = CURRENT_SCHEMA;
+        let lock = self.security_payload()?;
         let safety = self
             .directory
             .join(format!("before-restore-{}.json", crate::domain::id()));
         self.backup(&safety)?;
         let prepared = Self::prepare_replacement(self.generation, &self.state, candidate, &safety)?;
         self.commit_prepared(prepared)?;
+        ensure!(
+            self.security_payload()? == lock,
+            "Restore replaced the shop lock"
+        );
         Ok(safety)
     }
 

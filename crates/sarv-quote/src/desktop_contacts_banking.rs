@@ -244,12 +244,16 @@ pub(super) fn movement(s: &State, p: &Value) -> Result<PostCommand> {
                 debit: amount,
                 credit: Money::ZERO,
                 description: reference.into(),
+
+                dimension: String::new(),
             },
             JournalLineInput {
                 account_id: credit.into(),
                 debit: Money::ZERO,
                 credit: amount,
                 description: reference.into(),
+
+                dimension: String::new(),
             },
         ],
     })

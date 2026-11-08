@@ -374,7 +374,9 @@ fn ledger_rejects_malformed_cheque_clearing_movements() {
         debit: irr(debit),
         credit: irr(credit),
         description: "x".into(),
-    };
+    
+        dimension: String::new(),
+};
     let cmd = |key: &str, lines: Vec<JournalLineInput>| PostCommand {
         company_id: c.company_id.clone(),
         period_id: c.period_id.clone(),

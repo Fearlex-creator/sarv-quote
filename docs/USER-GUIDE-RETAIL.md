@@ -8,7 +8,7 @@ Settings → Shop lock. Set the owner name and a password. Write down the recove
 
 ## Bring in a workbook
 
-Excel → Download template. Fill the Data sheet. Choose the sheet type, preview, read any row errors, then confirm and commit. A bad row saves nothing. Import products before opening stock. Opening stock receives the goods into inventory and credits GRNI, the receipt not yet billed. It is not owner equity and it is not a finished supplier bill. Clear it with a supplier bill or a reviewed journal.
+Excel → Download template. Fill the Data sheet. Choose the sheet type, preview, read any row errors, then confirm and commit. A bad row saves nothing. Import products before opening stock. The opening-stock sheet is goods received and not yet invoiced: inventory is debited and GRNI is credited. An opening balance of cash or owner capital is a different entry and is not created by this sheet. It is not a finished supplier bill. Clear GRNI with a supplier bill or a reviewed journal.
 
 Export current rows or the trial balance from the same page. The Microsoft 365 panel stays "not configured" until an owner supplies an application registration. Local files work without that.
 

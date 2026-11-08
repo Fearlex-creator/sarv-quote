@@ -1014,6 +1014,116 @@ fn graph_refuses_an_ungranted_workbook_without_echoing_tokens() {
     }
 }
 
+#[test]
+fn restore_refuses_an_unlocked_profile_and_keeps_the_existing_lock() {
+    let dir = tempfile::tempdir().unwrap();
+    company(dir.path());
+    let refused = call(
+        dir.path(),
+        "backup_restore",
+        json!({"filename": "sarv-backup-missing.json", "confirmed": true}),
+    )
+    .unwrap_err();
+    assert!(refused.contains("password"), "{refused}");
+    let boot = must(
+        dir.path(),
+        "auth_bootstrap",
+        json!({"name": "Owner", "password": "sample-shop-pass"}),
+    );
+    let token = boot["session_token"].as_str().unwrap().to_owned();
+    let recovery = boot["recovery_code"].as_str().unwrap().to_owned();
+    assert_ne!(recovery, "sample-shop-pass");
+    let lock = sarv_quote::store::Store::open(dir.path())
+        .unwrap()
+        .security_payload()
+        .unwrap();
+    assert!(!lock.contains("sample-shop-pass"));
+    let backup = must(dir.path(), "backup_create", json!({"session_token": token}));
+    let filename = backup["filename"].as_str().unwrap().to_owned();
+    let text = std::fs::read_to_string(dir.path().join(&filename)).unwrap();
+    assert!(!text.contains("password_hash"));
+    assert!(!text.contains(&recovery));
+    assert!(!text.contains(&token));
+    let other = tempfile::tempdir().unwrap();
+    std::fs::copy(dir.path().join(&filename), other.path().join(&filename)).unwrap();
+    let unlocked = call(
+        other.path(),
+        "backup_restore",
+        json!({"filename": filename, "confirmed": true}),
+    )
+    .unwrap_err();
+    assert!(unlocked.contains("password"), "{unlocked}");
+    let other_boot = must(
+        other.path(),
+        "auth_bootstrap",
+        json!({"name": "Other", "password": "other-shop-pass-1"}),
+    );
+    let other_token = other_boot["session_token"].as_str().unwrap().to_owned();
+    let other_lock = sarv_quote::store::Store::open(other.path())
+        .unwrap()
+        .security_payload()
+        .unwrap();
+    assert_ne!(other_lock, lock);
+    must(
+        other.path(),
+        "backup_restore",
+        json!({"filename": filename, "confirmed": true, "session_token": other_token}),
+    );
+    assert_eq!(
+        sarv_quote::store::Store::open(other.path())
+            .unwrap()
+            .security_payload()
+            .unwrap(),
+        other_lock
+    );
+    assert_eq!(
+        sarv_quote::store::Store::open(dir.path())
+            .unwrap()
+            .security_payload()
+            .unwrap(),
+        lock
+    );
+    must(
+        dir.path(),
+        "auth_create_user",
+        json!({"session_token": token, "name": "Till", "password": "cashier-pass-1", "role": "cashier"}),
+    );
+    let till = must(
+        dir.path(),
+        "auth_login",
+        json!({"name": "Till", "password": "cashier-pass-1"}),
+    );
+    let denied = call(
+        dir.path(),
+        "backup_restore",
+        json!({
+            "filename": filename,
+            "confirmed": true,
+            "session_token": till["session_token"]
+        }),
+    )
+    .unwrap_err();
+    assert!(denied.contains("role"), "{denied}");
+    let reset = must(
+        dir.path(),
+        "auth_reset",
+        json!({"recovery_code": recovery, "password": "replaced-shop-pass"}),
+    );
+    assert_eq!(reset["reset"], true);
+    assert!(
+        call(
+            dir.path(),
+            "auth_login",
+            json!({"name": "Owner", "password": "sample-shop-pass"}),
+        )
+        .is_err()
+    );
+    must(
+        dir.path(),
+        "auth_login",
+        json!({"name": "Owner", "password": "replaced-shop-pass"}),
+    );
+}
 fn graph_env() -> &'static Mutex<()> {
     static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
     LOCK.get_or_init(|| Mutex::new(()))

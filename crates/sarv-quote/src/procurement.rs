@@ -595,9 +595,9 @@ impl AccountingState {
                     reference: x.document_reference.clone(),
                     document_date: x.document_date.clone(),
                     due_date: x.due_date.clone(),
-                    remaining: x.remaining.checked_add(
-                        settled.get(x.id.as_str()).copied().unwrap_or(Money::ZERO),
-                    )?,
+                    remaining: x
+                        .remaining
+                        .checked_add(settled.get(x.id.as_str()).copied().unwrap_or(Money::ZERO))?,
                 })
             })
             .collect::<Result<Vec<_>>>()?;
@@ -615,9 +615,9 @@ impl AccountingState {
                     reference: input.reference.clone(),
                     document_date: input.document_date.clone(),
                     due_date: input.due_date.clone(),
-                    remaining: b.total.checked_add(
-                        settled.get(r.id.as_str()).copied().unwrap_or(Money::ZERO),
-                    )?,
+                    remaining: b
+                        .total
+                        .checked_add(settled.get(r.id.as_str()).copied().unwrap_or(Money::ZERO))?,
                 });
             }
         }
@@ -1888,12 +1888,16 @@ fn pair(
             debit: value,
             credit: Money::ZERO,
             description: reference.into(),
+
+            dimension: String::new(),
         },
         JournalLineInput {
             account_id: setup.account_id(credit)?.into(),
             debit: Money::ZERO,
             credit: value,
             description: reference.into(),
+
+            dimension: String::new(),
         },
     ])
 }

@@ -127,7 +127,7 @@ fn wire_preview(kind: &str, parsed: Parsed) -> Value {
         "warnings": parsed.warnings,
         "currency": "IRR",
         "opening_stock_effect": if kind == "opening_stock" {
-            "Posts Inventory and GRNI. It does not post owner equity and it does not create a supplier bill. Clear GRNI later with a supplier bill or a reviewed journal."
+            "This sheet is stock received and not yet invoiced: inventory debit, GRNI credit. It is not an opening capital balance. Owner equity is a separate entry. It does not create a supplier bill. Clear GRNI later with a supplier bill or a reviewed journal."
         } else {
             ""
         },
@@ -183,9 +183,9 @@ fn commit(store: &mut Store, p: &Value) -> Result<Value> {
         "customers" | "suppliers" => commit_parties(
             store, &parsed, kind, &company, &period, &date, &actor, &key, &digest, policy,
         ),
-        "opening_stock" => {
-            commit_opening(store, &parsed, &company, &period, &date, &actor, &key, &digest)
-        }
+        "opening_stock" => commit_opening(
+            store, &parsed, &company, &period, &date, &actor, &key, &digest,
+        ),
         _ => Err(anyhow!("This sheet is export-only")),
     }
 }
@@ -223,7 +223,9 @@ fn parse(bytes: &[u8], kind: &str) -> Result<Parsed> {
         .worksheet_range(&sheet)
         .map_err(|e| anyhow!("Could not read {sheet}: {e}"))?;
     let mut rows_iter = range.rows();
-    let header = rows_iter.next().ok_or_else(|| anyhow!("The sheet is empty"))?;
+    let header = rows_iter
+        .next()
+        .ok_or_else(|| anyhow!("The sheet is empty"))?;
     let names: Vec<String> = header.iter().map(cell_label).collect::<Result<_>>()?;
     let mut errors = vec![];
     if names.len() != expected.len() || names.iter().zip(expected).any(|(g, w)| g != w) {
@@ -327,7 +329,9 @@ fn read_row(
             check_label(&map["sku"])?;
             check_label(&map["warehouse"])?;
             if quantity(&map["quantity"]).is_err() {
-                return Err("quantity must be a positive number with at most 3 decimal places".into());
+                return Err(
+                    "quantity must be a positive number with at most 3 decimal places".into(),
+                );
             }
         }
         _ => return Err("This workbook cannot be imported".into()),
@@ -366,14 +370,15 @@ fn commit_products(
                     skipped += 1;
                     continue;
                 }
-                let mut profile = state
-                    .product_profiles
-                    .get(&item.id)
-                    .cloned()
-                    .unwrap_or(ProductProfile {
-                        company_id: company.into(),
-                        ..ProductProfile::default()
-                    });
+                let mut profile =
+                    state
+                        .product_profiles
+                        .get(&item.id)
+                        .cloned()
+                        .unwrap_or(ProductProfile {
+                            company_id: company.into(),
+                            ..ProductProfile::default()
+                        });
                 fill_product(&mut profile, row)?;
                 profile.validate()?;
                 profiles.push((item.id.clone(), profile));
@@ -401,15 +406,24 @@ fn commit_products(
             created += 1;
         }
         if !units.is_empty() || !items.is_empty() {
-            state.accounting.post_procurement_command(ProcurementCommand::Resources(
-                RegisterResources {
-                    context: context(state, company, period, &format!("{key}:resources"), &format!("{key}:resources"), date, actor, "Excel product import")?,
+            state
+                .accounting
+                .post_procurement_command(ProcurementCommand::Resources(RegisterResources {
+                    context: context(
+                        state,
+                        company,
+                        period,
+                        &format!("{key}:resources"),
+                        &format!("{key}:resources"),
+                        date,
+                        actor,
+                        "Excel product import",
+                    )?,
                     parties,
                     units,
                     items,
                     warehouses: vec![],
-                },
-            ))?;
+                }))?;
         }
         for (id, profile) in profiles {
             state.product_profiles.insert(id, profile);
@@ -449,7 +463,10 @@ fn commit_parties(
             let matches: Vec<_> = existing
                 .parties
                 .iter()
-                .filter(|p| normalize(&p.name) == normalize(&name) && (if customer { p.customer } else { p.supplier }))
+                .filter(|p| {
+                    normalize(&p.name) == normalize(&name)
+                        && (if customer { p.customer } else { p.supplier })
+                })
                 .collect();
             if matches.len() > 1 {
                 return Err(anyhow!("More than one contact is named {name}"));
@@ -459,11 +476,16 @@ fn commit_parties(
                     skipped += 1;
                     continue;
                 }
-                let mut profile = state.party_profiles.get(&party.id).cloned().unwrap_or(PartyProfile {
-                    company_id: company.into(),
-                    display_name: party.name.clone(),
-                    ..PartyProfile::default()
-                });
+                let mut profile =
+                    state
+                        .party_profiles
+                        .get(&party.id)
+                        .cloned()
+                        .unwrap_or(PartyProfile {
+                            company_id: company.into(),
+                            display_name: party.name.clone(),
+                            ..PartyProfile::default()
+                        });
                 fill_party(&mut profile, row)?;
                 profile.validate()?;
                 profiles.push((party.id.clone(), profile));
@@ -471,7 +493,11 @@ fn commit_parties(
                 continue;
             }
             let id = stable(
-                if customer { "excel-customer" } else { "excel-supplier" },
+                if customer {
+                    "excel-customer"
+                } else {
+                    "excel-supplier"
+                },
                 &[company, &normalize(&name)],
             );
             parties.push(CoreParty {
@@ -492,15 +518,24 @@ fn commit_parties(
             created += 1;
         }
         if !parties.is_empty() {
-            state.accounting.post_procurement_command(ProcurementCommand::Resources(
-                RegisterResources {
-                    context: context(state, company, period, &format!("{key}:parties"), &format!("{key}:parties"), date, actor, "Excel contact import")?,
+            state
+                .accounting
+                .post_procurement_command(ProcurementCommand::Resources(RegisterResources {
+                    context: context(
+                        state,
+                        company,
+                        period,
+                        &format!("{key}:parties"),
+                        &format!("{key}:parties"),
+                        date,
+                        actor,
+                        "Excel contact import",
+                    )?,
                     parties,
                     units: vec![],
                     items: vec![],
                     warehouses: vec![],
-                },
-            ))?;
+                }))?;
         }
         for (id, profile) in profiles {
             state.party_profiles.insert(id, profile);
@@ -529,9 +564,19 @@ fn commit_opening(
     store.change(|state| {
         let existing = state.accounting.procurement_resources(company)?;
         if !existing.parties.iter().any(|p| p.id == supplier_id) {
-            state.accounting.post_procurement_command(ProcurementCommand::Resources(
-                RegisterResources {
-                    context: context(state, company, period, &supplier_id, &format!("excel-opening-supplier:{company}"), date, actor, "Excel opening-stock supplier")?,
+            state
+                .accounting
+                .post_procurement_command(ProcurementCommand::Resources(RegisterResources {
+                    context: context(
+                        state,
+                        company,
+                        period,
+                        &supplier_id,
+                        &format!("excel-opening-supplier:{company}"),
+                        date,
+                        actor,
+                        "Excel opening-stock supplier",
+                    )?,
                     parties: vec![CoreParty {
                         id: supplier_id.clone(),
                         company_id: company.into(),
@@ -542,8 +587,7 @@ fn commit_opening(
                     units: vec![],
                     items: vec![],
                     warehouses: vec![],
-                },
-            ))?;
+                }))?;
         }
         let existing = state.accounting.procurement_resources(company)?;
         let mut units = vec![];
@@ -553,8 +597,14 @@ fn commit_opening(
         let mut total = Money::ZERO;
         for (index, row) in parsed.rows.iter().enumerate() {
             let unit_id = ensure_unit(&existing, &mut units, company, &row["unit"])?;
-            let warehouse_id = ensure_warehouse(&existing, &mut warehouses, company, &row["warehouse"])?;
-            let item_id = if let Some(item) = existing.items.iter().chain(items.iter()).find(|i| normalize(&i.sku) == normalize(&row["sku"])) {
+            let warehouse_id =
+                ensure_warehouse(&existing, &mut warehouses, company, &row["warehouse"])?;
+            let item_id = if let Some(item) = existing
+                .items
+                .iter()
+                .chain(items.iter())
+                .find(|i| normalize(&i.sku) == normalize(&row["sku"]))
+            {
                 item.id.clone()
             } else {
                 let id = stable("excel-item", &[company, &normalize(&row["sku"])]);
@@ -567,7 +617,10 @@ fn commit_opening(
                     indivisible: false,
                     packs: vec![],
                 });
-                let profile = ProductProfile { company_id: company.into(), ..ProductProfile::default() };
+                let profile = ProductProfile {
+                    company_id: company.into(),
+                    ..ProductProfile::default()
+                };
                 profile.validate()?;
                 state.product_profiles.entry(id.clone()).or_insert(profile);
                 id
@@ -575,7 +628,10 @@ fn commit_opening(
             let qty = quantity(&row["quantity"])?;
             let price = Money::parse(&row["unit_cost_rial"], MoneyUnit::Rial)?;
             ensure!(price.rials() >= 0, "Cost cannot be negative");
-            let gross = Money::from_rials(positive_half_up(i128::from(price.rials()) * i128::from(qty), 1000)?);
+            let gross = Money::from_rials(positive_half_up(
+                i128::from(price.rials()) * i128::from(qty),
+                1000,
+            )?);
             total = total.checked_add(gross)?;
             lines.push(OrderLine {
                 id: format!("ln-{key}-{index}"),
@@ -591,41 +647,82 @@ fn commit_opening(
             });
         }
         if !units.is_empty() || !items.is_empty() || !warehouses.is_empty() {
-            state.accounting.post_procurement_command(ProcurementCommand::Resources(
-                RegisterResources {
-                    context: context(state, company, period, &format!("{key}:resources"), &format!("{key}:resources"), date, actor, "Excel opening stock resources")?,
+            state
+                .accounting
+                .post_procurement_command(ProcurementCommand::Resources(RegisterResources {
+                    context: context(
+                        state,
+                        company,
+                        period,
+                        &format!("{key}:resources"),
+                        &format!("{key}:resources"),
+                        date,
+                        actor,
+                        "Excel opening stock resources",
+                    )?,
                     parties: vec![],
                     units,
                     items,
                     warehouses,
-                },
-            ))?;
+                }))?;
         }
-        let order_id = state.accounting.post_procurement_command(ProcurementCommand::Order(PurchaseOrder {
-            context: context(state, company, period, &format!("{key}:order"), &format!("{key}:order"), date, actor, "Excel opening stock order")?,
-            supplier_id: supplier_id.clone(),
-            reference: format!("OPEN-{key}"),
-            document_date: date.into(),
-            lines: lines.clone(),
-            document_discount: Money::ZERO,
-            supplied_total: total,
-        }))?;
-        let receive_lines = lines.iter().enumerate().map(|(index, line)| ReceiveLine {
-            id: format!("rc-{key}-{index}"),
-            order_line_id: line.id.clone(),
-            warehouse_id: line.warehouse_id.clone(),
-            unit_id: line.unit_id.clone(),
-            quantity_thousandths: line.quantity_thousandths,
-        }).collect();
-        state.accounting.post_procurement_command(ProcurementCommand::Receive(ReceiveOrder {
-            context: context(state, company, period, &format!("{key}:receive"), &format!("{key}:receive"), date, actor, "Excel opening stock receipt")?,
-            order_id: order_id.record_id,
-            reference: format!("RCV-{key}"),
-            document_date: date.into(),
-            lines: receive_lines,
-            supplied_total: total,
-        }))?;
-        let mut done = summary("opening_stock", parsed.rows.len() as u32, 0, 0, &parsed.warnings);
+        let order_id = state
+            .accounting
+            .post_procurement_command(ProcurementCommand::Order(PurchaseOrder {
+                context: context(
+                    state,
+                    company,
+                    period,
+                    &format!("{key}:order"),
+                    &format!("{key}:order"),
+                    date,
+                    actor,
+                    "Excel opening stock order",
+                )?,
+                supplier_id: supplier_id.clone(),
+                reference: format!("OPEN-{key}"),
+                document_date: date.into(),
+                lines: lines.clone(),
+                document_discount: Money::ZERO,
+                supplied_total: total,
+            }))?;
+        let receive_lines = lines
+            .iter()
+            .enumerate()
+            .map(|(index, line)| ReceiveLine {
+                id: format!("rc-{key}-{index}"),
+                order_line_id: line.id.clone(),
+                warehouse_id: line.warehouse_id.clone(),
+                unit_id: line.unit_id.clone(),
+                quantity_thousandths: line.quantity_thousandths,
+            })
+            .collect();
+        state
+            .accounting
+            .post_procurement_command(ProcurementCommand::Receive(ReceiveOrder {
+                context: context(
+                    state,
+                    company,
+                    period,
+                    &format!("{key}:receive"),
+                    &format!("{key}:receive"),
+                    date,
+                    actor,
+                    "Excel opening stock receipt",
+                )?,
+                order_id: order_id.record_id,
+                reference: format!("RCV-{key}"),
+                document_date: date.into(),
+                lines: receive_lines,
+                supplied_total: total,
+            }))?;
+        let mut done = summary(
+            "opening_stock",
+            parsed.rows.len() as u32,
+            0,
+            0,
+            &parsed.warnings,
+        );
         done["effect"] = json!("inventory_debited_grni_credited");
         done["supplier_bill"] = json!(false);
         done["equity_journal"] = json!(false);
@@ -788,7 +885,12 @@ fn export_pair(store: &Store, p: &Value) -> Result<(String, Vec<u8>)> {
     let kind = p["kind"].as_str().unwrap_or("products");
     let company = required(p, "company_id")?;
     ensure!(
-        store.state.accounting.companies.iter().any(|c| c.id == company),
+        store
+            .state
+            .accounting
+            .companies
+            .iter()
+            .any(|c| c.id == company),
         "Company not found"
     );
     let (filename, bytes) = match kind {
@@ -838,7 +940,11 @@ fn export_parties(state: &State, company: &str, kind: &str) -> Result<(String, V
     let resources = state.accounting.procurement_resources(company)?;
     let mut rows = vec![];
     for party in resources.parties.iter().filter(|p| {
-        if kind == "customers" { p.customer } else { p.supplier }
+        if kind == "customers" {
+            p.customer
+        } else {
+            p.supplier
+        }
     }) {
         let profile = state.party_profiles.get(&party.id);
         rows.push(vec![
@@ -879,10 +985,22 @@ fn export_trial(state: &State, company: &str, to: &str) -> Result<(String, Vec<u
         trial.total_debit.rials().to_string(),
         trial.total_credit.rials().to_string(),
     ]);
-    workbook("trial", &headers, &extra, &format!("trial-balance-{to}.xlsx"))
+    workbook(
+        "trial",
+        &headers,
+        &extra,
+        &format!("trial-balance-{to}.xlsx"),
+    )
 }
 fn export_sales(state: &State, company: &str) -> Result<(String, Vec<u8>)> {
-    let headers = ["date", "reference", "customer", "invoice_id", "total_rial", "cost_rial"];
+    let headers = [
+        "date",
+        "reference",
+        "customer",
+        "invoice_id",
+        "total_rial",
+        "cost_rial",
+    ];
     let mut rows = vec![];
     for record in &state.accounting.sales.records {
         if record.command.context().company_id != company {
@@ -937,7 +1055,12 @@ fn template(kind: &str) -> Result<(String, Vec<u8>)> {
         ]],
         _ => vec![],
     };
-    workbook(kind, headers, &sample, &format!("sarv-{kind}-template.xlsx"))
+    workbook(
+        kind,
+        headers,
+        &sample,
+        &format!("sarv-{kind}-template.xlsx"),
+    )
 }
 
 fn workbook(
@@ -959,7 +1082,11 @@ fn workbook(
     notes.write_string(3, 0, "formulas")?;
     notes.write_string(3, 1, "Not allowed. Values only. Macros are refused.")?;
     notes.write_string(4, 0, "dates")?;
-    notes.write_string(4, 1, "The import date is chosen in Sarv, not as an Excel serial.")?;
+    notes.write_string(
+        4,
+        1,
+        "The import date is chosen in Sarv, not as an Excel serial.",
+    )?;
     let data = book.add_worksheet();
     data.set_name("Data")?;
     for (column, header) in headers.iter().enumerate() {
@@ -1137,9 +1264,9 @@ fn plain_text(cell: &Data) -> std::result::Result<String, String> {
 }
 fn text_identifier(cell: &Data) -> std::result::Result<String, String> {
     match cell {
-        Data::Int(_) | Data::Float(_) => Err(
-            "Write SKUs, barcodes and IDs as text so leading zeros are kept".into(),
-        ),
+        Data::Int(_) | Data::Float(_) => {
+            Err("Write SKUs, barcodes and IDs as text so leading zeros are kept".into())
+        }
         other => plain_text(other),
     }
 }
@@ -1147,7 +1274,9 @@ fn money_text(cell: &Data) -> std::result::Result<String, String> {
     match cell {
         Data::Empty => Ok(String::new()),
         Data::Int(n) if *n >= 0 => Ok(n.to_string()),
-        Data::Float(_) => Err("Write rials as a whole number. Fractional rials are rejected".into()),
+        Data::Float(_) => {
+            Err("Write rials as a whole number. Fractional rials are rejected".into())
+        }
         Data::String(value) => {
             let cleaned = digits(value).replace([' ', '٬', '،', ','], "");
             if cleaned.is_empty() {
@@ -1181,9 +1310,7 @@ fn quantity_text(cell: &Data) -> std::result::Result<String, String> {
             Ok(format_qty(whole))
         }
         Data::String(value) => {
-            let cleaned = digits(value)
-                .replace([' ', '٬', '،'], "")
-                .replace('٫', ".");
+            let cleaned = digits(value).replace([' ', '٬', '،'], "").replace('٫', ".");
             if cleaned.is_empty() {
                 return Ok(String::new());
             }

@@ -179,12 +179,16 @@ fn run_worker(mode: &str, directory: &Path) -> Result<()> {
                         debit: Money::from_rials(1251),
                         credit: Money::ZERO,
                         description: "دارایی".into(),
+
+                        dimension: String::new(),
                     },
                     JournalLineInput {
                         account_id: book.accounts[1].id.clone(),
                         debit: Money::ZERO,
                         credit: Money::from_rials(1251),
                         description: "سرمایه".into(),
+
+                        dimension: String::new(),
                     },
                 ],
             })?;
@@ -197,7 +201,9 @@ fn run_worker(mode: &str, directory: &Path) -> Result<()> {
         }
         "payment_before_commit" | "payment_after_commit" => {
             use sarv_quote::core::CoreRole;
-            use sarv_quote::payments::{PaymentAllocation, PaymentCommand, PaymentInput, PaymentSide};
+            use sarv_quote::payments::{
+                PaymentAllocation, PaymentCommand, PaymentInput, PaymentSide,
+            };
             let mut store = Store::open(directory)?;
             let opening = store.state.accounting.core.openings[0].command.clone();
             let command = PaymentCommand::Payment(PaymentInput {

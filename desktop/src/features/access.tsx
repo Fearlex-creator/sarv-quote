@@ -80,7 +80,7 @@ export function AccessPanel({ onReady }: { onReady?: () => void }) {
 
   if (!status) return <p className="text-sm text-muted-foreground">{t("Loading…")}</p>;
 
-  if (recovery && !wroteItDown) {
+  if (recovery) {
     return (
       <div className="flex max-w-lg flex-col gap-3" role="dialog" aria-labelledby="recovery-title">
         <h2 id="recovery-title" className="text-base font-semibold">

@@ -248,6 +248,11 @@ export function Backups() {
               </ul>
             </div>
           </div>
+          {error && (
+            <p role="alert" className="text-sm text-destructive">
+              {error}
+            </p>
+          )}
           <div className="form-actions">
             <Button
               variant="outline"

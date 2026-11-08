@@ -161,7 +161,11 @@ record!(PaymentRequest {
     record_id: String,
     business_sha256: String
 });
-record!(PaymentResult { record_id: String, journal_id: String, sequence: u64 });
+record!(PaymentResult {
+    record_id: String,
+    journal_id: String,
+    sequence: u64
+});
 record!(PaymentPreview {
     data: PaymentData,
     journal_lines: Vec<JournalLineInput>,
@@ -200,6 +204,8 @@ fn role_lines(
             debit: if *debit { *amount } else { Money::ZERO },
             credit: if *debit { Money::ZERO } else { *amount },
             description: reference.into(),
+
+            dimension: String::new(),
         });
     }
     Ok(out)
@@ -260,7 +266,8 @@ impl AccountingState {
         };
         let mut total = Money::ZERO;
         for r in &self.payments.records {
-            if r.command.context().company_id != company || r.command.context().date.as_str() > asof {
+            if r.command.context().company_id != company || r.command.context().date.as_str() > asof
+            {
                 continue;
             }
             let (advance, positive, same_side) = match &r.data {
@@ -279,22 +286,18 @@ impl AccountingState {
         Ok(total)
     }
     /// Net effect of payments on one cash/bank account as-of a date.
-    pub fn payment_fund_delta(
-        &self,
-        company: &str,
-        account: &str,
-        asof: &str,
-    ) -> Result<Money> {
+    pub fn payment_fund_delta(&self, company: &str, account: &str, asof: &str) -> Result<Money> {
         let mut total = Money::ZERO;
         for r in &self.payments.records {
-            if r.command.context().company_id != company || r.command.context().date.as_str() > asof {
+            if r.command.context().company_id != company || r.command.context().date.as_str() > asof
+            {
                 continue;
             }
             let (amount, funds_role, receive_in) = match &r.data {
-                PaymentData::Payment(p) => (p.total, r.funds_role(), p.side == PaymentSide::Receive),
-                PaymentData::Reversal(p) => {
-                    (p.total, p.funds_role, p.side != PaymentSide::Receive)
+                PaymentData::Payment(p) => {
+                    (p.total, r.funds_role(), p.side == PaymentSide::Receive)
                 }
+                PaymentData::Reversal(p) => (p.total, p.funds_role, p.side != PaymentSide::Receive),
             };
             if amount == Money::ZERO {
                 continue;
@@ -390,10 +393,16 @@ impl AccountingState {
             ),
             PaymentSide::Make => matches!(
                 input.funds_role,
-                CoreRole::Cash | CoreRole::Bank | CoreRole::ChequesPayable | CoreRole::ChequesReceivable
+                CoreRole::Cash
+                    | CoreRole::Bank
+                    | CoreRole::ChequesPayable
+                    | CoreRole::ChequesReceivable
             ),
         };
-        ensure!(funds_allowed, "حساب تسویه باید صندوق، بانک یا اسناد مجاز باشد");
+        ensure!(
+            funds_allowed,
+            "حساب تسویه باید صندوق، بانک یا اسناد مجاز باشد"
+        );
         text(&input.reference)?;
         let resources = self.procurement_resources(&c.company_id)?;
         let party = resources
@@ -410,7 +419,10 @@ impl AccountingState {
             (1..=1000).contains(&input.allocations.len()),
             "تعداد ردیف تخصیص نامعتبر است"
         );
-        ensure!(input.advance_amount.rials() >= 0, "پیش‌دریافت منفی مجاز نیست");
+        ensure!(
+            input.advance_amount.rials() >= 0,
+            "پیش‌دریافت منفی مجاز نیست"
+        );
         let mut seen = HashSet::new();
         for a in &input.allocations {
             ensure!(a.amount.rials() > 0, "مبلغ تخصیص باید مثبت باشد");
@@ -625,10 +637,8 @@ impl AccountingState {
         );
         let sequence = self.operational_sequence(&c.company_id)?;
         let command_sha256 = hash(&command)?;
-        let journal_id = self.post_payment_journal(financial_command(
-            &command,
-            preview.journal_lines.clone(),
-        ))?;
+        let journal_id =
+            self.post_payment_journal(financial_command(&command, preview.journal_lines.clone()))?;
         let record = PaymentRecord {
             id: record_id.clone(),
             command,
@@ -658,7 +668,11 @@ impl AccountingState {
         // kernel rejects genuinely new keys that collide with manual commands.
         ensure!(
             !self.core.zero_requests.iter().any(|r| r.request_key == key)
-                && !self.procurement.requests.iter().any(|r| r.request_key == key)
+                && !self
+                    .procurement
+                    .requests
+                    .iter()
+                    .any(|r| r.request_key == key)
                 && !self.sales.requests.iter().any(|r| r.request_key == key),
             "کلید درخواست قبلاً استفاده شده است"
         );
@@ -719,25 +733,22 @@ impl AccountingState {
     }
     fn ensure_payment_controls(&self, company: &str) -> Result<()> {
         ensure!(
-            self.procurement_reconcile(company, "9999-12-31")?.reconciled,
+            self.procurement_reconcile(company, "9999-12-31")?
+                .reconciled,
             "ثبت پرداخت باعث اختلاف حساب کنترلی می‌شود"
         );
         Ok(())
     }
     pub(crate) fn post_payment_journal(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
-            command.event.starts_with(PAYMENTS_EVENT_PREFIX)
-                && command.kind == JournalKind::Manual,
+            command.event.starts_with(PAYMENTS_EVENT_PREFIX) && command.kind == JournalKind::Manual,
             "رویداد پرداخت فقط از گردش کار معتبر مجاز است"
         );
         self.post_internal(command, true, false)
     }
 }
 
-pub(crate) fn financial_command(
-    c: &PaymentCommand,
-    lines: Vec<JournalLineInput>,
-) -> PostCommand {
+pub(crate) fn financial_command(c: &PaymentCommand, lines: Vec<JournalLineInput>) -> PostCommand {
     let x = c.context();
     PostCommand {
         company_id: x.company_id.clone(),

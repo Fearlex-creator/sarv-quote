@@ -93,6 +93,10 @@ pub fn enforce(store: &Store, action: &str, payload: &mut Value) -> Result<()> {
     let security = load(store)?;
     if security.users.is_empty() {
         ensure!(
+            action != "backup_restore",
+            "Set a shop password before restoring a backup into this profile"
+        );
+        ensure!(
             !matches!(
                 action,
                 "auth_create_user" | "auth_disable_user" | "auth_reset" | "auth_logout"
@@ -162,12 +166,7 @@ fn bootstrap(store: &mut Store, payload: &Value) -> Result<Value> {
     };
     security.recovery_hash = hash_secret(&recovery)?;
     security.users.push(user.clone());
-    remember(
-        &mut security,
-        &user.id,
-        "auth_bootstrap",
-        "shop",
-    );
+    remember(&mut security, &user.id, "auth_bootstrap", "shop");
     let session = issue(&mut security, &user)?;
     save(store, &security)?;
     Ok(json!({
@@ -258,7 +257,10 @@ fn create_user(store: &mut Store, payload: &Value) -> Result<Value> {
     );
     ensure!(security.users.len() < 50, "Too many people");
     let user = User {
-        id: format!("user-{}", &token_hash(&format!("{name}:{role}:{}", now_secs()))[..12]),
+        id: format!(
+            "user-{}",
+            &token_hash(&format!("{name}:{role}:{}", now_secs()))[..12]
+        ),
         name,
         role,
         password_hash: hash_secret(&password)?,
@@ -353,10 +355,7 @@ fn role_allows(role: &str, action: &str, payload: &Value) -> bool {
         ),
         "cashier" => {
             let kind_ok = action != "resource"
-                || matches!(
-                    payload["kind"].as_str(),
-                    Some("customer" | "item" | "unit")
-                );
+                || matches!(payload["kind"].as_str(), Some("customer" | "item" | "unit"));
             let receipt_ok = action != "payment_post" || payload["side"] == "receive";
             kind_ok
                 && receipt_ok
@@ -386,10 +385,23 @@ fn is_write(action: &str) -> bool {
         || action.ends_with("_status")
         || matches!(
             action,
-            "excel_template" | "excel_export" | "excel_graph_status" | "workspace" | "report"
-                | "integrity" | "law_data" | "detail" | "ledger" | "report_csv" | "profit_csv"
-                | "backup_list" | "payment_options" | "operation_options" | "contact_detail"
-                | "banking" | "product_detail"
+            "excel_template"
+                | "excel_export"
+                | "excel_graph_status"
+                | "workspace"
+                | "report"
+                | "integrity"
+                | "law_data"
+                | "detail"
+                | "ledger"
+                | "report_csv"
+                | "profit_csv"
+                | "backup_list"
+                | "payment_options"
+                | "operation_options"
+                | "contact_detail"
+                | "banking"
+                | "product_detail"
         )
     {
         return false;
@@ -442,7 +454,11 @@ fn issue(security: &mut Security, user: &User) -> Result<String> {
     let now = now_secs();
     security.sessions.retain(|s| s.expires > now);
     ensure!(security.sessions.len() < 32, "Too many open sessions");
-    let token = format!("{}{}", uuid::Uuid::new_v4().simple(), uuid::Uuid::new_v4().simple());
+    let token = format!(
+        "{}{}",
+        uuid::Uuid::new_v4().simple(),
+        uuid::Uuid::new_v4().simple()
+    );
     security.sessions.push(Session {
         token_hash: token_hash(&token),
         user_id: user.id.clone(),

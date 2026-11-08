@@ -654,6 +654,10 @@ const messages: Record<string, string> = {
   "Journal debit {index}": "بدهکار ردیف {index}",
   "Journal credit {index}": "بستانکار ردیف {index}",
   "Journal description {index}": "شرح ردیف {index}",
+  Dimension: "تفصیلی",
+  "Journal dimension {index}": "تفصیلی ردیف {index}",
+  "Optional tag stored with this line. It does not change the amount or the journal id.":
+    "برچسب اختیاری همین ردیف. مبلغ و شناسهٔ سند را عوض نمی‌کند.",
   "Remove journal line {index}": "حذف ردیف سند {index}",
   "Journal #{value1}": "سند #{value1}",
   "Record purchase order {value1}. Stock changes when goods are received.":

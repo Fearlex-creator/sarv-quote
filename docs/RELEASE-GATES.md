@@ -4,20 +4,20 @@ No tag was created. The existing GitHub release `v0.1.0` points at main `f5888a1
 
 ## Green on this branch
 
-- `cargo test -p sarv-quote --offline`: 276 listed, 273 passed, 3 ignored, 0 failed.
+- `cargo test -p sarv-quote --offline --no-fail-fast`: 278 listed, 275 passed, 3 ignored, 0 failed. The three ignored tests are not part of that pass count.
 - Desktop typecheck, lint, and 14 unit tests.
 - `cargo audit` reports no advisories on the lockfile that uses calamine 0.38, zip 9.4.2, and rust_xlsxwriter 0.102.
 - `pnpm --dir desktop audit --prod` reports no known vulnerabilities. The shadcn CLI is not a production dependency.
 - Shop-lock denial for a cashier journal, a signed-out workspace, and a legacy agent token. An owner-granted accountant token can read and cannot create users.
 - Graph connector contract against a local mock. `live_verified` is false.
-- A Linux deb was produced after the Graph change: `desktop/src-tauri/target/release/bundle/deb/Sarv_0.1.0_amd64.deb`, sha256 `3aaa9c62594496f14f2113f745c88f78775e3375f5ada46416302f0d8db36708`. The extracted `usr/bin/sarv-desktop` is sha256 `2a1e4cb99d3ff0fa25f54b526755a55cfa6c4b4cb8fe79ea2882e221c32b7a7e`. A copy is `/opt/cursor/artifacts/sarv-linux/Sarv_0.1.0_amd64.deb`. Version 0.1.0 matches the existing GitHub release `v0.1.0` and is not a new public release. Under Xvfb, with a disposable `SARV_DATA_DIR`, the extracted binary opened the first-run screen (owner name, password, “Set a password”) and created `sarv.sqlite3`. Screenshot: `/opt/cursor/artifacts/sarv-linux/first-run.png`. Excel import, POS, and the receipt were exercised by the Playwright run on this same UI, not by clicking through the packaged webview.
-- `pnpm test:pdf --offline --no-fail-fast`: 316 passed, 0 failed, 3 ignored.
+- Linux package `0.2.0-rc.1`: `desktop/src-tauri/target/release/bundle/deb/Sarv_0.2.0-rc.1_amd64.deb`, sha256 `4a32e020a259cb23d99bf3ed152a4f90482fe0c6871f86004a9e0683d1ff562f`. Extracted `usr/bin/sarv-desktop` sha256 `cfb0e1c99f29cd6d7da24fcbf4bd22aa9f5a52474a6fa4083cd974273960de26`. A copy is `/opt/cursor/artifacts/sarv-linux/Sarv_0.2.0-rc.1_amd64.deb`. This is not the published `v0.1.0` release. The packaged webview was driven with AT-SPI on a disposable `/tmp` profile. Password setup, company creation, Excel product and opening-stock commit, a till sale, backup, sign-out, and restore into a second locked profile all went through that UI. The production JavaScript has no QA URL. See `docs/PROGRESS.md`.
+- `pnpm test:pdf --offline --no-fail-fast`: 319 passed, 0 failed, 3 ignored. `wrong_missing_and_clipped_money_fail_the_independent_check` replaces and deletes the extracted amount and whites out the right 24px of the glyph box. Those fixtures fail the text and geometry checks. The 4px threshold was not loosened. The renderer was not changed.
 
 ## PDF money cells
 
 `final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster` used to count pixels whose channels were all below 180 and require the poppler count to stay within 20% of cairo. On this machine the first amount cell was 194×226 in both rasters and both showed `۱۵٬۶۲۵.۴`. Cairo counted 186 ink pixels and poppler 24.02 counted 265. Channel-max bands were cairo `[0, 47, 46, 60, 33]` and poppler `[0, 119, 64, 57, 25]` for the bins below 40, 40–79, 80–119, 120–159, and 160–179. Neither raster had a pixel below 40. The extra poppler ink is mid-gray stem weight, not a missing or extra digit. Crops: `/opt/cursor/artifacts/sarv-pdf/cell-native.png` and `/opt/cursor/artifacts/sarv-pdf/cell-poppler.png`.
 
-The ink ratio is no longer the assertion. The test now requires each line price, line total, discount, and grand total from `MoneyUnit::display` to appear in `pdftotext`, and the glyph box of pixels darker than 160 to agree within 4px. The measured boxes were cairo `(126, 25, 57, 13)` and poppler `(123, 22, 60, 13)`: the far edge stays put and the heavier stem grows the box by 3px. A dropped digit in that 57px run is wider than 4px. Draft and approved pages from the same cairo rasterizer must still match exactly, and each cell must still contain ink. The renderer was not changed.
+The ink ratio is no longer the assertion. The test now requires each line price, line total, discount, and grand total from `MoneyUnit::display` to appear in `pdftotext`, and the glyph box of pixels darker than 160 to agree within 4px. The measured boxes were cairo `(126, 25, 57, 13)` and poppler `(123, 22, 60, 13)`: the far edge stays put and the heavier stem grows the box by 3px. A dropped digit in that 57px run is wider than 4px. Draft and approved pages from the same cairo rasterizer must still match exactly, and each cell must still contain ink. A separate test feeds a wrong expected amount, deletes the real amount from the extracted text, and clips the glyph box. Those checks fail. The renderer was not changed.
 
 ## Not green
 
@@ -26,7 +26,7 @@ The ink ratio is no longer the assertion. The test now requires each line price,
 | Dev-tool advisory | `pnpm --dir desktop audit` still reports moderate `minimatch` via ESLint (GHSA-g3hv-75wg-m249). ESLint 10 is the linter. Forcing minimatch 11 was not done. The high `zod` finding is patched. Thresholds were not raised. |
 | Historical binaries in CI | The default `cargo test` still ignores the three compat tests, because the binaries are not in git and an Ubuntu 24.04 runner cannot link libadwaita 1.9. A local Ubuntu 26.04 chroot did build the unchanged commits and the three tests passed there. See below. |
 | Graph against Microsoft | The connector and a local mock pass. A real tenant still needs the owner to register an app and set `SARV_GRAPH_CLIENT_ID`. No secret is in the repo. |
-| Windows artifact of this branch | `gh workflow run windows-build.yml --ref cursor/retail-excel-pos-8dc2` returned HTTP 404: `workflow windows-build.yml not found on the default branch`. GitHub only dispatches a workflow that already exists on the default branch. The only workflow there is `release-windows.yml` (id 411221940), which publishes a release, so it was not dispatched. No tag was created. |
+| Windows artifact of this branch | The build-only workflow now triggers on a push to `cursor/retail-excel-pos-8dc2` and on a pull request into `main`. Permissions are `contents: read`. It does not use `pull_request_target`, secrets, or a tag. The earlier `workflow_dispatch` HTTP 404 was the API limitation for a workflow that is not on the default branch, not an approval denial. `release-windows.yml` was not dispatched. The run URL is recorded after this commit is pushed. |
 | Production host | There is no separate server to deploy. The product is the local profile. |
 
 ## Browser run
