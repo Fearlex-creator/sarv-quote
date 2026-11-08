@@ -1,8 +1,8 @@
 name: Release (Windows)
 
-# Builds a portable Windows zip (Sarv.exe, sarv-agent.exe and the GTK/WebView2
-# DLLs PDF export needs) and attaches it to a GitHub release.
-# Run it by pushing a `v*` tag, or by hand from the Actions tab.
+# Builds a per-user Windows setup executable, the portable zip, and the Linux
+# deb, then attaches them to a prerelease. It does not replace v0.1.0.
+# Run it by pushing a `v*` tag. The setup executable is not code-signed.
 on:
   push:
     tags: ["v*"]
@@ -91,13 +91,88 @@ jobs:
           zip -r "$out.zip" "$out"
           echo "ASSET=$out.zip" >> "$GITHUB_ENV"
 
+      - name: Windows setup executable
+        shell: pwsh
+        run: |
+          choco install nsis -y --no-progress
+          if ($LASTEXITCODE -ne 0 -and $LASTEXITCODE -ne 3010) { throw "choco failed: $LASTEXITCODE" }
+          $global:LASTEXITCODE = 0
+          $makensis = "C:\Program Files (x86)\NSIS\makensis.exe"
+          if (-not (Test-Path $makensis)) { throw "NSIS was not installed" }
+          $version = (Get-Content desktop/src-tauri/tauri.conf.json -Raw | ConvertFrom-Json).version
+          $stage = "desktop/src-tauri/installer"
+          New-Item -ItemType Directory -Force -Path "$stage/payload" | Out-Null
+          Copy-Item "Sarv-${{ env.TAG }}-windows-x64\*" "$stage/payload" -Force
+          Copy-Item desktop/src-tauri/icons/icon.ico "$stage/payload/icon.ico" -Force
+          Copy-Item desktop/src-tauri/icons/icon.ico "$stage/icon.ico" -Force
+          Copy-Item LICENSE "$stage/LICENSE.txt" -Force
+          Push-Location $stage
+          & $makensis "/DPRODUCT_VERSION=$version" "/INPUTCHARSET" "UTF8" "sarv.nsi"
+          if ($LASTEXITCODE -ne 0) { throw "makensis failed: $LASTEXITCODE" }
+          Get-ChildItem "Sarv-*-windows-x64-setup.exe" | Format-List Name, Length
+          Pop-Location
+
       - name: Publish release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          set -euo pipefail
+          setup=$(echo desktop/src-tauri/installer/Sarv-*-windows-x64-setup.exe)
+          test -f "$setup"
+          notes="Pre-release ${TAG}. This does not replace v0.1.0.
+
+          Windows: run the setup executable. It installs Sarv for the current user and adds a Start menu shortcut. Uninstall does not delete the shop's books. The setup is not code-signed. WebView2, already present on current Windows 10 and 11, is required.
+
+          The portable zip is the same program without a setup wizard.
+
+          Linux: install the .deb on Ubuntu or Debian with WebKitGTK 4.1.
+
+          The first screen asks for a shop password. There is no default password. Sarv does not file tax returns."
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release upload "$TAG" "$ASSET" --clobber
+            gh release upload "$TAG" "$ASSET" "$setup" --clobber
           else
-            gh release create "$TAG" "$ASSET" --title "Sarv $TAG" --prerelease --target "$GITHUB_SHA" \
-              --notes "Portable Windows build. Unzip anywhere and run Sarv.exe (needs the Microsoft Edge WebView2 runtime, preinstalled on Windows 10/11)."
+            gh release create "$TAG" "$ASSET" "$setup" --title "Sarv $TAG" --prerelease --target "$GITHUB_SHA" --notes "$notes"
           fi
+
+  linux:
+    needs: windows
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: System libraries
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libayatana-appindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libssl-dev \
+            libcairo2-dev \
+            libpango1.0-dev \
+            libgdk-pixbuf-2.0-dev \
+            pkg-config
+
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+
+      - name: Install JS dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir desktop install --frozen-lockfile
+
+      - name: Build the Debian package
+        run: pnpm --dir desktop exec tauri build --bundles deb
+
+      - name: Attach the Debian package
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          deb=$(echo desktop/src-tauri/target/release/bundle/deb/*.deb)
+          gh release upload "$TAG" "$deb" --clobber

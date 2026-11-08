@@ -25,6 +25,25 @@
     }
   },
   "bundle": {
-    "active": false
+    "active": true,
+    "targets": ["deb"],
+    "publisher": "Sarv",
+    "copyright": "AGPL-3.0-only",
+    "category": "Office",
+    "shortDescription": "Shop accounting on this computer",
+    "longDescription": "Sarv keeps a shop's books on this computer. It does not file tax returns and it does not replace a signed Windows release.",
+    "licenseFile": "../../LICENSE",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "linux": {
+      "deb": {
+        "depends": ["libwebkit2gtk-4.1-0", "libgtk-3-0"]
+      }
+    }
   }
 }

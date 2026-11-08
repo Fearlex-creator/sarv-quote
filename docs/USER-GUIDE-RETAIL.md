@@ -2,6 +2,14 @@
 
 This page is the shop lock, Excel workbooks, and the till. It is not the full accounting specification. An optional journal dimension is a line tag, not a kol/moein/tafsili chart. Sarv does not submit tax filings.
 
+## Install
+
+Windows, from the `v0.2.0-rc.1` pre-release: run `Sarv-0.2.0-rc.1-windows-x64-setup.exe`. It installs for the current user and adds a Start menu shortcut named Sarv. It does not need an administrator account. Uninstalling removes the program and leaves the shop's books in the user profile. The setup is not code-signed, so Windows may ask for confirmation. Opening the window needs Microsoft Edge WebView2, which current Windows 10 and 11 already have. A portable zip is also published for people who would rather not run a setup program.
+
+Linux: install `Sarv_0.2.0-rc.1_amd64.deb` on Ubuntu or Debian. The package depends on WebKitGTK 4.1 and GTK 3. That package is the installer. It is not a statement that every desktop portal is configured.
+
+The first screen asks for a shop password. There is no default password.
+
 Amounts in Excel and in the engine are rials. If the display unit is toman, the screen labels it as toman (10 rials).
 
 ## Lock the shop
