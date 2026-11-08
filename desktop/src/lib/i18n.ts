@@ -1150,6 +1150,10 @@ const messages: Record<string, string> = {
   "Microsoft 365 connection": "اتصال مایکروسافت ۳۶۵",
   "Local Excel files work without a Microsoft 365 subscription. Live sync is not configured.":
     "فایل اکسل محلی بدون اشتراک مایکروسافت ۳۶۵ کار می‌کند. همگام‌سازی زنده پیکربندی نشده است.",
+  "Local .xlsx import and export work with no Microsoft 365 subscription. A client id does not connect a workbook. The connector requests Files.SelectedOperations.Selected. Admin consent is required, and typing an item id is not a file grant. This build does not register an application.":
+    "ورود و خروج xlsx محلی بدون اشتراک مایکروسافت ۳۶۵ کار می‌کند. شناسهٔ برنامه به‌تنهایی کارپوشه را وصل نمی‌کند. اتصال، مجوز Files.SelectedOperations.Selected را می‌خواهد. رضایت مدیر لازم است و نوشتن شناسهٔ مورد، مجوز فایل نیست. این نسخه برنامه‌ای ثبت نمی‌کند.",
+  "Open the connect link and sign in. Files.SelectedOperations.Selected does not grant a typed item id. The workbook must already be permissioned to this app in OneDrive or SharePoint, and an administrator must consent. A refusal means that grant is missing. Sarv does not list the drive. live_verified stays false until a real tenant call succeeds, and this build has not made one.":
+    "پیوند اتصال را باز کنید و وارد شوید. Files.SelectedOperations.Selected با نوشتن شناسهٔ مورد داده نمی‌شود. کارپوشه باید از قبل در وان‌درایو یا شیرپوینت به این برنامه مجوز گرفته باشد و مدیر رضایت دهد. رد شدن یعنی آن مجوز نیست. سرو فهرست درایو را نمی‌گیرد. live_verified تا یک تماس واقعی با مستأجر false می‌ماند و این نسخه چنین تماسی نگرفته است.",
   "Check live connection": "بررسی اتصال زنده",
   "Create connect link": "ساخت پیوند اتصال",
   "Paste the redirected address": "نشانی بازگشت را بچسبانید",

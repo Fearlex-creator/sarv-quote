@@ -16,7 +16,12 @@ use std::io::{Read, Write};
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-const SCOPES: &str = "Files.ReadWrite.Selected offline_access";
+/// Per-file delegated scope. `Files.ReadWrite.Selected` is an Office file-handler
+/// scope and Microsoft says it must not be used to call Microsoft Graph.
+/// `Files.SelectedOperations.Selected` is the current per-file scope. Consent
+/// does not grant a typed drive item id; OneDrive or SharePoint must permission
+/// this application on that file, and admin consent is required.
+const SCOPES: &str = "Files.SelectedOperations.Selected offline_access";
 const PENDING: &str = ".graph-pending.json";
 const GRANT: &str = ".graph-grant.json";
 const MAX_DOWNLOAD: u64 = 1_000_000;
@@ -53,9 +58,9 @@ pub fn status(store: &Store) -> Value {
         "live_verified": false,
         "scopes": if configured { vec![SCOPES] } else { vec![] },
         "instructions": if configured {
-            "Open the connect link, sign in as the workbook owner, and paste the redirected address. Then type the item id of the one workbook you chose. Sarv does not list the drive."
+            "Open the connect link and sign in. Files.SelectedOperations.Selected does not grant a typed item id. The workbook must already be permissioned to this app in OneDrive or SharePoint, and an administrator must consent. A refusal means that grant is missing. Sarv does not list the drive. live_verified stays false until a real tenant call succeeds, and this build has not made one."
         } else {
-            "Local .xlsx import and export work with no Microsoft 365 subscription. To enable the connector, set SARV_GRAPH_CLIENT_ID, and optionally SARV_GRAPH_TENANT and SARV_GRAPH_REDIRECT_URI, on this computer. Do not put those values in the books. This build does not register an application and does not ask for tenant admin consent."
+            "Local .xlsx import and export work with no Microsoft 365 subscription. A client id does not connect a workbook. The connector requests Files.SelectedOperations.Selected. Admin consent is required, and typing an item id is not a file grant. This build does not register an application."
         },
     })
 }
@@ -234,15 +239,75 @@ fn item_id(payload: &Value) -> Result<String> {
 }
 
 fn post_form(url: &str, body: &str) -> Result<Value> {
-    let response = ureq::post(url)
+    let agent = ureq::AgentBuilder::new().redirects(0).build();
+    let attempted = agent
+        .post(url)
         .set("Content-Type", "application/x-www-form-urlencoded")
         .set("Accept", "application/json")
-        .send_string(body)
-        .map_err(|e| anyhow!("Token request failed: {}", redact(&e.to_string())))?;
+        .send_string(body);
+    let response = match attempted {
+        Ok(response) => response,
+        Err(ureq::Error::Status(code, response)) => {
+            let _ = response.into_string();
+            return Err(graph_status(code));
+        }
+        Err(error) => {
+            return Err(anyhow!(
+                "Token request failed: {}",
+                redact(&error.to_string())
+            ));
+        }
+    };
     let text = response
         .into_string()
         .map_err(|_| anyhow!("Token response was not readable"))?;
     serde_json::from_str(&text).map_err(|_| anyhow!("Token response was not JSON"))
+}
+
+fn graph_status(code: u16) -> anyhow::Error {
+    match code {
+        401 => anyhow!("Microsoft refused the sign-in. Start the connection again."),
+        403 => anyhow!(
+            "This workbook is not granted to the app. Files.SelectedOperations.Selected does not authorize a typed item id."
+        ),
+        429 => anyhow!("Microsoft asked Sarv to wait. Try the workbook again later."),
+        _ => anyhow!("Workbook request was refused ({code})"),
+    }
+}
+
+fn allowed_redirect(location: &str) -> bool {
+    let (secure, rest) = if let Some(rest) = location.strip_prefix("https://") {
+        (true, rest)
+    } else if let Some(rest) = location.strip_prefix("http://") {
+        (false, rest)
+    } else {
+        return false;
+    };
+    let hostport = rest.split(['/', '?', '#']).next().unwrap_or("");
+    if hostport.is_empty() || hostport.contains('@') {
+        return false;
+    }
+    let host = hostport
+        .rsplit_once(':')
+        .filter(|(_, port)| port.chars().all(|c| c.is_ascii_digit()))
+        .map(|(host, _)| host)
+        .unwrap_or(hostport);
+    if !secure {
+        return host == "127.0.0.1";
+    }
+    if host == "localhost" || host == "metadata.google.internal" {
+        return false;
+    }
+    match host.parse::<std::net::Ipv4Addr>() {
+        Ok(ip) => {
+            !(ip.is_loopback()
+                || ip.is_private()
+                || ip.is_link_local()
+                || ip.is_unspecified()
+                || ip.is_broadcast())
+        }
+        Err(_) => true,
+    }
 }
 
 fn http_bytes(method: &str, url: &str, token: &str, body: Option<&[u8]>) -> Result<Vec<u8>> {
@@ -252,7 +317,7 @@ fn http_bytes(method: &str, url: &str, token: &str, body: Option<&[u8]>) -> Resu
         _ => agent.get(url),
     }
     .set("Authorization", &format!("Bearer {token}"));
-    let response = if method == "PUT" {
+    let attempted = if method == "PUT" {
         request
             .set(
                 "Content-Type",
@@ -261,15 +326,27 @@ fn http_bytes(method: &str, url: &str, token: &str, body: Option<&[u8]>) -> Resu
             .send_bytes(body.unwrap_or_default())
     } else {
         request.call()
-    }
-    .map_err(|e| anyhow!("Workbook request failed: {}", redact(&e.to_string())))?;
+    };
+    let response = match attempted {
+        Ok(response) => response,
+        Err(ureq::Error::Status(code, response)) => {
+            let _ = response.into_string();
+            return Err(graph_status(code));
+        }
+        Err(error) => {
+            return Err(anyhow!(
+                "Workbook request failed: {}",
+                redact(&error.to_string())
+            ));
+        }
+    };
     let status = response.status();
     if status == 301 || status == 302 || status == 303 || status == 307 {
         let location = response
             .header("location")
             .unwrap_or("")
             .to_owned();
-        ensure!(location.starts_with("https://") || location.starts_with("http://127.0.0.1"), "Redirect was not allowed");
+        ensure!(allowed_redirect(&location), "Redirect was not allowed");
         let follow = ureq::AgentBuilder::new().redirects(0).build();
         let file = follow
             .get(&location)

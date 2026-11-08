@@ -893,8 +893,16 @@ fn graph_connector_uses_pkce_and_does_not_echo_tokens() {
     let url = begin["authorize_url"].as_str().unwrap();
     assert!(url.contains("code_challenge="));
     assert!(url.contains("code_challenge_method=S256"));
-    assert!(url.contains("Files.ReadWrite.Selected"));
+    assert!(url.contains("Files.SelectedOperations.Selected"));
+    assert!(!url.contains("Files.ReadWrite"));
+    assert!(url.contains("127.0.0.1"));
     assert!(!url.contains("code_verifier"));
+    let mismatch = call(
+        dir.path(),
+        "excel_graph_complete",
+        json!({"redirect_url": format!("http://127.0.0.1/cb?code=one&state=nope")}),
+    );
+    assert!(mismatch.unwrap_err().contains("state"));
     let state = url.split("state=").nth(1).unwrap().split('&').next().unwrap();
     must(
         dir.path(),
@@ -917,6 +925,85 @@ fn graph_connector_uses_pkce_and_does_not_echo_tokens() {
     must(dir.path(), "excel_graph_revoke", json!({}));
     let cleared = must(dir.path(), "excel_graph_status", json!({}));
     assert_eq!(cleared["authenticated"], false);
+    unsafe {
+        std::env::remove_var("SARV_GRAPH_CLIENT_ID");
+        std::env::remove_var("SARV_GRAPH_TENANT");
+        std::env::remove_var("SARV_GRAPH_REDIRECT_URI");
+        std::env::remove_var("SARV_GRAPH_AUTHORIZE_BASE");
+        std::env::remove_var("SARV_GRAPH_TOKEN_URL");
+        std::env::remove_var("SARV_GRAPH_API_BASE");
+    }
+}
+
+#[test]
+fn graph_refuses_an_ungranted_workbook_without_echoing_tokens() {
+    let _guard = graph_env().lock().unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = listener.local_addr().unwrap().port();
+    thread::spawn(move || {
+        for incoming in listener.incoming().take(4) {
+            let mut stream = incoming.unwrap();
+            let mut buf = [0u8; 4096];
+            let n = stream.read(&mut buf).unwrap_or(0);
+            let text = String::from_utf8_lossy(&buf[..n]);
+            let path = text.split_whitespace().nth(1).unwrap_or("").to_owned();
+            let (status, extra, body): (u16, String, Vec<u8>) = if path.starts_with("/token") {
+                (
+                    200,
+                    String::new(),
+                    br#"{"access_token":"at-secret","refresh_token":"rt-secret","expires_in":3600}"#.to_vec(),
+                )
+            } else if path.contains("RATE") {
+                (429, String::new(), br#"{"error":"access_token=at-secret"}"#.to_vec())
+            } else if path.contains("META") {
+                (
+                    302,
+                    "Location: http://169.254.169.254/latest\r\n".into(),
+                    Vec::new(),
+                )
+            } else {
+                (403, String::new(), br#"{"error":"access_token=at-secret"}"#.to_vec())
+            };
+            let head = format!(
+                "HTTP/1.1 {status} x\r\n{extra}Content-Length: {}\r\nConnection: close\r\n\r\n",
+                body.len()
+            );
+            let _ = stream.write_all(head.as_bytes());
+            let _ = stream.write_all(&body);
+        }
+    });
+    unsafe {
+        std::env::set_var("SARV_GRAPH_CLIENT_ID", "client-1");
+        std::env::set_var("SARV_GRAPH_TENANT", "common");
+        std::env::set_var("SARV_GRAPH_REDIRECT_URI", "http://127.0.0.1/cb");
+        std::env::set_var("SARV_GRAPH_AUTHORIZE_BASE", format!("http://127.0.0.1:{port}"));
+        std::env::set_var("SARV_GRAPH_TOKEN_URL", format!("http://127.0.0.1:{port}/token"));
+        std::env::set_var("SARV_GRAPH_API_BASE", format!("http://127.0.0.1:{port}/v1.0"));
+    }
+    let dir = tempfile::tempdir().unwrap();
+    let (c, p) = company(dir.path());
+    let begin = must(dir.path(), "excel_graph_begin", json!({}));
+    let url = begin["authorize_url"].as_str().unwrap();
+    let state = url.split("state=").nth(1).unwrap().split('&').next().unwrap();
+    must(
+        dir.path(),
+        "excel_graph_complete",
+        json!({"redirect_url": format!("http://127.0.0.1/cb?code=one&state={state}")}),
+    );
+    for (item, needle) in [
+        ("DENIED", "not granted"),
+        ("RATE", "wait"),
+        ("META", "Redirect"),
+    ] {
+        let error = call(
+            dir.path(),
+            "excel_graph_preview",
+            json!({"kind": "products", "item_id": item, "company_id": c, "period_id": p}),
+        )
+        .unwrap_err();
+        assert!(error.contains(needle), "{error}");
+        assert!(!error.contains("at-secret"), "{error}");
+    }
     unsafe {
         std::env::remove_var("SARV_GRAPH_CLIENT_ID");
         std::env::remove_var("SARV_GRAPH_TENANT");

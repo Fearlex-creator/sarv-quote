@@ -25,6 +25,7 @@ interface GraphStatus {
   instructions: string;
   authenticated: boolean;
   live_verified: boolean;
+  scopes?: string[];
 }
 
 async function fileBase64(file: File) {
@@ -244,12 +245,15 @@ export function ExcelIO() {
       <section className="rounded-xl border border-dashed border-border p-4">
         <h2 className="text-sm font-medium">{t("Microsoft 365 connection")}</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          {graph?.instructions ??
-            t("Local Excel files work without a Microsoft 365 subscription. Live sync is not configured.")}
+          {t(
+            graph?.instructions ??
+              "Local Excel files work without a Microsoft 365 subscription. Live sync is not configured.",
+          )}
         </p>
         <p className="mt-2 text-sm font-medium" dir="ltr">
           {t("Status")}: {graph?.status ?? "not_configured"}
           {graph ? ` · live_verified=${String(graph.live_verified)}` : ""}
+          {graph?.scopes?.length ? ` · ${graph.scopes.join(" ")}` : ""}
         </p>
         {graph?.configured && !graph.authenticated && (
           <div className="mt-3 flex flex-col gap-2">

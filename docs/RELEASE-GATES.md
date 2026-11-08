@@ -4,28 +4,46 @@ No tag was created and the Windows workflow was not started. The existing GitHub
 
 ## Green on this branch
 
-- `cargo test -p sarv-quote --offline`: 275 listed, 272 passed, 3 ignored, 0 failed.
+- `cargo test -p sarv-quote --offline`: 276 listed, 273 passed, 3 ignored, 0 failed.
 - Desktop typecheck, lint, and 14 unit tests.
 - `cargo audit` reports no advisories on the lockfile that uses calamine 0.38, zip 9.4.2, and rust_xlsxwriter 0.102.
 - `pnpm --dir desktop audit --prod` reports no known vulnerabilities. The shadcn CLI is not a production dependency.
 - Shop-lock denial for a cashier journal, a signed-out workspace, and a legacy agent token. An owner-granted accountant token can read and cannot create users.
 - Graph connector contract against a local mock. `live_verified` is false.
-- A Linux deb was produced: `desktop/src-tauri/target/release/bundle/deb/Sarv_0.1.0_amd64.deb`, sha256 `98f7f9dbc83f08362e51779458bbf231a85467644d014c13729eec5f31cd4ecb`. A copy is `/opt/cursor/artifacts/sarv-linux/Sarv_0.1.0_amd64.deb`.
+- A Linux deb was produced after the Graph change: `desktop/src-tauri/target/release/bundle/deb/Sarv_0.1.0_amd64.deb`, sha256 `3aaa9c62594496f14f2113f745c88f78775e3375f5ada46416302f0d8db36708`. The extracted `usr/bin/sarv-desktop` is sha256 `2a1e4cb99d3ff0fa25f54b526755a55cfa6c4b4cb8fe79ea2882e221c32b7a7e`. A copy is `/opt/cursor/artifacts/sarv-linux/Sarv_0.1.0_amd64.deb`. Version 0.1.0 matches the existing GitHub release `v0.1.0` and is not a new public release. Under Xvfb, with a disposable `SARV_DATA_DIR`, the extracted binary opened the first-run screen (owner name, password, “Set a password”) and created `sarv.sqlite3`. Screenshot: `/opt/cursor/artifacts/sarv-linux/first-run.png`. Excel import, POS, and the receipt were exercised by the Playwright run on this same UI, not by clicking through the packaged webview.
+- `pnpm test:pdf --offline --no-fail-fast`: 316 passed, 0 failed, 3 ignored.
+
+## PDF money cells
+
+`final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster` used to count pixels whose channels were all below 180 and require the poppler count to stay within 20% of cairo. On this machine the first amount cell was 194×226 in both rasters and both showed `۱۵٬۶۲۵.۴`. Cairo counted 186 ink pixels and poppler 24.02 counted 265. Channel-max bands were cairo `[0, 47, 46, 60, 33]` and poppler `[0, 119, 64, 57, 25]` for the bins below 40, 40–79, 80–119, 120–159, and 160–179. Neither raster had a pixel below 40. The extra poppler ink is mid-gray stem weight, not a missing or extra digit. Crops: `/opt/cursor/artifacts/sarv-pdf/cell-native.png` and `/opt/cursor/artifacts/sarv-pdf/cell-poppler.png`.
+
+The ink ratio is no longer the assertion. The test now requires each line price, line total, discount, and grand total from `MoneyUnit::display` to appear in `pdftotext`, and the glyph box of pixels darker than 160 to agree within 4px. The measured boxes were cairo `(126, 25, 57, 13)` and poppler `(123, 22, 60, 13)`: the far edge stays put and the heavier stem grows the box by 3px. A dropped digit in that 57px run is wider than 4px. Draft and approved pages from the same cairo rasterizer must still match exactly, and each cell must still contain ink. The renderer was not changed.
 
 ## Not green
 
 | Gate | What is missing |
 | --- | --- |
-| PDF raster tolerance | `pnpm test:pdf --offline --no-fail-fast` passed 314, failed 1, ignored 3. `final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster` compared cairo's page with poppler 24.02 (`pdftoppm`). Native ink in the first money cell was 186 and poppler's was 265. The test allows a gap under one fifth. Both rasters show the Persian quotation. Files: `/opt/cursor/artifacts/sarv-pdf/native-page.png` and `/opt/cursor/artifacts/sarv-pdf/poppler-page.png`. |
-| Dev-tool advisories | `pnpm --dir desktop audit` (dev included): high `zod` &lt; 4.6.6 via `eslint-plugin-react-hooks` (GHSA-mrhx-c7xc-m3w5) and moderate `minimatch` via ESLint (GHSA-g3hv-75wg-m249). Not reachable from the production bundle. Thresholds were not raised. |
-| Historical binaries | Ignored tests need `SARV_M3_COMPAT_BINARY`, `SARV_M4_COMPAT_BINARY`, and `SARV_M5_COMPAT_BINARY`. The schema 4/5/6 commits are `bdc304cb139e3d258b107b9ce18c7f4682ec5a89`, `24ae57bc179336ad21d7d1d52501f49e80f3330b`, and `eb8f8c29648fd4a206a26d65ae4eaca5cf945a1b`. Building them in isolated worktrees stopped: `libadwaita-sys` requires libadwaita &gt;= 1.9 and this machine has 1.5.0. GitHub release `v0.1.0` is a Windows Tauri zip, not those GTK binaries. Actions artifacts for this repo were empty. |
+| Dev-tool advisory | `pnpm --dir desktop audit` still reports moderate `minimatch` via ESLint (GHSA-g3hv-75wg-m249). ESLint 10 is the linter. Forcing minimatch 11 was not done. The high `zod` finding is patched. Thresholds were not raised. |
+| Historical binaries in CI | The default `cargo test` still ignores the three compat tests, because the binaries are not in git and an Ubuntu 24.04 runner cannot link libadwaita 1.9. A local Ubuntu 26.04 chroot did build the unchanged commits and the three tests passed there. See below. |
 | Graph against Microsoft | The connector and a local mock pass. A real tenant still needs the owner to register an app and set `SARV_GRAPH_CLIENT_ID`. No secret is in the repo. |
-| Windows artifact of this branch | `release-windows.yml` publishes on `v*` or a manual dispatch. Neither was run for this branch. Chrome does not prove Windows. |
+| Windows artifact of this branch | `windows-build.yml` is build-only. It is dispatched after this commit. `release-windows.yml` still publishes, so it was not dispatched and no tag was created. |
 | Production host | There is no separate server to deploy. The product is the local profile. |
 
 ## Browser run
 
-Playwright projects are `chrome` (system Google Chrome), `firefox` (Playwright Firefox 1555), and `webkit` (Playwright WebKit 2370). One invocation of `pnpm --dir desktop exec playwright test` passed 78 and failed 0 (26 per browser, 12.3 minutes).
+Playwright projects are `chrome` (system Google Chrome), `firefox` (Playwright Firefox 1555), and `webkit` (Playwright WebKit 2370). After the Graph copy change, one invocation of `pnpm --dir desktop test` passed 78 and failed 0 (12.2 minutes).
+
+## Historical schema binaries
+
+The host is Ubuntu 24.04 with libadwaita 1.5.0 and has no Docker. `debootstrap --variant=minbase resolute` from `http://archive.ubuntu.com/ubuntu` produced a chroot with libadwaita 1.9.1-0ubuntu0.2, GTK 4.22.4, and rustc/cargo 1.93.1. The historical sources were not edited. `cargo build --release --locked` succeeded for each commit:
+
+| Commit | Schema era | sha256 of `target/release/sarv-quote` |
+| --- | --- | --- |
+| `bdc304cb139e3d258b107b9ce18c7f4682ec5a89` | 4 | `d7b230635208a5d92605f0db8d754432dbb9a71227266622b4667f59689079bf` |
+| `24ae57bc179336ad21d7d1d52501f49e80f3330b` | 5 | `406a0beee684c3a1a521d2918cc4e215855950f8d9ac6cec8bbe7877fdfa068b` |
+| `eb8f8c29648fd4a206a26d65ae4eaca5cf945a1b` | 6 | `502d77fa11f067575553329815da97a028d4f2a43d0996134cc7f5f95175bc01` |
+
+The binaries need glibc 2.43, so they were executed with the chroot's `ld-linux-x86-64.so.2` and library path. With that loader, `actual_m3_binary_rejects_current_schema_without_modifying_committed_row`, `actual_m4_binary_refuses_current_schema_without_changing_row`, and `actual_m5_binary_refuses_schema7_without_modifying_committed_row` passed. They stay `#[ignore]` in the default suite.
 
 An earlier combined run on the same product, before two test waits and the opening-stock id fix, was 74 passed and 4 failed. The agent spec asked Firefox and WebKit for a Chromium-only clipboard permission. The retail sale then failed because opening-stock line ids `ln-0` and `rc-0` were global, so the second company in the shared QA profile was rejected. Line ids now include the request key. Clipboard checks use an in-page clipboard. A later WebKit-only miss was the sale toast's 5 second wait while checkout was still running; that wait is 20 seconds. The 78-pass run is after those fixes.
 

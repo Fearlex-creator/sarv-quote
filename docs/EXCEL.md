@@ -27,11 +27,13 @@ Compressed size 1 MB, uncompressed 8 MB, 64 zip entries, 5000 data rows. Paths t
 
 ## Microsoft 365
 
-The connector runs only when this computer has `SARV_GRAPH_CLIENT_ID`. Optional names are `SARV_GRAPH_TENANT` and `SARV_GRAPH_REDIRECT_URI`. Sarv does not register the application and does not request tenant admin consent. The scope is `Files.ReadWrite.Selected` plus `offline_access`.
+The connector runs only when this computer has `SARV_GRAPH_CLIENT_ID`. Optional names are `SARV_GRAPH_TENANT` and `SARV_GRAPH_REDIRECT_URI`. Sarv does not register the application.
 
-Connect creates a PKCE challenge and a state value. The owner pastes the redirected address. The refresh token is stored in `.graph-grant.json` with mode 0600. Status JSON never includes the token. Disconnect deletes the file and attempts revocation. The owner then types one workbook item id. Sarv does not list the drive. Preview and commit use the same row checks as a local file. Push replaces that item only, and only after confirmation. `excel_graph_sync` does not run a background sync.
+The requested scope is `Files.SelectedOperations.Selected` plus `offline_access`. Microsoft’s OneDrive permission reference says `Files.ReadWrite.Selected` is only for Office file handlers and should not be used to call Microsoft Graph. The current per-file scope still does not grant a workbook because someone typed its item id. An administrator must consent, and OneDrive or SharePoint must permission this app on that file. A 403 means that grant is missing. A client id alone is not a connection. Sarv does not fall back to `Files.ReadWrite` or `Files.ReadWrite.All`.
 
-`live_verified` stays false in status. A contract test talks to a local mock, not to Microsoft. Without the client id, status is `not_configured` and local `.xlsx` still works.
+Connect creates a PKCE challenge and a state value. The owner pastes the redirected address. The refresh token is stored in `.graph-grant.json` with mode 0600. Status JSON never includes the token. Disconnect deletes the file and attempts revocation. The content call is only `GET` or `PUT /me/drive/items/{id}/content` for one id. Redirects drop the bearer token, refuse private and link-local targets, and allow `http` only for `127.0.0.1`. Sarv does not list the drive. Preview and commit use the same row checks as a local file. Push replaces that item only, and only after confirmation. `excel_graph_sync` does not run a background sync.
+
+`live_verified` stays false in status. Contract tests talk to a local mock, not to Microsoft. Without the client id, status is `not_configured` and local `.xlsx` still works. A real tenant has not been activated.
 
 Opening stock is a goods receipt: inventory debit, GRNI credit. It is not owner equity and it is not a supplier bill. Clear GRNI with a bill or a reviewed journal.
 

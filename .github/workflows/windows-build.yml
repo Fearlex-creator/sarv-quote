@@ -1,0 +1,86 @@
+name: Windows build
+
+# Builds the portable Windows folder for this branch and uploads it as a
+# workflow artifact. It does not create a tag and it does not publish a GitHub
+# release. The release workflow remains release-windows.yml, which runs on a
+# v* tag or a manual dispatch that names a tag.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          path-type: inherit
+          install: >-
+            zip
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-cairo
+            mingw-w64-x86_64-pango
+            mingw-w64-x86_64-fontconfig
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-harfbuzz
+
+      - name: Rust (GNU toolchain)
+        run: |
+          rustup toolchain install stable-x86_64-pc-windows-gnu --profile minimal
+          rustup default stable-x86_64-pc-windows-gnu
+          rustc --version
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+            desktop/src-tauri/target
+          key: windows-gnu-${{ hashFiles('Cargo.lock', 'desktop/src-tauri/Cargo.lock') }}
+
+      - name: Install JS dependencies
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm --dir desktop install --frozen-lockfile
+
+      - name: Build agent and desktop app
+        run: |
+          pnpm --dir desktop run build:agent
+          pnpm --dir desktop exec tauri build --no-bundle
+
+      - name: Collect portable folder
+        run: |
+          set -euo pipefail
+          out="Sarv-windows-x64"
+          mkdir -p "$out"
+          cp desktop/src-tauri/target/release/sarv-desktop.exe "$out/Sarv.exe"
+          cp target/release/sarv-agent.exe "$out/"
+          find desktop/src-tauri/target/release -name WebView2Loader.dll -path '*x64*' | head -n1 | xargs -I{} cp {} "$out/"
+          ldd "$out/Sarv.exe" "$out/sarv-agent.exe" \
+            | awk '/\/mingw64\// {print $3}' | sort -u \
+            | xargs -I{} cp {} "$out/"
+          cp LICENSE "$out/"
+          ls -l "$out"
+          zip -r "$out.zip" "$out"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Sarv-windows-x64
+          path: Sarv-windows-x64.zip
+          if-no-files-found: error
