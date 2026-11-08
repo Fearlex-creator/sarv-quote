@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("settings backups create, list, preview and safe restore", async ({
+test("settings backups create and list, and refuse restore without a shop password", async ({
   page,
 }) => {
   const errors: string[] = [];
@@ -43,14 +43,12 @@ test("settings backups create, list, preview and safe restore", async ({
   await dialog
     .getByRole("button", { name: "Restore backup", exact: true })
     .click();
-  await expect(page.getByText("Books restored from backup")).toBeVisible();
-  // Books still work after the restore.
-  await page
-    .locator(".sidebar")
-    .getByRole("button", { name: "Overview", exact: true })
-    .click();
-  await expect(
-    page.getByRole("heading", { name: "Overview", exact: true }),
-  ).toBeVisible();
+  // The shared browser profile is the unlocked QA adapter. Restore stays refused
+  // until that profile has its own shop password, so this click must not import
+  // the books. A packaged profile with its own password is covered separately.
+  await expect(dialog.getByRole("alert")).toContainText(
+    "Set a shop password before restoring a backup into this profile",
+  );
+  await expect(page.getByText("Books restored from backup")).toHaveCount(0);
   expect(errors).toEqual([]);
 });

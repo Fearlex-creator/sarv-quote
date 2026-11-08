@@ -71,12 +71,16 @@ fn command(company: &str, period: &str, asset: &str, equity: &str, amount: i64) 
                 debit: Money::from_rials(amount),
                 credit: Money::ZERO,
                 description: "دارایی مصنوعی".into(),
+
+                dimension: String::new(),
             },
             JournalLineInput {
                 account_id: equity.into(),
                 debit: Money::ZERO,
                 credit: Money::from_rials(amount),
                 description: "سرمایهٔ مصنوعی".into(),
+
+                dimension: String::new(),
             },
         ],
     }
@@ -286,6 +290,8 @@ fn failed_post_is_atomic_for_invalid_lines_unbalance_and_overflow() {
         debit: Money::from_rials(1),
         credit: Money::ZERO,
         description: String::new(),
+
+        dimension: String::new(),
     });
     variants.push(bad);
     for bad in variants {
@@ -557,4 +563,53 @@ fn backdated_post_checks_every_affected_cutoff_not_only_current_balance() {
     assert!(s.post(backdated).is_err());
     assert_eq!(s, before);
     s.validate().unwrap();
+}
+
+#[test]
+fn optional_dimension_stays_out_of_old_books_and_does_not_unbalance() {
+    let (mut state, company, period, asset, equity) = fixture();
+    let mut posted = command(&company, &period, &asset, &equity, 40);
+    posted.kind = JournalKind::Manual;
+    posted.event = "manual".into();
+    posted.request_key = "dimension-post".into();
+    posted.source_id = "dimension-post".into();
+    posted.lines[0].dimension = "party:sample".into();
+    state.post(posted).unwrap();
+    let journal = state.journals.last().unwrap();
+    assert_eq!(journal.lines[0].dimension, "party:sample");
+    assert!(journal.lines[1].dimension.is_empty());
+    assert_eq!(journal.lines[0].debit, journal.lines[1].credit);
+    let encoded = serde_json::to_string(journal).unwrap();
+    assert!(encoded.contains("party:sample"));
+    assert_eq!(encoded.matches("\"dimension\"").count(), 1);
+    let bare = JournalLineInput {
+        account_id: "legacy".into(),
+        debit: Money::ZERO,
+        credit: Money::ZERO,
+        description: "legacy".into(),
+        dimension: String::new(),
+    };
+    let value = serde_json::to_value(&bare).unwrap();
+    assert!(value.get("dimension").is_none());
+    let restored: JournalLineInput = serde_json::from_value(value).unwrap();
+    assert!(restored.dimension.is_empty());
+    state.validate().unwrap();
+    let id = state.journals.last().unwrap().id.clone();
+    state
+        .reverse(
+            &id,
+            &period,
+            "2026-01-02",
+            "dimension-reversal",
+            "آزمایشگر محلی",
+            "برگرداندن تفصیلی",
+        )
+        .unwrap();
+    assert_eq!(
+        state.journals.last().unwrap().lines[0].dimension,
+        "party:sample"
+    );
+    state.validate().unwrap();
+    state.journals[0].lines[0].dimension = "changed".into();
+    assert!(state.validate().is_err());
 }

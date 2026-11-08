@@ -50,9 +50,25 @@ export default defineConfig({
   use: {
     baseURL: "http://localhost:1420",
     viewport: { width: 1440, height: 900 },
-    launchOptions: { executablePath: browser, args: ["--no-sandbox"] },
     trace: "retain-on-failure",
   },
+  projects: [
+    {
+      name: "chrome",
+      use: {
+        browserName: "chromium",
+        launchOptions: { executablePath: browser, args: ["--no-sandbox"] },
+      },
+    },
+    {
+      name: "firefox",
+      use: { browserName: "firefox" },
+    },
+    {
+      name: "webkit",
+      use: { browserName: "webkit" },
+    },
+  ],
   reporter: [
     ["list"],
     ["json", { outputFile: "../artifacts/tauri-ui/results.json" }],

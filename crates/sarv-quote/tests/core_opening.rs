@@ -460,12 +460,16 @@ fn guided_setup_is_atomic_customizable_and_preserves_other_books() {
                 debit: irr(1251),
                 credit: irr(0),
                 description: "independent legacy funds".into(),
+
+                dimension: String::new(),
             },
             JournalLineInput {
                 account_id: legacy_capital,
                 debit: irr(0),
                 credit: irr(1251),
                 description: "independent supplied capital".into(),
+
+                dimension: String::new(),
             },
         ],
     })
@@ -691,12 +695,16 @@ fn zero_and_financial_request_keys_share_one_collision_boundary() {
                 debit: irr(1),
                 credit: Money::ZERO,
                 description: "explicit asset".into(),
+
+                dimension: String::new(),
             },
             JournalLineInput {
                 account_id: capital,
                 debit: Money::ZERO,
                 credit: irr(1),
                 description: "explicit supplied capital".into(),
+
+                dimension: String::new(),
             },
         ],
     };

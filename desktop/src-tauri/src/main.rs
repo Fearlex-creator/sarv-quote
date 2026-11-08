@@ -29,6 +29,17 @@ async fn save_report(
     payload: Value,
 ) -> Result<bool, String> {
     use tauri_plugin_dialog::DialogExt;
+    {
+        let dir = state.0.clone();
+        let mut payload = payload.clone();
+        let action = action.clone();
+        tauri::async_runtime::spawn_blocking(move || {
+            let store = sarv_quote::store::Store::open(&dir).map_err(|e| e.to_string())?;
+            sarv_quote::access::enforce(&store, &action, &mut payload).map_err(|e| e.to_string())
+        })
+        .await
+        .map_err(|e| e.to_string())??;
+    }
     if action == "backup_export" {
         let dir = state.0.clone();
         return tauri::async_runtime::spawn_blocking(move || {

@@ -1,6 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import "./shadcn-theme.css";
 @import "@fontsource-variable/ibm-plex-sans";
 @import "@fontsource-variable/space-grotesk";
 
@@ -35,7 +35,7 @@
   --secondary: oklch(0.967 0.001 286.375);
   --secondary-foreground: oklch(0.21 0.006 285.885);
   --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
+  --muted-foreground: oklch(0.45 0 0);
   --accent: oklch(0.97 0 0);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
@@ -3810,4 +3810,22 @@ input[inputmode="decimal"] {
 
 .quick-create-type-bar .pay-methods {
   grid-template-columns: repeat(2, 1fr);
+}
+
+@media print {
+  body.pos-printing * {
+    visibility: hidden;
+  }
+  body.pos-printing .pos-receipt,
+  body.pos-printing .pos-receipt * {
+    visibility: visible;
+  }
+  body.pos-printing .pos-receipt {
+    position: absolute;
+    inset: 0;
+    width: 80mm;
+    border: 0;
+    background: white;
+    color: black;
+  }
 }

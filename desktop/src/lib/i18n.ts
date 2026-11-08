@@ -654,6 +654,10 @@ const messages: Record<string, string> = {
   "Journal debit {index}": "بدهکار ردیف {index}",
   "Journal credit {index}": "بستانکار ردیف {index}",
   "Journal description {index}": "شرح ردیف {index}",
+  Dimension: "تفصیلی",
+  "Journal dimension {index}": "تفصیلی ردیف {index}",
+  "Optional tag stored with this line. It does not change the amount or the journal id.":
+    "برچسب اختیاری همین ردیف. مبلغ و شناسهٔ سند را عوض نمی‌کند.",
   "Remove journal line {index}": "حذف ردیف سند {index}",
   "Journal #{value1}": "سند #{value1}",
   "Record purchase order {value1}. Stock changes when goods are received.":
@@ -1101,6 +1105,117 @@ const messages: Record<string, string> = {
   ORDER: "سفارش",
   "Goods received and supplier bill recorded":
     "کالا دریافت و صورتحساب تأمین‌کننده ثبت شد",
+  "Point of sale": "صندوق فروش",
+  Excel: "اکسل",
+  "Sign in": "ورود",
+  "Sign out": "خروج",
+  "Sarv keeps this shop's books on this computer.":
+    "سرو دفاتر این فروشگاه را روی همین رایانه نگه می‌دارد.",
+  Password: "گذرواژه",
+  "Shop lock": "قفل فروشگاه",
+  "This shop is not password protected. Anyone who can open Sarv can change the books.":
+    "این فروشگاه گذرواژه ندارد. هر کس سرو را باز کند می‌تواند دفاتر را تغییر دهد.",
+  "Owner name": "نام مالک",
+  "Set a password": "گذاشتن گذرواژه",
+  "Write this recovery code down. It will not be shown again.":
+    "این کد بازیابی را بنویسید. دیگر نشان داده نمی‌شود.",
+  "There is no email reset. The code stays out of the books and out of logs.":
+    "بازیابی با ایمیل وجود ندارد. کد در دفاتر و گزارش‌ها ذخیره نمی‌شود.",
+  "I wrote the recovery code down": "کد بازیابی را نوشتم",
+  "Shop lock is on": "قفل فروشگاه روشن شد",
+  "Signed in as {name} ({role}).": "وارد شده‌اید: {name} ({role}).",
+  Disabled: "غیرفعال",
+  "Add person": "افزودن شخص",
+  Cashier: "صندوقدار",
+  Accountant: "حسابدار",
+  Admin: "مدیر",
+  "Person added. The password you typed is not saved in a report.":
+    "شخص اضافه شد. گذرواژه‌ای که نوشتید در گزارش ذخیره نمی‌شود.",
+  "Rial amounts, not tomans. Formulas and macros are refused.":
+    "مبالغ به ریال است، نه تومان. فرمول و ماکرو پذیرفته نمی‌شود.",
+  "Download template": "دریافت الگوی اکسل",
+  Sheet: "برگه",
+  "Opening stock": "موجودی اول دوره",
+  "If the row already exists": "اگر ردیف از قبل باشد",
+  "Skip existing rows": "ردیف‌های موجود رد شوند",
+  "Update prices and contact details": "قیمت و مشخصات مخاطب به‌روز شود",
+  Workbook: "کارپوشه",
+  "Preview workbook": "پیش‌نمایش کارپوشه",
+  "Export current rows": "خروجی ردیف‌های فعلی",
+  "Export trial balance": "خروجی تراز آزمایشی",
+  "{count} rows can be committed. Currency: {currency}. The whole workbook is saved or nothing is.":
+    "{count} ردیف قابل ثبت است. واحد پول: {currency}. یا همهٔ کارپوشه ثبت می‌شود یا هیچ‌چیز.",
+  "Row {row}: {message}": "ردیف {row}: {message}",
+  "Commit these rows into the books": "این ردیف‌ها در دفاتر ثبت شوند",
+  "Commit workbook": "ثبت کارپوشه",
+  "This workbook was already committed": "این کارپوشه قبلاً ثبت شده است",
+  "Imported {created} new, {updated} updated, {skipped} skipped":
+    "{created} تازه، {updated} به‌روز، {skipped} رد شد",
+  "Microsoft 365 connection": "اتصال مایکروسافت ۳۶۵",
+  "Local Excel files work without a Microsoft 365 subscription. Live sync is not configured.":
+    "فایل اکسل محلی بدون اشتراک مایکروسافت ۳۶۵ کار می‌کند. همگام‌سازی زنده پیکربندی نشده است.",
+  "Local .xlsx import and export work with no Microsoft 365 subscription. A client id does not connect a workbook. The connector requests Files.SelectedOperations.Selected. Admin consent is required, and typing an item id is not a file grant. This build does not register an application.":
+    "ورود و خروج xlsx محلی بدون اشتراک مایکروسافت ۳۶۵ کار می‌کند. شناسهٔ برنامه به‌تنهایی کارپوشه را وصل نمی‌کند. اتصال، مجوز Files.SelectedOperations.Selected را می‌خواهد. رضایت مدیر لازم است و نوشتن شناسهٔ مورد، مجوز فایل نیست. این نسخه برنامه‌ای ثبت نمی‌کند.",
+  "Open the connect link and sign in. Files.SelectedOperations.Selected does not grant a typed item id. The workbook must already be permissioned to this app in OneDrive or SharePoint, and an administrator must consent. A refusal means that grant is missing. Sarv does not list the drive. live_verified stays false until a real tenant call succeeds, and this build has not made one.":
+    "پیوند اتصال را باز کنید و وارد شوید. Files.SelectedOperations.Selected با نوشتن شناسهٔ مورد داده نمی‌شود. کارپوشه باید از قبل در وان‌درایو یا شیرپوینت به این برنامه مجوز گرفته باشد و مدیر رضایت دهد. رد شدن یعنی آن مجوز نیست. سرو فهرست درایو را نمی‌گیرد. live_verified تا یک تماس واقعی با مستأجر false می‌ماند و این نسخه چنین تماسی نگرفته است.",
+  "Check live connection": "بررسی اتصال زنده",
+  "Create connect link": "ساخت پیوند اتصال",
+  "Paste the redirected address": "نشانی بازگشت را بچسبانید",
+  "Finish sign-in": "پایان ورود",
+  "Workbook item id": "شناسهٔ کارپوشه",
+  "Preview selected workbook": "پیش‌نمایش کارپوشهٔ انتخاب‌شده",
+  Disconnect: "قطع اتصال",
+  "Scan or search": "اسکن یا جست‌وجو",
+  "Barcode, SKU, or name": "بارکد، کد کالا یا نام",
+  "No product matches that code": "کالایی با این کد پیدا نشد",
+  "Till open": "صندوق باز است",
+  Opening: "موجودی اول صندوق",
+  "Counted cash": "وجه شمارش‌شده",
+  "Close till": "بستن صندوق",
+  "Open a till before checkout. Opening cash is the float you counted, not new revenue.":
+    "پیش از فروش صندوق را باز کنید. وجه اول، پول شمارش‌شدهٔ صندوق است نه درآمد تازه.",
+  "Opening cash": "وجه اول صندوق",
+  "Open till": "باز کردن صندوق",
+  "Open a till before checkout.": "پیش از فروش صندوق را باز کنید.",
+  "You are offline. Checkout is paused so a sale cannot look successful without being saved.":
+    "اتصال نیست. فروش متوقف شد تا بدون ذخیره، موفق به نظر نرسد.",
+  "Negative stock is rejected. Card and bank amounts here are manual records, not a live collection.":
+    "موجودی منفی پذیرفته نمی‌شود. مبلغ کارت و بانک اینجا فقط ثبت دستی است، نه دریافت زنده.",
+  "Toman (10 rials)": "تومان (۱۰ ریال)",
+  Rial: "ریال",
+  Cart: "سبد",
+  "Cash recorded in the till. This is not a card payment.":
+    "نقد در صندوق ثبت می‌شود. این پرداخت کارتی نیست.",
+  "Bank receipt recorded. Sarv did not contact a bank or a card terminal.":
+    "رسید بانک ثبت می‌شود. سرو با بانک یا کارتخوان تماس نگرفته است.",
+  "Left on the customer account. Nothing was charged to a card.":
+    "روی حساب مشتری می‌ماند. چیزی از کارت کشیده نشده است.",
+  "Split the receipt between cash and bank. Both are manual records.":
+    "رسید بین نقد و بانک تقسیم می‌شود. هر دو ثبت دستی هستند.",
+  "Hold sale": "نگه‌داشتن فروش",
+  "Complete sale": "تکمیل فروش",
+  "Sale held": "فروش نگه داشته شد",
+  "Sale recorded": "فروش ثبت شد",
+  Resume: "ادامه",
+  Paid: "پرداخت‌شده",
+  "Manual payment": "پرداخت دستی",
+  Print: "چاپ",
+  Keypad: "صفحه‌کلید",
+  "Digit {digit}": "رقم {digit}",
+  Backspace: "پاک کردن رقم",
+  "Clear code": "پاک کردن کد",
+  "Increase quantity": "افزایش مقدار",
+  "Decrease quantity": "کاهش مقدار",
+  "No matching product": "کالایی با این عبارت پیدا نشد",
+  "Add a warehouse before checkout.": "پیش از فروش، یک انبار به کسب‌وکار اضافه کنید.",
+  Products: "کالاها",
+  Customers: "مشتریان",
+  Suppliers: "تأمین‌کنندگان",
+  Status: "وضعیت",
+  Quantity: "مقدار",
+  Customer: "مشتری",
+  Total: "جمع",
+  "No records yet.": "هنوز رکوردی نیست.",
 };
 export function translate(
   text: string,

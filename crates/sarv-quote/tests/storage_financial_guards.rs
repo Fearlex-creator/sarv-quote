@@ -52,12 +52,16 @@ fn posted() -> State {
                 debit: Money::from_rials(1251),
                 credit: Money::ZERO,
                 description: "دارایی".into(),
+
+                dimension: String::new(),
             },
             JournalLineInput {
                 account_id: ids[1].clone(),
                 debit: Money::ZERO,
                 credit: Money::from_rials(1251),
                 description: "سرمایه".into(),
+
+                dimension: String::new(),
             },
         ],
     })

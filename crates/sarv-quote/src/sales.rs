@@ -247,7 +247,13 @@ fn base(i: &CoreItem, u: &str, q: i64) -> Result<i64> {
     );
     Ok(v)
 }
-pub(crate) fn allocation(v: Money, q: i64, priorq: i64, priorv: Money, nextq: i64) -> Result<Money> {
+pub(crate) fn allocation(
+    v: Money,
+    q: i64,
+    priorq: i64,
+    priorv: Money,
+    nextq: i64,
+) -> Result<Money> {
     ensure!(
         q > 0 && priorq >= 0 && nextq > 0 && v.rials() >= 0 && priorv.rials() >= 0,
         "مقدار تخصیص نامعتبر است"
@@ -371,12 +377,16 @@ fn pair(
             debit: v,
             credit: Money::ZERO,
             description: r.into(),
+
+            dimension: String::new(),
         },
         JournalLineInput {
             account_id: s.account_id(c)?.into(),
             debit: Money::ZERO,
             credit: v,
             description: r.into(),
+
+            dimension: String::new(),
         },
     ])
 }
@@ -583,9 +593,9 @@ impl AccountingState {
                     document_date: x.document_date.clone(),
                     due_date: x.due_date.clone(),
                     original: x.remaining,
-                    remaining: x.remaining.checked_add(
-                        settled.get(&x.id).copied().unwrap_or(Money::ZERO),
-                    )?,
+                    remaining: x
+                        .remaining
+                        .checked_add(settled.get(&x.id).copied().unwrap_or(Money::ZERO))?,
                     credit_ids: Vec::new(),
                 })
             })

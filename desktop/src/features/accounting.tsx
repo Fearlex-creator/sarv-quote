@@ -337,8 +337,8 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
   const [date, setDate] = useState(today);
   const [reason, setReason] = useState("");
   const [lines, setLines] = useState([
-    { id: uid(), account_id: "", debit: "0", credit: "0", description: "" },
-    { id: uid(), account_id: "", debit: "0", credit: "0", description: "" },
+    { id: uid(), account_id: "", debit: "0", credit: "0", description: "", dimension: "" },
+    { id: uid(), account_id: "", debit: "0", credit: "0", description: "", dimension: "" },
   ]);
   const [key] = useState(uid);
   const [preview, setPreview] = useState<Journal | null>(null);
@@ -426,6 +426,7 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
               <TableHead className="numeric">{t("Debit · IRR")}</TableHead>
               <TableHead className="numeric">{t("Credit · IRR")}</TableHead>
               <TableHead>{t("Description")}</TableHead>
+              <TableHead>{t("Dimension")}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>
@@ -478,6 +479,13 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
                   />
                 </TableCell>
                 <TableCell>
+                  <Input
+                    aria-label={t("Journal dimension {index}", { index: i + 1 })}
+                    value={l.dimension}
+                    onChange={(e) => update(l.id, "dimension", e.target.value)}
+                  />
+                </TableCell>
+                <TableCell>
                   <Button
                     variant="ghost"
                     size="sm"
@@ -509,6 +517,7 @@ export function JournalEditor({ onClose }: { onClose: () => void }) {
               debit: "0",
               credit: "0",
               description: "",
+              dimension: "",
             },
           ]);
           setPreview(null);
@@ -620,7 +629,10 @@ export function JournalDetail({
                 <TableCell>
                   {l.account.code} · {l.account.name}
                 </TableCell>
-                <TableCell>{l.description}</TableCell>
+                <TableCell>
+                  {l.description}
+                  {l.dimension ? ` · ${l.dimension}` : ""}
+                </TableCell>
                 <TableCell>
                   <Money value={l.debit} />
                 </TableCell>

@@ -1522,6 +1522,8 @@ fn opening_post(c: &OpeningCommand) -> PostCommand {
                 debit: b.debit,
                 credit: b.credit,
                 description: b.source_reference.clone(),
+
+                dimension: String::new(),
             })
             .collect(),
     }

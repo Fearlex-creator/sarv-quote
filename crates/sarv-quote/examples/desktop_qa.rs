@@ -87,6 +87,14 @@ fn serve(
     stream.write_all(&body)?;
     Ok(())
 }
+fn agent_cli() -> anyhow::Result<PathBuf> {
+    let root = std::env::current_dir()?;
+    let release = root.join("target/release/sarv-agent");
+    if release.is_file() {
+        return Ok(release);
+    }
+    Ok(root.join("target/debug/sarv-agent"))
+}
 fn main() -> anyhow::Result<()> {
     let dir = PathBuf::from(std::env::var("SARV_QA_DATA_DIR")?);
     let token = std::env::var("SARV_QA_TOKEN")?;
@@ -103,7 +111,7 @@ fn main() -> anyhow::Result<()> {
     let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port))?;
     let agents = std::sync::Arc::new(sarv_quote::agent::AgentService::start(
         &dir,
-        std::env::current_dir()?.join("target/release/sarv-agent"),
+        agent_cli()?,
     )?);
     println!("Rust QA adapter listening on 127.0.0.1:{port}; isolated profile");
     for s in listener.incoming().flatten() {

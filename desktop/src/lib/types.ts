@@ -47,6 +47,7 @@ export interface JournalLine {
   debit: Integer;
   credit: Integer;
   description: string;
+  dimension?: string;
 }
 export interface Journal {
   total_debit: Integer;
@@ -364,6 +365,27 @@ export interface Workspace {
   }[];
   settings: Settings;
   capabilities: Record<string, boolean>;
+  retail?: {
+    shifts: {
+      id: string;
+      cashier: string;
+      opened_on: string;
+      opening_cash_rial: string;
+      closed_on: string;
+      expected_cash_rial?: string | null;
+      variance_rial?: string | null;
+    }[];
+    held: { id: string; label: string; payload: string; at: string }[];
+    open_shift: {
+      id: string;
+      cashier: string;
+      opened_on: string;
+      opening_cash_rial: string;
+      closed_on: string;
+    } | null;
+    negative_stock: string;
+    offline: string;
+  };
 }
 export interface TrialRow {
   account_id: string;
@@ -477,7 +499,9 @@ export type Page =
   | "reports"
   | "customers"
   | "settings"
-  | "banking";
+  | "banking"
+  | "pos"
+  | "excel";
 
 export type PaymentSide = "receive" | "make";
 export interface PaymentOpenItem {

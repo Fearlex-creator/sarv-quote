@@ -264,6 +264,42 @@ fn ink_count(path: &Path, x: usize, y: usize, width: usize, height: usize) -> us
     count
 }
 
+/// Bounding box of glyph-body pixels (channel max below 160), relative to the
+/// cell. Antialiased fringe is excluded so two rasterizers can be compared
+/// without treating stem weight as a different number.
+fn glyph_box(
+    path: &Path,
+    x: usize,
+    y: usize,
+    width: usize,
+    height: usize,
+) -> Option<(usize, usize, usize, usize)> {
+    let mut file = std::fs::File::open(path).unwrap();
+    let mut image = cairo::ImageSurface::create_from_png(&mut file).unwrap();
+    let stride = image.stride() as usize;
+    let data = image.data().unwrap();
+    let mut min_c = width;
+    let mut min_r = height;
+    let mut max_c = 0;
+    let mut max_r = 0;
+    let mut any = false;
+    for row in 0..height {
+        for column in 0..width {
+            let start = (y + row) * stride + (x + column) * 4;
+            let pixel = u32::from_ne_bytes(data[start..start + 4].try_into().unwrap());
+            let (red, green, blue) = ((pixel >> 16) & 255, (pixel >> 8) & 255, pixel & 255);
+            if red.max(green).max(blue) < 160 {
+                any = true;
+                min_c = min_c.min(column);
+                min_r = min_r.min(row);
+                max_c = max_c.max(column);
+                max_r = max_r.max(row);
+            }
+        }
+    }
+    any.then_some((min_c, min_r, max_c - min_c + 1, max_r - min_r + 1))
+}
+
 fn monetary_row_bounds(path: &Path, count: usize) -> Vec<(usize, usize)> {
     let mut file = std::fs::File::open(path).unwrap();
     let mut image = cairo::ImageSurface::create_from_png(&mut file).unwrap();
@@ -328,6 +364,26 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
         assert!(output.status.success());
     }
     let independent_png = prefix.with_extension("png");
+    let extracted = Command::new("pdftotext")
+        .arg(&pdf)
+        .arg("-")
+        .output()
+        .expect("pdftotext");
+    assert!(extracted.status.success());
+    let text = String::from_utf8(extracted.stdout).unwrap();
+    let mut amounts = vec![q.discount_rial, q.total_rial];
+    for line in &q.lines {
+        amounts.push(line.price_rial);
+        amounts.push(line.total_rial);
+    }
+    for rial in amounts {
+        let shown = q.display_unit.display(rial);
+        let number = shown.split_whitespace().next().unwrap();
+        assert!(
+            text.contains(number),
+            "PDF text is missing {number} from {shown}"
+        );
+    }
     q.id.clear();
     q.version = 0;
     q.approved_at.clear();
@@ -350,12 +406,32 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
                 "draft monetary glyph positions differ"
             );
             if let Some(bounds) = &independent_bounds {
+                // Poppler 24.02 and Cairo's image surface do not share stem
+                // weight. On the first money cell both rasters are 194 by 226
+                // and both read ۱۵٬۶۲۵.۴, but pixels under 180 were 186 versus
+                // 265 because Poppler put 119 pixels in the 40–79 band and
+                // Cairo put 47. An ink-ratio check reports that as a mismatch.
+                // The independent check is the extracted amount plus the glyph
+                // box, which moves if a digit is clipped, added, or shifted.
                 let (independent_y, independent_height) = bounds[index];
-                let independent_count =
-                    ink_count(&independent_png, x, independent_y, 194, independent_height);
                 assert!(
-                    count.abs_diff(independent_count) < count / 5,
-                    "native monetary cell disagrees with independently rasterized PDF"
+                    independent_height.abs_diff(height) <= 2,
+                    "monetary row height differs"
+                );
+                let native =
+                    glyph_box(&approved[0], x, y, 194, height).expect("native monetary glyphs");
+                let other = glyph_box(&independent_png, x, independent_y, 194, independent_height)
+                    .expect("PDF monetary glyphs");
+                // Measured on this machine for the first amount cell: Cairo
+                // (126, 25, 57, 13) and Poppler (123, 22, 60, 13). The far edge
+                // stays put; the heavier stem grows the box by 3px. A dropped
+                // digit in that 57px run is wider than this 4px allowance.
+                assert!(
+                    native.0.abs_diff(other.0) <= 4
+                        && native.1.abs_diff(other.1) <= 4
+                        && native.2.abs_diff(other.2) <= 4
+                        && native.3.abs_diff(other.3) <= 4,
+                    "glyph box differs native={native:?} pdf={other:?} at {x}/{y}"
                 );
             }
         }
@@ -363,6 +439,79 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
     assert!(
         ink_count(&approved[0], 0, 0, 1190, 1150) > 10_000,
         "document title, metadata and table must all contain visible text"
+    );
+}
+
+fn blank_rect(src: &Path, dest: &Path, x: usize, y: usize, width: usize, height: usize) {
+    let mut file = std::fs::File::open(src).unwrap();
+    let mut image = cairo::ImageSurface::create_from_png(&mut file).unwrap();
+    {
+        let stride = image.stride() as usize;
+        let mut data = image.data().unwrap();
+        for row in y..y + height {
+            for column in x..x + width {
+                let start = row * stride + column * 4;
+                data[start..start + 4].fill(255);
+            }
+        }
+    }
+    let mut out = std::fs::File::create(dest).unwrap();
+    image.write_to_png(&mut out).unwrap();
+}
+
+#[test]
+fn wrong_missing_and_clipped_money_fail_the_independent_check() {
+    let quote = quote(4);
+    let directory = tempfile::tempdir().unwrap();
+    let pages = export::png_pages(&quote, directory.path()).unwrap();
+    let pdf = directory.path().join("money.pdf");
+    export::pdf(&quote, &pdf).unwrap();
+    let extracted = Command::new("pdftotext")
+        .arg(&pdf)
+        .arg("-")
+        .output()
+        .unwrap();
+    assert!(extracted.status.success());
+    let text = String::from_utf8(extracted.stdout).unwrap();
+    let expected = quote.display_unit.display(quote.lines[0].price_rial);
+    let number = expected.split_whitespace().next().unwrap();
+    assert!(text.contains(number), "the real PDF must contain {number}");
+    let replaced = text.replace(number, "۹۹۹");
+    assert!(
+        !replaced.contains(number),
+        "replaced monetary digits must fail the text check"
+    );
+    let missing = text.replace(number, "");
+    assert!(
+        !missing.contains(number),
+        "missing monetary digits must fail the text check"
+    );
+    assert!(
+        !text.contains("۹۹۹٬۹۹۹.۹"),
+        "a wrong expected amount is not in the real PDF"
+    );
+    let bounds = monetary_row_bounds(&pages[0], quote.lines.len());
+    let (y, height) = bounds[0];
+    let native = glyph_box(&pages[0], 72, y, 194, height).unwrap();
+    let clip_width = 24.min(native.2);
+    let clip = directory.path().join("clipped.png");
+    blank_rect(
+        &pages[0],
+        &clip,
+        72 + native.0 + native.2 - clip_width,
+        y + native.1,
+        clip_width,
+        native.3,
+    );
+    let clipped = glyph_box(&clip, 72, y, 194, height).unwrap();
+    assert!(
+        native.2.abs_diff(clipped.2) > 4,
+        "a clipped money glyph must move the box by more than 4px, native={native:?} clipped={clipped:?}"
+    );
+    assert_ne!(
+        ink_count(&pages[0], 72, y, 194, height),
+        ink_count(&clip, 72, y, 194, height),
+        "the same-raster ink check must see a clipped cell"
     );
 }
 

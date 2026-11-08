@@ -169,6 +169,11 @@ pub struct JournalLineInput {
     pub debit: Money,
     pub credit: Money,
     pub description: String,
+    /// Optional tag stored with the line. Empty tags are omitted from JSON so
+    /// older books stay byte-compatible. It is not a chart level and it does
+    /// not change the journal id or the debit and credit.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub dimension: String,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -192,6 +197,9 @@ pub struct JournalLine {
     pub debit: Money,
     pub credit: Money,
     pub description: String,
+    /// Optional tag. Absent in books written before this field. See `JournalLineInput::dimension`.
+    #[serde(default, skip_serializing_if = "String::is_empty")]
+    pub dimension: String,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -580,11 +588,7 @@ impl AccountingState {
                         .records
                         .iter()
                         .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
-                    let payment = self
-                        .payments
-                        .records
-                        .iter()
-                        .find(|r| r.journal_id == j.id);
+                    let payment = self.payments.records.iter().find(|r| r.journal_id == j.id);
                     let banking = self.banking.iter().find(|r| r.journal_id == j.id);
                     ensure!(
                         usize::from(opening.is_some())
@@ -1430,6 +1434,11 @@ impl AccountingState {
                 control_allowed || !account.control,
                 "حساب کنترلی به زیرسیستم معتبر نیاز دارد؛ ثبت مستقیم در این مرحله پشتیبانی نمی‌شود"
             );
+            ensure!(
+                line.dimension.chars().count() <= 64
+                    && !line.dimension.chars().any(|c| c.is_control()),
+                "تفصیلی ردیف نامعتبر است"
+            );
             debit = debit.checked_add(line.debit)?;
             credit = credit.checked_add(line.credit)?;
             lines.push(JournalLine {
@@ -1437,6 +1446,7 @@ impl AccountingState {
                 debit: line.debit,
                 credit: line.credit,
                 description: line.description.clone(),
+                dimension: line.dimension.clone(),
             });
         }
         ensure!(debit == credit, "جمع بدهکار و بستانکار برابر نیست");
@@ -1556,6 +1566,8 @@ impl AccountingState {
                     debit: l.credit,
                     credit: l.debit,
                     description: l.description.clone(),
+
+                    dimension: l.dimension.clone(),
                 })
                 .collect();
             ensure!(
@@ -1635,6 +1647,8 @@ impl AccountingState {
                     debit: l.credit,
                     credit: l.debit,
                     description: l.description.clone(),
+
+                    dimension: l.dimension.clone(),
                 })
                 .collect(),
         };

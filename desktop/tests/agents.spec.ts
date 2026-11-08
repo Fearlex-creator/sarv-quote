@@ -6,7 +6,6 @@ mkdirSync(out, { recursive: true });
 
 test("minimal settings grants local CLI and MCP access and revokes it", async ({
   page,
-  context,
   request,
 }) => {
   const errors: string[] = [];
@@ -21,7 +20,18 @@ test("minimal settings grants local CLI and MCP access and revokes it", async ({
       payload: { enabled: false, access: "read_only" },
     },
   });
-  await context.grantPermissions(["clipboard-read", "clipboard-write"]);
+  await page.addInitScript(() => {
+    let text = "";
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async (value: string) => {
+          text = value;
+        },
+        readText: async () => text,
+      },
+    });
+  });
   await page.goto("/");
   await page
     .locator(".sidebar")

@@ -685,12 +685,16 @@ fn ordinary_sales_adjustments_remain_distinct_from_invoice_provenance_and_revers
                     debit: irr(7),
                     credit: irr(0),
                     description: "ordinary".into(),
+
+                    dimension: String::new(),
                 },
                 JournalLineInput {
                     account_id: setup.account_id(CoreRole::Sales).unwrap().into(),
                     debit: irr(0),
                     credit: irr(7),
                     description: "ordinary".into(),
+
+                    dimension: String::new(),
                 },
             ],
         })
