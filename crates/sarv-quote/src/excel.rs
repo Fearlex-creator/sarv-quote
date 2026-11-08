@@ -25,7 +25,7 @@ use rust_xlsxwriter::{Format, Workbook};
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 use std::collections::BTreeMap;
-use std::io::Cursor;
+use std::io::{Cursor, Read};
 
 pub const SCHEMA: &str = "sarv-excel-1";
 const MAX_BYTES: usize = 1_000_000;
@@ -75,42 +75,63 @@ pub fn command(store: &mut Store, action: &str, p: &Value) -> Result<Value> {
         "excel_preview" => {
             let kind = kind(p)?;
             let bytes = decode(p)?;
-            let parsed = parse(&bytes, kind)?;
-            Ok(json!({
-                "dry_run": true,
-                "committed": false,
-                "kind": kind,
-                "schema": SCHEMA,
-                "sheet": parsed.sheet,
-                "sheets": parsed.sheets,
-                "accepted": parsed.rows.len(),
-                "errors": parsed.errors,
-                "warnings": parsed.warnings,
-                "currency": "IRR",
-                "opening_stock_effect": if kind == "opening_stock" {
-                    "Posts Inventory and GRNI. It does not post owner equity and it does not create a supplier bill."
-                } else {
-                    ""
-                },
-            }))
+            Ok(wire_preview(kind, parse(&bytes, kind)?))
         }
         "excel_commit" => commit(store, p),
-        "excel_graph_status" => Ok(graph_status()),
+        "excel_graph_status" => Ok(crate::excel_graph::status(store)),
+        "excel_graph_begin" => crate::excel_graph::begin(store),
+        "excel_graph_complete" => crate::excel_graph::complete(store, p),
+        "excel_graph_revoke" => crate::excel_graph::revoke(store),
+        "excel_graph_preview" => graph_preview(store, p),
+        "excel_graph_commit" => graph_commit(store, p),
+        "excel_graph_push" => crate::excel_graph::push(store, p),
         "excel_graph_sync" => Err(anyhow!(
-            "Microsoft 365 is not configured. Local .xlsx import and export work without it. Live sync was not run."
+            "Name the workbook item and use excel_graph_preview, then excel_graph_commit. There is no background sync."
         )),
         _ => Err(anyhow!("Unsupported Excel command")),
     }
 }
 
-pub fn graph_status() -> Value {
+fn graph_preview(store: &Store, p: &Value) -> Result<Value> {
+    let bytes = crate::excel_graph::download(store, p)?;
+    let mut payload = p.clone();
+    payload["content_base64"] = json!(STANDARD.encode(&bytes));
+    command_preview(store, &payload)
+}
+
+fn graph_commit(store: &mut Store, p: &Value) -> Result<Value> {
+    let bytes = crate::excel_graph::download(store, p)?;
+    let mut payload = p.clone();
+    payload["content_base64"] = json!(STANDARD.encode(&bytes));
+    commit(store, &payload)
+}
+
+fn command_preview(store: &Store, p: &Value) -> Result<Value> {
+    let _ = store;
+    let kind = kind(p)?;
+    let bytes = decode(p)?;
+    let parsed = parse(&bytes, kind)?;
+    Ok(wire_preview(kind, parsed))
+}
+
+fn wire_preview(kind: &str, parsed: Parsed) -> Value {
     json!({
-        "configured": false,
-        "status": "not_configured",
-        "live_sync": false,
-        "authenticated": false,
-        "scopes_if_owner_registers_an_app": ["Files.ReadWrite.Selected", "offline_access"],
-        "instructions": "Local Excel files already import and export. A live Microsoft 365 connection needs the owner to register an application and supply its client id, tenant, and redirect URL. This build has no Graph credentials, does not ask for tenant-wide admin consent, and will not report Connected.",
+        "dry_run": true,
+        "committed": false,
+        "kind": kind,
+        "schema": SCHEMA,
+        "sheet": parsed.sheet,
+        "sheets": parsed.sheets,
+        "accepted": parsed.rows.len(),
+        "errors": parsed.errors,
+        "warnings": parsed.warnings,
+        "currency": "IRR",
+        "opening_stock_effect": if kind == "opening_stock" {
+            "Posts Inventory and GRNI. It does not post owner equity and it does not create a supplier bill. Clear GRNI later with a supplier bill or a reviewed journal."
+        } else {
+            ""
+        },
+        "live_verified": false,
     })
 }
 
@@ -557,7 +578,7 @@ fn commit_opening(
             let gross = Money::from_rials(positive_half_up(i128::from(price.rials()) * i128::from(qty), 1000)?);
             total = total.checked_add(gross)?;
             lines.push(OrderLine {
-                id: format!("ln-{index}"),
+                id: format!("ln-{key}-{index}"),
                 item_id,
                 warehouse_id,
                 unit_id,
@@ -590,7 +611,7 @@ fn commit_opening(
             supplied_total: total,
         }))?;
         let receive_lines = lines.iter().enumerate().map(|(index, line)| ReceiveLine {
-            id: format!("rc-{index}"),
+            id: format!("rc-{key}-{index}"),
             order_line_id: line.id.clone(),
             warehouse_id: line.warehouse_id.clone(),
             unit_id: line.unit_id.clone(),
@@ -754,7 +775,16 @@ fn context(
     })
 }
 
+pub(crate) fn exported_bytes(store: &Store, p: &Value) -> Result<Vec<u8>> {
+    Ok(export_pair(store, p)?.1)
+}
+
 fn export(store: &Store, p: &Value) -> Result<Value> {
+    let (filename, bytes) = export_pair(store, p)?;
+    Ok(file_json(&filename, &bytes))
+}
+
+fn export_pair(store: &Store, p: &Value) -> Result<(String, Vec<u8>)> {
     let kind = p["kind"].as_str().unwrap_or("products");
     let company = required(p, "company_id")?;
     ensure!(
@@ -769,7 +799,7 @@ fn export(store: &Store, p: &Value) -> Result<Value> {
         "opening_stock" => template("opening_stock")?,
         _ => return Err(anyhow!("Unknown export")),
     };
-    Ok(file_json(&filename, &bytes))
+    Ok((filename, bytes))
 }
 
 fn export_products(state: &State, company: &str) -> Result<(String, Vec<u8>)> {
@@ -965,18 +995,45 @@ fn guard_zip(bytes: &[u8]) -> Result<()> {
     let mut archive = zip::ZipArchive::new(Cursor::new(bytes))
         .map_err(|_| anyhow!("Workbook archive is not readable"))?;
     ensure!(archive.len() <= MAX_ENTRIES, "Workbook has too many parts");
-    let mut total = 0u64;
+    let mut declared = 0u64;
+    let mut actual = 0u64;
     for index in 0..archive.len() {
-        let file = archive
+        let mut file = archive
             .by_index(index)
             .map_err(|_| anyhow!("Workbook part is not readable"))?;
-        let name = file.name().replace('\\', "/");
+        let name = file
+            .name()
+            .map_err(|_| anyhow!("Workbook part name is not readable"))?
+            .replace('\\', "/");
+        let lower = name.to_ascii_lowercase();
         ensure!(
-            !name.contains("..") && !name.starts_with('/') && !name.to_ascii_lowercase().contains("vbaproject"),
-            "Workbook contains a macro or an unsafe path"
+            !lower.contains("..")
+                && !lower.starts_with('/')
+                && !lower.starts_with('\\')
+                && !lower.contains("vbaproject")
+                && !lower.contains("externallink")
+                && !lower.contains("embeddings"),
+            "Workbook contains a macro, an external link, or an unsafe path"
         );
-        total = total.saturating_add(file.size());
-        ensure!(total <= MAX_UNCOMPRESSED, "Workbook expands too far");
+        let declared_size = file.size();
+        let compressed = file.compressed_size();
+        ensure!(
+            compressed <= MAX_BYTES as u64 && declared_size <= MAX_UNCOMPRESSED,
+            "Workbook part is too large"
+        );
+        declared = declared.saturating_add(declared_size);
+        ensure!(declared <= MAX_UNCOMPRESSED, "Workbook expands too far");
+        let mut buf = [0u8; 8192];
+        loop {
+            let read = file
+                .read(&mut buf)
+                .map_err(|_| anyhow!("Workbook part could not be expanded"))?;
+            if read == 0 {
+                break;
+            }
+            actual = actual.saturating_add(read as u64);
+            ensure!(actual <= MAX_UNCOMPRESSED, "Workbook expands too far");
+        }
     }
     Ok(())
 }

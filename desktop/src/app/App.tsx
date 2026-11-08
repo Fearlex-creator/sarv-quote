@@ -35,6 +35,7 @@ import { ArrowsClockwiseIcon as RefreshCw } from "@phosphor-icons/react/dist/csr
 import { command, today } from "../lib/client";
 import { readSession, writeSession } from "../lib/session";
 import { LockScreen } from "../features/lock";
+import { AccessPanel } from "../features/access";
 import { installEnterAdvance } from "../lib/enter-advance";
 import { isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -103,7 +104,9 @@ import {
 export default function App() {
   const [page, setPage] = useState<Page>("overview");
   const [locked, setLocked] = useState(false);
+  const [setupRequired, setSetupRequired] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
+  const qaPreview = Boolean(import.meta.env.VITE_QA_URL);
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [companyId, setCompanyId] = useState(
     () => localStorage.getItem("sarv.company") ?? "",
@@ -194,6 +197,7 @@ export default function App() {
     void command<{ configured: boolean }>("auth_status")
       .then((status) => {
         if (!live) return;
+        setSetupRequired(!qaPreview && !status.configured);
         setLocked(status.configured && !readSession());
         setAuthChecked(true);
       })
@@ -206,11 +210,11 @@ export default function App() {
       live = false;
       window.removeEventListener("sarv-locked", onLock);
     };
-  }, []);
+  }, [qaPreview]);
   useEffect(() => {
-    if (!authChecked || locked) return;
+    if (!authChecked || locked || setupRequired) return;
     void refresh();
-  }, [refresh, authChecked, locked]);
+  }, [refresh, authChecked, locked, setupRequired]);
   useEffect(() => installEnterAdvance(), []);
   useEffect(() => {
     // Warm every screen once the shell is idle so navigation never waits on a
@@ -696,7 +700,16 @@ export default function App() {
   return (
     <I18nContext.Provider value={locale}>
       <DirectionProvider dir={locale === "fa" ? "rtl" : "ltr"}>
-        {locked ? (
+        {setupRequired ? (
+          <div className="flex min-h-svh items-center justify-center p-6">
+            <AccessPanel
+              onReady={() => {
+                setSetupRequired(false);
+                void refresh();
+              }}
+            />
+          </div>
+        ) : locked ? (
           <LockScreen
             onUnlock={() => {
               setLocked(false);

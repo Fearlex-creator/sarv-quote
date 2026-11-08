@@ -2,8 +2,10 @@
 //! written into the financial snapshot, backups, or audit text. Sessions live in
 //! the profile database and expire. There is no shipped default password.
 //!
-//! The opt-in local agent keeps its own token. Enabling that agent is an owner
-//! action once the lock is on, and that token is a separate full credential.
+//! The local agent has its own token. Once a shop password exists, that token
+//! works only after the owner grants a role again. A grant saved before the
+//! lock, or a grant with no role, cannot read or change the books. The SQLite
+//! file is not encrypted at rest; the password protects commands, not the disk.
 use crate::store::Store;
 use anyhow::{Result, anyhow, ensure};
 use argon2::{
@@ -67,6 +69,25 @@ pub fn is_auth_command(action: &str) -> bool {
     )
 }
 
+pub fn configured(store: &Store) -> Result<bool> {
+    Ok(!load(store)?.users.is_empty())
+}
+
+/// Role check for an already authenticated caller. The caller supplies the
+/// actor label. Client-supplied `user:` and `agent:` actors are removed first.
+pub fn authorize(role: &str, action: &str, payload: &mut Value, actor: &str) -> Result<()> {
+    scrub(payload);
+    ensure!(
+        role_allows(role, action, payload),
+        "Your role cannot perform this action"
+    );
+    if let Some(object) = payload.as_object_mut() {
+        object.insert("_actor".into(), json!(actor));
+        object.remove("session_token");
+    }
+    Ok(())
+}
+
 pub fn enforce(store: &Store, action: &str, payload: &mut Value) -> Result<()> {
     scrub(payload);
     let security = load(store)?;
@@ -93,18 +114,12 @@ pub fn enforce(store: &Store, action: &str, payload: &mut Value) -> Result<()> {
         .and_then(Value::as_str)
         .unwrap_or("");
     let user = session_user(&security, token)?;
-    ensure!(
-        role_allows(&user.role, action, payload),
-        "Your role cannot perform this action"
-    );
-    if let Some(object) = payload.as_object_mut() {
-        object.insert(
-            "_actor".into(),
-            json!(format!("user:{}:{}", user.role, user.id)),
-        );
-        object.remove("session_token");
-    }
-    Ok(())
+    authorize(
+        &user.role,
+        action,
+        payload,
+        &format!("user:{}:{}", user.role, user.id),
+    )
 }
 
 pub fn handle(store: &mut Store, action: &str, payload: &Value) -> Result<Value> {
@@ -331,6 +346,10 @@ fn role_allows(role: &str, action: &str, payload: &Value) -> bool {
                 | "auth_reset"
                 | "agent_configure"
                 | "setup_company"
+                | "excel_graph_begin"
+                | "excel_graph_complete"
+                | "excel_graph_revoke"
+                | "excel_graph_push"
         ),
         "cashier" => {
             let kind_ok = action != "resource"
@@ -394,6 +413,11 @@ fn is_write(action: &str) -> bool {
                 | "journal_reverse"
                 | "excel_commit"
                 | "excel_graph_sync"
+                | "excel_graph_begin"
+                | "excel_graph_complete"
+                | "excel_graph_revoke"
+                | "excel_graph_commit"
+                | "excel_graph_push"
                 | "pos_shift_open"
                 | "pos_shift_close"
                 | "pos_hold"
@@ -525,7 +549,7 @@ fn scrub(payload: &mut Value) {
         if object
             .get("_actor")
             .and_then(Value::as_str)
-            .is_some_and(|s| s.starts_with("user:"))
+            .is_some_and(|s| s.starts_with("user:") || s.starts_with("agent:"))
         {
             object.remove("_actor");
         }

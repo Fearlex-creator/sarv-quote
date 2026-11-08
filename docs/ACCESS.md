@@ -15,6 +15,8 @@ Roles:
 
 A cashier cannot post a manual journal or commit an Excel workbook. The recovery code is shown once at bootstrap, stored as a hash, and is the only reset. There is no email reset. `auth_reset` does not need a session; the code is the credential. Generated passwords are not written into reports.
 
-The local agent, if the owner enables it, still authenticates with its own token and does not pass through this role check. Treat enabling the agent as granting another full local credential.
+The local agent listens only on loopback. Its token is not a shop password. After a shop lock exists, a token that was enabled earlier, or a grant with no role, is refused until the owner approves it again. The owner can grant readonly, cashier, or accountant. That grant is checked on every agent call, including exports the agent is allowed to request. Revoking the grant deletes the connection file. The agent cannot create users, reset the lock, or start a Microsoft 365 sign-in.
+
+The SQLite file, including `app_security`, is not encrypted at rest. The password stops commands. It does not stop someone who can read the profile directory.
 
 Tauri file exports (`save_report`) open the store and run the same role check before writing a PDF, CSV, or backup.

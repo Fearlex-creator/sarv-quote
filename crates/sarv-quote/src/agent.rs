@@ -81,6 +81,10 @@ struct Policy {
     enabled: bool,
     access: Access,
     epoch: String,
+    /// Shop role granted by the owner. Empty grants are the pre-lock token
+    /// and cannot pass a configured shop lock.
+    #[serde(default)]
+    role: String,
 }
 #[derive(Deserialize, Serialize)]
 #[serde(deny_unknown_fields)]
@@ -185,6 +189,8 @@ impl AgentService {
     pub fn start(directory: &Path, cli: PathBuf) -> Result<Self> {
         let accounting = crate::store::Store::open(directory)?;
         let policy = load_policy(directory)?;
+        let locked_without_grant =
+            crate::access::configured(&accounting)? && policy.role.trim().is_empty();
         let service = Self {
             inner: Arc::new(Inner {
                 directory: directory.to_owned(),
@@ -202,8 +208,8 @@ impl AgentService {
                 on_change: Mutex::new(None),
             }),
         };
-        if policy.enabled {
-            service.configure(true, policy.access)?;
+        if policy.enabled && !locked_without_grant {
+            service.configure_with(true, policy.access, policy.role.clone())?;
         } else {
             remove_connection(directory)?;
         }
@@ -220,6 +226,7 @@ impl AgentService {
         Ok(json!({
             "enabled": state.policy.enabled,
             "access": state.policy.access,
+            "role": state.policy.role,
             "transport": "local",
             "cli_available": cli.is_file(),
             "cli_command": format!("{}{} --connection {}", if cfg!(windows) { "& " } else { "" }, shell_quote(&cli.to_string_lossy()), shell_quote(&connection.to_string_lossy())),
@@ -232,6 +239,9 @@ impl AgentService {
         }
     }
     pub fn configure(&self, enabled: bool, access: Access) -> Result<Value> {
+        self.configure_with(enabled, access, String::new())
+    }
+    pub fn configure_with(&self, enabled: bool, access: Access, role: String) -> Result<Value> {
         // Serialize revocation with accepted calls: no previously queued call
         // can write after disable returns.
         let mut state = self
@@ -239,10 +249,18 @@ impl AgentService {
             .state
             .lock()
             .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let role = role.trim().to_owned();
+        if !role.is_empty() {
+            ensure!(
+                matches!(role.as_str(), "readonly" | "cashier" | "accountant"),
+                "Agent grant must be readonly, cashier, or accountant"
+            );
+        }
         let policy = Policy {
             enabled,
             access,
             epoch: uuid::Uuid::new_v4().to_string(),
+            role,
         };
         if !enabled {
             private_json(&self.inner.directory.join(POLICY), &policy)?;
@@ -307,7 +325,30 @@ impl AgentService {
                     .as_bool()
                     .ok_or_else(|| anyhow!("Enabled must be boolean"))?;
                 let access = serde_json::from_value(p["access"].clone())?;
-                self.configure(enabled, access)
+                let locked = {
+                    let store = self
+                        .inner
+                        .accounting
+                        .lock()
+                        .map_err(|_| anyhow!("Accounting state interrupted"))?;
+                    crate::access::configured(&store)?
+                };
+                let requested = p["role"].as_str().unwrap_or("").trim().to_owned();
+                let role = if locked {
+                    let fallback = if access == Access::Full {
+                        "accountant"
+                    } else {
+                        "readonly"
+                    };
+                    if requested.is_empty() {
+                        fallback.to_owned()
+                    } else {
+                        requested
+                    }
+                } else {
+                    requested
+                };
+                self.configure_with(enabled, access, role)
             }
             _ => self.inner.dispatch(action, p),
         }
@@ -338,7 +379,14 @@ fn listen(inner: Arc<Inner>, listener: TcpListener, epoch: String) {
             break;
         }
         match listener.accept() {
-            Ok((stream, _)) => {
+            Ok((stream, peer)) => {
+                let loopback = match peer.ip() {
+                    IpAddr::V4(ip) => ip.is_loopback(),
+                    IpAddr::V6(ip) => ip.is_loopback(),
+                };
+                if !loopback {
+                    continue;
+                }
                 let count = inner.connections.fetch_add(1, Ordering::AcqRel);
                 if count >= 8 {
                     inner.connections.fetch_sub(1, Ordering::AcqRel);
@@ -401,6 +449,26 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
             "Read-only agent access"
         );
         ensure!(request.payload.is_object(), "Payload must be an object");
+        let mut payload = request.payload;
+        {
+            let mut store = inner
+                .accounting
+                .lock()
+                .map_err(|_| anyhow!("Accounting state interrupted"))?;
+            store.refresh_if_stale()?;
+            if crate::access::configured(&store)? {
+                ensure!(
+                    !disk.role.is_empty(),
+                    "Agent grant expired. The owner must approve access again."
+                );
+                crate::access::authorize(
+                    &disk.role,
+                    &request.action,
+                    &mut payload,
+                    &format!("agent:{}", disk.role),
+                )?;
+            }
+        }
         let financial_post = matches!(
             request.action.as_str(),
             "opening_csv_post"
@@ -414,11 +482,12 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
                 | "journal_reverse"
         );
         ensure!(
-            !financial_post || request.payload["expected_generation"].as_str().is_some(),
+            !financial_post || payload["expected_generation"].as_str().is_some(),
             "Preview first and supply expected_generation"
         );
-        let mut payload = request.payload;
-        payload["_actor"] = json!("local-agent");
+        if payload.get("_actor").and_then(Value::as_str).is_none() {
+            payload["_actor"] = json!("local-agent");
+        }
         let result = inner.dispatch(&request.action, payload);
         changed = result.is_ok() && !readonly;
         result

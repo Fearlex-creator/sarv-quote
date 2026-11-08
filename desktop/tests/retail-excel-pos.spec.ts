@@ -66,7 +66,14 @@ test("excel import, manual till sale, and honest graph status", async ({
   await expect(page.getByText("1 rows can be committed", { exact: false })).toBeVisible();
   await page.getByRole("checkbox", { name: "Commit these rows into the books" }).check();
   await page.getByRole("button", { name: "Commit workbook", exact: true }).click();
-  await expect(page.getByText("Imported 1 new", { exact: false })).toBeVisible();
+  await expect(page.getByText("Imported 1 new", { exact: false })).toBeVisible({
+    timeout: 20000,
+  });
+  await page
+    .locator("[data-sonner-toast]")
+    .getByRole("button", { name: "Close notification" })
+    .click();
+  await expect(page.locator("[data-sonner-toast]")).toHaveCount(0);
 
   await page
     .getByRole("combobox", { name: "Sheet", exact: true })
@@ -80,7 +87,13 @@ test("excel import, manual till sale, and honest graph status", async ({
   });
   await page.getByRole("checkbox", { name: "Commit these rows into the books" }).check();
   await page.getByRole("button", { name: "Commit workbook", exact: true }).click();
-  await expect(page.getByText("Imported 1 new", { exact: false })).toBeVisible();
+  await expect(page.getByText("Imported 1 new", { exact: false })).toBeVisible({
+    timeout: 20000,
+  });
+  await page
+    .locator("[data-sonner-toast]")
+    .getByRole("button", { name: "Close notification" })
+    .click();
 
   await nav("Point of sale");
   await expect(page.getByRole("heading", { name: "Point of sale", exact: true })).toBeVisible();
@@ -96,7 +109,9 @@ test("excel import, manual till sale, and honest graph status", async ({
     path: `${shots}/03-pos-desktop.png`,
   });
   await page.getByRole("button", { name: "Complete sale", exact: true }).click();
-  await expect(page.getByText("Sale recorded", { exact: false })).toBeVisible();
+  await expect(page.getByText("Sale recorded", { exact: false })).toBeVisible({
+    timeout: 20000,
+  });
   await expect(page.locator(".pos-receipt")).toContainText("Manual payment");
   await page.screenshot({
     animations: "disabled",

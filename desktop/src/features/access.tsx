@@ -16,7 +16,7 @@ interface Status {
   people: { id: string; name: string; role: string; disabled: boolean }[];
 }
 
-export function AccessPanel() {
+export function AccessPanel({ onReady }: { onReady?: () => void }) {
   const t = useTranslation();
   const session = readSession();
   const [status, setStatus] = useState<Status | null>(null);
@@ -106,6 +106,7 @@ export function AccessPanel() {
           onClick={() => {
             setRecovery("");
             toast.success(t("Shop lock is on"));
+            onReady?.();
           }}
         >
           {t("Continue")}

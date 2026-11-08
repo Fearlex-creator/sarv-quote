@@ -355,7 +355,7 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
                     ink_count(&independent_png, x, independent_y, 194, independent_height);
                 assert!(
                     count.abs_diff(independent_count) < count / 5,
-                    "native monetary cell disagrees with independently rasterized PDF"
+                    "native monetary cell disagrees with independently rasterized PDF native={count} independent={independent_count} at {x}/{independent_y}"
                 );
             }
         }

@@ -7,7 +7,7 @@ Status is what this branch can show with a test or a named blocker. A screen tha
 | Keep Sarv's ledger, SQLite book, and schema 7 | Implemented | Full `cargo test -p sarv-quote` including migration tests. Empty `retail` is omitted from JSON. | `domain.rs`, `store.rs` |
 | Shop password, roles, no default credential | Implemented | `shop_lock_hides_secrets_and_cashier_cannot_post_a_journal` checks the database bytes and a cashier journal denial. Recovery replaces the password. The code is not written into logs by the test. | `access.rs`, Settings → Shop lock |
 | Session for every desktop command once the lock exists | Implemented | `desktop::dispatch` and `AgentService::ui_dispatch` call `access::enforce`. PDF/CSV save in the Tauri shell checks the same lock. | `desktop_bridge.rs`, `agent.rs`, `src-tauri/src/main.rs` |
-| Agent token cannot skip the lock | Blocked as a documented limit | The agent has its own token and still uses that path. Closing it would change the existing agent contract. | `agent.rs` |
+| Agent token cannot skip the lock | Implemented | A full token enabled before the grant is refused after bootstrap. An owner grant of accountant can read the workspace. The same token cannot create a user. A cashier cannot grant the agent. Revoke closes the connection. | `legacy_agent_token_cannot_pass_a_shop_lock_until_the_owner_grants_a_role` |
 | Email password reset | Not implemented | There is no mail transport. Recovery is a local code shown once. | `access.rs` |
 | Catalog SKU, barcode, price, cost | Implemented, already in the engine; Excel now loads them | Product round-trip keeps SKU `00123` as text and Persian digits `۲۵۰۰۰۰` as 250000 rials. | `excel.rs`, `product_profile.rs` |
 | Quote to invoice to stock to payment | Implemented on the existing kernel | POS checkout calls draft, fulfill, and payment. The browser test sells one unit and the report stays balanced. | `pos.tsx`, `sales.rs` |
@@ -20,12 +20,12 @@ Status is what this branch can show with a test or a named blocker. A screen tha
 | Double-entry, trial balance, P&L, balance sheet | Implemented before this slice and still tested | Opening stock: inventory 1301 debit equals GRNI 2201 credit. Trial debit equals credit. | `statements.rs`, Excel opening test |
 | COGS | Implemented as weighted average already in the engine | Unchanged. Opening stock uses the typed unit cost. | procurement receive |
 | Closed periods | Implemented before this slice | Existing period-lock tests still pass. | `period_lock` |
-| Tafsili, statutory e-invoice, payroll | Not implemented | Law data stays unreviewed and must not feed a filing. | `docs/SPEC-COVERAGE.md` |
-| Real `.xlsx` import and export | Implemented | Calamine reads values. rust_xlsxwriter writes the export. Caps: 1 MB compressed, 8 MB uncompressed, 64 entries, 5000 rows. | `excel.rs` |
+| Tafsili, statutory e-invoice, payroll | Not implemented | Tafsili would change journal-line identity and audited replay. Law data stays unreviewed and must not feed a filing. | `docs/SPEC-COVERAGE.md` |
+| Real `.xlsx` import and export | Implemented | Calamine 0.38 reads values. rust_xlsxwriter 0.102 writes the export. Caps: 1 MB compressed, 8 MB declared and inflated, 64 entries, 5000 rows. Opening-stock line ids include the request key. | `excel.rs` |
 | CSV as the only import | Not a substitute | CSV opening import remains for the older path. Excel is a separate command. | `opening_csv` |
 | Formula and macro execution | Refused | `=1+1` and `xl/vbaProject.bin` fail the tests. | `excel_rejects_formulas_macros_numeric_skus_and_oversized_files` |
-| Microsoft 365 live sync | Blocked | Status is `not_configured`. `excel_graph_sync` returns an error. No OAuth client is included. | `excel.rs` |
+| Microsoft 365 live sync | Connector implemented, not live | PKCE, state, refresh, and revoke run when `SARV_GRAPH_CLIENT_ID` is set. Without it, status is `not_configured`. `excel_graph_sync` refuses a background sync. `live_verified` is false. The contract test uses a local mock. | `excel_graph.rs` |
 | Multi-tenant isolation | Not claimed | One local profile. Roles apply inside that profile. | `access.rs` |
 | Chrome desktop and mobile RTL | Implemented for the new flow | `retail-excel-pos.spec.ts` on the system Chrome. | `desktop/tests` |
-| Firefox and WebKit | Blocked in this environment | Those browsers were not installed. Not marked passed. | — |
+| Firefox and WebKit | Exercised with Chrome | One Playwright invocation passed 78 tests: 26 Chrome, 26 Firefox, 26 WebKit. | `desktop/playwright.config.ts` |
 | Windows release | Not run | `.github/workflows/release-windows.yml` publishes on `v*` or a manual dispatch. Neither was used. | `docs/RELEASE-GATES.md` |

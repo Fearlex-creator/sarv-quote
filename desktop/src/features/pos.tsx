@@ -50,7 +50,13 @@ export function Pos() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [online, setOnline] = useState(navigator.onLine);
-  const [receipt, setReceipt] = useState<{ number: string; total: string; paid: string; method: string } | null>(null);
+  const [receipt, setReceipt] = useState<{
+    number: string;
+    total: string;
+    paid: string;
+    method: string;
+    lines: CartLine[];
+  } | null>(null);
   const lock = useRef(false);
   const scan = useRef<HTMLInputElement>(null);
 
@@ -225,6 +231,7 @@ export function Pos() {
       if (!lines.length) throw new Error(t("Add at least one product."));
       const customer = customerId || (await walkIn());
       const warehouse = resources?.warehouses[0]?.id ?? "";
+      if (!warehouse) throw new Error(t("Add a warehouse before checkout."));
       const draft: Draft = {
         id: uid(),
         revision: "0",
@@ -330,7 +337,13 @@ export function Pos() {
         const bank = toIrr(bankPart || "0", b.unit);
         paid += await pay(bank > left ? left : bank, "bank");
       }
-      setReceipt({ number: invoice, total: String(owed), paid: String(paid), method });
+      setReceipt({
+        number: invoice,
+        total: String(owed),
+        paid: String(paid),
+        method,
+        lines: lines.map((line) => ({ ...line })),
+      });
       setLines([]);
       await b.refresh();
       toast.success(t("Sale recorded"));
@@ -409,12 +422,43 @@ export function Pos() {
             onKeyDown={onScan}
             autoComplete="off"
           />
+          <div className="grid grid-cols-3 gap-2" role="group" aria-label={t("Keypad")} dir="ltr">
+            {["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"].map((digit) => (
+              <Button
+                key={digit}
+                type="button"
+                variant="outline"
+                className="h-12 text-lg tabular-nums"
+                aria-label={t("Digit {digit}", { digit })}
+                onClick={() => {
+                  setQuery((current) => `${current}${digit}`);
+                  scan.current?.focus();
+                }}
+              >
+                {digit}
+              </Button>
+            ))}
+            <Button
+              type="button"
+              variant="outline"
+              className="h-12"
+              onClick={() => setQuery((current) => current.slice(0, -1))}
+            >
+              {t("Backspace")}
+            </Button>
+            <Button type="button" variant="outline" className="h-12" onClick={() => setQuery("")}>
+              {t("Clear code")}
+            </Button>
+          </div>
+          {catalog.length === 0 && (
+            <p className="text-sm text-muted-foreground">{t("No matching product")}</p>
+          )}
           <ul className="grid gap-2 sm:grid-cols-2">
             {catalog.map(({ item, stock }) => (
               <li key={item.id}>
                 <button
                   type="button"
-                  className="flex w-full flex-col rounded-lg border border-border px-3 py-3 text-start hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  className="flex min-h-14 w-full flex-col justify-center rounded-lg border border-border px-3 py-3 text-start hover:bg-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                   onClick={() => addItem(item.id, item.name)}
                 >
                   <span className="font-medium">{item.name}</span>
@@ -431,9 +475,28 @@ export function Pos() {
           {lines.length === 0 && <p className="text-sm text-muted-foreground">{t("No records yet.")}</p>}
           <ul className="flex flex-col gap-2">
             {lines.map((line) => (
-              <li key={line.id} className="grid grid-cols-[1fr_4.5rem_6rem_auto] items-center gap-2 text-sm">
-                <span>{line.name}</span>
-                <Input
+              <li key={line.id} className="grid grid-cols-1 items-center gap-2 text-sm sm:grid-cols-[minmax(0,1fr)_auto_5.5rem_auto]">
+                <span className="truncate">{line.name}</span>
+                <div className="flex items-center gap-1">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-11 w-11"
+                    aria-label={t("Decrease quantity")}
+                    onClick={() =>
+                      setLines((current) =>
+                        current.map((row) => {
+                          if (row.id !== line.id) return row;
+                          const next = (toThousandths(row.qty) ?? 0n) - 1000n;
+                          return { ...row, qty: qtyText(next > 0n ? next : 0n) };
+                        }),
+                      )
+                    }
+                  >
+                    −
+                  </Button>
+                  <Input
                   aria-label={t("Quantity")}
                   inputMode="decimal"
                   value={line.qty}
@@ -443,6 +506,25 @@ export function Pos() {
                     )
                   }
                 />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-11 w-11"
+                    aria-label={t("Increase quantity")}
+                    onClick={() =>
+                      setLines((current) =>
+                        current.map((row) =>
+                          row.id === line.id
+                            ? { ...row, qty: qtyText((toThousandths(row.qty) ?? 0n) + 1000n) }
+                            : row,
+                        ),
+                      )
+                    }
+                  >
+                    +
+                  </Button>
+                </div>
                 <Input
                   aria-label={t("Price")}
                   inputMode="decimal"
@@ -519,7 +601,7 @@ export function Pos() {
             <Button type="button" variant="outline" disabled={!lines.length || busy} onClick={() => void hold()}>
               {t("Hold sale")}
             </Button>
-            <Button type="button" className="flex-1" disabled={busy || !online} onClick={() => void checkout()}>
+            <Button type="button" className="h-12 flex-1 text-base" disabled={busy || !online} onClick={() => void checkout()}>
               {t("Complete sale")}
             </Button>
           </div>
@@ -543,6 +625,16 @@ export function Pos() {
         >
           <h2 className="font-semibold">{t("Receipt")}</h2>
           <p dir="ltr">{receipt.number}</p>
+          <ul className="flex flex-col gap-1">
+            {receipt.lines.map((line) => (
+              <li key={line.id} className="flex justify-between gap-3">
+                <span>
+                  {line.name} <span dir="ltr">× {line.qty}</span>
+                </span>
+                <span dir="ltr">{line.price}</span>
+              </li>
+            ))}
+          </ul>
           <p>
             {t("Total")} <Money value={receipt.total} />
           </p>

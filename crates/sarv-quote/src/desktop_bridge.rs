@@ -21,7 +21,7 @@ mod products;
 fn actor(p: &Value) -> &str {
     match p["_actor"].as_str() {
         Some("local-agent") => "local-agent",
-        Some(actor) if actor.starts_with("user:") => actor,
+        Some(actor) if actor.starts_with("user:") || actor.starts_with("agent:") => actor,
         _ => "local-desktop",
     }
 }
@@ -1864,7 +1864,10 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             json!({"filename":format!("profit-loss-{}.csv",string(&p,"to")?),"content":format!("\u{feff}{}",String::from_utf8(writer.into_inner()?)?)})
         }
         "excel_template" | "excel_preview" | "excel_export" | "excel_commit" | "excel_graph_status"
-        | "excel_graph_sync" => crate::excel::command(store, action, &p)?,
+        | "excel_graph_sync" | "excel_graph_begin" | "excel_graph_complete" | "excel_graph_revoke"
+        | "excel_graph_preview" | "excel_graph_commit" | "excel_graph_push" => {
+            crate::excel::command(store, action, &p)?
+        }
         "pos_shift_open" | "pos_shift_close" | "pos_hold" | "pos_hold_delete" => {
             crate::retail::command(store, action, &p)?
         }

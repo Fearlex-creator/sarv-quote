@@ -40,4 +40,5 @@ pub mod desktop;
 pub mod agent;
 pub mod access;
 pub mod excel;
+pub mod excel_graph;
 pub mod retail;

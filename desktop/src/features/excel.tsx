@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useBooks } from "../app/books";
 import { command, downloadWorkbook, today } from "../lib/client";
@@ -23,6 +23,8 @@ interface GraphStatus {
   configured: boolean;
   status: string;
   instructions: string;
+  authenticated: boolean;
+  live_verified: boolean;
 }
 
 async function fileBase64(file: File) {
@@ -43,6 +45,10 @@ export function ExcelIO() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<Preview | null>(null);
   const [graph, setGraph] = useState<GraphStatus | null>(null);
+  const [authorizeUrl, setAuthorizeUrl] = useState("");
+  const [redirectUrl, setRedirectUrl] = useState("");
+  const [itemId, setItemId] = useState("");
+  const [fromGraph, setFromGraph] = useState(false);
   const [confirm, setConfirm] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
@@ -50,6 +56,11 @@ export function ExcelIO() {
   async function loadGraph() {
     setGraph(await command<GraphStatus>("excel_graph_status"));
   }
+  useEffect(() => {
+    void command<GraphStatus>("excel_graph_status")
+      .then(setGraph)
+      .catch((e: Error) => setError(e.message));
+  }, []);
 
   async function runPreview() {
     if (!file) return;
@@ -59,6 +70,7 @@ export function ExcelIO() {
     setConfirm(false);
     try {
       const content_base64 = await fileBase64(file);
+      setFromGraph(false);
       setPreview(
         await command<Preview>("excel_preview", { kind, content_base64 }),
       );
@@ -71,16 +83,17 @@ export function ExcelIO() {
   }
 
   async function commit() {
-    if (!file || !preview || preview.errors.length) return;
+    if (!preview || preview.errors.length || (!fromGraph && !file)) return;
     setBusy(true);
     setError("");
     try {
-      const content_base64 = await fileBase64(file);
+      const content_base64 = file ? await fileBase64(file) : "";
       const result = await command<{ created: string; updated: string; skipped: string; replayed: boolean }>(
-        "excel_commit",
+        fromGraph ? "excel_graph_commit" : "excel_commit",
         {
           kind,
-          content_base64,
+          content_base64: fromGraph ? undefined : content_base64,
+          item_id: fromGraph ? itemId : undefined,
           company_id: b.companyId,
           period_id: b.periodId,
           date: today(),
@@ -89,6 +102,10 @@ export function ExcelIO() {
           confirm: true,
         },
       );
+      setPreview(null);
+      setFile(null);
+      setConfirm(false);
+      await b.refresh();
       toast.success(
         result.replayed
           ? t("This workbook was already committed")
@@ -98,10 +115,6 @@ export function ExcelIO() {
               skipped: result.skipped,
             }),
       );
-      setPreview(null);
-      setFile(null);
-      setConfirm(false);
-      await b.refresh();
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -236,11 +249,89 @@ export function ExcelIO() {
         </p>
         <p className="mt-2 text-sm font-medium" dir="ltr">
           {t("Status")}: {graph?.status ?? "not_configured"}
+          {graph ? ` · live_verified=${String(graph.live_verified)}` : ""}
         </p>
-        {!graph && (
-          <Button className="mt-3" variant="outline" type="button" onClick={() => void loadGraph().catch((e: Error) => setError(e.message))}>
-            {t("Check live connection")}
-          </Button>
+        {graph?.configured && !graph.authenticated && (
+          <div className="mt-3 flex flex-col gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                void command<{ authorize_url: string }>("excel_graph_begin")
+                  .then((result) => setAuthorizeUrl(result.authorize_url))
+                  .catch((e: Error) => setError(e.message))
+              }
+            >
+              {t("Create connect link")}
+            </Button>
+            {authorizeUrl && (
+              <a className="text-sm break-all underline" href={authorizeUrl} dir="ltr">
+                {authorizeUrl}
+              </a>
+            )}
+            <Input
+              dir="ltr"
+              value={redirectUrl}
+              placeholder={t("Paste the redirected address")}
+              onChange={(e) => setRedirectUrl(e.target.value)}
+            />
+            <Button
+              type="button"
+              disabled={!redirectUrl}
+              onClick={() =>
+                void command("excel_graph_complete", { redirect_url: redirectUrl })
+                  .then(() => loadGraph())
+                  .catch((e: Error) => setError(e.message))
+              }
+            >
+              {t("Finish sign-in")}
+            </Button>
+          </div>
+        )}
+        {graph?.authenticated && (
+          <div className="mt-3 flex flex-col gap-2">
+            <Input
+              dir="ltr"
+              value={itemId}
+              placeholder={t("Workbook item id")}
+              onChange={(e) => setItemId(e.target.value)}
+            />
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                disabled={!itemId || busy}
+                onClick={() =>
+                  void command<Preview>("excel_graph_preview", {
+                    kind,
+                    item_id: itemId,
+                    company_id: b.companyId,
+                  })
+                    .then((result) => {
+                      setFromGraph(true);
+                      setPreview(result);
+                      setConfirm(false);
+                    })
+                    .catch((e: Error) => setError(e.message))
+                }
+              >
+                {t("Preview selected workbook")}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() =>
+                  void command("excel_graph_revoke")
+                    .then(() => {
+                      setAuthorizeUrl("");
+                      return loadGraph();
+                    })
+                    .catch((e: Error) => setError(e.message))
+                }
+              >
+                {t("Disconnect")}
+              </Button>
+            </div>
+          </div>
         )}
       </section>
     </div>

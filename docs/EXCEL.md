@@ -27,6 +27,14 @@ Compressed size 1 MB, uncompressed 8 MB, 64 zip entries, 5000 data rows. Paths t
 
 ## Microsoft 365
 
-`excel_graph_status` returns `configured: false` and `status: not_configured`. The instructions tell the owner what a later registration would need: an application they create, a client id, tenant, and redirect URL, with Files.ReadWrite.Selected and offline_access. This build does not ask for tenant admin consent, does not store a token, and `excel_graph_sync` fails closed. A green "connected" state is not shown.
+The connector runs only when this computer has `SARV_GRAPH_CLIENT_ID`. Optional names are `SARV_GRAPH_TENANT` and `SARV_GRAPH_REDIRECT_URI`. Sarv does not register the application and does not request tenant admin consent. The scope is `Files.ReadWrite.Selected` plus `offline_access`.
 
-The libraries are calamine 0.32 and rust_xlsxwriter 0.88. The historic npm `xlsx` package is not used.
+Connect creates a PKCE challenge and a state value. The owner pastes the redirected address. The refresh token is stored in `.graph-grant.json` with mode 0600. Status JSON never includes the token. Disconnect deletes the file and attempts revocation. The owner then types one workbook item id. Sarv does not list the drive. Preview and commit use the same row checks as a local file. Push replaces that item only, and only after confirmation. `excel_graph_sync` does not run a background sync.
+
+`live_verified` stays false in status. A contract test talks to a local mock, not to Microsoft. Without the client id, status is `not_configured` and local `.xlsx` still works.
+
+Opening stock is a goods receipt: inventory debit, GRNI credit. It is not owner equity and it is not a supplier bill. Clear GRNI with a bill or a reviewed journal.
+
+Zip limits are the whole compressed file (1 MB), each part's compressed size, the sum of declared uncompressed sizes (8 MB), and the bytes actually inflated (8 MB). Paths, macros, embeddings, and external-link parts are refused.
+
+The libraries are calamine 0.38, rust_xlsxwriter 0.102, zip 9, and ureq 2.12. The historic npm `xlsx` package is not used.

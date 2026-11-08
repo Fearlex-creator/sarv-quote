@@ -21,10 +21,11 @@ uuid.workspace = true
 pango = { version = "0.22", optional = true }
 argon2 = { version = "0.5", features = ["std"] }
 # Read-only workbook parser. It does not calculate formulas or run macros.
-calamine = "0.32"
-rust_xlsxwriter = "0.88"
-zip = { version = "2.4", default-features = false, features = ["deflate"] }
+calamine = "0.38"
+rust_xlsxwriter = "0.102"
+zip = { version = "9", default-features = false, features = ["deflate"] }
 base64 = "0.22"
+ureq = { version = "2.12", default-features = false, features = ["tls"] }
 
 [features]
 default = []

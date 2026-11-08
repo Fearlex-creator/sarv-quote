@@ -2,11 +2,17 @@
 use base64::{Engine as _, engine::general_purpose::STANDARD};
 use calamine::Reader;
 use rust_xlsxwriter::Workbook;
+use sarv_quote::agent::{Access, AgentService, CONNECTION};
 use sarv_quote::desktop;
 use serde_json::{Value, json};
-use std::io::{Cursor, Write};
+use std::io::{Cursor, Read, Write};
+use std::net::TcpListener;
 use std::path::Path;
+use std::process::{Command, Stdio};
+use std::sync::{Mutex, OnceLock};
 use std::thread;
+use zip::write::SimpleFileOptions;
+use zip::{CompressionMethod, ZipWriter};
 
 fn call(dir: &Path, action: &str, payload: Value) -> Result<Value, String> {
     desktop::dispatch(dir, action, payload).map_err(|e| e.to_string())
@@ -333,14 +339,12 @@ fn excel_rejects_formulas_macros_numeric_skus_and_oversized_files() {
     .unwrap_err();
     assert!(oversized.contains("1 MB"), "{oversized}");
 
+    let _guard = graph_env().lock().unwrap();
     let graph = must(dir.path(), "excel_graph_status", json!({}));
     assert_eq!(graph["configured"], false);
     assert_eq!(graph["status"], "not_configured");
-    assert!(
-        call(dir.path(), "excel_graph_sync", json!({}))
-            .unwrap_err()
-            .contains("not configured")
-    );
+    let sync = call(dir.path(), "excel_graph_sync", json!({})).unwrap_err();
+    assert!(sync.contains("no background sync"), "{sync}");
 }
 
 #[test]
@@ -694,4 +698,260 @@ fn concurrent_last_unit_sells_once_and_return_restores_stock() {
         restored["reconciliation"]["stock"][0]["quantity_thousandths"],
         "1000"
     );
+}
+
+#[test]
+fn workbook_limits_cover_declared_and_actual_expansion() {
+    let dir = tempfile::tempdir().unwrap();
+    let cursor = Cursor::new(Vec::new());
+    let mut zip = ZipWriter::new(cursor);
+    let options = SimpleFileOptions::default().compression_method(CompressionMethod::Deflated);
+    for index in 0..9 {
+        zip.start_file(format!("pad{index}.bin"), options).unwrap();
+        zip.write_all(&vec![b'A'; 1_000_000]).unwrap();
+    }
+    let bytes = zip.finish().unwrap().into_inner();
+    assert!(bytes.len() < 1_000_000, "fixture must stay under the compressed cap");
+    let error = call(
+        dir.path(),
+        "excel_preview",
+        json!({"kind": "products", "content_base64": STANDARD.encode(&bytes)}),
+    )
+    .unwrap_err();
+    assert!(error.contains("expands"), "{error}");
+
+    let mut zip = ZipWriter::new(Cursor::new(Vec::new()));
+    zip.start_file("xl/externalLinks/link.xml", options).unwrap();
+    zip.write_all(b"<link/>").unwrap();
+    let bytes = zip.finish().unwrap().into_inner();
+    let error = call(
+        dir.path(),
+        "excel_preview",
+        json!({"kind": "products", "content_base64": STANDARD.encode(&bytes)}),
+    )
+    .unwrap_err();
+    assert!(error.contains("external"), "{error}");
+}
+
+#[test]
+fn legacy_agent_token_cannot_pass_a_shop_lock_until_the_owner_grants_a_role() {
+    let dir = tempfile::tempdir().unwrap();
+    let (c, _) = company(dir.path());
+    let owner_password = "owner-passphrase-1";
+    let cashier_password = "cashier-passphrase-1";
+    let boot = must(
+        dir.path(),
+        "auth_bootstrap",
+        json!({"name": "Owner", "password": owner_password}),
+    );
+    let owner_session = boot["session_token"].as_str().unwrap();
+    assert!(!boot.to_string().contains(owner_password));
+    let service = AgentService::start(dir.path(), env!("CARGO_BIN_EXE_sarv-agent").into()).unwrap();
+    service.configure(true, Access::Full).unwrap();
+    let denied = agent_call(dir.path(), "workspace", json!({"company_id": c})).unwrap_err();
+    assert!(denied.contains("approve"), "{denied}");
+    let configured = service
+        .ui_dispatch(
+            "agent_configure",
+            json!({
+                "session_token": owner_session,
+                "enabled": true,
+                "access": "full",
+                "role": "accountant"
+            }),
+        )
+        .unwrap();
+    assert_eq!(configured["role"], "accountant");
+    let workspace = agent_call(dir.path(), "workspace", json!({"company_id": c})).unwrap();
+    assert!(workspace.get("error").is_none());
+    let people = must(
+        dir.path(),
+        "auth_status",
+        json!({"session_token": owner_session}),
+    )["people"]
+        .as_array()
+        .unwrap()
+        .len();
+    assert!(
+        agent_call(
+            dir.path(),
+            "auth_create_user",
+            json!({"name": "Other", "password": cashier_password, "role": "cashier"}),
+        )
+        .is_err()
+    );
+    assert_eq!(
+        must(
+            dir.path(),
+            "auth_status",
+            json!({"session_token": owner_session}),
+        )["people"]
+            .as_array()
+            .unwrap()
+            .len(),
+        people
+    );
+    must(
+        dir.path(),
+        "auth_create_user",
+        json!({
+            "session_token": owner_session,
+            "name": "Till",
+            "password": cashier_password,
+            "role": "cashier"
+        }),
+    );
+    let cashier = must(
+        dir.path(),
+        "auth_login",
+        json!({"name": "Till", "password": cashier_password}),
+    );
+    let blocked = service.ui_dispatch(
+        "agent_configure",
+        json!({
+            "session_token": cashier["session_token"],
+            "enabled": true,
+            "access": "full",
+            "role": "accountant"
+        }),
+    );
+    assert!(blocked.unwrap_err().to_string().contains("role"));
+    service
+        .ui_dispatch(
+            "agent_configure",
+            json!({"session_token": owner_session, "enabled": false, "access": "read_only"}),
+        )
+        .unwrap();
+    let after = agent_call(dir.path(), "workspace", json!({"company_id": c}));
+    assert!(after.is_err());
+}
+
+#[test]
+fn graph_connector_uses_pkce_and_does_not_echo_tokens() {
+    let _guard = graph_env().lock().unwrap();
+    let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+    let port = listener.local_addr().unwrap().port();
+    let seen = std::sync::Arc::new(Mutex::new(Vec::new()));
+    let record = seen.clone();
+    thread::spawn(move || {
+        for incoming in listener.incoming().take(6) {
+            let mut stream = incoming.unwrap();
+            let mut buf = [0u8; 4096];
+            let n = stream.read(&mut buf).unwrap_or(0);
+            let text = String::from_utf8_lossy(&buf[..n]);
+            let path = text.split_whitespace().nth(1).unwrap_or("");
+            let authed = text.to_ascii_lowercase().contains("authorization:");
+            record.lock().unwrap().push(format!("{path} {authed}"));
+            let response = if path.starts_with("/token") || path.starts_with("/revoke") {
+                let body = br#"{"access_token":"at-1","refresh_token":"rt-1","expires_in":3600,"token_type":"Bearer"}"#;
+                let mut head = format!(
+                    "HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                    body.len()
+                )
+                .into_bytes();
+                head.extend_from_slice(body);
+                head
+            } else if path.contains("/content") {
+                format!("HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:{port}/blob\r\nContent-Length: 0\r\nConnection: close\r\n\r\n").into_bytes()
+            } else {
+                let file = products_file(&[vec![
+                    "00123".into(),
+                    "Tea".into(),
+                    "Piece".into(),
+                    "626".into(),
+                    "Grocery".into(),
+                    "1000".into(),
+                    "500".into(),
+                    "0".into(),
+                ]]);
+                let mut head = format!(
+                    "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                    file.len()
+                )
+                .into_bytes();
+                head.extend(file);
+                head
+            };
+            let _ = stream.write_all(&response);
+        }
+    });
+    unsafe {
+        std::env::set_var("SARV_GRAPH_CLIENT_ID", "client-1");
+        std::env::set_var("SARV_GRAPH_TENANT", "common");
+        std::env::set_var("SARV_GRAPH_REDIRECT_URI", "http://127.0.0.1/cb");
+        std::env::set_var("SARV_GRAPH_AUTHORIZE_BASE", format!("http://127.0.0.1:{port}"));
+        std::env::set_var("SARV_GRAPH_TOKEN_URL", format!("http://127.0.0.1:{port}/token"));
+        std::env::set_var("SARV_GRAPH_API_BASE", format!("http://127.0.0.1:{port}/v1.0"));
+    }
+    let dir = tempfile::tempdir().unwrap();
+    let (c, p) = company(dir.path());
+    let absent = must(dir.path(), "excel_graph_status", json!({}));
+    assert_eq!(absent["configured"], true);
+    assert_eq!(absent["authenticated"], false);
+    assert_eq!(absent["live_verified"], false);
+    let begin = must(dir.path(), "excel_graph_begin", json!({}));
+    let url = begin["authorize_url"].as_str().unwrap();
+    assert!(url.contains("code_challenge="));
+    assert!(url.contains("code_challenge_method=S256"));
+    assert!(url.contains("Files.ReadWrite.Selected"));
+    assert!(!url.contains("code_verifier"));
+    let state = url.split("state=").nth(1).unwrap().split('&').next().unwrap();
+    must(
+        dir.path(),
+        "excel_graph_complete",
+        json!({"redirect_url": format!("http://127.0.0.1/cb?code=one&state={state}")}),
+    );
+    let signed = must(dir.path(), "excel_graph_status", json!({}));
+    let rendered = signed.to_string();
+    assert_eq!(signed["authenticated"], true);
+    assert!(!rendered.contains("rt-1") && !rendered.contains("at-1"));
+    let preview = must(
+        dir.path(),
+        "excel_graph_preview",
+        json!({"kind": "products", "item_id": "ITEM1", "company_id": c, "period_id": p}),
+    );
+    assert_eq!(preview["accepted"], "1");
+    assert_eq!(preview["live_verified"], false);
+    let hits = seen.lock().unwrap().clone();
+    assert!(hits.iter().any(|hit| hit.contains("/blob false")), "{hits:?}");
+    must(dir.path(), "excel_graph_revoke", json!({}));
+    let cleared = must(dir.path(), "excel_graph_status", json!({}));
+    assert_eq!(cleared["authenticated"], false);
+    unsafe {
+        std::env::remove_var("SARV_GRAPH_CLIENT_ID");
+        std::env::remove_var("SARV_GRAPH_TENANT");
+        std::env::remove_var("SARV_GRAPH_REDIRECT_URI");
+        std::env::remove_var("SARV_GRAPH_AUTHORIZE_BASE");
+        std::env::remove_var("SARV_GRAPH_TOKEN_URL");
+        std::env::remove_var("SARV_GRAPH_API_BASE");
+    }
+}
+
+fn graph_env() -> &'static Mutex<()> {
+    static LOCK: OnceLock<Mutex<()>> = OnceLock::new();
+    LOCK.get_or_init(|| Mutex::new(()))
+}
+
+fn agent_call(dir: &Path, action: &str, payload: Value) -> Result<Value, String> {
+    let mut child = Command::new(env!("CARGO_BIN_EXE_sarv-agent"))
+        .args([
+            "--connection",
+            dir.join(CONNECTION).to_str().unwrap(),
+            "call",
+            action,
+            "--stdin",
+        ])
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::piped())
+        .spawn()
+        .unwrap();
+    serde_json::to_writer(child.stdin.take().unwrap(), &payload).unwrap();
+    let output = child.wait_with_output().unwrap();
+    let body = String::from_utf8_lossy(&output.stdout);
+    if output.status.success() {
+        Ok(serde_json::from_str(&body).unwrap_or(json!({})))
+    } else {
+        Err(format!("{body} {}", String::from_utf8_lossy(&output.stderr)))
+    }
 }
