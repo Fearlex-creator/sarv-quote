@@ -29,7 +29,7 @@
     "targets": ["deb"],
     "publisher": "Sarv",
     "copyright": "AGPL-3.0-only",
-    "category": "Office",
+    "category": "Finance",
     "shortDescription": "Shop accounting on this computer",
     "longDescription": "Sarv keeps a shop's books on this computer. It does not file tax returns and it does not replace a signed Windows release.",
     "licenseFile": "../../LICENSE",
