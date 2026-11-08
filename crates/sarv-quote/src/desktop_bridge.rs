@@ -19,10 +19,10 @@ mod contacts_banking;
 mod products;
 
 fn actor(p: &Value) -> &str {
-    if p["_actor"] == "local-agent" {
-        "local-agent"
-    } else {
-        "local-desktop"
+    match p["_actor"].as_str() {
+        Some("local-agent") => "local-agent",
+        Some(actor) if actor.starts_with("user:") => actor,
+        _ => "local-desktop",
     }
 }
 fn string<'a>(p: &'a Value, key: &str) -> Result<&'a str> {
@@ -1103,8 +1103,12 @@ fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
     Ok(json!(rows))
 }
 
-pub fn dispatch(directory: &Path, action: &str, p: Value) -> Result<Value> {
+pub fn dispatch(directory: &Path, action: &str, mut p: Value) -> Result<Value> {
     let mut store = Store::open(directory)?;
+    crate::access::enforce(&mut store, action, &mut p)?;
+    if crate::access::is_auth_command(action) {
+        return Ok(wire(crate::access::handle(&mut store, action, &p)?));
+    }
     dispatch_in(&mut store, action, p)
 }
 
@@ -1228,6 +1232,15 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                     "cheques".into(),
                     cheque_rows(&store.state, p["company_id"].as_str().unwrap_or(""))?,
                 );
+                o.insert(
+                    "retail".into(),
+                    crate::retail::view(&store.state, p["company_id"].as_str().unwrap_or("")),
+                );
+                if let Some(caps) = o.get_mut("capabilities").and_then(|v| v.as_object_mut()) {
+                    caps.insert("excel".into(), json!(true));
+                    caps.insert("pos".into(), json!(true));
+                    caps.insert("excel_graph".into(), json!(false));
+                }
             }
             w
         }
@@ -1849,6 +1862,11 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 &r["profit_loss"]["profit"].to_string(),
             ])?;
             json!({"filename":format!("profit-loss-{}.csv",string(&p,"to")?),"content":format!("\u{feff}{}",String::from_utf8(writer.into_inner()?)?)})
+        }
+        "excel_template" | "excel_preview" | "excel_export" | "excel_commit" | "excel_graph_status"
+        | "excel_graph_sync" => crate::excel::command(store, action, &p)?,
+        "pos_shift_open" | "pos_shift_close" | "pos_hold" | "pos_hold_delete" => {
+            crate::retail::command(store, action, &p)?
         }
         _ => return Err(anyhow!("Unsupported command: {action}")),
     };

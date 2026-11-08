@@ -4,6 +4,8 @@ Local-first Persian accounting for individuals and businesses. The desktop inter
 
 The primary desktop lives in `desktop/`: a minimal native-style shell, dense financial tables, first-class Persian RTL, independent language/digit/calendar settings, and opt-in local CLI/MCP agents. See [desktop development](desktop/README.md), [agent access](docs/tauri/AGENT-ACCESS.md), and [UI verification and limitations](docs/tauri/NATIVE-UI-REDESIGN.md). This remains an implementation checkpoint, not a production release. There is one React frontend and one Rust accounting backend. See [current handoff](docs/CLOUD-HANDOFF.md) for remaining work.
 
+Shop lock, Excel workbooks, and the till are documented in [progress](docs/PROGRESS.md), the [requirements matrix](docs/REQUIREMENTS-MATRIX.md), [Excel](docs/EXCEL.md), [access](docs/ACCESS.md), [point of sale](docs/POS.md), and [release gates](docs/RELEASE-GATES.md). Local `.xlsx` import and export do not need Microsoft 365. Live workbook sync is not configured.
+
 ## Local development
 
 Install Node >=20.19 (or >=22.12), pnpm 12.5.1, Rust, and the Tauri 2 prerequisites for your platform. Linux needs WebKitGTK 4.1 and GTK3 development/runtime packages for Tauri’s native webview. There is no GTK4/libadwaita application. Windows uses WebView2; macOS uses WKWebView. The Rust engine and agent CLI build without any GUI toolkit.

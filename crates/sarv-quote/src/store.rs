@@ -176,7 +176,11 @@ impl Store {
         fs::create_dir_all(directory)?;
         let conn = Connection::open(directory.join("sarv.sqlite3"))?;
         conn.busy_timeout(Duration::from_secs(3))?;
-        conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL);")?;
+        conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS app_security (id INTEGER PRIMARY KEY CHECK(id=1), payload TEXT NOT NULL);")?;
+        conn.execute(
+            "INSERT OR IGNORE INTO app_security VALUES(1,?1)",
+            ["{}"],
+        )?;
         let json = serde_json::to_string(&State::default())?;
         conn.execute("INSERT OR IGNORE INTO state VALUES(1,0,?1)", [json])?;
         let (generation, payload): (i64, String) =
@@ -524,6 +528,25 @@ impl Store {
         let prepared = Self::prepare_replacement(self.generation, &self.state, candidate, &safety)?;
         self.commit_prepared(prepared)?;
         Ok(safety)
+    }
+
+    /// Shop-lock record. It is not part of the financial snapshot or JSON backup.
+    pub fn security_payload(&self) -> Result<String> {
+        self.conn
+            .query_row("SELECT payload FROM app_security WHERE id=1", [], |row| {
+                row.get(0)
+            })
+            .context("Shop lock record is missing")
+    }
+
+    pub fn set_security_payload(&self, payload: &str) -> Result<()> {
+        ensure!(payload.len() <= 200_000, "Shop lock record is too large");
+        let changed = self.conn.execute(
+            "UPDATE app_security SET payload=?1 WHERE id=1",
+            params![payload],
+        )?;
+        ensure!(changed == 1, "Shop lock record is missing");
+        Ok(())
     }
 }
 pub fn backup_state(state: &State, path: &Path) -> Result<()> {

@@ -33,6 +33,8 @@ import { QuestionIcon as CircleHelp } from "@phosphor-icons/react/dist/csr/Quest
 import { PlantIcon as Sprout } from "@phosphor-icons/react/dist/csr/Plant";
 import { ArrowsClockwiseIcon as RefreshCw } from "@phosphor-icons/react/dist/csr/ArrowsClockwise";
 import { command, today } from "../lib/client";
+import { readSession, writeSession } from "../lib/session";
+import { LockScreen } from "../features/lock";
 import { installEnterAdvance } from "../lib/enter-advance";
 import { isTauri } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -91,6 +93,8 @@ import {
   JournalEditor,
   Reports,
   Settings,
+  Pos,
+  ExcelIO,
   Onboarding,
   preloadPage,
   preloadAll,
@@ -98,6 +102,8 @@ import {
 } from "./screens";
 export default function App() {
   const [page, setPage] = useState<Page>("overview");
+  const [locked, setLocked] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
   const [workspace, setWorkspace] = useState<Workspace | null>(null);
   const [companyId, setCompanyId] = useState(
     () => localStorage.getItem("sarv.company") ?? "",
@@ -184,8 +190,27 @@ export default function App() {
     }
   }, [companyId]);
   useEffect(() => {
+    let live = true;
+    void command<{ configured: boolean }>("auth_status")
+      .then((status) => {
+        if (!live) return;
+        setLocked(status.configured && !readSession());
+        setAuthChecked(true);
+      })
+      .catch(() => {
+        if (live) setAuthChecked(true);
+      });
+    const onLock = () => setLocked(true);
+    window.addEventListener("sarv-locked", onLock);
+    return () => {
+      live = false;
+      window.removeEventListener("sarv-locked", onLock);
+    };
+  }, []);
+  useEffect(() => {
+    if (!authChecked || locked) return;
     void refresh();
-  }, [refresh]);
+  }, [refresh, authChecked, locked]);
   useEffect(() => installEnterAdvance(), []);
   useEffect(() => {
     // Warm every screen once the shell is idle so navigation never waits on a
@@ -552,6 +577,10 @@ export default function App() {
               )
             ) : page === "sales" ? (
               <Sales onEdit={editDraft} onDetail={setRecord} />
+            ) : page === "pos" ? (
+              <Pos />
+            ) : page === "excel" ? (
+              <ExcelIO />
             ) : page === "purchases" ? (
               <Purchases onDetail={setRecord} />
             ) : page === "payments" ? (
@@ -667,6 +696,15 @@ export default function App() {
   return (
     <I18nContext.Provider value={locale}>
       <DirectionProvider dir={locale === "fa" ? "rtl" : "ltr"}>
+        {locked ? (
+          <LockScreen
+            onUnlock={() => {
+              setLocked(false);
+              void refresh();
+            }}
+          />
+        ) : (
+          <>
         <SidebarProvider
           open={!collapsed}
           onOpenChange={(open) => setCollapsed(!open)}
@@ -771,6 +809,20 @@ export default function App() {
                     </AvatarFallback>
                   </Avatar>
                   <span className="truncate">{companyName}</span>
+                  {readSession() && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        void command("auth_logout").finally(() => {
+                          writeSession(null);
+                          setLocked(true);
+                        });
+                      }}
+                    >
+                      {t("Sign out")}
+                    </Button>
+                  )}
                 </div>
               </SidebarFooter>
             </Sidebar>
@@ -951,6 +1003,8 @@ export default function App() {
           containerAriaLabel={t("Notifications")}
           closeButton
         />
+          </>
+        )}
       </DirectionProvider>
     </I18nContext.Provider>
   );

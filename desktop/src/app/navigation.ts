@@ -8,6 +8,8 @@ import { UsersIcon as Users } from "@phosphor-icons/react/dist/csr/Users";
 import { GearIcon as Settings } from "@phosphor-icons/react/dist/csr/Gear";
 import { BankIcon as Landmark } from "@phosphor-icons/react/dist/csr/Bank";
 import { ArrowsLeftRightIcon as ArrowsLeftRight } from "@phosphor-icons/react/dist/csr/ArrowsLeftRight";
+import { CashRegisterIcon as CashRegister } from "@phosphor-icons/react/dist/csr/CashRegister";
+import { FileXlsIcon as FileXls } from "@phosphor-icons/react/dist/csr/FileXls";
 import type { Page } from "../lib/types";
 export type NavGroup = "daily" | "people" | "books" | "workspace";
 export const navigationGroups: { id: NavGroup; label: string }[] = [
@@ -24,6 +26,7 @@ export const navigation: {
 }[] = [
   { page: "overview", label: "Overview", icon: LayoutDashboard, group: "daily" },
   { page: "sales", label: "Sales", icon: FileText, group: "daily" },
+  { page: "pos", label: "Point of sale", icon: CashRegister, group: "daily" },
   { page: "purchases", label: "Purchases", icon: ShoppingBag, group: "daily" },
   { page: "payments", label: "Payments", icon: ArrowsLeftRight, group: "daily" },
   { page: "banking", label: "Banking", icon: Landmark, group: "daily" },
@@ -32,10 +35,13 @@ export const navigation: {
   { page: "accounting", label: "Accounting", icon: BookOpen, group: "books" },
   { page: "reports", label: "Reports", icon: ChartNoAxesCombined, group: "books" },
   { page: "settings", label: "Settings", icon: Settings, group: "workspace" },
+  { page: "excel", label: "Excel", icon: FileXls, group: "workspace" },
 ];
 export const persian: Record<string, string> = {
   Overview: "نمای کلی",
   Sales: "فروش",
+  "Point of sale": "صندوق فروش",
+  Excel: "اکسل",
   Purchases: "خریدها",
   Payments: "پرداخت‌ها",
   Accounting: "حسابداری",

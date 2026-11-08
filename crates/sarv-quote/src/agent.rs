@@ -279,7 +279,27 @@ impl AgentService {
         self.status()
     }
     /// Called only by the trusted native Settings UI (and isolated QA adapter).
-    pub fn ui_dispatch(&self, action: &str, p: Value) -> Result<Value> {
+    pub fn ui_dispatch(&self, action: &str, mut p: Value) -> Result<Value> {
+        {
+            let mut store = self
+                .inner
+                .accounting
+                .lock()
+                .map_err(|_| anyhow!("Accounting state interrupted"))?;
+            store.refresh_if_stale()?;
+            crate::access::enforce(&store, action, &mut p)?;
+        }
+        if crate::access::is_auth_command(action) {
+            let mut store = self
+                .inner
+                .accounting
+                .lock()
+                .map_err(|_| anyhow!("Accounting state interrupted"))?;
+            store.refresh_if_stale()?;
+            return Ok(crate::desktop::wire(crate::access::handle(
+                &mut store, action, &p,
+            )?));
+        }
         match action {
             "agent_status" => self.status(),
             "agent_configure" => {

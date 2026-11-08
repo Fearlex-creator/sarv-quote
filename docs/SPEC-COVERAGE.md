@@ -8,6 +8,11 @@ as worded*, and no item meets that bar yet. Partial work is listed here instead.
 Legend: **Done** = implemented and tested · **Partial** = some of the item · **Present** = exists in
 Sarv in its own form · **Not started** · **Deferred** = decided not to do now (ADR).
 
+2026-11-08 addendum: shop lock, `.xlsx` import/export, and a till that posts through the existing
+sales kernel are covered by `tests/shop_excel_pos.rs` and `desktop/tests/retail-excel-pos.spec.ts`.
+The historical checklist below is unchanged. Tafsili, Moadian e-invoicing, payroll runs, and a live
+Microsoft 365 connection are still not done. See `docs/REQUIREMENTS-MATRIX.md`.
+
 ## Delivered (all tested)
 
 | Item | Where | Tests |
@@ -20,11 +25,11 @@ Sarv in its own form · **Not started** · **Deferred** = decided not to do now 
 | **Balance sheet** and **receivable/payable aging** (read-only) | `statements.rs`, Reports tabs | 6 hand-calculated tests + browser test |
 | Amount in Persian words under the invoice total; Persian search normalisation in the command menu | `lib/words-fa.ts`, `lib/normalize-fa.ts`, `lib/command-filter.ts` | 14 unit tests |
 | Fast desktop builds (`--profile fast`, 6 s vs 97 s); one frontend build per release | `desktop/src-tauri/Cargo.toml`, scripts | measured |
-| E2E harness that works out of the box (`pnpm --dir desktop test`) | `playwright.config.ts` | 25 of 25 pass |
+| E2E harness that works out of the box (`pnpm --dir desktop test`) | `playwright.config.ts` | 26 Chrome tests on 2026-11-08, including Excel and the till |
 | Licence AGPL-3.0-only for the core (ADR-0006) | `LICENSE`, `Cargo.toml` | — |
 
-Run: `cargo test -p sarv-quote` (264 pass; 307 with `--features pdf-export`) · `pnpm --dir desktop run check` ·
-`run test:unit` (14) · `run lint` · `run test` (25 browser tests).
+Run on 2026-11-08: `cargo test -p sarv-quote --offline` (272 listed, 3 ignored historical-binary tests, 0 failed; PDF feature not re-run) · `pnpm --dir desktop run check` ·
+`run test:unit` (14) · `run lint` · `run test` (26 Chrome tests).
 
 ## Accounting spec
 

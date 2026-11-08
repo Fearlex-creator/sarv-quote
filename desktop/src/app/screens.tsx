@@ -69,6 +69,12 @@ export const SetupDialog = lazy(() =>
 export const Payments = lazy(() =>
   import("../features/payments").then((m) => ({ default: memo(m.Payments) })),
 );
+export const Pos = lazy(() =>
+  import("../features/pos").then((m) => ({ default: memo(m.Pos) })),
+);
+export const ExcelIO = lazy(() =>
+  import("../features/excel").then((m) => ({ default: memo(m.ExcelIO) })),
+);
 export const RecordDetail = lazy(() =>
   import("../features/records").then((m) => ({ default: m.RecordDetail })),
 );
@@ -80,6 +86,8 @@ const loaders: Partial<Record<Page, () => Promise<unknown>>> = {
   sales,
   purchases,
   payments: () => import("../features/payments"),
+  pos: () => import("../features/pos"),
+  excel: () => import("../features/excel"),
   inventory: resources,
   customers: resources,
   accounting,

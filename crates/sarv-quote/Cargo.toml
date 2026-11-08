@@ -19,6 +19,12 @@ sha2.workspace = true
 uuid.workspace = true
 # pango used by export modules for RTL PDF text
 pango = { version = "0.22", optional = true }
+argon2 = { version = "0.5", features = ["std"] }
+# Read-only workbook parser. It does not calculate formulas or run macros.
+calamine = "0.32"
+rust_xlsxwriter = "0.88"
+zip = { version = "2.4", default-features = false, features = ["deflate"] }
+base64 = "0.22"
 
 [features]
 default = []

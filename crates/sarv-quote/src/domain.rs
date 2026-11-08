@@ -928,6 +928,9 @@ pub struct State {
     pub cashbook: crate::cashbook::Cashbook,
     #[serde(default, skip_serializing_if = "crate::cheques::ChequeRegister::is_empty")]
     pub cheques: crate::cheques::ChequeRegister,
+    /// Till shifts, held sales, and Excel import marks. Empty books omit it.
+    #[serde(default, skip_serializing_if = "crate::retail::RetailState::is_empty")]
+    pub retail: crate::retail::RetailState,
 }
 impl Default for State {
     fn default() -> Self {
@@ -946,6 +949,7 @@ impl Default for State {
             sales_drafts: vec![],
             cashbook: crate::cashbook::Cashbook::default(),
             cheques: crate::cheques::ChequeRegister::default(),
+            retail: crate::retail::RetailState::default(),
         }
     }
 }
@@ -1442,6 +1446,7 @@ impl State {
             || self.settings != base.settings
             || self.sales_drafts != base.sales_drafts
             || self.cheques != base.cheques
+            || self.retail != base.retail
             || self.quotes != base.quotes;
         let quotation_changed = self.catalogs != base.catalogs
             || self.customers != base.customers
@@ -1521,6 +1526,7 @@ impl State {
         self.validate_sales_drafts_and_links()?;
         self.accounting.validate()?;
         self.validate_cheques()?;
+        crate::retail::check(self)?;
         Ok(())
     }
     fn validate_approved_quotation_data(&self) -> Result<()> {
