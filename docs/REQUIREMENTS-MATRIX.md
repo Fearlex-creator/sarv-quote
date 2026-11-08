@@ -28,4 +28,4 @@ Status is what this branch can show with a test or a named blocker. A screen tha
 | Multi-tenant isolation | Not claimed | One local profile. Roles apply inside that profile. | `access.rs` |
 | Chrome desktop and mobile RTL | Implemented for the new flow | `retail-excel-pos.spec.ts` on the system Chrome. | `desktop/tests` |
 | Firefox and WebKit | Exercised with Chrome | One Playwright invocation passed 78 tests: 26 Chrome, 26 Firefox, 26 WebKit. | `desktop/playwright.config.ts` |
-| Windows release | Build workflow triggers on push and pull request | `.github/workflows/windows-build.yml` uploads a portable zip and does not create a tag. A push of this branch and a pull request into `main` start it. `workflow_dispatch` is not used, because that API returns 404 until the file is on the default branch. The release workflow was not dispatched. | `docs/RELEASE-GATES.md` |
+| Windows release | Portable zip built on `windows-latest` | On `20fd940`, push run 42511252121 and pull-request run 42511256432 both uploaded `Sarv-windows-x64`. No tag and no `release-windows.yml` dispatch. | `.github/workflows/windows-build.yml` |
