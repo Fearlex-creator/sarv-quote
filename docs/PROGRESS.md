@@ -24,7 +24,7 @@ Branch `cursor/retail-excel-pos-8dc2`. The engine stays one SQLite book in `crat
 - One local profile. Roles apply inside that profile. This is not multi-shop isolation.
 - Historical M3/M4/M5 executables are not in the git tree. They were built, unchanged, in an official Ubuntu 26.04 chroot (libadwaita 1.9.1, rustc 1.93.1) and the three ignored schema-rejection tests passed when those binaries were supplied. The default suite still ignores them. Hashes are in `docs/RELEASE-GATES.md`.
 - Quote and invoice PDF money is checked by the extracted Persian amount and by the glyph box, not by counting antialiased ink. See `docs/RELEASE-GATES.md`.
-- No `v*` tag was pushed. `release-windows.yml` was not dispatched, because that workflow publishes a release. `.github/workflows/windows-build.yml` builds this branch and uploads an artifact only.
+- No `v*` tag was pushed. `release-windows.yml` was not dispatched, because that workflow publishes a release. `.github/workflows/windows-build.yml` builds this branch and uploads an artifact only. Dispatching it returned HTTP 404 because the file is not on the default branch yet.
 
 ## Evidence
 

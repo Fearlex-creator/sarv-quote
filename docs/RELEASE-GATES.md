@@ -1,6 +1,6 @@
 # Release gates
 
-No tag was created and the Windows workflow was not started. The existing GitHub release `v0.1.0` points at main `f5888a16cc675eaaf58ca165363a39513b6695ac`, which does not contain this branch. Publishing this branch would attach a new release before the gates below are green.
+No tag was created. The existing GitHub release `v0.1.0` points at main `f5888a16cc675eaaf58ca165363a39513b6695ac`, which does not contain this branch. `release-windows.yml` was not dispatched, because a manual run creates or updates that tag's GitHub release.
 
 ## Green on this branch
 
@@ -26,7 +26,7 @@ The ink ratio is no longer the assertion. The test now requires each line price,
 | Dev-tool advisory | `pnpm --dir desktop audit` still reports moderate `minimatch` via ESLint (GHSA-g3hv-75wg-m249). ESLint 10 is the linter. Forcing minimatch 11 was not done. The high `zod` finding is patched. Thresholds were not raised. |
 | Historical binaries in CI | The default `cargo test` still ignores the three compat tests, because the binaries are not in git and an Ubuntu 24.04 runner cannot link libadwaita 1.9. A local Ubuntu 26.04 chroot did build the unchanged commits and the three tests passed there. See below. |
 | Graph against Microsoft | The connector and a local mock pass. A real tenant still needs the owner to register an app and set `SARV_GRAPH_CLIENT_ID`. No secret is in the repo. |
-| Windows artifact of this branch | `windows-build.yml` is build-only. It is dispatched after this commit. `release-windows.yml` still publishes, so it was not dispatched and no tag was created. |
+| Windows artifact of this branch | `gh workflow run windows-build.yml --ref cursor/retail-excel-pos-8dc2` returned HTTP 404: `workflow windows-build.yml not found on the default branch`. GitHub only dispatches a workflow that already exists on the default branch. The only workflow there is `release-windows.yml` (id 411221940), which publishes a release, so it was not dispatched. No tag was created. |
 | Production host | There is no separate server to deploy. The product is the local profile. |
 
 ## Browser run

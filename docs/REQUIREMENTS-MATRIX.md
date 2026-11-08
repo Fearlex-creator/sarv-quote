@@ -28,4 +28,4 @@ Status is what this branch can show with a test or a named blocker. A screen tha
 | Multi-tenant isolation | Not claimed | One local profile. Roles apply inside that profile. | `access.rs` |
 | Chrome desktop and mobile RTL | Implemented for the new flow | `retail-excel-pos.spec.ts` on the system Chrome. | `desktop/tests` |
 | Firefox and WebKit | Exercised with Chrome | One Playwright invocation passed 78 tests: 26 Chrome, 26 Firefox, 26 WebKit. | `desktop/playwright.config.ts` |
-| Windows release | Build workflow added, not published | `.github/workflows/windows-build.yml` uploads a portable zip and does not create a tag. `.github/workflows/release-windows.yml` still publishes, so it was not dispatched. | `docs/RELEASE-GATES.md` |
+| Windows release | Build workflow added, not run | `.github/workflows/windows-build.yml` uploads a portable zip and does not create a tag. GitHub refused `workflow_dispatch` with HTTP 404 because that file is not on the default branch. The release workflow was not dispatched. | `docs/RELEASE-GATES.md` |
