@@ -526,6 +526,19 @@ mod tests {
     }
 
     #[test]
+    fn test_accounting_and_banking_copy_helpers() {
+        assert_eq!(
+            crate::ui::views::accounting::tab_empty_copy(0),
+            ("Every entry behind your numbers.", "No journals")
+        );
+        assert_eq!(crate::ui::views::accounting::tab_empty_copy(1).1, "No accounts");
+        assert_eq!(crate::ui::views::accounting::tab_empty_copy(2).1, "No fiscal periods");
+        assert_eq!(crate::ui::views::banking::move_dialog_title(0), "Transfer");
+        assert_eq!(crate::ui::views::banking::move_dialog_title(1), "Money in");
+        assert_eq!(crate::ui::views::banking::move_dialog_title(2), "Money out");
+    }
+
+    #[test]
     fn test_cheque_strip_labels_are_translated_keys() {
         use crate::ui::views::payments::{cheque_action_label, cheque_status_label};
         assert_eq!(cheque_status_label("in_hand"), "In hand");

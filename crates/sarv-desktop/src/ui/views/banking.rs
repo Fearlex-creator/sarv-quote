@@ -151,11 +151,13 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.labeled("Amount", ui.field(s, "bank-amount", "۰")))
         .child(ui.labeled("Description", ui.field(s, "bank-reason", &ui.t("Note (optional)"))));
 
+    let title = move_dialog_title(s.banking.kind);
+
     ui.dialog_described(
         layer,
         &mut portals,
         "banking-move",
-        &ui.t("Transfer"),
+        &ui.t(title),
         &ui.t("Move money between cash and bank accounts."),
         true,
         900.0,
@@ -221,4 +223,12 @@ fn open_move(st: &mut State, kind: usize) {
     st.banking.post_key = format!("bank-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
     st.forms.set("bank-amount", "");
     st.forms.set("bank-reason", "");
+}
+
+pub fn move_dialog_title(kind: usize) -> &'static str {
+    match kind {
+        1 => "Money in",
+        2 => "Money out",
+        _ => "Transfer",
+    }
 }

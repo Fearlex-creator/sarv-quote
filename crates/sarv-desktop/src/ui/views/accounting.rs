@@ -31,6 +31,15 @@ pub fn period_status_key(locked: bool) -> &'static str {
     if locked { "Locked" } else { "Open" }
 }
 
+/// Hint + empty-state title for the accounting tab.
+pub fn tab_empty_copy(tab_idx: usize) -> (&'static str, &'static str) {
+    match tab_idx {
+        1 => ("The list of accounts your books use.", "No accounts"),
+        2 => ("Your financial years.", "No fiscal periods"),
+        _ => ("Every entry behind your numbers.", "No journals"),
+    }
+}
+
 fn periods(s: &State) -> &[serde_json::Value] {
     s.books.workspace["periods"].as_array().map(|a| a.as_slice()).unwrap_or(&[])
 }
@@ -144,13 +153,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .min_h(0.0),
     };
 
-    let hint = match s.accounting.tab_idx {
-        1 => "The list of accounts your books use.",
-        2 => "Your financial years.",
-        _ => "Every entry behind your numbers.",
+    let (hint, empty_title) = tab_empty_copy(s.accounting.tab_idx);
+    let empty_count = match s.accounting.tab_idx {
+        1 => accounts(s).len(),
+        2 => periods(s).len(),
+        _ => journals(s).len(),
     };
 
-    let body = col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.muted(ui.t(hint))).child(table);
+    let body = col()
+        .w_full()
+        .gap(14.0)
+        .grow(1.0)
+        .min_h(0.0)
+        .child(tab_bar)
+        .child(ui.muted(ui.t(hint)))
+        .child(ui.fill_or_empty(empty_count, empty_title, hint, &icons::REPORTS, table));
 
     if s.accounting.modal_open {
         mount_journal_dialog(s, ui, layer);
