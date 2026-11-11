@@ -911,6 +911,11 @@ mod tests {
         click(&mut rt, Page::Pos.key());
         assert!(rt.find("pos-screen").is_some());
         assert!(rt.find("pos-ticket").is_some());
+        assert!(
+            rt.state.forms.view("pos-search").focused,
+            "POS opens with catalog search focused for barcode entry"
+        );
+        assert!(rt.find("field-pos-search").is_some());
         assert!(crate::ui::views::pos::product_matches("کالای الف", "SKU-A", "ITEM-A", "6260001", "sku-a"));
         assert!(crate::ui::views::pos::product_matches("کالای الف", "SKU-A", "ITEM-A", "6260001", "۶۲۶"));
         assert!(!crate::ui::views::pos::product_matches("کالای الف", "SKU-A", "ITEM-A", "6260001", "no-such-sku"));
