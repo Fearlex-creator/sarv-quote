@@ -879,7 +879,9 @@ mod tests {
         click(&mut rt, "btn-Add sheet");
         assert_eq!(rt.state.sheets.book.sheets.len(), 2);
         click(&mut rt, "btn-sheet-tab-0");
+        assert!(rt.state.sheets.dirty, "edits leave the workbook dirty before save");
         click(&mut rt, "btn-Save sheet");
+        assert!(!rt.state.sheets.dirty, "successful save must clear the dirty flag");
 
         let loaded = rt.state.engine.call("sheet_load", serde_json::json!({ "company_id": rt.state.books.company_id })).unwrap();
         assert_eq!(loaded["workbook"]["sheets"][0]["cells"]["C3"], "=C1+C2");
