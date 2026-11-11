@@ -475,6 +475,29 @@ mod tests {
         let (mx, my) = rt.find("journal-debit-content").expect("account menu");
         assert!((fx - mx).abs() < 160.0, "account menu should cover the field: field {fx} menu {mx}");
         assert!((fy - my).abs() > 12.0 && (fy - my).abs() < 280.0, "account menu should sit on the field: field {fy} menu {my}");
+        rt.state.accounting.modal_open = false;
+        rt.frame(1.0 / 60.0);
+    }
+
+    #[test]
+    fn test_journal_post_uses_preview_generation() {
+        let mut rt = make_test_runtime();
+        rt.state.fmt.unit = crate::i18n::Unit::Rial;
+        let accounts = crate::ui::pickers::account_options(&rt.state);
+        assert!(accounts.len() >= 2, "need two postable accounts");
+        let debit = accounts[0].0.clone();
+        let credit = accounts[1].0.clone();
+        let before = rt.state.books.count("journal_count");
+        click(&mut rt, Page::Accounting.key());
+        click(&mut rt, "btn-New journal");
+        assert!(!rt.state.accounting.post_key.is_empty(), "dialog mints a stable request key");
+        rt.state.accounting.debit_account = debit;
+        rt.state.accounting.credit_account = credit;
+        rt.state.forms.set("journal-amount", "1000");
+        rt.state.forms.set("journal-reason", "Quality loop journal");
+        click(&mut rt, "btn-Save");
+        assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal post"));
+        assert!(rt.state.books.count("journal_count") > before, "journal posted");
     }
 
     #[test]

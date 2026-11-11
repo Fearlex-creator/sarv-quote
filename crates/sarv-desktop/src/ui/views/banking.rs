@@ -186,7 +186,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 } else {
                     st.banking.post_key.clone()
                 };
-                let payload = json!({
+                let mut payload = json!({
                     "kind": kind,
                     "account_id": st.banking.from_id,
                     "counterpart_id": st.banking.to_id,
@@ -196,9 +196,12 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "source_id": key,
                     "request_key": key
                 });
-                if let Err(e) = st.query("banking_preview", payload.clone()) {
-                    st.toast_err(e);
-                    return;
+                match st.query("banking_preview", payload.clone()) {
+                    Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
+                    Err(e) => {
+                        st.toast_err(e);
+                        return;
+                    }
                 }
                 match st.run("banking_post", payload, Some("Posted")) {
                     Ok(_) => st.banking.modal_open = false,

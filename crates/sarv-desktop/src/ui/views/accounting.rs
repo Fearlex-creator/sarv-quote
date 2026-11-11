@@ -19,6 +19,8 @@ pub struct AccountingState {
     pub selected: String,
     pub ledger_open: bool,
     pub ledger: serde_json::Value,
+    pub post_key: String,
+    pub posting: bool,
 }
 
 fn accounts(s: &State) -> &[serde_json::Value] {
@@ -166,6 +168,9 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 st.accounting.modal_open = true;
                 st.accounting.debit_account.clear();
                 st.accounting.credit_account.clear();
+                st.accounting.post_key =
+                    format!("journal-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
+                st.accounting.posting = false;
                 st.forms.set("journal-amount", "");
                 st.forms.set("journal-reason", "");
             }),
@@ -225,33 +230,56 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.accounting.modal_open = false),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
+                if st.accounting.posting || !st.accounting.modal_open {
+                    return;
+                }
+                st.accounting.posting = true;
                 if st.accounting.debit_account.is_empty() || st.accounting.credit_account.is_empty() {
                     st.toast(Tone::Danger, st.fmt.t("Select account"));
+                    st.accounting.posting = false;
                     return;
                 }
                 let amt = st.parse_money_input(&st.forms.get("journal-amount"));
                 if amt <= 0 {
                     st.toast(Tone::Danger, st.fmt.t("Amount"));
+                    st.accounting.posting = false;
                     return;
                 }
                 let reason = {
                     let r = st.forms.get("journal-reason");
                     if r.trim().is_empty() { "Manual journal".into() } else { r }
                 };
-                let payload = json!({
+                let key = if st.accounting.post_key.is_empty() {
+                    format!("journal-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0))
+                } else {
+                    st.accounting.post_key.clone()
+                };
+                let mut payload = json!({
                     "reason": reason,
+                    "source_id": key,
+                    "request_key": key,
                     "lines": [
                         { "account_id": st.accounting.debit_account, "debit": amt.to_string(), "credit": "0", "description": "" },
                         { "account_id": st.accounting.credit_account, "debit": "0", "credit": amt.to_string(), "description": "" }
                     ]
                 });
-                if let Err(e) = st.query("journal_preview", payload.clone()) {
-                    st.toast_err(e);
-                    return;
+                match st.query("journal_preview", payload.clone()) {
+                    Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
+                    Err(e) => {
+                        st.toast_err(e);
+                        st.accounting.posting = false;
+                        return;
+                    }
                 }
                 match st.run("journal_post", payload, Some("Posted")) {
-                    Ok(_) => st.accounting.modal_open = false,
-                    Err(e) => st.toast_err(e),
+                    Ok(_) => {
+                        st.accounting.modal_open = false;
+                        st.accounting.posting = false;
+                    }
+                    Err(e) => {
+                        st.toast_err(e);
+                        st.accounting.posting = false;
+                    }
                 }
             }),
         ],
@@ -286,7 +314,7 @@ fn reverse_selected(st: &mut State) {
         return;
     };
     let key = format!("rev-{id}");
-    let payload = serde_json::json!({
+    let mut payload = serde_json::json!({
         "journal_id": id,
         "period_id": crate::data::s(&journal["period_id"]),
         "date": crate::data::s(&journal["date"]),
@@ -294,9 +322,12 @@ fn reverse_selected(st: &mut State) {
         "source_id": key,
         "reason": "Reverse entry"
     });
-    if let Err(e) = st.query("journal_reverse_preview", payload.clone()) {
-        st.toast_err(e);
-        return;
+    match st.query("journal_reverse_preview", payload.clone()) {
+        Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
+        Err(e) => {
+            st.toast_err(e);
+            return;
+        }
     }
     if let Err(e) = st.run("journal_reverse", payload, Some("Posted")) {
         st.toast_err(e);
