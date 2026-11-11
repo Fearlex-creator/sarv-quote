@@ -366,40 +366,118 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     );
 }
 
+/// Engine status key → English message key (FA via `fa_messages`).
+pub fn cheque_status_label(status: &str) -> &str {
+    match status {
+        "in_hand" => "In hand",
+        "in_collection" => "In collection",
+        "cleared" => "Cleared",
+        "bounced" => "Bounced",
+        "spent" => "Spent",
+        "returned" => "Returned to customer",
+        "issued" => "Issued",
+        "voided" => "Voided",
+        other => other,
+    }
+}
+
+/// Engine allowed-action key → English button label.
+pub fn cheque_action_label(act: &str) -> Option<&'static str> {
+    match act {
+        "deposit" => Some("Deposit for collection"),
+        "clear" => Some("Mark as cleared"),
+        "bounce" => Some("Mark as bounced"),
+        "return" => Some("Return to customer"),
+        "void" => Some("Void cheque"),
+        // Endorse / spend stays a separate flow; do not offer it from this strip.
+        "spend" => None,
+        _ => None,
+    }
+}
+
+fn cheque_dispatch_action(act: &str) -> Option<&'static str> {
+    match act {
+        "deposit" => Some("cheque_deposit"),
+        "clear" => Some("cheque_clear"),
+        "bounce" => Some("cheque_bounce"),
+        "return" => Some("cheque_return"),
+        "void" => Some("cheque_void"),
+        _ => None,
+    }
+}
+
+fn first_fund_account(s: &State) -> Option<String> {
+    let rows = s.books.banking["accounts"].as_array()?;
+    let pick = |want: &str| {
+        rows.iter()
+            .find(|r| crate::data::s(&r["role"]).eq_ignore_ascii_case(want))
+            .map(|r| crate::data::s(&r["account"]["id"]))
+            .filter(|id| !id.is_empty())
+    };
+    pick("Bank")
+        .or_else(|| pick("Cash"))
+        .or_else(|| {
+            rows.first()
+                .map(|r| crate::data::s(&r["account"]["id"]))
+                .filter(|id| !id.is_empty())
+        })
+}
+
 fn cheque_strip(s: &State, ui: &Ui) -> El {
     let rows = s.books.workspace["cheques"].as_array().cloned().unwrap_or_default();
     if rows.is_empty() {
         return ui.muted(ui.t("No cheques yet"));
     }
-    let mut col_el = col().w_full().gap(8.0).child(ui.heading(ui.t("Cheque")));
-    for row in rows.iter().take(8) {
-        let id = crate::data::s(&row["cheque"]["id"]);
-        let number = crate::data::s(&row["cheque"]["details"]["number"]);
-        let status = crate::data::s(&row["status"]);
-        let allowed = row["allowed"].as_array().cloned().unwrap_or_default();
+    let mut col_el = col().w_full().gap(8.0).child(ui.heading(ui.t("Cheques")));
+    for entry in rows.iter().take(8) {
+        let id = crate::data::s(&entry["cheque"]["id"]);
+        let number = crate::data::s(&entry["cheque"]["details"]["number"]);
+        let status = crate::data::s(&entry["status"]);
+        let allowed = entry["allowed"].as_array().cloned().unwrap_or_default();
         let label = if number.is_empty() { id.clone() } else { number };
-        col_el = col_el.child(ui.body(format!("{label} · {status}")));
-        if let Some(act) = allowed.first().and_then(|v| v.as_str()) {
-            let act = act.to_string();
-            let cheque_id = id.clone();
-            let action = match act.as_str() {
-                "deposit" => "cheque_deposit",
-                "clear" => "cheque_clear",
-                "bounce" => "cheque_bounce",
-                "return" => "cheque_return",
-                "void" => "cheque_void",
-                "spend" => "cheque_spend",
-                _ => "",
+        let status_label = ui.t(cheque_status_label(&status));
+        let mut actions = row().w_full().gap(8.0).flex_wrap();
+        let mut has_action = false;
+        for act in allowed.iter().filter_map(|v| v.as_str()) {
+            let Some(button_label) = cheque_action_label(act) else {
+                continue;
             };
-            if !action.is_empty() && action != "cheque_spend" {
-                let key = format!("cheque-{action}-{cheque_id}");
-                col_el = col_el.child(ui.button(Btn::Glass, &key, &ui.t("Cheque"), None, move |st| {
-                    let req = format!("{action}-{cheque_id}");
-                    let payload = json!({ "cheque_id": cheque_id, "request_key": req, "source_id": req });
-                    let _ = st.run(action, payload, Some("Posted"));
-                }));
-            }
+            let Some(action) = cheque_dispatch_action(act) else {
+                continue;
+            };
+            has_action = true;
+            let cheque_id = id.clone();
+            let needs_fund = action == "cheque_clear";
+            let key = format!("cheque-{action}-{cheque_id}");
+            actions = actions.child(ui.button(Btn::Glass, &key, &ui.t(button_label), None, move |st| {
+                let req = format!("{action}-{cheque_id}");
+                let mut payload = json!({ "cheque_id": cheque_id, "request_key": req, "source_id": req });
+                if needs_fund {
+                    let Some(fund) = first_fund_account(st) else {
+                        st.toast(Tone::Danger, st.fmt.t("Select account"));
+                        return;
+                    };
+                    payload["fund_account_id"] = json!(fund);
+                }
+                let _ = st.run(action, payload, Some("Posted"));
+            }));
         }
+        let mut line = col()
+            .key(format!("cheque-row-{id}"))
+            .w_full()
+            .gap(6.0)
+            .child(
+                row()
+                    .w_full()
+                    .gap(8.0)
+                    .center_y()
+                    .child(ui.body(label).grow(1.0).min_w(0.0))
+                    .child(ui.muted(status_label)),
+            );
+        if has_action {
+            line = line.child(actions);
+        }
+        col_el = col_el.child(line);
     }
     col_el
 }

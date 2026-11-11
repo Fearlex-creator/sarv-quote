@@ -526,6 +526,20 @@ mod tests {
     }
 
     #[test]
+    fn test_cheque_strip_labels_are_translated_keys() {
+        use crate::ui::views::payments::{cheque_action_label, cheque_status_label};
+        assert_eq!(cheque_status_label("in_hand"), "In hand");
+        assert_eq!(cheque_status_label("in_collection"), "In collection");
+        assert_eq!(cheque_status_label("cleared"), "Cleared");
+        assert_eq!(cheque_action_label("deposit"), Some("Deposit for collection"));
+        assert_eq!(cheque_action_label("clear"), Some("Mark as cleared"));
+        assert_eq!(cheque_action_label("bounce"), Some("Mark as bounced"));
+        assert_eq!(cheque_action_label("return"), Some("Return to customer"));
+        assert_eq!(cheque_action_label("void"), Some("Void cheque"));
+        assert_eq!(cheque_action_label("spend"), None);
+    }
+
+    #[test]
     fn test_rial_sale_is_not_scaled() {
         let mut rt = make_test_runtime();
         rt.state.fmt.unit = crate::i18n::Unit::Rial;
