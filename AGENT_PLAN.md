@@ -8,20 +8,20 @@ Sarv is Iranian double-entry accounting. `crates/sarv-quote` is the engine; `cra
 
 ## Backlog
 
-1. Widen account pickers to 420; party/product stay 280; keep `{key}-trigger` as the menu anchor.
-2. POS: focus the search field when the page opens (barcode → catalog). No second payment path.
-3. Sheets: after a successful save, confirm `dirty` clears; add a test if it does not.
-4. Out of scope for this loop: payroll, bank feeds, card processors, team server.
+1. POS: focus the search field when the page opens (barcode → catalog). No second payment path.
+2. Sheets: after a successful save, confirm `dirty` clears; add a test if it does not.
+3. Out of scope for this loop: payroll, bank feeds, card processors, team server.
 
 ## In Progress
 
-- Account picker width 420.
+- GPU snaps for overview + invoice, then later backlog (POS focus, sheets dirty).
 
 ## Done
 
 - `dbd642db` — docs: add AGENT_PLAN.md for the quality loop
 - `2dd9ffdd` — fix(desktop): unmount finished setup guide in Auto mode
-- _(pending)_ — solid dialog panels (drop glass/blur; keep portal append order)
+- `ca91d1e4` — fix(desktop): make dialog panels solid layer_01
+- _(pending)_ — account pickers width 420; party/product stay 280
 
 ## Decisions
 
@@ -31,9 +31,10 @@ Sarv is Iranian double-entry accounting. `crates/sarv-quote` is the engine; `cra
 - Do not bump the Rune pin.
 - Auto + five steps done unmounts `setup-guide-card`; `GuideMode::Open` still mounts it; Closed keeps the collapsed header so the user can reopen.
 - Dialog sheets use solid `layer_01`; overview frost keeps `alpha(0.72)` glass.
+- `entity_combo` / `select_field` take an explicit width; `PICKER_WIDTH=280`, `ACCOUNT_PICKER_WIDTH=420`. Journal/banking dialogs widened to 900 so two 420 account fields fit. `{key}-trigger` remains the menu anchor.
 
 ## Open Risks
 
 - Demo fixture is intentionally 4 of 5 setup steps; guide-hide tests force all five complete in-memory.
-- Widening account selects to 420 may need a looser menu-alignment assertion if the field center drifts.
 - Large uncommitted Rune migration tree exists beside this loop; commits stay scoped to quality-loop files where possible.
+- POS autofocus and sheets dirty-clear still unverified.
