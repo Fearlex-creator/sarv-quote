@@ -21,7 +21,7 @@ _(idle — quality loop items from the accepted plan are finished)_
 - `ca91d1e4` — fix(desktop): make dialog panels solid layer_01
 - `6cfa45ec` — fix(desktop): widen account pickers to 420
 - `b2a30ba1` — fix(desktop): focus POS search when the page opens
-- _(this commit)_ — test(desktop): assert sheet dirty clears after save
+- `0b367954` — test(desktop): assert sheet dirty clears after save
 - GPU snaps (`SARV_DEMO=1`): overview shows guide at 4/5; invoice dialog panel samples solid `#121314` (no glass bleed). Suite: `cargo test -p sarv-desktop --bin sarv-desktop` — 30 passed.
 
 ## Decisions
