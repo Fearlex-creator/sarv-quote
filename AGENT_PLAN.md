@@ -8,9 +8,9 @@ Sarv is Iranian double-entry accounting. `crates/sarv-quote` is the engine; `cra
 
 ## Backlog
 
-1. Settings / Setup / Sheets modules are still largely untracked beside the loop — empty-state polish, backup double-toast, and first-run copy QA once those files are owned.
-2. Purchases / Sales return flows: confirm remaining_quantity /1000 and expected_generation on every branch (spot-check after concurrent edits).
-3. GPU snap pass for Payments cheque strip + Accounting empty card after the solid-dialog fix; also Contacts/Inventory suite and sidebar without brand.
+1. Settings / Setup / Sheets: empty-state polish, backup double-toast QA, first-run copy once those modules stay owned in git.
+2. Purchases / Sales return flows: confirm remaining_quantity /1000 and expected_generation on every branch.
+3. GPU snap pass for Payments cheque strip, Accounting empty card, Contacts/Inventory suite, and sidebar without brand.
 4. Out of scope: payroll, bank feeds, card processors, team server.
 
 ## In Progress
@@ -31,7 +31,9 @@ _(idle)_
 - `9d7b074f` — fix(desktop): empty states for Reports P&L, trial, and party tabs
 - `9fc72816` — fix(desktop): stop double-toasting failed posts; wire stock transfer generation
 - `e3d1d6f0` — fix(desktop): filter Contacts by name, phone, or id
-- Sidebar / Contacts / Inventory suite (this commit): no SARV brand header; company in footer; Inventory before Contacts; POS behind Settings `show_pos` (default off); full PartyProfile contact suite; inventory brands/categories/search/metrics.
+- `85bb17af` — docs: record quality-loop commits in AGENT_PLAN
+- `4deeef1e` — feat(desktop): tidy sidebar and deepen contacts/inventory (no brand header; company footer; Inventory before Contacts; POS via Settings `show_pos`; full contact/product suites with brand/category search)
+- Cleared from backlog: inventory on-page search; unfinished `show_pos` nav race.
 - Suite: `cargo test -p sarv-desktop --bin sarv-desktop` — 34 passed.
 
 ## Decisions
