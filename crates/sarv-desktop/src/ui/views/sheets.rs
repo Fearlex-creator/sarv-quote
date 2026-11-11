@@ -41,7 +41,7 @@ fn blank_sheet(name: &str) -> Sheet {
     Sheet { name: name.to_string(), cells: BTreeMap::new() }
 }
 
-fn starter(st: &State) -> Workbook {
+fn starter_cells(st: &State) -> BTreeMap<String, String> {
     let mut cells = BTreeMap::new();
     let rows = [
         ("A1", st.fmt.t("Cash and bank"), "B1", "=BOOKS(\"cash\")".to_string()),
@@ -54,7 +54,25 @@ fn starter(st: &State) -> Workbook {
         cells.insert(b.to_string(), formula);
     }
     cells.insert("A6".to_string(), st.fmt.t("Notes"));
-    Workbook { sheets: vec![Sheet { name: st.fmt.t("Sheet 1"), cells }] }
+    cells
+}
+
+fn starter(st: &State) -> Workbook {
+    Workbook { sheets: vec![Sheet { name: st.fmt.t("Sheet 1"), cells: starter_cells(st) }] }
+}
+
+fn fill_from_books(st: &mut State) {
+    if st.sheets.book.sheets.is_empty() {
+        return;
+    }
+    let cells = starter_cells(st);
+    let sheet = current_mut(st);
+    if !sheet.cells.is_empty() {
+        return;
+    }
+    sheet.cells = cells;
+    st.sheets.dirty = true;
+    sync_fields(st);
 }
 
 fn current<'a>(st: &'a State) -> &'a Sheet {
@@ -299,11 +317,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             sync_fields(st);
         }));
     }
-    tabs = tabs
-        .child(ui.compact_btn(Btn::Glass, "Add sheet", add_sheet))
-        .child(ui.field(s, "sheet-name", "").w(160.0))
-        .child(el_grow())
-        .child(ui.btn(Btn::Primary, "Save sheet", Some(&icons::CHECK), save));
+    let sheet_empty = current(s).cells.is_empty();
+    tabs = tabs.child(ui.compact_btn(Btn::Glass, "Add sheet", add_sheet)).child(ui.field(s, "sheet-name", "").w(160.0));
+    if sheet_empty {
+        tabs = tabs.child(ui.btn(Btn::Primary, "Fill from the books", Some(&icons::CHECK), fill_from_books));
+    }
+    let save_kind = if sheet_empty { Btn::Glass } else { Btn::Primary };
+    tabs = tabs.child(el_grow()).child(ui.btn(save_kind, "Save sheet", Some(&icons::CHECK), save));
 
     let grid = col()
         .w_full()
@@ -314,14 +334,19 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         .scroll_xy()
         .grow(1.0)
         .min_h(0.0);
-    let sheet = col()
-        .w_full()
-        .gap(10.0)
-        .grow(1.0)
-        .min_h(0.0)
-        .child(formula)
-        .child(ui.muted(ui.t("Type =A1+B1, =SUM(A1:A10), or =BOOKS(\"cash\") for a figure from the books.")))
-        .child(grid);
+    let mut sheet = col().w_full().gap(10.0).grow(1.0).min_h(0.0).child(formula);
+    if sheet_empty {
+        sheet = sheet.child(
+            ui.kit_card()
+                .title(ui.t("This sheet is empty"), Some(&icons::SHEETS))
+                .description(ui.t("Bring cash, receivables, and profit in from the books."))
+                .build(&ui.k)
+                .key("sheet-empty"),
+        );
+    } else {
+        sheet = sheet.child(ui.muted(ui.t("Type =A1+B1, =SUM(A1:A10), or =BOOKS(\"cash\") for a figure from the books.")));
+    }
+    let sheet = sheet.child(grid);
     let body = col()
         .w_full()
         .min_w(0.0)

@@ -8,10 +8,12 @@ Sarv is Iranian double-entry accounting. `crates/sarv-quote` is the engine; `cra
 
 ## Backlog
 
-1. Settings / Setup / Sheets: empty-state polish, backup double-toast QA, first-run copy once those modules stay owned in git.
-2. Purchases / Sales return flows: confirm remaining_quantity /1000 and expected_generation on every branch.
-3. GPU snap pass for Payments cheque strip, Accounting empty card, Contacts/Inventory suite, and sidebar without brand.
-4. Out of scope: payroll, bank feeds, card processors, team server.
+1. Sales invoice numbering: the desktop builds `ORD-` / prefix references in `sales.rs`. Show the engine's number and stop minting one in the UI. Impact 5, effort M, feature: invoice dialog.
+2. Purchases / Sales return flows: confirm `remaining_quantity` is divided by 1000 and `expected_generation` is sent on every branch. Impact 4, effort M, feature: returns.
+3. Invoice settlement: cash, card, transfer, cheque, on account, and split, with the engine preview in plain Persian before post. Impact 5, effort L — split before starting. Feature: invoice dialog.
+4. Invoice as a full page with the sidebar collapsed, party search focused, and one primary action «پیش‌نمایش و ثبت». Impact 4, effort L. Feature: invoice dialog.
+5. GPU snap pass for Payments cheque strip, Accounting empty card, Contacts/Inventory suite, and sidebar without brand. Impact 2, effort M. Needs a GPU. Feature: visual QA.
+6. Out of scope, do not build: payroll, live bank feeds, card processors, a team server.
 
 ## In Progress
 
@@ -53,9 +55,15 @@ _(idle)_
 - POS stays in `Page::GROUPS` but `Page::nav_pages(show_pos)` filters sidebar, rail, and palette. Settings Features switch persists `settings.show_pos`. Headless tests that open POS must `rt.update(|s,_| { s.show_pos = true; s.nav(Page::Pos); })` — mutating `rt.state` alone does not dirty the view.
 - Contacts/Inventory use existing `PartyProfile` / `ProductProfile` fields (brand/category as the product “variables”); no new engine schema.
 - Pages reviewed (2026-11-12): Overview, Sales, POS, Purchases, Payments, Banking, Contacts, Inventory, Accounting, Reports, Sheets, Settings, Setup, shell/palette/dialogs/toasts.
+- A blank company name stays on the setup step and toasts «نام کسب‌وکار را بنویسید». The opening button says «شروع از صفر» only when cash and bank are both zero; any typed amount switches it to «مانده‌های افتتاحیه را ثبت کنید». The post path already branched that way.
+- Backup create, business-profile save, and backup restore do not call `toast_err` after `run`. Success uses «پشتیبان ساخته شد: {name}» once. The old Persian for an empty backup list said پشتیبانی (support); it now says پشتیبان.
+- A new sheet with no cells shows «این برگه خالی است». «آوردن از دفاتر» sits in the tab row. A button inside the grid column did not receive the press; the scrolling grid covers that band.
+- First-run Persian: «سه گام تا شروع», «نام مغازه یا شرکت را بنویسید», «معمولاً از اول فروردین تا آخر اسفند است», «نام مغازه، سال مالی، و ماندهٔ اول کار. بعدش دفاتر باز می‌شود.»
 
 ## Open Risks
 
 - Demo fixture is intentionally 4 of 5 setup steps; guide-hide tests force all five complete in-memory.
-- Large uncommitted Rune migration tree may still exist beside this loop.
+- `cargo clippy --all-targets -- -D warnings` is not clean on rustc 1.99. Pre-existing `collapsible_if` and `needless_borrow` fire in `sarv-quote` and `sarv-desktop`. This loop did not take that cleanup.
+- GPU scene snaps still need a GPU. `png_scenes` was not run here.
+- The sales invoice is still a modal, and the desktop still mints order and invoice references. That is the next invoice-dialog work, not a second sales system.
 - Concurrent agents previously raced `shell.rs` / `app.rs` / Settings `show_pos` — keep POS reachable via `show_pos` for the suite.

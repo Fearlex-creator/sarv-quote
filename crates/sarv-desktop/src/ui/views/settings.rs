@@ -202,10 +202,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         vec![
             ui.btn(Btn::Glass, "Your business", None, open_business),
             ui.btn(Btn::Glass, "Restore backup", None, open_restore),
-            ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), |st| match st.run("backup_create", json!({}), None) {
-                Ok(v) => st.toast(Tone::Success, crate::data::s(&v["filename"])),
-                Err(e) => st.toast_err(e),
-            }),
+            ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), create_backup_pressed),
             ui.btn(Btn::Glass, "Law data", None, |st| match st.query("law_data", json!({})) {
                 Ok(v) => {
                     let notice = crate::data::s(&v["notice_en"]);
@@ -298,9 +295,8 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "footer": st.forms.get("biz-footer"),
                     "bank_details": st.forms.get("biz-bank")
                 });
-                match st.run("business_profile", json!({ "profile": profile }), Some("Saved")) {
-                    Ok(_) => st.settings.business_open = false,
-                    Err(e) => st.toast_err(e),
+                if st.run("business_profile", json!({ "profile": profile }), Some("Saved")).is_ok() {
+                    st.settings.business_open = false;
                 }
             }),
         ],
@@ -320,11 +316,45 @@ fn open_restore(st: &mut State) {
     }
 }
 
+fn create_backup_pressed(st: &mut State) {
+    create_backup(st);
+}
+
+/// `run` already toasts a failure. This adds one success line and never a second error.
+fn create_backup(st: &mut State) -> bool {
+    match st.run("backup_create", json!({}), None) {
+        Ok(v) => {
+            let name = crate::data::s(&v["filename"]);
+            let msg = if name.is_empty() {
+                st.fmt.t("Backup exported")
+            } else {
+                st.fmt.tf("Backup created: {name}", &[("name", &name)])
+            };
+            st.toast(Tone::Success, msg);
+            true
+        }
+        Err(_) => false,
+    }
+}
+
 fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let rows = s.settings.backups["backups"].as_array().cloned().unwrap_or_default();
     let mut form = col().gap(8.0);
     if rows.is_empty() {
-        form = form.child(ui.empty(&icons::DOWNLOAD, "No backups yet. Create one before your first closing.", "Backup"));
+        form = form.child(
+            ui.kit_card()
+                .title(ui.t("No backups yet"), Some(&icons::DOWNLOAD))
+                .description(ui.t("Create one before your first closing."))
+                .action(ui.btn(Btn::Primary, "Create backup", Some(&icons::DOWNLOAD), |st| {
+                    if create_backup(st)
+                        && let Ok(v) = st.query("backup_list", json!({}))
+                    {
+                        st.settings.backups = v;
+                    }
+                }))
+                .build(&ui.k)
+                .key("backup-empty"),
+        );
     }
     for row in rows.iter().take(6) {
         let name = crate::data::s(&row["filename"]);
@@ -362,7 +392,7 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.settings.restore_open = false),
             ui.button(Btn::Danger, "restore-confirm", &ui.t("Restore backup"), None, |st| {
                 if st.settings.restore_name.is_empty() {
-                    st.toast(Tone::Info, st.fmt.t("No backups yet. Create one before your first closing."));
+                    st.toast(Tone::Info, st.fmt.t("Choose a backup first."));
                     return;
                 }
                 let payload = json!({
@@ -370,9 +400,8 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "confirmed": true,
                     "expected_generation": st.settings.generation_note
                 });
-                match st.run("backup_restore", payload, Some("Saved")) {
-                    Ok(_) => st.settings.restore_open = false,
-                    Err(e) => st.toast_err(e),
+                if st.run("backup_restore", payload, Some("Saved")).is_ok() {
+                    st.settings.restore_open = false;
                 }
             }),
         ],

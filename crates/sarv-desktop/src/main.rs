@@ -933,15 +933,76 @@ mod tests {
         click(&mut rt, "btn-Back");
         assert!(rt.find("setup-welcome").is_some());
         click(&mut rt, "btn-Get started");
+        click(&mut rt, "btn-Create a company and fiscal period");
+        assert!(
+            rt.state.toasts.iter().any(|t| t.message.contains("نام کسب‌وکار") || t.message.contains("Write your business")),
+            "{}",
+            blow(&rt, "missing name"),
+        );
+        assert!(rt.find("setup-screen").is_some(), "a blank name stays on the company step");
         rt.state.forms.set("setup-name", "Sarv Cafe");
         click(&mut rt, "btn-Create a company and fiscal period");
         assert!(rt.find("setup-opening").is_some(), "{}", blow(&rt, "opening"));
+        rt.state.forms.set("opening-cash", "1500");
+        assert_eq!(crate::ui::views::setup::opening_action(&rt.state), "Record your opening balances");
+        rt.state.forms.set("opening-cash", "");
+        assert_eq!(crate::ui::views::setup::opening_action(&rt.state), "Start fresh");
         click(&mut rt, "btn-Start fresh");
         assert_eq!(rt.state.page, Page::Overview, "{}", blow(&rt, "opened"));
         assert!(rt.state.books.initialized());
         assert!(rt.find("sidebar-brand").is_none());
         assert!(rt.find("sidebar-search").is_some());
         assert!(rt.find("org-selector").is_some());
+        let _ = std::fs::remove_dir_all(&dir);
+    }
+
+    #[test]
+    fn test_fresh_books_backup_empty_state_toasts_once() {
+        let dir = std::env::temp_dir().join(format!("sarv-backup-{}", std::process::id()));
+        let _ = std::fs::remove_dir_all(&dir);
+        std::fs::create_dir_all(&dir).unwrap();
+        let env = Env { system_dark: true, scale: 2.0 };
+        let mut rt = Runtime::new(
+            State::with_engine(data::Engine::with_dir(&dir), true),
+            ui::root_view,
+            (1180.0, 780.0),
+            env,
+        );
+        rt.frame(0.0);
+        click(&mut rt, "btn-Get started");
+        rt.state.forms.set("setup-name", "Sarv Shop");
+        click(&mut rt, "btn-Create a company and fiscal period");
+        click(&mut rt, "btn-Start fresh");
+        assert_eq!(rt.state.page, Page::Overview, "{}", blow(&rt, "opened"));
+
+        click(&mut rt, Page::Settings.key());
+        click(&mut rt, "btn-Restore backup");
+        assert!(rt.find("backup-empty").is_some(), "{}", blow(&rt, "empty backups"));
+        assert_eq!(rt.state.fmt.t("No backups yet"), "هنوز پشتیبان ندارید");
+        assert!(!rt.state.fmt.t("No backups yet. Create one before your first closing.").contains("پشتیبانی"));
+        let before = rt.state.toasts.len();
+        click(&mut rt, "btn-Create backup");
+        let made: Vec<_> = rt.state.toasts.iter().skip(before).filter(|t| t.tone == Tone::Success).collect();
+        assert_eq!(made.len(), 1, "{}", blow(&rt, "backup toast"));
+        assert!(made[0].message.contains("sarv-backup-"), "{}", blow(&rt, "backup name"));
+        assert!(rt.find("backup-empty").is_none(), "the new backup replaces the empty card");
+        let filename = rt
+            .state
+            .settings
+            .backups["backups"]
+            .as_array()
+            .and_then(|rows| rows.first())
+            .map(|row| crate::data::s(&row["filename"]))
+            .filter(|name| !name.is_empty())
+            .unwrap_or_else(|| panic!("{}", blow(&rt, "backup list")));
+        click(&mut rt, &format!("btn-backup-{filename}"));
+        assert!(!rt.state.settings.generation_note.is_empty(), "{}", blow(&rt, "generation"));
+        rt.state.settings.generation_note.push('9');
+        let dangers_before = rt.state.toasts.iter().filter(|t| t.tone == Tone::Danger).count();
+        click(&mut rt, "btn-restore-confirm");
+        let dangers = rt.state.toasts.iter().filter(|t| t.tone == Tone::Danger).count();
+        assert_eq!(dangers, dangers_before + 1, "{}", blow(&rt, "double toast"));
+        assert!(rt.state.settings.restore_open, "a generation conflict keeps the dialog open");
         let _ = std::fs::remove_dir_all(&dir);
     }
 
@@ -965,6 +1026,14 @@ mod tests {
         click(&mut rt, "btn-sheet-apply");
         click(&mut rt, "btn-Add sheet");
         assert_eq!(rt.state.sheets.book.sheets.len(), 2);
+        assert!(rt.find("sheet-empty").is_some(), "a new sheet starts empty");
+        click(&mut rt, "btn-Fill from the books");
+        assert!(!rt.state.sheets.book.sheets[1].cells.is_empty(), "fill writes the books onto the blank sheet");
+        assert!(rt.find("sheet-empty").is_none(), "filling the sheet replaces the empty card");
+        assert_eq!(
+            rt.state.sheets.book.sheets[1].cells.get("B1").map(String::as_str),
+            Some("=BOOKS(\"cash\")"),
+        );
         click(&mut rt, "btn-sheet-tab-0");
         assert!(rt.state.sheets.dirty, "edits leave the workbook dirty before save");
         click(&mut rt, "btn-Save sheet");
