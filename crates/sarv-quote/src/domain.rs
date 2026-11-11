@@ -275,6 +275,9 @@ pub struct Settings {
     pub text_direction: TextDirection,
     #[serde(default, skip_serializing_if = "String::is_empty")]
     pub accent: String,
+    /// Counter page. Off by default so the daily sidebar stays focused on invoices and cash.
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub show_pos: bool,
 }
 impl Default for Settings {
     fn default() -> Self {
@@ -299,6 +302,7 @@ impl Default for Settings {
             fiscal_year_start_month: 1,
             text_direction: TextDirection::Rtl,
             accent: String::new(),
+            show_pos: false,
         }
     }
 }

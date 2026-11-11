@@ -1,11 +1,11 @@
-//! Inventory — kit Table + product dialog with unit Select and creatable fields.
+//! Inventory — brands, categories, search, and a full product profile suite (not a plain list).
 
 use std::borrow::Cow;
+use std::collections::BTreeSet;
 
-use rune::{Align, Cx, El, col};
+use rune::{Align, Cx, El, col, row};
 use rune_kit::{Cell, Table, TableColumn, TableState};
-
-use serde_json::json;
+use serde_json::{Value, json};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, Ui};
@@ -27,14 +27,21 @@ pub struct InventoryState {
     pub profile_open: bool,
     pub stock_label: String,
     pub generation: String,
+    pub brand_filter: String,
+    pub category_filter: String,
+    pub detail: Value,
 }
 
 fn items(s: &State) -> &[serde_json::Value] {
     s.books.workspace["resources"]["items"].as_array().map(|a| a.as_slice()).unwrap_or(&[])
 }
 
+fn product_profile<'a>(s: &'a State, id: &str) -> &'a Value {
+    &s.books.workspace["product_profiles"][id]
+}
+
 fn sale_price(s: &State, id: &str) -> String {
-    let p = &s.books.workspace["product_profiles"][id]["sale_price"];
+    let p = &product_profile(s, id)["sale_price"];
     if p.is_null() {
         "0".into()
     } else {
@@ -50,26 +57,96 @@ fn unit_name(s: &State, unit_id: &str) -> String {
         .unwrap_or_else(|| "Unit".into())
 }
 
+fn catalog_values(s: &State, field: &str) -> Vec<String> {
+    let mut set = BTreeSet::new();
+    for item in items(s) {
+        let id = crate::data::s(&item["id"]);
+        let value = crate::data::s(&product_profile(s, &id)[field]);
+        if !value.trim().is_empty() {
+            set.insert(value);
+        }
+    }
+    set.into_iter().collect()
+}
+
+fn item_matches(s: &State, item: &Value, query: &str) -> bool {
+    let q = query.trim().to_lowercase();
+    let id = crate::data::s(&item["id"]);
+    let profile = product_profile(s, &id);
+    let brand = crate::data::s(&profile["brand"]);
+    let category = crate::data::s(&profile["category"]);
+    if !s.inventory.brand_filter.is_empty() && brand != s.inventory.brand_filter {
+        return false;
+    }
+    if !s.inventory.category_filter.is_empty() && category != s.inventory.category_filter {
+        return false;
+    }
+    if q.is_empty() {
+        return true;
+    }
+    let latin = crate::i18n::latin_digits(&q).to_lowercase();
+    let name = crate::data::s(&item["name"]);
+    let sku = crate::data::s(&item["sku"]);
+    let barcode = crate::data::s(&profile["barcode"]);
+    [name.as_str(), sku.as_str(), barcode.as_str(), brand.as_str(), category.as_str(), id.as_str()]
+        .iter()
+        .any(|field| {
+            let field = field.to_lowercase();
+            field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
+        })
+}
+
+fn filtered_items(s: &State) -> Vec<serde_json::Value> {
+    let q = s.forms.get("inventory-search");
+    items(s).iter().filter(|item| item_matches(s, item, &q)).cloned().collect()
+}
+
+fn money_field_from_rial(st: &State, rials: &str) -> String {
+    if rials.is_empty() {
+        return String::new();
+    }
+    if st.fmt.unit == crate::i18n::Unit::Toman {
+        (rials.parse::<i64>().unwrap_or(0) / 10).to_string()
+    } else {
+        rials.to_string()
+    }
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
+    let list = filtered_items(s);
     let table = Table::new(
         |s: &State| &s.inventory.table,
         |s: &mut State| &mut s.inventory.table,
-        |s: &State| items(s).len(),
+        |s: &State| filtered_items(s).len(),
         |s: &State, i| {
-            let id = crate::data::s(&items(s)[i]["id"]);
+            let id = crate::data::s(&filtered_items(s)[i]["id"]);
             Cow::Owned(format!("item-{id}"))
         },
     )
     .name(ui.t("Inventory"))
     .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-    .column(TableColumn::new("code", ui.t("Code")).width(120.0).min(80.0).sortable())
-    .column(TableColumn::new("unit", ui.t("Unit")).width(100.0).min(72.0))
-    .column(TableColumn::new("price", ui.t("Price")).width(140.0).min(96.0).align(Align::End).sortable())
+    .column(TableColumn::new("brand", ui.t("Brand")).width(120.0).min(88.0).sortable())
+    .column(TableColumn::new("category", ui.t("Category")).width(120.0).min(88.0).sortable())
+    .column(TableColumn::new("code", ui.t("Code")).width(110.0).min(72.0).sortable())
+    .column(TableColumn::new("unit", ui.t("Unit")).width(90.0).min(64.0))
+    .column(TableColumn::new("price", ui.t("Price")).width(130.0).min(96.0).align(Align::End).sortable())
     .cell(|s: &State, i, col| {
-        let item = &items(s)[i];
+        let list = filtered_items(s);
+        let Some(item) = list.get(i) else {
+            return Cell::text("");
+        };
         let id = crate::data::s(&item["id"]);
+        let profile = product_profile(s, &id);
         match col {
             "name" => Cell::text(crate::data::s(&item["name"])),
+            "brand" => {
+                let brand = crate::data::s(&profile["brand"]);
+                Cell::text(if brand.is_empty() { "—" } else { &brand }).muted()
+            }
+            "category" => {
+                let category = crate::data::s(&profile["category"]);
+                Cell::text(if category.is_empty() { "—" } else { &category }).muted()
+            }
             "code" => {
                 let code = crate::data::s(&item["sku"]);
                 Cell::text(if code.is_empty() { id } else { code }).muted()
@@ -86,132 +163,64 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .grow(1.0)
     .min_h(0.0);
 
+    let brands = catalog_values(s, "brand");
+    let categories = catalog_values(s, "category");
+    let mut portals = Vec::new();
+
+    let mut brand_opts = vec![("".to_string(), ui.t("All brands"))];
+    brand_opts.extend(brands.iter().cloned().map(|b| (b.clone(), b)));
+    let brand_open = s.selects.get("inventory-brand").copied().unwrap_or(false);
+    let brand_select = pickers::select_field(
+        ui,
+        &mut portals,
+        "inventory-brand",
+        &brand_opts,
+        Some(s.inventory.brand_filter.as_str()),
+        &ui.t("Brand"),
+        pickers::PICKER_WIDTH,
+        brand_open,
+        |st, id| st.inventory.brand_filter = id.to_string(),
+    );
+
+    let mut category_opts = vec![("".to_string(), ui.t("All categories"))];
+    category_opts.extend(categories.iter().cloned().map(|c| (c.clone(), c)));
+    let category_open = s.selects.get("inventory-category").copied().unwrap_or(false);
+    let category_select = pickers::select_field(
+        ui,
+        &mut portals,
+        "inventory-category",
+        &category_opts,
+        Some(s.inventory.category_filter.as_str()),
+        &ui.t("Category"),
+        pickers::PICKER_WIDTH,
+        category_open,
+        |st, id| st.inventory.category_filter = id.to_string(),
+    );
+
     let add_btn = ui.btn(Btn::Primary, "New product", Some(&icons::PLUS), |st| {
         st.inventory.modal_open = true;
         st.inventory.unit_id = pickers::first_unit(st);
         st.inventory.supplier_id.clear();
         st.inventory.is_service = false;
-        st.forms.set("item-name", "");
-        st.forms.set("item-sku", "");
-        st.forms.set("item-price", "");
-        st.forms.set("item-cost", "");
-        st.forms.set("item-barcode", "");
-        st.forms.set("item-notes", "");
+        for key in [
+            "item-name",
+            "item-sku",
+            "item-price",
+            "item-cost",
+            "item-barcode",
+            "item-brand",
+            "item-category",
+            "item-min-stock",
+            "item-notes",
+        ] {
+            st.forms.set(key, "");
+        }
+        st.forms.set("item-min-stock", "0");
     });
 
     if s.inventory.modal_open {
-        let mut portals = Vec::new();
-        let units = pickers::unit_options(s);
-        let unit_open = s.selects.get("item-unit").copied().unwrap_or(false);
-        let unit_select = pickers::select_field(
-            ui,
-            &mut portals,
-            "item-unit",
-            &units,
-            if s.inventory.unit_id.is_empty() { None } else { Some(s.inventory.unit_id.as_str()) },
-            &ui.t("Select unit"),
-            pickers::PICKER_WIDTH,
-            unit_open,
-            |st, id| st.inventory.unit_id = id.to_string(),
-        );
-        let suppliers = pickers::party_options(s, false, true)
-            .into_iter()
-            .map(|o| (o.id, o.label))
-            .collect::<Vec<_>>();
-        let supp_open = s.selects.get("item-supplier").copied().unwrap_or(false);
-        let supplier_select = pickers::select_field(
-            ui,
-            &mut portals,
-            "item-supplier",
-            &suppliers,
-            if s.inventory.supplier_id.is_empty() {
-                None
-            } else {
-                Some(s.inventory.supplier_id.as_str())
-            },
-            &ui.t("Select supplier"),
-            pickers::PICKER_WIDTH,
-            supp_open,
-            |st, id| st.inventory.supplier_id = id.to_string(),
-        );
-
-        let kind_stock = ui.t("Stock item · Track inventory");
-        let kind_svc = ui.t("Service / Non-stock");
-        let kind_tabs = [
-            (kind_stock.as_str(), !s.inventory.is_service),
-            (kind_svc.as_str(), s.inventory.is_service),
-        ];
-        let kind_bar = ui.tabs("item-kind", &kind_tabs, |st, idx| st.inventory.is_service = idx == 1);
-
-        let form = col()
-            .gap(12.0)
-            .child(kind_bar)
-            .child(ui.labeled("Name", ui.field(s, "item-name", &ui.t("Enter a product name."))))
-            .child(ui.form_grid(
-                ui.labeled("Code", ui.field(s, "item-sku", "PRD-101")),
-                ui.labeled("Unit", unit_select),
-            ))
-            .child(ui.form_grid(
-                ui.labeled("Your cost", ui.field(s, "item-cost", "۰")),
-                ui.labeled("Unit price", ui.field(s, "item-price", "۱۵۰٬۰۰۰")),
-            ))
-            .child(ui.form_grid(
-                ui.labeled("Barcode", ui.field(s, "item-barcode", "")),
-                ui.labeled("Preferred supplier", supplier_select),
-            ))
-            .child(ui.labeled("Description", ui.field(s, "item-notes", &ui.t("Note (optional)"))));
-
-        let save_btn = ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), move |st| {
-            let name = st.forms.get("item-name").trim().to_string();
-            if name.is_empty() {
-                st.toast(Tone::Danger, st.fmt.t("Enter a product name."));
-                return;
-            }
-            let sku = st.forms.get("item-sku").trim().to_string();
-            let barcode = st.forms.get("item-barcode").trim().to_string();
-            let notes = st.forms.get("item-notes").trim().to_string();
-            let sale = st.parse_money_input(&st.forms.get("item-price")).to_string();
-            let cost_raw = st.forms.get("item-cost");
-            let cost = if cost_raw.trim().is_empty() {
-                None
-            } else {
-                Some(st.parse_money_input(&cost_raw).to_string())
-            };
-            let unit = st.inventory.unit_id.clone();
-            let supplier = st.inventory.supplier_id.clone();
-            let service = st.inventory.is_service;
-            match st.create_item(
-                &name,
-                &sku,
-                &unit,
-                &sale,
-                cost.as_deref(),
-                &barcode,
-                &notes,
-                &supplier,
-                service,
-            ) {
-                Ok(_) => st.inventory.modal_open = false,
-                Err(e) => st.toast_err(e),
-            }
-        });
-        ui.dialog_described(
-            layer,
-            &mut portals,
-            "product",
-            &ui.t("New product"),
-            &ui.t("Track stock, pricing, and preferred suppliers."),
-            true,
-            560.0,
-            form,
-            vec![
-                ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.modal_open = false),
-                save_btn,
-            ],
-            |st| st.inventory.modal_open = false,
-        );
+        mount_create(s, ui, layer);
     }
-
     if s.inventory.transfer_open {
         mount_transfer(s, ui, layer);
     }
@@ -219,10 +228,34 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_product_profile(s, ui, layer);
     }
 
+    let filters = row()
+        .w_full()
+        .gap(10.0)
+        .center_y()
+        .child(ui.field(s, "inventory-search", &ui.t("Search products")).grow(1.0).min_w(0.0))
+        .child(brand_select)
+        .child(category_select);
+
+    let body = col()
+        .w_full()
+        .gap(14.0)
+        .grow(1.0)
+        .min_h(0.0)
+        .child(filters)
+        .child(ui.fill_or_empty(
+            list.len(),
+            if items(s).is_empty() { "No products" } else { "Nothing to show" },
+            "Products and services you sell",
+            &icons::INVENTORY,
+            table,
+        ));
+
+    layer.append(&mut portals);
+
     ui.page(
         "inventory-screen",
         &ui.t("Inventory"),
-        &ui.t("Products and services you sell"),
+        &ui.t("Organize products by brand and category"),
         vec![
             ui.btn(Btn::Glass, "Transfer stock", Some(&icons::ARROW), |st| {
                 st.inventory.transfer_open = true;
@@ -241,13 +274,148 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 open_product(st, &id);
             }),
         ],
-        ui.fill_or_empty(items(s).len(), "No products", "Products and services you sell", &icons::INVENTORY, table),
+        body,
     )
 }
 
-fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
-    use serde_json::json;
+fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    let mut portals = Vec::new();
+    let units = pickers::unit_options(s);
+    let unit_open = s.selects.get("item-unit").copied().unwrap_or(false);
+    let unit_select = pickers::select_field(
+        ui,
+        &mut portals,
+        "item-unit",
+        &units,
+        if s.inventory.unit_id.is_empty() { None } else { Some(s.inventory.unit_id.as_str()) },
+        &ui.t("Select unit"),
+        pickers::PICKER_WIDTH,
+        unit_open,
+        |st, id| st.inventory.unit_id = id.to_string(),
+    );
+    let suppliers = pickers::party_options(s, false, true)
+        .into_iter()
+        .map(|o| (o.id, o.label))
+        .collect::<Vec<_>>();
+    let supp_open = s.selects.get("item-supplier").copied().unwrap_or(false);
+    let supplier_select = pickers::select_field(
+        ui,
+        &mut portals,
+        "item-supplier",
+        &suppliers,
+        if s.inventory.supplier_id.is_empty() {
+            None
+        } else {
+            Some(s.inventory.supplier_id.as_str())
+        },
+        &ui.t("Select supplier"),
+        pickers::PICKER_WIDTH,
+        supp_open,
+        |st, id| st.inventory.supplier_id = id.to_string(),
+    );
 
+    let kind_stock = ui.t("Stock item · Track inventory");
+    let kind_svc = ui.t("Service / Non-stock");
+    let kind_tabs = [
+        (kind_stock.as_str(), !s.inventory.is_service),
+        (kind_svc.as_str(), s.inventory.is_service),
+    ];
+    let kind_bar = ui.tabs("item-kind", &kind_tabs, |st, idx| st.inventory.is_service = idx == 1);
+
+    let form = col()
+        .gap(16.0)
+        .child(kind_bar)
+        .child(ui.section(
+            "item-basics",
+            &ui.t("Product"),
+            col()
+                .gap(12.0)
+                .child(ui.labeled("Name", ui.field(s, "item-name", &ui.t("Enter a product name."))))
+                .child(ui.form_grid(
+                    ui.labeled("Code", ui.field(s, "item-sku", "PRD-101")),
+                    ui.labeled("Unit", unit_select),
+                ))
+                .child(ui.form_grid(
+                    ui.labeled("Brand", ui.field(s, "item-brand", &ui.t("Brand"))),
+                    ui.labeled("Category", ui.field(s, "item-category", &ui.t("Category"))),
+                )),
+        ))
+        .child(ui.section(
+            "item-pricing",
+            &ui.t("Pricing"),
+            col()
+                .gap(12.0)
+                .child(ui.form_grid(
+                    ui.labeled("Your cost", ui.field(s, "item-cost", "۰")),
+                    ui.labeled("Unit price", ui.field(s, "item-price", "۱۵۰٬۰۰۰")),
+                ))
+                .child(ui.form_grid(
+                    ui.labeled("Barcode", ui.field(s, "item-barcode", "")),
+                    ui.labeled("Preferred supplier", supplier_select),
+                ))
+                .child(ui.labeled("Minimum stock · base units", ui.field(s, "item-min-stock", "0"))),
+        ))
+        .child(ui.labeled("Description", ui.field(s, "item-notes", &ui.t("Note (optional)"))));
+
+    let save_btn = ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), move |st| {
+        let name = st.forms.get("item-name").trim().to_string();
+        if name.is_empty() {
+            st.toast(Tone::Danger, st.fmt.t("Enter a product name."));
+            return;
+        }
+        let sku = st.forms.get("item-sku").trim().to_string();
+        let barcode = st.forms.get("item-barcode").trim().to_string();
+        let notes = st.forms.get("item-notes").trim().to_string();
+        let brand = st.forms.get("item-brand").trim().to_string();
+        let category = st.forms.get("item-category").trim().to_string();
+        let sale = st.parse_money_input(&st.forms.get("item-price")).to_string();
+        let cost_raw = st.forms.get("item-cost");
+        let cost = if cost_raw.trim().is_empty() {
+            None
+        } else {
+            Some(st.parse_money_input(&cost_raw).to_string())
+        };
+        let unit = st.inventory.unit_id.clone();
+        let supplier = st.inventory.supplier_id.clone();
+        let service = st.inventory.is_service;
+        let min_raw = crate::i18n::latin_digits(&st.forms.get("item-min-stock")).replace(',', "");
+        let min_stock = if min_raw.trim().is_empty() { "0".into() } else { min_raw };
+        match st.create_item(
+            &name,
+            &sku,
+            &unit,
+            &sale,
+            cost.as_deref(),
+            &barcode,
+            &notes,
+            &supplier,
+            &brand,
+            &category,
+            &min_stock,
+            service,
+        ) {
+            Ok(_) => st.inventory.modal_open = false,
+            Err(e) => st.toast_err(e),
+        }
+    });
+    ui.dialog_described(
+        layer,
+        &mut portals,
+        "product",
+        &ui.t("New product"),
+        &ui.t("Track stock, pricing, brands, and preferred suppliers."),
+        true,
+        640.0,
+        form,
+        vec![
+            ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.modal_open = false),
+            save_btn,
+        ],
+        |st| st.inventory.modal_open = false,
+    );
+}
+
+fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let mut portals = Vec::new();
     let items: Vec<_> = pickers::item_options(s).into_iter().map(|o| (o.id, o.label)).collect();
     let wh = pickers::warehouse_options(s);
@@ -346,20 +514,21 @@ fn open_product(st: &mut State, item_id: &str) {
         Ok(v) => {
             let profile = &v["profile"];
             st.forms.set("prod-barcode", &crate::data::s(&profile["barcode"]));
+            st.forms.set("prod-brand", &crate::data::s(&profile["brand"]));
             st.forms.set("prod-category", &crate::data::s(&profile["category"]));
             st.forms.set("prod-notes", &crate::data::s(&profile["notes"]));
-            let price = crate::data::s(&profile["sale_price"]);
-            let shown = if price.is_empty() {
-                String::new()
-            } else if st.fmt.unit == crate::i18n::Unit::Toman {
-                (price.parse::<i64>().unwrap_or(0) / 10).to_string()
-            } else {
-                price
-            };
-            st.forms.set("prod-price", &shown);
+            st.forms.set("prod-price", &money_field_from_rial(st, &crate::data::s(&profile["sale_price"])));
+            st.forms.set("prod-cost", &money_field_from_rial(st, &crate::data::s(&profile["purchase_price"])));
+            let min_th = profile["minimum_stock_thousandths"].as_i64().unwrap_or(0);
+            st.forms.set(
+                "prod-min-stock",
+                &crate::ui::ops::qty_from_thousandths(&min_th.to_string()),
+            );
+            st.inventory.supplier_id = crate::data::s(&profile["preferred_supplier_id"]);
             let stock = crate::data::s(&v["stats"]["stock_quantity"]);
             st.inventory.stock_label = crate::ui::ops::qty_from_thousandths(&stock);
             st.inventory.generation = crate::data::s(&v["_generation"]);
+            st.inventory.detail = v;
             st.inventory.selected = item_id.to_string();
             st.inventory.profile_open = true;
         }
@@ -368,16 +537,95 @@ fn open_product(st: &mut State, item_id: &str) {
 }
 
 fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
-    let form = col()
-        .gap(12.0)
-        .child(ui.muted(format!("{} {}", ui.t("Remaining"), s.inventory.stock_label)))
-        .child(ui.form_grid(
-            ui.labeled("Barcode", ui.field(s, "prod-barcode", "")),
-            ui.labeled("Product type", ui.field(s, "prod-category", "")),
+    let stats = &s.inventory.detail["stats"];
+    let stock_value = ui.f.money(&crate::data::s(&stats["stock_value"]));
+    let net_sales = ui.f.money(&crate::data::s(&stats["net_sales"]));
+    let low = stats["low_stock"].as_bool().unwrap_or(false);
+    let stock_sub = if low {
+        ui.t("Low stock")
+    } else {
+        ui.t("On hand")
+    };
+    let metrics = row()
+        .w_full()
+        .gap(10.0)
+        .child(ui.metric(
+            "prod-stock",
+            &icons::INVENTORY,
+            &ui.t("Remaining"),
+            s.fmt.digits(&s.inventory.stock_label),
+            stock_sub,
+            if low { Tone::Warning } else { Tone::Info },
         ))
-        .child(ui.labeled("Unit price", ui.field(s, "prod-price", "0")))
-        .child(ui.labeled("Product notes", ui.field(s, "prod-notes", "")));
+        .child(ui.metric(
+            "prod-value",
+            &icons::ACCOUNTING,
+            &ui.t("Stock value"),
+            stock_value,
+            ui.t("Carried cost"),
+            Tone::Info,
+        ))
+        .child(ui.metric(
+            "prod-sales",
+            &icons::SALES,
+            &ui.t("Net sales"),
+            net_sales,
+            ui.t("Posted invoices"),
+            Tone::Success,
+        ));
+
     let mut portals = Vec::new();
+    let suppliers = pickers::party_options(s, false, true)
+        .into_iter()
+        .map(|o| (o.id, o.label))
+        .collect::<Vec<_>>();
+    let supp_open = s.selects.get("prod-supplier").copied().unwrap_or(false);
+    let supplier_select = pickers::select_field(
+        ui,
+        &mut portals,
+        "prod-supplier",
+        &suppliers,
+        if s.inventory.supplier_id.is_empty() {
+            None
+        } else {
+            Some(s.inventory.supplier_id.as_str())
+        },
+        &ui.t("Select supplier"),
+        pickers::PICKER_WIDTH,
+        supp_open,
+        |st, id| st.inventory.supplier_id = id.to_string(),
+    );
+
+    let form = col()
+        .gap(16.0)
+        .child(metrics)
+        .child(ui.section(
+            "prod-catalog",
+            &ui.t("Catalog"),
+            col()
+                .gap(12.0)
+                .child(ui.form_grid(
+                    ui.labeled("Brand", ui.field(s, "prod-brand", "")),
+                    ui.labeled("Category", ui.field(s, "prod-category", "")),
+                ))
+                .child(ui.form_grid(
+                    ui.labeled("Barcode", ui.field(s, "prod-barcode", "")),
+                    ui.labeled("Preferred supplier", supplier_select),
+                )),
+        ))
+        .child(ui.section(
+            "prod-commerce",
+            &ui.t("Pricing"),
+            col()
+                .gap(12.0)
+                .child(ui.form_grid(
+                    ui.labeled("Your cost", ui.field(s, "prod-cost", "0")),
+                    ui.labeled("Unit price", ui.field(s, "prod-price", "0")),
+                ))
+                .child(ui.labeled("Minimum stock · base units", ui.field(s, "prod-min-stock", "0")))
+                .child(ui.labeled("Product notes", ui.field(s, "prod-notes", ""))),
+        ));
+
     ui.dialog_described(
         layer,
         &mut portals,
@@ -385,24 +633,34 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Product details"),
         &ui.t("Product details, stock costs and performance from posted documents."),
         true,
-        560.0,
+        720.0,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.profile_open = false),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 let id = st.inventory.selected.clone();
-                let typed = st.forms.get("prod-price");
-                let sale_price = if typed.trim().is_empty() {
+                let sale_typed = st.forms.get("prod-price");
+                let sale_price = if sale_typed.trim().is_empty() {
                     serde_json::Value::Null
                 } else {
-                    json!(st.parse_money_input(&typed).to_string())
+                    json!(st.parse_money_input(&sale_typed).to_string())
                 };
+                let cost_typed = st.forms.get("prod-cost");
+                let purchase_price = if cost_typed.trim().is_empty() {
+                    serde_json::Value::Null
+                } else {
+                    json!(st.parse_money_input(&cost_typed).to_string())
+                };
+                let min_raw = crate::i18n::latin_digits(&st.forms.get("prod-min-stock")).replace(',', "");
                 let profile = json!({
                     "barcode": st.forms.get("prod-barcode"),
+                    "brand": st.forms.get("prod-brand"),
                     "category": st.forms.get("prod-category"),
                     "notes": st.forms.get("prod-notes"),
                     "sale_price": sale_price,
-                    "minimum_stock": "0"
+                    "purchase_price": purchase_price,
+                    "minimum_stock": if min_raw.trim().is_empty() { "0" } else { &min_raw },
+                    "preferred_supplier_id": st.inventory.supplier_id
                 });
                 if st
                     .run(

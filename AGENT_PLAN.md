@@ -9,11 +9,9 @@ Sarv is Iranian double-entry accounting. `crates/sarv-quote` is the engine; `cra
 ## Backlog
 
 1. Settings / Setup / Sheets modules are still largely untracked beside the loop — empty-state polish, backup double-toast, and first-run copy QA once those files are owned.
-2. Inventory table lacks an on-page search like Contacts now has.
-3. Purchases / Sales return flows: confirm remaining_quantity /1000 and expected_generation on every branch (spot-check after concurrent edits).
-4. Concurrent unfinished `show_pos` Settings toggle raced this session — either finish it (default on for demo) or keep POS always in `Page::GROUPS`.
-5. GPU snap pass for Payments cheque strip + Accounting empty card after the solid-dialog fix.
-6. Out of scope: payroll, bank feeds, card processors, team server.
+2. Purchases / Sales return flows: confirm remaining_quantity /1000 and expected_generation on every branch (spot-check after concurrent edits).
+3. GPU snap pass for Payments cheque strip + Accounting empty card after the solid-dialog fix; also Contacts/Inventory suite and sidebar without brand.
+4. Out of scope: payroll, bank feeds, card processors, team server.
 
 ## In Progress
 
@@ -33,7 +31,8 @@ _(idle)_
 - `9d7b074f` — fix(desktop): empty states for Reports P&L, trial, and party tabs
 - `9fc72816` — fix(desktop): stop double-toasting failed posts; wire stock transfer generation
 - `e3d1d6f0` — fix(desktop): filter Contacts by name, phone, or id
-- Suite: `cargo test -p sarv-desktop --bin sarv-desktop` — 34 passed after contacts search.
+- Sidebar / Contacts / Inventory suite (this commit): no SARV brand header; company in footer; Inventory before Contacts; POS behind Settings `show_pos` (default off); full PartyProfile contact suite; inventory brands/categories/search/metrics.
+- Suite: `cargo test -p sarv-desktop --bin sarv-desktop` — 34 passed.
 
 ## Decisions
 
@@ -49,10 +48,12 @@ _(idle)_
 - Journal/banking/transfer posts copy preview `_generation` into `expected_generation`; journal dialog mints a stable `request_key` on open.
 - Cheque strip maps engine status/action keys to FA message keys; `cheque_clear` sends `fund_account_id` from the first Bank (else Cash) account.
 - `State::run` already toasts engine errors — callers must not `toast_err` again after `run`.
+- POS stays in `Page::GROUPS` but `Page::nav_pages(show_pos)` filters sidebar, rail, and palette. Settings Features switch persists `settings.show_pos`. Headless tests that open POS must `rt.update(|s,_| { s.show_pos = true; s.nav(Page::Pos); })` — mutating `rt.state` alone does not dirty the view.
+- Contacts/Inventory use existing `PartyProfile` / `ProductProfile` fields (brand/category as the product “variables”); no new engine schema.
 - Pages reviewed (2026-11-12): Overview, Sales, POS, Purchases, Payments, Banking, Contacts, Inventory, Accounting, Reports, Sheets, Settings, Setup, shell/palette/dialogs/toasts.
 
 ## Open Risks
 
 - Demo fixture is intentionally 4 of 5 setup steps; guide-hide tests force all five complete in-memory.
-- Large uncommitted Rune migration tree exists beside this loop; many `crates/sarv-desktop` support files remain untracked outside the quality-loop commits.
-- Another agent concurrently edited `shell.rs` / `app.rs` / Settings `show_pos` during this session; POS must stay reachable for the desktop suite.
+- Large uncommitted Rune migration tree may still exist beside this loop.
+- Concurrent agents previously raced `shell.rs` / `app.rs` / Settings `show_pos` — keep POS reachable via `show_pos` for the suite.

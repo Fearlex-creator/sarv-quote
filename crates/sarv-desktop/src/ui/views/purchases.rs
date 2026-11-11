@@ -490,7 +490,7 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     }
                     let cost = st.parse_money_input(&st.forms.get("quick-item-cost")).to_string();
                     let sale = st.parse_money_input(&st.forms.get("quick-item-price")).to_string();
-                    match st.create_item(&name, "", "", &sale, Some(&cost), "", "", "", false) {
+                    match st.create_item(&name, "", "", &sale, Some(&cost), "", "", "", "", "", "0", false) {
                         Ok(id) => {
                             if let Some(l) = st.purchases.lines.get_mut(idx) {
                                 l.item_id = id;

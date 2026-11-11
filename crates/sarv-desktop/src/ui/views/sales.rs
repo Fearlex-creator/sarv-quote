@@ -710,7 +710,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             } else {
                 Some(st.parse_money_input(&cost_raw).to_string())
             };
-            match st.create_item(&name, "", "", &sale, cost.as_deref(), "", "", "", false) {
+            match st.create_item(&name, "", "", &sale, cost.as_deref(), "", "", "", "", "", "0", false) {
                 Ok(id) => {
                     if let Some(l) = st.sales.lines.get_mut(idx) {
                         l.item_id = id;

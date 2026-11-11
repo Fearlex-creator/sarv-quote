@@ -81,6 +81,7 @@ fn main() {
                     }),
                     None,
                 );
+                s.show_pos = true;
                 s.nav(Page::Pos);
                 s.pos.lines.push(ui::views::pos::PosLine {
                     item_id: "ITEM-A".into(),
@@ -148,7 +149,8 @@ mod tests {
         let mut rt = make_test_runtime();
         assert_eq!(rt.state.page, Page::Overview);
         assert!(rt.state.sidebar_open());
-        assert!(rt.find("sidebar-brand").is_some());
+        assert!(rt.find("sidebar-brand").is_none());
+        assert!(rt.find("sidebar-search").is_some());
         assert!(rt.find("toolbar").is_some());
         assert!(rt.find("sidebar-toggle").is_some());
         assert!(rt.find("quick-actions").is_some());
@@ -320,8 +322,19 @@ mod tests {
     #[test]
     fn test_all_pages_render_headlessly() {
         let mut rt = make_test_runtime();
+        assert!(!rt.state.show_pos, "POS stays off until Settings turns it on");
+        assert!(rt.find(Page::Pos.key()).is_none());
         for page in Page::ALL {
-            click(&mut rt, page.key());
+            if page == Page::Pos {
+                rt.update(|s, _| {
+                    s.show_pos = true;
+                    s.nav(Page::Pos);
+                });
+                rt.frame(1.0 / 60.0);
+                assert!(rt.find(Page::Pos.key()).is_some(), "POS appears under Sales once enabled");
+            } else {
+                click(&mut rt, page.key());
+            }
             assert_eq!(rt.state.page, page);
             assert!(rt.find("toolbar").is_some());
             assert!(rt.find("sidebar").is_some());
@@ -926,7 +939,9 @@ mod tests {
         click(&mut rt, "btn-Start fresh");
         assert_eq!(rt.state.page, Page::Overview, "{}", blow(&rt, "opened"));
         assert!(rt.state.books.initialized());
-        assert!(rt.find("sidebar-brand").is_some());
+        assert!(rt.find("sidebar-brand").is_none());
+        assert!(rt.find("sidebar-search").is_some());
+        assert!(rt.find("org-selector").is_some());
         let _ = std::fs::remove_dir_all(&dir);
     }
 
@@ -982,7 +997,13 @@ mod tests {
                 None,
             )
             .expect("price");
-        click(&mut rt, Page::Pos.key());
+        rt.update(|s, _| {
+            s.show_pos = true;
+            s.nav(Page::Pos);
+        });
+        rt.frame(1.0 / 60.0);
+        assert!(rt.find(Page::Pos.key()).is_some(), "POS nav row mounts after the feature flag");
+        assert_eq!(rt.state.page, Page::Pos);
         assert!(rt.find("pos-screen").is_some());
         assert!(rt.find("pos-ticket").is_some());
         assert!(

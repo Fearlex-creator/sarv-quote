@@ -99,10 +99,18 @@ impl Page {
     /// `(key, label, pages)` — label is an English message key.
     pub const GROUPS: [(&'static str, &'static str, &'static [Page]); 4] = [
         ("daily", "Daily work", &[Page::Overview, Page::Sales, Page::Pos, Page::Purchases, Page::Payments, Page::Banking]),
-        ("people", "Stock & people", &[Page::Contacts, Page::Inventory]),
+        ("people", "Stock & people", &[Page::Inventory, Page::Contacts]),
         ("books", "Books", &[Page::Accounting, Page::Reports, Page::Sheets]),
         ("workspace", "Workspace", &[Page::Settings]),
     ];
+
+    /// Whether this page belongs in the sidebar for the current feature flags.
+    pub fn nav_pages(self, show_pos: bool) -> bool {
+        match self {
+            Page::Pos => show_pos,
+            _ => true,
+        }
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -171,6 +179,8 @@ pub struct State {
     pub setup: views::setup::SetupState,
     /// Open state for kit `Select` fields, keyed by select id.
     pub selects: HashMap<String, bool>,
+    /// Counter page. Loaded from settings; off until the owner turns it on.
+    pub show_pos: bool,
 }
 
 impl State {
@@ -204,6 +214,7 @@ impl State {
             settings: Default::default(),
             setup: Default::default(),
             selects: HashMap::new(),
+            show_pos: false,
         };
         s.apply_settings();
         s
@@ -236,6 +247,10 @@ impl State {
             Some("Dark") => self.dark = true,
             _ => {}
         }
+        self.show_pos = st["show_pos"].as_bool().unwrap_or(false);
+        if self.page == Page::Pos && !self.show_pos {
+            self.page = Page::Overview;
+        }
     }
 
     pub fn lang(&self) -> Lang {
@@ -248,6 +263,10 @@ impl State {
     }
 
     pub fn nav(&mut self, page: Page) {
+        if page == Page::Pos && !self.show_pos {
+            self.toast(Tone::Info, self.fmt.t("Turn on Point of sale in Settings."));
+            return;
+        }
         self.page = page;
         self.palette_open = false;
         if page == Page::Sheets {
