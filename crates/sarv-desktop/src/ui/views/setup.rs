@@ -75,7 +75,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     let create = ui.btn(Btn::Primary, "Create a company and fiscal period", Some(&icons::CHECK), |st| {
         let name = st.forms.get("setup-name").trim().to_string();
         if name.is_empty() {
-            st.toast(Tone::Warning, st.fmt.t("Name"));
+            st.toast(Tone::Warning, st.fmt.t("Write your business name."));
             return;
         }
         let defaults = fiscal_period(st.fmt.calendar, chrono::Local::now().date_naive());
@@ -196,6 +196,12 @@ fn stage(key: &str, body: El) -> El {
     col().key(key).w_full().h_full().center().padding(32.0).child(body)
 }
 
+pub(crate) fn opening_action(s: &State) -> &'static str {
+    let cash = s.parse_money_input(&s.forms.get("opening-cash"));
+    let bank = s.parse_money_input(&s.forms.get("opening-bank"));
+    if cash == 0 && bank == 0 { "Start fresh" } else { "Record your opening balances" }
+}
+
 fn opening_step(s: &State, ui: &Ui) -> El {
     let card = ui
         .kit_card()
@@ -205,7 +211,7 @@ fn opening_step(s: &State, ui: &Ui) -> El {
             ui.labeled("Cash", ui.field(s, "opening-cash", "0")),
             ui.labeled("Bank", ui.field(s, "opening-bank", "0")),
         ))
-        .action(ui.btn(Btn::Primary, "Start fresh", Some(&icons::CHECK), |st| {
+        .action(ui.btn(Btn::Primary, opening_action(s), Some(&icons::CHECK), |st| {
             let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
             let source = format!("open-{stamp}");
             let cash = st.parse_money_input(&st.forms.get("opening-cash"));

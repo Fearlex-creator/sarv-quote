@@ -16,3 +16,5 @@ cargo test -p sarv-desktop --test png_scenes
 Law data is a read-only notice. It is not an input to a journal. Agents are configured from the CLI, not from a desktop post.
 
 First run is a welcome, then the company and fiscal year, then opening balances. The sidebar stays hidden until the books are open.
+
+The improvement loop's memory is `AGENT_PLAN.md`. Continue from In Progress, then the highest-impact Backlog item. Do not redo Done.
