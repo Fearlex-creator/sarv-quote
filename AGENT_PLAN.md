@@ -8,20 +8,20 @@ Sarv is Iranian double-entry accounting. `crates/sarv-quote` is the engine; `cra
 
 ## Backlog
 
-1. Hide the setup guide when all five steps are done in `GuideMode::Auto` (keep `Open` visible).
-2. Make dialog panels solid `layer_01` (drop glass/blur on dialogs only; keep menus appended after the panel).
-3. Widen account pickers to 420; party/product stay 280; keep `{key}-trigger` as the menu anchor.
-4. POS: focus the search field when the page opens (barcode → catalog). No second payment path.
-5. Sheets: after a successful save, confirm `dirty` clears; add a test if it does not.
-6. Out of scope for this loop: payroll, bank feeds, card processors, team server.
+1. Make dialog panels solid `layer_01` (drop glass/blur on dialogs only; keep menus appended after the panel).
+2. Widen account pickers to 420; party/product stay 280; keep `{key}-trigger` as the menu anchor.
+3. POS: focus the search field when the page opens (barcode → catalog). No second payment path.
+4. Sheets: after a successful save, confirm `dirty` clears; add a test if it does not.
+5. Out of scope for this loop: payroll, bank feeds, card processors, team server.
 
 ## In Progress
 
-- Creating this memory file and starting item 1 (hide finished setup guide).
+- Opaque dialog panels (`dialog_described`).
 
 ## Done
 
-_(none yet)_
+- `dbd642db` — docs: add AGENT_PLAN.md for the quality loop
+- _(pending)_ — hide finished setup guide in Auto mode + headless test
 
 ## Decisions
 
@@ -29,9 +29,10 @@ _(none yet)_
 - `cargo test -p sarv-desktop --bin sarv-desktop` must stay green between commits.
 - GPU snaps (`SARV_DEMO=1`, `--scene invoice` / `--scene overview`) for dialog opacity and guide visibility; needs `required_permissions: ["all"]`.
 - Do not bump the Rune pin.
+- Auto + five steps done unmounts `setup-guide-card`; `GuideMode::Open` still mounts it; Closed keeps the collapsed header so the user can reopen.
 
 ## Open Risks
 
-- Demo fixture is intentionally 4 of 5 setup steps; guide-hide tests must force all five complete without breaking the demo snap that still shows the card.
+- Demo fixture is intentionally 4 of 5 setup steps; guide-hide tests force all five complete in-memory.
 - Widening account selects to 420 may need a looser menu-alignment assertion if the field center drifts.
-- Large uncommitted Rune migration tree exists beside this loop; commits should stay scoped to quality-loop files.
+- Large uncommitted Rune migration tree exists beside this loop; commits stay scoped to quality-loop files where possible.
