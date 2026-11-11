@@ -116,6 +116,31 @@ impl Store {
         self.generation
     }
 
+    /// The company's spreadsheet, stored beside the ledger. It does not change the books.
+    pub fn load_workbook(&self, company_id: &str) -> Result<Option<String>> {
+        self.conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);",
+        )?;
+        let mut stmt = self.conn.prepare("SELECT payload FROM workbooks WHERE company_id=?1")?;
+        let mut rows = stmt.query(params![company_id])?;
+        Ok(rows.next()?.map(|row| row.get(0)).transpose()?)
+    }
+
+    /// Replace the company's spreadsheet. The ledger generation stays where it is.
+    pub fn save_workbook(&self, company_id: &str, payload: &str) -> Result<()> {
+        ensure!(!company_id.is_empty() && company_id.len() <= 80, "شرکت نامعتبر است");
+        ensure!(payload.len() <= 512_000, "برگه بیش از حد بزرگ است");
+        self.conn.execute_batch(
+            "CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);",
+        )?;
+        self.conn.execute(
+            "INSERT INTO workbooks (company_id, payload) VALUES (?1, ?2)
+             ON CONFLICT(company_id) DO UPDATE SET payload=excluded.payload",
+            params![company_id, payload],
+        )?;
+        Ok(())
+    }
+
     /// Run on a worker. Never creates a missing database or replaces a newer
     /// snapshot. Losing a race leaves both the database and owner unchanged.
     pub fn commit_detached(
@@ -176,7 +201,7 @@ impl Store {
         fs::create_dir_all(directory)?;
         let conn = Connection::open(directory.join("sarv.sqlite3"))?;
         conn.busy_timeout(Duration::from_secs(3))?;
-        conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL);")?;
+        conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);")?;
         let json = serde_json::to_string(&State::default())?;
         conn.execute("INSERT OR IGNORE INTO state VALUES(1,0,?1)", [json])?;
         let (generation, payload): (i64, String) =

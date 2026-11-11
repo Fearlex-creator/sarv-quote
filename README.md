@@ -1,42 +1,39 @@
 # Sarv / سرو
 
-Local-first Persian accounting for individuals and businesses. The desktop interface uses Tauri 2, React 19, TypeScript, official shadcn components, Tailwind, and pnpm. The original Rust accounting, quotation, procurement, inventory, sales, and returns engine remains the source of business rules and persisted books.
+Local-first Persian accounting for individuals and businesses. The books and the ledger rules live in `crates/sarv-quote`. The desktop is `crates/sarv-desktop`, a Rune and rune-kit application that calls the engine in-process. There is no React, Tauri, or GTK application.
 
-The primary desktop lives in `desktop/`: a minimal native-style shell, dense financial tables, first-class Persian RTL, independent language/digit/calendar settings, and opt-in local CLI/MCP agents. See [desktop development](desktop/README.md), [agent access](docs/tauri/AGENT-ACCESS.md), and [UI verification and limitations](docs/tauri/NATIVE-UI-REDESIGN.md). This remains an implementation checkpoint, not a production release. There is one React frontend and one Rust accounting backend. See [current handoff](docs/CLOUD-HANDOFF.md) for remaining work.
-
-## Local development
-
-Install Node >=20.19 (or >=22.12), pnpm 12.5.1, Rust, and the Tauri 2 prerequisites for your platform. Linux needs WebKitGTK 4.1 and GTK3 development/runtime packages for Tauri’s native webview. There is no GTK4/libadwaita application. Windows uses WebView2; macOS uses WKWebView. The Rust engine and agent CLI build without any GUI toolkit.
+## Desktop
 
 ```bash
-pnpm --dir desktop install
-pnpm dev
+cargo run -p sarv-desktop
+cargo test -p sarv-desktop --bin sarv-desktop
+SARV_DEMO=1 cargo run -p sarv-desktop -- --scene overview
 ```
 
-The primary desktop uses `ir.sarv.accounting/books` in the application data directory. Set `SARV_DATA_DIR` explicitly to open an existing Sarv profile. It uses the original validated SQLite store; keep backups and avoid simultaneous editing across interfaces.
+`SARV_DATA_DIR` chooses the books directory. Without it, the app uses `ir.sarv.accounting/books` under the XDG data directory. `SARV_DEMO=1` opens a throwaway fixture. Snapshot scenes (`--scene`, `--snap`) need a GPU: `cargo test -p sarv-desktop --test png_scenes`.
 
-For a browser preview of the same React frontend, run `pnpm preview:dev`. Browser financial workflows require the isolated Rust QA adapter described in [desktop development](desktop/README.md); the product uses native Tauri IPC.
+A new profile opens on a welcome: language and theme, then the company and fiscal year, then opening cash and bank. The sidebar appears after the books are open.
 
-## Build
+The UI must not invent ledger rules. It sends the engine's existing actions (`draft_post`, `fulfill_post`, `payment_post`, `banking_post`, and the rest) and shows the engine's error when a post is refused. Payroll, live bank feeds, payment processors, and a team server are out of scope.
 
-To install Sarv on Linux as a desktop application:
+See [AGENTS.md](AGENTS.md). Screen notes are in [the desktop guide](docs/FRONTEND-UI-GUIDE.md).
+
+## Install
 
 ```bash
-pnpm desktop:build --no-bundle
-pnpm desktop:install
+cargo build --release -p sarv-desktop -p sarv-quote --bin sarv-agent
+bash scripts/install-desktop.sh
 ```
 
-Open **Sarv** from your application launcher. Installation copies the desktop binary, agent and icon into your user application directory. Run `pnpm desktop:install` again after rebuilding to update the installed app. `pnpm start` opens the release binary from this checkout.
-
-Linux startup defaults to WebKit's compatible rendering path to avoid DMA-BUF/GBM allocation and related Wayland protocol failures. Set `WEBKIT_DISABLE_DMABUF_RENDERER=0` explicitly to use the default DMA-BUF renderer instead.
+Open **Sarv** from your application launcher. The script copies the desktop binary, the agent, and the icon into your user application directory. Run it again after rebuilding to update the installed app.
 
 ```bash
-pnpm lint
-pnpm build
-pnpm desktop:build --no-bundle
+cargo test -p sarv-quote
+cargo test -p sarv-desktop --bin sarv-desktop
+cargo test -p sarv-quote --features pdf-export
 ```
 
-Rust checks live in `crates/sarv-quote/tests`. Use `pnpm test:core` for the engine and `pnpm test:desktop` with the isolated QA adapter for the desktop workflows. PDF rendering and its tests use `cargo test -p sarv-quote --features pdf-export`. The desktop enables this feature for printable sales documents; normal engine and agent CLI builds exclude PDF renderer dependencies.
+The desktop enables PDF export for printable sales documents. Normal engine and agent CLI builds exclude the PDF renderer. Linux PDF rendering needs cairo and pango.
 
 Create additional businesses in **Settings → Add company**. First-run setup collects business contact details, registration and tax IDs, invoice reference prefix, terms and footer; these details are saved separately for each business. The selected calendar applies throughout date entry, reports and sales PDFs. Open a sales record and choose **Save printable PDF** to export an A4 document with embedded Persian fonts, totals and signature lines.
 
@@ -54,15 +51,15 @@ Products have editable purchase/selling price defaults in rials per base unit, b
 
 ## One ledger
 
-Canonical money is exact integer Rials; Toman display divides by ten without losing fractional Tomans. React receives money as strings. The existing Rust core validates balanced double-entry journals, fiscal-period locks, immutable postings, duplicate request keys, stock availability, weighted-average costs, and original-cost returns. Financial mutations use `Store::change` with validation and SQLite generation checks. Corrections use reversal journals or the typed goods-return workflows.
+Canonical money is exact integer Rials; Toman display divides by ten without losing fractional Tomans. The desktop receives money as strings. The Rust core validates balanced double-entry journals, fiscal-period locks, immutable postings, duplicate request keys, stock availability, weighted-average costs, and original-cost returns. Financial mutations use `Store::change` with validation and SQLite generation checks. Corrections use reversal journals or the typed goods-return workflows.
 
-The Tauri interface invokes `sarv-quote::desktop::dispatch` and `AgentService` over the original store. The former GTK app, duplicate web/Tauri shells, experimental second ledger, and their build/launch scripts have been removed. Existing books, accounting migrations, financial tests, CSV functions and optional PDF rendering remain in the Rust backend.
+The desktop calls `sarv-quote::desktop::dispatch` in-process. The former GTK app, the React and Tauri shells, and their launch scripts have been removed. Existing books, accounting migrations, financial tests, CSV functions and optional PDF rendering remain in the Rust backend.
 
 The original store persists a validated versioned snapshot in SQLite, with a 64 MiB backup limit. This release has not established suitability for large or concurrent enterprise books. A shared SQLite file is not the team architecture.
 
 ## Confirmed roadmap
 
-1. Restore the original workflows in a Persian RTL/Jalali shadcn desktop, with individual/service/trading onboarding and a resumable setup checklist.
+1. The Persian RTL/Jalali desktop is the Rune app, with a first-run welcome, company, fiscal year, and opening balances.
 2. Add the remaining workflow depth, imports, exports, performance validation and production hardening on the same ledger.
 3. Add an optional team server, authorization and enterprise workflows behind the existing transport boundary.
 4. Add multi-currency accounting with explicit exchange-rate postings. Rial/Toman comes first.

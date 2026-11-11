@@ -4,16 +4,16 @@ repo_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 app_dir="${XDG_DATA_HOME:-$HOME/.local/share}/sarv/bin"
 applications_dir="${XDG_DATA_HOME:-$HOME/.local/share}/applications"
 icon_dir="${XDG_DATA_HOME:-$HOME/.local/share}/icons/hicolor/128x128/apps"
-binary="$repo_dir/desktop/src-tauri/target/release/sarv-desktop"
+binary="$repo_dir/target/release/sarv-desktop"
 agent="$repo_dir/target/release/sarv-agent"
 if [[ ! -x "$binary" || ! -x "$agent" ]]; then
-  echo 'Build first: pnpm desktop:build --no-bundle' >&2
+  echo 'Build first: cargo build --release -p sarv-desktop -p sarv-quote --bin sarv-agent' >&2
   exit 1
 fi
 install -d "$app_dir" "$applications_dir" "$icon_dir"
 install -m 755 "$binary" "$app_dir/sarv-desktop"
 install -m 755 "$agent" "$app_dir/sarv-agent"
-install -m 644 "$repo_dir/desktop/src-tauri/icons/128x128.png" "$icon_dir/ir.sarv.accounting.png"
+install -m 644 "$repo_dir/assets/brand/sarv.png" "$icon_dir/ir.sarv.accounting.png"
 for retired_entry in ir.sarv.quote.demo.desktop ir.sarv.quote.v1.desktop; do
   if [[ -f "$applications_dir/$retired_entry" ]]; then
     install -d "${app_dir%/bin}/retired-launchers"

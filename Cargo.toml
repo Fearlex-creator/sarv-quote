@@ -1,8 +1,10 @@
 [workspace]
 resolver = "2"
-members = ["crates/sarv-quote"]
-exclude = ["desktop/src-tauri"]
-default-members = ["crates/sarv-quote"]
+members = [
+    "crates/sarv-quote",
+    "crates/sarv-desktop",
+]
+default-members = ["crates/sarv-quote", "crates/sarv-desktop"]
 
 [workspace.package]
 version = "0.1.0"

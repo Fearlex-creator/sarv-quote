@@ -1,6 +1,6 @@
 # Product acceptance — current improvement cycle
 
-Historical milestone record. The GTK application has been removed. Current architecture and commands are in [the handoff](CLOUD-HANDOFF.md) and [desktop development](../desktop/README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
 
 User goal: a coherent professional quotation tool in the existing Rust + GTK4 + stable libadwaita app, with a polished Persian RTL workspace and searchable indexed customers/products. Preserve exact rial/toman calculations, existing data and immutable history. Improve actual daily interaction rather than marking prior test reports as UX acceptance. No web rewrite, deployment, credentials, paid services or real customer data.
 

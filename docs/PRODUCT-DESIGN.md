@@ -1,6 +1,6 @@
 # Product design and reference evidence
 
-Historical milestone record. The GTK application has been removed. Current architecture and commands are in [the handoff](CLOUD-HANDOFF.md) and [desktop development](../desktop/README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
 
 Reviewed on 2026-10-07 for the native Rust/GTK4/libadwaita product improvement. This report supersedes the component descriptions in earlier design reports; those screenshots remain historical evidence.
 

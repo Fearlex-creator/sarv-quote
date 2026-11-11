@@ -1,4 +1,4 @@
-//! Shared desktop boundary. Both Tauri and the opt-in local QA adapter call this
+//! Shared desktop boundary. The Rune app calls this in-process. The opt-in local QA adapter calls this
 //! dispatcher; all validation and durable writes still use Store and the kernel.
 use crate::{
     accounting::*,
@@ -1219,6 +1219,20 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 let safety = store.restore(candidate)?;
                 json!({"restored": true, "safety_backup": safety.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default()})
             }
+        }
+        "sheet_load" => {
+            let company = string(&p, "company_id")?;
+            match store.load_workbook(company)? {
+                Some(payload) => json!({"workbook": serde_json::from_str::<Value>(&payload)?}),
+                None => json!({"workbook": Value::Null}),
+            }
+        }
+        "sheet_save" => {
+            let company = string(&p, "company_id")?;
+            crate::sheets::validate_workbook(&p["workbook"])?;
+            let payload = serde_json::to_string(&p["workbook"])?;
+            store.save_workbook(company, &payload)?;
+            json!({"saved": true})
         }
         "workspace" => {
             let mut w = workspace(&store.state, &p)?;

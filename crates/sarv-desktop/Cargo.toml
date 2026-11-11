@@ -1,0 +1,21 @@
+[package]
+name = "sarv-desktop"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Native Rune desktop interface for Sarv accounting"
+
+[dependencies]
+chrono.workspace = true
+rune = { git = "https://github.com/anomalyco/rune", rev = "b556a38a1ff88aa8690d21b45ebf9b9167038674" }
+rune-kit = { git = "https://github.com/anomalyco/rune", rev = "b556a38a1ff88aa8690d21b45ebf9b9167038674" }
+sarv-quote = { path = "../sarv-quote", features = ["pdf-export"] }
+serde.workspace = true
+serde_json.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true
+
+[[bin]]
+name = "sarv-desktop"
+path = "src/main.rs"

@@ -1,7 +1,7 @@
 name: Release (Windows)
 
-# Builds a portable Windows zip (Sarv.exe, sarv-agent.exe and the GTK/WebView2
-# DLLs PDF export needs) and attaches it to a GitHub release.
+# Builds a portable Windows zip (Sarv.exe, sarv-agent.exe and the DLLs PDF
+# export needs) and attaches it to a GitHub release.
 # Run it by pushing a `v*` tag, or by hand from the Actions tab.
 on:
   push:
@@ -49,39 +49,24 @@ jobs:
           rustup default stable-x86_64-pc-windows-gnu
           rustc --version
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-      - uses: pnpm/action-setup@v4
-
       - uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
             target
-            desktop/src-tauri/target
-          key: windows-gnu-${{ hashFiles('Cargo.lock', 'desktop/src-tauri/Cargo.lock') }}
-
-      - name: Install JS dependencies
-        run: |
-          pnpm install --frozen-lockfile
-          pnpm --dir desktop install --frozen-lockfile
+          key: windows-gnu-${{ hashFiles('Cargo.lock') }}
 
       - name: Build agent and desktop app
-        run: |
-          pnpm --dir desktop run build:agent
-          pnpm --dir desktop exec tauri build --no-bundle
+        run: cargo build --release -p sarv-desktop -p sarv-quote --bin sarv-agent
 
       - name: Collect portable folder
         run: |
           set -euo pipefail
           out="Sarv-${TAG}-windows-x64"
           mkdir -p "$out"
-          cp desktop/src-tauri/target/release/sarv-desktop.exe "$out/Sarv.exe"
+          cp target/release/sarv-desktop.exe "$out/Sarv.exe"
           cp target/release/sarv-agent.exe "$out/"
-          # The GNU WebView2 build loads WebView2Loader.dll at runtime.
-          find desktop/src-tauri/target/release -name WebView2Loader.dll -path '*x64*' | head -n1 | xargs -I{} cp {} "$out/"
           # Every MSYS2 DLL the binaries pull in (cairo, pango, glib, ...).
           ldd "$out/Sarv.exe" "$out/sarv-agent.exe" \
             | awk '/\/mingw64\// {print $3}' | sort -u \
@@ -99,5 +84,5 @@ jobs:
             gh release upload "$TAG" "$ASSET" --clobber
           else
             gh release create "$TAG" "$ASSET" --title "Sarv $TAG" --prerelease --target "$GITHUB_SHA" \
-              --notes "Portable Windows build. Unzip anywhere and run Sarv.exe (needs the Microsoft Edge WebView2 runtime, preinstalled on Windows 10/11)."
+              --notes "Portable Windows build. Unzip anywhere and run Sarv.exe."
           fi
