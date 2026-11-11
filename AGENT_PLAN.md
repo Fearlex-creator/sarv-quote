@@ -36,7 +36,8 @@ _(idle)_
 - `85bb17af` — docs: record quality-loop commits in AGENT_PLAN
 - `4deeef1e` — feat(desktop): tidy sidebar and deepen contacts/inventory (no brand header; company footer; Inventory before Contacts; POS via Settings `show_pos`; full contact/product suites with brand/category search)
 - Cleared from backlog: inventory on-page search; unfinished `show_pos` nav race.
-- Suite: `cargo test -p sarv-desktop --bin sarv-desktop` — 34 passed.
+- `c257264a` — fix(desktop): polish setup, backups, and empty sheets (one error toast, پشتیبان not پشتیبانی, first-run copy, blank sheet fills from the books).
+- Suite: `cargo test -p sarv-desktop --bin sarv-desktop` — 35 passed.
 
 ## Decisions
 
