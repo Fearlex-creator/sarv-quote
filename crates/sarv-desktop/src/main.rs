@@ -539,6 +539,28 @@ mod tests {
     }
 
     #[test]
+    fn test_contacts_search_filters_the_table() {
+        let mut rt = make_test_runtime();
+        let party = rt
+            .state
+            .books
+            .workspace["resources"]["parties"]
+            .as_array()
+            .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == "CU-A"))
+            .cloned()
+            .expect("demo customer CU-A");
+        assert!(crate::ui::views::contacts::party_matches(&rt.state, &party, ""));
+        assert!(crate::ui::views::contacts::party_matches(&rt.state, &party, "CU-A"));
+        assert!(!crate::ui::views::contacts::party_matches(&rt.state, &party, "___no-such-contact___"));
+        click(&mut rt, Page::Contacts.key());
+        assert!(rt.find("field-contact-search").is_some());
+        assert!(rt.find("contact-CU-A").is_some());
+        rt.state.forms.set("contact-search", "___no-such-contact___");
+        rt.frame(1.0 / 60.0);
+        assert!(rt.find("contact-CU-A").is_none(), "search should hide unmatched contacts");
+    }
+
+    #[test]
     fn test_cheque_strip_labels_are_translated_keys() {
         use crate::ui::views::payments::{cheque_action_label, cheque_status_label};
         assert_eq!(cheque_status_label("in_hand"), "In hand");
