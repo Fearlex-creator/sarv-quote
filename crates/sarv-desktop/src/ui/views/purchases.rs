@@ -166,8 +166,8 @@ fn post_purchase(st: &mut State) {
     }
     let posted = match st.run("purchase_post", payload, None) {
         Ok(v) => v,
-        Err(e) => {
-            st.toast_err(e);
+        Err(_) => {
+            // `run` already toasted the engine error.
             st.purchases.posting = false;
             return;
         }

@@ -205,9 +205,8 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         return;
                     }
                 }
-                match st.run("banking_post", payload, Some("Posted")) {
-                    Ok(_) => st.banking.modal_open = false,
-                    Err(e) => st.toast_err(e),
+                if st.run("banking_post", payload, Some("Posted")).is_ok() {
+                    st.banking.modal_open = false;
                 }
             }),
         ],

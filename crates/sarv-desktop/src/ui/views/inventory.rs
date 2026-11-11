@@ -318,20 +318,22 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
                 let qty = crate::i18n::latin_digits(&st.forms.get("transfer-qty")).replace(',', "");
                 let unit = pickers::item_unit(st, &st.inventory.transfer_item);
-                let payload = json!({
+                let mut payload = json!({
                     "item_id": st.inventory.transfer_item,
                     "source_warehouse_id": st.inventory.transfer_from,
                     "target_warehouse_id": st.inventory.transfer_to,
                     "unit_id": unit,
                     "quantity": qty
                 });
-                if let Err(e) = st.query("transfer_preview", payload.clone()) {
-                    st.toast_err(e);
-                    return;
+                match st.query("transfer_preview", payload.clone()) {
+                    Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
+                    Err(e) => {
+                        st.toast_err(e);
+                        return;
+                    }
                 }
-                match st.run("transfer_post", payload, Some("Posted")) {
-                    Ok(_) => st.inventory.transfer_open = false,
-                    Err(e) => st.toast_err(e),
+                if st.run("transfer_post", payload, Some("Posted")).is_ok() {
+                    st.inventory.transfer_open = false;
                 }
             }),
         ],
@@ -402,17 +404,19 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "sale_price": sale_price,
                     "minimum_stock": "0"
                 });
-                match st.run(
-                    "product_profile",
-                    json!({
-                        "item_id": id,
-                        "profile": profile,
-                        "expected_generation": st.inventory.generation
-                    }),
-                    Some("Product saved"),
-                ) {
-                    Ok(_) => st.inventory.profile_open = false,
-                    Err(e) => st.toast_err(e),
+                if st
+                    .run(
+                        "product_profile",
+                        json!({
+                            "item_id": id,
+                            "profile": profile,
+                            "expected_generation": st.inventory.generation
+                        }),
+                        Some("Product saved"),
+                    )
+                    .is_ok()
+                {
+                    st.inventory.profile_open = false;
                 }
             }),
         ],

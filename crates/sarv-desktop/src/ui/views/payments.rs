@@ -355,8 +355,8 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         st.payments.modal_open = false;
                         st.payments.posting = false;
                     }
-                    Err(e) => {
-                        st.toast_err(e);
+                    Err(_) => {
+                        // `run` already toasted the engine error.
                         st.payments.posting = false;
                     }
                 }

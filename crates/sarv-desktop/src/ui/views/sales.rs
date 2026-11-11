@@ -200,9 +200,8 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         }
     };
     draft["supplied_total"] = preview["supplied_total"].clone();
-    if let Err(e) = st.run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None) {
-        st.toast_err(e);
-        return false;
+    if st.run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None).is_err() {
+        return false; // `run` already toasted
     }
     let saved = st
         .books
@@ -225,10 +224,7 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         None,
     ) {
         Ok(v) => v,
-        Err(e) => {
-            st.toast_err(e);
-            return false;
-        }
+        Err(_) => return false, // `run` already toasted
     };
     let record_id = crate::data::s(&posted["record_id"]);
     if record_id.is_empty() {
@@ -385,8 +381,7 @@ fn issue_quotation(st: &mut State) {
             st.sales.tab_idx = 1;
             finish_posting(st);
         }
-        Err(e) => {
-            st.toast_err(e);
+        Err(_) => {
             finish_posting(st);
         }
     }

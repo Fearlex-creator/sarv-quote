@@ -293,8 +293,8 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         st.accounting.modal_open = false;
                         st.accounting.posting = false;
                     }
-                    Err(e) => {
-                        st.toast_err(e);
+                    Err(_) => {
+                        // `run` already toasted the engine error.
                         st.accounting.posting = false;
                     }
                 }
@@ -346,9 +346,7 @@ fn reverse_selected(st: &mut State) {
             return;
         }
     }
-    if let Err(e) = st.run("journal_reverse", payload, Some("Posted")) {
-        st.toast_err(e);
-    }
+    let _ = st.run("journal_reverse", payload, Some("Posted"));
 }
 
 fn toggle_period(st: &mut State) {
@@ -365,7 +363,7 @@ fn toggle_period(st: &mut State) {
         .and_then(|p| p["locked"].as_bool())
         .unwrap_or(false);
     let key = format!("lock-{id}-{}", !locked);
-    if let Err(e) = st.run(
+    let _ = st.run(
         "period_lock",
         serde_json::json!({
             "period_id": id,
@@ -375,9 +373,7 @@ fn toggle_period(st: &mut State) {
             "source_id": key
         }),
         Some("Posted"),
-    ) {
-        st.toast_err(e);
-    }
+    );
 }
 
 fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
