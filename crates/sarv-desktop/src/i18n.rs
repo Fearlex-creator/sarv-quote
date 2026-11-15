@@ -120,6 +120,60 @@ pub fn latin_digits(s: &str) -> String {
         .collect()
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum MoneyError {
+    Empty,
+    NotANumber,
+    TooPrecise,
+    TooLarge,
+    Negative,
+}
+
+/// What the user typed, in the active display unit, as exact rials.
+/// Accepts Persian/Arabic/Latin digits and grouping separators. In toman, one
+/// decimal digit is allowed (0.5 toman = 5 rials). Anything else is an error.
+pub fn parse_money(raw: &str, unit: Unit) -> Result<i64, MoneyError> {
+    let norm = latin_digits(raw.trim()).replace([',', ' '], "");
+    if norm.is_empty() {
+        return Err(MoneyError::Empty);
+    }
+    if let Some(rest) = norm.strip_prefix('-') {
+        if rest.is_empty() || !rest.chars().all(|c| c.is_ascii_digit() || c == '.') {
+            return Err(MoneyError::NotANumber);
+        }
+        return Err(MoneyError::Negative);
+    }
+    if !norm.chars().all(|c| c.is_ascii_digit() || c == '.') {
+        return Err(MoneyError::NotANumber);
+    }
+    let mut parts = norm.split('.');
+    let whole = parts.next().unwrap_or_default();
+    let frac = parts.next();
+    if parts.next().is_some() || whole.is_empty() {
+        return Err(MoneyError::NotANumber);
+    }
+    let frac_val: i64 = match (unit, frac) {
+        (_, None) => 0,
+        (_, Some("")) => return Err(MoneyError::NotANumber),
+        (Unit::Rial, Some(_)) => return Err(MoneyError::TooPrecise),
+        (Unit::Toman, Some(f)) => {
+            if f.len() > 1 {
+                return Err(MoneyError::TooPrecise);
+            }
+            (f.as_bytes()[0] - b'0') as i64
+        }
+    };
+    let whole_val: i64 = whole.parse().map_err(|_| MoneyError::TooLarge)?;
+    let scale = match unit {
+        Unit::Toman => 10,
+        Unit::Rial => 1,
+    };
+    whole_val
+        .checked_mul(scale)
+        .and_then(|v| v.checked_add(frac_val))
+        .ok_or(MoneyError::TooLarge)
+}
+
 impl Fmt {
     pub fn t(&self, key: &str) -> String {
         tr(self.lang, key)
@@ -171,6 +225,28 @@ impl Fmt {
 
     pub fn money_i64(&self, rials: i64) -> String {
         self.money(&rials.to_string())
+    }
+
+    /// Exact rial value formatted for an editable field: ungrouped, in active unit and digits,
+    /// with one-digit toman fraction when `rials % 10 != 0` so `parse_money(&self.money_input(r), self.unit) == Ok(r)`.
+    pub fn money_input(&self, rials: i64) -> String {
+        let neg = rials < 0;
+        let a = rials.unsigned_abs();
+        let body = match self.unit {
+            Unit::Rial => a.to_string(),
+            Unit::Toman => {
+                let whole = a / 10;
+                let frac = a % 10;
+                if frac == 0 {
+                    whole.to_string()
+                } else {
+                    let dot = if self.persian_digits { '٫' } else { '.' };
+                    format!("{whole}{dot}{frac}")
+                }
+            }
+        };
+        let body = self.digits(&body);
+        if neg { format!("-{body}") } else { body }
     }
 
     pub fn unit_label(&self) -> String {
@@ -274,5 +350,49 @@ mod tests {
     fn jalali_dates() {
         let f = Fmt::default();
         assert_eq!(f.date("2025-03-21"), "۱۴۰۴/۰۱/۰۱");
+    }
+
+    #[test]
+    fn parse_money_table_and_round_trip() {
+        let cases: &[(&str, Unit, Result<i64, MoneyError>)] = &[
+            ("۱۲٬۳۴۵", Unit::Toman, Ok(123_450)),
+            ("1234.5", Unit::Toman, Ok(12_345)),
+            ("1234.56", Unit::Toman, Err(MoneyError::TooPrecise)),
+            ("12.5", Unit::Rial, Err(MoneyError::TooPrecise)),
+            ("100 تومان", Unit::Toman, Err(MoneyError::NotANumber)),
+            ("", Unit::Toman, Err(MoneyError::Empty)),
+            ("-5", Unit::Toman, Err(MoneyError::Negative)),
+            ("1234567890123456789", Unit::Toman, Err(MoneyError::TooLarge)),
+            ("9999999999999999999", Unit::Rial, Err(MoneyError::TooLarge)),
+        ];
+        for (raw, unit, expected) in cases {
+            assert_eq!(parse_money(raw, *unit), *expected, "raw={raw:?} unit={unit:?}");
+        }
+
+        let configs = [
+            Fmt::default(),
+            Fmt {
+                lang: Lang::En,
+                persian_digits: false,
+                unit: Unit::Toman,
+                calendar: CalendarKind::Gregorian,
+            },
+            Fmt {
+                lang: Lang::En,
+                persian_digits: false,
+                unit: Unit::Rial,
+                calendar: CalendarKind::Gregorian,
+            },
+        ];
+        for fmt in configs {
+            for r in [12_345_i64, 12_340, 0] {
+                let formatted = fmt.money_input(r);
+                assert_eq!(
+                    parse_money(&formatted, fmt.unit),
+                    Ok(r),
+                    "fmt={fmt:?} r={r} formatted={formatted:?}"
+                );
+            }
+        }
     }
 }

@@ -204,14 +204,28 @@ fn opening_step(s: &State, ui: &Ui) -> El {
         .title(ui.t("Record your opening balances"), Some(&icons::SHIELD))
         .description(ui.t("Start fresh or bring in your existing balances."))
         .child(ui.form_grid(
-            ui.labeled("Cash", ui.field(s, "opening-cash", "0")),
-            ui.labeled("Bank", ui.field(s, "opening-bank", "0")),
+            ui.labeled("Cash", ui.money_field(s, "opening-cash")),
+            ui.labeled("Bank", ui.money_field(s, "opening-bank")),
         ))
         .action(ui.btn(Btn::Primary, "Start fresh", Some(&icons::CHECK), |st| {
             let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
             let source = format!("open-{stamp}");
-            let cash = st.parse_money_input(&st.forms.get("opening-cash"));
-            let bank = st.parse_money_input(&st.forms.get("opening-bank"));
+            let cash = match st.parse_money_input(&st.forms.get("opening-cash")) {
+                Ok(v) => v,
+                Err(crate::i18n::MoneyError::Empty) => 0,
+                Err(_) => {
+                    st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                    return;
+                }
+            };
+            let bank = match st.parse_money_input(&st.forms.get("opening-bank")) {
+                Ok(v) => v,
+                Err(crate::i18n::MoneyError::Empty) => 0,
+                Err(_) => {
+                    st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                    return;
+                }
+            };
             let res = if cash == 0 && bank == 0 {
                 st.run(
                     "initialize_zero",

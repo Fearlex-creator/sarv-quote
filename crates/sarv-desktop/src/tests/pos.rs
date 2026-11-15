@@ -77,3 +77,39 @@ fn test_pos_charges_the_catalog_and_keeps_the_books() {
     assert!(dumped.contains("50000"), "catalog price posted once: {dumped}");
     assert!(rt.state.toasts.iter().any(|t| t.tone == Tone::Success));
 }
+
+#[test]
+fn test_pos_posts_exact_rials_for_odd_price() {
+    let mut rt = make_test_runtime();
+    assert_eq!(rt.state.fmt.unit, crate::i18n::Unit::Toman);
+    rt.state
+        .run(
+            "product_profile",
+            serde_json::json!({
+                "item_id": "ITEM-A",
+                "profile": {
+                    "barcode": "6260001",
+                    "category": "",
+                    "notes": "",
+                    "sale_price": "12345",
+                    "minimum_stock": "0"
+                }
+            }),
+            None,
+        )
+        .expect("price");
+    rt.update(|s, _| {
+        s.show_pos = true;
+        s.nav(Page::Pos);
+    });
+    rt.frame(1.0 / 60.0);
+
+    click(&mut rt, "pos-item-ITEM-A");
+    let before = rt.state.books.count("sales_count");
+    click(&mut rt, "btn-pos-cash");
+    assert!(rt.state.pos.lines.is_empty(), "{}", blow(&rt, "pos odd price cash"));
+    assert!(rt.state.books.count("sales_count") > before);
+    let dumped = serde_json::to_string(&rt.state.books.list("sales")[0]).unwrap_or_default();
+    assert!(dumped.contains("12345"), "odd-rial catalog price must post exact rials: {dumped}");
+    assert!(rt.state.toasts.iter().any(|t| t.tone == Tone::Success));
+}

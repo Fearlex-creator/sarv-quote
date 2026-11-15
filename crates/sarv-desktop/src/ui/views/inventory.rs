@@ -133,10 +133,9 @@ fn money_field_from_rial(st: &State, rials: &str) -> String {
     if rials.is_empty() {
         return String::new();
     }
-    if st.fmt.unit == crate::i18n::Unit::Toman {
-        (rials.parse::<i64>().unwrap_or(0) / 10).to_string()
-    } else {
-        rials.to_string()
+    match rials.trim().parse::<i64>() {
+        Ok(v) => st.fmt.money_input(v),
+        Err(_) => String::new(),
     }
 }
 
@@ -356,8 +355,8 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 col()
                     .gap(12.0)
                     .child(ui.form_grid(
-                        ui.labeled("Your cost", ui.field(s, "item-cost", "۰")),
-                        ui.labeled("Unit price", ui.field(s, "item-price", "۱۵۰٬۰۰۰")),
+                        ui.labeled("Your cost", ui.money_field(s, "item-cost")),
+                        ui.labeled("Unit price", ui.money_field(s, "item-price")),
                     ))
                     .child(ui.form_grid(
                         ui.labeled("Barcode", ui.field(s, "item-barcode", "")),
@@ -379,12 +378,25 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         let notes = st.forms.get("item-notes").trim().to_string();
         let brand = st.forms.get("item-brand").trim().to_string();
         let category = st.forms.get("item-category").trim().to_string();
-        let sale = st.parse_money_input(&st.forms.get("item-price")).to_string();
+        let sale = match st.parse_money_input(&st.forms.get("item-price")) {
+            Ok(v) => v.to_string(),
+            Err(crate::i18n::MoneyError::Empty) => "0".into(),
+            Err(_) => {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                return;
+            }
+        };
         let cost_raw = st.forms.get("item-cost");
         let cost = if cost_raw.trim().is_empty() {
             None
         } else {
-            Some(st.parse_money_input(&cost_raw).to_string())
+            match st.parse_money_input(&cost_raw) {
+                Ok(v) => Some(v.to_string()),
+                Err(_) => {
+                    st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                    return;
+                }
+            }
         };
         let unit = st.inventory.unit_id.clone();
         let supplier = st.inventory.supplier_id.clone();
@@ -654,8 +666,8 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 col()
                     .gap(12.0)
                     .child(ui.form_grid(
-                        ui.labeled("Your cost", ui.field(s, "prod-cost", "0")),
-                        ui.labeled("Unit price", ui.field(s, "prod-price", "0")),
+                        ui.labeled("Your cost", ui.money_field(s, "prod-cost")),
+                        ui.labeled("Unit price", ui.money_field(s, "prod-price")),
                     ))
                     .child(ui.labeled("Minimum stock · base units", ui.field(s, "prod-min-stock", "0")))
                     .child(ui.labeled("Product notes", ui.field(s, "prod-notes", ""))),
@@ -679,13 +691,25 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 let sale_price = if sale_typed.trim().is_empty() {
                     serde_json::Value::Null
                 } else {
-                    json!(st.parse_money_input(&sale_typed).to_string())
+                    match st.parse_money_input(&sale_typed) {
+                        Ok(v) => json!(v.to_string()),
+                        Err(_) => {
+                            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                            return;
+                        }
+                    }
                 };
                 let cost_typed = st.forms.get("prod-cost");
                 let purchase_price = if cost_typed.trim().is_empty() {
                     serde_json::Value::Null
                 } else {
-                    json!(st.parse_money_input(&cost_typed).to_string())
+                    match st.parse_money_input(&cost_typed) {
+                        Ok(v) => json!(v.to_string()),
+                        Err(_) => {
+                            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                            return;
+                        }
+                    }
                 };
                 let min_raw = crate::i18n::latin_digits(&st.forms.get("prod-min-stock")).replace(',', "");
                 let profile = json!({

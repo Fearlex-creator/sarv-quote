@@ -129,20 +129,26 @@ fn post_purchase(st: &mut State) {
     }
     let wh = pickers::first_warehouse(st);
     let date = crate::data::today();
-    let lines: Vec<_> = filled
-        .iter()
-        .map(|l| {
-            json!({
-                "id": l.id,
-                "item_id": l.item_id,
-                "warehouse_id": wh,
-                "unit_id": pickers::item_unit(st, &l.item_id),
-                "quantity": crate::i18n::latin_digits(&l.qty).replace(',', ""),
-                "unit_price": st.parse_money_input(&l.price).to_string(),
-                "line_discount": "0"
-            })
-        })
-        .collect();
+    let mut lines = Vec::with_capacity(filled.len());
+    for l in &filled {
+        let unit_price = match st.parse_money_input(&l.price) {
+            Ok(v) if v >= 0 => v,
+            _ => {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                st.purchases.posting = false;
+                return;
+            }
+        };
+        lines.push(json!({
+            "id": l.id,
+            "item_id": l.item_id,
+            "warehouse_id": wh,
+            "unit_id": pickers::item_unit(st, &l.item_id),
+            "quantity": crate::i18n::latin_digits(&l.qty).replace(',', ""),
+            "unit_price": unit_price.to_string(),
+            "line_discount": "0"
+        }));
+    }
     if st.purchases.post_key.is_empty() {
         st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
         st.purchases.posting = false;
@@ -440,7 +446,7 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 .center_y()
                 .child(item_picker.grow(1.0).min_w(0.0))
                 .child(ui.field(s, &format!("buy-qty-{i}"), "1").w(90.0))
-                .child(ui.field(s, &format!("buy-price-{i}"), "۰").w(140.0)),
+                .child(ui.money_field(s, &format!("buy-price-{i}")).w(160.0)),
         );
     }
 
@@ -477,8 +483,8 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             .gap(12.0)
             .child(ui.labeled("Name", ui.field(s, "quick-item-name", &ui.t("Enter a product name."))))
             .child(ui.form_grid(
-                ui.labeled("Your cost", ui.field(s, "quick-item-cost", "۰")),
-                ui.labeled("Unit price", ui.field(s, "quick-item-price", "۰")),
+                ui.labeled("Your cost", ui.money_field(s, "quick-item-cost")),
+                ui.labeled("Unit price", ui.money_field(s, "quick-item-price")),
             ));
         ui.dialog_described(
             layer,
@@ -498,8 +504,22 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         st.toast(Tone::Danger, st.fmt.t("Enter a product name."));
                         return;
                     }
-                    let cost = st.parse_money_input(&st.forms.get("quick-item-cost")).to_string();
-                    let sale = st.parse_money_input(&st.forms.get("quick-item-price")).to_string();
+                    let cost = match st.parse_money_input(&st.forms.get("quick-item-cost")) {
+                        Ok(v) => v.to_string(),
+                        Err(crate::i18n::MoneyError::Empty) => "0".into(),
+                        Err(_) => {
+                            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                            return;
+                        }
+                    };
+                    let sale = match st.parse_money_input(&st.forms.get("quick-item-price")) {
+                        Ok(v) => v.to_string(),
+                        Err(crate::i18n::MoneyError::Empty) => "0".into(),
+                        Err(_) => {
+                            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                            return;
+                        }
+                    };
                     if let Ok(id) = st.create_item(&name, "", "", &sale, Some(&cost), "", "", "", "", "", "0", false) {
                         if let Some(l) = st.purchases.lines.get_mut(idx) {
                             l.item_id = id;

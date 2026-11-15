@@ -165,7 +165,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(14.0)
         .child(ui.form_grid(ui.labeled("From", from), ui.labeled("To", to)))
-        .child(ui.labeled("Amount", ui.field(s, "bank-amount", "۰")))
+        .child(ui.labeled("Amount", ui.money_field(s, "bank-amount")))
         .child(ui.labeled("Description", ui.field(s, "bank-reason", &ui.t("Note (optional)"))));
 
     let title = move_dialog_title(s.banking.kind);
@@ -186,11 +186,13 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.toast(Tone::Danger, st.fmt.t("Select account"));
                     return;
                 }
-                let amt = st.parse_money_input(&st.forms.get("bank-amount"));
-                if amt <= 0 {
-                    st.toast(Tone::Danger, st.fmt.t("Amount"));
-                    return;
-                }
+                let amt = match st.parse_money_input(&st.forms.get("bank-amount")) {
+                    Ok(v) if v > 0 => v,
+                    _ => {
+                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                        return;
+                    }
+                };
                 let reason = {
                     let r = st.forms.get("bank-reason");
                     if r.trim().is_empty() { "Transfer".into() } else { r }

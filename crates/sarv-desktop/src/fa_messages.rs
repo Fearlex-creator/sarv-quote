@@ -445,6 +445,7 @@ pub static FA: &[(&str, &str)] = &[
     ),
     ("Enter a price on every line.", "برای هر ردیف قیمت وارد کنید."),
     ("Enter a product name.", "نام کالا را وارد کنید."),
+    ("Enter a valid amount.", "مبلغ معتبر وارد کنید."),
     (
         "Enter sale details, then continue to delivery and invoice review.",
         "اطلاعات فروش را وارد کنید؛ سپس تحویل کالا و صدور فاکتور را بررسی کنید.",

@@ -21,10 +21,18 @@ pub fn qty_from_thousandths(raw: &str) -> String {
     if neg { format!("-{body}") } else { body }
 }
 
-/// Digits the user typed, in the active display unit. Do not convert toman to rial here.
+/// Validated display-unit amount normalized to Latin digits without grouping.
+/// Preserves a single decimal separator (e.g. `"۱۲۳۴٫۵"` -> `"1234.5"`). Do not convert toman to rial here.
 pub fn typed_display_amount(raw: &str) -> String {
-    let digits: String = crate::i18n::latin_digits(raw).chars().filter(|c| c.is_ascii_digit()).collect();
-    if digits.is_empty() { "0".into() } else { digits }
+    let norm = crate::i18n::latin_digits(raw.trim()).replace([',', ' '], "");
+    if norm.is_empty() {
+        return "0".into();
+    }
+    if crate::i18n::parse_money(raw, crate::i18n::Unit::Toman).is_ok() || crate::i18n::parse_money(raw, crate::i18n::Unit::Rial).is_ok() {
+        norm
+    } else {
+        "0".into()
+    }
 }
 
 /// Preview then post `fulfill`, `receive`, or `bill`. Empty remaining quantity is an error.

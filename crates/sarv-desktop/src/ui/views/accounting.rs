@@ -240,7 +240,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(14.0)
         .child(ui.form_grid(ui.labeled("Debit", debit), ui.labeled("Credit", credit)))
-        .child(ui.labeled("Amount", ui.field(s, "journal-amount", "۰")))
+        .child(ui.labeled("Amount", ui.money_field(s, "journal-amount")))
         .child(ui.labeled("Description", ui.field(s, "journal-reason", &ui.t("Note (optional)"))));
 
     ui.dialog_described(
@@ -264,12 +264,14 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.accounting.posting = false;
                     return;
                 }
-                let amt = st.parse_money_input(&st.forms.get("journal-amount"));
-                if amt <= 0 {
-                    st.toast(Tone::Danger, st.fmt.t("Amount"));
-                    st.accounting.posting = false;
-                    return;
-                }
+                let amt = match st.parse_money_input(&st.forms.get("journal-amount")) {
+                    Ok(v) if v > 0 => v,
+                    _ => {
+                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                        st.accounting.posting = false;
+                        return;
+                    }
+                };
                 let reason = {
                     let r = st.forms.get("journal-reason");
                     if r.trim().is_empty() { "Manual journal".into() } else { r }

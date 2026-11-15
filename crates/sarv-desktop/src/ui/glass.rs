@@ -168,6 +168,15 @@ impl Ui {
             .w_full()
     }
 
+    pub fn money_field(&self, s: &State, key: &str) -> El {
+        row()
+            .w_full()
+            .gap(6.0)
+            .center_y()
+            .child(self.field(s, key, &self.f.digits("0")).grow(1.0).min_w(0.0))
+            .child(self.muted(self.f.unit_label()))
+    }
+
     pub fn labeled(&self, label_key: &str, control: El) -> El {
         Field::new().label(self.t(label_key)).control(control).build(&self.k)
     }

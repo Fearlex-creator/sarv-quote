@@ -171,6 +171,21 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
             st.toast(Tone::Danger, st.fmt.t("Check the quantity on every line."));
             return false;
         }
+        match st.parse_money_input(&l.price) {
+            Ok(v) if v >= 0 => {}
+            _ => {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                return false;
+            }
+        }
+        if !l.discount.trim().is_empty() && st.parse_money_input(&l.discount).is_err() {
+            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+            return false;
+        }
+    }
+    if ticket.pay_method < 2 && !ticket.received.trim().is_empty() && st.parse_money_input(&ticket.received).is_err() {
+        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+        return false;
     }
     let customer = if ticket.customer_id.is_empty() {
         match st.ensure_walk_in_customer() {
@@ -320,9 +335,14 @@ fn settle_invoice(
         st.toast_err(msg.clone());
         return Err(msg);
     }
-    let received = {
-        let parsed = st.parse_money_input(received_display);
-        if parsed > 0 { parsed } else { owed }
+    let received = match st.parse_money_input(received_display) {
+        Ok(v) if v > 0 => v,
+        Ok(_) | Err(crate::i18n::MoneyError::Empty) => owed,
+        Err(_) => {
+            let msg = st.fmt.t("Enter a valid amount.");
+            st.toast_err(msg.clone());
+            return Err(msg);
+        }
     };
     let paid = received.min(owed);
     if paid <= 0 {
@@ -536,7 +556,7 @@ fn estimate_total(s: &State) -> i64 {
                 if f.trim().is_empty() { l.price.clone() } else { f }
             };
             let qty: i64 = crate::i18n::latin_digits(&qty_raw).replace(',', "").parse().unwrap_or(1).max(1);
-            let price = s.parse_money_input(&price_raw);
+            let price = s.parse_money_input(&price_raw).unwrap_or(0);
             price * qty
         })
         .sum()
@@ -632,12 +652,11 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     return;
                 }
                 let price = pickers::item_sale_price(st, id);
-                let toman = st.fmt.unit == crate::i18n::Unit::Toman;
                 if let Some(l) = st.sales.lines.iter_mut().find(|l| l.id == line_id) {
                     l.item_id = id.to_string();
                     if l.price.is_empty() {
                         let rials: i64 = price.parse().unwrap_or(0);
-                        l.price = if toman { (rials / 10).to_string() } else { rials.to_string() };
+                        l.price = st.fmt.money_input(rials);
                         st.forms.set(&format!("sale-price-{}", i), &l.price);
                     }
                 }
@@ -648,7 +667,6 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             },
         );
         let qty_ph = if line.qty.is_empty() { "1" } else { line.qty.as_str() };
-        let price_ph = if line.price.is_empty() { "۰" } else { line.price.as_str() };
         let row_el = row()
             .key(format!("sale-line-{i}"))
             .w_full()
@@ -656,7 +674,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             .center_y()
             .child(item_picker.grow(1.0).min_w(0.0))
             .child(ui.field(s, &format!("sale-qty-{i}"), qty_ph).w(90.0))
-            .child(ui.field(s, &format!("sale-price-{i}"), price_ph).w(140.0));
+            .child(ui.money_field(s, &format!("sale-price-{i}")).w(160.0));
         lines_col = lines_col.child(row_el);
     }
 
@@ -683,7 +701,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             ui.section("sale-pay", &ui.t("Payment method"), {
                 let mut pay = col().gap(10.0).child(pay_bar);
                 if s.sales.pay_method < 2 {
-                    pay = pay.child(ui.labeled("Amount received", ui.field(s, "sale-received", "۰")));
+                    pay = pay.child(ui.labeled("Amount received", ui.money_field(s, "sale-received")));
                 }
                 pay
             }),
@@ -737,8 +755,8 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             .gap(12.0)
             .child(ui.labeled("Name", ui.field(s, "quick-item-name", &ui.t("Enter a product name."))))
             .child(ui.form_grid(
-                ui.labeled("Your cost", ui.field(s, "quick-item-cost", "۰")),
-                ui.labeled("Unit price", ui.field(s, "quick-item-price", "۰")),
+                ui.labeled("Your cost", ui.money_field(s, "quick-item-cost")),
+                ui.labeled("Unit price", ui.money_field(s, "quick-item-price")),
             ));
         let add = ui.btn(Btn::Primary, "Add product", Some(&icons::CHECK), |st| {
             let Some(idx) = st.sales.creating_item_for_line else { return };
@@ -747,12 +765,25 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 st.toast(Tone::Danger, st.fmt.t("Enter a product name."));
                 return;
             }
-            let sale = st.parse_money_input(&st.forms.get("quick-item-price")).to_string();
+            let sale = match st.parse_money_input(&st.forms.get("quick-item-price")) {
+                Ok(v) => v.to_string(),
+                Err(crate::i18n::MoneyError::Empty) => "0".into(),
+                Err(_) => {
+                    st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                    return;
+                }
+            };
             let cost_raw = st.forms.get("quick-item-cost");
             let cost = if cost_raw.trim().is_empty() {
                 None
             } else {
-                Some(st.parse_money_input(&cost_raw).to_string())
+                match st.parse_money_input(&cost_raw) {
+                    Ok(v) => Some(v.to_string()),
+                    Err(_) => {
+                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                        return;
+                    }
+                }
             };
             if let Ok(id) = st.create_item(&name, "", "", &sale, cost.as_deref(), "", "", "", "", "", "0", false) {
                 if let Some(l) = st.sales.lines.get_mut(idx) {

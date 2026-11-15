@@ -58,14 +58,6 @@ fn matches(s: &State, item: &serde_json::Value, query: &str) -> bool {
     )
 }
 
-fn display_digits(s: &State, rials: i64) -> String {
-    if s.fmt.unit == crate::i18n::Unit::Toman {
-        (rials / 10).to_string()
-    } else {
-        rials.to_string()
-    }
-}
-
 fn total_rials(s: &State) -> i64 {
     s.pos
         .lines
@@ -151,7 +143,14 @@ fn charge(st: &mut State, method: usize) {
         return;
     }
     if method == 0 {
-        let tendered = st.parse_money_input(&st.forms.get("pos-received"));
+        let tendered = match st.parse_money_input(&st.forms.get("pos-received")) {
+            Ok(v) => v,
+            Err(crate::i18n::MoneyError::Empty) => 0,
+            Err(_) => {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                return;
+            }
+        };
         if tendered > 0 && tendered < total_rials(st) {
             st.toast(Tone::Danger, st.fmt.t("The cash received is less than the total."));
             return;
@@ -167,7 +166,7 @@ fn charge(st: &mut State, method: usize) {
             id: format!("pos-{}", l.item_id),
             item_id: l.item_id.clone(),
             qty: l.qty.to_string(),
-            price: display_digits(st, l.price_rials),
+            price: st.fmt.money_input(l.price_rials),
             discount: "0".into(),
         })
         .collect();
@@ -305,7 +304,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     }
 
     let total = total_rials(s);
-    let tendered = s.parse_money_input(&s.forms.get("pos-received"));
+    let tendered = s.parse_money_input(&s.forms.get("pos-received")).unwrap_or(0);
     let change = tendered.saturating_sub(total);
     let total_style = TextStyle {
         size: 34.0,

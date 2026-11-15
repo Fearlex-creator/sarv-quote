@@ -176,3 +176,41 @@ fn test_transfer_double_click_posts_once() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_product_profile_roundtrip_keeps_price() {
+    let mut rt = make_test_runtime();
+    assert_eq!(rt.state.fmt.unit, crate::i18n::Unit::Toman);
+    rt.state
+        .run(
+            "product_profile",
+            serde_json::json!({
+                "item_id": "ITEM-A",
+                "profile": {
+                    "barcode": "6260001",
+                    "category": "",
+                    "notes": "",
+                    "sale_price": "12345",
+                    "minimum_stock": "0"
+                }
+            }),
+            None,
+        )
+        .expect("seed price");
+
+    click(&mut rt, Page::Inventory.key());
+    click(&mut rt, "item-ITEM-A");
+    click(&mut rt, "btn-Product details");
+    assert!(rt.state.inventory.profile_open, "{}", blow(&rt, "open profile"));
+
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.inventory.profile_open, "{}", blow(&rt, "save profile"));
+
+    let detail = rt
+        .state
+        .query("product_detail", serde_json::json!({ "item_id": "ITEM-A", "as_of": data::today() }))
+        .expect("product_detail");
+    assert_eq!(data::s(&detail["profile"]["sale_price"]), "12345");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

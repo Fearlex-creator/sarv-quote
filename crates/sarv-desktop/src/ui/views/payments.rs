@@ -223,7 +223,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.labeled(if customers { "Customer" } else { "Vendor" }, party))
         .child(ui.section("pay-funds-sec", &ui.t("Cash and bank"), funds_bar))
         .child(ui.form_grid(
-            ui.labeled("Amount", ui.field(s, "pay-amount", "۰")),
+            ui.labeled("Amount", ui.money_field(s, "pay-amount")),
             ui.labeled("Reference", ui.field(s, "pay-ref", "")),
         ))
         .child(ui.labeled("Description", ui.field(s, "pay-reason", &ui.t("Note (optional)"))));
@@ -265,12 +265,14 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.payments.posting = false;
                     return;
                 }
-                let amount = st.parse_money_input(&st.forms.get("pay-amount"));
-                if amount <= 0 {
-                    st.toast(Tone::Danger, st.fmt.t("Amount"));
-                    st.payments.posting = false;
-                    return;
-                }
+                let amount = match st.parse_money_input(&st.forms.get("pay-amount")) {
+                    Ok(v) if v > 0 => v,
+                    _ => {
+                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                        st.payments.posting = false;
+                        return;
+                    }
+                };
                 let side = if st.payments.receive { "receive" } else { "make" };
                 let funds_role = match st.payments.funds {
                     0 => "cash",

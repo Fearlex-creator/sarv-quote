@@ -155,10 +155,8 @@ impl State {
         }
     }
 
-    pub fn parse_money_input(&self, raw: &str) -> i64 {
-        let latin = crate::i18n::latin_digits(raw).replace(',', "");
-        let amt: i64 = latin.trim().parse().unwrap_or(0);
-        if self.fmt.unit == crate::i18n::Unit::Toman { amt * 10 } else { amt }
+    pub fn parse_money_input(&self, raw: &str) -> Result<i64, crate::i18n::MoneyError> {
+        crate::i18n::parse_money(raw, self.fmt.unit)
     }
 
     pub fn ensure_walk_in_customer(&mut self) -> Result<String, String> {
