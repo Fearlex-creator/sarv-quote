@@ -26,8 +26,7 @@ fn write(
     let dir = st.engine.dir.join("exports");
     std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let path = dir.join(format!("{stem}-{}.pdf", safe_name(id)));
-    let store = sarv_quote::store::Store::open(&st.engine.dir).map_err(|e| e.to_string())?;
-    paint(&store.state, &path)?;
+    st.engine.with_state(|state| paint(state, &path))?;
     Ok(path)
 }
 

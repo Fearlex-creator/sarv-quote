@@ -2,11 +2,13 @@
 
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::Mutex;
 
 use serde_json::{Value, json};
 
 pub struct Engine {
     pub dir: PathBuf,
+    store: Mutex<Option<sarv_quote::store::Store>>,
 }
 
 impl Engine {
@@ -22,7 +24,10 @@ impl Engine {
             PathBuf::from("sarv_books")
         };
         let _ = std::fs::create_dir_all(&dir);
-        Engine { dir }
+        Engine {
+            dir,
+            store: Mutex::new(None),
+        }
     }
 
     /// A throwaway profile seeded with the QA fixture, for screenshots and tests.
@@ -42,16 +47,42 @@ impl Engine {
         let _ = std::fs::remove_dir_all(&dir);
         let _ = std::fs::create_dir_all(&dir);
         let _ = sarv_quote::desktop::seed_fixture(&dir);
-        Engine { dir }
+        Engine {
+            dir,
+            store: Mutex::new(None),
+        }
     }
 
     pub fn with_dir(dir: impl Into<PathBuf>) -> Self {
-        Engine { dir: dir.into() }
+        Engine {
+            dir: dir.into(),
+            store: Mutex::new(None),
+        }
+    }
+
+    fn ensure_store<'a>(&self, slot: &'a mut Option<sarv_quote::store::Store>) -> Result<&'a mut sarv_quote::store::Store, String> {
+        if slot.is_none() {
+            *slot = Some(sarv_quote::store::Store::open(&self.dir).map_err(|e| e.to_string())?);
+        }
+        if let Err(e) = slot.as_mut().expect("store was just opened").refresh_if_stale() {
+            *slot = None;
+            return Err(e.to_string());
+        }
+        Ok(slot.as_mut().expect("store was just refreshed"))
     }
 
     /// Run an action; the error is the engine's user-facing message.
     pub fn call(&self, action: &str, payload: Value) -> Result<Value, String> {
-        sarv_quote::desktop::dispatch(&self.dir, action, payload).map_err(|e| e.to_string())
+        let mut slot = self.store.lock().map_err(|_| "Books are busy".to_string())?;
+        let store = self.ensure_store(&mut slot)?;
+        sarv_quote::desktop::dispatch_in(store, action, payload).map_err(|e| e.to_string())
+    }
+
+    /// Read the current validated state from the held store.
+    pub fn with_state<T>(&self, f: impl FnOnce(&sarv_quote::domain::State) -> Result<T, String>) -> Result<T, String> {
+        let mut slot = self.store.lock().map_err(|_| "Books are busy".to_string())?;
+        let store = self.ensure_store(&mut slot)?;
+        f(&store.state)
     }
 }
 

@@ -20,7 +20,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `SARV_TODAY=2026-10-08 cargo test -p sarv-desktop --bin sarv-desktop test_demo_clock`
 
 ### Plan 003: Long-lived Store in desktop
-- [ ] **P03-T01**: Hold open `Store` in `Engine` (`Mutex<Option<Store>>` or `RefCell`), route `Engine::call` through `refresh_if_stale` + `dispatch_in`, add `with_state` for `ui/documents.rs`, single-query `refresh_if_stale` in `store.rs`, add 2 tests, update `plans/README.md`.
+- [x] **P03-T01**: Hold open `Store` in `Engine` (`Mutex<Option<Store>>` or `RefCell`), route `Engine::call` through `refresh_if_stale` + `dispatch_in`, add `with_state` for `ui/documents.rs`, single-query `refresh_if_stale` in `store.rs`, add 2 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/data.rs`, `crates/sarv-desktop/src/ui/documents.rs`, `crates/sarv-quote/src/store.rs`, `crates/sarv-quote/src/desktop.rs`, `crates/sarv-desktop/src/main.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo test -p sarv-quote --test storage_hardening --test process_recovery --test agent_access`
 

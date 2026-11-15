@@ -418,11 +418,13 @@ impl Store {
         if generation == self.generation {
             return Ok(());
         }
+        let (generation, payload): (i64, String) = self.conn.query_row("SELECT generation,payload FROM state WHERE id=1", [], |row| {
+            Ok((row.get(0)?, row.get(1)?))
+        })?;
         ensure!(
             generation > self.generation,
             "نسخهٔ ذخیره‌سازی عقب افتاده است؛ برنامه را دوباره باز کنید"
         );
-        let payload: String = self.conn.query_row("SELECT payload FROM state WHERE id=1", [], |row| row.get(0))?;
         let state: State = serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
         state.validate()?;
         ensure!(

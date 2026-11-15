@@ -1113,4 +1113,33 @@ mod tests {
         let today = data::today();
         assert!(from <= today && today <= to, "today={today} outside [{from}, {to}]");
     }
+
+    #[test]
+    fn test_engine_sees_writes_from_another_store() {
+        let mut rt = make_test_runtime();
+        let mut next = rt.state.books.workspace["settings"].clone();
+        let was = next["show_pos"].as_bool().unwrap_or(false);
+        next["show_pos"] = serde_json::json!(!was);
+        for (k, d) in [
+            ("next_number", "1"),
+            ("default_validity_days", "14"),
+            ("default_discount_rial", "0"),
+            ("tax_basis_points", "0"),
+        ] {
+            if next[k].as_str().is_none() {
+                next[k] = serde_json::json!(next[k].as_u64().map(|n| n.to_string()).unwrap_or_else(|| d.into()));
+            }
+        }
+        sarv_quote::desktop::dispatch(&rt.state.engine.dir, "settings", next).expect("external settings write");
+        rt.state.refresh();
+        assert_eq!(rt.state.books.workspace["settings"]["show_pos"].as_bool().unwrap_or(false), !was);
+    }
+
+    #[test]
+    fn test_integrity_status_survives_between_calls() {
+        let rt = make_test_runtime();
+        let a = rt.state.query("integrity", serde_json::json!({})).expect("first integrity query");
+        let b = rt.state.query("integrity", serde_json::json!({})).expect("second integrity query");
+        assert_eq!(a["status"], b["status"]);
+    }
 }

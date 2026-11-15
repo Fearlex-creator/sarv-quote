@@ -21,3 +21,9 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - Added `test_demo_clock_is_inside_the_fixture_year` in `crates/sarv-desktop/src/main.rs` and marked Plan 002 `DONE`.
 - Verified: `SARV_TODAY=2026-10-08 cargo test -p sarv-desktop --bin sarv-desktop test_demo_clock` (1 passed); `cargo test -p sarv-desktop --bin sarv-desktop` (35 passed); fmt + clippy clean.
 
+## P03-T01 — Long-lived Store in desktop
+- `Engine` in `crates/sarv-desktop/src/data.rs` now holds `Mutex<Option<Store>>`, routes `call` through `refresh_if_stale` + `dispatch_in`, and exposes `with_state` for `ui/documents.rs` (eliminating `Store::open` in `documents.rs`).
+- `Store::refresh_if_stale` in `crates/sarv-quote/src/store.rs` reads `(generation, payload)` in a single query when stale.
+- Added `test_engine_sees_writes_from_another_store` and `test_integrity_status_survives_between_calls` in `main.rs`; marked Plan 003 `DONE`.
+- Verified: `cargo test -p sarv-desktop --bin sarv-desktop` (37 passed), `cargo test -p sarv-quote --test storage_hardening --test process_recovery --test agent_access` (32 passed).
+
