@@ -3221,7 +3221,7 @@ dependencies = [
 
 [[package]]
 name = "sarv-desktop"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "chrono",
  "rune",
@@ -3234,7 +3234,7 @@ dependencies = [
 
 [[package]]
 name = "sarv-quote"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "anyhow",
  "cairo-rs",

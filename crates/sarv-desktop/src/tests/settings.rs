@@ -419,3 +419,37 @@ fn test_invalid_national_id_shows_hint_but_saves() {
     assert_eq!(rt.state.contacts.rows.len(), before + 1);
     assert_no_danger(&rt);
 }
+
+#[test]
+fn test_failed_action_is_logged_without_payload() {
+    let mut rt = make_test_runtime();
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(!accounts.is_empty(), "need at least one postable account");
+    let acct = accounts[0].0.clone();
+    let res = rt.state.run(
+        "journal_post",
+        serde_json::json!({
+            "lines": [
+                { "account_id": acct, "debit_rial": "123456", "credit_rial": "0" },
+                { "account_id": acct, "debit_rial": "0", "credit_rial": "123456" },
+            ]
+        }),
+        None,
+    );
+    assert!(res.is_err(), "journal_post with same account on both sides should fail");
+    let log_path = crate::logfile::logs_dir().expect("logs_dir initialized").join("sarv.log");
+    let content = std::fs::read_to_string(&log_path).expect("sarv.log exists");
+    assert!(
+        content.contains("ERROR action=journal_post"),
+        "expected ERROR action=journal_post in sarv.log, got:\n{content}"
+    );
+    assert!(!content.contains("123456"), "sarv.log must not contain payload amounts:\n{content}");
+}
+
+#[test]
+fn test_settings_shows_the_version() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Settings.key());
+    assert!(rt.find("about-version").is_some(), "Settings must show about-version");
+    assert_no_danger(&rt);
+}

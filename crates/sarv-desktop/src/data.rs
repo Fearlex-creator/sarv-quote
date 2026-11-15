@@ -157,6 +157,7 @@ impl Books {
     /// Reload the workspace (and the report for the period) from the engine.
     pub fn refresh(&mut self, engine: &Engine) {
         if let Some(err) = &engine.open_error {
+            crate::logfile::line("ERROR", &format!("refresh open_error message={err}"));
             self.error = err.clone();
             self.loaded = true;
             return;
@@ -178,16 +179,25 @@ impl Books {
                     let (from, to) = self.range();
                     match engine.call("report", json!({ "company_id": self.company_id, "from": from, "to": to })) {
                         Ok(r) => self.report = r,
-                        Err(e) => self.error = e,
+                        Err(e) => {
+                            crate::logfile::line("ERROR", &format!("refresh action=report message={e}"));
+                            self.error = e;
+                        }
                     }
                     match engine.call("banking", json!({ "company_id": self.company_id, "from": from, "to": to })) {
                         Ok(b) => self.banking = b,
-                        Err(_) => self.banking = Value::Null,
+                        Err(e) => {
+                            crate::logfile::line("ERROR", &format!("refresh action=banking message={e}"));
+                            self.banking = Value::Null;
+                        }
                     }
                 }
                 self.index_parties();
             }
-            Err(e) => self.error = e,
+            Err(e) => {
+                crate::logfile::line("ERROR", &format!("refresh action=workspace message={e}"));
+                self.error = e;
+            }
         }
         self.loaded = true;
     }

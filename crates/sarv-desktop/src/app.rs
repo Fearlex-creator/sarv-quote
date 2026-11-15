@@ -225,6 +225,17 @@ pub struct State {
 
 impl State {
     pub fn with_engine(engine: Engine, dark: bool) -> Self {
+        crate::logfile::init(&engine.dir);
+        crate::logfile::line(
+            "INFO",
+            &format!(
+                "start version={} ({}) os={} books={}",
+                env!("CARGO_PKG_VERSION"),
+                env!("SARV_GIT_SHA"),
+                std::env::consts::OS,
+                engine.dir.display()
+            ),
+        );
         let mut books = Books::default();
         books.refresh(&engine);
         let mut s = State {
@@ -268,6 +279,10 @@ impl State {
         };
         s.apply_settings();
         s.refresh_recovery_if_failed();
+        if let Some(crash_path) = crate::logfile::take_unseen_crash() {
+            let msg = s.fmt.t("Sarv closed unexpectedly last time. A report was saved on this device.");
+            s.push_toast(Tone::Info, msg, Some(crash_path));
+        }
         s
     }
 
@@ -694,6 +709,7 @@ impl State {
                 Ok(v)
             }
             Err(e) => {
+                crate::logfile::line("ERROR", &format!("action={action} message={e}"));
                 self.toast(Tone::Danger, e.clone());
                 Err(e)
             }

@@ -171,7 +171,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 ## Phase 4 — Release
 
 ### Plan 030: Crash log and version
-- [ ] **P30-T01**: Create `crates/sarv-desktop/src/logfile.rs` (+ unit tests), install panic hook + `--version` flag in `main.rs`, log `State::run` & `Books::refresh` failures, add `build.rs` (`SARV_GIT_SHA`), set `version = "0.2.0"` & `strip = "none"`/`debug = "line-tables-only"` (or fallback), add About section in `settings.rs`, create `CHANGELOG.md`, add 2 tests, update `plans/README.md`.
+- [x] **P30-T01**: Create `crates/sarv-desktop/src/logfile.rs` (+ unit tests), install panic hook + `--version` flag in `main.rs`, log `State::run` & `Books::refresh` failures, add `build.rs` (`SARV_GIT_SHA`), set `version = "0.2.0"` & `strip = "none"`/`debug = "line-tables-only"` (or fallback), add About section in `settings.rs`, create `CHANGELOG.md`, add 2 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/{logfile.rs,main.rs,app.rs,data.rs,fa_messages.rs}`, `crates/sarv-desktop/src/ui/views/settings.rs`, `crates/sarv-desktop/build.rs`, `crates/sarv-desktop/Cargo.toml`, `Cargo.toml`, `CHANGELOG.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo run -p sarv-desktop -- --version`
 

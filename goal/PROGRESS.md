@@ -193,3 +193,16 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
   - `cargo test -p sarv-quote --features pdf-export` -> exit 0 (all test binaries passed)
   - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`133 passed; 0 failed`)
   - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
+
+## P30-T01: Crash log and version (Plan 030)
+- **Changed**:
+  - `crates/sarv-desktop/src/logfile.rs`: Added local file logger (`init`, `line`, `logs_dir`, `write_crash_report`, `take_unseen_crash`) beside books (`0700` on Unix, 1 MiB rotation, no network calls, no payloads), plus 3 unit tests.
+  - `crates/sarv-desktop/src/{main.rs,app.rs,data.rs}`: Added `--version` flag (`sarv-desktop 0.2.0 (<sha>)`), early `logfile::init`, `std::panic::set_hook` writing `crash-<ts>.txt` (max 10 retained) + unseen crash startup toast (`open_path`), and `State::run` / `Books::refresh` error logging.
+  - `Cargo.toml`, `crates/sarv-desktop/{Cargo.toml,build.rs}`: Set workspace version `0.2.0`, emitted `SARV_GIT_SHA` in `build.rs`, set `strip = "debuginfo"` fallback after measuring `line-tables-only` (+427% size growth).
+  - `crates/sarv-desktop/src/ui/views/settings.rs`, `fa_messages.rs`, `CHANGELOG.md`, `tests/settings.rs`: Added About section (`about-version`, `Logs folder` + `Show in folder`), Persian translations, `CHANGELOG.md`, and 2 tests (`test_failed_action_is_logged_without_payload`, `test_settings_shows_the_version`).
+  - `plans/README.md`: Marked Plan `030` as `DONE`.
+- **Checks**:
+  - `cargo fmt --all -- --check` -> exit 0
+  - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
+  - `cargo run -p sarv-desktop -- --version` -> `sarv-desktop 0.2.0 (d446086a)` (exit 0)
+  - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`138 passed; 0 failed; 0 ignored`)

@@ -7,7 +7,7 @@ members = [
 default-members = ["crates/sarv-quote", "crates/sarv-desktop"]
 
 [workspace.package]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2024"
 rust-version = "1.85"
 license = "AGPL-3.0-only"
@@ -30,5 +30,5 @@ tempfile = "3"
 debug = "line-tables-only"
 
 [profile.release]
-strip = true
+strip = "debuginfo"
 lto = "thin"

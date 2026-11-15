@@ -5,6 +5,7 @@ edition.workspace = true
 rust-version.workspace = true
 license.workspace = true
 description = "Native Rune desktop interface for Sarv accounting"
+build = "build.rs"
 
 [dependencies]
 chrono.workspace = true

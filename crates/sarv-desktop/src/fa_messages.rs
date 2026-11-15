@@ -1724,4 +1724,11 @@ pub static FA: &[(&str, &str)] = &[
     ),
     ("Cheque endorsed", "چک خرج شد"),
     ("Enter an amount above zero.", "مبلغ باید بیشتر از صفر باشد."),
+    ("About", "درباره"),
+    ("Version", "نسخه"),
+    ("Logs folder", "پوشهٔ گزارش‌ها"),
+    (
+        "Sarv closed unexpectedly last time. A report was saved on this device.",
+        "سرو بار قبل به‌طور غیرمنتظره بسته شد. گزارشی روی همین دستگاه ذخیره شد.",
+    ),
 ];

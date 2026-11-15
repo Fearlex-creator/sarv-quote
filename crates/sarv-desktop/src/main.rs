@@ -4,6 +4,7 @@ pub mod app;
 pub mod data;
 pub mod fa_messages;
 pub mod i18n;
+pub mod logfile;
 pub mod shortcuts;
 pub mod ui;
 
@@ -101,6 +102,21 @@ fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
 }
 
 fn main() {
+    if std::env::args().any(|a| a == "--version") {
+        println!("sarv-desktop {} ({})", env!("CARGO_PKG_VERSION"), env!("SARV_GIT_SHA"));
+        return;
+    }
+    if std::env::var_os("SARV_DEMO").is_none()
+        && let Ok(dir) = data::books_dir(std::env::consts::OS, &|k| std::env::var(k).ok())
+    {
+        logfile::init(&dir);
+    }
+    let prev_hook = std::panic::take_hook();
+    std::panic::set_hook(Box::new(move |info| {
+        logfile::write_crash_report(info, env!("CARGO_PKG_VERSION"), env!("SARV_GIT_SHA"));
+        prev_hook(info);
+    }));
+
     // Traffic lights centred on the framed toolbar band (rune-kit shell example).
     let chrome = Chrome {
         full_size_content: true,

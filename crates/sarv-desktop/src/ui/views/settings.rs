@@ -223,13 +223,44 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 .key("company"),
         );
 
+        let version_text = crate::i18n::isolate(&format!("{} ({})", env!("CARGO_PKG_VERSION"), env!("SARV_GIT_SHA")));
+        let logs_path = crate::logfile::logs_dir().unwrap_or_else(|| s.engine.dir.parent().unwrap_or(&s.engine.dir).join("logs"));
+        let logs_detail = crate::i18n::isolate(&logs_path.display().to_string());
+        let logs_btn_path = logs_path.clone();
+        let about = ui.section(
+            "about",
+            &ui.t("About"),
+            ui.panel_rows(
+                "about-card",
+                vec![
+                    setting_row(ui, "about-version", &ui.t("Version"), "", ui.muted(version_text)),
+                    setting_row(
+                        ui,
+                        "about-logs",
+                        &ui.t("Logs folder"),
+                        &logs_detail,
+                        ui.btn(Btn::Ghost, "Show in folder", None, move |st| {
+                            if let Err(e) = std::fs::create_dir_all(&logs_btn_path) {
+                                st.toast(Tone::Danger, e.to_string());
+                                return;
+                            }
+                            if let Err(e) = crate::ui::documents::reveal(&logs_btn_path.join("sarv.log"), true) {
+                                st.toast_err(e);
+                            }
+                        }),
+                    ),
+                ],
+            ),
+        );
+
         let mut column = col()
             .w_full()
             .gap(24.0)
             .child(tab_bar)
             .child(appearance)
             .child(features)
-            .child(business);
+            .child(business)
+            .child(about);
         if !s.settings.law_notice.is_empty() {
             column = column.child(ui.muted(s.settings.law_notice.clone()).key("law-notice"));
         }
