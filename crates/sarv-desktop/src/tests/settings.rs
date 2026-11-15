@@ -67,9 +67,10 @@ fn backup_then_restore_returns_the_books_to_the_snapshot() {
     assert!(accounts.len() >= 2);
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "12000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "12000");
+    type_into(&mut rt, "journal-credit-1", "12000");
     type_into(&mut rt, "journal-reason", "Before restore");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "post journal"));

@@ -36,9 +36,10 @@ fn test_journal_post_uses_preview_generation() {
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
     assert!(!rt.state.accounting.post_key.is_empty(), "dialog mints a stable request key");
-    rt.state.accounting.debit_account = debit;
-    rt.state.accounting.credit_account = credit;
-    rt.state.forms.set("journal-amount", "1000");
+    rt.state.accounting.set_line_account(0, debit);
+    rt.state.accounting.set_line_account(1, credit);
+    rt.state.forms.set("journal-debit-0", "1000");
+    rt.state.forms.set("journal-credit-1", "1000");
     rt.state.forms.set("journal-reason", "Quality loop journal");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal post"));
@@ -123,9 +124,10 @@ fn locked_period_refuses_a_journal() {
     rt.frame(1.0 / 60.0);
 
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = debit.clone();
-    rt.state.accounting.credit_account = credit.clone();
-    type_into(&mut rt, "journal-amount", "15000");
+    rt.state.accounting.set_line_account(0, debit.clone());
+    rt.state.accounting.set_line_account(1, credit.clone());
+    type_into(&mut rt, "journal-debit-0", "15000");
+    type_into(&mut rt, "journal-credit-1", "15000");
     type_into(&mut rt, "journal-reason", "Blocked in locked period");
     click(&mut rt, "btn-Save");
 
@@ -154,9 +156,10 @@ fn locked_period_refuses_a_journal() {
         rt.frame(1.0 / 60.0);
     }
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = debit;
-    rt.state.accounting.credit_account = credit;
-    type_into(&mut rt, "journal-amount", "15000");
+    rt.state.accounting.set_line_account(0, debit);
+    rt.state.accounting.set_line_account(1, credit);
+    type_into(&mut rt, "journal-debit-0", "15000");
+    type_into(&mut rt, "journal-credit-1", "15000");
     type_into(&mut rt, "journal-reason", "Allowed after reopen");
     click(&mut rt, "btn-Save");
 
@@ -180,9 +183,10 @@ fn reverse_creates_a_mirror_journal() {
 
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = debit.clone();
-    rt.state.accounting.credit_account = credit.clone();
-    type_into(&mut rt, "journal-amount", "25000");
+    rt.state.accounting.set_line_account(0, debit.clone());
+    rt.state.accounting.set_line_account(1, credit.clone());
+    type_into(&mut rt, "journal-debit-0", "25000");
+    type_into(&mut rt, "journal-credit-1", "25000");
     type_into(&mut rt, "journal-reason", "Mirror test");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal post"));
@@ -219,9 +223,10 @@ fn test_second_journal_from_overview_posts() {
 
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "10000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "10000");
+    type_into(&mut rt, "journal-credit-1", "10000");
     type_into(&mut rt, "journal-reason", "First journal");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "first journal"));
@@ -229,9 +234,10 @@ fn test_second_journal_from_overview_posts() {
     click(&mut rt, Page::Overview.key());
     click(&mut rt, "btn-New journal");
     assert!(rt.state.accounting.modal_open, "{}", blow(&rt, "overview new journal"));
-    rt.state.accounting.debit_account = accounts[1].0.clone();
-    rt.state.accounting.credit_account = accounts[2].0.clone();
-    type_into(&mut rt, "journal-amount", "20000");
+    rt.state.accounting.set_line_account(0, accounts[1].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[2].0.clone());
+    type_into(&mut rt, "journal-debit-0", "20000");
+    type_into(&mut rt, "journal-credit-1", "20000");
     type_into(&mut rt, "journal-reason", "Second journal from overview");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "second journal"));
@@ -283,9 +289,10 @@ fn test_reverse_requires_confirmation() {
 
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "15000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "15000");
+    type_into(&mut rt, "journal-credit-1", "15000");
     type_into(&mut rt, "journal-reason", "Confirm reverse test");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal post"));
@@ -334,9 +341,10 @@ fn test_journal_posts_on_the_typed_jalali_date() {
 
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "25000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "25000");
+    type_into(&mut rt, "journal-credit-1", "25000");
     type_into(&mut rt, "journal-date", &typed_jalali);
     type_into(&mut rt, "journal-reason", "Jalali dated journal");
     click(&mut rt, "btn-Save");
@@ -364,9 +372,10 @@ fn test_invalid_date_blocks_the_post() {
 
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "25000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "25000");
+    type_into(&mut rt, "journal-credit-1", "25000");
     type_into(&mut rt, "journal-date", "1405/13/99");
     type_into(&mut rt, "journal-reason", "Should not post");
     click(&mut rt, "btn-Save");
@@ -436,9 +445,10 @@ fn test_open_next_fiscal_year_and_post_in_it() {
     let typed_date = rt.state.fmt.date_input(&target_iso);
 
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "30000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "30000");
+    type_into(&mut rt, "journal-credit-1", "30000");
     type_into(&mut rt, "journal-date", &typed_date);
     type_into(&mut rt, "journal-reason", "New fiscal year journal");
     click(&mut rt, "btn-Save");
@@ -724,4 +734,119 @@ fn test_trial_balance_row_opens_the_ledger() {
     assert_no_danger(&rt);
     assert!(rt.state.accounting.ledger_open);
     assert!(rt.find("ledger-dialog").is_some());
+}
+
+#[test]
+fn test_three_line_journal_posts_balanced() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 3, "need three postable accounts");
+    let before = count(&rt, "journal_count");
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    click(&mut rt, "btn-Add line");
+    assert_eq!(rt.state.accounting.lines.len(), 3);
+
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    rt.state.accounting.set_line_account(2, accounts[2].0.clone());
+    type_into(&mut rt, "journal-debit-0", "300");
+    type_into(&mut rt, "journal-credit-1", "100");
+    type_into(&mut rt, "journal-credit-2", "200");
+    type_into(&mut rt, "journal-reason", "Split three-line journal");
+    click(&mut rt, "btn-Save");
+
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "three line journal"));
+    assert_eq!(count(&rt, "journal_count"), before + 1);
+    let posted = rt
+        .state
+        .books
+        .list("journals")
+        .into_iter()
+        .find(|j| data::s(&j["reason"]) == "Split three-line journal")
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "find three line journal")));
+    let lines = posted["lines"].as_array().expect("journal lines");
+    assert_eq!(lines.len(), 3, "stored journal must have 3 lines");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_unbalanced_journal_is_blocked_with_one_toast() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let before = count(&rt, "journal_count");
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "1000");
+    type_into(&mut rt, "journal-credit-1", "500");
+    rt.update(|s, _| s.toasts.clear());
+    click(&mut rt, "btn-Save");
+
+    assert!(rt.state.accounting.modal_open, "unbalanced journal must keep dialog open");
+    assert!(!rt.state.accounting.posting, "posting flag must reset");
+    assert_eq!(count(&rt, "journal_count"), before);
+    let dangers = danger_toasts(&rt);
+    assert_eq!(dangers.len(), 1, "expected 1 danger toast, got {dangers:?}");
+}
+
+#[test]
+fn test_removing_a_journal_line_shifts_the_fields() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 3);
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    click(&mut rt, "btn-Add line");
+    assert_eq!(rt.state.accounting.lines.len(), 3);
+
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    rt.state.accounting.set_line_account(2, accounts[2].0.clone());
+    type_into(&mut rt, "journal-debit-0", "100");
+    type_into(&mut rt, "journal-desc-0", "first");
+    type_into(&mut rt, "journal-credit-1", "50");
+    type_into(&mut rt, "journal-desc-1", "middle");
+    type_into(&mut rt, "journal-credit-2", "100");
+    type_into(&mut rt, "journal-desc-2", "last");
+
+    click(&mut rt, "btn-journal-remove-1");
+    assert_eq!(rt.state.accounting.lines.len(), 2);
+    assert_eq!(rt.state.accounting.lines[0].account_id, accounts[0].0);
+    assert_eq!(rt.state.accounting.lines[1].account_id, accounts[2].0);
+    assert_eq!(rt.state.forms.get("journal-credit-1"), "100");
+    assert_eq!(rt.state.forms.get("journal-desc-1"), "last");
+    assert_eq!(rt.state.forms.get("journal-credit-2"), "");
+    assert_eq!(rt.state.forms.get("journal-desc-2"), "");
+}
+
+#[test]
+fn test_two_line_journal_mirrors_the_amount() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let before = count(&rt, "journal_count");
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "4500");
+    type_into(&mut rt, "journal-reason", "Mirrored two-line journal");
+    click(&mut rt, "btn-Save");
+
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "mirrored two line journal"));
+    assert_eq!(count(&rt, "journal_count"), before + 1);
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }

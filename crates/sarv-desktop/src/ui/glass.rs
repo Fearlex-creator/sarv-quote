@@ -83,7 +83,7 @@ impl Ui {
         self.button_enabled(kind, id, label, glyph, true, on_press)
     }
 
-    fn button_enabled(
+    pub fn button_enabled(
         &self,
         kind: Btn,
         id: &str,

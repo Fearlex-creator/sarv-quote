@@ -152,7 +152,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 024: Multi-line manual journal
-- [ ] **P24-T01**: Replace `debit_account`/`credit_account` with `lines: Vec<JournalLine>` in `accounting.rs`, build multi-line grid with add/remove (`remove_line` shifts fields), totals/difference row, 2-line amount mirroring, validation, update 2 + add 4 tests, update `plans/README.md`.
+- [x] **P24-T01**: Replace `debit_account`/`credit_account` with `lines: Vec<JournalLine>` in `accounting.rs`, build multi-line grid with add/remove (`remove_line` shifts fields), totals/difference row, 2-line amount mirroring, validation, update 2 + add 4 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/ui/views/{accounting,overview}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

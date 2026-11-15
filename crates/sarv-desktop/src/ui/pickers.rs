@@ -100,6 +100,13 @@ pub fn account_options(s: &State) -> Vec<(String, String)> {
         .collect()
 }
 
+pub fn account_combo_options(s: &State) -> Vec<ComboboxOption> {
+    account_options(s)
+        .into_iter()
+        .map(|(id, label)| ComboboxOption::new(id, label))
+        .collect()
+}
+
 pub fn first_warehouse(s: &State) -> String {
     warehouse_options(s).into_iter().next().map(|(id, _)| id).unwrap_or_default()
 }

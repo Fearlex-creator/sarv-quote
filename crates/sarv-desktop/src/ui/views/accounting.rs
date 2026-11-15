@@ -2,21 +2,26 @@
 
 use std::borrow::Cow;
 
-use rune::{Align, Cx, El, col, row};
-use rune_kit::{Cell, SortDir, Switch, Table, TableColumn, TableState};
+use rune::{Align, Cx, El, col, row, text};
+use rune_kit::{Cell, ComboboxState, SortDir, Switch, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_LG, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
 use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
+#[derive(Default, Clone)]
+pub struct JournalLine {
+    pub account_id: String,
+    pub combo: ComboboxState,
+}
+
 #[derive(Default)]
 pub struct AccountingState {
     pub tab_idx: usize,
     pub table: TableState,
     pub modal_open: bool,
-    pub debit_account: String,
-    pub credit_account: String,
+    pub lines: Vec<JournalLine>,
     pub selected: String,
     pub ledger_open: bool,
     pub ledger: serde_json::Value,
@@ -77,17 +82,47 @@ fn accounts(s: &State) -> &[serde_json::Value] {
     s.books.workspace["accounts"].as_array().map(|a| a.as_slice()).unwrap_or(&[])
 }
 
+impl AccountingState {
+    pub fn ensure_lines(&mut self, min_len: usize) {
+        while self.lines.len() < min_len {
+            self.lines.push(JournalLine::default());
+        }
+    }
+
+    pub fn set_line_account(&mut self, index: usize, account_id: impl Into<String>) {
+        self.ensure_lines(index + 1);
+        self.lines[index].account_id = account_id.into();
+    }
+}
+
 pub fn open_journal(st: &mut State) {
     st.forms.clear_prefix("journal-");
-    st.accounting.debit_account.clear();
-    st.accounting.credit_account.clear();
+    st.accounting.lines = vec![JournalLine::default(), JournalLine::default()];
     st.accounting.post_key = st.mint_key("journal");
     st.accounting.posting = false;
     st.accounting.modal_open = true;
 }
 
+pub fn remove_line(st: &mut State, index: usize) {
+    let len = st.accounting.lines.len();
+    if len <= 2 || index >= len {
+        return;
+    }
+    st.accounting.lines.remove(index);
+    for j in index..(len - 1) {
+        for prefix in ["journal-debit-", "journal-credit-", "journal-desc-"] {
+            let next_val = st.forms.get(&format!("{prefix}{}", j + 1));
+            st.forms.set(&format!("{prefix}{j}"), &next_val);
+        }
+    }
+    let last = len - 1;
+    for prefix in ["journal-debit-", "journal-credit-", "journal-desc-"] {
+        st.forms.set(&format!("{prefix}{last}"), "");
+    }
+}
+
 fn is_dirty(st: &State) -> bool {
-    st.forms.any_with_prefix("journal-") || !st.accounting.debit_account.is_empty() || !st.accounting.credit_account.is_empty()
+    st.forms.any_with_prefix("journal-") || st.accounting.lines.iter().any(|l| !l.account_id.is_empty())
 }
 
 pub fn close_or_confirm(st: &mut State) {
@@ -474,52 +509,127 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     )
 }
 
+fn two_line_mirror_active(s: &State) -> bool {
+    s.accounting.lines.len() == 2
+        && s.forms.get("journal-credit-1").trim().is_empty()
+        && s.forms.get("journal-debit-1").trim().is_empty()
+        && !s.accounting.lines[1].account_id.is_empty()
+        && !s.forms.get("journal-debit-0").trim().is_empty()
+}
+
 fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     use crate::ui::pickers;
     use serde_json::json;
 
     let mut portals = Vec::new();
-    let accounts = pickers::account_options(s);
-    let debit_open = s.selects.get("journal-debit").copied().unwrap_or(false);
-    let credit_open = s.selects.get("journal-credit").copied().unwrap_or(false);
-    let debit = pickers::select_field(
-        ui,
-        &mut portals,
-        "journal-debit",
-        &accounts,
-        if s.accounting.debit_account.is_empty() {
-            None
-        } else {
-            Some(s.accounting.debit_account.as_str())
-        },
-        &ui.t("Select account"),
-        pickers::ACCOUNT_PICKER_WIDTH,
-        debit_open,
-        |st, id| st.accounting.debit_account = id.to_string(),
+    let account_opts = pickers::account_combo_options(s);
+    let mirror = two_line_mirror_active(s);
+    let mirror_val = if mirror { s.forms.get("journal-debit-0") } else { String::new() };
+    let can_remove = s.accounting.lines.len() > 2;
+
+    let mut total_debit: i64 = 0;
+    let mut total_credit: i64 = 0;
+    let mut lines_col = col().w_full().gap(8.0).child(
+        row()
+            .w_full()
+            .gap(8.0)
+            .center_y()
+            .child(ui.muted(ui.t("Account")).w(pickers::ACCOUNT_PICKER_WIDTH))
+            .child(ui.muted(ui.t("Description")).grow(1.0).min_w(0.0))
+            .child(ui.muted(ui.t("Debit")).w(130.0))
+            .child(ui.muted(ui.t("Credit")).w(130.0))
+            .child(row().w(36.0)),
     );
-    let credit = pickers::select_field(
-        ui,
-        &mut portals,
-        "journal-credit",
-        &accounts,
-        if s.accounting.credit_account.is_empty() {
-            None
+
+    for (i, line) in s.accounting.lines.iter().enumerate() {
+        let debit_key = format!("journal-debit-{i}");
+        let credit_key = format!("journal-credit-{i}");
+        let desc_key = format!("journal-desc-{i}");
+
+        total_debit += s.parse_money_input(&s.forms.get(&debit_key)).unwrap_or(0).max(0);
+        let credit_raw = if i == 1 && mirror {
+            mirror_val.clone()
         } else {
-            Some(s.accounting.credit_account.as_str())
-        },
-        &ui.t("Select account"),
-        pickers::ACCOUNT_PICKER_WIDTH,
-        credit_open,
-        |st, id| st.accounting.credit_account = id.to_string(),
-    );
+            s.forms.get(&credit_key)
+        };
+        total_credit += s.parse_money_input(&credit_raw).unwrap_or(0).max(0);
+
+        let account_picker = pickers::entity_combo(
+            ui,
+            &mut portals,
+            &format!("journal-account-{i}"),
+            &line.combo,
+            move |st| {
+                st.accounting.ensure_lines(i + 1);
+                &mut st.accounting.lines[i].combo
+            },
+            &account_opts,
+            if line.account_id.is_empty() {
+                None
+            } else {
+                Some(line.account_id.as_str())
+            },
+            &ui.t("Select account"),
+            pickers::ACCOUNT_PICKER_WIDTH,
+            move |st, id| st.accounting.set_line_account(i, id),
+        );
+
+        let remove_btn = ui.button_enabled(
+            Btn::Ghost,
+            &format!("journal-remove-{i}"),
+            "",
+            Some(&icons::TRASH),
+            can_remove,
+            move |st| remove_line(st, i),
+        );
+
+        lines_col = lines_col.child(
+            row()
+                .key(format!("journal-line-{i}"))
+                .w_full()
+                .gap(8.0)
+                .center_y()
+                .child(account_picker)
+                .child(ui.field(s, &desc_key, &ui.t("Description")).grow(1.0).min_w(0.0))
+                .child(ui.money_field(s, &debit_key).w(130.0))
+                .child(ui.money_field(s, &credit_key).w(130.0))
+                .child(remove_btn),
+        );
+    }
+
+    let diff = (total_debit - total_credit).abs();
+    let status_el = if diff == 0 {
+        ui.muted(ui.t("Balanced"))
+    } else {
+        text(format!("{} {}", ui.t("Difference"), ui.f.money(&diff.to_string())))
+            .font(ui.k.ty.body_medium)
+            .color(ui.tone_fg(Tone::Danger))
+    };
+
+    let footer_bar = row()
+        .w_full()
+        .center_y()
+        .justify_between()
+        .child(ui.btn(Btn::Ghost, "Add line", Some(&icons::PLUS), |st| {
+            st.accounting.lines.push(JournalLine::default());
+        }))
+        .child(
+            row()
+                .gap(16.0)
+                .center_y()
+                .child(ui.muted(format!("{}: {}", ui.t("Debit"), ui.f.money(&total_debit.to_string()))))
+                .child(ui.muted(format!("{}: {}", ui.t("Credit"), ui.f.money(&total_credit.to_string()))))
+                .child(status_el),
+        );
+
     let form = col()
         .gap(14.0)
-        .child(ui.form_grid(ui.labeled("Debit", debit), ui.labeled("Credit", credit)))
         .child(ui.form_grid(
-            ui.labeled("Amount", ui.money_field(s, "journal-amount")),
             ui.date_field(s, "journal-date", "Date"),
+            ui.labeled("Description", ui.field(s, "journal-reason", &ui.t("Note (optional)"))),
         ))
-        .child(ui.labeled("Description", ui.field(s, "journal-reason", &ui.t("Note (optional)"))));
+        .child(lines_col)
+        .child(footer_bar);
 
     ui.form_dialog(
         layer,
@@ -537,19 +647,86 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     return;
                 }
                 st.accounting.posting = true;
-                if st.accounting.debit_account.is_empty() || st.accounting.credit_account.is_empty() {
-                    st.toast(Tone::Danger, st.fmt.t("Select account"));
-                    st.accounting.posting = false;
-                    return;
+                if two_line_mirror_active(st) {
+                    let d0 = st.forms.get("journal-debit-0");
+                    st.forms.set("journal-credit-1", &d0);
                 }
-                let amt = match st.parse_positive_money(&st.forms.get("journal-amount")) {
-                    Ok(v) => v,
-                    Err(key) => {
-                        st.toast(Tone::Danger, st.fmt.t(key));
+
+                let mut lines_json = Vec::new();
+                let mut total_debit: i64 = 0;
+                let mut total_credit: i64 = 0;
+
+                for (i, line) in st.accounting.lines.iter().enumerate() {
+                    let debit_raw = st.forms.get(&format!("journal-debit-{i}"));
+                    let credit_raw = st.forms.get(&format!("journal-credit-{i}"));
+                    let desc = st.forms.get(&format!("journal-desc-{i}"));
+                    let has_debit = !debit_raw.trim().is_empty();
+                    let has_credit = !credit_raw.trim().is_empty();
+                    let has_account = !line.account_id.is_empty();
+
+                    if !has_account && !has_debit && !has_credit && desc.trim().is_empty() {
+                        continue;
+                    }
+                    if has_debit && has_credit {
+                        st.toast(Tone::Danger, st.fmt.t("A line is either a debit or a credit."));
                         st.accounting.posting = false;
                         return;
                     }
-                };
+                    if !has_account {
+                        st.toast(Tone::Danger, st.fmt.t("Select an account on every line."));
+                        st.accounting.posting = false;
+                        return;
+                    }
+
+                    let (debit, credit) = if has_debit {
+                        match st.parse_positive_money(&debit_raw) {
+                            Ok(v) => (v, 0),
+                            Err(key) => {
+                                st.toast(Tone::Danger, st.fmt.t(key));
+                                st.accounting.posting = false;
+                                return;
+                            }
+                        }
+                    } else if has_credit {
+                        match st.parse_positive_money(&credit_raw) {
+                            Ok(v) => (0, v),
+                            Err(key) => {
+                                st.toast(Tone::Danger, st.fmt.t(key));
+                                st.accounting.posting = false;
+                                return;
+                            }
+                        }
+                    } else {
+                        let Err(key) = st.parse_positive_money("") else {
+                            st.accounting.posting = false;
+                            return;
+                        };
+                        st.toast(Tone::Danger, st.fmt.t(key));
+                        st.accounting.posting = false;
+                        return;
+                    };
+
+                    total_debit += debit;
+                    total_credit += credit;
+                    lines_json.push(json!({
+                        "account_id": line.account_id,
+                        "debit": debit.to_string(),
+                        "credit": credit.to_string(),
+                        "description": desc,
+                    }));
+                }
+
+                if lines_json.len() < 2 {
+                    st.toast(Tone::Danger, st.fmt.t("Add at least two lines."));
+                    st.accounting.posting = false;
+                    return;
+                }
+                if total_debit != total_credit {
+                    st.toast(Tone::Danger, st.fmt.t("Debits and credits must be equal."));
+                    st.accounting.posting = false;
+                    return;
+                }
+
                 let Ok(date) = st.form_date("journal-date") else {
                     st.accounting.posting = false;
                     return;
@@ -569,10 +746,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "reason": reason,
                     "source_id": key,
                     "request_key": key,
-                    "lines": [
-                        { "account_id": st.accounting.debit_account, "debit": amt.to_string(), "credit": "0", "description": "" },
-                        { "account_id": st.accounting.credit_account, "debit": "0", "credit": amt.to_string(), "description": "" }
-                    ]
+                    "lines": lines_json
                 });
                 match st.query("journal_preview", payload.clone()) {
                     Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),

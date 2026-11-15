@@ -146,9 +146,10 @@ fn test_owner_walks_profiles_documents_and_books() {
     let accounts = crate::ui::pickers::account_options(&rt.state);
     assert!(accounts.len() >= 2, "chart of accounts");
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    rt.state.forms.set("journal-amount", "25000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    rt.state.forms.set("journal-debit-0", "25000");
+    rt.state.forms.set("journal-credit-1", "25000");
     rt.state.forms.set("journal-reason", "Owner adjustment");
     click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal"));
@@ -259,9 +260,10 @@ fn double_click_on_save_posts_once() {
     let journals_before = count(&rt, "journal_count");
     click(&mut rt, Page::Accounting.key());
     click(&mut rt, "btn-New journal");
-    rt.state.accounting.debit_account = accounts[0].0.clone();
-    rt.state.accounting.credit_account = accounts[1].0.clone();
-    type_into(&mut rt, "journal-amount", "10000");
+    rt.state.accounting.set_line_account(0, accounts[0].0.clone());
+    rt.state.accounting.set_line_account(1, accounts[1].0.clone());
+    type_into(&mut rt, "journal-debit-0", "10000");
+    type_into(&mut rt, "journal-credit-1", "10000");
     type_into(&mut rt, "journal-reason", "Double click journal");
     double_click(&mut rt, "btn-Save");
     assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "double click journal"));

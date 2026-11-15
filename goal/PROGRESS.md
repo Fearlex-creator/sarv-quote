@@ -154,3 +154,15 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - **Changes**: Added `adding_company` mode (`start_add_company`, `cancel_adding`) in `crates/sarv-desktop/src/ui/views/setup.rs` and `ui/mod.rs`; added `"Add company"` button and always-visible company list in `settings.rs`; replaced `org-selector` action with `mount_company_switcher` (`DIALOG_SM`, dirty-guarded `select_company` + `"Add company"`) in `shell.rs` and `app.rs`; added FA translations and 3 tests in `tests/settings.rs`; marked Plan 022 `DONE` in `plans/README.md`.
 - **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet --workspace --all-targets -- -D warnings && cargo test -p sarv-desktop --bin sarv-desktop`
 - **Result**: PASS (`sarv-desktop`: 122 passed, 0 failed, 0 ignored).
+
+## P24-T01: Multi-line manual journal (Plan 024)
+- **Changed**:
+  - `crates/sarv-desktop/src/ui/views/accounting.rs`: Replaced fixed `debit_account`/`credit_account` with dynamic `lines: Vec<JournalLine>` (`JournalLine { account_id, combo }`), added `ensure_lines`/`set_line_account`/`remove_line` (shifting `journal-debit-*`, `journal-credit-*`, `journal-desc-*` down and clearing trailing index), dynamic journal grid with `Add line` & per-row `Remove`, totals/difference row, 2-line debit-to-credit mirroring, and multi-line validation + preview/post flow.
+  - `crates/sarv-desktop/src/ui/pickers.rs`: Added `account_combo_options`.
+  - `crates/sarv-desktop/src/ui/glass.rs`: Exposed `Ui::button_enabled`.
+  - `crates/sarv-desktop/src/fa_messages.rs`: Added Persian entries for the 4 new multi-line validation messages.
+  - `crates/sarv-desktop/src/tests/{accounting,purchases,walkthrough,settings}.rs`: Updated existing journal tests and added `test_three_line_journal_posts_balanced`, `test_unbalanced_journal_is_blocked_with_one_toast`, `test_removing_a_journal_line_shifts_the_fields`, and `test_two_line_journal_mirrors_the_amount`.
+  - `plans/README.md`: Marked Plan `024` as `DONE`.
+- **Checks**:
+  - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
+  - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`126 passed; 0 failed; 0 ignored`)

@@ -55,7 +55,7 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 | [020](020-document-lifecycle.md) | Continue documents: receive, bill, deliver, return in part; edit/convert/delete quotations | P1 | L | 004, 013, 014 | DONE |
 | [021](021-payments-and-cheques.md) | Reverse payments; endorse cheques; cheque register with due dates | P2 | M | 004, 010, 013, 014 | DONE (Step 5: Rune setup only imports cash/bank, no opening cheque lines) |
 | [022](022-add-company-and-switcher.md) | Add a second business; switch from the sidebar | P2 | S–M | (004), (013) | DONE |
-| [024](024-multi-line-journal.md) | Journals with any number of lines | P2 | M | 004, 005, 014 | TODO |
+| [024](024-multi-line-journal.md) | Journals with any number of lines | P2 | M | 004, 005, 014 | DONE |
 | [025](025-exports-and-printing.md) | Export every report and document; open the file from the toast | P2 | M | 003, (011) | TODO |
 | [023](023-persian-affordances.md) | Amount in words; advisory Iranian ID hints; law-data table | P2 | M | — | TODO |
 

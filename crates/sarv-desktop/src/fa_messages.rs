@@ -41,6 +41,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Active", "فعال"),
     ("Actual gross margin", "حاشیه سود ناخالص واقعی"),
     ("Actual gross profit", "سود ناخالص واقعی"),
+    ("A line is either a debit or a credit.", "هر ردیف یا بدهکار است یا بستانکار."),
     (
         "Actual gross profit uses posted invoice revenue minus original carried costs, including returns. It excludes operating expenses and tax.",
         "سود ناخالص واقعی از درآمد فاکتورهای ثبت‌شده منهای بهای دفتری اصلی با احتساب برگشت‌ها محاسبه می‌شود. هزینه‌های عملیاتی و مالیات در آن منظور نمی‌شوند.",
@@ -52,6 +53,7 @@ pub static FA: &[(&str, &str)] = &[
     ),
     ("Add an account to your chart of accounts.", "یک حساب به کدینگ حساب‌ها اضافه کنید."),
     ("Add at least one product.", "دست‌کم یک کالا اضافه کنید."),
+    ("Add at least two lines.", "دست‌کم دو ردیف وارد کنید."),
     ("Add company", "افزودن کسب‌وکار"),
     ("Add customer", "افزودن مشتری"),
     (
@@ -391,6 +393,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Date display", "تقویم نمایشی"),
     ("Day / month / year", "روز / ماه / سال"),
     ("Debit", "بدهکار"),
+    ("Debits and credits must be equal.", "جمع بدهکار و بستانکار باید برابر باشد."),
     ("Debit / credit:", "بدهکار / بستانکار:"),
     ("Debit · IRR", "بدهکار · IRR"),
     (
@@ -1296,6 +1299,7 @@ pub static FA: &[(&str, &str)] = &[
         "یک الگو برای پرکردن پیش‌فرض‌های فاکتور انتخاب کنید یا خودتان تنظیم کنید.",
     ),
     ("Select account", "انتخاب حساب"),
+    ("Select an account on every line.", "برای هر ردیف حساب انتخاب کنید."),
     ("Select cheque", "انتخاب چک"),
     ("Select contact", "انتخاب طرف حساب"),
     ("Select customer", "انتخاب مشتری"),
