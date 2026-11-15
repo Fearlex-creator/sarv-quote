@@ -16,16 +16,28 @@ use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 pub struct PaymentsState {
     pub tab_idx: usize,
     pub table: TableState,
+    pub cheques_table: TableState,
     pub modal_open: bool,
     pub receive: bool,
     pub party_id: String,
     pub selected: String,
+    pub selected_cheque: String,
     pub party_combo: rune_kit::ComboboxState,
     pub funds: usize, // 0 cash, 1 bank, 2 cheque
     pub post_key: String,
     pub posting: bool,
     pub rows: Vec<Row>,
     pub rows_stamp: u64,
+    pub cheques_rows: Vec<Row>,
+    pub cheques_rows_stamp: u64,
+    pub spend_open: bool,
+    pub spend_cheque_id: String,
+    pub spend_cheque_amount: String,
+    pub spend_cheque_number: String,
+    pub spend_party_id: String,
+    pub spend_party_combo: rune_kit::ComboboxState,
+    pub spend_key: String,
+    pub spend_posting: bool,
 }
 
 fn load_more_payments(st: &mut State) {
@@ -80,13 +92,28 @@ fn col_index(col: &str) -> Option<usize> {
 }
 
 fn build_rows(s: &State) -> Vec<Row> {
-    let status = s.fmt.t("Posted");
-    payments(s)
+    let list = payments(s);
+    let reversed_ids: std::collections::HashSet<String> = list
         .iter()
+        .filter_map(|record| {
+            let pid = crate::data::s(&record["data"]["Reversal"]["payment_id"]);
+            if pid.is_empty() { None } else { Some(pid) }
+        })
+        .collect();
+    list.iter()
         .map(|record| {
             let id = crate::data::s(&record["id"]);
-            let cmd = &record["command"];
-            let data = &record["data"];
+            let is_reversal = record["data"].get("Reversal").is_some();
+            let is_reversed = is_reversal || reversed_ids.contains(&id);
+            let status = if is_reversed { s.fmt.t("Reversed") } else { s.fmt.t("Posted") };
+            let cmd = record["command"]
+                .get("Payment")
+                .or_else(|| record["command"].get("Reversal"))
+                .unwrap_or(&record["command"]);
+            let data = record["data"]
+                .get("Payment")
+                .or_else(|| record["data"].get("Reversal"))
+                .unwrap_or(&record["data"]);
             let ref_no = first_nonempty(crate::data::s(&data["reference"]), crate::data::s(&cmd["reference"]));
             let ref_text = if ref_no.is_empty() {
                 format!("#{}", &id[..id.len().min(8)])
@@ -94,14 +121,15 @@ fn build_rows(s: &State) -> Vec<Row> {
                 ref_no
             };
             let party_id = first_nonempty(crate::data::s(&data["party"]["id"]), crate::data::s(&cmd["party_id"]));
-            let name = s.books.party_name(&party_id);
-            let date_raw = crate::data::s(
-                &cmd.get("context")
-                    .and_then(|c| c.get("effective_date"))
-                    .cloned()
-                    .unwrap_or_else(|| record["date"].clone()),
+            let name = first_nonempty(s.books.party_name(&party_id), crate::data::s(&data["party"]["name"]));
+            let date_raw = first_nonempty(
+                crate::data::s(&cmd["context"]["effective_date"]),
+                first_nonempty(crate::data::s(&cmd["context"]["date"]), crate::data::s(&record["date"])),
             );
-            let amount_raw = first_nonempty(crate::data::s(&data["applied"]), crate::data::s(&record["total"]));
+            let amount_raw = first_nonempty(
+                crate::data::s(&data["total"]),
+                first_nonempty(crate::data::s(&data["applied"]), crate::data::s(&record["total"])),
+            );
             Row {
                 id: format!("payment-{id}"),
                 cells: vec![
@@ -123,19 +151,111 @@ fn build_rows(s: &State) -> Vec<Row> {
         .collect()
 }
 
-pub fn ensure(st: &mut State) {
-    if st.payments.rows_stamp == st.stamp {
-        return;
+fn cheque_col_index(col: &str) -> Option<usize> {
+    match col {
+        "number" => Some(0),
+        "sayad" => Some(1),
+        "party" => Some(2),
+        "bank" => Some(3),
+        "amount" => Some(4),
+        "due_date" => Some(5),
+        "direction" => Some(6),
+        "status" => Some(7),
+        _ => None,
     }
-    st.payments.rows = build_rows(st);
-    st.payments.rows_stamp = st.stamp;
-    reapply_sort(&st.payments.table, &mut st.payments.rows, col_index);
+}
+
+fn is_cheque_closed(status: &str) -> bool {
+    matches!(status, "cleared" | "bounced" | "spent" | "returned" | "voided")
+}
+
+fn build_cheque_rows(s: &State) -> Vec<Row> {
+    let mut entries = s.books.workspace["cheques"].as_array().cloned().unwrap_or_default();
+    entries.sort_by(|a, b| {
+        let sa = crate::data::s(&a["status"]);
+        let sb = crate::data::s(&b["status"]);
+        let da = crate::data::s(&a["cheque"]["details"]["due_date"]);
+        let db = crate::data::s(&b["cheque"]["details"]["due_date"]);
+        let na = crate::data::s(&a["cheque"]["details"]["number"]);
+        let nb = crate::data::s(&b["cheque"]["details"]["number"]);
+        (is_cheque_closed(&sa), da, na).cmp(&(is_cheque_closed(&sb), db, nb))
+    });
+    entries
+        .into_iter()
+        .map(|entry| {
+            let id = crate::data::s(&entry["cheque"]["id"]);
+            let details = &entry["cheque"]["details"];
+            let number = first_nonempty(crate::data::s(&details["number"]), format!("#{}", &id[..id.len().min(8)]));
+            let sayad_raw = crate::data::s(&details["sayad_id"]);
+            let sayad_cell = if sayad_raw.is_empty() {
+                String::new()
+            } else {
+                crate::i18n::isolate(&sayad_raw)
+            };
+            let party_id = crate::data::s(&entry["cheque"]["party_id"]);
+            let party = s.books.party_name(&party_id);
+            let bank = crate::data::s(&details["bank"]);
+            let amount_raw = crate::data::s(&entry["cheque"]["amount"]);
+            let due_raw = crate::data::s(&details["due_date"]);
+            let dir_raw = crate::data::s(&entry["cheque"]["direction"]);
+            let dir_label = if dir_raw.eq_ignore_ascii_case("Issued") {
+                s.fmt.t("Issued")
+            } else {
+                s.fmt.t("Received")
+            };
+            let status_raw = crate::data::s(&entry["status"]);
+            let status_label = s.fmt.t(cheque_status_label(&status_raw));
+            Row {
+                id: format!("cheque-{id}"),
+                cells: vec![
+                    number.clone(),
+                    sayad_cell,
+                    party.clone(),
+                    bank.clone(),
+                    s.fmt.money(&amount_raw),
+                    s.fmt.date(&due_raw),
+                    dir_label.clone(),
+                    status_label.clone(),
+                ],
+                keys: vec![
+                    SortKey::text(&number),
+                    SortKey::text(&sayad_raw),
+                    SortKey::text(&party),
+                    SortKey::text(&bank),
+                    SortKey::num_str(&amount_raw),
+                    SortKey::text(&due_raw),
+                    SortKey::text(&dir_label),
+                    SortKey::text(&status_label),
+                ],
+            }
+        })
+        .collect()
+}
+
+pub fn ensure(st: &mut State) {
+    if st.payments.rows_stamp != st.stamp {
+        st.payments.rows = build_rows(st);
+        st.payments.rows_stamp = st.stamp;
+        reapply_sort(&st.payments.table, &mut st.payments.rows, col_index);
+    }
+    if st.payments.cheques_rows_stamp != st.stamp {
+        st.payments.cheques_rows = build_cheque_rows(st);
+        st.payments.cheques_rows_stamp = st.stamp;
+        reapply_sort(&st.payments.cheques_table, &mut st.payments.cheques_rows, cheque_col_index);
+    }
 }
 
 pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
     st.payments.table.set_sort(col, dir);
     if let Some(idx) = col_index(col) {
         sort_rows(&mut st.payments.rows, idx, dir);
+    }
+}
+
+pub fn apply_cheque_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.payments.cheques_table.set_sort(col, dir);
+    if let Some(idx) = cheque_col_index(col) {
+        sort_rows(&mut st.payments.cheques_rows, idx, dir);
     }
 }
 
@@ -220,27 +340,101 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .grow(1.0)
     .min_h(0.0);
 
-    let mut body = col().w_full().gap(16.0).grow(1.0).min_h(0.0).child(metrics).child(ui.fill_or_empty(
-        s.payments.rows.len(),
-        "No payments recorded yet",
-        "Settle invoices and bills",
-        &icons::PAYMENTS,
-        table,
-    ));
-    if let Some(footer) = ui.load_more_footer(
-        "payments-load-more",
-        s.books.list("payments").len(),
-        s.books.count("payment_count"),
-        load_more_payments,
-    ) {
-        body = body.child(footer);
+    let payments_lbl = ui.t("Payments");
+    let cheques_lbl = ui.t("Cheques");
+    let tabs = ui.tabs(
+        "payments-tabs",
+        &[
+            (payments_lbl.as_str(), s.payments.tab_idx == 0),
+            (cheques_lbl.as_str(), s.payments.tab_idx == 1),
+        ],
+        |st, i| st.payments.tab_idx = i,
+    );
+
+    let mut body = col().w_full().gap(16.0).grow(1.0).min_h(0.0).child(metrics).child(tabs);
+    if s.payments.tab_idx == 0 {
+        body = body.child(ui.fill_or_empty(
+            s.payments.rows.len(),
+            "No payments recorded yet",
+            "Settle invoices and bills",
+            &icons::PAYMENTS,
+            table,
+        ));
+        if let Some(footer) = ui.load_more_footer(
+            "payments-load-more",
+            s.books.list("payments").len(),
+            s.books.count("payment_count"),
+            load_more_payments,
+        ) {
+            body = body.child(footer);
+        }
+    } else {
+        let cheques_table = Table::new(
+            |s: &State| &s.payments.cheques_table,
+            |s: &mut State| &mut s.payments.cheques_table,
+            |s: &State| s.payments.cheques_rows.len(),
+            |s: &State, i| Cow::Owned(s.payments.cheques_rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
+        )
+        .name(ui.t("Cheques"))
+        .column(TableColumn::new("number", ui.t("Cheque number")).width(110.0).min(80.0).sortable())
+        .column(TableColumn::new("sayad", ui.t("Sayad ID")).width(150.0).min(110.0).sortable())
+        .column(TableColumn::new("party", ui.t("Name")).flex(1.5).min(120.0).sortable())
+        .column(TableColumn::new("bank", ui.t("Bank")).width(110.0).min(80.0).sortable())
+        .column(
+            TableColumn::new("amount", ui.t("Amount"))
+                .width(140.0)
+                .min(100.0)
+                .align(Align::End)
+                .sortable(),
+        )
+        .column(TableColumn::new("due_date", ui.t("Due date")).width(110.0).min(88.0).sortable())
+        .column(TableColumn::new("direction", ui.t("Direction")).width(100.0).min(80.0).sortable())
+        .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0).sortable())
+        .cell(|s: &State, i, col| {
+            let Some(row) = s.payments.cheques_rows.get(i) else {
+                return Cell::text("");
+            };
+            match col {
+                "number" => Cell::text(&row.cells[0]),
+                "sayad" => Cell::text(&row.cells[1]).mono(),
+                "party" => Cell::text(&row.cells[2]),
+                "bank" => Cell::text(&row.cells[3]).muted(),
+                "amount" => Cell::text(&row.cells[4]).mono(),
+                "due_date" => Cell::text(&row.cells[5]).muted(),
+                "direction" => Cell::text(&row.cells[6]).muted(),
+                _ => Cell::text(&row.cells[7]).muted(),
+            }
+        })
+        .on_sort(|st, col, dir, _tx| apply_cheque_sort(st, col, dir))
+        .on_select(|st, id, _| {
+            st.payments.selected_cheque = id.strip_prefix("cheque-").unwrap_or(id).to_string();
+        })
+        .zebra(true)
+        .build(s, &ui.k)
+        .key("cheques-table")
+        .grow(1.0)
+        .min_h(0.0);
+
+        body = body.child(ui.fill_or_empty(
+            s.payments.cheques_rows.len(),
+            "No cheques yet",
+            "Settle invoices and bills",
+            &icons::PAYMENTS,
+            cheques_table,
+        ));
+        if let Some(detail) = cheque_detail_panel(s, ui) {
+            body = body.child(detail);
+        }
     }
-    body = body.child(cheque_strip(s, ui));
 
     if s.payments.modal_open {
         mount_payment_dialog(s, ui, layer);
     }
+    if s.payments.spend_open {
+        mount_spend_dialog(s, ui, layer);
+    }
 
+    let pay_selected = s.payments.tab_idx == 0 && !s.payments.selected.is_empty();
     ui.page(
         "payments-screen",
         &ui.t("Payments"),
@@ -248,9 +442,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         vec![
             ui.btn(Btn::Primary, "Receive money", Some(&icons::ARROW), |st| open_payment(st, true)),
             ui.btn(Btn::Glass, "Pay bill", Some(&icons::PURCHASES), |st| open_payment(st, false)),
-            ui.btn_enabled(Btn::Glass, "Open", None, !s.payments.selected.is_empty(), |st| {
+            ui.btn_enabled(Btn::Glass, "Open", None, pay_selected, |st| {
                 let id = st.payments.selected.clone();
                 crate::ui::detail::open(st, &id);
+            }),
+            ui.btn_enabled(Btn::Glass, "Reverse payment", None, pay_selected, |st| {
+                let id = st.payments.selected.clone();
+                open_payment_reverse_confirm(st, &id);
             }),
         ],
         body,
@@ -316,13 +514,24 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             ui.labeled("Description", ui.field(s, "pay-reason", &ui.t("Note (optional)"))),
         ));
     if s.payments.funds == 2 {
+        let sayad_raw = s.forms.get("pay-sayad");
+        let sayad_norm = sarv_quote::iran::ids::normalize_digits(sayad_raw.trim());
+        let sayad_field = if !sayad_norm.is_empty() && sarv_quote::iran::ids::sayad_id(&sayad_norm).is_err() {
+            col()
+                .gap(4.0)
+                .child(ui.labeled("Sayad ID", ui.field(s, "pay-sayad", "")))
+                .child(ui.muted(ui.t("A Sayad ID has exactly 16 digits.")))
+        } else {
+            ui.labeled("Sayad ID", ui.field(s, "pay-sayad", ""))
+        };
         form = form
-            .child(ui.form_grid(
-                ui.labeled("Cheque", ui.field(s, "pay-sayad", "")),
-                ui.labeled("Number", ui.field(s, "pay-cheque-no", "")),
-            ))
+            .child(ui.form_grid(sayad_field, ui.labeled("Number", ui.field(s, "pay-cheque-no", ""))))
             .child(ui.form_grid(
                 ui.labeled("Bank", ui.field(s, "pay-bank", "")),
+                ui.labeled("Branch", ui.field(s, "pay-branch", "")),
+            ))
+            .child(ui.form_grid(
+                ui.labeled("Drawer national ID", ui.field(s, "pay-drawer-nid", "")),
                 ui.date_field(s, "pay-due", "Due date"),
             ));
     }
@@ -377,33 +586,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         }
                     }
                 };
-                let opts = st.query(
-                    "payment_options",
-                    json!({
-                        "side": side,
-                        "party_id": st.payments.party_id
-                    }),
-                );
-                let mut allocations = Vec::new();
-                let mut left = amount;
-                if let Ok(o) = opts {
-                    if let Some(items) = o["items"].as_array() {
-                        for item in items {
-                            if left <= 0 {
-                                break;
-                            }
-                            let rem: i64 = crate::data::s(&item["remaining"]).parse().unwrap_or(0);
-                            let open_id = crate::data::s(&item["id"]);
-                            if rem <= 0 || open_id.is_empty() {
-                                continue;
-                            }
-                            let applied = left.min(rem);
-                            allocations.push(json!({ "open_item_id": open_id, "amount": applied.to_string() }));
-                            left -= applied;
-                        }
-                    }
-                }
-                let advance = left.to_string();
+                let (allocations, advance) = build_allocations(st, side, &st.payments.party_id, amount);
                 let reason = {
                     let r = st.forms.get("pay-reason");
                     if r.trim().is_empty() { st.fmt.t("Payment") } else { r }
@@ -431,16 +614,18 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "allocations": allocations
                 });
                 if st.payments.funds == 2 {
-                    let sayad = crate::i18n::latin_digits(&st.forms.get("pay-sayad"));
+                    let sayad_raw = st.forms.get("pay-sayad");
+                    let sayad = sarv_quote::iran::ids::normalize_digits(sayad_raw.trim());
                     let number = st.forms.get("pay-cheque-no");
                     let bank = st.forms.get("pay-bank");
-                    if sayad.trim().is_empty() || number.trim().is_empty() || st.forms.get("pay-due").trim().is_empty() {
+                    let branch = st.forms.get("pay-branch");
+                    let drawer_nid = sarv_quote::iran::ids::normalize_digits(st.forms.get("pay-drawer-nid").trim());
+                    if sayad.is_empty() || number.trim().is_empty() || st.forms.get("pay-due").trim().is_empty() {
                         st.toast(Tone::Danger, st.fmt.t("Enter the cheque's Sayad ID, number and due date."));
                         st.payments.posting = false;
                         return;
                     }
-                    let sayad_trimmed = sayad.trim();
-                    if sayad_trimmed.len() != 16 || !sayad_trimmed.chars().all(|c| c.is_ascii_digit()) {
+                    if sarv_quote::iran::ids::sayad_id(&sayad).is_err() {
                         st.toast(Tone::Danger, st.fmt.t("A Sayad ID has exactly 16 digits."));
                         st.payments.posting = false;
                         return;
@@ -450,12 +635,12 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         return;
                     };
                     payload["cheque"] = json!({
-                        "sayad_id": sayad_trimmed,
+                        "sayad_id": sayad,
                         "number": number.trim(),
                         "bank": bank.trim(),
-                        "branch": "",
+                        "branch": branch.trim(),
                         "due_date": due,
-                        "drawer_national_id": "",
+                        "drawer_national_id": drawer_nid,
                         "purpose": "",
                         "notes": ""
                     });
@@ -514,10 +699,258 @@ pub fn cheque_action_label(act: &str) -> Option<&'static str> {
         "bounce" => Some("Mark as bounced"),
         "return" => Some("Return to customer"),
         "void" => Some("Void cheque"),
-        // Endorse / spend stays a separate flow; do not offer it from this strip.
-        "spend" => None,
+        "spend" => Some("Endorse to supplier"),
         _ => None,
     }
+}
+
+fn build_allocations(st: &State, side: &str, party_id: &str, amount: i64) -> (Vec<serde_json::Value>, String) {
+    let opts = st.query(
+        "payment_options",
+        json!({
+            "side": side,
+            "party_id": party_id
+        }),
+    );
+    let mut allocations = Vec::new();
+    let mut left = amount;
+    if let Ok(o) = opts {
+        if let Some(items) = o["items"].as_array() {
+            for item in items {
+                if left <= 0 {
+                    break;
+                }
+                let rem: i64 = crate::data::s(&item["remaining"]).parse().unwrap_or(0);
+                let open_id = crate::data::s(&item["id"]);
+                if rem <= 0 || open_id.is_empty() {
+                    continue;
+                }
+                let applied = left.min(rem);
+                allocations.push(json!({ "open_item_id": open_id, "amount": applied.to_string() }));
+                left -= applied;
+            }
+        }
+    }
+    (allocations, left.to_string())
+}
+
+fn account_name(s: &State, account_id: &str) -> String {
+    s.books.workspace["accounts"]
+        .as_array()
+        .and_then(|rows| rows.iter().find(|a| crate::data::s(&a["id"]) == account_id))
+        .map(|a| crate::data::s(&a["name"]))
+        .filter(|n| !n.is_empty())
+        .unwrap_or_else(|| account_id.to_string())
+}
+
+pub fn open_payment_reverse_confirm(st: &mut State, payment_id: &str) {
+    if payment_id.is_empty() {
+        return;
+    }
+    let preview = match st.query("payment_reverse_preview", json!({ "payment_id": payment_id })) {
+        Ok(pr) => pr,
+        Err(e) => {
+            st.toast_err(e);
+            return;
+        }
+    };
+    let rev = &preview["data"]["Reversal"];
+    let party_id = crate::data::s(&rev["party"]["id"]);
+    let party = first_nonempty(st.books.party_name(&party_id), crate::data::s(&rev["party"]["name"]));
+    let amount_raw = first_nonempty(crate::data::s(&preview["total"]), crate::data::s(&rev["total"]));
+    let mut lines = vec![(st.fmt.t("Name"), party), (st.fmt.t("Amount"), st.fmt.money(&amount_raw))];
+    for jl in preview["journal_lines"].as_array().into_iter().flatten() {
+        let acc_id = crate::data::s(&jl["account_id"]);
+        let acc_label = account_name(st, &acc_id);
+        let debit = crate::data::s(&jl["debit"]);
+        let credit = crate::data::s(&jl["credit"]);
+        if !debit.is_empty() && debit != "0" {
+            lines.push((acc_label, format!("{} {}", st.fmt.t("Debit"), st.fmt.money(&debit))));
+        } else if !credit.is_empty() && credit != "0" {
+            lines.push((acc_label, format!("{} {}", st.fmt.t("Credit"), st.fmt.money(&credit))));
+        }
+    }
+    let key = st.mint_key("payrev");
+    let expected_generation = preview["_generation"].clone();
+    let pid = payment_id.to_string();
+    st.confirm = Some(crate::ui::confirm::Confirm::one(
+        st.fmt.t("Reverse payment"),
+        st.fmt.t("Creates an offsetting payment and restores open items."),
+        lines,
+        "Confirm reversal",
+        st.fmt.t("Reverse payment"),
+        true,
+        move |st| {
+            let mut payload = json!({
+                "payment_id": pid,
+                "request_key": key,
+                "source_id": key,
+                "reason": st.fmt.t("Payment reversal"),
+                "reference": key,
+            });
+            if !expected_generation.is_null() {
+                payload["expected_generation"] = expected_generation.clone();
+            }
+            let _ = st.run("payment_post", payload, Some("Payment reversed"));
+        },
+    ));
+}
+
+pub fn open_cheque_spend(st: &mut State, cheque_id: &str) {
+    let Some(entry) = st.books.workspace["cheques"]
+        .as_array()
+        .and_then(|rows| rows.iter().find(|e| crate::data::s(&e["cheque"]["id"]) == cheque_id))
+        .cloned()
+    else {
+        return;
+    };
+    st.forms.clear_prefix("spend-");
+    st.payments.spend_cheque_id = cheque_id.to_string();
+    st.payments.spend_cheque_amount = crate::data::s(&entry["cheque"]["amount"]);
+    st.payments.spend_cheque_number = crate::data::s(&entry["cheque"]["details"]["number"]);
+    st.payments.spend_party_id.clear();
+    st.payments.spend_party_combo = Default::default();
+    st.payments.spend_key = st.mint_key("spend");
+    st.payments.spend_posting = false;
+    st.payments.spend_open = true;
+}
+
+pub fn close_spend_or_confirm(st: &mut State) {
+    let dirty = st.forms.any_with_prefix("spend-") || !st.payments.spend_party_id.is_empty();
+    if !dirty {
+        st.payments.spend_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.payments.spend_open = false);
+}
+
+fn mount_spend_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    use crate::ui::pickers;
+    use crate::ui::resources::ResourceKind;
+    let mut portals = Vec::new();
+    let mut opts = pickers::party_options(s, false, true);
+    let q = s.payments.spend_party_combo.search().text.clone();
+    opts = pickers::with_create_option(opts, &q, &ui.t("New supplier"));
+    let party = pickers::entity_combo(
+        ui,
+        &mut portals,
+        "spend-party",
+        &s.payments.spend_party_combo,
+        |st| &mut st.payments.spend_party_combo,
+        &opts,
+        if s.payments.spend_party_id.is_empty() {
+            None
+        } else {
+            Some(s.payments.spend_party_id.as_str())
+        },
+        &ui.t("Select contact"),
+        pickers::PICKER_WIDTH,
+        move |st, id| {
+            if let Some(name) = pickers::create_text(id) {
+                if let Ok(pid) = st.create_party(ResourceKind::Vendor, name, "", "", "") {
+                    st.payments.spend_party_id = pid;
+                }
+            } else {
+                st.payments.spend_party_id = id.to_string();
+            }
+        },
+    );
+    let form = col()
+        .gap(14.0)
+        .child(ui.labeled("Vendor", party))
+        .child(ui.form_grid(
+            ui.labeled("Amount", ui.body(ui.f.money(&s.payments.spend_cheque_amount))),
+            ui.date_field(s, "spend-date", "Date"),
+        ))
+        .child(ui.form_grid(
+            ui.labeled("Reference", ui.field(s, "spend-ref", "")),
+            ui.labeled("Description", ui.field(s, "spend-reason", &ui.t("Note (optional)"))),
+        ));
+    ui.form_dialog(
+        layer,
+        &mut portals,
+        "cheque-spend-dialog",
+        &ui.t("Endorse to supplier"),
+        &ui.t("Endorse a cheque I hold"),
+        true,
+        DIALOG_MD,
+        form,
+        vec![
+            ui.btn(Btn::Ghost, "Cancel", None, close_spend_or_confirm),
+            ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
+                if st.payments.spend_posting || !st.payments.spend_open {
+                    return;
+                }
+                st.payments.spend_posting = true;
+                if st.payments.spend_party_id.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Select contact"));
+                    st.payments.spend_posting = false;
+                    return;
+                }
+                let amount: i64 = st.payments.spend_cheque_amount.parse().unwrap_or(0);
+                if amount <= 0 {
+                    st.toast(Tone::Danger, st.fmt.t("Enter an amount above zero."));
+                    st.payments.spend_posting = false;
+                    return;
+                }
+                let Ok(date) = st.form_date("spend-date") else {
+                    st.payments.spend_posting = false;
+                    return;
+                };
+                if st.payments.spend_key.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+                    st.payments.spend_posting = false;
+                    return;
+                }
+                let key = st.payments.spend_key.clone();
+                let (allocations, advance) = build_allocations(st, "make", &st.payments.spend_party_id, amount);
+                let reference = {
+                    let r = st.forms.get("spend-ref");
+                    if r.trim().is_empty() { key.clone() } else { r }
+                };
+                let reason = {
+                    let r = st.forms.get("spend-reason");
+                    if r.trim().is_empty() { st.fmt.t("Endorse to supplier") } else { r }
+                };
+                let mut payload = json!({
+                    "cheque_id": st.payments.spend_cheque_id,
+                    "side": "make",
+                    "date": date,
+                    "party_id": st.payments.spend_party_id,
+                    "funds_role": "cheques_receivable",
+                    "reference": reference,
+                    "reason": reason,
+                    "source_id": key,
+                    "request_key": key,
+                    "advance_amount": advance,
+                    "allocations": allocations,
+                });
+                match st.query("payment_preview", payload.clone()) {
+                    Ok(pr) => {
+                        if !pr["_generation"].is_null() {
+                            payload["expected_generation"] = pr["_generation"].clone();
+                        }
+                    }
+                    Err(e) => {
+                        st.toast_err(e);
+                        st.payments.spend_posting = false;
+                        return;
+                    }
+                }
+                match st.run("cheque_spend", payload, Some("Cheque endorsed")) {
+                    Ok(_) => {
+                        st.payments.spend_open = false;
+                        st.payments.spend_posting = false;
+                        st.payments.spend_key.clear();
+                    }
+                    Err(_) => {
+                        st.payments.spend_posting = false;
+                    }
+                }
+            }),
+        ],
+        close_spend_or_confirm,
+    );
 }
 
 fn cheque_dispatch_action(act: &str) -> Option<&'static str> {
@@ -548,50 +981,69 @@ fn fund_accounts(s: &State) -> Vec<(String, String)> {
         .collect()
 }
 
-fn cheque_strip(s: &State, ui: &Ui) -> El {
-    let rows = s.books.workspace["cheques"].as_array().cloned().unwrap_or_default();
-    if rows.is_empty() {
-        return ui.muted(ui.t("No cheques yet"));
+fn cheque_detail_panel(s: &State, ui: &Ui) -> Option<El> {
+    if s.payments.selected_cheque.is_empty() {
+        return None;
     }
-    let mut col_el = col().w_full().gap(8.0).child(ui.heading(ui.t("Cheques")));
-    for entry in rows.iter().take(8) {
-        let id = crate::data::s(&entry["cheque"]["id"]);
-        let number = crate::data::s(&entry["cheque"]["details"]["number"]);
-        let status = crate::data::s(&entry["status"]);
-        let allowed = entry["allowed"].as_array().cloned().unwrap_or_default();
-        let label = if number.is_empty() { id.clone() } else { number.clone() };
-        let status_label = ui.t(cheque_status_label(&status));
-        let mut actions = row().w_full().gap(8.0).flex_wrap();
-        let mut has_action = false;
-        for act in allowed.iter().filter_map(|v| v.as_str()) {
-            let Some(button_label) = cheque_action_label(act) else {
-                continue;
-            };
-            let Some(action) = cheque_dispatch_action(act) else {
-                continue;
-            };
-            has_action = true;
-            let cheque_id = id.clone();
+    let entry = s.books.workspace["cheques"].as_array().and_then(|rows| {
+        rows.iter()
+            .find(|e| crate::data::s(&e["cheque"]["id"]) == s.payments.selected_cheque)
+    })?;
+    let id = crate::data::s(&entry["cheque"]["id"]);
+    let details = &entry["cheque"]["details"];
+    let number = first_nonempty(crate::data::s(&details["number"]), id.clone());
+    let status = crate::data::s(&entry["status"]);
+    let status_label = ui.t(cheque_status_label(&status));
+    let bank = crate::data::s(&details["bank"]);
+    let branch = crate::data::s(&details["branch"]);
+    let bank_text = if branch.is_empty() {
+        bank
+    } else if bank.is_empty() {
+        branch
+    } else {
+        format!("{bank} · {branch}")
+    };
+    let due_raw = crate::data::s(&details["due_date"]);
+    let amount_raw = crate::data::s(&entry["cheque"]["amount"]);
+
+    let mut actions = row().key(format!("cheque-actions-{id}-{status}")).w_full().gap(8.0).flex_wrap();
+    let mut has_action = false;
+    for act in entry["allowed"].as_array().into_iter().flatten().filter_map(|v| v.as_str()) {
+        let Some(button_label) = cheque_action_label(act) else {
+            continue;
+        };
+        has_action = true;
+        let cheque_id = id.clone();
+        if act == "spend" {
+            actions = actions.child(ui.btn(Btn::Glass, button_label, None, move |st| {
+                open_cheque_spend(st, &cheque_id);
+            }));
+        } else {
             let act_owned = act.to_string();
-            let key = format!("cheque-{action}-{cheque_id}");
+            let key = format!("cheque-act-{act}");
             actions = actions.child(ui.button(Btn::Glass, &key, &ui.t(button_label), None, move |st| {
                 open_cheque_confirm(st, &cheque_id, &act_owned);
             }));
         }
-        let mut line = col().key(format!("cheque-row-{id}")).w_full().gap(6.0).child(
-            row()
-                .w_full()
-                .gap(8.0)
-                .center_y()
-                .child(ui.body(label).grow(1.0).min_w(0.0))
-                .child(ui.muted(status_label)),
-        );
-        if has_action {
-            line = line.child(actions);
-        }
-        col_el = col_el.child(line);
     }
-    col_el
+
+    let mut summary = row()
+        .w_full()
+        .gap(12.0)
+        .center_y()
+        .child(ui.title(number).grow(1.0).min_w(0.0))
+        .child(ui.muted(ui.f.money(&amount_raw)))
+        .child(ui.muted(ui.f.date(&due_raw)));
+    if !bank_text.is_empty() {
+        summary = summary.child(ui.muted(bank_text));
+    }
+    summary = summary.child(ui.muted(status_label));
+
+    let mut panel = col().key("cheque-detail").w_full().gap(8.0).child(summary);
+    if has_action {
+        panel = panel.child(actions);
+    }
+    Some(panel)
 }
 
 pub fn open_cheque_confirm(st: &mut State, cheque_id: &str, act: &str) {

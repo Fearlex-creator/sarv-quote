@@ -142,7 +142,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo test -p sarv-quote`
 
 ### Plan 021: Payments and cheques
-- [ ] **P21-T01**: Add "Reverse payment" flow + "Reversed" badge, "Endorse to supplier" (`cheque_spend`) flow, full "Cheques" tab register sorted by due date with `date_field`/branch/drawer/Sayad hint, "Cheques due this week" card on `overview.rs`, check opening cheques finding, add 4 tests, update `plans/README.md`.
+- [x] **P21-T01**: Add "Reverse payment" flow + "Reversed" badge, "Endorse to supplier" (`cheque_spend`) flow, full "Cheques" tab register sorted by due date with `date_field`/branch/drawer/Sayad hint, "Cheques due this week" card on `overview.rs`, check opening cheques finding, add 4 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/ui/views/{payments.rs,cheques.rs,overview.rs,mod.rs}`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo test -p sarv-quote`
 

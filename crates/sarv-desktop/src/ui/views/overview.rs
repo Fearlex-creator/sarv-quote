@@ -99,6 +99,36 @@ fn guide_mounted(s: &State, done: usize) -> bool {
     }
 }
 
+fn cheques_due_this_week(s: &State) -> (usize, usize, i64) {
+    let today = crate::data::today();
+    let week_end = chrono::NaiveDate::parse_from_str(&today, "%Y-%m-%d")
+        .ok()
+        .and_then(|d| d.checked_add_days(chrono::Days::new(7)))
+        .map(|d| d.format("%Y-%m-%d").to_string())
+        .unwrap_or(today);
+    let mut collect_count = 0usize;
+    let mut pay_count = 0usize;
+    let mut total = 0i64;
+    for entry in s.books.workspace["cheques"].as_array().into_iter().flatten() {
+        let status = crate::data::s(&entry["status"]);
+        if !matches!(status.as_str(), "in_hand" | "in_collection" | "issued") {
+            continue;
+        }
+        let due = crate::data::s(&entry["cheque"]["details"]["due_date"]);
+        if due.is_empty() || due > week_end {
+            continue;
+        }
+        let amt: i64 = crate::data::s(&entry["cheque"]["amount"]).parse().unwrap_or(0);
+        if crate::data::s(&entry["cheque"]["direction"]).eq_ignore_ascii_case("Issued") {
+            pay_count += 1;
+        } else {
+            collect_count += 1;
+        }
+        total += amt;
+    }
+    (collect_count, pay_count, total)
+}
+
 fn recent_journals(s: &State) -> Vec<serde_json::Value> {
     s.books.list("journals").into_iter().take(6).collect()
 }
@@ -436,6 +466,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     } else {
         ui.f.money("0")
     };
+    let (due_collect, due_pay, due_total) = cheques_due_this_week(s);
+    let due_sub = format!(
+        "{} {} · {} {}",
+        ui.f.digits(&due_collect.to_string()),
+        ui.t("to collect"),
+        ui.f.digits(&due_pay.to_string()),
+        ui.t("to pay")
+    );
     let metrics = row()
         .key("overview-metrics")
         .w_full()
@@ -476,7 +514,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             profit,
             ui.t("Net profit"),
             Tone::Info,
-        ));
+        ))
+        .child(
+            ui.metric(
+                "overview-cheques-due",
+                &icons::PAYMENTS,
+                &ui.t("Cheques due this week"),
+                ui.f.money(&due_total.to_string()),
+                due_sub,
+                Tone::Warning,
+            )
+            .on_press(|st: &mut State| {
+                st.payments.tab_idx = 1;
+                st.nav(Page::Payments);
+            }),
+        );
 
     let rec = &s.books.report["reconciliation"];
     let controls = if rec.is_null() {

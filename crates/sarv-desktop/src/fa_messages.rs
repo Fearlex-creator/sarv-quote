@@ -1681,4 +1681,16 @@ pub static FA: &[(&str, &str)] = &[
     ("Sale", "فروش"),
     ("Purchase", "خرید"),
     ("Document", "مدرک"),
+    ("Endorse to supplier", "خرج چک نزد تأمین‌کننده"),
+    ("Cheques due this week", "چک‌های سررسید این هفته"),
+    ("to collect", "دریافتنی"),
+    ("to pay", "پرداختنی"),
+    ("Drawer national ID", "کد ملی صادرکننده"),
+    ("Direction", "نوع"),
+    (
+        "Creates an offsetting payment and restores open items.",
+        "پرداخت معکوس ثبت و اقلام باز دوباره باز می‌شوند.",
+    ),
+    ("Cheque endorsed", "چک خرج شد"),
+    ("Enter an amount above zero.", "مبلغ باید بیشتر از صفر باشد."),
 ];

@@ -1,4 +1,4 @@
-use super::harness::{assert_no_danger, books_validate, click, make_test_runtime};
+use super::harness::{assert_no_danger, blow, books_validate, click, make_test_runtime, type_into};
 use crate::app::{Page, State};
 use crate::{data, handle_key, i18n, ui};
 use rune::{Env, Runtime};
@@ -490,4 +490,56 @@ fn test_escape_closes_the_open_dialog() {
     rt.frame(1.0 / 60.0);
     assert!(!rt.state.sales.modal_open);
     assert!(!rt.state.request_close_top_dialog());
+}
+
+#[test]
+fn test_overview_counts_cheques_due_within_a_week() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Week Cheque Buyer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = party.clone();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "130000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "130000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "credit sale"));
+
+    let base = chrono::NaiveDate::parse_from_str(&data::today(), "%Y-%m-%d").unwrap();
+    let d_within = base.checked_add_days(chrono::Days::new(3)).unwrap().format("%Y-%m-%d").to_string();
+    let d_later = base.checked_add_days(chrono::Days::new(14)).unwrap().format("%Y-%m-%d").to_string();
+
+    for (num, sayad, amt, due_iso) in [
+        ("CHQ-WK-1", "3333444455556661", "50000", &d_within),
+        ("CHQ-WK-2", "3333444455556662", "80000", &d_later),
+    ] {
+        click(&mut rt, Page::Payments.key());
+        click(&mut rt, "btn-Receive money");
+        rt.state.payments.party_id = party.clone();
+        rt.state.payments.funds = 2;
+        rt.frame(1.0 / 60.0);
+        type_into(&mut rt, "pay-amount", amt);
+        type_into(&mut rt, "pay-sayad", sayad);
+        type_into(&mut rt, "pay-cheque-no", num);
+        type_into(&mut rt, "pay-bank", "Melli");
+        let due_in = rt.state.fmt.date_input(due_iso);
+        type_into(&mut rt, "pay-due", &due_in);
+        click(&mut rt, "btn-Save");
+        assert!(!rt.state.payments.modal_open, "{}", blow(&rt, num));
+    }
+
+    click(&mut rt, Page::Overview.key());
+    rt.frame(1.0 / 60.0);
+    assert!(rt.find("overview-cheques-due").is_some());
+    click(&mut rt, "overview-cheques-due");
+    assert_eq!(rt.state.page, Page::Payments);
+    assert_eq!(rt.state.payments.tab_idx, 1);
 }

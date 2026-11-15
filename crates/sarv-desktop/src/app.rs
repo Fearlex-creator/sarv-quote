@@ -491,6 +491,10 @@ impl State {
             views::purchases::close_or_confirm(self);
             return true;
         }
+        if self.payments.spend_open {
+            views::payments::close_spend_or_confirm(self);
+            return true;
+        }
         if self.payments.modal_open {
             views::payments::close_or_confirm(self);
             return true;
