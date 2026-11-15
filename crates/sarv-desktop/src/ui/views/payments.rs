@@ -506,10 +506,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         let raw = s.forms.get("pay-amount");
         if s.lang() == crate::i18n::Lang::Fa && !raw.trim().is_empty() {
             if let Ok(rials) = s.parse_money_input(&raw) {
-                let words = sarv_quote::iran::words::amount_in_words(
-                    i128::from(rials),
-                    s.fmt.unit == crate::i18n::Unit::Toman,
-                );
+                let words = sarv_quote::iran::words::amount_in_words(i128::from(rials), s.fmt.unit == crate::i18n::Unit::Toman);
                 col().gap(4.0).child(f).child(ui.muted(words).key("pay-amount-words"))
             } else {
                 f
@@ -522,10 +519,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .gap(14.0)
         .child(ui.labeled(if customers { "Customer" } else { "Vendor" }, party))
         .child(ui.section("pay-funds-sec", &ui.t("Cash and bank"), funds_bar))
-        .child(ui.form_grid(
-            amount_field,
-            ui.date_field(s, "pay-date", "Date"),
-        ))
+        .child(ui.form_grid(amount_field, ui.date_field(s, "pay-date", "Date")))
         .child(ui.form_grid(
             ui.labeled("Reference", ui.field(s, "pay-ref", "")),
             ui.labeled("Description", ui.field(s, "pay-reason", &ui.t("Note (optional)"))),

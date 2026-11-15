@@ -1050,10 +1050,7 @@ pub(crate) fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 |st| {
                     let (from, to) = st.books.range();
                     let aid = st.accounting.ledger_account_id.clone();
-                    match st.query(
-                        "ledger_csv",
-                        serde_json::json!({ "account_id": aid, "from": from, "to": to }),
-                    ) {
+                    match st.query("ledger_csv", serde_json::json!({ "account_id": aid, "from": from, "to": to })) {
                         Ok(v) => {
                             let name = crate::data::s(&v["filename"]);
                             let content = v["content"].as_str().unwrap_or("");

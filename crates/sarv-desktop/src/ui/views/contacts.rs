@@ -358,12 +358,8 @@ pub(crate) fn national_id_hint(ui: &Ui, raw: &str) -> Option<(Tone, String)> {
     };
     match res {
         Ok(()) => None,
-        Err(IdError::Checksum | IdError::Repeated) => {
-            Some((Tone::Warning, ui.t("This national ID does not pass its check digit.")))
-        }
-        Err(IdError::NotDigits | IdError::Length) => {
-            Some((Tone::Warning, ui.t("A national ID has 10 digits; a legal ID has 11.")))
-        }
+        Err(IdError::Checksum | IdError::Repeated) => Some((Tone::Warning, ui.t("This national ID does not pass its check digit."))),
+        Err(IdError::NotDigits | IdError::Length) => Some((Tone::Warning, ui.t("A national ID has 10 digits; a legal ID has 11."))),
     }
 }
 
@@ -447,11 +443,7 @@ fn contact_form_fields(s: &State, ui: &Ui, prefix: &str) -> El {
                     .child(ui.labeled("Address", ui.field(s, &address, "")))
                     .child(ui.form_grid(
                         ui.labeled("City", ui.field(s, &city, "")),
-                        ui.hinted(
-                            "Postal code",
-                            ui.field(s, &postal, ""),
-                            postal_code_hint(ui, &s.forms.get(&postal)),
-                        ),
+                        ui.hinted("Postal code", ui.field(s, &postal, ""), postal_code_hint(ui, &s.forms.get(&postal))),
                     )),
             ),
         )

@@ -114,8 +114,7 @@ pub fn write_sales_pdf(st: &State, document_id: &str) -> Result<PathBuf, String>
     let language = locale(st);
     let id = document_id.to_string();
     write_ext(st, "invoice", document_id, "pdf", move |state, path| {
-        sarv_quote::sales_export::printable_document_pdf(state, &company, &id, language, path)
-            .map_err(|e| e.to_string())
+        sarv_quote::sales_export::printable_document_pdf(state, &company, &id, language, path).map_err(|e| e.to_string())
     })
 }
 
@@ -124,8 +123,7 @@ pub fn write_quotation_pdf(st: &State, draft_id: &str) -> Result<PathBuf, String
     let language = locale(st);
     let id = draft_id.to_string();
     write_ext(st, "quotation", draft_id, "pdf", move |state, path| {
-        sarv_quote::sales_export::printable_quotation_pdf(state, &company, &id, language, path)
-            .map_err(|e| e.to_string())
+        sarv_quote::sales_export::printable_quotation_pdf(state, &company, &id, language, path).map_err(|e| e.to_string())
     })
 }
 
@@ -134,8 +132,7 @@ pub fn write_purchase_pdf(st: &State, record_id: &str) -> Result<PathBuf, String
     let (unit, dates, digits) = engine_prefs(st);
     let id = record_id.to_string();
     write_ext(st, "purchase", record_id, "pdf", move |state, path| {
-        sarv_quote::procurement_export::document_pdf(&state.accounting, &company, &id, unit, dates, digits, path)
-            .map_err(|e| e.to_string())
+        sarv_quote::procurement_export::document_pdf(&state.accounting, &company, &id, unit, dates, digits, path).map_err(|e| e.to_string())
     })
 }
 
@@ -148,12 +145,8 @@ pub fn write_trial_balance_pdf(st: &State, _from: &str, to: &str) -> Result<Path
     let (unit, dates, _) = engine_prefs(st);
     let cutoff = to.to_string();
     write_ext(st, "trial-balance", to, "pdf", move |state, path| {
-        let tb = state
-            .accounting
-            .trial_balance(&company_id, &cutoff)
-            .map_err(|e| e.to_string())?;
-        sarv_quote::accounting_export::trial_pdf_with_dates(&company_name, &tb, unit, dates, path)
-            .map_err(|e| e.to_string())
+        let tb = state.accounting.trial_balance(&company_id, &cutoff).map_err(|e| e.to_string())?;
+        sarv_quote::accounting_export::trial_pdf_with_dates(&company_name, &tb, unit, dates, path).map_err(|e| e.to_string())
     })
 }
 
@@ -162,8 +155,7 @@ pub fn write_sales_document_csv(st: &State, document_id: &str) -> Result<PathBuf
     let (unit, dates, digits) = engine_prefs(st);
     let id = document_id.to_string();
     write_ext(st, "sale", document_id, "csv", move |state, path| {
-        sarv_quote::sales_export::document_csv(&state.accounting, &company, &id, unit, dates, digits, path)
-            .map_err(|e| e.to_string())
+        sarv_quote::sales_export::document_csv(&state.accounting, &company, &id, unit, dates, digits, path).map_err(|e| e.to_string())
     })
 }
 
@@ -172,7 +164,6 @@ pub fn write_purchase_document_csv(st: &State, record_id: &str) -> Result<PathBu
     let (unit, dates, digits) = engine_prefs(st);
     let id = record_id.to_string();
     write_ext(st, "purchase", record_id, "csv", move |state, path| {
-        sarv_quote::procurement_export::document_csv(&state.accounting, &company, &id, unit, dates, digits, path)
-            .map_err(|e| e.to_string())
+        sarv_quote::procurement_export::document_csv(&state.accounting, &company, &id, unit, dates, digits, path).map_err(|e| e.to_string())
     })
 }

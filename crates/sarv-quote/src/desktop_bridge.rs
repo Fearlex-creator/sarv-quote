@@ -2093,9 +2093,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         }
         "balance_sheet_csv" => {
             let r = report(&store.state, &p)?;
-            let bs = r["balance_sheet"]
-                .as_object()
-                .ok_or_else(|| anyhow!("Balance sheet unavailable"))?;
+            let bs = r["balance_sheet"].as_object().ok_or_else(|| anyhow!("Balance sheet unavailable"))?;
             let mut writer = csv::Writer::from_writer(vec![]);
             writer.write_record(["Section", "Account code", "Account name", "Amount IRR"])?;
             for (section, key) in [("Asset", "assets"), ("Liability", "liabilities"), ("Equity", "equity")] {
@@ -2175,11 +2173,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
     journal_totals(&mut out)?;
     Ok(wire(out))
 }
-fn ledger_rows(
-    s: &State,
-    p: &Value,
-    limit: Option<usize>,
-) -> Result<(String, String, String, i128, usize, Vec<Value>)> {
+fn ledger_rows(s: &State, p: &Value, limit: Option<usize>) -> Result<(String, String, String, i128, usize, Vec<Value>)> {
     let c = company(s, p)?;
     let aid = string(p, "account_id")?;
     let from = string(p, "from")?;

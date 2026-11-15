@@ -949,10 +949,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
 
     let mut total_col = col().w_full().gap(4.0).child(total_row);
     if s.lang() == crate::i18n::Lang::Fa {
-        let words = sarv_quote::iran::words::amount_in_words(
-            i128::from(total),
-            s.fmt.unit == crate::i18n::Unit::Toman,
-        );
+        let words = sarv_quote::iran::words::amount_in_words(i128::from(total), s.fmt.unit == crate::i18n::Unit::Toman);
         total_col = total_col.child(row().key("sale-total-words").w_full().px(4.0).child(ui.muted(words)));
     }
 

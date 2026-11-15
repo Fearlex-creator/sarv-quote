@@ -1357,8 +1357,8 @@ fn balance_sheet_aging_and_ledger_csv_export_rows_and_neutralize_formulas() {
     let bs_rows: Vec<_> = bs_reader.records().map(|r| r.unwrap()).collect();
     assert_eq!(bs_rows.len(), bs_expected);
 
-    let aging_expected = rep["aging"]["receivable"]["rows"].as_array().unwrap().len()
-        + rep["aging"]["payable"]["rows"].as_array().unwrap().len();
+    let aging_expected =
+        rep["aging"]["receivable"]["rows"].as_array().unwrap().len() + rep["aging"]["payable"]["rows"].as_array().unwrap().len();
     let aging_csv = call(
         d.path(),
         "aging_csv",
@@ -1401,10 +1401,7 @@ fn balance_sheet_aging_and_ledger_csv_export_rows_and_neutralize_formulas() {
     let ledger_content = ledger_csv["content"].as_str().unwrap();
     let mut ledger_reader = csv::Reader::from_reader(ledger_content.trim_start_matches('\u{feff}').as_bytes());
     let ledger_rows: Vec<_> = ledger_reader.records().map(|r| r.unwrap()).collect();
-    assert_eq!(
-        ledger_rows.len(),
-        ledger_page["count"].as_str().unwrap().parse::<usize>().unwrap()
-    );
+    assert_eq!(ledger_rows.len(), ledger_page["count"].as_str().unwrap().parse::<usize>().unwrap());
     assert!(
         ledger_rows.iter().any(|r| &r[2] == "'=HYPERLINK(\"x\")"),
         "expected neutralized formula in ledger_csv: {ledger_rows:?}"

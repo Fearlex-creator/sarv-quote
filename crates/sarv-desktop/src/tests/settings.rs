@@ -54,10 +54,7 @@ fn test_export_balance_sheet_and_aging_csv() {
     assert_no_danger(&rt);
 
     let exports = rt.state.engine.dir.join("exports");
-    let files: Vec<_> = std::fs::read_dir(&exports)
-        .unwrap()
-        .map(|e| e.unwrap().path())
-        .collect();
+    let files: Vec<_> = std::fs::read_dir(&exports).unwrap().map(|e| e.unwrap().path()).collect();
     let bs = files
         .iter()
         .find(|p| p.file_name().unwrap().to_string_lossy().starts_with("balance-sheet-"))
@@ -386,9 +383,7 @@ fn test_law_data_lists_entries_as_not_reviewed() {
     click(&mut rt, Page::Settings.key());
     click(&mut rt, "btn-Law data");
     assert!(rt.state.settings.law_open);
-    let entries = rt.state.settings.law_data["entries"]
-        .as_array()
-        .expect("law_data entries array");
+    let entries = rt.state.settings.law_data["entries"].as_array().expect("law_data entries array");
     assert!(!entries.is_empty(), "law_data must list entries");
     for (idx, entry) in entries.iter().enumerate() {
         assert!(rt.find(&format!("law-entry-{idx}")).is_some(), "missing row for law-entry-{idx}");
@@ -416,7 +411,11 @@ fn test_invalid_national_id_shows_hint_but_saves() {
     );
 
     click(&mut rt, "btn-Save");
-    assert!(!rt.state.contacts.modal_open, "{}", blow(&rt, "save contact with invalid national id"));
+    assert!(
+        !rt.state.contacts.modal_open,
+        "{}",
+        blow(&rt, "save contact with invalid national id")
+    );
     assert_eq!(rt.state.contacts.rows.len(), before + 1);
     assert_no_danger(&rt);
 }

@@ -532,10 +532,7 @@ fn mount_law_data(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             };
             let key = crate::data::s(&entry["key"]);
             let val = ui.f.digits(&crate::data::s(&entry["value"]));
-            let from_date = entry["from_year"]
-                .as_i64()
-                .map(|y| format_law_from_date(ui, y))
-                .unwrap_or_default();
+            let from_date = entry["from_year"].as_i64().map(|y| format_law_from_date(ui, y)).unwrap_or_default();
             let reviewed = entry["reviewed"].as_bool() == Some(true);
             let verify = entry["verify"].as_bool() == Some(true);
             let badge = if reviewed && !verify {
@@ -550,14 +547,7 @@ fn mount_law_data(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 .px(12.0)
                 .py(8.0)
                 .center_y()
-                .child(
-                    col()
-                        .gap(2.0)
-                        .grow(1.2)
-                        .min_w(0.0)
-                        .child(ui.body(title))
-                        .child(ui.muted(key)),
-                )
+                .child(col().gap(2.0).grow(1.2).min_w(0.0).child(ui.body(title)).child(ui.muted(key)))
                 .child(ui.body(val).grow(1.4).min_w(0.0))
                 .child(ui.muted(from_date).w(110.0))
                 .child(row().w(110.0).child(badge))
