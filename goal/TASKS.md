@@ -10,7 +10,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 - [x] **P01-T01**: Pin Rust toolchain (`rust-toolchain.toml`, `rust-version = "1.85"` in `Cargo.toml` + crates), add `rustfmt.toml` (`max_width = 140`), run `cargo fmt --all`, set `[profile.dev] debug = "line-tables-only"`.
   - Files: `rust-toolchain.toml`, `rustfmt.toml`, `Cargo.toml`, `crates/sarv-quote/Cargo.toml`, `crates/sarv-desktop/Cargo.toml`, `crates/**/*.rs` (formatting only)
   - Done when: `cargo fmt --all -- --check && cargo test -p sarv-desktop --bin sarv-desktop`
-- [ ] **P01-T02**: Fix all `clippy` errors/warnings across workspace (`-D warnings`), create `.github/workflows/ci.yml`, document `poppler-utils` in `README.md`, update `plans/README.md`.
+- [x] **P01-T02**: Fix all `clippy` errors/warnings across workspace (`-D warnings`), create `.github/workflows/ci.yml`, document `poppler-utils` in `README.md`, update `plans/README.md`.
   - Files: `crates/sarv-quote/src/*.rs`, `crates/sarv-desktop/src/**/*.rs`, `.github/workflows/ci.yml`, `README.md`, `plans/README.md`
   - Done when: `cargo clippy --workspace --all-targets -- -D warnings && python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/ci.yml'))"`
 

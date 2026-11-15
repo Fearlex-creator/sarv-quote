@@ -1000,7 +1000,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                     && name.ends_with(".json"),
                 "Invalid backup filename"
             );
-            let path = store.directory.join(&name);
+            let path = store.directory.join(name);
             let candidate = Store::restore_preview(&path)?;
             let summary = |s: &State| {
                 json!({

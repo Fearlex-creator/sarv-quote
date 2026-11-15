@@ -67,7 +67,7 @@ fn starter(st: &State) -> Workbook {
     }
 }
 
-fn current<'a>(st: &'a State) -> &'a Sheet {
+fn current(st: &State) -> &Sheet {
     st.sheets.book.sheets.get(st.sheets.active).unwrap_or(&st.sheets.book.sheets[0])
 }
 

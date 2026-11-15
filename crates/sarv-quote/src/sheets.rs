@@ -97,6 +97,7 @@ pub fn addr(col: u32, row: u32) -> String {
 
 /// Evaluate one stored cell. `cell` returns the raw text of an address. `books` returns a
 /// rial figure for `cash`, `receivables`, `payables`, or `profit`.
+#[allow(clippy::result_unit_err)] // Preserved public signature for sheet evaluation
 pub fn eval_cell(
     raw: &str,
     cell: &mut dyn FnMut(&str) -> Option<String>,

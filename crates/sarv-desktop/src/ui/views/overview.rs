@@ -153,6 +153,7 @@ fn progress(ui: &Ui, done: usize) -> El {
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn step(ui: &Ui, key: &str, n: usize, title: &str, detail: &str, done: bool, badge: String, actions: Vec<El>) -> El {
     let mut body = col()
         .grow(1.0)

@@ -78,6 +78,7 @@ impl State {
     }
 
     /// Create an item (+ product profile) and return its id.
+    #[allow(clippy::too_many_arguments)]
     pub fn create_item(
         &mut self,
         name: &str,

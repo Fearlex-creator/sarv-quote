@@ -372,11 +372,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 } else {
                     "payment_post"
                 };
-                let preview_action = if st.payments.funds == 2 {
-                    "payment_preview"
-                } else {
-                    "payment_preview"
-                };
+                let preview_action = "payment_preview";
                 match st.query(preview_action, payload.clone()) {
                     Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
                     Err(e) => {

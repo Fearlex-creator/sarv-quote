@@ -895,7 +895,7 @@ fn payment_settlement_settles_receivable_and_reverses_through_bridge() {
     let ar = options["items"].as_array().unwrap().iter().find(|x| x["id"] == "AR-125").unwrap();
     assert_eq!(ar["remaining"], "125");
     let before = Store::open(d.path()).unwrap().local_generation();
-    let mut preview = call(
+    let preview = call(
         d.path(),
         "payment_preview",
         json!({"company_id":c,"period_id":p,"source_id":"bridge-pay","request_key":"bridge-pay","date":"2026-10-08","reason":"Customer settlement","side":"receive","party_id":"CU-A","funds_role":"bank","reference":"RCP-1","advance_amount":"25","allocations":[{"open_item_id":"AR-125","amount":"100"}]}),

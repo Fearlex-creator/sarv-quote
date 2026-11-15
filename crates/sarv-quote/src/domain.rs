@@ -62,13 +62,7 @@ pub fn grouped(n: i64) -> String {
     let len = s.len();
     fa(s.chars()
         .enumerate()
-        .flat_map(|(i, c)| {
-            if i > 0 && (len - i).is_multiple_of(3) {
-                vec!['٬', c]
-            } else {
-                vec![c]
-            }
-        })
+        .flat_map(|(i, c)| if i > 0 && (len - i) % 3 == 0 { vec!['٬', c] } else { vec![c] })
         .collect::<String>())
 }
 pub fn text(s: &str) -> Result<()> {

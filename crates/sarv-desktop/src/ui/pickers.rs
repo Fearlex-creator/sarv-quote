@@ -124,6 +124,7 @@ pub fn item_sale_price(s: &State, item_id: &str) -> String {
 }
 
 /// Searchable entity picker (kit Combobox). `on_choose` receives the option id (or `__create__:…`).
+#[allow(clippy::too_many_arguments)]
 pub fn entity_combo(
     ui: &Ui,
     layer: &mut Vec<El>,
@@ -151,6 +152,7 @@ pub fn entity_combo(
 }
 
 /// Field-styled Select over `(id, label)` pairs. Open state lives in `State::selects[key]`.
+#[allow(clippy::too_many_arguments)]
 pub fn select_field(
     ui: &Ui,
     layer: &mut Vec<El>,

@@ -15,7 +15,7 @@ Phases are ordered; inside a phase, follow the "Depends on" column. Phase 0 firs
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| [001](001-ci-and-lint-baseline.md) | CI runs fmt, clippy and both test suites | P1 | M | — | TODO |
+| [001](001-ci-and-lint-baseline.md) | CI runs fmt, clippy and both test suites | P1 | M | — | DONE |
 | [002](002-deterministic-test-clock.md) | Tests stop depending on today's date | P1 | S | — | TODO |
 | [003](003-long-lived-store.md) | Desktop keeps one open Store (speed; integrity status) | P1 | M | — | TODO |
 | [033](033-desktop-test-coverage.md) | Money-moving flows covered; tests out of `main.rs` | P2 | M | 002 | TODO |

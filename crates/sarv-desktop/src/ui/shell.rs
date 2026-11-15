@@ -303,7 +303,8 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         }
     }
 
-    let actions: [(&str, &str, &'static rune::Icon, fn(&mut State)); 4] = [
+    type PaletteAction = (&'static str, &'static str, &'static rune::Icon, fn(&mut State));
+    let actions: [PaletteAction; 4] = [
         ("action-new-order", "New sales invoice", &icons::PLUS, |st| {
             st.sales.start_new();
             st.nav(Page::Sales);

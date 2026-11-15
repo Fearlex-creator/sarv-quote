@@ -33,7 +33,7 @@ cargo test -p sarv-desktop --bin sarv-desktop
 cargo test -p sarv-quote --features pdf-export
 ```
 
-The desktop enables PDF export for printable sales documents. Normal engine and agent CLI builds exclude the PDF renderer. Linux PDF rendering needs cairo and pango.
+The desktop enables PDF export for printable sales documents. Normal engine and agent CLI builds exclude the PDF renderer. Linux PDF rendering needs cairo and pango. The `pdf-export` tests also need the Poppler command-line tools (`poppler-utils`).
 
 Create additional businesses in **Settings → Add company**. First-run setup collects business contact details, registration and tax IDs, invoice reference prefix, terms and footer; these details are saved separately for each business. The selected calendar applies throughout date entry, reports and sales PDFs. Open a sales record and choose **Save printable PDF** to export an A4 document with embedded Persian fonts, totals and signature lines.
 

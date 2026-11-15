@@ -296,6 +296,7 @@ impl Ui {
     }
 
     /// Mount a kit `Dialog` into the overlay layer when `open`.
+    #[allow(clippy::too_many_arguments)]
     pub fn dialog(
         &self,
         layer: &mut Vec<El>,
@@ -314,6 +315,7 @@ impl Ui {
     ///
     /// Pass picker portals in `portals` (build Combobox/Select into that vec). They are appended
     /// after the dialog so menus paint above the panel, anchored under their fields.
+    #[allow(clippy::too_many_arguments)]
     pub fn dialog_described(
         &self,
         layer: &mut Vec<El>,

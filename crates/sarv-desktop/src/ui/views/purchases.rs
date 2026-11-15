@@ -301,7 +301,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             _ => Cell::text(s.fmt.t("Posted")).muted(),
         }
     })
-    .on_select(|st, id, _| st.purchases.selected = id.strip_prefix("purchase-").unwrap_or(&id).to_string())
+    .on_select(|st, id, _| st.purchases.selected = id.strip_prefix("purchase-").unwrap_or(id).to_string())
     .zebra(true)
     .build(s, &ui.k)
     .key("purchases-table")

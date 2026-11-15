@@ -167,7 +167,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             _ => Cell::text(s.fmt.money(&sale_price(s, &id))).mono(),
         }
     })
-    .on_select(|st, id, _| st.inventory.selected = id.strip_prefix("item-").unwrap_or(&id).to_string())
+    .on_select(|st, id, _| st.inventory.selected = id.strip_prefix("item-").unwrap_or(id).to_string())
     .on_open(|st, id, _| open_product(st, id.strip_prefix("item-").unwrap_or(id)))
     .zebra(true)
     .build(s, &ui.k)

@@ -533,8 +533,8 @@ fn party_balances(state: &State) -> (Vec<PartyBalance>, Vec<PartyBalance>) {
             });
         }
     }
-    receivables.sort_by(|a, b| b.amount_rial.cmp(&a.amount_rial));
-    payables.sort_by(|a, b| b.amount_rial.cmp(&a.amount_rial));
+    receivables.sort_by_key(|a| std::cmp::Reverse(a.amount_rial));
+    payables.sort_by_key(|a| std::cmp::Reverse(a.amount_rial));
     receivables.truncate(8);
     payables.truncate(8);
     (receivables, payables)

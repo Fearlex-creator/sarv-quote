@@ -437,7 +437,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 _ => Cell::text(s.fmt.t("Posted")).muted(),
             }
         })
-        .on_select(|st, id, _| st.sales.selected = id.strip_prefix("sale-").unwrap_or(&id).to_string())
+        .on_select(|st, id, _| st.sales.selected = id.strip_prefix("sale-").unwrap_or(id).to_string())
         .zebra(true)
         .build(s, &ui.k)
         .key("sales-table")
@@ -467,7 +467,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 _ => Cell::text(if note.is_empty() { s.fmt.t("Draft") } else { note }).muted(),
             }
         })
-        .on_select(|st, id, _| st.sales.selected = id.strip_prefix("draft-").unwrap_or(&id).to_string())
+        .on_select(|st, id, _| st.sales.selected = id.strip_prefix("draft-").unwrap_or(id).to_string())
         .zebra(true)
         .build(s, &ui.k)
         .key("sales-table")

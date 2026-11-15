@@ -17,6 +17,7 @@ pub struct PosLine {
     pub price_rials: i64,
 }
 
+#[derive(Default)]
 pub struct PosState {
     pub lines: Vec<PosLine>,
     pub customer_id: String,
@@ -24,19 +25,6 @@ pub struct PosState {
     pub posting: bool,
     pub post_key: String,
     pub draft_id: String,
-}
-
-impl Default for PosState {
-    fn default() -> Self {
-        Self {
-            lines: Vec::new(),
-            customer_id: String::new(),
-            customer_combo: ComboboxState::default(),
-            posting: false,
-            post_key: String::new(),
-            draft_id: String::new(),
-        }
-    }
 }
 
 fn items(s: &State) -> Vec<serde_json::Value> {
