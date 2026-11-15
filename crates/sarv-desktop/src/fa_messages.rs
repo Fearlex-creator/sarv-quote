@@ -1627,6 +1627,18 @@ pub static FA: &[(&str, &str)] = &[
     ("Payment", "پرداخت"),
     ("Recorded in Sarv", "ثبت در سرو"),
     ("Select a row first.", "ابتدا یک ردیف انتخاب کنید."),
+    ("Choose a fiscal year", "انتخاب سال مالی"),
+    ("Fiscal year opened", "سال مالی باز شد"),
+    ("New fiscal year", "سال مالی جدید"),
+    (
+        "Open the next fiscal year starting the day after the current one ends.",
+        "سال مالی بعدی را از روز پس از پایان سال مالی فعلی باز کنید.",
+    ),
+    ("Viewing a past fiscal year", "در حال مشاهدهٔ سال مالی گذشته"),
+    (
+        "Your fiscal year ends on {date}. Open the next year to keep posting.",
+        "سال مالی شما در تاریخ {date} به پایان می‌رسد. برای ادامهٔ ثبت اسناد، سال مالی بعدی را باز کنید.",
+    ),
     ("~2 min setup", "راه‌اندازی در ۲ دقیقه"),
     ("· Cost:", "· بهای تمام‌شده:"),
 ];

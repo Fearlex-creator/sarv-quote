@@ -755,6 +755,32 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     if !failed.is_empty() {
         body = body.child(ui.kit_card().title(failed, Some(&icons::INFO)).build(&ui.k).key("integrity-notice"));
     }
+    if let Some(latest_end) = s.books.workspace["periods"]
+        .as_array()
+        .and_then(|rows| rows.iter().filter_map(|p| p["end_date"].as_str()).filter(|d| !d.is_empty()).max())
+        && let (Ok(end_d), Ok(today_d)) = (
+            chrono::NaiveDate::parse_from_str(latest_end, "%Y-%m-%d"),
+            chrono::NaiveDate::parse_from_str(&crate::data::today(), "%Y-%m-%d"),
+        )
+        && (end_d - today_d).num_days() <= 30
+    {
+        let msg = ui.f.tf(
+            "Your fiscal year ends on {date}. Open the next year to keep posting.",
+            &[("date", &ui.f.date(latest_end))],
+        );
+        let notice = ui
+            .kit_card()
+            .title(msg, Some(&icons::WARNING))
+            .child(row().child(ui.btn(
+                Btn::Glass,
+                "New fiscal year",
+                Some(&icons::PLUS),
+                crate::ui::views::accounting::open_new_period,
+            )))
+            .build(&ui.k)
+            .key("fiscal-year-notice");
+        body = body.child(notice);
+    }
     body = body.child(upper).child(recent);
 
     if s.overview.starter_open {

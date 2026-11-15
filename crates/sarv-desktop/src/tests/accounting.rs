@@ -406,3 +406,82 @@ fn test_accounting_coa_sorts_by_code() {
         "expected ascending codes: {codes:?}"
     );
 }
+
+#[test]
+fn test_open_next_fiscal_year_and_post_in_it() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let initial_periods = rt.state.books.workspace["periods"].as_array().map(|a| a.len()).unwrap_or(0);
+    assert_eq!(initial_periods, 1);
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New fiscal year");
+    assert!(rt.find("period-add-dialog").is_some(), "period-add dialog must open");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.period_add_open, "{}", blow(&rt, "open next fiscal year"));
+
+    let periods = rt.state.books.workspace["periods"].as_array().expect("periods array");
+    assert_eq!(periods.len(), 2, "expected two periods after opening next fiscal year");
+
+    let new_period_id = rt.state.books.period_id.clone();
+    let (new_start, _) = rt.state.books.range();
+    let target_iso = chrono::NaiveDate::parse_from_str(&new_start, "%Y-%m-%d")
+        .unwrap()
+        .checked_add_days(chrono::Days::new(2))
+        .unwrap()
+        .format("%Y-%m-%d")
+        .to_string();
+    let typed_date = rt.state.fmt.date_input(&target_iso);
+
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "30000");
+    type_into(&mut rt, "journal-date", &typed_date);
+    type_into(&mut rt, "journal-reason", "New fiscal year journal");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "post in new fiscal year"));
+
+    let posted = rt
+        .state
+        .books
+        .list("journals")
+        .into_iter()
+        .find(|j| data::s(&j["reason"]) == "New fiscal year journal")
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "find new year journal")));
+    assert_eq!(data::s(&posted["period_id"]), new_period_id);
+    assert_eq!(data::s(&posted["date"]), target_iso);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_switching_fiscal_year_changes_the_report_range() {
+    let mut rt = make_test_runtime();
+    let first_period_id = rt.state.books.period_id.clone();
+    let first_range = rt.state.books.range();
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New fiscal year");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.period_add_open, "{}", blow(&rt, "open second year"));
+
+    let second_period_id = rt.state.books.period_id.clone();
+    assert_ne!(second_period_id, first_period_id);
+    let second_range = rt.state.books.range();
+    assert_ne!(second_range, first_range);
+
+    click(&mut rt, "fiscal-year-switch");
+    assert!(rt.find("period-switch-dialog").is_some(), "period switcher dialog must open");
+    click(&mut rt, &format!("switch-period-{first_period_id}"));
+    assert_eq!(rt.state.books.period_id, first_period_id);
+    assert_eq!(rt.state.books.range(), first_range);
+
+    click(&mut rt, "fiscal-year-switch");
+    click(&mut rt, &format!("switch-period-{second_period_id}"));
+    assert_eq!(rt.state.books.period_id, second_period_id);
+    assert_eq!(rt.state.books.range(), second_range);
+    assert_no_danger(&rt);
+}

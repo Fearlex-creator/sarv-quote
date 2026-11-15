@@ -192,6 +192,7 @@ pub struct State {
     pub palette_open: bool,
     pub palette_cursor: usize,
     pub palette_last_query: String,
+    pub period_switch_open: bool,
     pub confirm: Option<crate::ui::confirm::Confirm>,
     pub sidebar: PaneState,
     pub guide_open: bool,
@@ -234,6 +235,7 @@ impl State {
             palette_open: false,
             palette_cursor: 0,
             palette_last_query: String::new(),
+            period_switch_open: false,
             confirm: None,
             // Match rune-kit shell example: full close to 0, resize 136…640.
             sidebar: PaneState::new(276.0).range(136.0, 640.0),
@@ -423,6 +425,14 @@ impl State {
         }
         if self.palette_open {
             self.palette_open = false;
+            return true;
+        }
+        if self.period_switch_open {
+            self.period_switch_open = false;
+            return true;
+        }
+        if self.accounting.period_add_open {
+            self.accounting.period_add_open = false;
             return true;
         }
         if self.sales.creating_item_for_line.is_some() {

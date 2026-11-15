@@ -26,6 +26,48 @@ pub fn fiscal_period(calendar: CalendarKind, today: chrono::NaiveDate) -> (Strin
     (y.to_string(), format!("{y}-01-01"), format!("{y}-12-31"))
 }
 
+/// Next fiscal period `(name, start_iso, end_iso)` starting the day after `latest_end_iso`.
+pub(crate) fn next_fiscal_period(
+    calendar: CalendarKind,
+    latest_end_iso: Option<&str>,
+    today: chrono::NaiveDate,
+) -> (String, String, String) {
+    let Some(end_date) = latest_end_iso.and_then(|s| chrono::NaiveDate::parse_from_str(s, "%Y-%m-%d").ok()) else {
+        return fiscal_period(calendar, today);
+    };
+    let start_date = end_date.succ_opt().unwrap_or(today);
+    if calendar == CalendarKind::Jalali {
+        if let Ok(j) = sarv_quote::calendar::from_gregorian(start_date) {
+            if let Ok((_, fy_end)) = sarv_quote::calendar::jalali_fiscal_year(j.year()) {
+                let end = if fy_end >= start_date {
+                    fy_end
+                } else {
+                    sarv_quote::calendar::jalali_fiscal_year(j.year() + 1)
+                        .map(|(_, e)| e)
+                        .unwrap_or(start_date)
+                };
+                return (
+                    j.year().to_string(),
+                    start_date.format("%Y-%m-%d").to_string(),
+                    end.format("%Y-%m-%d").to_string(),
+                );
+            }
+        }
+    }
+    let y = start_date.year();
+    let end = chrono::NaiveDate::from_ymd_opt(y, 12, 31).unwrap_or(start_date);
+    let end = if end >= start_date {
+        end
+    } else {
+        chrono::NaiveDate::from_ymd_opt(y + 1, 12, 31).unwrap_or(start_date)
+    };
+    (
+        y.to_string(),
+        start_date.format("%Y-%m-%d").to_string(),
+        end.format("%Y-%m-%d").to_string(),
+    )
+}
+
 fn iso_or_parsed(s: &State, raw: &str, fallback: &str) -> Result<String, String> {
     let raw = raw.trim();
     if raw.is_empty() {

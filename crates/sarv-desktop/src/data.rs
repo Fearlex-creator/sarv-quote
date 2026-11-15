@@ -198,12 +198,19 @@ impl Books {
             return;
         }
         let now = today();
+        let latest = periods.iter().max_by_key(|p| p["end_date"].as_str().unwrap_or(""));
         let chosen = periods
             .iter()
             .find(|p| {
                 p["start_date"].as_str().is_some_and(|s| s <= now.as_str()) && p["end_date"].as_str().is_some_and(|e| e >= now.as_str())
             })
-            .or_else(|| periods.first());
+            .or_else(|| {
+                if latest.is_some_and(|p| p["end_date"].as_str().is_some_and(|e| now.as_str() > e)) {
+                    latest
+                } else {
+                    periods.first()
+                }
+            });
         self.period_id = chosen.and_then(|p| p["id"].as_str()).unwrap_or("").to_string();
     }
 

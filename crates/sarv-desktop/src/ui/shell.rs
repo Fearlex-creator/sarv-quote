@@ -6,8 +6,8 @@ use std::time::Duration;
 use rune::{Cx, El, Spring, col, icon, row};
 use rune_kit::shell::{PaneMotion, SidebarPeek, SidebarToggle};
 use rune_kit::{
-    Badge, BadgeVariant, ControlSize, IconButton, IconButtonVariant, SegmentedControl, Sidebar, SidebarRow, SidebarSection, SplitView,
-    Toast, ToastRegion, Toolbar,
+    Badge, BadgeVariant, Button, ButtonVariant, ControlSize, IconButton, IconButtonVariant, SegmentedControl, Sidebar, SidebarRow,
+    SidebarSection, SplitView, Toast, ToastRegion, Toolbar,
 };
 
 use crate::app::{Page, State, Tone};
@@ -189,8 +189,20 @@ fn build_toolbar(s: &State, ui: &Ui) -> Toolbar {
     bar = bar.trailing(search).trailing(refresh).trailing(synced);
     let period = s.books.period_name();
     if !period.is_empty() {
+        let (start, end) = s.books.range();
+        let now = crate::data::today();
+        let is_current = !start.is_empty() && !end.is_empty() && now >= start && now <= end;
+        if !is_current {
+            bar = bar.trailing(ui.badge(Tone::Warning, ui.t("Viewing a past fiscal year")));
+        }
         let label = format!("{} {}", ui.t("Fiscal year"), s.fmt.digits(&period));
-        bar = bar.trailing(Badge::new(label).variant(BadgeVariant::Neutral).build(k));
+        let switcher = Button::new(label)
+            .variant(ButtonVariant::Outline)
+            .control_size(ControlSize::Small)
+            .on_press(|st: &mut State| st.period_switch_open = true)
+            .build(k)
+            .key("fiscal-year-switch");
+        bar = bar.trailing(switcher);
     }
     bar
 }
@@ -484,6 +496,51 @@ pub fn mount_toasts(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         region = region.toast(toast);
     }
     layer.push(region.build(&ui.k));
+}
+
+pub fn mount_period_switcher(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    if !s.period_switch_open {
+        return;
+    }
+    let mut periods = s.books.workspace["periods"].as_array().cloned().unwrap_or_default();
+    periods.sort_by(|a, b| crate::data::s(&b["start_date"]).cmp(&crate::data::s(&a["start_date"])));
+
+    let mut list = col().w_full().gap(6.0);
+    for p in periods {
+        let id = crate::data::s(&p["id"]);
+        let name = s.fmt.digits(&crate::data::s(&p["name"]));
+        let start = s.fmt.date(&crate::data::s(&p["start_date"]));
+        let end = s.fmt.date(&crate::data::s(&p["end_date"]));
+        let active = id == s.books.period_id;
+        let label = format!("{name}  ({start} – {end})");
+        let target_id = id.clone();
+        let row_btn = Button::new(label)
+            .variant(if active { ButtonVariant::Submit } else { ButtonVariant::Outline })
+            .control_size(ControlSize::Regular)
+            .on_press(move |st: &mut State| {
+                st.books.period_id = target_id.clone();
+                st.period_switch_open = false;
+                st.refresh();
+            })
+            .build(&ui.k)
+            .key(format!("switch-period-{id}"))
+            .w_full();
+        list = list.child(row_btn);
+    }
+
+    let mut portals = Vec::new();
+    ui.dialog_described(
+        layer,
+        &mut portals,
+        "period-switch",
+        &ui.t("Fiscal year"),
+        &ui.t("Choose a fiscal year"),
+        true,
+        DIALOG_SM,
+        list,
+        vec![ui.btn(Btn::Ghost, "Close", None, |st| st.period_switch_open = false)],
+        |st| st.period_switch_open = false,
+    );
 }
 
 pub fn segmented(

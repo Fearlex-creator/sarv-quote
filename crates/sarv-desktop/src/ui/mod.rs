@@ -44,6 +44,8 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     };
 
     confirm::mount(s, &ui, &mut layer);
+    views::accounting::mount_period_add_dialog(s, &ui, &mut layer);
+    shell::mount_period_switcher(s, &ui, &mut layer);
     shell::mount_palette(s, &ui, &mut layer);
     shell::mount_toasts(s, &ui, &mut layer);
 

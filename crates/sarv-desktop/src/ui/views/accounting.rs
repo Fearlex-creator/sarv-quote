@@ -6,7 +6,7 @@ use rune::{Align, Cx, El, col};
 use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
-use crate::ui::glass::{Btn, DIALOG_LG, DIALOG_MD, Ui};
+use crate::ui::glass::{Btn, DIALOG_LG, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
 use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
@@ -22,6 +22,10 @@ pub struct AccountingState {
     pub ledger: serde_json::Value,
     pub post_key: String,
     pub posting: bool,
+    pub period_add_open: bool,
+    pub period_add_busy: bool,
+    pub next_period_start: String,
+    pub next_period_end: String,
     pub rows: Vec<Row>,
     pub rows_stamp: u64,
 }
@@ -355,6 +359,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 s.accounting.selected.starts_with("period-"),
                 toggle_period,
             ),
+            ui.btn(Btn::Glass, "New fiscal year", Some(&icons::PLUS), open_new_period),
         ],
         body,
     )
@@ -633,5 +638,80 @@ fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         body,
         vec![ui.btn(Btn::Ghost, "Close", None, |st| st.accounting.ledger_open = false)],
         |st| st.accounting.ledger_open = false,
+    );
+}
+
+pub(crate) fn open_new_period(st: &mut State) {
+    let latest_end = st.books.workspace["periods"]
+        .as_array()
+        .and_then(|rows| rows.iter().filter_map(|p| p["end_date"].as_str()).filter(|d| !d.is_empty()).max())
+        .map(str::to_string);
+    let today_date =
+        chrono::NaiveDate::parse_from_str(&crate::data::today(), "%Y-%m-%d").unwrap_or_else(|_| chrono::Local::now().date_naive());
+    let (name, start_iso, end_iso) = crate::ui::views::setup::next_fiscal_period(st.fmt.calendar, latest_end.as_deref(), today_date);
+    st.forms.set("period-name", &name);
+    st.accounting.next_period_start = start_iso;
+    st.accounting.next_period_end = end_iso;
+    st.accounting.period_add_busy = false;
+    st.accounting.period_add_open = true;
+}
+
+pub(crate) fn mount_period_add_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    if !s.accounting.period_add_open {
+        return;
+    }
+    let mut portals = Vec::new();
+    let form = col()
+        .gap(14.0)
+        .child(ui.labeled("Name", ui.field(s, "period-name", &ui.t("Fiscal year"))))
+        .child(ui.form_grid(
+            ui.labeled("Start date", ui.body(s.fmt.date(&s.accounting.next_period_start))),
+            ui.labeled("End date", ui.body(s.fmt.date(&s.accounting.next_period_end))),
+        ));
+
+    ui.form_dialog(
+        layer,
+        &mut portals,
+        "period-add",
+        &ui.t("New fiscal year"),
+        &ui.t("Open the next fiscal year starting the day after the current one ends."),
+        true,
+        DIALOG_SM,
+        form,
+        vec![
+            ui.btn(Btn::Ghost, "Cancel", None, |st| st.accounting.period_add_open = false),
+            ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
+                if st.accounting.period_add_busy || !st.accounting.period_add_open {
+                    return;
+                }
+                let name = st.forms.get("period-name").trim().to_string();
+                if name.is_empty() {
+                    st.toast(Tone::Warning, st.fmt.t("Name"));
+                    return;
+                }
+                st.accounting.period_add_busy = true;
+                let generation = crate::data::s(&st.books.workspace["_generation"]);
+                let payload = serde_json::json!({
+                    "name": name,
+                    "start_date": st.accounting.next_period_start,
+                    "end_date": st.accounting.next_period_end,
+                    "expected_generation": generation,
+                });
+                match st.run("period_add", payload, Some("Fiscal year opened")) {
+                    Ok(v) => {
+                        if let Some(id) = v["period_id"].as_str() {
+                            st.books.period_id = id.to_string();
+                        }
+                        st.accounting.period_add_open = false;
+                        st.accounting.period_add_busy = false;
+                        st.refresh();
+                    }
+                    Err(_) => {
+                        st.accounting.period_add_busy = false;
+                    }
+                }
+            }),
+        ],
+        |st| st.accounting.period_add_open = false,
     );
 }
