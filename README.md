@@ -10,7 +10,7 @@ cargo test -p sarv-desktop --bin sarv-desktop
 SARV_DEMO=1 cargo run -p sarv-desktop -- --scene overview
 ```
 
-`SARV_DATA_DIR` chooses the books directory. Without it, the app uses `ir.sarv.accounting/books` under the XDG data directory. `SARV_DEMO=1` opens a throwaway fixture. Snapshot scenes (`--scene`, `--snap`) need a GPU: `cargo test -p sarv-desktop --test png_scenes`.
+`SARV_DATA_DIR` chooses the books directory. Without it, the app uses `%APPDATA%\ir.sarv.accounting\books` on Windows, `$HOME/Library/Application Support/ir.sarv.accounting/books` on macOS, and `$XDG_DATA_HOME/ir.sarv.accounting/books` (or `$HOME/.local/share/ir.sarv.accounting/books`) on Linux. `SARV_DEMO=1` opens a throwaway fixture. Snapshot scenes (`--scene`, `--snap`) need a GPU: `cargo test -p sarv-desktop --test png_scenes`.
 
 A new profile opens on a welcome: language and theme, then the company and fiscal year, then opening cash and bank. The sidebar appears after the books are open.
 

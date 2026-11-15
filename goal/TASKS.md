@@ -60,7 +60,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 008: Data directory & file safety
-- [ ] **P08-T01**: Add `books_dir(os, get)` + legacy fallback + `open_error` in `data.rs`, show "Books folder" in `settings.rs`, private `0o700`/`0o600` Unix permissions & portable `write_new` + `sweep_stale_staging` in `store.rs`, add tests in `storage_hardening.rs` and `data.rs`, update `README.md` and `plans/README.md`.
+- [x] **P08-T01**: Add `books_dir(os, get)` + legacy fallback + `open_error` in `data.rs`, show "Books folder" in `settings.rs`, private `0o700`/`0o600` Unix permissions & portable `write_new` + `sweep_stale_staging` in `store.rs`, add tests in `storage_hardening.rs` and `data.rs`, update `README.md` and `plans/README.md`.
   - Files: `crates/sarv-desktop/src/data.rs`, `crates/sarv-desktop/src/ui/views/settings.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-quote/src/store.rs`, `crates/sarv-quote/tests/storage_hardening.rs`, `README.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --test export_hardening --test storage_hardening --test process_recovery && cargo test -p sarv-desktop --bin sarv-desktop`
 

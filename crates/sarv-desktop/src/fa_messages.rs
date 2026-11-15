@@ -153,6 +153,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Book balance", "ماندهٔ دفتری"),
     ("Books", "دفاتر"),
     ("Books could not be loaded", "دفاتر بارگذاری نشد"),
+    ("Books folder", "پوشهٔ دفاتر"),
     (
         "Books look healthy — keep the momentum",
         "دفاتر سالم به نظر می‌رسند — همین روند را ادامه دهید",

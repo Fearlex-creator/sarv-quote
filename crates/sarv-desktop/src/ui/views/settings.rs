@@ -161,6 +161,15 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 .title(company_label, Some(&icons::BUILDING))
                 .description(ui.t("Saved on this device"))
                 .child(text(s.books.period_name()).font(ui.k.ty.ui).color(ui.k.c.text_muted))
+                .child(
+                    row()
+                        .w_full()
+                        .gap(12.0)
+                        .center_y()
+                        .justify_between()
+                        .child(ui.body(ui.t("Books folder")))
+                        .child(ui.muted(crate::i18n::isolate(&s.engine.dir.display().to_string()))),
+                )
                 .build(&ui.k)
                 .key("company"),
         );

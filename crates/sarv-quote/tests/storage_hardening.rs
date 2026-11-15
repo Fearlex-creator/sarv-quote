@@ -398,3 +398,37 @@ fn prepared_candidate_becomes_stale_after_a_regular_change_without_losing_either
     assert_eq!(bytes(&store.state), before);
     assert_eq!(bytes(&Store::open(directory.path()).unwrap().state), before);
 }
+
+#[cfg(unix)]
+#[test]
+fn unix_books_folder_database_and_backups_are_private() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let root = tempfile::tempdir().unwrap();
+    let folder = root.path().join("books");
+    let store = Store::open(&folder).unwrap();
+    let backup = folder.join("backup.json");
+    store.backup(&backup).unwrap();
+
+    for path in [&folder, &folder.join("sarv.sqlite3"), &backup] {
+        let mode = fs::metadata(path).unwrap().permissions().mode();
+        assert_eq!(mode & 0o077, 0, "expected private permissions on {}", path.display());
+    }
+}
+
+#[test]
+fn stale_staging_files_are_swept_on_open() {
+    let dir = tempfile::tempdir().unwrap();
+    let stale = dir.path().join(".sarv-write-x.tmp");
+    let fresh = dir.path().join(".sarv-write-fresh.tmp");
+    let old_file = fs::File::create(&stale).unwrap();
+    let two_hours_ago = std::time::SystemTime::now() - std::time::Duration::from_secs(7200);
+    old_file.set_modified(two_hours_ago).unwrap();
+    drop(old_file);
+    fs::write(&fresh, b"fresh").unwrap();
+
+    Store::open(dir.path()).unwrap();
+
+    assert!(!stale.exists());
+    assert!(fresh.exists());
+}

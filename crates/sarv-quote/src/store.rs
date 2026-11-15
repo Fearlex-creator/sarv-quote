@@ -181,10 +181,28 @@ impl Store {
         Ok(())
     }
     pub fn open(directory: &Path) -> Result<Self> {
+        let dir_existed = directory.exists();
         fs::create_dir_all(directory)?;
+        #[cfg(unix)]
+        if !dir_existed {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(directory, fs::Permissions::from_mode(0o700))?;
+        }
+        sweep_stale_staging(directory);
         let conn = Connection::open(directory.join("sarv.sqlite3"))?;
         conn.busy_timeout(Duration::from_secs(3))?;
         conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);")?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            for name in ["sarv.sqlite3", "sarv.sqlite3-wal", "sarv.sqlite3-shm"] {
+                match fs::set_permissions(directory.join(name), fs::Permissions::from_mode(0o600)) {
+                    Ok(()) => {}
+                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+                    Err(e) => return Err(e.into()),
+                }
+            }
+        }
         let json = serde_json::to_string(&State::default())?;
         conn.execute("INSERT OR IGNORE INTO state VALUES(1,0,?1)", [json])?;
         let (generation, payload): (i64, String) = conn.query_row("SELECT generation,payload FROM state WHERE id=1", [], |r| {
@@ -491,7 +509,7 @@ impl Store {
             Ok((r.get(0)?, r.get(1)?))
         })?;
         let preserved = directory.join(format!("unreadable-{}.json", crate::domain::id()));
-        write_new(&preserved, payload.as_bytes())?;
+        write_new_private(&preserved, payload.as_bytes())?;
         let next = generation.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
         let replaced = serde_json::to_string(&candidate)?;
         let changed = tx.execute(
@@ -518,9 +536,53 @@ pub fn backup_state(state: &State, path: &Path) -> Result<()> {
     let b = backup_view(state, &payload);
     let bytes = serde_json::to_vec_pretty(&b)?;
     ensure!(bytes.len() as u64 <= MAX_BACKUP, "پشتیبان بیش از حد بزرگ است");
-    write_new(path, &bytes)
+    write_new_private(path, &bytes)
 }
+
+fn open_new_file(path: &Path, private: bool) -> std::io::Result<fs::File> {
+    let mut opts = OpenOptions::new();
+    opts.write(true).create_new(true);
+    #[cfg(unix)]
+    if private {
+        use std::os::unix::fs::OpenOptionsExt;
+        opts.mode(0o600);
+    }
+    opts.open(path)
+}
+
+fn sweep_stale_staging(directory: &Path) {
+    let Ok(entries) = fs::read_dir(directory) else {
+        return;
+    };
+    let Some(cutoff) = std::time::SystemTime::now().checked_sub(Duration::from_secs(3600)) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
+            continue;
+        };
+        if name.starts_with(".sarv-write-")
+            && name.ends_with(".tmp")
+            && let Ok(meta) = entry.metadata()
+            && let Ok(modified) = meta.modified()
+            && modified < cutoff
+        {
+            let _ = fs::remove_file(path);
+        }
+    }
+}
+
 pub fn write_new(path: &Path, bytes: &[u8]) -> Result<()> {
+    write_new_inner(path, bytes, false)
+}
+
+pub fn write_new_private(path: &Path, bytes: &[u8]) -> Result<()> {
+    write_new_inner(path, bytes, true)
+}
+
+fn write_new_inner(path: &Path, bytes: &[u8], private: bool) -> Result<()> {
+    const EXISTING_MSG: &str = "فایل موجود است یا مسیر قابل نوشتن نیست؛ نام تازه انتخاب کنید";
     let parent = path
         .parent()
         .filter(|p| !p.as_os_str().is_empty())
@@ -528,22 +590,39 @@ pub fn write_new(path: &Path, bytes: &[u8]) -> Result<()> {
     // Same-directory staging plus a no-replace hard link publishes only complete,
     // synced data. Neither an existing file nor a symlink can be overwritten.
     let staging = parent.join(format!(".sarv-write-{}.tmp", crate::domain::id()));
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&staging)
-        .context("فایل موجود است یا مسیر قابل نوشتن نیست؛ نام تازه انتخاب کنید")?;
+    let mut file = open_new_file(&staging, private).context(EXISTING_MSG)?;
     if let Err(e) = file.write_all(bytes).and_then(|()| file.sync_all()) {
         drop(file);
         let _ = fs::remove_file(&staging);
         return Err(e.into());
     }
     drop(file);
-    if let Err(error) = fs::hard_link(&staging, path) {
-        let _ = fs::remove_file(&staging);
-        return Err(error).context("فایل موجود است یا مسیر قابل نوشتن نیست؛ نام تازه انتخاب کنید");
+    match fs::hard_link(&staging, path) {
+        Ok(()) => {
+            let _ = fs::remove_file(&staging);
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+            let _ = fs::remove_file(&staging);
+            return Err(error).context(EXISTING_MSG);
+        }
+        Err(_) => {
+            let mut dest = match open_new_file(path, private) {
+                Ok(f) => f,
+                Err(error) => {
+                    let _ = fs::remove_file(&staging);
+                    return Err(error).context(EXISTING_MSG);
+                }
+            };
+            if let Err(e) = dest.write_all(bytes).and_then(|()| dest.sync_all()) {
+                drop(dest);
+                let _ = fs::remove_file(path);
+                let _ = fs::remove_file(&staging);
+                return Err(e.into());
+            }
+            let _ = fs::remove_file(&staging);
+        }
     }
-    fs::remove_file(&staging)?;
+    #[cfg(unix)]
     fs::File::open(parent)?.sync_all()?;
     Ok(())
 }

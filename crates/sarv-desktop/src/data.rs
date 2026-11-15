@@ -8,24 +8,59 @@ use serde_json::{Value, json};
 
 pub struct Engine {
     pub dir: PathBuf,
+    pub legacy_location: bool,
+    pub open_error: Option<String>,
     store: Mutex<Option<sarv_quote::store::Store>>,
 }
 
+/// Resolve the books directory for `os` using `get` for environment variables.
+pub fn books_dir(os: &str, get: &dyn Fn(&str) -> Option<String>) -> Result<PathBuf, String> {
+    let non_empty = |k: &str| get(k).filter(|v| !v.is_empty());
+    if let Some(v) = non_empty("SARV_DATA_DIR") {
+        return Ok(PathBuf::from(v));
+    }
+    match os {
+        "windows" => non_empty("APPDATA").map(|v| PathBuf::from(v).join("ir.sarv.accounting").join("books")),
+        "macos" => non_empty("HOME").map(|v| PathBuf::from(v).join("Library/Application Support/ir.sarv.accounting/books")),
+        _ => non_empty("XDG_DATA_HOME")
+            .map(|v| PathBuf::from(v).join("ir.sarv.accounting/books"))
+            .or_else(|| non_empty("HOME").map(|v| PathBuf::from(v).join(".local/share/ir.sarv.accounting/books"))),
+    }
+    .ok_or_else(|| "No home folder found. Set SARV_DATA_DIR.".into())
+}
+
 impl Engine {
-    /// `SARV_DATA_DIR`, else `ir.sarv.accounting/books` under the XDG data directory.
+    /// `SARV_DATA_DIR`, else per-OS user data directory (`ir.sarv.accounting/books`).
     pub fn open() -> Self {
-        let dir = if let Ok(v) = std::env::var("SARV_DATA_DIR") {
-            PathBuf::from(v)
-        } else if let Ok(xdg) = std::env::var("XDG_DATA_HOME") {
-            PathBuf::from(xdg).join("ir.sarv.accounting/books")
-        } else if let Ok(home) = std::env::var("HOME") {
-            PathBuf::from(home).join(".local/share/ir.sarv.accounting/books")
-        } else {
-            PathBuf::from("sarv_books")
+        let mut legacy_location = false;
+        let (dir, open_error) = match books_dir(std::env::consts::OS, &|k| std::env::var(k).ok()) {
+            Ok(mut dir) => {
+                if std::env::var_os("SARV_DATA_DIR").is_none() && !dir.join("sarv.sqlite3").exists() {
+                    if std::env::consts::OS == "macos" {
+                        if let Some(home) = std::env::var("HOME").ok().filter(|v| !v.is_empty()) {
+                            let legacy = PathBuf::from(home).join(".local/share/ir.sarv.accounting/books");
+                            if legacy.join("sarv.sqlite3").exists() {
+                                dir = legacy;
+                                legacy_location = true;
+                            }
+                        }
+                    } else if std::env::consts::OS == "windows" {
+                        let legacy = PathBuf::from("sarv_books");
+                        if legacy.join("sarv.sqlite3").exists() {
+                            dir = legacy;
+                            legacy_location = true;
+                        }
+                    }
+                }
+                let err = std::fs::create_dir_all(&dir).err().map(|e| e.to_string());
+                (dir, err)
+            }
+            Err(e) => (PathBuf::new(), Some(e)),
         };
-        let _ = std::fs::create_dir_all(&dir);
         Engine {
             dir,
+            legacy_location,
+            open_error,
             store: Mutex::new(None),
         }
     }
@@ -49,6 +84,8 @@ impl Engine {
         let _ = sarv_quote::desktop::seed_fixture(&dir);
         Engine {
             dir,
+            legacy_location: false,
+            open_error: None,
             store: Mutex::new(None),
         }
     }
@@ -56,6 +93,8 @@ impl Engine {
     pub fn with_dir(dir: impl Into<PathBuf>) -> Self {
         Engine {
             dir: dir.into(),
+            legacy_location: false,
+            open_error: None,
             store: Mutex::new(None),
         }
     }
@@ -117,6 +156,11 @@ pub fn today() -> String {
 impl Books {
     /// Reload the workspace (and the report for the period) from the engine.
     pub fn refresh(&mut self, engine: &Engine) {
+        if let Some(err) = &engine.open_error {
+            self.error = err.clone();
+            self.loaded = true;
+            return;
+        }
         let first = engine.call("workspace", json!({ "company_id": self.company_id }));
         match first {
             Ok(w) => {
@@ -255,5 +299,73 @@ pub fn s(v: &Value) -> String {
         Value::String(x) => x.clone(),
         Value::Null => String::new(),
         other => other.to_string(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::books_dir;
+    use std::collections::HashMap;
+    use std::path::PathBuf;
+
+    fn from_map(vars: &[(&str, &str)]) -> impl Fn(&str) -> Option<String> {
+        let map: HashMap<String, String> = vars.iter().map(|(k, v)| ((*k).into(), (*v).into())).collect();
+        move |k: &str| map.get(k).cloned()
+    }
+
+    #[test]
+    fn books_dir_linux_xdg() {
+        let get = from_map(&[("XDG_DATA_HOME", "/xdg"), ("HOME", "/home/u")]);
+        assert_eq!(books_dir("linux", &get).unwrap(), PathBuf::from("/xdg/ir.sarv.accounting/books"));
+    }
+
+    #[test]
+    fn books_dir_linux_home() {
+        let get = from_map(&[("HOME", "/home/u")]);
+        assert_eq!(
+            books_dir("linux", &get).unwrap(),
+            PathBuf::from("/home/u/.local/share/ir.sarv.accounting/books")
+        );
+    }
+
+    #[test]
+    fn books_dir_windows_appdata() {
+        let get = from_map(&[("APPDATA", r"C:\Users\u\AppData\Roaming"), ("HOME", "/home/u")]);
+        assert_eq!(
+            books_dir("windows", &get).unwrap(),
+            PathBuf::from(r"C:\Users\u\AppData\Roaming")
+                .join("ir.sarv.accounting")
+                .join("books")
+        );
+    }
+
+    #[test]
+    fn books_dir_macos() {
+        let get = from_map(&[("HOME", "/Users/u"), ("XDG_DATA_HOME", "/xdg")]);
+        assert_eq!(
+            books_dir("macos", &get).unwrap(),
+            PathBuf::from("/Users/u/Library/Application Support/ir.sarv.accounting/books")
+        );
+    }
+
+    #[test]
+    fn books_dir_override() {
+        let get = from_map(&[
+            ("SARV_DATA_DIR", "/custom/books"),
+            ("XDG_DATA_HOME", "/xdg"),
+            ("APPDATA", r"C:\AppData"),
+            ("HOME", "/home/u"),
+        ]);
+        for os in ["linux", "macos", "windows"] {
+            assert_eq!(books_dir(os, &get).unwrap(), PathBuf::from("/custom/books"));
+        }
+    }
+
+    #[test]
+    fn books_dir_nothing_set_returns_err() {
+        let get = from_map(&[]);
+        for os in ["linux", "macos", "windows"] {
+            assert!(books_dir(os, &get).is_err());
+        }
     }
 }
