@@ -379,3 +379,30 @@ fn test_invalid_date_blocks_the_post() {
     );
     assert_eq!(rt.state.books.list("journals").len(), before);
 }
+
+#[test]
+fn test_accounting_coa_sorts_by_code() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Accounting.key());
+    rt.state.accounting.tab_idx = 1;
+    rt.state.accounting.rows_stamp = 0;
+    crate::ui::views::accounting::ensure(&mut rt.state);
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.accounting.rows.len() >= 2);
+
+    crate::ui::views::accounting::apply_sort(&mut rt.state, "code", rune_kit::SortDir::Descending);
+    rt.frame(1.0 / 60.0);
+    let codes: Vec<&str> = rt.state.accounting.rows.iter().map(|r| r.cells[0].as_str()).collect();
+    assert!(
+        codes.windows(2).all(|w| w[0].to_lowercase() >= w[1].to_lowercase()),
+        "expected descending codes: {codes:?}"
+    );
+
+    crate::ui::views::accounting::apply_sort(&mut rt.state, "code", rune_kit::SortDir::Ascending);
+    rt.frame(1.0 / 60.0);
+    let codes: Vec<&str> = rt.state.accounting.rows.iter().map(|r| r.cells[0].as_str()).collect();
+    assert!(
+        codes.windows(2).all(|w| w[0].to_lowercase() <= w[1].to_lowercase()),
+        "expected ascending codes: {codes:?}"
+    );
+}

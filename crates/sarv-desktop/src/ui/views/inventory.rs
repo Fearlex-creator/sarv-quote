@@ -1,16 +1,17 @@
 //! Inventory — brands, categories, search, and a full product profile suite (not a plain list).
 
 use std::borrow::Cow;
-use std::collections::BTreeSet;
+use std::collections::{BTreeSet, HashMap};
 
 use rune::{Align, Cx, El, col, row};
-use rune_kit::{Cell, Table, TableColumn, TableState};
+use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
 use serde_json::{Value, json};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_MD, Ui};
 use crate::ui::icons;
 use crate::ui::pickers;
+use crate::ui::rows::{FilterCache, Row, SortKey, fold_text, reapply_sort, sort_rows};
 
 #[derive(Default)]
 pub struct InventoryState {
@@ -35,6 +36,11 @@ pub struct InventoryState {
     pub new_snapshot: String,
     pub profile_snapshot: String,
     pub transfer_snapshot: String,
+    pub rows: Vec<Row>,
+    pub search_blobs: HashMap<String, String>,
+    pub filter_cache: FilterCache,
+    pub rows_gen: u64,
+    pub rows_stamp: u64,
 }
 
 fn new_product_snapshot(st: &State) -> String {
@@ -143,45 +149,6 @@ fn catalog_values(s: &State, field: &str) -> Vec<String> {
     set.into_iter().collect()
 }
 
-fn item_matches(s: &State, item: &Value, query: &str) -> bool {
-    let q = query.trim().to_lowercase();
-    let id = crate::data::s(&item["id"]);
-    let profile = product_profile(s, &id);
-    let brand = crate::data::s(&profile["brand"]);
-    let category = crate::data::s(&profile["category"]);
-    if !s.inventory.brand_filter.is_empty() && brand != s.inventory.brand_filter {
-        return false;
-    }
-    if !s.inventory.category_filter.is_empty() && category != s.inventory.category_filter {
-        return false;
-    }
-    if q.is_empty() {
-        return true;
-    }
-    let latin = crate::i18n::latin_digits(&q).to_lowercase();
-    let name = crate::data::s(&item["name"]);
-    let sku = crate::data::s(&item["sku"]);
-    let barcode = crate::data::s(&profile["barcode"]);
-    [
-        name.as_str(),
-        sku.as_str(),
-        barcode.as_str(),
-        brand.as_str(),
-        category.as_str(),
-        id.as_str(),
-    ]
-    .iter()
-    .any(|field| {
-        let field = field.to_lowercase();
-        field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
-    })
-}
-
-fn filtered_items(s: &State) -> Vec<serde_json::Value> {
-    let q = s.forms.get("inventory-search");
-    items(s).iter().filter(|item| item_matches(s, item, &q)).cloned().collect()
-}
-
 fn money_field_from_rial(st: &State, rials: &str) -> String {
     if rials.is_empty() {
         return String::new();
@@ -192,15 +159,115 @@ fn money_field_from_rial(st: &State, rials: &str) -> String {
     }
 }
 
+fn col_index(col: &str) -> Option<usize> {
+    match col {
+        "name" => Some(0),
+        "brand" => Some(1),
+        "category" => Some(2),
+        "code" => Some(3),
+        "unit" => Some(4),
+        "price" => Some(5),
+        _ => None,
+    }
+}
+
+fn build_rows(s: &State) -> (Vec<Row>, HashMap<String, String>) {
+    let mut rows = Vec::new();
+    let mut blobs = HashMap::new();
+    for item in items(s) {
+        let id = crate::data::s(&item["id"]);
+        let profile = product_profile(s, &id);
+        let brand_raw = crate::data::s(&profile["brand"]);
+        let category_raw = crate::data::s(&profile["category"]);
+        if !s.inventory.brand_filter.is_empty() && brand_raw != s.inventory.brand_filter {
+            continue;
+        }
+        if !s.inventory.category_filter.is_empty() && category_raw != s.inventory.category_filter {
+            continue;
+        }
+        let row_id = format!("item-{id}");
+        let name = crate::data::s(&item["name"]);
+        let brand = if brand_raw.is_empty() { "—".into() } else { brand_raw.clone() };
+        let category = if category_raw.is_empty() {
+            "—".into()
+        } else {
+            category_raw.clone()
+        };
+        let sku = crate::data::s(&item["sku"]);
+        let code = if sku.is_empty() { id.clone() } else { sku.clone() };
+        let unit = unit_name(s, &crate::data::s(&item["base_unit_id"]));
+        let price_raw = sale_price(s, &id);
+        let barcode = crate::data::s(&profile["barcode"]);
+        let blob = fold_text(&format!("{name}\n{sku}\n{barcode}\n{brand_raw}\n{category_raw}\n{id}"));
+        blobs.insert(row_id.clone(), blob);
+        rows.push(Row {
+            id: row_id,
+            cells: vec![
+                name.clone(),
+                brand.clone(),
+                category.clone(),
+                code.clone(),
+                unit.clone(),
+                s.fmt.money(&price_raw),
+            ],
+            keys: vec![
+                SortKey::text(&name),
+                SortKey::text(&brand),
+                SortKey::text(&category),
+                SortKey::text(&code),
+                SortKey::text(&unit),
+                SortKey::num_str(&price_raw),
+            ],
+        });
+    }
+    (rows, blobs)
+}
+
+pub fn ensure(st: &mut State) {
+    if st.inventory.rows_stamp == st.stamp {
+        return;
+    }
+    let (rows, blobs) = build_rows(st);
+    st.inventory.rows = rows;
+    st.inventory.search_blobs = blobs;
+    st.inventory.rows_stamp = st.stamp;
+    st.inventory.rows_gen += 1;
+    reapply_sort(&st.inventory.table, &mut st.inventory.rows, col_index);
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.inventory.table.set_sort(col, dir);
+    if let Some(idx) = col_index(col) {
+        sort_rows(&mut st.inventory.rows, idx, dir);
+        st.inventory.rows_gen += 1;
+    }
+}
+
+fn visible_indices(s: &State) -> std::cell::Ref<'_, Vec<usize>> {
+    let q = s.forms.get("inventory-search");
+    let latin = fold_text(&crate::i18n::latin_digits(&q));
+    s.inventory
+        .filter_cache
+        .visible(&s.inventory.rows, s.inventory.rows_gen, &q, |row, q_folded| {
+            let blob = s.inventory.search_blobs.get(&row.id).map(String::as_str).unwrap_or("");
+            blob.contains(q_folded) || (!latin.is_empty() && blob.contains(&latin))
+        })
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
-    let list = filtered_items(s);
+    let visible_count = visible_indices(s).len();
     let table = Table::new(
         |s: &State| &s.inventory.table,
         |s: &mut State| &mut s.inventory.table,
-        |s: &State| filtered_items(s).len(),
+        |s: &State| visible_indices(s).len(),
         |s: &State, i| {
-            let id = crate::data::s(&filtered_items(s)[i]["id"]);
-            Cow::Owned(format!("item-{id}"))
+            let vis = visible_indices(s);
+            Cow::Owned(
+                vis.get(i)
+                    .and_then(|&idx| s.inventory.rows.get(idx))
+                    .map(|r| r.id.clone())
+                    .unwrap_or_default(),
+            )
         },
     )
     .name(ui.t("Inventory"))
@@ -208,7 +275,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .column(TableColumn::new("brand", ui.t("Brand")).width(120.0).min(88.0).sortable())
     .column(TableColumn::new("category", ui.t("Category")).width(120.0).min(88.0).sortable())
     .column(TableColumn::new("code", ui.t("Code")).width(110.0).min(72.0).sortable())
-    .column(TableColumn::new("unit", ui.t("Unit")).width(90.0).min(64.0))
+    .column(TableColumn::new("unit", ui.t("Unit")).width(90.0).min(64.0).sortable())
     .column(
         TableColumn::new("price", ui.t("Price"))
             .width(130.0)
@@ -217,30 +284,20 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .sortable(),
     )
     .cell(|s: &State, i, col| {
-        let list = filtered_items(s);
-        let Some(item) = list.get(i) else {
+        let vis = visible_indices(s);
+        let Some(row) = vis.get(i).and_then(|&idx| s.inventory.rows.get(idx)) else {
             return Cell::text("");
         };
-        let id = crate::data::s(&item["id"]);
-        let profile = product_profile(s, &id);
         match col {
-            "name" => Cell::text(crate::data::s(&item["name"])),
-            "brand" => {
-                let brand = crate::data::s(&profile["brand"]);
-                Cell::text(if brand.is_empty() { "—" } else { &brand }).muted()
-            }
-            "category" => {
-                let category = crate::data::s(&profile["category"]);
-                Cell::text(if category.is_empty() { "—" } else { &category }).muted()
-            }
-            "code" => {
-                let code = crate::data::s(&item["sku"]);
-                Cell::text(if code.is_empty() { id } else { code }).muted()
-            }
-            "unit" => Cell::text(unit_name(s, &crate::data::s(&item["base_unit_id"]))).muted(),
-            _ => Cell::text(s.fmt.money(&sale_price(s, &id))).mono(),
+            "name" => Cell::text(&row.cells[0]),
+            "brand" => Cell::text(&row.cells[1]).muted(),
+            "category" => Cell::text(&row.cells[2]).muted(),
+            "code" => Cell::text(&row.cells[3]).muted(),
+            "unit" => Cell::text(&row.cells[4]).muted(),
+            _ => Cell::text(&row.cells[5]).mono(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .on_select(|st, id, _| st.inventory.selected = id.strip_prefix("item-").unwrap_or(id).to_string())
     .on_open(|st, id, _| open_product(st, id.strip_prefix("item-").unwrap_or(id)))
     .zebra(true)
@@ -265,7 +322,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Brand"),
         pickers::PICKER_WIDTH,
         brand_open,
-        |st, id| st.inventory.brand_filter = id.to_string(),
+        |st, id| {
+            st.inventory.brand_filter = id.to_string();
+            st.inventory.rows_stamp = 0;
+            ensure(st);
+        },
     );
 
     let mut category_opts = vec![("".to_string(), ui.t("All categories"))];
@@ -280,7 +341,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Category"),
         pickers::PICKER_WIDTH,
         category_open,
-        |st, id| st.inventory.category_filter = id.to_string(),
+        |st, id| {
+            st.inventory.category_filter = id.to_string();
+            st.inventory.rows_stamp = 0;
+            ensure(st);
+        },
     );
 
     let add_btn = ui.btn(Btn::Primary, "New product", Some(&icons::PLUS), open_new_product);
@@ -304,7 +369,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .child(category_select);
 
     let body = col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(filters).child(ui.fill_or_empty(
-        list.len(),
+        visible_count,
         if items(s).is_empty() { "No products" } else { "Nothing to show" },
         "Products and services you sell",
         &icons::INVENTORY,

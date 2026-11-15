@@ -323,3 +323,51 @@ fn test_backdated_sale_chain_uses_one_date() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_sales_table_sorts_by_amount() {
+    use crate::ui::rows::SortKey;
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+
+    for price in ["10000", "50000"] {
+        click(&mut rt, "btn-New sales invoice");
+        rt.state.sales.customer_id = "CU-A".into();
+        rt.state.sales.pay_method = 0;
+        rt.state.sales.lines[0].item_id = "ITEM-A".into();
+        rt.state.forms.set("sale-qty-0", "1");
+        rt.state.forms.set("sale-price-0", price);
+        click(&mut rt, "btn-Complete sale");
+        assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "sale post"));
+    }
+
+    assert!(rt.state.sales.rows.len() >= 2);
+    crate::ui::views::sales::apply_sort(&mut rt.state, "amount", rune_kit::SortDir::Descending);
+    rt.frame(1.0 / 60.0);
+    let amounts: Vec<i128> = rt
+        .state
+        .sales
+        .rows
+        .iter()
+        .filter_map(|r| match r.keys.get(3) {
+            Some(SortKey::Num(n)) => Some(*n),
+            _ => None,
+        })
+        .collect();
+    assert!(amounts.windows(2).all(|w| w[0] >= w[1]), "expected descending amounts: {amounts:?}");
+
+    crate::ui::views::sales::apply_sort(&mut rt.state, "amount", rune_kit::SortDir::Ascending);
+    rt.frame(1.0 / 60.0);
+    let amounts: Vec<i128> = rt
+        .state
+        .sales
+        .rows
+        .iter()
+        .filter_map(|r| match r.keys.get(3) {
+            Some(SortKey::Num(n)) => Some(*n),
+            _ => None,
+        })
+        .collect();
+    assert!(amounts.windows(2).all(|w| w[0] <= w[1]), "expected ascending amounts: {amounts:?}");
+}

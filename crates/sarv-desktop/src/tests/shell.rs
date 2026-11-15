@@ -339,3 +339,32 @@ fn test_refresh_reports_engine_failure() {
         rt.state.toasts
     );
 }
+
+#[test]
+fn test_contacts_table_sorts_by_name_and_keeps_search() {
+    use crate::ui::rows::SortKey;
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Contacts.key());
+    assert!(rt.state.contacts.rows.len() >= 2);
+
+    crate::ui::views::contacts::apply_sort(&mut rt.state, "name", rune_kit::SortDir::Descending);
+    rt.frame(1.0 / 60.0);
+    let names: Vec<String> = rt
+        .state
+        .contacts
+        .rows
+        .iter()
+        .filter_map(|r| match r.keys.first() {
+            Some(SortKey::Text(s)) => Some(s.clone()),
+            _ => None,
+        })
+        .collect();
+    assert!(names.windows(2).all(|w| w[0] >= w[1]), "expected descending names: {names:?}");
+
+    rt.state.forms.set("contact-search", "CU-A");
+    rt.frame(1.0 / 60.0);
+    assert!(
+        rt.find("contact-CU-A").is_some(),
+        "CU-A should still be visible after sort + search"
+    );
+}

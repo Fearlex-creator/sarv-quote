@@ -102,7 +102,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 012: Table sorting and row models
-- [ ] **P12-T01**: Create `crates/sarv-desktop/src/ui/rows.rs` (`Row`, `SortKey`, `sort_rows` + unit tests), add `State::stamp` + `views::ensure_rows`, convert all tables across all 8 views (`sales`, `purchases`, `payments`, `banking`, `contacts`, `inventory`, `accounting`, `reports`) to `Row` + `.on_sort()`, add ≥3 view sort tests, update `plans/README.md`.
+- [x] **P12-T01**: Create `crates/sarv-desktop/src/ui/rows.rs` (`Row`, `SortKey`, `sort_rows` + unit tests), add `State::stamp` + `views::ensure_rows`, convert all tables across all 8 views (`sales`, `purchases`, `payments`, `banking`, `contacts`, `inventory`, `accounting`, `reports`) to `Row` + `.on_sort()`, add ≥3 view sort tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/ui/{mod.rs,rows.rs}`, `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/views/{mod.rs,sales.rs,purchases.rs,payments.rs,banking.rs,contacts.rs,inventory.rs,accounting.rs,reports.rs}`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

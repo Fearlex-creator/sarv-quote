@@ -208,6 +208,8 @@ pub struct State {
     pub selects: HashMap<String, bool>,
     /// Counter page. Loaded from settings; off until the owner turns it on.
     pub show_pos: bool,
+    /// Monotonic counter bumped whenever books, language, or formatting change.
+    pub stamp: u64,
 }
 
 impl State {
@@ -245,6 +247,7 @@ impl State {
             recovery: Default::default(),
             selects: HashMap::new(),
             show_pos: false,
+            stamp: 0,
         };
         s.apply_settings();
         s.refresh_recovery_if_failed();
@@ -292,6 +295,8 @@ impl State {
         if self.page == Page::Pos && !self.show_pos {
             self.page = Page::Overview;
         }
+        self.stamp += 1;
+        views::ensure_rows(self);
     }
 
     pub fn lang(&self) -> Lang {
@@ -300,6 +305,8 @@ impl State {
 
     pub fn set_lang(&mut self, lang: Lang) {
         self.fmt.lang = lang;
+        self.stamp += 1;
+        views::ensure_rows(self);
     }
 
     /// Persist appearance, language, digits, unit, calendar, and feature toggles to the books.
@@ -517,6 +524,8 @@ impl State {
 
     pub fn refresh(&mut self) {
         self.books.refresh(&self.engine);
+        self.stamp += 1;
+        views::ensure_rows(self);
         self.refresh_recovery_if_failed();
     }
 

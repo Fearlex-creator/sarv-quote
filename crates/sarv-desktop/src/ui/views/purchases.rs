@@ -3,7 +3,7 @@
 use std::borrow::Cow;
 
 use rune::{Align, Cx, El, col, row};
-use rune_kit::{Cell, ComboboxState, Switch, Table, TableColumn, TableState};
+use rune_kit::{Cell, ComboboxState, SortDir, Switch, Table, TableColumn, TableState};
 use serde_json::json;
 
 use crate::app::{State, Tone};
@@ -11,6 +11,7 @@ use crate::ui::glass::{Btn, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
 use crate::ui::pickers;
 use crate::ui::resources::ResourceKind;
+use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
 #[derive(Clone, Debug)]
 pub struct PurchaseLine {
@@ -46,6 +47,8 @@ pub struct PurchasesState {
     /// When set, the order is received and billed in the same step.
     pub receive_and_bill: bool,
     pub selected: String,
+    pub rows: Vec<Row>,
+    pub rows_stamp: u64,
 }
 
 impl PurchasesState {
@@ -245,6 +248,91 @@ fn post_purchase(st: &mut State) {
     st.toast(Tone::Success, st.fmt.t("Posted"));
 }
 
+fn col_index(col: &str) -> Option<usize> {
+    match col {
+        "ref" => Some(0),
+        "vendor" => Some(1),
+        "date" => Some(2),
+        "amount" => Some(3),
+        "status" => Some(4),
+        _ => None,
+    }
+}
+
+fn build_rows(s: &State) -> Vec<Row> {
+    let status = s.fmt.t("Posted");
+    filtered(s)
+        .iter()
+        .map(|record| {
+            let id = crate::data::s(&record["id"]);
+            let cmd = &record["command"];
+            let inner = cmd
+                .get("Order")
+                .or_else(|| cmd.get("Receive"))
+                .or_else(|| cmd.get("Bill"))
+                .or_else(|| cmd.get("Return"))
+                .unwrap_or(cmd);
+            let ref_no = first_nonempty(crate::data::s(&inner["reference"]), crate::data::s(&inner["return_reference"]));
+            let ref_text = if ref_no.is_empty() {
+                format!("#{}", &id[..id.len().min(8)])
+            } else {
+                ref_no
+            };
+            let supplier_id = crate::data::s(&inner["supplier_id"]);
+            let vendor = if supplier_id.is_empty() {
+                crate::data::s(&record["data"]["supplier"]["name"])
+            } else {
+                s.books.party_name(&supplier_id)
+            };
+            let date_raw = crate::data::s(
+                &inner
+                    .get("context")
+                    .and_then(|c| c.get("effective_date"))
+                    .cloned()
+                    .unwrap_or_else(|| record["date"].clone()),
+            );
+            let amount_raw = ["Order", "Receive", "Bill", "Return"]
+                .iter()
+                .map(|kind| crate::data::s(&record["data"][kind]["total"]))
+                .find(|value| !value.is_empty())
+                .unwrap_or_else(|| "0".into());
+            Row {
+                id: format!("purchase-{id}"),
+                cells: vec![
+                    ref_text.clone(),
+                    vendor.clone(),
+                    s.fmt.date(&date_raw),
+                    s.fmt.money(&amount_raw),
+                    status.clone(),
+                ],
+                keys: vec![
+                    SortKey::text(&ref_text),
+                    SortKey::text(&vendor),
+                    SortKey::text(&date_raw),
+                    SortKey::num_str(&amount_raw),
+                    SortKey::text(&status),
+                ],
+            }
+        })
+        .collect()
+}
+
+pub fn ensure(st: &mut State) {
+    if st.purchases.rows_stamp == st.stamp {
+        return;
+    }
+    st.purchases.rows = build_rows(st);
+    st.purchases.rows_stamp = st.stamp;
+    reapply_sort(&st.purchases.table, &mut st.purchases.rows, col_index);
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.purchases.table.set_sort(col, dir);
+    if let Some(idx) = col_index(col) {
+        sort_rows(&mut st.purchases.rows, idx, dir);
+    }
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
     let tabs_labels = [ui.t("Orders"), ui.t("Receipts"), ui.t("Bills"), ui.t("Returns")];
     let kinds = ["Order", "Receive", "Bill", "Return"];
@@ -256,6 +344,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let tab_bar = ui.tabs("purchases-tabs", &tabs, |st, idx| {
         st.purchases.tab_idx = idx;
         st.purchases.table = TableState::new();
+        st.purchases.rows_stamp = 0;
+        ensure(st);
     });
 
     let kind = kinds.get(s.purchases.tab_idx).copied().unwrap_or("Order");
@@ -263,13 +353,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let table = Table::new(
         |s: &State| &s.purchases.table,
         |s: &mut State| &mut s.purchases.table,
-        |s: &State| filtered(s).len(),
-        |s: &State, i| Cow::Owned(format!("purchase-{}", crate::data::s(&filtered(s)[i]["id"]))),
+        |s: &State| s.purchases.rows.len(),
+        |s: &State, i| Cow::Owned(s.purchases.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
     )
     .name(ui.t("Purchases"))
-    .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
+    .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0).sortable())
     .column(TableColumn::new("vendor", ui.t("Vendor")).flex(2.0).min(140.0).sortable())
-    .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
+    .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0).sortable())
     .column(
         TableColumn::new("amount", ui.t("Amount"))
             .width(160.0)
@@ -277,57 +367,20 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .align(Align::End)
             .sortable(),
     )
-    .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
+    .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0).sortable())
     .cell(|s: &State, i, col| {
-        let list = filtered(s);
-        let Some(record) = list.get(i) else {
+        let Some(row) = s.purchases.rows.get(i) else {
             return Cell::text("");
         };
-        let id = crate::data::s(&record["id"]);
-        let cmd = &record["command"];
-        let inner = cmd
-            .get("Order")
-            .or_else(|| cmd.get("Receive"))
-            .or_else(|| cmd.get("Bill"))
-            .or_else(|| cmd.get("Return"))
-            .unwrap_or(cmd);
         match col {
-            "ref" => {
-                let ref_no = first_nonempty(crate::data::s(&inner["reference"]), crate::data::s(&inner["return_reference"]));
-                Cell::text(if ref_no.is_empty() {
-                    format!("#{}", &id[..id.len().min(8)])
-                } else {
-                    ref_no
-                })
-            }
-            "vendor" => {
-                let supplier_id = crate::data::s(&inner["supplier_id"]);
-                let supplier = if supplier_id.is_empty() {
-                    crate::data::s(&record["data"]["supplier"]["name"])
-                } else {
-                    s.books.party_name(&supplier_id)
-                };
-                Cell::text(supplier)
-            }
-            "date" => {
-                let date_raw = inner
-                    .get("context")
-                    .and_then(|c| c.get("effective_date"))
-                    .cloned()
-                    .unwrap_or_else(|| record["date"].clone());
-                Cell::text(s.fmt.date(&crate::data::s(&date_raw))).muted()
-            }
-            "amount" => {
-                let amount = ["Order", "Receive", "Bill", "Return"]
-                    .iter()
-                    .map(|kind| crate::data::s(&record["data"][kind]["total"]))
-                    .find(|value| !value.is_empty())
-                    .unwrap_or_else(|| "0".into());
-                Cell::text(s.fmt.money(&amount)).mono()
-            }
-            _ => Cell::text(s.fmt.t("Posted")).muted(),
+            "ref" => Cell::text(&row.cells[0]),
+            "vendor" => Cell::text(&row.cells[1]),
+            "date" => Cell::text(&row.cells[2]).muted(),
+            "amount" => Cell::text(&row.cells[3]).mono(),
+            _ => Cell::text(&row.cells[4]).muted(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .on_select(|st, id, _| st.purchases.selected = id.strip_prefix("purchase-").unwrap_or(id).to_string())
     .zebra(true)
     .build(s, &ui.k)
@@ -353,7 +406,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .min_h(0.0)
         .child(tab_bar)
         .child(ui.muted(ui.t(hint)))
-        .child(ui.fill_or_empty(filtered(s).len(), "No records", hint, &icons::PURCHASES, table));
+        .child(ui.fill_or_empty(s.purchases.rows.len(), "No records", hint, &icons::PURCHASES, table));
 
     ui.page(
         "purchases-screen",

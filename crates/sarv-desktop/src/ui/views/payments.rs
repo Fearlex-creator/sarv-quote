@@ -3,13 +3,14 @@
 use std::borrow::Cow;
 
 use rune::{Align, Cx, El, col, row};
-use rune_kit::{Cell, Table, TableColumn, TableState};
+use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
 
 use serde_json::json;
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_MD, Ui};
 use crate::ui::icons;
+use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
 #[derive(Default)]
 pub struct PaymentsState {
@@ -22,6 +23,8 @@ pub struct PaymentsState {
     pub funds: usize, // 0 cash, 1 bank, 2 cheque
     pub post_key: String,
     pub posting: bool,
+    pub rows: Vec<Row>,
+    pub rows_stamp: u64,
 }
 
 pub fn open_payment(st: &mut State, receive: bool) {
@@ -53,6 +56,77 @@ fn first_nonempty(a: String, b: String) -> String {
 
 fn payments(s: &State) -> Vec<serde_json::Value> {
     s.books.list("payments")
+}
+
+fn col_index(col: &str) -> Option<usize> {
+    match col {
+        "ref" => Some(0),
+        "name" => Some(1),
+        "date" => Some(2),
+        "amount" => Some(3),
+        "status" => Some(4),
+        _ => None,
+    }
+}
+
+fn build_rows(s: &State) -> Vec<Row> {
+    let status = s.fmt.t("Posted");
+    payments(s)
+        .iter()
+        .map(|record| {
+            let id = crate::data::s(&record["id"]);
+            let cmd = &record["command"];
+            let data = &record["data"];
+            let ref_no = first_nonempty(crate::data::s(&data["reference"]), crate::data::s(&cmd["reference"]));
+            let ref_text = if ref_no.is_empty() {
+                format!("#{}", &id[..id.len().min(8)])
+            } else {
+                ref_no
+            };
+            let party_id = first_nonempty(crate::data::s(&data["party"]["id"]), crate::data::s(&cmd["party_id"]));
+            let name = s.books.party_name(&party_id);
+            let date_raw = crate::data::s(
+                &cmd.get("context")
+                    .and_then(|c| c.get("effective_date"))
+                    .cloned()
+                    .unwrap_or_else(|| record["date"].clone()),
+            );
+            let amount_raw = first_nonempty(crate::data::s(&data["applied"]), crate::data::s(&record["total"]));
+            Row {
+                id: format!("payment-{id}"),
+                cells: vec![
+                    ref_text.clone(),
+                    name.clone(),
+                    s.fmt.date(&date_raw),
+                    s.fmt.money(&amount_raw),
+                    status.clone(),
+                ],
+                keys: vec![
+                    SortKey::text(&ref_text),
+                    SortKey::text(&name),
+                    SortKey::text(&date_raw),
+                    SortKey::num_str(&amount_raw),
+                    SortKey::text(&status),
+                ],
+            }
+        })
+        .collect()
+}
+
+pub fn ensure(st: &mut State) {
+    if st.payments.rows_stamp == st.stamp {
+        return;
+    }
+    st.payments.rows = build_rows(st);
+    st.payments.rows_stamp = st.stamp;
+    reapply_sort(&st.payments.table, &mut st.payments.rows, col_index);
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.payments.table.set_sort(col, dir);
+    if let Some(idx) = col_index(col) {
+        sort_rows(&mut st.payments.rows, idx, dir);
+    }
 }
 
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
@@ -100,13 +174,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let table = Table::new(
         |s: &State| &s.payments.table,
         |s: &mut State| &mut s.payments.table,
-        |s: &State| payments(s).len(),
-        |s: &State, i| Cow::Owned(format!("payment-{}", crate::data::s(&payments(s)[i]["id"]))),
+        |s: &State| s.payments.rows.len(),
+        |s: &State, i| Cow::Owned(s.payments.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
     )
     .name(ui.t("Payments"))
-    .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
+    .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0).sortable())
     .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-    .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
+    .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0).sortable())
     .column(
         TableColumn::new("amount", ui.t("Amount"))
             .width(160.0)
@@ -114,39 +188,20 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .align(Align::End)
             .sortable(),
     )
-    .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
+    .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0).sortable())
     .cell(|s: &State, i, col| {
-        let list = payments(s);
-        let Some(record) = list.get(i) else {
+        let Some(row) = s.payments.rows.get(i) else {
             return Cell::text("");
         };
-        let id = crate::data::s(&record["id"]);
-        let cmd = &record["command"];
-        let data = &record["data"];
-        let ref_no = first_nonempty(crate::data::s(&data["reference"]), crate::data::s(&cmd["reference"]));
-        let party_id = first_nonempty(crate::data::s(&data["party"]["id"]), crate::data::s(&cmd["party_id"]));
         match col {
-            "ref" => Cell::text(if ref_no.is_empty() {
-                format!("#{}", &id[..id.len().min(8)])
-            } else {
-                ref_no
-            }),
-            "name" => Cell::text(s.books.party_name(&party_id)),
-            "date" => {
-                let date_raw = cmd
-                    .get("context")
-                    .and_then(|c| c.get("effective_date"))
-                    .cloned()
-                    .unwrap_or_else(|| record["date"].clone());
-                Cell::text(s.fmt.date(&crate::data::s(&date_raw))).muted()
-            }
-            "amount" => {
-                let amount = first_nonempty(crate::data::s(&data["applied"]), crate::data::s(&record["total"]));
-                Cell::text(s.fmt.money(&amount)).mono()
-            }
-            _ => Cell::text(s.fmt.t("Posted")).muted(),
+            "ref" => Cell::text(&row.cells[0]),
+            "name" => Cell::text(&row.cells[1]),
+            "date" => Cell::text(&row.cells[2]).muted(),
+            "amount" => Cell::text(&row.cells[3]).mono(),
+            _ => Cell::text(&row.cells[4]).muted(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .zebra(true)
     .build(s, &ui.k)
     .key("payments-table")
@@ -160,7 +215,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .min_h(0.0)
         .child(metrics)
         .child(ui.fill_or_empty(
-            payments(s).len(),
+            s.payments.rows.len(),
             "No payments recorded yet",
             "Settle invoices and bills",
             &icons::PAYMENTS,

@@ -3,16 +3,19 @@
 use std::borrow::Cow;
 
 use rune::{Align, Cx, El, col, row};
-use rune_kit::{Cell, Table, TableColumn, TableState};
+use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, Ui};
 use crate::ui::icons;
+use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
 #[derive(Default)]
 pub struct ReportsState {
     pub tab_idx: usize,
     pub table: TableState,
+    pub rows: Vec<Row>,
+    pub rows_stamp: u64,
 }
 
 fn trial_rows(s: &State) -> Vec<serde_json::Value> {
@@ -28,6 +31,162 @@ fn party_keys(s: &State) -> Vec<(String, String)> {
 
 fn pl_rows(s: &State) -> Vec<serde_json::Value> {
     s.books.report["profit_loss"]["rows"].as_array().cloned().unwrap_or_default()
+}
+
+fn col_index(tab_idx: usize, col: &str) -> Option<usize> {
+    match tab_idx {
+        1 => match col {
+            "code" => Some(0),
+            "name" => Some(1),
+            "debit" => Some(2),
+            "credit" => Some(3),
+            _ => None,
+        },
+        2 => match col {
+            "name" => Some(0),
+            "role" => Some(1),
+            "balance" => Some(2),
+            _ => None,
+        },
+        3 => match col {
+            "class" => Some(0),
+            "code" => Some(1),
+            "name" => Some(2),
+            "amount" => Some(3),
+            _ => None,
+        },
+        4 => match col {
+            "name" => Some(0),
+            "side" => Some(1),
+            "total" => Some(2),
+            _ => None,
+        },
+        _ => match col {
+            "code" => Some(0),
+            "name" => Some(1),
+            "class" => Some(2),
+            "amount" => Some(3),
+            _ => None,
+        },
+    }
+}
+
+fn build_rows(s: &State) -> Vec<Row> {
+    match s.reports.tab_idx {
+        1 => trial_rows(s)
+            .iter()
+            .map(|r| {
+                let code = crate::data::s(&r["code"]);
+                let name = crate::data::s(&r["name"]);
+                let debit_raw = crate::data::s(&r["debit"]);
+                let credit_raw = crate::data::s(&r["credit"]);
+                Row {
+                    id: format!("tb-{}", crate::data::s(&r["account_id"])),
+                    cells: vec![code.clone(), name.clone(), s.fmt.money(&debit_raw), s.fmt.money(&credit_raw)],
+                    keys: vec![
+                        SortKey::text(&code),
+                        SortKey::text(&name),
+                        SortKey::num_str(&debit_raw),
+                        SortKey::num_str(&credit_raw),
+                    ],
+                }
+            })
+            .collect(),
+        2 => party_keys(s)
+            .iter()
+            .map(|(key, amount_raw)| {
+                let (role_raw, id) = key.split_once(':').unwrap_or(("contact", key.as_str()));
+                let p_name = s.books.party_name(id);
+                let name = if p_name.is_empty() { id.to_string() } else { p_name };
+                let role = if role_raw == "customer" {
+                    s.fmt.t("Customer")
+                } else {
+                    s.fmt.t("Supplier")
+                };
+                Row {
+                    id: format!("party-bal-{key}"),
+                    cells: vec![name.clone(), role.clone(), s.fmt.money(amount_raw)],
+                    keys: vec![SortKey::text(&name), SortKey::text(&role), SortKey::num_str(amount_raw)],
+                }
+            })
+            .collect(),
+        3 => sheet_rows(s)
+            .iter()
+            .map(|(class_raw, row)| {
+                let key = match class_raw.as_str() {
+                    "assets" => "Asset",
+                    "liabilities" => "Liability",
+                    "equity" => "Equity",
+                    other => other,
+                };
+                let class = s.fmt.t(key);
+                let code = crate::data::s(&row["code"]);
+                let name = crate::data::s(&row["name"]);
+                let amount_raw = crate::data::s(&row["amount"]);
+                Row {
+                    id: format!("bs-{}", crate::data::s(&row["account_id"])),
+                    cells: vec![class.clone(), code.clone(), name.clone(), s.fmt.money(&amount_raw)],
+                    keys: vec![
+                        SortKey::text(&class),
+                        SortKey::text(&code),
+                        SortKey::text(&name),
+                        SortKey::num_str(&amount_raw),
+                    ],
+                }
+            })
+            .collect(),
+        4 => aging_rows(s)
+            .iter()
+            .map(|row| {
+                let id = crate::data::s(&row["party_id"]);
+                let side_raw = crate::data::s(&row["side"]);
+                let name = s.books.party_name(&id);
+                let side = s.fmt.t(if side_raw == "payable" { "Supplier" } else { "Customer" });
+                let total_raw = crate::data::s(&row["total"]);
+                Row {
+                    id: format!("age-{side_raw}-{id}"),
+                    cells: vec![name.clone(), side.clone(), s.fmt.money(&total_raw)],
+                    keys: vec![SortKey::text(&name), SortKey::text(&side), SortKey::num_str(&total_raw)],
+                }
+            })
+            .collect(),
+        _ => pl_rows(s)
+            .iter()
+            .map(|r| {
+                let code = crate::data::s(&r["code"]);
+                let name = crate::data::s(&r["name"]);
+                let class = crate::data::s(&r["classification"]);
+                let amount_raw = crate::data::s(&r["amount"]);
+                Row {
+                    id: format!("pl-{}", crate::data::s(&r["account_id"])),
+                    cells: vec![code.clone(), name.clone(), class.clone(), s.fmt.money(&amount_raw)],
+                    keys: vec![
+                        SortKey::text(&code),
+                        SortKey::text(&name),
+                        SortKey::text(&class),
+                        SortKey::num_str(&amount_raw),
+                    ],
+                }
+            })
+            .collect(),
+    }
+}
+
+pub fn ensure(st: &mut State) {
+    if st.reports.rows_stamp == st.stamp {
+        return;
+    }
+    st.reports.rows = build_rows(st);
+    st.reports.rows_stamp = st.stamp;
+    let tab_idx = st.reports.tab_idx;
+    reapply_sort(&st.reports.table, &mut st.reports.rows, |c| col_index(tab_idx, c));
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.reports.table.set_sort(col, dir);
+    if let Some(idx) = col_index(st.reports.tab_idx, col) {
+        sort_rows(&mut st.reports.rows, idx, dir);
+    }
 }
 
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El {
@@ -48,6 +207,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     let tab_bar = ui.tabs("reports-tabs", &tabs, |st, idx| {
         st.reports.tab_idx = idx;
         st.reports.table = TableState::new();
+        st.reports.rows_stamp = 0;
+        ensure(st);
     });
 
     let body = match s.reports.tab_idx {
@@ -56,33 +217,38 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             let table = Table::new(
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
-                |s: &State| trial_rows(s).len(),
-                |s: &State, i| {
-                    Cow::Owned(
-                        trial_rows(s)
-                            .get(i)
-                            .map(|r| format!("tb-{}", crate::data::s(&r["account_id"])))
-                            .unwrap_or_default(),
-                    )
-                },
+                |s: &State| s.reports.rows.len(),
+                |s: &State, i| Cow::Owned(s.reports.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
             )
             .name(ui.t("Trial balance"))
             .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
             .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-            .column(TableColumn::new("debit", ui.t("Debit")).width(140.0).min(96.0).align(Align::End))
-            .column(TableColumn::new("credit", ui.t("Credit")).width(140.0).min(96.0).align(Align::End))
+            .column(
+                TableColumn::new("debit", ui.t("Debit"))
+                    .width(140.0)
+                    .min(96.0)
+                    .align(Align::End)
+                    .sortable(),
+            )
+            .column(
+                TableColumn::new("credit", ui.t("Credit"))
+                    .width(140.0)
+                    .min(96.0)
+                    .align(Align::End)
+                    .sortable(),
+            )
             .cell(|s: &State, i, col| {
-                let rows = trial_rows(s);
-                let Some(r) = rows.get(i) else {
+                let Some(row) = s.reports.rows.get(i) else {
                     return Cell::text("");
                 };
                 match col {
-                    "code" => Cell::text(crate::data::s(&r["code"])),
-                    "name" => Cell::text(crate::data::s(&r["name"])),
-                    "debit" => Cell::text(s.fmt.money(&crate::data::s(&r["debit"]))).mono(),
-                    _ => Cell::text(s.fmt.money(&crate::data::s(&r["credit"]))).mono(),
+                    "code" => Cell::text(&row.cells[0]),
+                    "name" => Cell::text(&row.cells[1]),
+                    "debit" => Cell::text(&row.cells[2]).mono(),
+                    _ => Cell::text(&row.cells[3]).mono(),
                 }
             })
+            .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
             .zebra(true)
             .build(s, &ui.k)
             .key("trial-table")
@@ -95,19 +261,19 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .min_h(0.0)
                 .child(tab_bar)
                 .child(ui.muted(ui.t(hint)))
-                .child(ui.fill_or_empty(trial_rows(s).len(), "Nothing to show", hint, &icons::REPORTS, table))
+                .child(ui.fill_or_empty(s.reports.rows.len(), "Nothing to show", hint, &icons::REPORTS, table))
         }
         2 => {
             let hint = "Who owes you and who you owe.";
             let table = Table::new(
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
-                |s: &State| party_keys(s).len(),
-                |s: &State, i| Cow::Owned(party_keys(s).get(i).map(|(k, _)| format!("party-bal-{k}")).unwrap_or_default()),
+                |s: &State| s.reports.rows.len(),
+                |s: &State, i| Cow::Owned(s.reports.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
             )
             .name(ui.t("Customers & Suppliers"))
             .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-            .column(TableColumn::new("role", ui.t("Role")).width(120.0).min(88.0))
+            .column(TableColumn::new("role", ui.t("Role")).width(120.0).min(88.0).sortable())
             .column(
                 TableColumn::new("balance", ui.t("Balance"))
                     .width(160.0)
@@ -116,23 +282,16 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                     .sortable(),
             )
             .cell(|s: &State, i, col| {
-                let keys = party_keys(s);
-                let Some((key, amount)) = keys.get(i) else {
+                let Some(row) = s.reports.rows.get(i) else {
                     return Cell::text("");
                 };
-                let (role, id) = key.split_once(':').unwrap_or(("contact", key.as_str()));
-                let name = s.books.party_name(id);
                 match col {
-                    "name" => Cell::text(if name.is_empty() { id.to_string() } else { name }),
-                    "role" => Cell::text(if role == "customer" {
-                        s.fmt.t("Customer")
-                    } else {
-                        s.fmt.t("Supplier")
-                    })
-                    .muted(),
-                    _ => Cell::text(s.fmt.money(amount)).mono(),
+                    "name" => Cell::text(&row.cells[0]),
+                    "role" => Cell::text(&row.cells[1]).muted(),
+                    _ => Cell::text(&row.cells[2]).mono(),
                 }
             })
+            .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
             .zebra(true)
             .build(s, &ui.k)
             .key("party-balances-table")
@@ -145,7 +304,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .min_h(0.0)
                 .child(tab_bar)
                 .child(ui.muted(ui.t(hint)))
-                .child(ui.fill_or_empty(party_keys(s).len(), "Nothing to show", hint, &icons::REPORTS, table))
+                .child(ui.fill_or_empty(s.reports.rows.len(), "Nothing to show", hint, &icons::REPORTS, table))
         }
         3 => sheet_tab(s, ui, tab_bar),
         4 => aging_tab(s, ui, tab_bar),
@@ -186,20 +345,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             let table = Table::new(
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
-                |s: &State| pl_rows(s).len(),
-                |s: &State, i| {
-                    Cow::Owned(
-                        pl_rows(s)
-                            .get(i)
-                            .map(|r| format!("pl-{}", crate::data::s(&r["account_id"])))
-                            .unwrap_or_default(),
-                    )
-                },
+                |s: &State| s.reports.rows.len(),
+                |s: &State, i| Cow::Owned(s.reports.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
             )
             .name(ui.t("Profit & Loss"))
             .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
             .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-            .column(TableColumn::new("class", ui.t("Classification")).width(120.0).min(96.0))
+            .column(TableColumn::new("class", ui.t("Classification")).width(120.0).min(96.0).sortable())
             .column(
                 TableColumn::new("amount", ui.t("Amount"))
                     .width(160.0)
@@ -208,17 +360,17 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                     .sortable(),
             )
             .cell(|s: &State, i, col| {
-                let rows = pl_rows(s);
-                let Some(r) = rows.get(i) else {
+                let Some(row) = s.reports.rows.get(i) else {
                     return Cell::text("");
                 };
                 match col {
-                    "code" => Cell::text(crate::data::s(&r["code"])),
-                    "name" => Cell::text(crate::data::s(&r["name"])),
-                    "class" => Cell::text(crate::data::s(&r["classification"])).muted(),
-                    _ => Cell::text(s.fmt.money(&crate::data::s(&r["amount"]))).mono(),
+                    "code" => Cell::text(&row.cells[0]),
+                    "name" => Cell::text(&row.cells[1]),
+                    "class" => Cell::text(&row.cells[2]).muted(),
+                    _ => Cell::text(&row.cells[3]).mono(),
                 }
             })
+            .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
             .zebra(true)
             .build(s, &ui.k)
             .key("pl-table")
@@ -233,7 +385,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .child(tab_bar)
                 .child(ui.muted(ui.t(hint)))
                 .child(metrics)
-                .child(ui.fill_or_empty(pl_rows(s).len(), "Nothing to show", hint, &icons::REPORTS, table))
+                .child(ui.fill_or_empty(s.reports.rows.len(), "Nothing to show", hint, &icons::REPORTS, table))
         }
     };
 
@@ -259,8 +411,7 @@ fn sheet_rows(s: &State) -> Vec<(String, serde_json::Value)> {
 }
 
 fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
-    let rows = sheet_rows(s);
-    if rows.is_empty() {
+    if s.reports.rows.is_empty() {
         return col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(
             ui.empty(&icons::REPORTS, "No balances through this date", "Balance sheet")
                 .grow(1.0),
@@ -269,41 +420,32 @@ fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     let table = Table::new(
         |s: &State| &s.reports.table,
         |s: &mut State| &mut s.reports.table,
-        |s: &State| sheet_rows(s).len(),
-        |s: &State, i| {
-            Cow::Owned(
-                sheet_rows(s)
-                    .get(i)
-                    .map(|(_, r)| format!("bs-{}", crate::data::s(&r["account_id"])))
-                    .unwrap_or_default(),
-            )
-        },
+        |s: &State| s.reports.rows.len(),
+        |s: &State, i| Cow::Owned(s.reports.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
     )
     .name(ui.t("Balance sheet"))
-    .column(TableColumn::new("class", ui.t("Classification")).width(120.0).min(88.0))
-    .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0))
-    .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0))
-    .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(110.0).align(Align::End))
+    .column(TableColumn::new("class", ui.t("Classification")).width(120.0).min(88.0).sortable())
+    .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
+    .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
+    .column(
+        TableColumn::new("amount", ui.t("Amount"))
+            .width(160.0)
+            .min(110.0)
+            .align(Align::End)
+            .sortable(),
+    )
     .cell(|s: &State, i, col| {
-        let rows = sheet_rows(s);
-        let Some((class, row)) = rows.get(i) else {
+        let Some(row) = s.reports.rows.get(i) else {
             return Cell::text("");
         };
         match col {
-            "class" => {
-                let key = match class.as_str() {
-                    "assets" => "Asset",
-                    "liabilities" => "Liability",
-                    "equity" => "Equity",
-                    other => other,
-                };
-                Cell::text(s.fmt.t(key))
-            }
-            "code" => Cell::text(crate::data::s(&row["code"])),
-            "name" => Cell::text(crate::data::s(&row["name"])),
-            _ => Cell::text(s.fmt.money(&crate::data::s(&row["amount"]))).mono(),
+            "class" => Cell::text(&row.cells[0]),
+            "code" => Cell::text(&row.cells[1]),
+            "name" => Cell::text(&row.cells[2]),
+            _ => Cell::text(&row.cells[3]).mono(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .zebra(true)
     .build(s, &ui.k)
     .key("balance-sheet-table")
@@ -340,7 +482,7 @@ fn aging_rows(s: &State) -> Vec<serde_json::Value> {
 }
 
 fn aging_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
-    if aging_rows(s).is_empty() {
+    if s.reports.rows.is_empty() {
         return col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(
             ui.empty(&icons::REPORTS, "No outstanding balances — everything is settled.", "Aging")
                 .grow(1.0),
@@ -349,32 +491,30 @@ fn aging_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     let table = Table::new(
         |s: &State| &s.reports.table,
         |s: &mut State| &mut s.reports.table,
-        |s: &State| aging_rows(s).len(),
-        |s: &State, i| {
-            Cow::Owned(
-                aging_rows(s)
-                    .get(i)
-                    .map(|r| format!("age-{}-{}", crate::data::s(&r["side"]), crate::data::s(&r["party_id"])))
-                    .unwrap_or_default(),
-            )
-        },
+        |s: &State| s.reports.rows.len(),
+        |s: &State, i| Cow::Owned(s.reports.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
     )
     .name(ui.t("Aging"))
-    .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0))
-    .column(TableColumn::new("side", ui.t("Role")).width(120.0).min(88.0))
-    .column(TableColumn::new("total", ui.t("Balance")).width(160.0).min(110.0).align(Align::End))
+    .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
+    .column(TableColumn::new("side", ui.t("Role")).width(120.0).min(88.0).sortable())
+    .column(
+        TableColumn::new("total", ui.t("Balance"))
+            .width(160.0)
+            .min(110.0)
+            .align(Align::End)
+            .sortable(),
+    )
     .cell(|s: &State, i, col| {
-        let rows = aging_rows(s);
-        let Some(row) = rows.get(i) else {
+        let Some(row) = s.reports.rows.get(i) else {
             return Cell::text("");
         };
-        let id = crate::data::s(&row["party_id"]);
         match col {
-            "name" => Cell::text(s.books.party_name(&id)),
-            "side" => Cell::text(s.fmt.t(if row["side"] == "payable" { "Supplier" } else { "Customer" })).muted(),
-            _ => Cell::text(s.fmt.money(&crate::data::s(&row["total"]))).mono(),
+            "name" => Cell::text(&row.cells[0]),
+            "side" => Cell::text(&row.cells[1]).muted(),
+            _ => Cell::text(&row.cells[2]).mono(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .zebra(true)
     .build(s, &ui.k)
     .key("aging-table")

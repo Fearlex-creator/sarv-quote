@@ -3,7 +3,7 @@
 use std::borrow::Cow;
 
 use rune::{Align, Cx, El, col, row, text};
-use rune_kit::{Cell, ComboboxState, Table, TableColumn, TableState};
+use rune_kit::{Cell, ComboboxState, SortDir, Table, TableColumn, TableState};
 use serde_json::json;
 
 use crate::app::{State, Tone};
@@ -11,6 +11,7 @@ use crate::ui::glass::{Btn, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
 use crate::ui::pickers;
 use crate::ui::resources::ResourceKind;
+use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
 #[derive(Clone, Debug)]
 pub struct SaleLine {
@@ -50,6 +51,9 @@ pub struct SalesState {
     pub draft_id: String,
     pub posting: bool,
     pub selected: String,
+    pub rows: Vec<Row>,
+    pub draft_rows: Vec<Row>,
+    pub rows_stamp: u64,
 }
 
 impl SalesState {
@@ -455,6 +459,104 @@ fn issue_quotation(st: &mut State) {
     }
 }
 
+fn col_index(col: &str) -> Option<usize> {
+    match col {
+        "ref" => Some(0),
+        "customer" => Some(1),
+        "date" => Some(2),
+        "amount" => Some(3),
+        "status" => Some(4),
+        _ => None,
+    }
+}
+
+fn build_invoice_rows(s: &State) -> Vec<Row> {
+    let status = s.fmt.t("Posted");
+    sales_records(s)
+        .iter()
+        .map(|record| {
+            let ref_text = sales_ref(record);
+            let customer = s.books.party_name(&sales_party(record));
+            let date_raw = sales_date(record);
+            let amount_raw = sales_amount(record);
+            Row {
+                id: format!("sale-{}", crate::data::s(&record["id"])),
+                cells: vec![
+                    ref_text.clone(),
+                    customer.clone(),
+                    s.fmt.date(&date_raw),
+                    s.fmt.money(&amount_raw),
+                    status.clone(),
+                ],
+                keys: vec![
+                    SortKey::text(&ref_text),
+                    SortKey::text(&customer),
+                    SortKey::text(&date_raw),
+                    SortKey::num_str(&amount_raw),
+                    SortKey::text(&status),
+                ],
+            }
+        })
+        .collect()
+}
+
+fn build_draft_rows(s: &State) -> Vec<Row> {
+    let fallback_status = s.fmt.t("Draft");
+    drafts(s)
+        .iter()
+        .map(|draft| {
+            let ref_text = crate::data::s(&draft["reference"]);
+            let customer = s.books.party_name(&crate::data::s(&draft["customer_id"]));
+            let date_raw = crate::data::s(&draft["document_date"]);
+            let amount_raw = crate::data::s(&draft["supplied_total"]);
+            let note = crate::data::s(&draft["reason"]);
+            let status = if note.is_empty() { fallback_status.clone() } else { note };
+            Row {
+                id: format!("draft-{}", crate::data::s(&draft["id"])),
+                cells: vec![
+                    ref_text.clone(),
+                    customer.clone(),
+                    s.fmt.date(&date_raw),
+                    s.fmt.money(&amount_raw),
+                    status.clone(),
+                ],
+                keys: vec![
+                    SortKey::text(&ref_text),
+                    SortKey::text(&customer),
+                    SortKey::text(&date_raw),
+                    SortKey::num_str(&amount_raw),
+                    SortKey::text(&status),
+                ],
+            }
+        })
+        .collect()
+}
+
+pub fn ensure(st: &mut State) {
+    if st.sales.rows_stamp == st.stamp {
+        return;
+    }
+    st.sales.rows = build_invoice_rows(st);
+    st.sales.draft_rows = build_draft_rows(st);
+    st.sales.rows_stamp = st.stamp;
+    if st.sales.tab_idx == 0 {
+        reapply_sort(&st.sales.table, &mut st.sales.rows, col_index);
+    } else {
+        reapply_sort(&st.sales.table, &mut st.sales.draft_rows, col_index);
+    }
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.sales.table.set_sort(col, dir);
+    if let Some(idx) = col_index(col) {
+        if st.sales.tab_idx == 0 {
+            sort_rows(&mut st.sales.rows, idx, dir);
+        } else {
+            sort_rows(&mut st.sales.draft_rows, idx, dir);
+        }
+    }
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
     let t_inv = ui.t("Invoices");
     let t_draft = ui.t("Drafts");
@@ -462,26 +564,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let tab_bar = ui.tabs("sales-tabs", &tabs, |st, idx| {
         st.sales.tab_idx = idx;
         st.sales.table = TableState::new();
+        st.sales.rows_stamp = 0;
+        ensure(st);
     });
 
     let table = if s.sales.tab_idx == 0 {
         Table::new(
             |s: &State| &s.sales.table,
             |s: &mut State| &mut s.sales.table,
-            |s: &State| sales_records(s).len(),
-            |s: &State, i| {
-                Cow::Owned(
-                    sales_records(s)
-                        .get(i)
-                        .map(|r| format!("sale-{}", crate::data::s(&r["id"])))
-                        .unwrap_or_default(),
-                )
-            },
+            |s: &State| s.sales.rows.len(),
+            |s: &State, i| Cow::Owned(s.sales.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
         )
         .name(ui.t("Invoices"))
-        .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
+        .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0).sortable())
         .column(TableColumn::new("customer", ui.t("Customer")).flex(2.0).min(140.0).sortable())
-        .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
+        .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0).sortable())
         .column(
             TableColumn::new("amount", ui.t("Amount"))
                 .width(160.0)
@@ -489,20 +586,20 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 .align(Align::End)
                 .sortable(),
         )
-        .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
+        .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0).sortable())
         .cell(|s: &State, i, col| {
-            let records = sales_records(s);
-            let Some(record) = records.get(i) else {
+            let Some(row) = s.sales.rows.get(i) else {
                 return Cell::text("");
             };
             match col {
-                "ref" => Cell::text(sales_ref(record)),
-                "customer" => Cell::text(s.books.party_name(&sales_party(record))),
-                "date" => Cell::text(s.fmt.date(&sales_date(record))).muted(),
-                "amount" => Cell::text(s.fmt.money(&sales_amount(record))).mono(),
-                _ => Cell::text(s.fmt.t("Posted")).muted(),
+                "ref" => Cell::text(&row.cells[0]),
+                "customer" => Cell::text(&row.cells[1]),
+                "date" => Cell::text(&row.cells[2]).muted(),
+                "amount" => Cell::text(&row.cells[3]).mono(),
+                _ => Cell::text(&row.cells[4]).muted(),
             }
         })
+        .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.sales.selected = id.strip_prefix("sale-").unwrap_or(id).to_string())
         .zebra(true)
         .build(s, &ui.k)
@@ -513,36 +610,34 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         Table::new(
             |s: &State| &s.sales.table,
             |s: &mut State| &mut s.sales.table,
-            |s: &State| drafts(s).len(),
-            |s: &State, i| {
-                Cow::Owned(
-                    drafts(s)
-                        .get(i)
-                        .map(|d| format!("draft-{}", crate::data::s(&d["id"])))
-                        .unwrap_or_default(),
-                )
-            },
+            |s: &State| s.sales.draft_rows.len(),
+            |s: &State, i| Cow::Owned(s.sales.draft_rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
         )
         .name(ui.t("Drafts"))
-        .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
-        .column(TableColumn::new("customer", ui.t("Customer")).flex(2.0).min(140.0))
-        .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
-        .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(100.0).align(Align::End))
-        .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
+        .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0).sortable())
+        .column(TableColumn::new("customer", ui.t("Customer")).flex(2.0).min(140.0).sortable())
+        .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0).sortable())
+        .column(
+            TableColumn::new("amount", ui.t("Amount"))
+                .width(160.0)
+                .min(100.0)
+                .align(Align::End)
+                .sortable(),
+        )
+        .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0).sortable())
         .cell(|s: &State, i, col| {
-            let list = drafts(s);
-            let Some(draft) = list.get(i) else {
+            let Some(row) = s.sales.draft_rows.get(i) else {
                 return Cell::text("");
             };
-            let note = crate::data::s(&draft["reason"]);
             match col {
-                "ref" => Cell::text(crate::data::s(&draft["reference"])),
-                "customer" => Cell::text(s.books.party_name(&crate::data::s(&draft["customer_id"]))),
-                "date" => Cell::text(s.fmt.date(&crate::data::s(&draft["document_date"]))).muted(),
-                "amount" => Cell::text(s.fmt.money(&crate::data::s(&draft["supplied_total"]))).mono(),
-                _ => Cell::text(if note.is_empty() { s.fmt.t("Draft") } else { note }).muted(),
+                "ref" => Cell::text(&row.cells[0]),
+                "customer" => Cell::text(&row.cells[1]),
+                "date" => Cell::text(&row.cells[2]).muted(),
+                "amount" => Cell::text(&row.cells[3]).mono(),
+                _ => Cell::text(&row.cells[4]).muted(),
             }
         })
+        .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.sales.selected = id.strip_prefix("draft-").unwrap_or(id).to_string())
         .zebra(true)
         .build(s, &ui.k)
@@ -574,9 +669,9 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         ],
         col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.fill_or_empty(
             if s.sales.tab_idx == 0 {
-                sales_records(s).len()
+                s.sales.rows.len()
             } else {
-                drafts(s).len()
+                s.sales.draft_rows.len()
             },
             if s.sales.tab_idx == 0 { "No invoices" } else { "No drafts" },
             "Sales that are delivered and billed.",

@@ -3,11 +3,12 @@
 use std::borrow::Cow;
 
 use rune::{Cx, El, col, row};
-use rune_kit::{Cell, Table, TableColumn, TableState};
+use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_LG, Ui};
 use crate::ui::icons;
+use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
 #[derive(Default)]
 pub struct BankingState {
@@ -18,6 +19,8 @@ pub struct BankingState {
     /// 0 transfer, 1 deposit (money in), 2 withdrawal (money out).
     pub kind: usize,
     pub post_key: String,
+    pub rows: Vec<Row>,
+    pub rows_stamp: u64,
 }
 
 fn bank_rows(s: &State) -> Vec<serde_json::Value> {
@@ -47,36 +50,85 @@ fn counterpart_options(s: &State) -> Vec<(String, String)> {
         .unwrap_or_default()
 }
 
+fn col_index(col: &str) -> Option<usize> {
+    match col {
+        "code" => Some(0),
+        "name" => Some(1),
+        "class" => Some(2),
+        "balance" => Some(3),
+        _ => None,
+    }
+}
+
+fn build_rows(s: &State) -> Vec<Row> {
+    bank_rows(s)
+        .iter()
+        .map(|row| {
+            let acc = &row["account"];
+            let code = crate::data::s(&acc["code"]);
+            let name = crate::data::s(&acc["name"]);
+            let class = s.fmt.t(&crate::data::s(&row["role"]));
+            let bal_raw = crate::data::s(&row["balance"]);
+            Row {
+                id: format!("bank-acc-{}", crate::data::s(&acc["id"])),
+                cells: vec![code.clone(), name.clone(), class.clone(), s.fmt.money(&bal_raw)],
+                keys: vec![
+                    SortKey::text(&code),
+                    SortKey::text(&name),
+                    SortKey::text(&class),
+                    SortKey::num_str(&bal_raw),
+                ],
+            }
+        })
+        .collect()
+}
+
+pub fn ensure(st: &mut State) {
+    if st.banking.rows_stamp == st.stamp {
+        return;
+    }
+    st.banking.rows = build_rows(st);
+    st.banking.rows_stamp = st.stamp;
+    reapply_sort(&st.banking.table, &mut st.banking.rows, col_index);
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.banking.table.set_sort(col, dir);
+    if let Some(idx) = col_index(col) {
+        sort_rows(&mut st.banking.rows, idx, dir);
+    }
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
     let table = Table::new(
         |s: &State| &s.banking.table,
         |s: &mut State| &mut s.banking.table,
-        |s: &State| bank_rows(s).len(),
-        |s: &State, i| Cow::Owned(format!("bank-acc-{}", crate::data::s(&bank_rows(s)[i]["account"]["id"]))),
+        |s: &State| s.banking.rows.len(),
+        |s: &State, i| Cow::Owned(s.banking.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
     )
     .name(ui.t("Banking"))
     .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
     .column(TableColumn::new("name", ui.t("Account")).flex(2.0).min(140.0).sortable())
-    .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0))
+    .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0).sortable())
     .column(
         TableColumn::new("balance", ui.t("Balance"))
             .width(160.0)
             .min(110.0)
-            .align(rune::Align::End),
+            .align(rune::Align::End)
+            .sortable(),
     )
     .cell(|s: &State, i, col| {
-        let rows = bank_rows(s);
-        let Some(row) = rows.get(i) else {
+        let Some(row) = s.banking.rows.get(i) else {
             return Cell::text("");
         };
-        let acc = &row["account"];
         match col {
-            "code" => Cell::text(crate::data::s(&acc["code"])),
-            "name" => Cell::text(crate::data::s(&acc["name"])),
-            "balance" => Cell::text(s.fmt.money(&crate::data::s(&row["balance"]))).mono(),
-            _ => Cell::text(s.fmt.t(&crate::data::s(&row["role"]))).muted(),
+            "code" => Cell::text(&row.cells[0]),
+            "name" => Cell::text(&row.cells[1]),
+            "balance" => Cell::text(&row.cells[3]).mono(),
+            _ => Cell::text(&row.cells[2]).muted(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .zebra(true)
     .build(s, &ui.k)
     .key("banking-table")
@@ -93,7 +145,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     ));
 
     let body = col().w_full().gap(16.0).grow(1.0).min_h(0.0).child(kpis).child(ui.fill_or_empty(
-        bank_rows(s).len(),
+        s.banking.rows.len(),
         "No accounts",
         "Cash and bank",
         &icons::WALLET,

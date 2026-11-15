@@ -8,6 +8,7 @@ pub mod kit;
 pub mod ops;
 pub mod pickers;
 pub mod resources;
+pub mod rows;
 pub mod shell;
 pub mod views;
 

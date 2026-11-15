@@ -3,11 +3,12 @@
 use std::borrow::Cow;
 
 use rune::{Align, Cx, El, col};
-use rune_kit::{Cell, Table, TableColumn, TableState};
+use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_LG, DIALOG_MD, Ui};
 use crate::ui::icons;
+use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 
 #[derive(Default)]
 pub struct AccountingState {
@@ -21,6 +22,8 @@ pub struct AccountingState {
     pub ledger: serde_json::Value,
     pub post_key: String,
     pub posting: bool,
+    pub rows: Vec<Row>,
+    pub rows_stamp: u64,
 }
 
 fn accounts(s: &State) -> &[serde_json::Value] {
@@ -69,6 +72,114 @@ fn journals(s: &State) -> Vec<serde_json::Value> {
     s.books.list("journals")
 }
 
+fn col_index(tab_idx: usize, col: &str) -> Option<usize> {
+    match tab_idx {
+        1 => match col {
+            "code" => Some(0),
+            "name" => Some(1),
+            "class" => Some(2),
+            _ => None,
+        },
+        2 => match col {
+            "name" => Some(0),
+            "date" => Some(1),
+            "status" => Some(2),
+            _ => None,
+        },
+        _ => match col {
+            "ref" => Some(0),
+            "date" => Some(1),
+            "desc" => Some(2),
+            "debit" => Some(3),
+            "credit" => Some(4),
+            "status" => Some(5),
+            _ => None,
+        },
+    }
+}
+
+fn build_rows(s: &State) -> Vec<Row> {
+    match s.accounting.tab_idx {
+        1 => accounts(s)
+            .iter()
+            .map(|acc| {
+                let code = crate::data::s(&acc["code"]);
+                let name = crate::data::s(&acc["name"]);
+                let class = s.fmt.t(&crate::data::s(&acc["classification"]));
+                Row {
+                    id: format!("acc-{}", crate::data::s(&acc["id"])),
+                    cells: vec![code.clone(), name.clone(), class.clone()],
+                    keys: vec![SortKey::text(&code), SortKey::text(&name), SortKey::text(&class)],
+                }
+            })
+            .collect(),
+        2 => periods(s)
+            .iter()
+            .map(|period| {
+                let name = crate::data::s(&period["name"]);
+                let date_raw = crate::data::s(&period["start_date"]);
+                let locked = period["locked"].as_bool().unwrap_or(false);
+                let status = s.fmt.t(period_status_key(locked));
+                Row {
+                    id: format!("period-{}", crate::data::s(&period["id"])),
+                    cells: vec![name.clone(), s.fmt.date(&date_raw), status.clone()],
+                    keys: vec![SortKey::text(&name), SortKey::text(&date_raw), SortKey::text(&status)],
+                }
+            })
+            .collect(),
+        _ => {
+            let status = s.fmt.t("Posted");
+            journals(s)
+                .iter()
+                .map(|j| {
+                    let id = crate::data::s(&j["id"]);
+                    let ref_text = format!("#{}", id.chars().take(8).collect::<String>());
+                    let date_raw = crate::data::s(&j["date"]);
+                    let desc = crate::data::s(&j["reason"]);
+                    let debit_raw = crate::data::s(&j["total_debit"]);
+                    let credit_raw = crate::data::s(&j["total_credit"]);
+                    Row {
+                        id: format!("journal-{id}"),
+                        cells: vec![
+                            ref_text.clone(),
+                            s.fmt.date(&date_raw),
+                            desc.clone(),
+                            s.fmt.money(&debit_raw),
+                            s.fmt.money(&credit_raw),
+                            status.clone(),
+                        ],
+                        keys: vec![
+                            SortKey::text(&ref_text),
+                            SortKey::text(&date_raw),
+                            SortKey::text(&desc),
+                            SortKey::num_str(&debit_raw),
+                            SortKey::num_str(&credit_raw),
+                            SortKey::text(&status),
+                        ],
+                    }
+                })
+                .collect()
+        }
+    }
+}
+
+pub fn ensure(st: &mut State) {
+    if st.accounting.rows_stamp == st.stamp {
+        return;
+    }
+    st.accounting.rows = build_rows(st);
+    st.accounting.rows_stamp = st.stamp;
+    let tab_idx = st.accounting.tab_idx;
+    reapply_sort(&st.accounting.table, &mut st.accounting.rows, |c| col_index(tab_idx, c));
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.accounting.table.set_sort(col, dir);
+    if let Some(idx) = col_index(st.accounting.tab_idx, col) {
+        sort_rows(&mut st.accounting.rows, idx, dir);
+    }
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
     let t0 = ui.t("Journals");
     let t1 = ui.t("Chart of accounts");
@@ -81,37 +192,32 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let tab_bar = ui.tabs("accounting-tabs", &tabs, |st, idx| {
         st.accounting.tab_idx = idx;
         st.accounting.table = TableState::new();
+        st.accounting.rows_stamp = 0;
+        ensure(st);
     });
 
     let table = match s.accounting.tab_idx {
         1 => Table::new(
             |s: &State| &s.accounting.table,
             |s: &mut State| &mut s.accounting.table,
-            |s: &State| accounts(s).len(),
-            |s: &State, i| {
-                Cow::Owned(
-                    accounts(s)
-                        .get(i)
-                        .map(|a| format!("acc-{}", crate::data::s(&a["id"])))
-                        .unwrap_or_default(),
-                )
-            },
+            |s: &State| s.accounting.rows.len(),
+            |s: &State, i| Cow::Owned(s.accounting.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
         )
         .name(ui.t("Chart of accounts"))
         .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
         .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-        .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0))
+        .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0).sortable())
         .cell(|s: &State, i, col| {
-            let list = accounts(s);
-            let Some(acc) = list.get(i) else {
+            let Some(row) = s.accounting.rows.get(i) else {
                 return Cell::text("");
             };
             match col {
-                "code" => Cell::text(crate::data::s(&acc["code"])),
-                "name" => Cell::text(crate::data::s(&acc["name"])),
-                _ => Cell::text(s.fmt.t(&crate::data::s(&acc["classification"]))).muted(),
+                "code" => Cell::text(&row.cells[0]),
+                "name" => Cell::text(&row.cells[1]),
+                _ => Cell::text(&row.cells[2]).muted(),
             }
         })
+        .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.accounting.selected = id.to_string())
         .zebra(true)
         .build(s, &ui.k)
@@ -121,34 +227,24 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         2 => Table::new(
             |s: &State| &s.accounting.table,
             |s: &mut State| &mut s.accounting.table,
-            |s: &State| periods(s).len(),
-            |s: &State, i| {
-                Cow::Owned(
-                    periods(s)
-                        .get(i)
-                        .map(|p| format!("period-{}", crate::data::s(&p["id"])))
-                        .unwrap_or_default(),
-                )
-            },
+            |s: &State| s.accounting.rows.len(),
+            |s: &State, i| Cow::Owned(s.accounting.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
         )
         .name(ui.t("Fiscal periods"))
         .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-        .column(TableColumn::new("date", ui.t("Date")).width(120.0).min(96.0))
-        .column(TableColumn::new("status", ui.t("Status")).width(120.0).min(88.0))
+        .column(TableColumn::new("date", ui.t("Date")).width(120.0).min(96.0).sortable())
+        .column(TableColumn::new("status", ui.t("Status")).width(120.0).min(88.0).sortable())
         .cell(|s: &State, i, col| {
-            let list = periods(s);
-            let Some(period) = list.get(i) else {
+            let Some(row) = s.accounting.rows.get(i) else {
                 return Cell::text("");
             };
             match col {
-                "name" => Cell::text(crate::data::s(&period["name"])),
-                "date" => Cell::text(s.fmt.date(&crate::data::s(&period["start_date"]))).muted(),
-                _ => {
-                    let locked = period["locked"].as_bool().unwrap_or(false);
-                    Cell::text(s.fmt.t(period_status_key(locked))).muted()
-                }
+                "name" => Cell::text(&row.cells[0]),
+                "date" => Cell::text(&row.cells[1]).muted(),
+                _ => Cell::text(&row.cells[2]).muted(),
             }
         })
+        .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.accounting.selected = id.to_string())
         .zebra(true)
         .build(s, &ui.k)
@@ -158,38 +254,42 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         _ => Table::new(
             |s: &State| &s.accounting.table,
             |s: &mut State| &mut s.accounting.table,
-            |s: &State| journals(s).len(),
-            |s: &State, i| {
-                Cow::Owned(
-                    journals(s)
-                        .get(i)
-                        .map(|j| format!("journal-{}", crate::data::s(&j["id"])))
-                        .unwrap_or_default(),
-                )
-            },
+            |s: &State| s.accounting.rows.len(),
+            |s: &State, i| Cow::Owned(s.accounting.rows.get(i).map(|r| r.id.clone()).unwrap_or_default()),
         )
         .name(ui.t("Journals"))
-        .column(TableColumn::new("ref", ui.t("Reference")).width(120.0).min(88.0))
-        .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
-        .column(TableColumn::new("desc", ui.t("Description")).flex(2.0).min(140.0))
-        .column(TableColumn::new("debit", ui.t("Debit")).width(140.0).min(96.0).align(Align::End))
-        .column(TableColumn::new("credit", ui.t("Credit")).width(140.0).min(96.0).align(Align::End))
-        .column(TableColumn::new("status", ui.t("Status")).width(100.0).min(80.0))
+        .column(TableColumn::new("ref", ui.t("Reference")).width(120.0).min(88.0).sortable())
+        .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0).sortable())
+        .column(TableColumn::new("desc", ui.t("Description")).flex(2.0).min(140.0).sortable())
+        .column(
+            TableColumn::new("debit", ui.t("Debit"))
+                .width(140.0)
+                .min(96.0)
+                .align(Align::End)
+                .sortable(),
+        )
+        .column(
+            TableColumn::new("credit", ui.t("Credit"))
+                .width(140.0)
+                .min(96.0)
+                .align(Align::End)
+                .sortable(),
+        )
+        .column(TableColumn::new("status", ui.t("Status")).width(100.0).min(80.0).sortable())
         .cell(|s: &State, i, col| {
-            let list = journals(s);
-            let Some(j) = list.get(i) else {
+            let Some(row) = s.accounting.rows.get(i) else {
                 return Cell::text("");
             };
-            let id = crate::data::s(&j["id"]);
             match col {
-                "ref" => Cell::text(format!("#{}", id.chars().take(8).collect::<String>())),
-                "date" => Cell::text(s.fmt.date(&crate::data::s(&j["date"]))).muted(),
-                "desc" => Cell::text(crate::data::s(&j["reason"])),
-                "debit" => Cell::text(s.fmt.money(&crate::data::s(&j["total_debit"]))).mono(),
-                "credit" => Cell::text(s.fmt.money(&crate::data::s(&j["total_credit"]))).mono(),
-                _ => Cell::text(s.fmt.t("Posted")).muted(),
+                "ref" => Cell::text(&row.cells[0]),
+                "date" => Cell::text(&row.cells[1]).muted(),
+                "desc" => Cell::text(&row.cells[2]),
+                "debit" => Cell::text(&row.cells[3]).mono(),
+                "credit" => Cell::text(&row.cells[4]).mono(),
+                _ => Cell::text(&row.cells[5]).muted(),
             }
         })
+        .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.accounting.selected = id.to_string())
         .zebra(true)
         .build(s, &ui.k)
@@ -199,11 +299,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     };
 
     let (hint, empty_title) = tab_empty_copy(s.accounting.tab_idx);
-    let empty_count = match s.accounting.tab_idx {
-        1 => accounts(s).len(),
-        2 => periods(s).len(),
-        _ => journals(s).len(),
-    };
+    let empty_count = s.accounting.rows.len();
 
     let body = col()
         .w_full()

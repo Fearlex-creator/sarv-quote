@@ -1,14 +1,16 @@
 //! Contacts — customers & suppliers with kit Table, role filters, and a full PartyProfile suite.
 
 use std::borrow::Cow;
+use std::collections::HashMap;
 
 use rune::{Align, Cx, El, col, row};
-use rune_kit::{Cell, Switch, Table, TableColumn, TableState};
+use rune_kit::{Cell, SortDir, Switch, Table, TableColumn, TableState};
 use serde_json::{Value, json};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_MD, Ui};
 use crate::ui::icons;
+use crate::ui::rows::{FilterCache, Row, SortKey, fold_text, reapply_sort, sort_rows};
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
 pub enum ContactFilter {
@@ -30,6 +32,11 @@ pub struct ContactsState {
     pub detail: Value,
     pub new_snapshot: String,
     pub profile_snapshot: String,
+    pub rows: Vec<Row>,
+    pub search_blobs: HashMap<String, String>,
+    pub filter_cache: FilterCache,
+    pub rows_gen: u64,
+    pub rows_stamp: u64,
 }
 
 fn all_parties(s: &State) -> &[serde_json::Value] {
@@ -73,24 +80,6 @@ pub fn party_matches(s: &State, party: &serde_json::Value, query: &str) -> bool 
     })
 }
 
-fn filtered_parties(s: &State) -> Vec<serde_json::Value> {
-    let q = s.forms.get("contact-search");
-    all_parties(s)
-        .iter()
-        .filter(|p| {
-            let is_cust = p["customer"].as_bool().unwrap_or(false);
-            let is_supp = p["supplier"].as_bool().unwrap_or(false);
-            let role_ok = match s.contacts.filter {
-                ContactFilter::All => true,
-                ContactFilter::Customers => is_cust,
-                ContactFilter::Suppliers => is_supp,
-            };
-            role_ok && party_matches(s, p, &q)
-        })
-        .cloned()
-        .collect()
-}
-
 fn balance_for(s: &State, id: &str) -> String {
     let party_balances = s.books.report["party_balances"].as_object();
     party_balances
@@ -126,20 +115,137 @@ pub fn close_profile_or_confirm(st: &mut State) {
     crate::ui::confirm::discard_form(st, |s| s.contacts.open_id.clear());
 }
 
+fn col_index(col: &str) -> Option<usize> {
+    match col {
+        "name" => Some(0),
+        "org" => Some(1),
+        "role" => Some(2),
+        "phone" => Some(3),
+        "city" => Some(4),
+        "balance" => Some(5),
+        _ => None,
+    }
+}
+
+fn build_rows(s: &State) -> (Vec<Row>, HashMap<String, String>) {
+    let mut rows = Vec::new();
+    let mut blobs = HashMap::new();
+    for party in all_parties(s) {
+        let is_cust = party["customer"].as_bool().unwrap_or(false);
+        let is_supp = party["supplier"].as_bool().unwrap_or(false);
+        let role_ok = match s.contacts.filter {
+            ContactFilter::All => true,
+            ContactFilter::Customers => is_cust,
+            ContactFilter::Suppliers => is_supp,
+        };
+        if !role_ok {
+            continue;
+        }
+        let id = crate::data::s(&party["id"]);
+        let row_id = format!("contact-{id}");
+        let name = s.books.party_name(&id);
+        let p = profile(s, &id);
+        let org_raw = crate::data::s(&p["organization"]);
+        let org = if org_raw.is_empty() { "—".into() } else { org_raw.clone() };
+        let role = match (is_cust, is_supp) {
+            (true, true) => s.fmt.t("Both"),
+            (true, false) => s.fmt.t("Customer"),
+            (false, true) => s.fmt.t("Supplier"),
+            (false, false) => s.fmt.t("Contact"),
+        };
+        let phone_raw = crate::data::s(&p["phone"]);
+        let mobile_raw = crate::data::s(&p["mobile"]);
+        let phone = if !mobile_raw.is_empty() {
+            mobile_raw.clone()
+        } else if !phone_raw.is_empty() {
+            phone_raw.clone()
+        } else {
+            "—".into()
+        };
+        let city_raw = crate::data::s(&p["city"]);
+        let city = if city_raw.is_empty() { "—".into() } else { city_raw.clone() };
+        let bal_raw = balance_for(s, &id);
+        let email_raw = crate::data::s(&p["email"]);
+        let blob = fold_text(&format!(
+            "{name}\n{phone_raw}\n{mobile_raw}\n{email_raw}\n{org_raw}\n{city_raw}\n{id}"
+        ));
+        blobs.insert(row_id.clone(), blob);
+        rows.push(Row {
+            id: row_id,
+            cells: vec![
+                name.clone(),
+                org.clone(),
+                role.clone(),
+                phone.clone(),
+                city.clone(),
+                s.fmt.money(&bal_raw),
+            ],
+            keys: vec![
+                SortKey::text(&name),
+                SortKey::text(&org),
+                SortKey::text(&role),
+                SortKey::text(&phone),
+                SortKey::text(&city),
+                SortKey::num_str(&bal_raw),
+            ],
+        });
+    }
+    (rows, blobs)
+}
+
+pub fn ensure(st: &mut State) {
+    if st.contacts.rows_stamp == st.stamp {
+        return;
+    }
+    let (rows, blobs) = build_rows(st);
+    st.contacts.rows = rows;
+    st.contacts.search_blobs = blobs;
+    st.contacts.rows_stamp = st.stamp;
+    st.contacts.rows_gen += 1;
+    reapply_sort(&st.contacts.table, &mut st.contacts.rows, col_index);
+}
+
+pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
+    st.contacts.table.set_sort(col, dir);
+    if let Some(idx) = col_index(col) {
+        sort_rows(&mut st.contacts.rows, idx, dir);
+        st.contacts.rows_gen += 1;
+    }
+}
+
+fn visible_indices(s: &State) -> std::cell::Ref<'_, Vec<usize>> {
+    let q = s.forms.get("contact-search");
+    let latin = fold_text(&crate::i18n::latin_digits(&q));
+    s.contacts
+        .filter_cache
+        .visible(&s.contacts.rows, s.contacts.rows_gen, &q, |row, q_folded| {
+            let blob = s.contacts.search_blobs.get(&row.id).map(String::as_str).unwrap_or("");
+            blob.contains(q_folded) || (!latin.is_empty() && blob.contains(&latin))
+        })
+}
+
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
-    let list = filtered_parties(s);
+    let visible_count = visible_indices(s).len();
     let table = Table::new(
         |s: &State| &s.contacts.table,
         |s: &mut State| &mut s.contacts.table,
-        |s: &State| filtered_parties(s).len(),
-        |s: &State, i| Cow::Owned(format!("contact-{}", crate::data::s(&filtered_parties(s)[i]["id"]))),
+        |s: &State| visible_indices(s).len(),
+        |s: &State, i| {
+            let vis = visible_indices(s);
+            Cow::Owned(
+                vis.get(i)
+                    .and_then(|&idx| s.contacts.rows.get(idx))
+                    .map(|r| r.id.clone())
+                    .unwrap_or_default(),
+            )
+        },
     )
     .name(ui.t("Contacts"))
     .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
-    .column(TableColumn::new("org", ui.t("Organization")).flex(1.4).min(110.0))
-    .column(TableColumn::new("role", ui.t("Role")).width(110.0).min(80.0))
-    .column(TableColumn::new("phone", ui.t("Phone")).width(130.0).min(96.0))
-    .column(TableColumn::new("city", ui.t("City")).width(110.0).min(80.0))
+    .column(TableColumn::new("org", ui.t("Organization")).flex(1.4).min(110.0).sortable())
+    .column(TableColumn::new("role", ui.t("Role")).width(110.0).min(80.0).sortable())
+    .column(TableColumn::new("phone", ui.t("Phone")).width(130.0).min(96.0).sortable())
+    .column(TableColumn::new("city", ui.t("City")).width(110.0).min(80.0).sortable())
     .column(
         TableColumn::new("balance", ui.t("Balance"))
             .width(150.0)
@@ -148,48 +254,20 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .sortable(),
     )
     .cell(|s: &State, i, col| {
-        let list = filtered_parties(s);
-        let Some(party) = list.get(i) else {
+        let vis = visible_indices(s);
+        let Some(row) = vis.get(i).and_then(|&idx| s.contacts.rows.get(idx)) else {
             return Cell::text("");
         };
-        let id = crate::data::s(&party["id"]);
-        let is_cust = party["customer"].as_bool().unwrap_or(false);
-        let is_supp = party["supplier"].as_bool().unwrap_or(false);
-        let p = profile(s, &id);
         match col {
-            "name" => Cell::text(s.books.party_name(&id)),
-            "org" => {
-                let org = crate::data::s(&p["organization"]);
-                Cell::text(if org.is_empty() { "—" } else { &org }).muted()
-            }
-            "role" => {
-                let role = match (is_cust, is_supp) {
-                    (true, true) => s.fmt.t("Both"),
-                    (true, false) => s.fmt.t("Customer"),
-                    (false, true) => s.fmt.t("Supplier"),
-                    (false, false) => s.fmt.t("Contact"),
-                };
-                Cell::text(role).muted()
-            }
-            "phone" => {
-                let phone = crate::data::s(&p["phone"]);
-                let mobile = crate::data::s(&p["mobile"]);
-                let shown = if !mobile.is_empty() {
-                    mobile
-                } else if !phone.is_empty() {
-                    phone
-                } else {
-                    "—".into()
-                };
-                Cell::text(shown).muted()
-            }
-            "city" => {
-                let city = crate::data::s(&p["city"]);
-                Cell::text(if city.is_empty() { "—" } else { &city }).muted()
-            }
-            _ => Cell::text(s.fmt.money(&balance_for(s, &id))).mono(),
+            "name" => Cell::text(&row.cells[0]),
+            "org" => Cell::text(&row.cells[1]).muted(),
+            "role" => Cell::text(&row.cells[2]).muted(),
+            "phone" => Cell::text(&row.cells[3]).muted(),
+            "city" => Cell::text(&row.cells[4]).muted(),
+            _ => Cell::text(&row.cells[5]).mono(),
         }
     })
+    .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .on_select(|st, id, _| st.contacts.selected = id.to_string())
     .on_open(|st, id, _| open_contact(st, id))
     .zebra(true)
@@ -212,6 +290,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             2 => ContactFilter::Suppliers,
             _ => ContactFilter::All,
         };
+        st.contacts.rows_stamp = 0;
+        ensure(st);
     });
 
     let add_btn = ui.btn(Btn::Primary, "New customer", Some(&icons::PLUS), |st| open_new_contact(st, false));
@@ -243,7 +323,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 .child(ui.field(s, "contact-search", &ui.t("Search")).grow(1.0).min_w(0.0)),
         )
         .child(ui.fill_or_empty(
-            list.len(),
+            visible_count,
             empty_title,
             "People and companies you sell to or buy from",
             &icons::CONTACTS,
