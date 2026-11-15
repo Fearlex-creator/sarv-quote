@@ -462,6 +462,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Enter a price on every line.", "برای هر ردیف قیمت وارد کنید."),
     ("Enter a product name.", "نام کالا را وارد کنید."),
     ("Enter a valid amount.", "مبلغ معتبر وارد کنید."),
+    ("Enter a valid date.", "تاریخ معتبر وارد کنید."),
     (
         "Entries can be posted again in this fiscal year once it is reopened.",
         "پس از بازگشایی، ثبت سند در این سال مالی دوباره ممکن می‌شود.",
@@ -893,6 +894,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Outstanding by contact", "مانده‌ها به تفکیک طرف حساب"),
     ("Outstanding invoices", "فاکتورهای دارای مانده"),
     ("Outstanding records for this contact.", "اسناد تسویه‌نشدهٔ این طرف حساب."),
+    ("Outside the selected fiscal year", "خارج از سال مالی انتخاب‌شده"),
     ("Over 90 days", "بیش از ۹۰ روز"),
     ("Overdue", "سررسید گذشته"),
     ("Overview", "نمای کلی"),

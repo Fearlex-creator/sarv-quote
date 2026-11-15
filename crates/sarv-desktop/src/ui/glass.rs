@@ -182,6 +182,31 @@ impl Ui {
             .child(self.muted(self.f.unit_label()))
     }
 
+    pub fn date_field(&self, s: &State, key: &str, label_key: &str) -> El {
+        let placeholder = s.fmt.date_input(&crate::data::today());
+        let raw = s.forms.get(key);
+        let mut body = col().w_full().gap(4.0).child(self.field(s, key, &placeholder));
+        if !raw.trim().is_empty() {
+            match s.fmt.parse_date(&raw) {
+                Ok(iso) => {
+                    body = body.child(self.muted(s.fmt.date(&iso)));
+                    let (start, end) = s.books.range();
+                    if (!start.is_empty() && iso < start) || (!end.is_empty() && iso > end) {
+                        body = body.child(
+                            text(self.t("Outside the selected fiscal year"))
+                                .font(self.k.ty.caption())
+                                .color(self.tone_fg(Tone::Warning)),
+                        );
+                    }
+                }
+                Err(msg) => {
+                    body = body.child(text(msg).font(self.k.ty.caption()).color(self.tone_fg(Tone::Danger)));
+                }
+            }
+        }
+        self.labeled(label_key, body)
+    }
+
     pub fn labeled(&self, label_key: &str, control: El) -> El {
         Field::new().label(self.t(label_key)).control(control).build(&self.k)
     }

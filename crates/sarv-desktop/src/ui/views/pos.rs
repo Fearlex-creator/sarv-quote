@@ -178,6 +178,7 @@ fn charge(st: &mut State, method: usize) {
         pay_method: method,
         note: "Goods sales order".into(),
         received: String::new(),
+        date: crate::data::today(),
     };
     if post_ticket(st, &ticket) {
         clear_ticket(st);

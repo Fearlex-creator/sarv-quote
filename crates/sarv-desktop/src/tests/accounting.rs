@@ -253,6 +253,7 @@ fn test_engine_error_toasts_once() {
         "REF-ERR",
         "Test error toast",
         "err-key-1",
+        &crate::data::today(),
     );
     assert!(res.is_err());
     let danger_count = rt.state.toasts.iter().filter(|t| t.tone == crate::app::Tone::Danger).count();
@@ -313,4 +314,68 @@ fn test_reverse_requires_confirmation() {
     assert_eq!(count(&rt, "journal_count"), after_post_count + 1, "reversal posted after confirm");
     assert_no_danger(&rt);
     books_validate(&rt);
+}
+
+#[test]
+fn test_journal_posts_on_the_typed_jalali_date() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+
+    let (start, _) = rt.state.books.range();
+    let target_iso = chrono::NaiveDate::parse_from_str(&start, "%Y-%m-%d")
+        .unwrap()
+        .checked_add_days(chrono::Days::new(3))
+        .unwrap()
+        .format("%Y-%m-%d")
+        .to_string();
+    let typed_jalali = rt.state.fmt.date_input(&target_iso);
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "25000");
+    type_into(&mut rt, "journal-date", &typed_jalali);
+    type_into(&mut rt, "journal-reason", "Jalali dated journal");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "jalali journal post"));
+
+    let posted = rt
+        .state
+        .books
+        .list("journals")
+        .into_iter()
+        .find(|j| data::s(&j["reason"]) == "Jalali dated journal")
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "find jalali journal")));
+    assert_eq!(data::s(&posted["date"]), target_iso);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_invalid_date_blocks_the_post() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let before = rt.state.books.list("journals").len();
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "25000");
+    type_into(&mut rt, "journal-date", "1405/13/99");
+    type_into(&mut rt, "journal-reason", "Should not post");
+    click(&mut rt, "btn-Save");
+
+    assert!(rt.state.accounting.modal_open, "invalid date must keep modal open");
+    assert!(!rt.state.accounting.posting, "posting flag must reset after invalid date");
+    assert!(
+        rt.state.toasts.iter().any(|t| t.tone == crate::app::Tone::Danger),
+        "invalid date must show a danger toast"
+    );
+    assert_eq!(rt.state.books.list("journals").len(), before);
 }

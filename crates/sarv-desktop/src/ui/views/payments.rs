@@ -236,9 +236,12 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.section("pay-funds-sec", &ui.t("Cash and bank"), funds_bar))
         .child(ui.form_grid(
             ui.labeled("Amount", ui.money_field(s, "pay-amount")),
-            ui.labeled("Reference", ui.field(s, "pay-ref", "")),
+            ui.date_field(s, "pay-date", "Date"),
         ))
-        .child(ui.labeled("Description", ui.field(s, "pay-reason", &ui.t("Note (optional)"))));
+        .child(ui.form_grid(
+            ui.labeled("Reference", ui.field(s, "pay-ref", "")),
+            ui.labeled("Description", ui.field(s, "pay-reason", &ui.t("Note (optional)"))),
+        ));
     if s.payments.funds == 2 {
         form = form
             .child(ui.form_grid(
@@ -247,7 +250,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             ))
             .child(ui.form_grid(
                 ui.labeled("Bank", ui.field(s, "pay-bank", "")),
-                ui.labeled("Due date", ui.field(s, "pay-due", &crate::data::today())),
+                ui.date_field(s, "pay-due", "Due date"),
             ));
     }
 
@@ -284,6 +287,10 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         st.payments.posting = false;
                         return;
                     }
+                };
+                let Ok(date) = st.form_date("pay-date") else {
+                    st.payments.posting = false;
+                    return;
                 };
                 let side = if st.payments.receive { "receive" } else { "make" };
                 let funds_role = match st.payments.funds {
@@ -340,6 +347,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 };
                 let mut payload = json!({
                     "side": side,
+                    "date": date,
                     "party_id": st.payments.party_id,
                     "funds_role": funds_role,
                     "reference": reference,
@@ -353,18 +361,21 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     let sayad = crate::i18n::latin_digits(&st.forms.get("pay-sayad"));
                     let number = st.forms.get("pay-cheque-no");
                     let bank = st.forms.get("pay-bank");
-                    let due = st.forms.get("pay-due");
-                    if sayad.trim().is_empty() || number.trim().is_empty() || due.trim().is_empty() {
+                    if sayad.trim().is_empty() || number.trim().is_empty() {
                         st.toast(Tone::Danger, st.fmt.t("Cheque"));
                         st.payments.posting = false;
                         return;
                     }
+                    let Ok(due) = st.form_date("pay-due") else {
+                        st.payments.posting = false;
+                        return;
+                    };
                     payload["cheque"] = json!({
                         "sayad_id": sayad.trim(),
                         "number": number.trim(),
                         "bank": bank.trim(),
                         "branch": "",
-                        "due_date": due.trim(),
+                        "due_date": due,
                         "drawer_national_id": "",
                         "purpose": "",
                         "notes": ""

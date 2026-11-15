@@ -92,7 +92,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 014: Jalali-aware date field in every posting dialog
-- [ ] **P14-T01**: Add `Fmt::parse_date` / `Fmt::date_input` in `i18n.rs` (+ unit tests), update `setup.rs::iso_or_parsed`, add `Ui::date_field` in `glass.rs` + `State::form_date` in `app.rs`, wire into journal/banking/payment+cheque/transfer/sale/purchase dialogs and `ops::post_operation`, add 4 tests, update `plans/README.md`.
+- [x] **P14-T01**: Add `Fmt::parse_date` / `Fmt::date_input` in `i18n.rs` (+ unit tests), update `setup.rs::iso_or_parsed`, add `Ui::date_field` in `glass.rs` + `State::form_date` in `app.rs`, wire into journal/banking/payment+cheque/transfer/sale/purchase dialogs and `ops::post_operation`, add 4 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/i18n.rs`, `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/{glass.rs,ops.rs}`, `crates/sarv-desktop/src/ui/views/{setup,sales,purchases,payments,accounting,banking,inventory}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

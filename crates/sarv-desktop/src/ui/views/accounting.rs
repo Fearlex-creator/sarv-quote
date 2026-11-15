@@ -293,7 +293,10 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(14.0)
         .child(ui.form_grid(ui.labeled("Debit", debit), ui.labeled("Credit", credit)))
-        .child(ui.labeled("Amount", ui.money_field(s, "journal-amount")))
+        .child(ui.form_grid(
+            ui.labeled("Amount", ui.money_field(s, "journal-amount")),
+            ui.date_field(s, "journal-date", "Date"),
+        ))
         .child(ui.labeled("Description", ui.field(s, "journal-reason", &ui.t("Note (optional)"))));
 
     ui.form_dialog(
@@ -325,6 +328,10 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         return;
                     }
                 };
+                let Ok(date) = st.form_date("journal-date") else {
+                    st.accounting.posting = false;
+                    return;
+                };
                 let reason = {
                     let r = st.forms.get("journal-reason");
                     if r.trim().is_empty() { "Manual journal".into() } else { r }
@@ -336,6 +343,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
                 let key = st.accounting.post_key.clone();
                 let mut payload = json!({
+                    "date": date,
                     "reason": reason,
                     "source_id": key,
                     "request_key": key,

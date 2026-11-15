@@ -26,19 +26,12 @@ pub fn fiscal_period(calendar: CalendarKind, today: chrono::NaiveDate) -> (Strin
     (y.to_string(), format!("{y}-01-01"), format!("{y}-12-31"))
 }
 
-fn iso_or_parsed(s: &State, raw: &str, fallback: &str) -> String {
+fn iso_or_parsed(s: &State, raw: &str, fallback: &str) -> Result<String, String> {
     let raw = raw.trim();
     if raw.is_empty() {
-        return fallback.to_string();
+        return Ok(fallback.to_string());
     }
-    let cal = if s.fmt.calendar == CalendarKind::Jalali {
-        sarv_quote::calendar::Calendar::Jalali
-    } else {
-        sarv_quote::calendar::Calendar::Gregorian
-    };
-    sarv_quote::calendar::parse_date(raw, cal)
-        .map(|d| d.format("%Y-%m-%d").to_string())
-        .unwrap_or_else(|_| raw.to_string())
+    s.fmt.parse_date(raw)
 }
 
 #[derive(Default)]
@@ -87,8 +80,20 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 crate::i18n::latin_digits(&f)
             }
         };
-        let start = iso_or_parsed(st, &st.forms.get("setup-start"), &defaults.1);
-        let end = iso_or_parsed(st, &st.forms.get("setup-end"), &defaults.2);
+        let start = match iso_or_parsed(st, &st.forms.get("setup-start"), &defaults.1) {
+            Ok(d) => d,
+            Err(msg) => {
+                st.toast(Tone::Danger, msg);
+                return;
+            }
+        };
+        let end = match iso_or_parsed(st, &st.forms.get("setup-end"), &defaults.2) {
+            Ok(d) => d,
+            Err(msg) => {
+                st.toast(Tone::Danger, msg);
+                return;
+            }
+        };
         let locale = match st.lang() {
             Lang::Fa => "fa",
             Lang::En => "en",

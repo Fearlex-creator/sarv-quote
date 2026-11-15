@@ -165,7 +165,10 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(14.0)
         .child(ui.form_grid(ui.labeled("From", from), ui.labeled("To", to)))
-        .child(ui.labeled("Amount", ui.money_field(s, "bank-amount")))
+        .child(ui.form_grid(
+            ui.labeled("Amount", ui.money_field(s, "bank-amount")),
+            ui.date_field(s, "bank-date", "Date"),
+        ))
         .child(ui.labeled("Description", ui.field(s, "bank-reason", &ui.t("Note (optional)"))));
 
     let title = move_dialog_title(s.banking.kind);
@@ -193,6 +196,9 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         return;
                     }
                 };
+                let Ok(date) = st.form_date("bank-date") else {
+                    return;
+                };
                 let reason = {
                     let r = st.forms.get("bank-reason");
                     if r.trim().is_empty() { "Transfer".into() } else { r }
@@ -209,6 +215,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 };
                 let mut payload = json!({
                     "kind": kind,
+                    "date": date,
                     "account_id": st.banking.from_id,
                     "counterpart_id": st.banking.to_id,
                     "amount": amt.to_string(),
@@ -251,8 +258,7 @@ fn open_move(st: &mut State, kind: usize) {
     st.banking.from_id.clear();
     st.banking.to_id.clear();
     st.banking.post_key = format!("bank-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
-    st.forms.set("bank-amount", "");
-    st.forms.set("bank-reason", "");
+    st.forms.clear_prefix("bank-");
 }
 
 pub fn move_dialog_title(kind: usize) -> &'static str {

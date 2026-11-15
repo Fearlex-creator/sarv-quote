@@ -546,7 +546,10 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .gap(12.0)
         .child(ui.labeled("Select product", item))
         .child(ui.form_grid(ui.labeled("From", from), ui.labeled("To", to)))
-        .child(ui.labeled("Qty", ui.field(s, "transfer-qty", "1")));
+        .child(ui.form_grid(
+            ui.labeled("Qty", ui.field(s, "transfer-qty", "1")),
+            ui.date_field(s, "transfer-date", "Date"),
+        ));
 
     ui.form_dialog(
         layer,
@@ -579,6 +582,10 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.inventory.transfer_posting = false;
                     return;
                 }
+                let Ok(date) = st.form_date("transfer-date") else {
+                    st.inventory.transfer_posting = false;
+                    return;
+                };
                 let key = st.inventory.transfer_key.clone();
                 let qty = crate::i18n::latin_digits(&st.forms.get("transfer-qty")).replace(',', "");
                 let unit = pickers::item_unit(st, &st.inventory.transfer_item);
@@ -588,6 +595,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "target_warehouse_id": st.inventory.transfer_to,
                     "unit_id": unit,
                     "quantity": qty,
+                    "date": date,
                     "source_id": key,
                     "request_key": key
                 });

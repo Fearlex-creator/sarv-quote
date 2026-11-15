@@ -140,7 +140,10 @@ fn post_purchase(st: &mut State) {
         return;
     }
     let wh = pickers::first_warehouse(st);
-    let date = crate::data::today();
+    let Ok(date) = st.form_date("buy-date") else {
+        st.purchases.posting = false;
+        return;
+    };
     let mut lines = Vec::with_capacity(filled.len());
     for l in &filled {
         let unit_price = match st.parse_money_input(&l.price) {
@@ -211,6 +214,7 @@ fn post_purchase(st: &mut State) {
             &format!("R-{reference}"),
             "Receive goods",
             &format!("{key}-recv"),
+            &date,
         ) {
             Ok(v) => v,
             Err(_) => {
@@ -227,6 +231,7 @@ fn post_purchase(st: &mut State) {
             &format!("B-{reference}"),
             "Bill received goods",
             &format!("{key}-bill"),
+            &date,
         )
         .is_err()
         {
@@ -465,6 +470,7 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(16.0)
         .child(ui.labeled("Vendor", pickers::picker_row(supplier_picker, add_supplier)))
+        .child(ui.date_field(s, "buy-date", "Date"))
         .child(ui.section("buy-lines-sec", &ui.t("Products"), lines_col))
         .child(
             Switch::new(s.purchases.receive_and_bill)
@@ -568,7 +574,15 @@ fn return_selected(st: &mut State) {
     let id = st.purchases.selected.clone();
     let reference = format!("PRET-{}", &id[..id.len().min(6)]);
     let key = st.mint_key("return");
-    let Ok(review) = crate::ui::ops::review_operation(st, &id, "purchase_return", &reference, "Return goods to the supplier", &key) else {
+    let Ok(review) = crate::ui::ops::review_operation(
+        st,
+        &id,
+        "purchase_return",
+        &reference,
+        "Return goods to the supplier",
+        &key,
+        &crate::data::today(),
+    ) else {
         return;
     };
     let mut lines = review.lines;

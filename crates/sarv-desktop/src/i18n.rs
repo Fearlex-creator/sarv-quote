@@ -6,7 +6,7 @@
 use std::collections::HashMap;
 use std::sync::OnceLock;
 
-use sarv_quote::calendar::{Calendar, format_date, from_gregorian};
+use sarv_quote::calendar::{Calendar, format_date, from_gregorian, parse_date as calendar_parse_date};
 
 use crate::fa_messages::FA;
 
@@ -296,6 +296,24 @@ impl Fmt {
         self.digits(&s.replace('-', "/"))
     }
 
+    /// Parse a date typed in the active calendar (Jalali or Gregorian), accepting
+    /// Persian/Arabic-Indic/Latin digits and `/`, `-`, or `.` separators.
+    pub fn parse_date(&self, raw: &str) -> Result<String, String> {
+        let norm = latin_digits(raw.trim()).replace('.', "/");
+        let cal = match self.calendar {
+            CalendarKind::Jalali => Calendar::Jalali,
+            CalendarKind::Gregorian => Calendar::Gregorian,
+        };
+        calendar_parse_date(&norm, cal)
+            .map(|d| d.format("%Y-%m-%d").to_string())
+            .map_err(|_| self.t("Enter a valid date."))
+    }
+
+    /// Format an ISO `YYYY-MM-DD` date as the user would type it in the active calendar and digits.
+    pub fn date_input(&self, iso: &str) -> String {
+        self.date(iso)
+    }
+
     /// Jalali (or Gregorian) year of today's date, for the fiscal period badge.
     pub fn year_of(&self, iso: &str) -> String {
         let day = iso.get(..10).unwrap_or(iso);
@@ -350,6 +368,39 @@ mod tests {
     fn jalali_dates() {
         let f = Fmt::default();
         assert_eq!(f.date("2025-03-21"), "۱۴۰۴/۰۱/۰۱");
+    }
+
+    #[test]
+    fn parse_date_jalali_gregorian_and_round_trip() {
+        let jalali = Fmt::default();
+        let expected_iso = calendar_parse_date("1405/08/22", Calendar::Jalali)
+            .unwrap()
+            .format("%Y-%m-%d")
+            .to_string();
+        assert_eq!(jalali.parse_date("۱۴۰۵/۰۸/۲۲"), Ok(expected_iso.clone()));
+        assert_eq!(jalali.parse_date("1405-08-22"), Ok(expected_iso.clone()));
+        assert_eq!(jalali.parse_date("1405.08.22"), Ok(expected_iso.clone()));
+
+        let greg = Fmt {
+            lang: Lang::En,
+            persian_digits: false,
+            unit: Unit::Toman,
+            calendar: CalendarKind::Gregorian,
+        };
+        assert_eq!(greg.parse_date("2026-11-13"), Ok("2026-11-13".to_string()));
+        assert_eq!(greg.parse_date("2026/11/13"), Ok("2026-11-13".to_string()));
+
+        for bad in ["", "not-a-date", "1405/13/01", "1405/08", "2026-02-30"] {
+            assert!(jalali.parse_date(bad).is_err(), "expected Err for {bad:?}");
+            assert!(greg.parse_date(bad).is_err(), "expected Err for {bad:?}");
+        }
+
+        for fmt in [jalali, greg] {
+            for iso in ["2025-03-21", "2026-11-13", "2026-02-28"] {
+                let typed = fmt.date_input(iso);
+                assert_eq!(fmt.parse_date(&typed), Ok(iso.to_string()), "fmt={fmt:?} iso={iso}");
+            }
+        }
     }
 
     #[test]

@@ -131,7 +131,8 @@ fn received_cheque_goes_through_deposit_and_clear() {
     type_into(&mut rt, "pay-sayad", "1234567890123456");
     type_into(&mut rt, "pay-cheque-no", "CHQ-101");
     type_into(&mut rt, "pay-bank", "Melli");
-    type_into(&mut rt, "pay-due", &data::today());
+    let due = rt.state.fmt.date_input(&data::today());
+    type_into(&mut rt, "pay-due", &due);
     click(&mut rt, "btn-Save");
     assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "receive cheque"));
 
@@ -186,7 +187,8 @@ fn bounced_cheque_reopens_the_receivable() {
     type_into(&mut rt, "pay-sayad", "6543210987654321");
     type_into(&mut rt, "pay-cheque-no", "CHQ-202");
     type_into(&mut rt, "pay-bank", "Saderat");
-    type_into(&mut rt, "pay-due", &data::today());
+    let due = rt.state.fmt.date_input(&data::today());
+    type_into(&mut rt, "pay-due", &due);
     click(&mut rt, "btn-Save");
     assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "receive bounce cheque"));
     assert_eq!(open_receivable_total(&mut rt, &party), 0);
@@ -281,7 +283,8 @@ fn test_cheque_clear_offers_fund_accounts() {
     type_into(&mut rt, "pay-sayad", "1234567890123457");
     type_into(&mut rt, "pay-cheque-no", "CHQ-CLR-1");
     type_into(&mut rt, "pay-bank", "Melli");
-    type_into(&mut rt, "pay-due", &data::today());
+    let due = rt.state.fmt.date_input(&data::today());
+    type_into(&mut rt, "pay-due", &due);
     click(&mut rt, "btn-Save");
     assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "receive cheque"));
 
@@ -307,6 +310,62 @@ fn test_cheque_clear_offers_fund_accounts() {
 
     let (_, status) = cheque_entry(&rt, "CHQ-CLR-1");
     assert_eq!(status, "cleared", "{}", blow(&rt, "clear cheque"));
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_cheque_due_date_accepts_jalali() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Jalali Cheque Buyer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = party.clone();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "50000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "50000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "credit sale for jalali cheque"));
+
+    let (start, _) = rt.state.books.range();
+    let target_iso = chrono::NaiveDate::parse_from_str(&start, "%Y-%m-%d")
+        .unwrap()
+        .checked_add_days(chrono::Days::new(10))
+        .unwrap()
+        .format("%Y-%m-%d")
+        .to_string();
+    let jalali_due = rt.state.fmt.date_input(&target_iso);
+
+    click(&mut rt, Page::Payments.key());
+    click(&mut rt, "btn-Receive money");
+    rt.state.payments.party_id = party;
+    rt.state.payments.funds = 2;
+    rt.frame(1.0 / 60.0);
+    type_into(&mut rt, "pay-amount", "50000");
+    type_into(&mut rt, "pay-sayad", "9876543210123456");
+    type_into(&mut rt, "pay-cheque-no", "CHQ-JAL-1");
+    type_into(&mut rt, "pay-bank", "Melli");
+    type_into(&mut rt, "pay-due", &jalali_due);
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "receive jalali cheque"));
+
+    let due_saved = rt.state.books.workspace["cheques"]
+        .as_array()
+        .and_then(|rows| {
+            rows.iter()
+                .find(|e| data::s(&e["cheque"]["details"]["number"]) == "CHQ-JAL-1")
+                .map(|e| data::s(&e["cheque"]["details"]["due_date"]))
+        })
+        .unwrap_or_else(|| panic!("missing cheque CHQ-JAL-1"));
+    assert_eq!(due_saved, target_iso);
     assert_no_danger(&rt);
     books_validate(&rt);
 }

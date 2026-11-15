@@ -442,6 +442,22 @@ impl State {
         }
     }
 
+    /// Parse a form date field in the active calendar. Empty defaults to today; invalid toasts an error.
+    #[allow(clippy::result_unit_err)]
+    pub fn form_date(&mut self, key: &str) -> Result<String, ()> {
+        let raw = self.forms.get(key);
+        if raw.trim().is_empty() {
+            return Ok(crate::data::today());
+        }
+        match self.fmt.parse_date(&raw) {
+            Ok(iso) => Ok(iso),
+            Err(msg) => {
+                self.toast(Tone::Danger, msg);
+                Err(())
+            }
+        }
+    }
+
     /// A request key unique within and across runs: prefix, process id, nanoseconds, counter.
     pub fn mint_key(&mut self, prefix: &str) -> String {
         self.key_counter += 1;

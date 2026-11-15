@@ -103,8 +103,15 @@ fn drafts(s: &State) -> Vec<serde_json::Value> {
     s.books.list("drafts")
 }
 
-fn build_draft_json(s: &State, draft_id: &str, customer: &str, reference: &str, lines: &[SaleLine], note: &str) -> serde_json::Value {
-    let date = crate::data::today();
+fn build_draft_json(
+    s: &State,
+    draft_id: &str,
+    customer: &str,
+    reference: &str,
+    lines: &[SaleLine],
+    note: &str,
+    date: &str,
+) -> serde_json::Value {
     let wh = pickers::first_warehouse(s);
     let display_unit = if s.fmt.unit == crate::i18n::Unit::Toman { "Toman" } else { "Rial" };
     // Machine dates are always ISO; Jalali is a display preference only.
@@ -170,6 +177,7 @@ pub struct Ticket {
     pub note: String,
     /// Display-unit digits already typed. Empty settles the invoice in full.
     pub received: String,
+    pub date: String,
 }
 
 pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
@@ -219,7 +227,7 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
     if note.is_empty() {
         note = "Goods sales order".into();
     }
-    let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note);
+    let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &ticket.date);
     let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
         Ok(v) => v,
         Err(e) => {
@@ -266,22 +274,22 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         return false;
     }
     let fulfill_key = format!("{post_key}-fulfill");
-    if crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, "Deliver goods and issue invoice", &fulfill_key).is_err() {
+    if crate::ui::ops::post_operation(
+        st,
+        &record_id,
+        "fulfill",
+        &invoice,
+        "Deliver goods and issue invoice",
+        &fulfill_key,
+        &ticket.date,
+    )
+    .is_err()
+    {
         return false;
     }
     if ticket.pay_method < 2 {
         let invoice_id = format!("{fulfill_key}-invoice");
-        if settle_invoice(
-            st,
-            &customer,
-            &invoice,
-            &invoice_id,
-            &format!("{post_key}-pay"),
-            ticket.pay_method,
-            &ticket.received,
-        )
-        .is_err()
-        {
+        if settle_invoice(st, ticket, &customer, &invoice, &invoice_id, &format!("{post_key}-pay")).is_err() {
             return false;
         }
     }
@@ -297,6 +305,10 @@ fn complete_sale(st: &mut State) {
         return;
     }
     st.sales.posting = true;
+    let Ok(date) = st.form_date("sale-date") else {
+        finish_posting(st);
+        return;
+    };
     let ticket = Ticket {
         draft_id: st.sales.draft_id.clone(),
         post_key: st.sales.post_key.clone(),
@@ -308,6 +320,7 @@ fn complete_sale(st: &mut State) {
             if note.is_empty() { "Goods sales order".into() } else { note }
         },
         received: st.forms.get("sale-received"),
+        date,
     };
     if post_ticket(st, &ticket) {
         st.sales.modal_open = false;
@@ -321,12 +334,11 @@ fn complete_sale(st: &mut State) {
 
 fn settle_invoice(
     st: &mut State,
+    ticket: &Ticket,
     customer: &str,
     reference: &str,
     invoice_id: &str,
     request_key: &str,
-    pay_method: usize,
-    received_display: &str,
 ) -> Result<(), String> {
     let open = match st.query("payment_options", json!({ "side": "receive", "party_id": customer })) {
         Ok(v) => v,
@@ -347,7 +359,7 @@ fn settle_invoice(
         st.toast_err(msg.clone());
         return Err(msg);
     }
-    let received = match st.parse_money_input(received_display) {
+    let received = match st.parse_money_input(&ticket.received) {
         Ok(v) if v > 0 => v,
         Ok(_) | Err(crate::i18n::MoneyError::Empty) => owed,
         Err(_) => {
@@ -362,9 +374,10 @@ fn settle_invoice(
         st.toast_err(msg.clone());
         return Err(msg);
     }
-    let funds = if pay_method == 0 { "cash" } else { "bank" };
+    let funds = if ticket.pay_method == 0 { "cash" } else { "bank" };
     let mut pay = json!({
         "side": "receive",
+        "date": &ticket.date,
         "party_id": customer,
         "funds_role": funds,
         "reference": reference,
@@ -413,13 +426,17 @@ fn issue_quotation(st: &mut State) {
         finish_posting(st);
         return;
     }
+    let Ok(date) = st.form_date("sale-date") else {
+        finish_posting(st);
+        return;
+    };
     let reference = next_order_ref(st, &st.sales.post_key);
     let note = {
         let note = st.forms.get("sale-note").trim().to_string();
         if note.is_empty() { "Quotation".into() } else { note }
     };
     let draft_id = st.sales.draft_id.clone();
-    let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note);
+    let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &date);
     let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
         Ok(v) => v,
         Err(e) => {
@@ -728,16 +745,21 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.labeled("Customer", pickers::picker_row(customer_picker, add_customer)))
         .child(ui.section("sale-lines-sec", &ui.t("Products"), lines_col))
         .child(total_row)
-        .child(ui.form_grid(
-            ui.labeled("Description", ui.field(s, "sale-note", &ui.t("Note (optional)"))),
-            ui.section("sale-pay", &ui.t("Payment method"), {
-                let mut pay = col().gap(10.0).child(pay_bar);
-                if s.sales.pay_method < 2 {
-                    pay = pay.child(ui.labeled("Amount received", ui.money_field(s, "sale-received")));
-                }
-                pay
-            }),
-        ));
+        .child(
+            ui.form_grid(
+                col()
+                    .gap(12.0)
+                    .child(ui.date_field(s, "sale-date", "Date"))
+                    .child(ui.labeled("Description", ui.field(s, "sale-note", &ui.t("Note (optional)")))),
+                ui.section("sale-pay", &ui.t("Payment method"), {
+                    let mut pay = col().gap(10.0).child(pay_bar);
+                    if s.sales.pay_method < 2 {
+                        pay = pay.child(ui.labeled("Amount received", ui.money_field(s, "sale-received")));
+                    }
+                    pay
+                }),
+            ),
+        );
 
     let save_btn = ui.btn(Btn::Primary, "Complete sale", Some(&icons::CHECK), |st| {
         for (i, line) in st.sales.lines.iter_mut().enumerate() {
@@ -940,8 +962,15 @@ fn return_selected(st: &mut State) {
     let id = st.sales.selected.clone();
     let reference = format!("RET-{}", &id[..id.len().min(6)]);
     let key = st.mint_key("return");
-    let Ok(review) = crate::ui::ops::review_operation(st, &id, "sale_return", &reference, "Restock customer return and issue credit", &key)
-    else {
+    let Ok(review) = crate::ui::ops::review_operation(
+        st,
+        &id,
+        "sale_return",
+        &reference,
+        "Restock customer return and issue credit",
+        &key,
+        &crate::data::today(),
+    ) else {
         return;
     };
     let mut lines = review.lines;

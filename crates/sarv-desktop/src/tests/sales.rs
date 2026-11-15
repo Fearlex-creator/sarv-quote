@@ -263,3 +263,63 @@ fn test_dirty_sale_survives_cancel() {
     assert!(!rt.state.sales.modal_open, "sale dialog must close after Discard");
     assert_no_danger(&rt);
 }
+
+#[test]
+fn test_backdated_sale_chain_uses_one_date() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+
+    let (start, _) = rt.state.books.range();
+    let backdate_iso = if start != data::today() {
+        start
+    } else {
+        chrono::NaiveDate::parse_from_str(&start, "%Y-%m-%d")
+            .unwrap()
+            .checked_add_days(chrono::Days::new(1))
+            .unwrap()
+            .format("%Y-%m-%d")
+            .to_string()
+    };
+    let typed_jalali = rt.state.fmt.date_input(&backdate_iso);
+
+    let sales_before = rt.state.books.list("sales").len();
+    let payments_before = rt.state.books.list("payments").len();
+
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.pay_method = 0;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "50000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "50000");
+    type_into(&mut rt, "sale-date", &typed_jalali);
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "backdated sale"));
+
+    let sales = rt.state.books.list("sales");
+    assert!(sales.len() >= sales_before + 2, "order and fulfill records created");
+    for rec in &sales[..sales.len() - sales_before] {
+        let cmd = &rec["command"];
+        let doc_date = if cmd.get("Order").is_some() {
+            data::s(&cmd["Order"]["document_date"])
+        } else if cmd.get("Fulfill").is_some() {
+            data::s(&cmd["Fulfill"]["date"])
+        } else {
+            String::new()
+        };
+        if !doc_date.is_empty() {
+            assert_eq!(doc_date, backdate_iso, "sale chain record must use backdate: {rec}");
+        }
+    }
+
+    let payments = rt.state.books.list("payments");
+    assert_eq!(payments.len(), payments_before + 1, "settlement payment created");
+    let newest_pay = payments
+        .iter()
+        .find(|p| data::s(&p["command"]["Payment"]["context"]["date"]) == backdate_iso);
+    assert!(newest_pay.is_some(), "settlement payment must use {backdate_iso}: {payments:?}");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

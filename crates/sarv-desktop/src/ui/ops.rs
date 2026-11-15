@@ -59,6 +59,7 @@ pub fn review_operation(
     reference: &str,
     reason: &str,
     request_key: &str,
+    date: &str,
 ) -> Result<OperationReview, String> {
     let opts = match st.query("operation_options", json!({ "record_id": record_id, "operation": operation })) {
         Ok(v) => v,
@@ -81,7 +82,6 @@ pub fn review_operation(
         st.toast_err(msg.clone());
         return Err(msg);
     }
-    let date = crate::data::today();
     let mut payload = json!({
         "record_id": record_id,
         "order_id": record_id,
@@ -124,7 +124,8 @@ pub fn post_operation(
     reference: &str,
     reason: &str,
     request_key: &str,
+    date: &str,
 ) -> Result<Value, String> {
-    let review = review_operation(st, record_id, operation, reference, reason, request_key)?;
+    let review = review_operation(st, record_id, operation, reference, reason, request_key, date)?;
     post_reviewed(st, operation, review.payload)
 }
