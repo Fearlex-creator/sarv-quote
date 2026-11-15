@@ -42,7 +42,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 005: Strict money input & unit display
-- [ ] **P05-T01**: Add `parse_money` / `MoneyError` and `Fmt::money_input` in `i18n.rs`, replace lenient `parse_money_input` and truncating `rials / 10` conversions, add `Ui::money_field` in `glass.rs`, update views & `fa_messages.rs`, add unit + 3 flow tests, update `plans/README.md`.
+- [x] **P05-T01**: Add `parse_money` / `MoneyError` and `Fmt::money_input` in `i18n.rs`, replace lenient `parse_money_input` and truncating `rials / 10` conversions, add `Ui::money_field` in `glass.rs`, update views & `fa_messages.rs`, add unit + 3 flow tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/i18n.rs`, `crates/sarv-desktop/src/ui/resources.rs`, `crates/sarv-desktop/src/ui/ops.rs`, `crates/sarv-desktop/src/ui/glass.rs`, `crates/sarv-desktop/src/ui/views/*.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
@@ -70,7 +70,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-quote && cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 009: Agent access hardening
-- [ ] **P09-T01**: Decide agent access from in-memory `state.policy.access` + tamper check in `agent.rs`, prevent `local-agent` from reopening locked periods in `desktop_bridge.rs`, require `expected_generation` on `payment_post`/`draft_post`/`purchase_post`/`period_lock`, add 5s total read deadline in `read_message`, add tests in `agent_access.rs`, update `plans/README.md`.
+- [x] **P09-T01**: Decide agent access from in-memory `state.policy.access` + tamper check in `agent.rs`, prevent `local-agent` from reopening locked periods in `desktop_bridge.rs`, require `expected_generation` on `payment_post`/`draft_post`/`purchase_post`/`period_lock`, add 5s total read deadline in `read_message`, add tests in `agent_access.rs`, update `plans/README.md`.
   - Files: `crates/sarv-quote/src/agent.rs`, `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/agent_access.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --test agent_access && cargo test -p sarv-quote && cargo test -p sarv-desktop --bin sarv-desktop`
 

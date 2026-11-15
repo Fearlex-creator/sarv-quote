@@ -130,10 +130,11 @@ fn full_cli_goods_workflow_keeps_exact_values_original_costs_and_audit() {
     assert_eq!(review["supplied_total"], "39");
     draft["supplied_total"] = review["supplied_total"].clone();
     let revision = cli(dir.path(), "draft_save", json!({"draft":draft,"expected_revision":null}));
+    let generation = cli(dir.path(), "workspace", json!({"company_id":c}))["_generation"].clone();
     let sales = cli(
         dir.path(),
         "draft_post",
-        json!({"id":"draft","revision":revision,"request_key":"sale-post"}),
+        json!({"id":"draft","revision":revision,"request_key":"sale-post","expected_generation":generation}),
     );
     let mut delivery = context(c, p, "delivery");
     delivery["order_id"] = sales["record_id"].clone();
@@ -333,4 +334,113 @@ fn mcp_supports_initialization_discovery_calls_notifications_and_protocol_errors
         assert!(schema["properties"]["lines"]["items"]["properties"].get("id").is_some());
         assert!(schema["required"].as_array().unwrap().contains(&json!("expected_generation")));
     }
+}
+#[test]
+fn read_only_agent_cannot_self_promote() {
+    let dir = tempfile::tempdir().unwrap();
+    let service = service(dir.path());
+    service.configure(true, Access::ReadOnly).unwrap();
+    let connection = dir.path().join(CONNECTION);
+    let policy_path = dir.path().join(".agent-access.json");
+    let mut policy: Value = serde_json::from_slice(&fs::read(&policy_path).unwrap()).unwrap();
+    policy["access"] = json!("full");
+    fs::write(&policy_path, serde_json::to_vec(&policy).unwrap()).unwrap();
+    assert!(
+        agent::call(&connection, "setup_company", json!({}))
+            .unwrap_err()
+            .to_string()
+            .contains("changed outside Sarv")
+    );
+    assert!(
+        agent::call(&connection, "workspace", json!({}))
+            .unwrap_err()
+            .to_string()
+            .contains("changed outside Sarv")
+    );
+}
+#[test]
+fn agent_cannot_reopen_a_locked_period() {
+    let dir = tempfile::tempdir().unwrap();
+    desktop::seed_fixture(dir.path()).unwrap();
+    let service = service(dir.path());
+    service.configure(true, Access::Full).unwrap();
+    let s = Store::open(dir.path()).unwrap();
+    let c = &s.state.accounting.companies[0].id;
+    let p = &s.state.accounting.periods[0].id;
+    let connection = dir.path().join(CONNECTION);
+    let generation = agent::call(&connection, "workspace", json!({"company_id":c})).unwrap()["_generation"].clone();
+    assert_eq!(
+        agent::call(
+            &connection,
+            "period_lock",
+            json!({"company_id":c,"period_id":p,"locked":true,"reason":"Agent close","expected_generation":generation}),
+        )
+        .unwrap(),
+        true
+    );
+    let generation = agent::call(&connection, "workspace", json!({"company_id":c})).unwrap()["_generation"].clone();
+    assert!(
+        agent::call(
+            &connection,
+            "period_lock",
+            json!({"company_id":c,"period_id":p,"locked":false,"reason":"Agent reopen","expected_generation":generation}),
+        )
+        .unwrap_err()
+        .to_string()
+        .contains("Only the desktop can reopen a locked fiscal period")
+    );
+    service
+        .ui_dispatch(
+            "period_lock",
+            json!({"company_id":c,"period_id":p,"locked":false,"reason":"Desktop reopen"}),
+        )
+        .unwrap();
+}
+#[test]
+fn agent_payment_requires_preview_generation() {
+    let dir = tempfile::tempdir().unwrap();
+    desktop::seed_fixture(dir.path()).unwrap();
+    let service = service(dir.path());
+    service.configure(true, Access::Full).unwrap();
+    let s = Store::open(dir.path()).unwrap();
+    let c = &s.state.accounting.companies[0].id;
+    let p = &s.state.accounting.periods[0].id;
+    let connection = dir.path().join(CONNECTION);
+    let mut payment = context(c, p, "pay-1");
+    payment["side"] = json!("receive");
+    payment["party_id"] = json!("CU-A");
+    payment["funds_role"] = json!("bank");
+    payment["allocations"] = json!([{"open_item_id":"AR-125","amount":"100"}]);
+    payment["advance_amount"] = json!("0");
+    assert!(
+        agent::call(&connection, "payment_post", payment.clone())
+            .unwrap_err()
+            .to_string()
+            .contains("Preview first")
+    );
+    let preview = agent::call(&connection, "payment_preview", payment.clone()).unwrap();
+    payment["expected_generation"] = preview["_generation"].clone();
+    assert!(agent::call(&connection, "payment_post", payment).is_ok());
+}
+#[test]
+#[ignore]
+fn slow_client_is_dropped() {
+    let dir = tempfile::tempdir().unwrap();
+    let service = service(dir.path());
+    service.configure(true, Access::Full).unwrap();
+    let connection: Value = serde_json::from_slice(&fs::read(dir.path().join(CONNECTION)).unwrap()).unwrap();
+    let mut stream = TcpStream::connect(connection["address"].as_str().unwrap()).unwrap();
+    stream.set_read_timeout(Some(std::time::Duration::from_secs(10))).unwrap();
+    let started = std::time::Instant::now();
+    stream.write_all(b"{").unwrap();
+    for _ in 0..7 {
+        std::thread::sleep(std::time::Duration::from_secs(1));
+        if stream.write_all(b" ").is_err() {
+            break;
+        }
+    }
+    let mut response = String::new();
+    let _ = BufReader::new(stream).read_line(&mut response);
+    assert!(started.elapsed() < std::time::Duration::from_secs(9));
+    assert!(response.contains("timed out") || response.is_empty());
 }

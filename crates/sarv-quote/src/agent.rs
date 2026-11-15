@@ -13,7 +13,7 @@ use std::{
         atomic::{AtomicBool, AtomicUsize, Ordering},
     },
     thread,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 const MAX_MESSAGE: u64 = 2_000_000;
@@ -319,14 +319,50 @@ fn listen(inner: Arc<Inner>, listener: TcpListener, epoch: String) {
         }
     }
 }
+struct TimedReader<R> {
+    inner: R,
+    started: Instant,
+    limit: Duration,
+}
+impl<R: Read> Read for TimedReader<R> {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        if self.started.elapsed() >= self.limit {
+            return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "Agent request timed out"));
+        }
+        self.inner.read(buf)
+    }
+}
 fn read_message(reader: impl Read) -> Result<Vec<u8>> {
     let mut bytes = Vec::new();
-    BufReader::new(reader.take(MAX_MESSAGE + 1)).read_until(b'\n', &mut bytes)?;
+    let timed = TimedReader {
+        inner: reader,
+        started: Instant::now(),
+        limit: Duration::from_secs(5),
+    };
+    BufReader::new(timed.take(MAX_MESSAGE + 1)).read_until(b'\n', &mut bytes)?;
     ensure!(
         bytes.len() <= MAX_MESSAGE as usize && bytes.last() == Some(&b'\n'),
         "Invalid or oversized agent message"
     );
     Ok(bytes)
+}
+fn is_financial_post(action: &str) -> bool {
+    matches!(
+        action,
+        "opening_csv_post"
+            | "receive_post"
+            | "bill_post"
+            | "fulfill_post"
+            | "sale_return_post"
+            | "purchase_return_post"
+            | "transfer_post"
+            | "journal_post"
+            | "journal_reverse"
+            | "payment_post"
+            | "draft_post"
+            | "purchase_post"
+            | "period_lock"
+    )
 }
 fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
     stream.set_read_timeout(Some(Duration::from_secs(2)))?;
@@ -344,28 +380,21 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
             disk.epoch == state.policy.epoch && token_matches(&request.token, &state.token),
             "Agent connection expired or unauthorized"
         );
+        ensure!(
+            disk.access == state.policy.access,
+            "Agent access file was changed outside Sarv. Turn agent access off and on in Settings."
+        );
         if request.action == "status" {
-            return Ok(json!({"enabled":true,"access":disk.access,"transport":"local"}));
+            return Ok(json!({"enabled":true,"access":state.policy.access,"transport":"local"}));
         }
         if request.action == "tools" {
             return Ok(tools());
         }
         let readonly = READ.contains(&request.action.as_str());
         ensure!(readonly || WRITE.contains(&request.action.as_str()), "Unsupported agent action");
-        ensure!(readonly || disk.access == Access::Full, "Read-only agent access");
+        ensure!(readonly || state.policy.access == Access::Full, "Read-only agent access");
         ensure!(request.payload.is_object(), "Payload must be an object");
-        let financial_post = matches!(
-            request.action.as_str(),
-            "opening_csv_post"
-                | "receive_post"
-                | "bill_post"
-                | "fulfill_post"
-                | "sale_return_post"
-                | "purchase_return_post"
-                | "transfer_post"
-                | "journal_post"
-                | "journal_reverse"
-        );
+        let financial_post = is_financial_post(&request.action);
         ensure!(
             !financial_post || request.payload["expected_generation"].as_str().is_some(),
             "Preview first and supply expected_generation"
@@ -449,7 +478,13 @@ fn description(action: &str) -> String {
         }
         "settings" => "Save complete presentation/document settings obtained from workspace. This cannot change agent access.",
         "journal_reverse" => {
-            "Create an immutable linked reversal of a supported manual journal. Typed subledger journals must use their return workflow."
+            "Create an immutable linked reversal of a supported manual journal. Typed subledger journals must use their return workflow. Financial posts require expected_generation from journal_reverse_preview."
+        }
+        "period_lock" => {
+            "Lock an open fiscal period (agents cannot reopen locked periods). Financial posts require expected_generation; workspace returns _generation for period_lock and draft_post."
+        }
+        "draft_post" => {
+            "Post a saved sales draft. Financial posts require expected_generation; workspace returns _generation for period_lock and draft_post."
         }
         "initialize_zero" => {
             "Explicit confirmed=true declaration for a fresh company with zero opening balances. Existing businesses use opening CSV instead."
@@ -458,7 +493,7 @@ fn description(action: &str) -> String {
             "Read-only validation. Review amounts, costs and journal lines. Copy _generation into the corresponding post's expected_generation and preserve the exact payload and request_key."
         }
         _ if action.ends_with("_post") => {
-            "Persist the reviewed operation. Financial posts require expected_generation from preview. Reuse request_key only for an identical retry. Locked periods and all kernel validations apply."
+            "Persist the reviewed operation. Financial posts (opening_csv_post, purchase_post, receive_post, bill_post, draft_post, fulfill_post, sale_return_post, purchase_return_post, transfer_post, journal_post, payment_post, journal_reverse, period_lock) require expected_generation from preview (workspace returns _generation for period_lock and draft_post). Reuse request_key only for an identical retry. Locked periods and all kernel validations apply."
         }
         _ => {
             "Use the same validated accounting operation as the desktop app. Money, quantities and revisions are strings; dates are ISO YYYY-MM-DD."
@@ -580,18 +615,7 @@ fn schema(action: &str) -> Value {
             json!({"type":"array","items":{"type":"object","properties":lp,"required":fields}}),
         );
     }
-    if matches!(
-        action,
-        "opening_csv_post"
-            | "receive_post"
-            | "bill_post"
-            | "fulfill_post"
-            | "sale_return_post"
-            | "purchase_return_post"
-            | "transfer_post"
-            | "journal_post"
-            | "journal_reverse"
-    ) {
+    if is_financial_post(action) {
         required.push("expected_generation");
     }
     if action == "settings" {

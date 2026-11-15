@@ -1083,7 +1083,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             || store.state.accounting.core.zero_requests.iter().any(|r| r.request_key == key)
             || store.state.accounting.payments.requests.iter().any(|r| r.request_key == key)
             || store.state.cheques.events.iter().any(|e| e.request_key == key));
-    if (action.ends_with("_post") || action == "journal_reverse" || action.starts_with("cheque_"))
+    if (action.ends_with("_post") || action == "journal_reverse" || action == "period_lock" || action.starts_with("cheque_"))
         && !replay
         && p.get("expected_generation").is_some()
     {
@@ -1631,6 +1631,10 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 "Wrong company period"
             );
             let closing = p["locked"] == true;
+            ensure!(
+                closing || actor(&p) != "local-agent",
+                "Only the desktop can reopen a locked fiscal period"
+            );
             if closing && let IntegrityStatus::Failed { message, .. } = store.integrity() {
                 anyhow::bail!("Integrity check failed; the period cannot be closed: {message}");
             }
