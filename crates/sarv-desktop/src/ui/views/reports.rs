@@ -156,7 +156,8 @@ fn build_rows(s: &State) -> Vec<Row> {
             .map(|r| {
                 let code = crate::data::s(&r["code"]);
                 let name = crate::data::s(&r["name"]);
-                let class = crate::data::s(&r["classification"]);
+                let class_raw = crate::data::s(&r["classification"]);
+                let class = s.fmt.t(&class_raw);
                 let amount_raw = crate::data::s(&r["amount"]);
                 Row {
                     id: format!("pl-{}", crate::data::s(&r["account_id"])),

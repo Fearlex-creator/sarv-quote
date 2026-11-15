@@ -44,7 +44,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
             .header(
                 SidebarRow::new(ui.t("Search anything…"))
                     .icon(&icons::SEARCH)
-                    .detail("⌘K")
+                    .detail(if cfg!(target_os = "macos") { "⌘K" } else { "Ctrl+K" })
                     .height(32.0)
                     .on_select(|st: &mut State, _| st.open_palette())
                     .build(k)

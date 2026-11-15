@@ -184,7 +184,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ui.kit_card()
                 .title(company_label, Some(&icons::BUILDING))
                 .description(ui.t("Saved on this device"))
-                .child(text(s.books.period_name()).font(ui.k.ty.ui).color(ui.k.c.text_muted))
+                .child(text(s.fmt.digits(&s.books.period_name())).font(ui.k.ty.ui).color(ui.k.c.text_muted))
                 .child(
                     row()
                         .w_full()
@@ -337,7 +337,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 }
             }),
         ],
-        body.scroll(rune::ScrollSpec { stick_bottom: false }).min_h(0.0),
+        body.pb(16.0).scroll(rune::ScrollSpec { stick_bottom: false }).min_h(0.0),
     )
 }
 

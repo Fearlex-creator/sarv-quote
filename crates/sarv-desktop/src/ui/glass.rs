@@ -347,7 +347,7 @@ impl Ui {
     /// The page's primary action stays in the toolbar. An empty list shows that instead of a blank table.
     pub fn fill_or_empty(&self, count: usize, title: &str, detail: &str, glyph: &'static Icon, table: El) -> El {
         if count == 0 {
-            self.empty(glyph, title, detail).grow(1.0).min_h(0.0)
+            col().grow(1.0).min_h(0.0).w_full().child(self.empty(glyph, title, detail))
         } else {
             table
         }
@@ -388,12 +388,17 @@ impl Ui {
             .px(24.0)
             .pt(8.0)
             .pb(16.0);
-        let mut titles = col().key("page-titles").gap(2.0).grow(1.0).min_w(0.0);
+        let mut titles = col().key("page-titles").gap(2.0).grow(1.0).min_w(160.0);
         if !subtitle.is_empty() {
-            titles = titles.child(self.muted(subtitle.to_string()));
+            titles = titles.child(self.muted(subtitle.to_string()).truncate());
         }
-        let mut head = row().key("page-head").w_full().gap(12.0).center_y().child(titles);
-        head = actions.into_iter().fold(head, |h, a| h.child(a));
+        let mut head = row().key("page-head").w_full().gap(12.0).center_y().flex_wrap().child(titles);
+        if !actions.is_empty() {
+            let actions_row = actions
+                .into_iter()
+                .fold(row().gap(8.0).flex_wrap().justify_end(), |r, a| r.child(a));
+            head = head.child(actions_row);
+        }
         page.child(head).child(body.grow(1.0).min_h(0.0)).transition(Transition::opacity())
     }
 

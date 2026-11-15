@@ -143,7 +143,7 @@ fn figure(ui: &Ui, key: &str, icon: &'static rune::Icon, label: &str, value: Str
     col()
         .key(key)
         .grow(1.0)
-        .min_w(168.0)
+        .min_w(136.0)
         .gap(2.0)
         .child(
             row()
@@ -516,7 +516,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             Tone::Info,
         ))
         .child(
-            ui.metric(
+            figure(
+                ui,
                 "overview-cheques-due",
                 &icons::PAYMENTS,
                 &ui.t("Cheques due this week"),
@@ -524,6 +525,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 due_sub,
                 Tone::Warning,
             )
+            .hit()
             .on_press(|st: &mut State| {
                 st.payments.tab_idx = 1;
                 st.nav(Page::Payments);
