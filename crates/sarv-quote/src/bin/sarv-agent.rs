@@ -10,20 +10,14 @@ fn run() -> Result<()> {
     let mut connection = std::env::var_os("SARV_AGENT_CONNECTION").map(PathBuf::from);
     let mut command = args.next().unwrap_or_else(|| "help".into());
     if command == "--connection" {
-        connection = Some(PathBuf::from(
-            args.next()
-                .ok_or_else(|| anyhow!("Missing connection path"))?,
-        ));
+        connection = Some(PathBuf::from(args.next().ok_or_else(|| anyhow!("Missing connection path"))?));
         command = args.next().unwrap_or_else(|| "status".into());
     }
     if matches!(command.as_str(), "help" | "--help" | "-h") {
-        println!(
-            "sarv-agent --connection PATH [status | tools | schema ACTION | call ACTION --json JSON | call ACTION --stdin | mcp]"
-        );
+        println!("sarv-agent --connection PATH [status | tools | schema ACTION | call ACTION --json JSON | call ACTION --stdin | mcp]");
         return Ok(());
     }
-    let connection =
-        connection.ok_or_else(|| anyhow!("Copy the CLI command from Settings → Agents"))?;
+    let connection = connection.ok_or_else(|| anyhow!("Copy the CLI command from Settings → Agents"))?;
     let value = match command.as_str() {
         "status" => {
             ensure!(args.next().is_none(), "Unexpected argument");
@@ -46,9 +40,7 @@ fn run() -> Result<()> {
         "call" => {
             let action = args.next().ok_or_else(|| anyhow!("Missing action"))?;
             let payload: Value = match args.next().as_deref() {
-                Some("--json") => {
-                    serde_json::from_str(&args.next().ok_or_else(|| anyhow!("Missing JSON"))?)?
-                }
+                Some("--json") => serde_json::from_str(&args.next().ok_or_else(|| anyhow!("Missing JSON"))?)?,
                 Some("--stdin") => {
                     let mut bytes = Vec::new();
                     io::stdin().take(2_000_001).read_to_end(&mut bytes)?;
@@ -72,10 +64,7 @@ fn run() -> Result<()> {
 }
 fn main() {
     if let Err(e) = run() {
-        println!(
-            "{}",
-            json!({"error":{"code":"agent_error","message":e.to_string()}})
-        );
+        println!("{}", json!({"error":{"code":"agent_error","message":e.to_string()}}));
         std::process::exit(1);
     }
 }

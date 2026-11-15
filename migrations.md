@@ -1,5 +1,7 @@
 # Current schema 7 purchase-return migration
 
+> **Note (`CURRENT_SCHEMA = 7`)**: Schema 7 remains the current schema version in `crates/sarv-quote/src/domain.rs`. Subsequent domain additions (such as `cheques` / `ChequeRegister` in ADR-0005, `cashbook`, contact/product profiles, and additional fiscal-year metadata) are additive fields skipped when empty on serialization and did not require a schema bump.
+
 M6 adds typed original-receipt-linked purchase returns and linked supplier credits inside the existing procurement aggregate. Schemas1–6 are validated in their original representation before upgrade; schema6 cannot claim these new typed return records. No receipt, bill, quotation, stock movement or posted journal is inferred or rewritten.
 
 Store publishes and verifies a unique `before-schema7-<uuid>.json` containing the original logical state and original backup format/checksum before the conditional generation update. Genuine M5 recovery remains `sarv-accounting-backup-v6`; current backups are `sarv-accounting-backup-v7`. Repeat open does not upgrade again. A v6 envelope containing schema7 is rejected even with a recomputed checksum. Current backups and original v6 recovery both restore to the exact upgraded state in fresh profiles.

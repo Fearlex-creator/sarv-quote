@@ -1,11 +1,6 @@
 //! Exact, linked procurement and stock transfers. Tax/cost variance/treasury are unsupported.
-use crate::accounting::{
-    AccountingState, AuditOperation, BalanceSide, JournalKind, JournalLineInput, Money, PostCommand,
-};
-use crate::core::{
-    CoreItem, CoreParty, CoreRole, CoreSetup, CoreUnit, CoreWarehouse, MAX_SOURCE_QUANTITY,
-    civil_date, positive_half_up,
-};
+use crate::accounting::{AccountingState, AuditOperation, BalanceSide, JournalKind, JournalLineInput, Money, PostCommand};
+use crate::core::{CoreItem, CoreParty, CoreRole, CoreSetup, CoreUnit, CoreWarehouse, MAX_SOURCE_QUANTITY, civil_date, positive_half_up};
 use crate::domain::{MAX_MONEY, id, normalize, text};
 use anyhow::{Result, ensure};
 use serde::{Deserialize, Serialize};
@@ -33,13 +28,9 @@ impl ProcurementState {
         Ok(())
     }
     pub fn uses_nonfinancial_key(&self, key: &str) -> bool {
-        self.requests.iter().any(|r| {
-            r.request_key == key
-                && self
-                    .records
-                    .iter()
-                    .any(|p| p.id == r.record_id && p.journal_id.is_none())
-        })
+        self.requests
+            .iter()
+            .any(|r| r.request_key == key && self.records.iter().any(|p| p.id == r.record_id && p.journal_id.is_none()))
     }
 }
 record!(ProcurementContext {
@@ -255,10 +246,7 @@ fn result(r: &ProcurementRecord) -> ProcurementResult {
     }
 }
 fn money(v: Money) -> Result<()> {
-    ensure!(
-        (0..=MAX_MONEY).contains(&v.rials()),
-        "مبلغ خرید خارج از محدوده یا منفی است"
-    );
+    ensure!((0..=MAX_MONEY).contains(&v.rials()), "مبلغ خرید خارج از محدوده یا منفی است");
     Ok(())
 }
 fn doc_date(date: &str, financial: &str) -> Result<()> {
@@ -267,10 +255,7 @@ fn doc_date(date: &str, financial: &str) -> Result<()> {
     Ok(())
 }
 fn base(item: &CoreItem, unit: &str, q: i64) -> Result<i64> {
-    ensure!(
-        (1..=MAX_SOURCE_QUANTITY).contains(&q),
-        "مقدار باید مثبت و در محدوده باشد"
-    );
+    ensure!((1..=MAX_SOURCE_QUANTITY).contains(&q), "مقدار باید مثبت و در محدوده باشد");
     let (n, d) = if unit == item.base_unit_id {
         (1, 1)
     } else {
@@ -285,31 +270,15 @@ fn base(item: &CoreItem, unit: &str, q: i64) -> Result<i64> {
     let v = i128::from(q) * i128::from(n);
     ensure!(v % i128::from(d) == 0, "تبدیل در هزارم واحد پایه دقیق نیست");
     let v = i64::try_from(v / i128::from(d))?;
-    ensure!(
-        v > 0 && (!item.indivisible || v % 1000 == 0),
-        "مقدار واحد پایه غیرقابل‌تقسیم است"
-    );
+    ensure!(v > 0 && (!item.indivisible || v % 1000 == 0), "مقدار واحد پایه غیرقابل‌تقسیم است");
     Ok(v)
 }
 fn sum<I: IntoIterator<Item = Money>>(values: I) -> Result<Money> {
-    values
-        .into_iter()
-        .try_fold(Money::ZERO, |a, b| a.checked_add(b))
+    values.into_iter().try_fold(Money::ZERO, |a, b| a.checked_add(b))
 }
-pub(crate) fn allocation(
-    v: Money,
-    original_q: i64,
-    previous_q: i64,
-    previous_v: Money,
-    new_q: i64,
-) -> Result<Money> {
-    ensure!(
-        original_q > 0 && new_q > 0 && previous_q >= 0,
-        "مقدار تخصیص نامعتبر است"
-    );
-    let cumulative = previous_q
-        .checked_add(new_q)
-        .ok_or_else(|| anyhow::anyhow!("سرریز مقدار تخصیص"))?;
+pub(crate) fn allocation(v: Money, original_q: i64, previous_q: i64, previous_v: Money, new_q: i64) -> Result<Money> {
+    ensure!(original_q > 0 && new_q > 0 && previous_q >= 0, "مقدار تخصیص نامعتبر است");
+    let cumulative = previous_q.checked_add(new_q).ok_or_else(|| anyhow::anyhow!("سرریز مقدار تخصیص"))?;
     ensure!(cumulative <= original_q, "مقدار از ماندهٔ منبع بیشتر است");
     let target = if cumulative == original_q {
         v
@@ -326,10 +295,7 @@ pub(crate) fn allocation(
 fn discount_alloc(lines: &[OrderLine], weights: &[Money], discount: Money) -> Result<Vec<Money>> {
     money(discount)?;
     let total = sum(weights.iter().copied())?;
-    ensure!(
-        discount.rials() <= total.rials(),
-        "تخفیف سند از مبلغ کالا بیشتر است"
-    );
+    ensure!(discount.rials() <= total.rials(), "تخفیف سند از مبلغ کالا بیشتر است");
     if total == Money::ZERO {
         return Ok(vec![Money::ZERO; weights.len()]);
     }
@@ -340,9 +306,7 @@ fn discount_alloc(lines: &[OrderLine], weights: &[Money], discount: Money) -> Re
         let p = i128::from(w.rials()) * i128::from(discount.rials());
         let d = i128::from(total.rials());
         let v = i64::try_from(p / d)?;
-        assigned = assigned
-            .checked_add(v)
-            .ok_or_else(|| anyhow::anyhow!("سرریز تخصیص تخفیف"))?;
+        assigned = assigned.checked_add(v).ok_or_else(|| anyhow::anyhow!("سرریز تخصیص تخفیف"))?;
         values.push(Money::from_rials(v));
         residuals.push((p % d, lines[i].id.as_str(), i));
     }
@@ -403,21 +367,12 @@ impl AccountingState {
             .find(|r| r.id == id)
             .ok_or_else(|| anyhow::anyhow!("سند خرید پیدا نشد"))
     }
-    pub(crate) fn operational_stock_pools(
-        &self,
-        company: &str,
-        asof: &str,
-    ) -> Result<BTreeMap<(String, String), StockPool>> {
+    pub(crate) fn operational_stock_pools(&self, company: &str, asof: &str) -> Result<BTreeMap<(String, String), StockPool>> {
         let o = self.procurement_opening(company)?;
-        ensure!(
-            asof >= o.command.as_of.as_str(),
-            "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود"
-        );
+        ensure!(asof >= o.command.as_of.as_str(), "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود");
         let mut pools = BTreeMap::new();
         for s in &o.command.stock {
-            let q = o
-                .command
-                .base_quantity(&s.item_id, &s.unit_id, s.quantity_thousandths)?;
+            let q = o.command.base_quantity(&s.item_id, &s.unit_id, s.quantity_thousandths)?;
             let pool = pools
                 .entry((s.item_id.clone(), s.warehouse_id.clone()))
                 .or_insert_with(|| empty_pool(&s.item_id, &s.warehouse_id));
@@ -432,31 +387,19 @@ impl AccountingState {
             .procurement
             .records
             .iter()
-            .map(|r| {
-                (
-                    &r.id,
-                    r.journal_id.as_deref(),
-                    r.command.context(),
-                    &r.movements,
-                )
-            })
-            .chain(self.sales.records.iter().map(|r| {
-                (
-                    &r.id,
-                    r.journal_id.as_deref(),
-                    r.command.context(),
-                    &r.movements,
-                )
-            }))
+            .map(|r| (&r.id, r.journal_id.as_deref(), r.command.context(), &r.movements))
+            .chain(
+                self.sales
+                    .records
+                    .iter()
+                    .map(|r| (&r.id, r.journal_id.as_deref(), r.command.context(), &r.movements)),
+            )
             .filter(|(_, _, c, _)| c.company_id == company && c.date.as_str() <= asof)
             .map(|(id, journal, c, moves)| {
                 let position = self
                     .audit
                     .iter()
-                    .position(|a| {
-                        a.company_id == company
-                            && (a.entity_id == *id || journal == Some(a.entity_id.as_str()))
-                    })
+                    .position(|a| a.company_id == company && (a.entity_id == *id || journal == Some(a.entity_id.as_str())))
                     .ok_or_else(|| anyhow::anyhow!("حرکت انبار بدون سوابق تغییرات معتبر است"))?;
                 Ok((position, c, moves))
             })
@@ -479,9 +422,7 @@ impl AccountingState {
         let o = self.procurement_opening(company)?;
         let mut receipts = BTreeMap::new();
         for x in &o.command.grni {
-            let q = o
-                .command
-                .base_quantity(&x.item_id, &x.unit_id, x.quantity_thousandths)?;
+            let q = o.command.base_quantity(&x.item_id, &x.unit_id, x.quantity_thousandths)?;
             receipts.insert(
                 x.id.clone(),
                 ReceiptRemainder {
@@ -499,9 +440,12 @@ impl AccountingState {
                 },
             );
         }
-        for r in self.procurement.records.iter().filter(|r| {
-            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
-        }) {
+        for r in self
+            .procurement
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company && r.command.context().date.as_str() <= asof)
+        {
             match &r.data {
                 ProcurementData::Receive(receive) => {
                     let ProcurementCommand::Receive(input) = &r.command else {
@@ -560,8 +504,7 @@ impl AccountingState {
                         ensure!(
                             receipt.quantity_thousandths >= 0
                                 && receipt.value.rials() >= 0
-                                && (receipt.quantity_thousandths != 0
-                                    || receipt.value == Money::ZERO),
+                                && (receipt.quantity_thousandths != 0 || receipt.value == Money::ZERO),
                             "برگشت از ماندهٔ رسید بیشتر است"
                         );
                     }
@@ -572,11 +515,7 @@ impl AccountingState {
         Ok(receipts.into_values().collect())
     }
     /// Open supplier payables as-of a date, net of posted payments.
-    pub fn procurement_open_payables(
-        &self,
-        company: &str,
-        asof: &str,
-    ) -> Result<Vec<PayableRemainder>> {
+    pub fn procurement_open_payables(&self, company: &str, asof: &str) -> Result<Vec<PayableRemainder>> {
         self.procurement_payables(company, asof)
     }
     fn procurement_payables(&self, company: &str, asof: &str) -> Result<Vec<PayableRemainder>> {
@@ -595,17 +534,19 @@ impl AccountingState {
                     reference: x.document_reference.clone(),
                     document_date: x.document_date.clone(),
                     due_date: x.due_date.clone(),
-                    remaining: x.remaining.checked_add(
-                        settled.get(x.id.as_str()).copied().unwrap_or(Money::ZERO),
-                    )?,
+                    remaining: x
+                        .remaining
+                        .checked_add(settled.get(x.id.as_str()).copied().unwrap_or(Money::ZERO))?,
                 })
             })
             .collect::<Result<Vec<_>>>()?;
-        for r in self.procurement.records.iter().filter(|r| {
-            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
-        }) {
-            if let (ProcurementData::Bill(b), ProcurementCommand::Bill(input)) =
-                (&r.data, &r.command)
+        for r in self
+            .procurement
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company && r.command.context().date.as_str() <= asof)
+        {
+            if let (ProcurementData::Bill(b), ProcurementCommand::Bill(input)) = (&r.data, &r.command)
                 && b.total.rials() > 0
             {
                 out.push(PayableRemainder {
@@ -615,15 +556,16 @@ impl AccountingState {
                     reference: input.reference.clone(),
                     document_date: input.document_date.clone(),
                     due_date: input.due_date.clone(),
-                    remaining: b.total.checked_add(
-                        settled.get(r.id.as_str()).copied().unwrap_or(Money::ZERO),
-                    )?,
+                    remaining: b.total.checked_add(settled.get(r.id.as_str()).copied().unwrap_or(Money::ZERO))?,
                 });
             }
         }
-        for r in self.procurement.records.iter().filter(|r| {
-            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
-        }) {
+        for r in self
+            .procurement
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company && r.command.context().date.as_str() <= asof)
+        {
             if let ProcurementData::Return(v) = &r.data
                 && let Some(bill_id) = &v.bill_id
             {
@@ -635,25 +577,22 @@ impl AccountingState {
                     .find(|p| &p.id == bill_id)
                     .ok_or_else(|| anyhow::anyhow!("ماندهٔ فاکتور برگشت پیدا نشد"))?;
                 payable.remaining = payable.remaining.checked_sub(v.total)?;
-                ensure!(
-                    payable.remaining.rials() >= 0,
-                    "اعتبار برگشت از ماندهٔ فاکتور بیشتر است"
-                );
+                ensure!(payable.remaining.rials() >= 0, "اعتبار برگشت از ماندهٔ فاکتور بیشتر است");
             }
         }
         Ok(out)
     }
     fn operational_receipt_record(&self, company: &str, line: &str) -> Result<&ProcurementRecord> {
-        self.procurement.records.iter().find(|r| r.command.context().company_id == company
-            && matches!(&r.data, ProcurementData::Receive(v) if v.lines.iter().any(|l| l.id == line)))
+        self.procurement
+            .records
+            .iter()
+            .find(|r| {
+                r.command.context().company_id == company
+                    && matches!(&r.data, ProcurementData::Receive(v) if v.lines.iter().any(|l| l.id == line))
+            })
             .ok_or_else(|| anyhow::anyhow!("برگشت فقط از رسید عملیاتی دارای سابقهٔ اصلی مجاز است؛ رسید افتتاحیه قابل برگشت نیست"))
     }
-    fn receipt_allocation_date<'a>(
-        &'a self,
-        company: &str,
-        line: &str,
-        original: &'a str,
-    ) -> &'a str {
+    fn receipt_allocation_date<'a>(&'a self, company: &str, line: &str, original: &'a str) -> &'a str {
         self.procurement
             .records
             .iter()
@@ -668,11 +607,7 @@ impl AccountingState {
             .max()
             .unwrap()
     }
-    pub fn procurement_receipt_returnable(
-        &self,
-        company: &str,
-        line: &str,
-    ) -> Result<PurchaseReturnableLine> {
+    pub fn procurement_receipt_returnable(&self, company: &str, line: &str) -> Result<PurchaseReturnableLine> {
         let source = self.operational_receipt_record(company, line)?;
         let r = self
             .procurement_receipts(company, "9999-12-31")?
@@ -690,23 +625,21 @@ impl AccountingState {
             original_value: r.original_value,
             remaining_quantity_thousandths: r.quantity_thousandths,
             remaining_value: r.value,
-            date: self
-                .receipt_allocation_date(company, line, &source.command.context().date)
-                .into(),
+            date: self.receipt_allocation_date(company, line, &source.command.context().date).into(),
             reference: r.reference,
         })
     }
-    pub fn procurement_bill_returnable(
-        &self,
-        company: &str,
-        line: &str,
-    ) -> Result<PurchaseReturnableLine> {
-        let source = self.procurement.records.iter().find(|r| r.command.context().company_id == company
-            && matches!(&r.data, ProcurementData::Bill(v) if v.lines.iter().any(|l| l.id == line)))
+    pub fn procurement_bill_returnable(&self, company: &str, line: &str) -> Result<PurchaseReturnableLine> {
+        let source = self
+            .procurement
+            .records
+            .iter()
+            .find(|r| {
+                r.command.context().company_id == company
+                    && matches!(&r.data, ProcurementData::Bill(v) if v.lines.iter().any(|l| l.id == line))
+            })
             .ok_or_else(|| anyhow::anyhow!("ردیف فاکتور عملیاتی پیدا نشد"))?;
-        let (ProcurementData::Bill(b), ProcurementCommand::Bill(c)) =
-            (&source.data, &source.command)
-        else {
+        let (ProcurementData::Bill(b), ProcurementCommand::Bill(c)) = (&source.data, &source.command) else {
             anyhow::bail!("منبع فاکتور نامعتبر است")
         };
         let orig = b.lines.iter().find(|l| l.id == line).unwrap();
@@ -721,11 +654,7 @@ impl AccountingState {
             .filter(|r| r.command.context().company_id == company)
         {
             if let ProcurementData::Return(ret) = &r.data {
-                for l in ret
-                    .lines
-                    .iter()
-                    .filter(|l| l.bill_line_id.as_deref() == Some(line))
-                {
+                for l in ret.lines.iter().filter(|l| l.bill_line_id.as_deref() == Some(line)) {
                     q = q
                         .checked_add(l.quantity_thousandths)
                         .ok_or_else(|| anyhow::anyhow!("سرریز مقدار برگشت"))?;
@@ -748,29 +677,17 @@ impl AccountingState {
                 && (out.remaining_quantity_thousandths != 0 || out.remaining_value == Money::ZERO),
             "برگشت از ردیف فاکتور بیشتر است"
         );
-        out.date = self
-            .receipt_allocation_date(company, &orig.receipt_line_id, &c.context.date)
-            .into();
+        out.date = self.receipt_allocation_date(company, &orig.receipt_line_id, &c.context.date).into();
         out.reference = c.reference.clone();
         Ok(out)
     }
-    pub fn procurement_reconcile(
-        &self,
-        company: &str,
-        asof: &str,
-    ) -> Result<ProcurementReconciliation> {
+    pub fn procurement_reconcile(&self, company: &str, asof: &str) -> Result<ProcurementReconciliation> {
         civil_date(asof)?;
         let o = self.procurement_opening(company)?;
-        ensure!(
-            asof >= o.command.as_of.as_str(),
-            "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود"
-        );
+        ensure!(asof >= o.command.as_of.as_str(), "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود");
         let opening = self.reconcile_opening(company, &o.command.as_of)?;
         ensure!(opening.reconciled, "افتتاحیه تطبیق ندارد");
-        let stock: Vec<_> = self
-            .operational_stock_pools(company, asof)?
-            .into_values()
-            .collect();
+        let stock: Vec<_> = self.operational_stock_pools(company, asof)?.into_values().collect();
         let receipts = self.procurement_receipts(company, asof)?;
         let payables = self.procurement_payables(company, asof)?;
         let tb = self.trial_balance(company, asof)?;
@@ -797,12 +714,10 @@ impl AccountingState {
                 CoreRole::Inventory => sum(stock.iter().map(|x| x.value))?,
                 CoreRole::Grni => sum(receipts.iter().map(|x| x.value))?,
                 CoreRole::Payables => sum(payables.iter().map(|x| x.remaining))?,
-                CoreRole::Receivables | CoreRole::Cogs => {
-                    self.sales_control_detail(r.role, company, asof)?
+                CoreRole::Receivables | CoreRole::Cogs => self.sales_control_detail(r.role, company, asof)?,
+                CoreRole::CustomerAdvances | CoreRole::SupplierAdvances => {
+                    r.detail.checked_add(self.payment_advance_delta(company, r.role, asof)?)?
                 }
-                CoreRole::CustomerAdvances | CoreRole::SupplierAdvances => r
-                    .detail
-                    .checked_add(self.payment_advance_delta(company, r.role, asof)?)?,
                 _ => r.detail,
             };
             let ledger = if let Some(t) = tb.rows.iter().find(|t| t.account_id == r.account_id) {
@@ -835,10 +750,7 @@ impl AccountingState {
             reconciled,
         })
     }
-    pub(crate) fn validate_operational_context(
-        &self,
-        c: &ProcurementContext,
-    ) -> Result<&CoreSetup> {
+    pub(crate) fn validate_operational_context(&self, c: &ProcurementContext) -> Result<&CoreSetup> {
         for t in [
             &c.company_id,
             &c.period_id,
@@ -957,9 +869,7 @@ impl AccountingState {
                 self.sales
                     .records
                     .iter()
-                    .filter(|r| {
-                        r.command.context().company_id == company && !r.movements.is_empty()
-                    })
+                    .filter(|r| r.command.context().company_id == company && !r.movements.is_empty())
                     .map(|r| r.command.context().date.as_str()),
             )
             .max()
@@ -991,17 +901,11 @@ impl AccountingState {
         let mut ids = self.operational_known_ids();
         let claim = |id: &str, ids: &mut HashSet<String>| -> Result<()> {
             text(id)?;
-            ensure!(
-                ids.insert(id.into()),
-                "شناسهٔ منبع/ردیف تکراری یا متعلق به سابقه است"
-            );
+            ensure!(ids.insert(id.into()), "شناسهٔ منبع/ردیف تکراری یا متعلق به سابقه است");
             Ok(())
         };
         let warehouse = |id: &str| -> Result<()> {
-            ensure!(
-                resources.warehouses.iter().any(|w| w.id == id),
-                "انبار معتبر نیست"
-            );
+            ensure!(resources.warehouses.iter().any(|w| w.id == id), "انبار معتبر نیست");
             Ok(())
         };
         let supplier = |id: &str| -> Result<CoreParty> {
@@ -1017,10 +921,7 @@ impl AccountingState {
         let (data, total) = match command {
             ProcurementCommand::Resources(x) => {
                 ensure!(
-                    !x.parties.is_empty()
-                        || !x.units.is_empty()
-                        || !x.items.is_empty()
-                        || !x.warehouses.is_empty(),
+                    !x.parties.is_empty() || !x.units.is_empty() || !x.items.is_empty() || !x.warehouses.is_empty(),
                     "حداقل یک منبع جدید لازم است"
                 );
                 for p in &x.parties {
@@ -1031,8 +932,7 @@ impl AccountingState {
                     );
                     text(&p.name)?;
                 }
-                let mut unit_names: HashSet<_> =
-                    resources.units.iter().map(|u| normalize(&u.name)).collect();
+                let mut unit_names: HashSet<_> = resources.units.iter().map(|u| normalize(&u.name)).collect();
                 for u in &x.units {
                     claim(&u.id, &mut ids)?;
                     ensure!(
@@ -1041,16 +941,12 @@ impl AccountingState {
                     );
                     text(&u.name)?;
                 }
-                let mut skus: HashSet<_> =
-                    resources.items.iter().map(|i| normalize(&i.sku)).collect();
-                let knownunit =
-                    |id: &str| resources.units.iter().chain(&x.units).any(|u| u.id == id);
+                let mut skus: HashSet<_> = resources.items.iter().map(|i| normalize(&i.sku)).collect();
+                let knownunit = |id: &str| resources.units.iter().chain(&x.units).any(|u| u.id == id);
                 for i in &x.items {
                     claim(&i.id, &mut ids)?;
                     ensure!(
-                        i.company_id == c.company_id
-                            && skus.insert(normalize(&i.sku))
-                            && knownunit(&i.base_unit_id),
+                        i.company_id == c.company_id && skus.insert(normalize(&i.sku)) && knownunit(&i.base_unit_id),
                         "کسب‌وکار/کد کالا/واحد پایه نامعتبر است"
                     );
                     text(&i.sku)?;
@@ -1078,10 +974,7 @@ impl AccountingState {
                 text(&x.reference)?;
                 doc_date(&x.document_date, &c.date)?;
                 money(x.supplied_total)?;
-                ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف سفارش نامعتبر است"
-                );
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف سفارش نامعتبر است");
                 let supplier = supplier(&x.supplier_id)?;
                 ensure!(!self.procurement.records.iter().any(|r|matches!(&r.command,ProcurementCommand::Order(p) if p.context.company_id==c.company_id&&p.supplier_id==x.supplier_id&&normalize(&p.reference)==normalize(&x.reference)&&p.document_date==x.document_date)),"مرجع سفارش این تأمین‌کننده تکراری است");
                 let mut frozen = Vec::new();
@@ -1107,10 +1000,7 @@ impl AccountingState {
                         1000,
                     )?);
                     money(gross)?;
-                    ensure!(
-                        l.line_discount.rials() <= gross.rials(),
-                        "تخفیف ردیف از مبلغ بیشتر است"
-                    );
+                    ensure!(l.line_discount.rials() <= gross.rials(), "تخفیف ردیف از مبلغ بیشتر است");
                     let weight = gross.checked_sub(l.line_discount)?;
                     weights.push(weight);
                     frozen.push(FrozenOrderLine {
@@ -1122,20 +1012,13 @@ impl AccountingState {
                         net: weight,
                     });
                 }
-                for (l, d) in
-                    frozen
-                        .iter_mut()
-                        .zip(discount_alloc(&x.lines, &weights, x.document_discount)?)
-                {
+                for (l, d) in frozen.iter_mut().zip(discount_alloc(&x.lines, &weights, x.document_discount)?) {
                     l.document_discount = d;
                     l.net = l.net.checked_sub(d)?;
                 }
                 let total = sum(frozen.iter().map(|l| l.net))?;
                 money(total)?;
-                ensure!(
-                    total == x.supplied_total,
-                    "جمع مستقل سفارش با خالص محاسبه‌شده برابر نیست"
-                );
+                ensure!(total == x.supplied_total, "جمع مستقل سفارش با خالص محاسبه‌شده برابر نیست");
                 (
                     ProcurementData::Order(PostedOrder {
                         supplier,
@@ -1149,18 +1032,14 @@ impl AccountingState {
                 text(&x.reference)?;
                 doc_date(&x.document_date, &c.date)?;
                 money(x.supplied_total)?;
-                ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف رسید نامعتبر است"
-                );
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف رسید نامعتبر است");
                 ensure!(
                     c.date.as_str() >= self.operational_stock_date(&c.company_id)?,
                     "ثبت موجودی پیش از آخرین تاریخ موجودی شرکت ممنوع است"
                 );
                 let order_record = self.procurement_document(&x.order_id)?;
                 ensure!(
-                    order_record.command.context().company_id == c.company_id
-                        && c.date >= order_record.command.context().date,
+                    order_record.command.context().company_id == c.company_id && c.date >= order_record.command.context().date,
                     "سفارش متعلق به شرکت یا تاریخ رسید نیست"
                 );
                 let ProcurementData::Order(order) = &order_record.data else {
@@ -1184,10 +1063,7 @@ impl AccountingState {
                 for l in &x.lines {
                     claim(&l.id, &mut ids)?;
                     warehouse(&l.warehouse_id)?;
-                    ensure!(
-                        source_ids.insert(&l.order_line_id),
-                        "ردیف سفارش در یک رسید تکراری است"
-                    );
+                    ensure!(source_ids.insert(&l.order_line_id), "ردیف سفارش در یک رسید تکراری است");
                     let orig = order
                         .lines
                         .iter()
@@ -1200,11 +1076,7 @@ impl AccountingState {
                         if let ProcurementData::Receive(receipt) = &r.data
                             && receipt.order_id == x.order_id
                         {
-                            for old in receipt
-                                .lines
-                                .iter()
-                                .filter(|old| old.order_line_id == l.order_line_id)
-                            {
+                            for old in receipt.lines.iter().filter(|old| old.order_line_id == l.order_line_id) {
                                 priorq = priorq
                                     .checked_add(old.quantity_thousandths)
                                     .ok_or_else(|| anyhow::anyhow!("سرریز مقدار دریافت"))?;
@@ -1212,8 +1084,7 @@ impl AccountingState {
                             }
                         }
                     }
-                    let value =
-                        allocation(orig.net, orig.base_quantity_thousandths, priorq, priorv, q)?;
+                    let value = allocation(orig.net, orig.base_quantity_thousandths, priorq, priorv, q)?;
                     let pool = pools
                         .entry((orig.item.id.clone(), l.warehouse_id.clone()))
                         .or_insert_with(|| empty_pool(&orig.item.id, &l.warehouse_id));
@@ -1241,18 +1112,9 @@ impl AccountingState {
                     });
                 }
                 let total = sum(lines.iter().map(|l| l.value))?;
-                ensure!(
-                    total == x.supplied_total,
-                    "جمع رسید با بهای تخصیص‌یافتهٔ سفارش برابر نیست"
-                );
+                ensure!(total == x.supplied_total, "جمع رسید با بهای تخصیص‌یافتهٔ سفارش برابر نیست");
                 if total.rials() > 0 {
-                    journal_lines = pair(
-                        setup,
-                        CoreRole::Inventory,
-                        CoreRole::Grni,
-                        total,
-                        &x.reference,
-                    )?;
+                    journal_lines = pair(setup, CoreRole::Inventory, CoreRole::Grni, total, &x.reference)?;
                 }
                 (
                     ProcurementData::Receive(PostedReceipt {
@@ -1268,26 +1130,16 @@ impl AccountingState {
                 text(&x.reference)?;
                 doc_date(&x.document_date, &c.date)?;
                 civil_date(&x.due_date)?;
-                ensure!(
-                    x.due_date >= x.document_date,
-                    "سررسید پیش از تاریخ فاکتور است"
-                );
+                ensure!(x.due_date >= x.document_date, "سررسید پیش از تاریخ فاکتور است");
                 supplier(&x.supplier_id)?;
                 money(x.supplied_total)?;
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف فاکتور نامعتبر است");
                 ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف فاکتور نامعتبر است"
-                );
-                ensure!(
-                    !self
-                        .procurement_opening(&c.company_id)?
-                        .command
-                        .open_items
-                        .iter()
-                        .any(|r| r.side == crate::core::OpenItemSide::Payable
-                            && r.party_id == x.supplier_id
-                            && normalize(&r.document_reference) == normalize(&x.reference)
-                            && r.document_date == x.document_date),
+                    !self.procurement_opening(&c.company_id)?.command.open_items.iter().any(|r| r.side
+                        == crate::core::OpenItemSide::Payable
+                        && r.party_id == x.supplier_id
+                        && normalize(&r.document_reference) == normalize(&x.reference)
+                        && r.document_date == x.document_date),
                     "این فاکتور پرداختنی قبلاً در افتتاحیه منظور شده است"
                 );
                 ensure!(!self.procurement.records.iter().any(|r|matches!(&r.command,ProcurementCommand::Bill(b) if b.context.company_id==c.company_id&&b.supplier_id==x.supplier_id&&normalize(&b.reference)==normalize(&x.reference)&&b.document_date==x.document_date)),"مرجع فاکتور این تأمین‌کننده قبلاً ثبت شده است؛ بازبینی مستقل لازم است");
@@ -1297,10 +1149,7 @@ impl AccountingState {
                 for l in &x.lines {
                     claim(&l.id, &mut ids)?;
                     money(l.supplied_value)?;
-                    ensure!(
-                        source_ids.insert(&l.receipt_line_id),
-                        "رسید در یک فاکتور تکراری است"
-                    );
+                    ensure!(source_ids.insert(&l.receipt_line_id), "رسید در یک فاکتور تکراری است");
                     let r = receipts
                         .iter()
                         .find(|r| r.id == l.receipt_line_id)
@@ -1315,17 +1164,11 @@ impl AccountingState {
                         .find(|i| i.id == r.item_id)
                         .ok_or_else(|| anyhow::anyhow!("کالای رسید پیدا نشد"))?;
                     ensure!(
-                        l.quantity_thousandths > 0
-                            && (!resources_item.indivisible || l.quantity_thousandths % 1000 == 0),
+                        l.quantity_thousandths > 0 && (!resources_item.indivisible || l.quantity_thousandths % 1000 == 0),
                         "مقدار فاکتور واحد پایه نامعتبر است"
                     );
                     ensure!(
-                        c.date.as_str()
-                            >= self.receipt_allocation_date(
-                                &c.company_id,
-                                &l.receipt_line_id,
-                                &r.date
-                            ),
+                        c.date.as_str() >= self.receipt_allocation_date(&c.company_id, &l.receipt_line_id, &r.date),
                         "تاریخ فاکتور پیش از آخرین تخصیص یا برگشت همین رسید است"
                     );
                     // Bills and unbilled returns consume one original receipt cursor.
@@ -1352,13 +1195,7 @@ impl AccountingState {
                 let total = sum(lines.iter().map(|l| l.value))?;
                 ensure!(total == x.supplied_total, "جمع مستقل فاکتور برابر نیست");
                 if total.rials() > 0 {
-                    journal_lines = pair(
-                        setup,
-                        CoreRole::Grni,
-                        CoreRole::Payables,
-                        total,
-                        &x.reference,
-                    )?;
+                    journal_lines = pair(setup, CoreRole::Grni, CoreRole::Payables, total, &x.reference)?;
                 }
                 (
                     ProcurementData::Bill(PostedBill {
@@ -1374,10 +1211,7 @@ impl AccountingState {
                 text(&x.return_reference)?;
                 doc_date(&x.document_date, &c.date)?;
                 money(x.supplied_total)?;
-                ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف برگشت نامعتبر است"
-                );
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف برگشت نامعتبر است");
                 let billed = x.lines[0].bill_line_id.is_some();
                 ensure!(
                     x.lines.iter().all(|l| l.bill_line_id.is_some() == billed)
@@ -1392,10 +1226,16 @@ impl AccountingState {
                 if let Some(reference) = &x.credit_reference {
                     text(reference)?;
                 }
-                ensure!(!self.procurement.records.iter().any(|r| matches!(&r.command, ProcurementCommand::Return(old)
+                ensure!(
+                    !self
+                        .procurement
+                        .records
+                        .iter()
+                        .any(|r| matches!(&r.command, ProcurementCommand::Return(old)
                     if old.context.company_id == c.company_id && old.supplier_id == x.supplier_id
                     && old.document_date == x.document_date && normalize(&old.return_reference) == normalize(&x.return_reference))),
-                    "مرجع برگشت این تأمین‌کننده قبلاً ثبت شده است");
+                    "مرجع برگشت این تأمین‌کننده قبلاً ثبت شده است"
+                );
                 if let Some(reference) = &x.credit_reference {
                     ensure!(!self.procurement.records.iter().any(|r| matches!(&r.command, ProcurementCommand::Return(old)
                         if old.context.company_id == c.company_id && old.supplier_id == x.supplier_id
@@ -1414,32 +1254,19 @@ impl AccountingState {
                 for l in &x.lines {
                     claim(&l.id, &mut ids)?;
                     money(l.supplied_value)?;
-                    ensure!(
-                        source_ids.insert(&l.receipt_line_id),
-                        "ردیف رسید در برگشت تکراری است"
-                    );
-                    let source =
-                        self.operational_receipt_record(&c.company_id, &l.receipt_line_id)?;
+                    ensure!(source_ids.insert(&l.receipt_line_id), "ردیف رسید در برگشت تکراری است");
+                    let source = self.operational_receipt_record(&c.company_id, &l.receipt_line_id)?;
                     let eligible = if let Some(bill_line) = &l.bill_line_id {
                         let e = self.procurement_bill_returnable(&c.company_id, bill_line)?;
-                        ensure!(
-                            e.receipt_line_id == l.receipt_line_id,
-                            "ردیف فاکتور به این رسید تعلق ندارد"
-                        );
+                        ensure!(e.receipt_line_id == l.receipt_line_id, "ردیف فاکتور به این رسید تعلق ندارد");
                         if let Some(prior) = &bill_id {
-                            ensure!(
-                                e.bill_id.as_ref() == Some(prior),
-                                "برگشت باید به یک فاکتور تعلق داشته باشد"
-                            );
+                            ensure!(e.bill_id.as_ref() == Some(prior), "برگشت باید به یک فاکتور تعلق داشته باشد");
                         }
                         bill_id = e.bill_id.clone();
                         e
                     } else {
                         if let Some(prior) = &receipt_id {
-                            ensure!(
-                                *prior == source.id,
-                                "برگشت فاکتور‌نشده باید به یک رسید تعلق داشته باشد"
-                            );
+                            ensure!(*prior == source.id, "برگشت فاکتور‌نشده باید به یک رسید تعلق داشته باشد");
                         }
                         receipt_id = Some(source.id.clone());
                         self.procurement_receipt_returnable(&c.company_id, &l.receipt_line_id)?
@@ -1454,18 +1281,14 @@ impl AccountingState {
                         .find(|i| i.id == eligible.item_id)
                         .ok_or_else(|| anyhow::anyhow!("کالای رسید برگشت پیدا نشد"))?;
                     ensure!(
-                        l.quantity_thousandths > 0
-                            && (!item.indivisible || l.quantity_thousandths % 1000 == 0),
+                        l.quantity_thousandths > 0 && (!item.indivisible || l.quantity_thousandths % 1000 == 0),
                         "مقدار برگشت واحد پایه نامعتبر است"
                     );
                     let value = allocation(
                         eligible.original_value,
                         eligible.original_quantity_thousandths,
-                        eligible.original_quantity_thousandths
-                            - eligible.remaining_quantity_thousandths,
-                        eligible
-                            .original_value
-                            .checked_sub(eligible.remaining_value)?,
+                        eligible.original_quantity_thousandths - eligible.remaining_quantity_thousandths,
+                        eligible.original_value.checked_sub(eligible.remaining_value)?,
                         l.quantity_thousandths,
                     )?;
                     ensure!(
@@ -1478,8 +1301,9 @@ impl AccountingState {
                         .entry((eligible.item_id.clone(), eligible.warehouse_id.clone()))
                         .or_insert_with(|| empty_pool(&eligible.item_id, &eligible.warehouse_id));
                     let before = pool.clone();
-                    let after = move_pool(pool, StockDirection::Out, l.quantity_thousandths, value)
-                        .map_err(|error| anyhow::anyhow!("برگشت با بهای اصلی از موجودی فعلی ممکن نیست؛ اصلاح بهای جداگانه لازم است: {error}"))?;
+                    let after = move_pool(pool, StockDirection::Out, l.quantity_thousandths, value).map_err(|error| {
+                        anyhow::anyhow!("برگشت با بهای اصلی از موجودی فعلی ممکن نیست؛ اصلاح بهای جداگانه لازم است: {error}")
+                    })?;
                     let movement_id = movement_id(c, &l.id, "return-out")?;
                     movements.push(StockMovement {
                         id: movement_id,
@@ -1522,11 +1346,7 @@ impl AccountingState {
                 if total != Money::ZERO {
                     journal_lines = pair(
                         setup,
-                        if billed {
-                            CoreRole::Payables
-                        } else {
-                            CoreRole::Grni
-                        },
+                        if billed { CoreRole::Payables } else { CoreRole::Grni },
                         CoreRole::Inventory,
                         total,
                         &x.return_reference,
@@ -1538,11 +1358,7 @@ impl AccountingState {
                         return_id: x.return_id.clone(),
                         return_state: PurchaseReturnState::Returned,
                         credit_id: x.credit_id.clone(),
-                        credit_state: if billed {
-                            Some(SupplierCreditState::Posted)
-                        } else {
-                            None
-                        },
+                        credit_state: if billed { Some(SupplierCreditState::Posted) } else { None },
                         receipt_id,
                         bill_id,
                         lines,
@@ -1552,10 +1368,7 @@ impl AccountingState {
                 )
             }
             ProcurementCommand::Transfer(x) => {
-                ensure!(
-                    x.source_warehouse_id != x.target_warehouse_id,
-                    "انبار مبدأ و مقصد یکسان است"
-                );
+                ensure!(x.source_warehouse_id != x.target_warehouse_id, "انبار مبدأ و مقصد یکسان است");
                 warehouse(&x.source_warehouse_id)?;
                 warehouse(&x.target_warehouse_id)?;
                 ensure!(
@@ -1633,10 +1446,7 @@ impl AccountingState {
             nonfinancial,
         })
     }
-    pub fn post_procurement_command(
-        &mut self,
-        command: ProcurementCommand,
-    ) -> Result<ProcurementResult> {
+    pub fn post_procurement_command(&mut self, command: ProcurementCommand) -> Result<ProcurementResult> {
         let mut next = self.clone();
         let out = next.post_procurement_inner(command)?;
         *self = next;
@@ -1645,29 +1455,16 @@ impl AccountingState {
     fn post_procurement_inner(&mut self, command: ProcurementCommand) -> Result<ProcurementResult> {
         let c = command.context();
         ensure!(
-            !self
-                .sales
-                .requests
-                .iter()
-                .any(|r| r.request_key == c.request_key),
+            !self.sales.requests.iter().any(|r| r.request_key == c.request_key),
             "کلید درخواست قبلاً برای فروش استفاده شده است"
         );
         text(&c.request_key)?;
         let business = business_hash(&command)?;
         ensure!(
-            !self
-                .core
-                .zero_requests
-                .iter()
-                .any(|r| r.request_key == c.request_key),
+            !self.core.zero_requests.iter().any(|r| r.request_key == c.request_key),
             "کلید درخواست برای شروع دفتر بدون مانده استفاده شده است"
         );
-        if let Some(alias) = self
-            .procurement
-            .requests
-            .iter()
-            .find(|r| r.request_key == c.request_key)
-        {
+        if let Some(alias) = self.procurement.requests.iter().find(|r| r.request_key == c.request_key) {
             ensure!(
                 alias.company_id == c.company_id && alias.business_sha256 == business,
                 "کلید درخواست با محتوای متفاوت استفاده شده است"
@@ -1701,16 +1498,12 @@ impl AccountingState {
             if prior.journal_id.is_some() {
                 let lines = record_journal_lines(&prior)?;
                 ensure!(
-                    self.post_procurement(financial_command(&command, lines))?
-                        == prior.journal_id.clone().unwrap(),
+                    self.post_procurement(financial_command(&command, lines))? == prior.journal_id.clone().unwrap(),
                     "درخواست به سند دیگری اشاره می‌کند"
                 );
             } else {
                 ensure!(
-                    !self
-                        .requests
-                        .iter()
-                        .any(|r| r.command.request_key == c.request_key),
+                    !self.requests.iter().any(|r| r.command.request_key == c.request_key),
                     "کلید درخواست قبلاً برای عملیات مالی استفاده شده است"
                 );
             }
@@ -1723,20 +1516,11 @@ impl AccountingState {
             return Ok(result(&prior));
         }
         ensure!(
-            !self
-                .requests
-                .iter()
-                .any(|r| r.command.request_key == c.request_key),
+            !self.requests.iter().any(|r| r.command.request_key == c.request_key),
             "کلید درخواست قبلاً برای عملیات مالی دیگری استفاده شده است"
         );
         let preview = self.preview_procurement(&command)?;
-        let frozen_setup = self
-            .core
-            .setups
-            .iter()
-            .find(|s| s.id == c.setup_id)
-            .unwrap()
-            .clone();
+        let frozen_setup = self.core.setups.iter().find(|s| s.id == c.setup_id).unwrap().clone();
         let record_id = id();
         ensure!(
             !self.operational_known_ids().contains(&record_id)
@@ -1747,13 +1531,7 @@ impl AccountingState {
         let sequence = self.operational_sequence(&c.company_id)?;
         let command_sha256 = hash(&command)?;
         let journal_id = if preview.nonfinancial {
-            self.activity(
-                &c.company_id,
-                &record_id,
-                AuditOperation::ProcurementRecorded,
-                &c.actor,
-                &c.reason,
-            );
+            self.activity(&c.company_id, &record_id, AuditOperation::ProcurementRecorded, &c.actor, &c.reason);
             None
         } else {
             Some(self.post_procurement(financial_command(&command, preview.journal_lines))?)
@@ -1780,10 +1558,7 @@ impl AccountingState {
         ensure!(report.reconciled, "ثبت خرید باعث اختلاف حساب کنترلی می‌شود");
         Ok(out)
     }
-    pub(crate) fn replay_procurement_record(
-        &mut self,
-        record: &ProcurementRecord,
-    ) -> Result<Option<String>> {
+    pub(crate) fn replay_procurement_record(&mut self, record: &ProcurementRecord) -> Result<Option<String>> {
         text(&record.id)?;
         ensure!(
             !self.operational_known_ids().contains(&record.id)
@@ -1793,10 +1568,7 @@ impl AccountingState {
         );
         let before = self.procurement.records.len();
         let out = self.post_procurement_command(record.command.clone())?;
-        ensure!(
-            self.procurement.records.len() == before + 1,
-            "سوابق تغییرات رویداد خرید تکراری است"
-        );
+        ensure!(self.procurement.records.len() == before + 1, "سوابق تغییرات رویداد خرید تکراری است");
         let created = self.procurement.records.last_mut().unwrap();
         created.id = record.id.clone();
         self.procurement.requests.last_mut().unwrap().record_id = record.id.clone();
@@ -1811,14 +1583,10 @@ impl AccountingState {
         }
         Ok(out.journal_id)
     }
-    pub(crate) fn replay_procurement_request(
-        &mut self,
-        request: &ProcurementRequest,
-    ) -> Result<ProcurementResult> {
+    pub(crate) fn replay_procurement_request(&mut self, request: &ProcurementRequest) -> Result<ProcurementResult> {
         let prior = self.procurement_document(&request.record_id)?;
         ensure!(
-            request.company_id == prior.command.context().company_id
-                && request.business_sha256 == business_hash(&prior.command)?,
+            request.company_id == prior.command.context().company_id && request.business_sha256 == business_hash(&prior.command)?,
             "هویت یا هش درخواست خرید نامعتبر است"
         );
         let mut c = prior.command.clone();
@@ -1835,10 +1603,7 @@ fn empty_pool(item: &str, warehouse: &str) -> StockPool {
     }
 }
 fn move_pool(before: &StockPool, direction: StockDirection, q: i64, v: Money) -> Result<StockPool> {
-    ensure!(
-        q > 0 && v.rials() >= 0,
-        "مقدار/بهای حرکت موجودی نامعتبر است"
-    );
+    ensure!(q > 0 && v.rials() >= 0, "مقدار/بهای حرکت موجودی نامعتبر است");
     let mut after = before.clone();
     match direction {
         StockDirection::In => {
@@ -1857,9 +1622,7 @@ fn move_pool(before: &StockPool, direction: StockDirection, q: i64, v: Money) ->
         }
     }
     ensure!(
-        after.quantity_thousandths >= 0
-            && after.value.rials() >= 0
-            && (after.quantity_thousandths != 0 || after.value == Money::ZERO),
+        after.quantity_thousandths >= 0 && after.value.rials() >= 0 && (after.quantity_thousandths != 0 || after.value == Money::ZERO),
         "موجودی منفی یا بهای باقی‌مانده بدون مقدار ممنوع است"
     );
     Ok(after)
@@ -1867,21 +1630,10 @@ fn move_pool(before: &StockPool, direction: StockDirection, q: i64, v: Money) ->
 fn movement_id(context: &ProcurementContext, line: &str, direction: &str) -> Result<String> {
     Ok(format!(
         "stock:{}",
-        hash(&(
-            context.company_id.as_str(),
-            context.source_id.as_str(),
-            line,
-            direction
-        ))?
+        hash(&(context.company_id.as_str(), context.source_id.as_str(), line, direction))?
     ))
 }
-fn pair(
-    setup: &CoreSetup,
-    debit: CoreRole,
-    credit: CoreRole,
-    value: Money,
-    reference: &str,
-) -> Result<Vec<JournalLineInput>> {
+fn pair(setup: &CoreSetup, debit: CoreRole, credit: CoreRole, value: Money, reference: &str) -> Result<Vec<JournalLineInput>> {
     Ok(vec![
         JournalLineInput {
             account_id: setup.account_id(debit)?.into(),
@@ -1915,27 +1667,15 @@ fn financial_command(command: &ProcurementCommand, lines: Vec<JournalLineInput>)
 }
 fn record_journal_lines(record: &ProcurementRecord) -> Result<Vec<JournalLineInput>> {
     match (&record.command, &record.data) {
-        (ProcurementCommand::Receive(c), ProcurementData::Receive(r)) => pair(
-            &record.frozen_setup,
-            CoreRole::Inventory,
-            CoreRole::Grni,
-            r.total,
-            &c.reference,
-        ),
-        (ProcurementCommand::Bill(c), ProcurementData::Bill(b)) => pair(
-            &record.frozen_setup,
-            CoreRole::Grni,
-            CoreRole::Payables,
-            b.total,
-            &c.reference,
-        ),
+        (ProcurementCommand::Receive(c), ProcurementData::Receive(r)) => {
+            pair(&record.frozen_setup, CoreRole::Inventory, CoreRole::Grni, r.total, &c.reference)
+        }
+        (ProcurementCommand::Bill(c), ProcurementData::Bill(b)) => {
+            pair(&record.frozen_setup, CoreRole::Grni, CoreRole::Payables, b.total, &c.reference)
+        }
         (ProcurementCommand::Return(c), ProcurementData::Return(r)) => pair(
             &record.frozen_setup,
-            if r.bill_id.is_some() {
-                CoreRole::Payables
-            } else {
-                CoreRole::Grni
-            },
+            if r.bill_id.is_some() { CoreRole::Payables } else { CoreRole::Grni },
             CoreRole::Inventory,
             r.total,
             &c.return_reference,

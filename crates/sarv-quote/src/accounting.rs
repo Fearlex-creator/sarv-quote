@@ -46,9 +46,7 @@ impl Money {
         let whole = parts.next().unwrap_or_default();
         let fraction = parts.next();
         ensure!(
-            !whole.is_empty()
-                && whole.bytes().all(|b| b.is_ascii_digit())
-                && parts.next().is_none(),
+            !whole.is_empty() && whole.bytes().all(|b| b.is_ascii_digit()) && parts.next().is_none(),
             "مبلغ نامعتبر است؛ جداکنندهٔ هزارگان وارد نکنید"
         );
         if let Some(fraction) = fraction {
@@ -57,9 +55,7 @@ impl Money {
                 "اعشار مبلغ نامعتبر است"
             );
         }
-        let whole: i128 = whole
-            .parse()
-            .map_err(|_| anyhow::anyhow!("سرریز مبلغ ریالی"))?;
+        let whole: i128 = whole.parse().map_err(|_| anyhow::anyhow!("سرریز مبلغ ریالی"))?;
         let multiplier = if unit == MoneyUnit::Toman { 10 } else { 1 };
         let fractional = match (unit, fraction) {
             (_, None) => 0,
@@ -68,10 +64,7 @@ impl Money {
                 0
             }
             (MoneyUnit::Toman, Some(f)) => {
-                ensure!(
-                    f[1..].bytes().all(|b| b == b'0'),
-                    "کسری از ریال قابل ثبت نیست"
-                );
+                ensure!(f[1..].bytes().all(|b| b == b'0'), "کسری از ریال قابل ثبت نیست");
                 (f.as_bytes()[0] - b'0') as i128
             }
         };
@@ -80,9 +73,7 @@ impl Money {
             .and_then(|v| v.checked_add(fractional))
             .ok_or_else(|| anyhow::anyhow!("سرریز مبلغ ریالی"))?;
         let signed = if negative { -unsigned } else { unsigned };
-        Ok(Self(
-            i64::try_from(signed).map_err(|_| anyhow::anyhow!("سرریز مبلغ ریالی"))?,
-        ))
+        Ok(Self(i64::try_from(signed).map_err(|_| anyhow::anyhow!("سرریز مبلغ ریالی"))?))
     }
     /// Decimal toman values preserve residual rials, including negative values.
     pub fn display(self, unit: MoneyUnit) -> String {
@@ -253,17 +244,11 @@ pub struct AccountingState {
     pub audit: Vec<AuditEvent>,
     #[serde(default, skip_serializing_if = "crate::core::CoreFoundation::is_empty")]
     pub core: crate::core::CoreFoundation,
-    #[serde(
-        default,
-        skip_serializing_if = "crate::procurement::ProcurementState::is_empty"
-    )]
+    #[serde(default, skip_serializing_if = "crate::procurement::ProcurementState::is_empty")]
     pub procurement: crate::procurement::ProcurementState,
     #[serde(default, skip_serializing_if = "crate::sales::SalesState::is_empty")]
     pub sales: crate::sales::SalesState,
-    #[serde(
-        default,
-        skip_serializing_if = "crate::payments::PaymentsState::is_empty"
-    )]
+    #[serde(default, skip_serializing_if = "crate::payments::PaymentsState::is_empty")]
     pub payments: crate::payments::PaymentsState,
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -283,12 +268,9 @@ pub struct TrialBalance {
     pub total_credit: Money,
 }
 fn iso_date(value: &str) -> Result<NaiveDate> {
-    let parsed = NaiveDate::parse_from_str(value, "%Y-%m-%d")
-        .map_err(|_| anyhow::anyhow!("تاریخ باید میلادی معتبر به شکل YYYY-MM-DD باشد"))?;
-    ensure!(
-        parsed.format("%Y-%m-%d").to_string() == value,
-        "تاریخ باید به شکل YYYY-MM-DD باشد"
-    );
+    let parsed =
+        NaiveDate::parse_from_str(value, "%Y-%m-%d").map_err(|_| anyhow::anyhow!("تاریخ باید میلادی معتبر به شکل YYYY-MM-DD باشد"))?;
+    ensure!(parsed.format("%Y-%m-%d").to_string() == value, "تاریخ باید به شکل YYYY-MM-DD باشد");
     Ok(parsed)
 }
 fn optional_text(value: &str) -> Result<()> {
@@ -298,10 +280,7 @@ fn optional_text(value: &str) -> Result<()> {
     Ok(())
 }
 fn same_business(a: &PostCommand, b: &PostCommand) -> bool {
-    a.company_id == b.company_id
-        && a.source_id == b.source_id
-        && a.source_revision == b.source_revision
-        && a.event == b.event
+    a.company_id == b.company_id && a.source_id == b.source_id && a.source_revision == b.source_revision && a.event == b.event
 }
 fn same_payload(a: &PostCommand, b: &PostCommand) -> bool {
     let mut a = a.clone();
@@ -356,8 +335,7 @@ impl AccountingState {
         for event in &self.audit {
             text(&event.actor)?;
             text(&event.reason)?;
-            DateTime::parse_from_rfc3339(&event.recorded_at)
-                .map_err(|_| anyhow::anyhow!("زمان سوابق تغییرات نامعتبر است"))?;
+            DateTime::parse_from_rfc3339(&event.recorded_at).map_err(|_| anyhow::anyhow!("زمان سوابق تغییرات نامعتبر است"))?;
             let before_audit = replay.audit.len();
             match event.operation {
                 AuditOperation::ProcurementRecorded => {
@@ -369,15 +347,12 @@ impl AccountingState {
                         .ok_or_else(|| anyhow::anyhow!("رویداد غیرمالی خرید یا انبار پیدا نشد"))?;
                     let context = record.command.context();
                     ensure!(
-                        context.company_id == event.company_id
-                            && context.actor == event.actor
-                            && context.reason == event.reason,
+                        context.company_id == event.company_id && context.actor == event.actor && context.reason == event.reason,
                         "رویداد خرید و سوابق تغییرات آن سازگار نیستند"
                     );
                     let journal_count = replay.journals.len();
                     ensure!(
-                        replay.replay_procurement_record(record)?.is_none()
-                            && replay.journals.len() == journal_count,
+                        replay.replay_procurement_record(record)?.is_none() && replay.journals.len() == journal_count,
                         "رویداد غیرمالی نباید سند مالی ایجاد کند"
                     );
                     ensure!(
@@ -394,15 +369,12 @@ impl AccountingState {
                         .ok_or_else(|| anyhow::anyhow!("رویداد غیرمالی فروش یا برگشت پیدا نشد"))?;
                     let context = record.command.context();
                     ensure!(
-                        context.company_id == event.company_id
-                            && context.actor == event.actor
-                            && context.reason == event.reason,
+                        context.company_id == event.company_id && context.actor == event.actor && context.reason == event.reason,
                         "رویداد فروش و سوابق تغییرات آن سازگار نیستند"
                     );
                     let journal_count = replay.journals.len();
                     ensure!(
-                        replay.replay_sales_record(record)?.is_none()
-                            && replay.journals.len() == journal_count,
+                        replay.replay_sales_record(record)?.is_none() && replay.journals.len() == journal_count,
                         "رویداد غیرمالی نباید سند مالی ایجاد کند"
                     );
                     ensure!(
@@ -430,10 +402,7 @@ impl AccountingState {
                         .core
                         .openings
                         .iter()
-                        .find(|o| {
-                            o.journal_id == event.entity_id
-                                && o.effect == crate::core::OpeningEffect::ZeroBalanceInitialization
-                        })
+                        .find(|o| o.journal_id == event.entity_id && o.effect == crate::core::OpeningEffect::ZeroBalanceInitialization)
                         .ok_or_else(|| anyhow::anyhow!("رویداد شروع دفتر بدون مانده پیدا نشد"))?;
                     ensure!(
                         opening.command.company_id == event.company_id
@@ -443,28 +412,19 @@ impl AccountingState {
                     );
                     let before = replay.journals.len();
                     replay.replay_core_opening(opening.command.clone())?;
-                    ensure!(
-                        replay.journals.len() == before,
-                        "شروع دفتر بدون مانده نباید سند مالی ایجاد کند"
-                    );
+                    ensure!(replay.journals.len() == before, "شروع دفتر بدون مانده نباید سند مالی ایجاد کند");
                     let created = replay.core.openings.last_mut().unwrap();
                     ensure!(
                         created.effect == crate::core::OpeningEffect::ZeroBalanceInitialization,
                         "شروع دفتر بدون مانده اثر مالی دارد"
                     );
                     created.journal_id = event.entity_id.clone();
-                    replay
-                        .core
-                        .zero_requests
-                        .last_mut()
-                        .unwrap()
-                        .initialization_id = event.entity_id.clone();
+                    replay.core.zero_requests.last_mut().unwrap().initialization_id = event.entity_id.clone();
                 }
                 AuditOperation::CompanyCreated => {
                     let company = self.company(&event.entity_id)?;
                     ensure!(
-                        company.id == event.company_id
-                            && !replay.companies.iter().any(|c| c.id == company.id),
+                        company.id == event.company_id && !replay.companies.iter().any(|c| c.id == company.id),
                         "سوابق تغییرات ایجاد کسب‌وکار نامعتبر است"
                     );
                     text(&company.name)?;
@@ -480,22 +440,11 @@ impl AccountingState {
                 AuditOperation::PeriodCreated => {
                     let p = self.period(&event.entity_id)?;
                     ensure!(
-                        p.company_id == event.company_id
-                            && !replay.periods.iter().any(|old| old.id == p.id),
+                        p.company_id == event.company_id && !replay.periods.iter().any(|old| old.id == p.id),
                         "سوابق تغییرات ایجاد سال مالی نامعتبر است"
                     );
-                    let generated = replay.add_period(
-                        &p.company_id,
-                        &p.name,
-                        &p.start_date,
-                        &p.end_date,
-                        &event.actor,
-                    )?;
-                    let created = replay
-                        .periods
-                        .iter_mut()
-                        .find(|old| old.id == generated)
-                        .unwrap();
+                    let generated = replay.add_period(&p.company_id, &p.name, &p.start_date, &p.end_date, &event.actor)?;
+                    let created = replay.periods.iter_mut().find(|old| old.id == generated).unwrap();
                     created.id = p.id.clone();
                 }
                 AuditOperation::AccountCreated => {
@@ -505,8 +454,7 @@ impl AccountingState {
                         .find(|a| a.id == event.entity_id)
                         .ok_or_else(|| anyhow::anyhow!("حساب سوابق تغییرات پیدا نشد"))?;
                     ensure!(
-                        a.company_id == event.company_id
-                            && !replay.accounts.iter().any(|old| old.id == a.id),
+                        a.company_id == event.company_id && !replay.accounts.iter().any(|old| old.id == a.id),
                         "سوابق تغییرات ایجاد حساب نامعتبر است"
                     );
                     let generated = replay.add_account(
@@ -522,12 +470,7 @@ impl AccountingState {
                         },
                         &event.actor,
                     )?;
-                    replay
-                        .accounts
-                        .iter_mut()
-                        .find(|old| old.id == generated)
-                        .unwrap()
-                        .id = a.id.clone();
+                    replay.accounts.iter_mut().find(|old| old.id == generated).unwrap().id = a.id.clone();
                 }
                 AuditOperation::AccountArchived => {
                     ensure!(
@@ -575,16 +518,8 @@ impl AccountingState {
                         .records
                         .iter()
                         .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
-                    let sales = self
-                        .sales
-                        .records
-                        .iter()
-                        .find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
-                    let payment = self
-                        .payments
-                        .records
-                        .iter()
-                        .find(|r| r.journal_id == j.id);
+                    let sales = self.sales.records.iter().find(|r| r.journal_id.as_deref() == Some(j.id.as_str()));
+                    let payment = self.payments.records.iter().find(|r| r.journal_id == j.id);
                     let banking = self.banking.iter().find(|r| r.journal_id == j.id);
                     ensure!(
                         usize::from(opening.is_some())
@@ -600,15 +535,12 @@ impl AccountingState {
                     } else if let Some(record) = procurement {
                         let context = record.command.context();
                         ensure!(
-                            context.company_id == event.company_id
-                                && context.actor == event.actor
-                                && context.reason == event.reason,
+                            context.company_id == event.company_id && context.actor == event.actor && context.reason == event.reason,
                             "رویداد خرید و سوابق تغییرات سند مالی سازگار نیستند"
                         );
-                        let generated =
-                            replay.replay_procurement_record(record)?.ok_or_else(|| {
-                                anyhow::anyhow!("رویداد خرید اثر مالی مورد انتظار را ندارد")
-                            })?;
+                        let generated = replay
+                            .replay_procurement_record(record)?
+                            .ok_or_else(|| anyhow::anyhow!("رویداد خرید اثر مالی مورد انتظار را ندارد"))?;
                         let mut expected = record.clone();
                         expected.journal_id = Some(generated.clone());
                         ensure!(
@@ -619,14 +551,12 @@ impl AccountingState {
                     } else if let Some(record) = sales {
                         let context = record.command.context();
                         ensure!(
-                            context.company_id == event.company_id
-                                && context.actor == event.actor
-                                && context.reason == event.reason,
+                            context.company_id == event.company_id && context.actor == event.actor && context.reason == event.reason,
                             "رویداد فروش و سوابق تغییرات سند مالی سازگار نیستند"
                         );
-                        let generated = replay.replay_sales_record(record)?.ok_or_else(|| {
-                            anyhow::anyhow!("رویداد فروش اثر مالی مورد انتظار را ندارد")
-                        })?;
+                        let generated = replay
+                            .replay_sales_record(record)?
+                            .ok_or_else(|| anyhow::anyhow!("رویداد فروش اثر مالی مورد انتظار را ندارد"))?;
                         let mut expected = record.clone();
                         expected.journal_id = Some(generated.clone());
                         ensure!(
@@ -637,9 +567,7 @@ impl AccountingState {
                     } else if let Some(record) = payment {
                         let context = record.command.context();
                         ensure!(
-                            context.company_id == event.company_id
-                                && context.actor == event.actor
-                                && context.reason == event.reason,
+                            context.company_id == event.company_id && context.actor == event.actor && context.reason == event.reason,
                             "رویداد پرداخت و سوابق تغییرات سند مالی سازگار نیستند"
                         );
                         let generated = replay.replay_payment_record(record)?;
@@ -651,10 +579,7 @@ impl AccountingState {
                         );
                         generated
                     } else if let Some(record) = banking {
-                        ensure!(
-                            record.command == request.command,
-                            "Banking source and journal request differ"
-                        );
+                        ensure!(record.command == request.command, "Banking source and journal request differ");
                         replay.post_banking(record.command.clone())?
                     } else {
                         // Event text was unrestricted in older manual ledgers.
@@ -666,24 +591,18 @@ impl AccountingState {
                         .journals
                         .iter_mut()
                         .find(|posted| posted.id == generated)
-                        .ok_or_else(|| {
-                            anyhow::anyhow!("سوابق تغییرات رویداد اقتصادی تکراری دارد")
-                        })?;
+                        .ok_or_else(|| anyhow::anyhow!("سوابق تغییرات رویداد اقتصادی تکراری دارد"))?;
                     let mut expected = j.clone();
                     expected.id = generated.clone();
                     expected.recorded_at = posted.recorded_at.clone();
-                    ensure!(
-                        *posted == expected,
-                        "محتوا یا تصویر حساب‌های سند ثبت‌شده نامعتبر است"
-                    );
+                    ensure!(*posted == expected, "محتوا یا تصویر حساب‌های سند ثبت‌شده نامعتبر است");
                     *posted = j.clone();
                     replay.requests.last_mut().unwrap().journal_id = j.id.clone();
                     if opening.is_some() {
                         replay.core.openings.last_mut().unwrap().journal_id = j.id.clone();
                     }
                     if procurement.is_some() {
-                        replay.procurement.records.last_mut().unwrap().journal_id =
-                            Some(j.id.clone());
+                        replay.procurement.records.last_mut().unwrap().journal_id = Some(j.id.clone());
                     }
                     if sales.is_some() {
                         replay.sales.records.last_mut().unwrap().journal_id = Some(j.id.clone());
@@ -696,10 +615,7 @@ impl AccountingState {
                     }
                 }
             }
-            ensure!(
-                replay.audit.len() == before_audit + 1,
-                "سوابق تغییرات عملیات تکراری یا نامعتبر است"
-            );
+            ensure!(replay.audit.len() == before_audit + 1, "سوابق تغییرات عملیات تکراری یا نامعتبر است");
             replay.audit[before_audit] = event.clone();
         }
         // Include aliases from identical business retries. No additional financial
@@ -708,11 +624,7 @@ impl AccountingState {
         let audit_count = replay.audit.len();
         for request in &self.requests {
             ensure!(
-                (if self
-                    .banking
-                    .iter()
-                    .any(|r| r.journal_id == request.journal_id)
-                {
+                (if self.banking.iter().any(|r| r.journal_id == request.journal_id) {
                     replay.post_banking(request.command.clone())?
                 } else {
                     replay.post(request.command.clone())?
@@ -729,10 +641,7 @@ impl AccountingState {
         let sales_count = replay.sales.records.len();
         for request in &self.sales.requests {
             let result = replay.replay_sales_request(request)?;
-            ensure!(
-                result.record_id == request.record_id,
-                "درخواست فروش به رویداد دیگری اشاره می‌کند"
-            );
+            ensure!(result.record_id == request.record_id, "درخواست فروش به رویداد دیگری اشاره می‌کند");
         }
         let procurement_count = replay.procurement.records.len();
         for request in &self.procurement.requests {
@@ -745,10 +654,7 @@ impl AccountingState {
         let payments_count = replay.payments.records.len();
         for request in &self.payments.requests {
             let result = replay.replay_payment_request(request)?;
-            ensure!(
-                result.record_id == request.record_id,
-                "درخواست پرداخت به رویداد دیگری اشاره می‌کند"
-            );
+            ensure!(result.record_id == request.record_id, "درخواست پرداخت به رویداد دیگری اشاره می‌کند");
         }
         ensure!(
             replay.journals.len() == journal_count
@@ -760,10 +666,7 @@ impl AccountingState {
         );
         // Original request order includes retry aliases between journal commands.
         // Uniqueness has been checked by post; preserve that original order.
-        ensure!(
-            replay.requests.len() == self.requests.len(),
-            "کلید درخواست تکراری است"
-        );
+        ensure!(replay.requests.len() == self.requests.len(), "کلید درخواست تکراری است");
         replay.requests = self.requests.clone();
         ensure!(
             replay.core.zero_requests.len() == self.core.zero_requests.len(),
@@ -785,10 +688,7 @@ impl AccountingState {
             "کلید درخواست پرداخت تکراری است"
         );
         replay.payments.requests = self.payments.requests.clone();
-        ensure!(
-            replay == *self,
-            "دادهٔ حسابداری با سوابق تغییرات کامل آن سازگار نیست"
-        );
+        ensure!(replay == *self, "دادهٔ حسابداری با سوابق تغییرات کامل آن سازگار نیست");
         Ok(())
     }
     /// Generic persistence mutations cannot delete/rewrite posted records or
@@ -809,13 +709,9 @@ impl AccountingState {
         );
         for journal in &next.journals[self.journals.len()..] {
             if journal.event == crate::core::CORE_OPENING_EVENT
-                || journal
-                    .event
-                    .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
+                || journal.event.starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
                 || journal.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
-                || journal
-                    .event
-                    .starts_with(crate::payments::PAYMENTS_EVENT_PREFIX)
+                || journal.event.starts_with(crate::payments::PAYMENTS_EVENT_PREFIX)
             {
                 ensure!(
                     next.has_typed_journal_source(&journal.id),
@@ -827,14 +723,8 @@ impl AccountingState {
             next.requests.starts_with(&self.requests),
             "سوابق تغییرات درخواست ثبت‌شده قابل تغییر یا حذف نیست"
         );
-        ensure!(
-            next.audit.starts_with(&self.audit),
-            "سوابق تغییرات حسابداری قابل تغییر یا حذف نیست"
-        );
-        ensure!(
-            next.companies.starts_with(&self.companies),
-            "هویت کسب‌وکار قابل تغییر یا حذف نیست"
-        );
+        ensure!(next.audit.starts_with(&self.audit), "سوابق تغییرات حسابداری قابل تغییر یا حذف نیست");
+        ensure!(next.companies.starts_with(&self.companies), "هویت کسب‌وکار قابل تغییر یا حذف نیست");
         ensure!(
             next.periods.len() >= self.periods.len() && next.accounts.len() >= self.accounts.len(),
             "سال مالی یا حساب قابل حذف نیست"
@@ -849,14 +739,8 @@ impl AccountingState {
                 let mut expected = old.clone();
                 ensure!(!old.archived, "حساب بایگانی‌شده قابل تغییر نیست");
                 expected.archived = true;
-                expected.version = old
-                    .version
-                    .checked_add(1)
-                    .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ حساب"))?;
-                ensure!(
-                    *new == expected,
-                    "مشخصات حساب موجود قابل تغییر نیست؛ فقط بایگانی مجاز است"
-                );
+                expected.version = old.version.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ حساب"))?;
+                ensure!(*new == expected, "مشخصات حساب موجود قابل تغییر نیست؛ فقط بایگانی مجاز است");
             }
         }
         Ok(())
@@ -873,14 +757,7 @@ impl AccountingState {
             .find(|p| p.id == id)
             .ok_or_else(|| anyhow::anyhow!("سال مالی پیدا نشد"))
     }
-    pub(crate) fn activity(
-        &mut self,
-        company: &str,
-        entity: &str,
-        operation: AuditOperation,
-        actor: &str,
-        reason: &str,
-    ) {
+    pub(crate) fn activity(&mut self, company: &str, entity: &str, operation: AuditOperation, actor: &str, reason: &str) {
         self.audit.push(AuditEvent {
             id: id(),
             company_id: company.into(),
@@ -899,23 +776,10 @@ impl AccountingState {
             id: company_id.clone(),
             name: name.trim().into(),
         });
-        self.activity(
-            &company_id,
-            &company_id,
-            AuditOperation::CompanyCreated,
-            actor,
-            "ایجاد کسب‌وکار",
-        );
+        self.activity(&company_id, &company_id, AuditOperation::CompanyCreated, actor, "ایجاد کسب‌وکار");
         Ok(company_id)
     }
-    pub fn add_period(
-        &mut self,
-        company_id: &str,
-        name: &str,
-        start: &str,
-        end: &str,
-        actor: &str,
-    ) -> Result<String> {
+    pub fn add_period(&mut self, company_id: &str, name: &str, start: &str, end: &str, actor: &str) -> Result<String> {
         self.company(company_id)?;
         text(name)?;
         text(actor)?;
@@ -923,9 +787,10 @@ impl AccountingState {
         let end_date = iso_date(end)?;
         ensure!(start_date <= end_date, "پایان سال مالی پیش از شروع آن است");
         ensure!(
-            !self.periods.iter().any(|p| p.company_id == company_id
-                && start <= p.end_date.as_str()
-                && end >= p.start_date.as_str()),
+            !self
+                .periods
+                .iter()
+                .any(|p| p.company_id == company_id && start <= p.end_date.as_str() && end >= p.start_date.as_str()),
             "سال مالی با دورهٔ موجود هم‌پوشانی دارد"
         );
         let period_id = id();
@@ -937,13 +802,7 @@ impl AccountingState {
             end_date: end.into(),
             locked: false,
         });
-        self.activity(
-            company_id,
-            &period_id,
-            AuditOperation::PeriodCreated,
-            actor,
-            "ایجاد سال مالی",
-        );
+        self.activity(company_id, &period_id, AuditOperation::PeriodCreated, actor, "ایجاد سال مالی");
         Ok(period_id)
     }
     pub fn add_account(&mut self, input: NewAccount, actor: &str) -> Result<String> {
@@ -955,8 +814,7 @@ impl AccountingState {
             !self
                 .accounts
                 .iter()
-                .any(|a| a.company_id == input.company_id
-                    && normalize(&a.code) == normalize(&input.code)),
+                .any(|a| a.company_id == input.company_id && normalize(&a.code) == normalize(&input.code)),
             "کد حساب در این کسب‌وکار تکراری است"
         );
         if let Some(parent) = &input.parent_id {
@@ -994,11 +852,11 @@ impl AccountingState {
         text(actor)?;
         text(reason)?;
         ensure!(
-            !self.core.setups.iter().any(|s| s
-                .command
-                .mappings
+            !self
+                .core
+                .setups
                 .iter()
-                .any(|m| m.account_id == account_id)),
+                .any(|s| s.command.mappings.iter().any(|m| m.account_id == account_id)),
             "حساب نگاشت‌شدهٔ تنظیمات فعال قابل بایگانی نیست؛ تغییر نگاشت پشتیبانی نمی‌شود"
         );
         ensure!(
@@ -1014,28 +872,13 @@ impl AccountingState {
             .find(|a| a.id == account_id)
             .ok_or_else(|| anyhow::anyhow!("حساب پیدا نشد"))?;
         ensure!(!a.archived, "حساب قبلاً بایگانی شده است");
-        a.version = a
-            .version
-            .checked_add(1)
-            .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ حساب"))?;
+        a.version = a.version.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ حساب"))?;
         a.archived = true;
         let company = a.company_id.clone();
-        self.activity(
-            &company,
-            account_id,
-            AuditOperation::AccountArchived,
-            actor,
-            reason,
-        );
+        self.activity(&company, account_id, AuditOperation::AccountArchived, actor, reason);
         Ok(())
     }
-    pub fn set_period_lock(
-        &mut self,
-        period_id: &str,
-        locked: bool,
-        actor: &str,
-        reason: &str,
-    ) -> Result<()> {
+    pub fn set_period_lock(&mut self, period_id: &str, locked: bool, actor: &str, reason: &str) -> Result<()> {
         text(actor)?;
         text(reason)?;
         let p = self
@@ -1074,20 +917,14 @@ impl AccountingState {
         }) {
             return self.post_internal(command, true, false);
         }
-        ensure!(
-            command.lines.len() == 2,
-            "Banking movement requires two lines"
-        );
+        ensure!(command.lines.len() == 2, "Banking movement requires two lines");
         let opening = self
             .core
             .openings
             .iter()
             .find(|o| o.command.company_id == command.company_id)
             .ok_or_else(|| anyhow::anyhow!("Confirm opening balances first"))?;
-        ensure!(
-            command.date >= opening.command.as_of,
-            "Banking date precedes opening"
-        );
+        ensure!(command.date >= opening.command.as_of, "Banking date precedes opening");
         let funds: Vec<_> = opening
             .frozen_setup
             .command
@@ -1104,34 +941,19 @@ impl AccountingState {
                 "Only a banking movement can be reversed here"
             );
         } else {
-            ensure!(
-                command.kind == JournalKind::Manual,
-                "Invalid banking journal kind"
-            );
+            ensure!(command.kind == JournalKind::Manual, "Invalid banking journal kind");
             let accounts = command
                 .lines
                 .iter()
                 .map(|l| {
                     self.accounts
                         .iter()
-                        .find(|a| {
-                            a.id == l.account_id
-                                && a.company_id == command.company_id
-                                && a.postable
-                                && !a.archived
-                        })
+                        .find(|a| a.id == l.account_id && a.company_id == command.company_id && a.postable && !a.archived)
                         .ok_or_else(|| anyhow::anyhow!("Invalid banking account"))
                 })
                 .collect::<Result<Vec<_>>>()?;
-            ensure!(
-                accounts[0].id != accounts[1].id,
-                "Choose different accounts"
-            );
-            let fund_lines: Vec<_> = command
-                .lines
-                .iter()
-                .filter(|l| funds.contains(&l.account_id.as_str()))
-                .collect();
+            ensure!(accounts[0].id != accounts[1].id, "Choose different accounts");
+            let fund_lines: Vec<_> = command.lines.iter().filter(|l| funds.contains(&l.account_id.as_str())).collect();
             let count = fund_lines.len();
             match command.event.as_str() {
                 "banking.transfer.v1" => {
@@ -1139,11 +961,7 @@ impl AccountingState {
                 }
                 "banking.deposit.v1" | "banking.withdrawal.v1" => {
                     ensure!(
-                        count == 1
-                            && accounts
-                                .iter()
-                                .filter(|a| !funds.contains(&a.id.as_str()))
-                                .all(|a| !a.control),
+                        count == 1 && accounts.iter().filter(|a| !funds.contains(&a.id.as_str())).all(|a| !a.control),
                         "Use a non-control counterpart account"
                     );
                     if command.event == "banking.deposit.v1" {
@@ -1170,10 +988,7 @@ impl AccountingState {
                             .find(|m| m.role == role)
                             .map(|m| m.account_id.as_str())
                     };
-                    let (receivable, payable) = (
-                        notes_for(CoreRole::ChequesReceivable),
-                        notes_for(CoreRole::ChequesPayable),
-                    );
+                    let (receivable, payable) = (notes_for(CoreRole::ChequesReceivable), notes_for(CoreRole::ChequesPayable));
                     ensure!(count == 1, "Cheque clearing needs one cash/bank line");
                     let fund = fund_lines[0];
                     let notes = command
@@ -1189,15 +1004,9 @@ impl AccountingState {
                         "Cheque clearing lines must be equal and opposite"
                     );
                     if Some(notes.account_id.as_str()) == receivable {
-                        ensure!(
-                            fund.debit.rials() > 0,
-                            "A received cheque clears into the bank: debit cash/bank"
-                        );
+                        ensure!(fund.debit.rials() > 0, "A received cheque clears into the bank: debit cash/bank");
                     } else if Some(notes.account_id.as_str()) == payable {
-                        ensure!(
-                            fund.credit.rials() > 0,
-                            "An issued cheque clears out of the bank: credit cash/bank"
-                        );
+                        ensure!(fund.credit.rials() > 0, "An issued cheque clears out of the bank: credit cash/bank");
                     } else {
                         anyhow::bail!("Cheque clearing must use a cheques notes account");
                     }
@@ -1221,12 +1030,7 @@ impl AccountingState {
             .iter()
             .filter(|r| r.command.company_id == company && r.command.date.as_str() <= asof)
         {
-            for line in source
-                .command
-                .lines
-                .iter()
-                .filter(|l| l.account_id == account)
-            {
+            for line in source.command.lines.iter().filter(|l| l.account_id == account) {
                 total = total.checked_add(line.debit)?.checked_sub(line.credit)?;
             }
         }
@@ -1234,8 +1038,7 @@ impl AccountingState {
     }
     pub(crate) fn post_core_opening(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
-            command.event == crate::core::CORE_OPENING_EVENT
-                && command.kind == JournalKind::Opening,
+            command.event == crate::core::CORE_OPENING_EVENT && command.kind == JournalKind::Opening,
             "مجوز کنترل فقط برای افتتاحیهٔ تطبیق‌شده است"
         );
         self.post_internal(command, true, false)
@@ -1243,36 +1046,23 @@ impl AccountingState {
     /// Capability used only after the typed procurement command has been validated.
     pub(crate) fn post_procurement(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
-            command
-                .event
-                .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
-                && command.kind == JournalKind::Manual,
+            command.event.starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX) && command.kind == JournalKind::Manual,
             "رویداد خرید فقط از گردش کار معتبر مجاز است"
         );
         self.post_internal(command, true, false)
     }
     pub(crate) fn post_sales(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
-            command.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
-                && command.kind == JournalKind::Manual,
+            command.event.starts_with(crate::sales::SALES_EVENT_PREFIX) && command.kind == JournalKind::Manual,
             "رویداد فروش فقط از گردش کار معتبر مجاز است"
         );
         self.post_internal(command, true, false)
     }
-    pub(crate) fn post_internal(
-        &mut self,
-        command: PostCommand,
-        control_allowed: bool,
-        historical_namespace: bool,
-    ) -> Result<String> {
+    pub(crate) fn post_internal(&mut self, command: PostCommand, control_allowed: bool, historical_namespace: bool) -> Result<String> {
         // Validate retry identity before locks: successful historical retries do not mutate books.
         text(&command.request_key)?;
         ensure!(
-            !self
-                .core
-                .zero_requests
-                .iter()
-                .any(|r| r.request_key == command.request_key),
+            !self.core.zero_requests.iter().any(|r| r.request_key == command.request_key),
             "کلید درخواست برای شروع دفتر بدون مانده استفاده شده است"
         );
         ensure!(
@@ -1283,22 +1073,11 @@ impl AccountingState {
             !self.sales.uses_nonfinancial_key(&command.request_key),
             "کلید درخواست برای رویداد غیرمالی فروش استفاده شده است"
         );
-        if let Some(prior) = self
-            .requests
-            .iter()
-            .find(|r| r.command.request_key == command.request_key)
-        {
-            ensure!(
-                prior.command == command,
-                "کلید درخواست با محتوای متفاوت استفاده شده است"
-            );
+        if let Some(prior) = self.requests.iter().find(|r| r.command.request_key == command.request_key) {
+            ensure!(prior.command == command, "کلید درخواست با محتوای متفاوت استفاده شده است");
             return Ok(prior.journal_id.clone());
         }
-        if let Some(prior) = self
-            .requests
-            .iter()
-            .find(|r| same_business(&r.command, &command))
-        {
+        if let Some(prior) = self.requests.iter().find(|r| same_business(&r.command, &command)) {
             ensure!(
                 same_payload(&prior.command, &command),
                 "رویداد اقتصادی قبلاً با محتوای متفاوت ثبت شده است"
@@ -1314,36 +1093,21 @@ impl AccountingState {
             control_allowed
                 || historical_namespace
                 || (command.event != crate::core::CORE_OPENING_EVENT
-                    && !command
-                        .event
-                        .starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
+                    && !command.event.starts_with(crate::procurement::PROCUREMENT_EVENT_PREFIX)
                     && !command.event.starts_with(crate::sales::SALES_EVENT_PREFIX)
-                    && !command
-                        .event
-                        .starts_with(crate::payments::PAYMENTS_EVENT_PREFIX)
+                    && !command.event.starts_with(crate::payments::PAYMENTS_EVENT_PREFIX)
                     && !command.event.starts_with("banking.")),
             "افتتاحیهٔ کنترلی فقط از گردش کار تطبیق‌شده مجاز است"
         );
         ensure!(
             control_allowed
-                || !self
-                    .core
-                    .setups
-                    .iter()
-                    .any(|s| s.command.company_id == command.company_id)
-                || self
-                    .core
-                    .openings
-                    .iter()
-                    .any(|o| o.command.company_id == command.company_id),
+                || !self.core.setups.iter().any(|s| s.command.company_id == command.company_id)
+                || self.core.openings.iter().any(|o| o.command.company_id == command.company_id),
             "ابتدا افتتاحیهٔ تطبیق‌شدهٔ این شرکت را ثبت کنید؛ ثبت دستی پیش از آن مجاز نیست"
         );
         self.company(&command.company_id)?;
         let period = self.period(&command.period_id)?;
-        ensure!(
-            period.company_id == command.company_id,
-            "سال مالی متعلق به کسب‌وکار دیگری است"
-        );
+        ensure!(period.company_id == command.company_id, "سال مالی متعلق به کسب‌وکار دیگری است");
         ensure!(!period.locked, "سال مالی قفل است؛ ثبت یا برگشت مجاز نیست");
         iso_date(&command.date)?;
         ensure!(
@@ -1361,18 +1125,10 @@ impl AccountingState {
         );
         if command.kind == JournalKind::Opening {
             ensure!(
-                control_allowed
-                    || !self
-                        .core
-                        .setups
-                        .iter()
-                        .any(|s| s.command.company_id == command.company_id),
+                control_allowed || !self.core.setups.iter().any(|s| s.command.company_id == command.company_id),
                 "افتتاحیهٔ شرکت هسته فقط از گردش کار تطبیق‌شده مجاز است"
             );
-            ensure!(
-                command.date == period.start_date,
-                "افتتاحیه باید در اولین روز سال مالی ثبت شود"
-            );
+            ensure!(command.date == period.start_date, "افتتاحیه باید در اولین روز سال مالی ثبت شود");
             ensure!(
                 !self
                     .journals
@@ -1381,10 +1137,7 @@ impl AccountingState {
                 "افتتاحیهٔ این کسب‌وکار قبلاً ثبت شده است؛ انتقال مجدد مانده‌ها پشتیبانی نمی‌شود"
             );
             ensure!(
-                !self
-                    .journals
-                    .iter()
-                    .any(|j| j.company_id == command.company_id),
+                !self.journals.iter().any(|j| j.company_id == command.company_id),
                 "افتتاحیه باید پیش از سایر اسناد این کسب‌وکار ثبت شود"
             );
         }
@@ -1395,8 +1148,7 @@ impl AccountingState {
         for (index, line) in command.lines.iter().enumerate() {
             optional_text(&line.description)?;
             ensure!(
-                (line.debit.0 > 0 && line.credit.0 == 0)
-                    || (line.credit.0 > 0 && line.debit.0 == 0),
+                (line.debit.0 > 0 && line.credit.0 == 0) || (line.credit.0 > 0 && line.debit.0 == 0),
                 "هر ردیف باید یک مبلغ مثبت فقط در بدهکار یا بستانکار داشته باشد"
             );
             let account = self
@@ -1404,25 +1156,11 @@ impl AccountingState {
                 .iter()
                 .find(|a| a.id == line.account_id)
                 .ok_or_else(|| anyhow::anyhow!("حساب ردیف پیدا نشد"))?;
-            ensure!(
-                account.company_id == command.company_id,
-                "حساب ردیف متعلق به کسب‌وکار دیگری است"
-            );
+            ensure!(account.company_id == command.company_id, "حساب ردیف متعلق به کسب‌وکار دیگری است");
             let account = match &command.kind {
-                JournalKind::Reversal { journal_id } => {
-                    &self
-                        .journals
-                        .iter()
-                        .find(|j| j.id == *journal_id)
-                        .unwrap()
-                        .lines[index]
-                        .account
-                }
+                JournalKind::Reversal { journal_id } => &self.journals.iter().find(|j| j.id == *journal_id).unwrap().lines[index].account,
                 _ => {
-                    ensure!(
-                        account.postable && !account.archived,
-                        "حساب ردیف بایگانی است یا قابل ثبت نیست"
-                    );
+                    ensure!(account.postable && !account.archived, "حساب ردیف بایگانی است یا قابل ثبت نیست");
                     account
                 }
             };
@@ -1493,23 +1231,16 @@ impl AccountingState {
                     .and_then(|v| v.checked_sub(i128::from(line.credit.0)))
                     .ok_or_else(|| anyhow::anyhow!("سرریز ماندهٔ حساب"))?;
             }
-            if journals
-                .get(index + 1)
-                .is_some_and(|next| next.date == journal.date)
-            {
+            if journals.get(index + 1).is_some_and(|next| next.date == journal.date) {
                 continue;
             }
             let mut debit = 0i128;
             let mut credit = 0i128;
             for balance in balances.values() {
                 if *balance >= 0 {
-                    debit = debit
-                        .checked_add(*balance)
-                        .ok_or_else(|| anyhow::anyhow!("سرریز تراز آزمایشی"))?;
+                    debit = debit.checked_add(*balance).ok_or_else(|| anyhow::anyhow!("سرریز تراز آزمایشی"))?;
                 } else {
-                    credit = credit
-                        .checked_sub(*balance)
-                        .ok_or_else(|| anyhow::anyhow!("سرریز تراز آزمایشی"))?;
+                    credit = credit.checked_sub(*balance).ok_or_else(|| anyhow::anyhow!("سرریز تراز آزمایشی"))?;
                 }
             }
             ensure!(
@@ -1531,23 +1262,20 @@ impl AccountingState {
                 !self.has_typed_journal_source(&original.id),
                 "برگشت سند کنترلی به اصلاح هماهنگ جزئیات نیاز دارد؛ از گردش کار منبع استفاده کنید"
             );
-            ensure!(
-                original.company_id == command.company_id,
-                "برگشت بین دو کسب‌وکار مجاز نیست"
-            );
+            ensure!(original.company_id == command.company_id, "برگشت بین دو کسب‌وکار مجاز نیست");
             ensure!(
                 !matches!(original.kind, JournalKind::Reversal { .. }),
                 "برگشتِ سند برگشتی پشتیبانی نمی‌شود"
             );
+            ensure!(command.date >= original.date, "تاریخ برگشت نباید پیش از سند اصلی باشد");
+            ensure!(!self.period(&original.period_id)?.locked, "سال مالی سند اصلی قفل است");
             ensure!(
-                command.date >= original.date,
-                "تاریخ برگشت نباید پیش از سند اصلی باشد"
+                !self
+                    .journals
+                    .iter()
+                    .any(|j| matches!(&j.kind, JournalKind::Reversal { journal_id: old } if old == journal_id)),
+                "سند اصلی قبلاً برگشت شده است"
             );
-            ensure!(
-                !self.period(&original.period_id)?.locked,
-                "سال مالی سند اصلی قفل است"
-            );
-            ensure!(!self.journals.iter().any(|j| matches!(&j.kind, JournalKind::Reversal { journal_id: old } if old == journal_id)), "سند اصلی قبلاً برگشت شده است");
             let expected: Vec<_> = original
                 .lines
                 .iter()
@@ -1571,10 +1299,7 @@ impl AccountingState {
     /// The source association, rather than historically unrestricted event
     /// text, determines whether a journal requires coordinated subledger work.
     pub fn has_typed_journal_source(&self, journal_id: &str) -> bool {
-        self.core
-            .openings
-            .iter()
-            .any(|opening| opening.journal_id == journal_id)
+        self.core.openings.iter().any(|opening| opening.journal_id == journal_id)
             || self
                 .procurement
                 .records
@@ -1585,11 +1310,7 @@ impl AccountingState {
                 .records
                 .iter()
                 .any(|record| record.journal_id.as_deref() == Some(journal_id))
-            || self
-                .payments
-                .records
-                .iter()
-                .any(|record| record.journal_id == journal_id)
+            || self.payments.records.iter().any(|record| record.journal_id == journal_id)
     }
     #[allow(clippy::too_many_arguments)]
     pub fn reverse(
@@ -1607,11 +1328,7 @@ impl AccountingState {
             .find(|j| j.id == journal_id)
             .ok_or_else(|| anyhow::anyhow!("سند اصلی پیدا نشد"))?;
         ensure!(
-            !self
-                .payments
-                .records
-                .iter()
-                .any(|r| r.journal_id == journal_id),
+            !self.payments.records.iter().any(|r| r.journal_id == journal_id),
             "برگشت پرداخت فقط از گردش کار پرداخت مجاز است"
         );
         let command = PostCommand {
@@ -1672,20 +1389,15 @@ impl AccountingState {
                 .ok_or_else(|| anyhow::anyhow!("حساب گزارش پیدا نشد"))?;
             let (debit, credit) = if net >= 0 {
                 (
-                    Money::from_rials(
-                        i64::try_from(net).map_err(|_| anyhow::anyhow!("سرریز ماندهٔ حساب"))?,
-                    ),
+                    Money::from_rials(i64::try_from(net).map_err(|_| anyhow::anyhow!("سرریز ماندهٔ حساب"))?),
                     Money::ZERO,
                 )
             } else {
                 (
                     Money::ZERO,
                     Money::from_rials(
-                        i64::try_from(
-                            net.checked_neg()
-                                .ok_or_else(|| anyhow::anyhow!("سرریز ماندهٔ حساب"))?,
-                        )
-                        .map_err(|_| anyhow::anyhow!("سرریز ماندهٔ حساب"))?,
+                        i64::try_from(net.checked_neg().ok_or_else(|| anyhow::anyhow!("سرریز ماندهٔ حساب"))?)
+                            .map_err(|_| anyhow::anyhow!("سرریز ماندهٔ حساب"))?,
                     ),
                 )
             };

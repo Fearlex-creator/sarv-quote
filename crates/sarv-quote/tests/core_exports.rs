@@ -21,16 +21,8 @@ fn fixture() -> (AccountingState, String) {
             actor: "آزمایشگر".into(),
         })
         .unwrap();
-    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv")
-        .replace("F2-core-v1", &setup.company_id);
-    let mut command = import_opening_csv(
-        &state,
-        &setup.company_id,
-        &input,
-        "آزمایشگر",
-        "export-fixture",
-    )
-    .unwrap();
+    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv").replace("F2-core-v1", &setup.company_id);
+    let mut command = import_opening_csv(&state, &setup.company_id, &input, "آزمایشگر", "export-fixture").unwrap();
     command.source_id = "=DANGEROUS()".into();
     command.cash[0].name = "=CASH-FORMULA()".into();
     state.post_opening(command).unwrap();
@@ -48,10 +40,7 @@ fn exact_csv_controls_details_snapshots_and_formula_guards() {
     let h = r.headers().unwrap().clone();
     let index = |name: &str| h.iter().position(|x| x == name).unwrap();
     let rows = r.records().map(|r| r.unwrap()).collect::<Vec<_>>();
-    let controls = rows
-        .iter()
-        .filter(|r| &r[index("row_kind")] == "control")
-        .collect::<Vec<_>>();
+    let controls = rows.iter().filter(|r| &r[index("row_kind")] == "control").collect::<Vec<_>>();
     assert!(controls.len() >= 10);
     for r in controls {
         assert_eq!(&r[index("difference_irr")], "0");
@@ -77,16 +66,11 @@ fn exact_csv_controls_details_snapshots_and_formula_guards() {
     assert!(capital[index("label")].contains("سرمایه"));
     assert_eq!(
         &capital[index("id")],
-        state.core.setups[0]
-            .account_id(CoreRole::OwnerCapital)
-            .unwrap()
+        state.core.setups[0].account_id(CoreRole::OwnerCapital).unwrap()
     );
     let cash = rows.iter().find(|r| &r[index("id")] == "C1").unwrap();
     assert_eq!(&cash[index("label")], "'=CASH-FORMULA()");
-    let full = rows
-        .iter()
-        .find(|r| &r[index("row_kind")] == "opening_snapshot")
-        .unwrap();
+    let full = rows.iter().find(|r| &r[index("row_kind")] == "opening_snapshot").unwrap();
     let reconstructed: OpeningRecord = serde_json::from_str(&full[index("snapshot_json")]).unwrap();
     assert_eq!(reconstructed, state.core.openings[0]);
     assert!(opening_csv(&state, &co, MoneyUnit::Rial, DateDisplay::Iso, &path).is_err());
@@ -97,15 +81,7 @@ fn persian_pdf_repeats_headers_includes_every_detail_exact_units_dates_and_pages
     let (state, co) = fixture();
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("report.pdf");
-    opening_pdf_with_preferences(
-        &state,
-        &co,
-        MoneyUnit::Toman,
-        DateDisplay::Jalali,
-        DisplayDigits::Latin,
-        &path,
-    )
-    .unwrap();
+    opening_pdf_with_preferences(&state, &co, MoneyUnit::Toman, DateDisplay::Jalali, DisplayDigits::Latin, &path).unwrap();
     assert!(fs::read(&path).unwrap().starts_with(b"%PDF"));
     let output = Command::new("pdftotext")
         .arg(&path)
@@ -142,18 +118,13 @@ fn persian_pdf_repeats_headers_includes_every_detail_exact_units_dates_and_pages
     // Pango's shaped Persian glyph runs can be extracted with intra-word spaces.
     let logical_text: String = text
         .chars()
-        .filter(|c| {
-            !c.is_whitespace() && !matches!(c,'\u{202a}'..='\u{202e}'|'\u{2066}'..='\u{2069}')
-        })
+        .filter(|c| !c.is_whitespace() && !matches!(c,'\u{202a}'..='\u{202e}'|'\u{2066}'..='\u{2069}'))
         .collect();
     assert!(
         logical_text.contains("سرمایه") && logical_text.contains("صندوق"),
         "human account names absent"
     );
-    assert!(
-        text.matches("TEST-OPENING").count() >= 2,
-        "repeated headers absent"
-    );
+    assert!(text.matches("TEST-OPENING").count() >= 2, "repeated headers absent");
     let info = Command::new("pdfinfo").arg(&path).output().unwrap();
     assert!(info.status.success());
     let info = String::from_utf8(info.stdout).unwrap();
@@ -173,16 +144,8 @@ fn persian_pdf_repeats_headers_includes_every_detail_exact_units_dates_and_pages
     assert_eq!(fs::read(&path).unwrap(), before);
     if let Ok(dir) = std::env::var("SARV_CORE_EXPORT_ARTIFACT_DIR") {
         fs::create_dir_all(&dir).unwrap();
-        fs::copy(
-            &path,
-            std::path::Path::new(&dir).join("opening-reconciliation.pdf"),
-        )
-        .unwrap();
-        fs::write(
-            std::path::Path::new(&dir).join("opening-pdf-text.txt"),
-            text,
-        )
-        .unwrap();
+        fs::copy(&path, std::path::Path::new(&dir).join("opening-reconciliation.pdf")).unwrap();
+        fs::write(std::path::Path::new(&dir).join("opening-pdf-text.txt"), text).unwrap();
     }
 }
 #[test]
@@ -220,22 +183,8 @@ fn backup_restores_identical_usable_opening_exports() {
     assert_eq!(restored.accounting.core, state.accounting.core);
     let a = dir.path().join("before.csv");
     let b = dir.path().join("restored.csv");
-    opening_csv(
-        &state.accounting,
-        &co,
-        MoneyUnit::Toman,
-        DateDisplay::Jalali,
-        &a,
-    )
-    .unwrap();
-    opening_csv(
-        &restored.accounting,
-        &co,
-        MoneyUnit::Toman,
-        DateDisplay::Jalali,
-        &b,
-    )
-    .unwrap();
+    opening_csv(&state.accounting, &co, MoneyUnit::Toman, DateDisplay::Jalali, &a).unwrap();
+    opening_csv(&restored.accounting, &co, MoneyUnit::Toman, DateDisplay::Jalali, &b).unwrap();
     assert_eq!(fs::read(a).unwrap(), fs::read(b).unwrap());
     opening_pdf(
         &restored.accounting,
@@ -264,14 +213,7 @@ fn gregorian_outside_jalali_range_exports_without_false_conversion() {
     let input = include_str!("../../../docs/assets/accounting-m3/opening.csv")
         .replace("F2-core-v1", &setup.company_id)
         .replace("2026-", "1800-");
-    let command = import_opening_csv(
-        &state,
-        &setup.company_id,
-        &input,
-        "آزمایشگر",
-        "historical-export",
-    )
-    .unwrap();
+    let command = import_opening_csv(&state, &setup.company_id, &input, "آزمایشگر", "historical-export").unwrap();
     state.post_opening(command).unwrap();
     let dir = tempfile::tempdir().unwrap();
     let pdf = dir.path().join("historical.pdf");
@@ -284,24 +226,11 @@ fn gregorian_outside_jalali_range_exports_without_false_conversion() {
         &pdf,
     )
     .unwrap();
-    let result = Command::new("pdftotext")
-        .arg(&pdf)
-        .arg("-")
-        .output()
-        .unwrap();
+    let result = Command::new("pdftotext").arg(&pdf).arg("-").output().unwrap();
     let text = String::from_utf8(result.stdout).unwrap();
     assert!(text.contains("1800-03-21"));
     let denied = dir.path().join("jalali.pdf");
-    assert!(
-        opening_pdf(
-            &state,
-            &setup.company_id,
-            MoneyUnit::Rial,
-            DateDisplay::Jalali,
-            &denied
-        )
-        .is_err()
-    );
+    assert!(opening_pdf(&state, &setup.company_id, MoneyUnit::Rial, DateDisplay::Jalali, &denied).is_err());
     assert!(!denied.exists());
 }
 
@@ -355,38 +284,17 @@ fn reviewed_explicit_zero_initialization_exports_without_fake_financial_journal(
     };
     state.post_opening(command).unwrap();
     assert!(state.journals.is_empty());
-    assert_eq!(
-        state.core.openings[0].effect,
-        OpeningEffect::ZeroBalanceInitialization
-    );
+    assert_eq!(state.core.openings[0].effect, OpeningEffect::ZeroBalanceInitialization);
     let d = tempfile::tempdir().unwrap();
     let csv = d.path().join("zero.csv");
-    opening_csv(
-        &state,
-        &setup.company_id,
-        MoneyUnit::Rial,
-        DateDisplay::Iso,
-        &csv,
-    )
-    .unwrap();
+    opening_csv(&state, &setup.company_id, MoneyUnit::Rial, DateDisplay::Iso, &csv).unwrap();
     let bytes = fs::read(csv).unwrap();
     let text = String::from_utf8(bytes).unwrap();
     assert!(text.contains("zero_balance_initialization"));
     assert!(text.contains("initialized_reconciled_zero_opening"));
     let pdf = d.path().join("zero.pdf");
-    opening_pdf(
-        &state,
-        &setup.company_id,
-        MoneyUnit::Rial,
-        DateDisplay::Iso,
-        &pdf,
-    )
-    .unwrap();
-    let output = Command::new("pdftotext")
-        .arg(&pdf)
-        .arg("-")
-        .output()
-        .unwrap();
+    opening_pdf(&state, &setup.company_id, MoneyUnit::Rial, DateDisplay::Iso, &pdf).unwrap();
+    let output = Command::new("pdftotext").arg(&pdf).arg("-").output().unwrap();
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).unwrap();
     assert!(text.contains("TEST-ZERO"));

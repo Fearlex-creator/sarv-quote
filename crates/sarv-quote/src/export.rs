@@ -174,14 +174,9 @@ fn tax_label(q: &Quote) -> String {
     let rate = if fractional == 0 {
         whole.to_string()
     } else {
-        format!("{whole}.{fractional:02}")
-            .trim_end_matches('0')
-            .to_string()
+        format!("{whole}.{fractional:02}").trim_end_matches('0').to_string()
     };
-    format!(
-        "مالیات تنظیم‌شده ({})",
-        ltr(&format!("{}٪", document_digits(q, rate)))
-    )
+    format!("مالیات تنظیم‌شده ({})", ltr(&format!("{}٪", document_digits(q, rate))))
 }
 fn validate_amounts(q: &Quote) -> Result<i64> {
     ensure!(
@@ -207,9 +202,7 @@ fn validate_amounts(q: &Quote) -> Result<i64> {
     let expected_tax = i128::from(tax_amount(taxable, q.tax_basis_points)?);
     let expected_total = i128::from(taxable) + expected_tax;
     ensure!(
-        expected_total <= i128::from(MAX_MONEY)
-            && i128::from(q.tax_rial) == expected_tax
-            && i128::from(q.total_rial) == expected_total,
+        expected_total <= i128::from(MAX_MONEY) && i128::from(q.tax_rial) == expected_tax && i128::from(q.total_rial) == expected_total,
         "جمع نهایی خروجی ناسازگار است"
     );
     Ok(subtotal)

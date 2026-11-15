@@ -1,0 +1,13 @@
+mod accounting;
+mod banking;
+mod harness;
+mod inventory;
+mod payments;
+mod pos;
+mod purchases;
+mod sales;
+mod settings;
+mod setup;
+mod sheets;
+mod shell;
+mod walkthrough;

@@ -161,7 +161,11 @@ record!(PaymentRequest {
     record_id: String,
     business_sha256: String
 });
-record!(PaymentResult { record_id: String, journal_id: String, sequence: u64 });
+record!(PaymentResult {
+    record_id: String,
+    journal_id: String,
+    sequence: u64
+});
 record!(PaymentPreview {
     data: PaymentData,
     journal_lines: Vec<JournalLineInput>,
@@ -185,11 +189,7 @@ fn business_hash(c: &PaymentCommand) -> Result<String> {
     hash(&(c.event(), c))
 }
 
-fn role_lines(
-    setup: &CoreSetup,
-    rows: &[(CoreRole, bool, Money)],
-    reference: &str,
-) -> Result<Vec<JournalLineInput>> {
+fn role_lines(setup: &CoreSetup, rows: &[(CoreRole, bool, Money)], reference: &str) -> Result<Vec<JournalLineInput>> {
     let mut out = Vec::new();
     for (role, debit, amount) in rows {
         if *amount == Money::ZERO {
@@ -218,15 +218,10 @@ pub struct PaymentOpenItem {
 
 impl AccountingState {
     /// Net settlements of all open items as-of a date, in one pass.
-    pub(crate) fn payment_allocation_map(
-        &self,
-        company: &str,
-        asof: &str,
-    ) -> Result<BTreeMap<String, Money>> {
+    pub(crate) fn payment_allocation_map(&self, company: &str, asof: &str) -> Result<BTreeMap<String, Money>> {
         let mut out: BTreeMap<String, Money> = BTreeMap::new();
         for r in &self.payments.records {
-            if r.command.context().company_id != company || r.command.context().date.as_str() > asof
-            {
+            if r.command.context().company_id != company || r.command.context().date.as_str() > asof {
                 continue;
             }
             match &r.data {
@@ -247,12 +242,7 @@ impl AccountingState {
         Ok(out)
     }
     /// Net advance balance created by payments for one advance role as-of a date.
-    pub fn payment_advance_delta(
-        &self,
-        company: &str,
-        role: CoreRole,
-        asof: &str,
-    ) -> Result<Money> {
+    pub fn payment_advance_delta(&self, company: &str, role: CoreRole, asof: &str) -> Result<Money> {
         let side = match role {
             CoreRole::CustomerAdvances => PaymentSide::Receive,
             CoreRole::SupplierAdvances => PaymentSide::Make,
@@ -279,12 +269,7 @@ impl AccountingState {
         Ok(total)
     }
     /// Net effect of payments on one cash/bank account as-of a date.
-    pub fn payment_fund_delta(
-        &self,
-        company: &str,
-        account: &str,
-        asof: &str,
-    ) -> Result<Money> {
+    pub fn payment_fund_delta(&self, company: &str, account: &str, asof: &str) -> Result<Money> {
         let mut total = Money::ZERO;
         for r in &self.payments.records {
             if r.command.context().company_id != company || r.command.context().date.as_str() > asof {
@@ -292,9 +277,7 @@ impl AccountingState {
             }
             let (amount, funds_role, receive_in) = match &r.data {
                 PaymentData::Payment(p) => (p.total, r.funds_role(), p.side == PaymentSide::Receive),
-                PaymentData::Reversal(p) => {
-                    (p.total, p.funds_role, p.side != PaymentSide::Receive)
-                }
+                PaymentData::Reversal(p) => (p.total, p.funds_role, p.side != PaymentSide::Receive),
             };
             if amount == Money::ZERO {
                 continue;
@@ -316,13 +299,7 @@ impl AccountingState {
         }
         Ok(total)
     }
-    pub fn payment_open_items(
-        &self,
-        company: &str,
-        party: Option<&str>,
-        side: PaymentSide,
-        asof: &str,
-    ) -> Result<Vec<PaymentOpenItem>> {
+    pub fn payment_open_items(&self, company: &str, party: Option<&str>, side: PaymentSide, asof: &str) -> Result<Vec<PaymentOpenItem>> {
         civil_date(asof)?;
         let rows: Vec<PaymentOpenItem> = match side {
             PaymentSide::Receive => self
@@ -356,13 +333,7 @@ impl AccountingState {
             .filter(|r| party.is_none_or(|p| r.party_id == p))
             .collect())
     }
-    pub fn payment_open_item_list(
-        &self,
-        company: &str,
-        party: &str,
-        side: PaymentSide,
-        asof: &str,
-    ) -> Result<Vec<PaymentOpenItem>> {
+    pub fn payment_open_item_list(&self, company: &str, party: &str, side: PaymentSide, asof: &str) -> Result<Vec<PaymentOpenItem>> {
         self.payment_open_items(company, Some(party), side, asof)
     }
 
@@ -384,10 +355,7 @@ impl AccountingState {
         // an issued one Cr cheques-payable, and a received cheque can be endorsed (spent) to a
         // supplier. Clearing is posted separately as a banking movement (ADR-0005).
         let funds_allowed = match input.side {
-            PaymentSide::Receive => matches!(
-                input.funds_role,
-                CoreRole::Cash | CoreRole::Bank | CoreRole::ChequesReceivable
-            ),
+            PaymentSide::Receive => matches!(input.funds_role, CoreRole::Cash | CoreRole::Bank | CoreRole::ChequesReceivable),
             PaymentSide::Make => matches!(
                 input.funds_role,
                 CoreRole::Cash | CoreRole::Bank | CoreRole::ChequesPayable | CoreRole::ChequesReceivable
@@ -406,10 +374,7 @@ impl AccountingState {
             PaymentSide::Receive => ensure!(party.customer, "طرف حساب نقش مشتری ندارد"),
             PaymentSide::Make => ensure!(party.supplier, "طرف حساب نقش تأمین‌کننده ندارد"),
         }
-        ensure!(
-            (1..=1000).contains(&input.allocations.len()),
-            "تعداد ردیف تخصیص نامعتبر است"
-        );
+        ensure!((1..=1000).contains(&input.allocations.len()), "تعداد ردیف تخصیص نامعتبر است");
         ensure!(input.advance_amount.rials() >= 0, "پیش‌دریافت منفی مجاز نیست");
         let mut seen = HashSet::new();
         for a in &input.allocations {
@@ -432,10 +397,7 @@ impl AccountingState {
             let remaining = open
                 .get_mut(&a.open_item_id)
                 .ok_or_else(|| anyhow!("ردیف باز معتبر نیست یا مانده ندارد"))?;
-            ensure!(
-                a.amount.rials() <= remaining.rials(),
-                "مبلغ تخصیص از ماندهٔ سند بیشتر است"
-            );
+            ensure!(a.amount.rials() <= remaining.rials(), "مبلغ تخصیص از ماندهٔ سند بیشتر است");
             *remaining = remaining.checked_sub(a.amount)?;
             frozen.push(PostedPaymentAllocation {
                 open_item_id: a.open_item_id.clone(),
@@ -471,24 +433,14 @@ impl AccountingState {
             total,
         })
     }
-    fn payment_open_item_by_id(
-        &self,
-        company: &str,
-        side: PaymentSide,
-        open_item: &str,
-        asof: &str,
-    ) -> Result<Option<PaymentOpenItem>> {
+    fn payment_open_item_by_id(&self, company: &str, side: PaymentSide, open_item: &str, asof: &str) -> Result<Option<PaymentOpenItem>> {
         Ok(self
             .payment_open_items(company, None, side, asof)?
             .into_iter()
             .find(|i| i.id == open_item))
     }
 
-    pub fn preview_payment_reversal(
-        &self,
-        company: &str,
-        payment_id: &str,
-    ) -> Result<PaymentPreview> {
+    pub fn preview_payment_reversal(&self, company: &str, payment_id: &str) -> Result<PaymentPreview> {
         let original = self.payment_document(company, payment_id)?;
         let PaymentData::Payment(p) = &original.data else {
             anyhow::bail!("سند پرداخت قابل برگشت نیست")
@@ -544,12 +496,7 @@ impl AccountingState {
         text(&c.request_key)?;
         let business = business_hash(&command)?;
         self.ensure_fresh_payment_key(&c.request_key)?;
-        if let Some(alias) = self
-            .payments
-            .requests
-            .iter()
-            .find(|r| r.request_key == c.request_key)
-        {
+        if let Some(alias) = self.payments.requests.iter().find(|r| r.request_key == c.request_key) {
             ensure!(
                 alias.company_id == c.company_id && alias.business_sha256 == business,
                 "کلید درخواست با محتوای متفاوت استفاده شده است"
@@ -625,10 +572,7 @@ impl AccountingState {
         );
         let sequence = self.operational_sequence(&c.company_id)?;
         let command_sha256 = hash(&command)?;
-        let journal_id = self.post_payment_journal(financial_command(
-            &command,
-            preview.journal_lines.clone(),
-        ))?;
+        let journal_id = self.post_payment_journal(financial_command(&command, preview.journal_lines.clone()))?;
         let record = PaymentRecord {
             id: record_id.clone(),
             command,
@@ -673,11 +617,7 @@ impl AccountingState {
             .ok_or_else(|| anyhow!("سند پرداخت در این شرکت یافت نشد"))
     }
     pub(crate) fn payment_entity_ids(&self) -> Vec<&str> {
-        self.payments
-            .records
-            .iter()
-            .map(|r| r.id.as_str())
-            .collect()
+        self.payments.records.iter().map(|r| r.id.as_str()).collect()
     }
     /// Reconstruct one posted payment during integrity replay.
     pub(crate) fn replay_payment_record(&mut self, record: &PaymentRecord) -> Result<String> {
@@ -688,29 +628,19 @@ impl AccountingState {
         );
         let before = self.payments.records.len();
         let out = self.post_payment_command(record.command.clone())?;
-        ensure!(
-            self.payments.records.len() == before + 1,
-            "سوابق تغییرات رویداد پرداخت تکراری است"
-        );
+        ensure!(self.payments.records.len() == before + 1, "سوابق تغییرات رویداد پرداخت تکراری است");
         let created = self.payments.records.last_mut().unwrap();
         created.id = record.id.clone();
         self.payments.requests.last_mut().unwrap().record_id = record.id.clone();
         let mut expected = record.clone();
         expected.journal_id = out.journal_id.clone();
-        ensure!(
-            *created == expected,
-            "محتوا یا تخصیص‌های رویداد پرداخت نامعتبر است"
-        );
+        ensure!(*created == expected, "محتوا یا تخصیص‌های رویداد پرداخت نامعتبر است");
         Ok(out.journal_id)
     }
-    pub(crate) fn replay_payment_request(
-        &mut self,
-        request: &PaymentRequest,
-    ) -> Result<PaymentResult> {
+    pub(crate) fn replay_payment_request(&mut self, request: &PaymentRequest) -> Result<PaymentResult> {
         let prior = self.payment_document(&request.company_id, &request.record_id)?;
         ensure!(
-            request.company_id == prior.command.context().company_id
-                && request.business_sha256 == business_hash(&prior.command)?,
+            request.company_id == prior.command.context().company_id && request.business_sha256 == business_hash(&prior.command)?,
             "هویت یا هش درخواست پرداخت نامعتبر است"
         );
         let mut c = prior.command.clone();
@@ -726,18 +656,14 @@ impl AccountingState {
     }
     pub(crate) fn post_payment_journal(&mut self, command: PostCommand) -> Result<String> {
         ensure!(
-            command.event.starts_with(PAYMENTS_EVENT_PREFIX)
-                && command.kind == JournalKind::Manual,
+            command.event.starts_with(PAYMENTS_EVENT_PREFIX) && command.kind == JournalKind::Manual,
             "رویداد پرداخت فقط از گردش کار معتبر مجاز است"
         );
         self.post_internal(command, true, false)
     }
 }
 
-pub(crate) fn financial_command(
-    c: &PaymentCommand,
-    lines: Vec<JournalLineInput>,
-) -> PostCommand {
+pub(crate) fn financial_command(c: &PaymentCommand, lines: Vec<JournalLineInput>) -> PostCommand {
     let x = c.context();
     PostCommand {
         company_id: x.company_id.clone(),

@@ -70,18 +70,9 @@ fn payments_backup_restore_and_restart_keep_exact_books() {
         "payment_options",
         json!({"company_id":c,"side":"receive","party_id":"CU-A"}),
     );
-    let ar = options["items"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|x| x["id"] == "AR-125")
-        .unwrap();
+    let ar = options["items"].as_array().unwrap().iter().find(|x| x["id"] == "AR-125").unwrap();
     assert_eq!(ar["remaining"], "125");
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-09"}),
-    );
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-09"}));
     assert_eq!(r["reconciliation"]["reconciled"], true);
     assert_eq!(r["party_balances"]["vendor:SU-A"], "40");
 }
@@ -199,46 +190,31 @@ fn stale_generation_payment_post_writes_nothing() {
             {"account_id":credit_account,"debit":"0","credit":"1","description":"x"}
         ]}),
     );
-    assert!(dispatch(
-        d.path(),
-        "payment_post",
-        receive_payload(&c, &p, "trust-stale", "2026-10-08", "10", "0")
-            .as_object()
-            .unwrap()
-            .clone()
-            .into_iter()
-            .chain([(
-                "expected_generation".to_owned(),
-                preview["_generation"].clone()
-            )])
-            .collect::<serde_json::Map<_, _>>()
-            .into(),
-    )
-    .is_err());
+    assert!(
+        dispatch(
+            d.path(),
+            "payment_post",
+            receive_payload(&c, &p, "trust-stale", "2026-10-08", "10", "0")
+                .as_object()
+                .unwrap()
+                .clone()
+                .into_iter()
+                .chain([("expected_generation".to_owned(), preview["_generation"].clone())])
+                .collect::<serde_json::Map<_, _>>()
+                .into(),
+        )
+        .is_err()
+    );
 }
 
 #[test]
 fn backup_actions_create_list_preview_restore_with_safety_copy() {
     let (d, c, p) = fixture();
-    call(
-        d.path(),
-        "payment_post",
-        receive_payload(&c, &p, "bk-1", "2026-10-08", "125", "0"),
-    );
+    call(d.path(), "payment_post", receive_payload(&c, &p, "bk-1", "2026-10-08", "125", "0"));
     // Restore requires explicit confirmation and rejects traversal names.
-    assert!(dispatch(
-        d.path(),
-        "backup_restore",
-        json!({"filename":"sarv-backup-x.json"}),
-    )
-    .is_err());
+    assert!(dispatch(d.path(), "backup_restore", json!({"filename":"sarv-backup-x.json"}),).is_err());
     for bad in ["../sarv-backup-x.json", "sub/sarv-backup-x.json", "before-schema7-a.json"] {
-        assert!(dispatch(
-            d.path(),
-            "backup_restore_preview",
-            json!({"filename":bad}),
-        )
-        .is_err());
+        assert!(dispatch(d.path(), "backup_restore_preview", json!({"filename":bad}),).is_err());
     }
     let created = call(d.path(), "backup_create", json!({}));
     let name = created["filename"].as_str().unwrap().to_owned();
@@ -262,11 +238,7 @@ fn backup_actions_create_list_preview_restore_with_safety_copy() {
         "payment_post",
         json!({"company_id":c,"period_id":p,"source_id":"bk-2","request_key":"bk-2","date":"2026-10-09","reason":"later","side":"make","party_id":"SU-A","funds_role":"cash","reference":"PMT-bk-2","advance_amount":"0","allocations":[{"open_item_id":"AP-100","amount":"10"}]}),
     );
-    let preview = call(
-        d.path(),
-        "backup_restore_preview",
-        json!({"filename":name}),
-    );
+    let preview = call(d.path(), "backup_restore_preview", json!({"filename":name}));
     assert_eq!(preview["backup"]["payments"], "1");
     assert_eq!(preview["current"]["payments"], "2");
     let restored = call(
@@ -275,20 +247,13 @@ fn backup_actions_create_list_preview_restore_with_safety_copy() {
         json!({"filename":name,"confirmed":true,"expected_generation":preview["_generation"]}),
     );
     assert_eq!(restored["restored"], true);
-    assert!(restored["safety_backup"]
-        .as_str()
-        .unwrap()
-        .starts_with("before-restore-"));
+    assert!(restored["safety_backup"].as_str().unwrap().starts_with("before-restore-"));
     let after = Store::open(d.path()).unwrap();
     assert_eq!(serde_json::to_value(&after.state).unwrap(), at_backup);
     after.state.accounting.validate().unwrap();
     // The automatic safety copy still restores the newer world if needed.
     let safety = restored["safety_backup"].as_str().unwrap().to_owned();
-    let back = call(
-        d.path(),
-        "backup_restore_preview",
-        json!({"filename":name}),
-    );
+    let back = call(d.path(), "backup_restore_preview", json!({"filename":name}));
     assert_eq!(back["backup"]["payments"], "1");
     let _ = safety;
 }
@@ -320,15 +285,30 @@ fn quotation_drafts_and_settings_survive_backup_and_restart() {
     assert!(issue.number.starts_with("Q-"));
     // ...and inside the backup.
     let list = call(d.path(), "backup_list", json!({}));
-    assert!(list["backups"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .any(|r| r["filename"] == name.as_str() && r["valid"] == true));
-    let preview = call(
-        d.path(),
-        "backup_restore_preview",
-        json!({"filename":name}),
+    assert!(
+        list["backups"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|r| r["filename"] == name.as_str() && r["valid"] == true)
     );
+    let preview = call(d.path(), "backup_restore_preview", json!({"filename":name}));
     assert_eq!(preview["backup"]["drafts"], "1");
+}
+
+#[test]
+fn payment_retry_with_old_generation_after_unrelated_save_is_idempotent() {
+    let (d, c, p) = fixture();
+    let generation = Store::open(d.path()).unwrap().local_generation().to_string();
+    let mut payload = receive_payload(&c, &p, "trust-stale-gen-retry", "2026-10-08", "125", "0");
+    payload["expected_generation"] = json!(generation);
+    let first = call(d.path(), "payment_post", payload.clone());
+    let mut settings = call(d.path(), "workspace", json!({"company_id": c}))["settings"].clone();
+    settings["business_name"] = json!("Unrelated save");
+    call(d.path(), "settings", settings);
+    let second = call(d.path(), "payment_post", payload);
+    assert_eq!(first["record_id"], second["record_id"]);
+    assert_eq!(first["journal_id"], second["journal_id"]);
+    let store = Store::open(d.path()).unwrap();
+    assert_eq!(store.state.accounting.payments.records.len(), 1);
 }

@@ -19,9 +19,7 @@ fn ctx(c: &str, p: &str, key: &str) -> Value {
 }
 #[test]
 fn wire_preserves_i64_extremes_and_nested_money_exactly() {
-    let v = wire(
-        json!({"max":i64::MAX,"min":i64::MIN,"lines":[{"debit":9007199254740993_i64}],"bool":true}),
-    );
+    let v = wire(json!({"max":i64::MAX,"min":i64::MIN,"lines":[{"debit":9007199254740993_i64}],"bool":true}));
     assert_eq!(v["max"], "9223372036854775807");
     assert_eq!(v["min"], "-9223372036854775808");
     assert_eq!(v["lines"][0]["debit"], "9007199254740993");
@@ -46,10 +44,7 @@ fn settings_round_trip_preserves_upstream_fiscal_month_and_books() {
     call(d.path(), "settings", settings);
     let store = Store::open(d.path()).unwrap();
     assert_eq!(store.state.settings.fiscal_year_start_month, 9);
-    assert_eq!(
-        serde_json::to_value(&store.state.accounting).unwrap(),
-        books
-    );
+    assert_eq!(serde_json::to_value(&store.state.accounting).unwrap(), books);
 }
 #[test]
 fn company_setup_zero_is_explicit_atomic_and_persists() {
@@ -105,10 +100,7 @@ fn manual_shop_catalog_generates_codes_and_first_unit_atomically() {
     assert_eq!(w["resources"]["units"].as_array().unwrap().len(), 1);
     assert_eq!(w["resources"]["units"][0]["name"], "عدد");
     assert_eq!(w["resources"]["items"][0]["sku"], "P-manual-product");
-    assert_eq!(
-        w["resources"]["items"][0]["base_unit_id"],
-        w["resources"]["units"][0]["id"]
-    );
+    assert_eq!(w["resources"]["items"][0]["base_unit_id"], w["resources"]["units"][0]["id"]);
     let before = Store::open(d.path()).unwrap().local_generation();
     let mut invalid = ctx(c, period, "invalid-product");
     invalid["id"] = json!("invalid-product");
@@ -131,20 +123,13 @@ fn purchase_receipt_bill_preserve_exact_stock_and_reconcile() {
     let r = call(d.path(), "purchase_post", order);
     let mut receipt = ctx(&c, &p, "bridge-receipt");
     receipt["order_id"] = r["record_id"].clone();
-    assert_eq!(
-        call(d.path(), "receive_preview", receipt.clone())["total"],
-        "33"
-    );
+    assert_eq!(call(d.path(), "receive_preview", receipt.clone())["total"], "33");
     let r = call(d.path(), "receive_post", receipt);
     let mut bill = ctx(&c, &p, "bridge-bill");
     bill["receipt_id"] = r["record_id"].clone();
     assert_eq!(call(d.path(), "bill_preview", bill.clone())["total"], "33");
     call(d.path(), "bill_post", bill);
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}),
-    );
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}));
     assert_eq!(r["reconciliation"]["reconciled"], true);
     let stock = r["reconciliation"]["stock"]
         .as_array()
@@ -177,14 +162,7 @@ fn sales_draft_preview_is_readonly_then_order_delivery_invoice_reconcile() {
     assert_eq!(before, Store::open(d.path()).unwrap().local_generation());
     let mut draft = draft;
     draft["supplied_total"] = preview["supplied_total"].clone();
-    assert_eq!(
-        call(
-            d.path(),
-            "draft_save",
-            json!({"draft":draft,"expected_revision":null})
-        ),
-        "1"
-    );
+    assert_eq!(call(d.path(), "draft_save", json!({"draft":draft,"expected_revision":null})), "1");
     let order = call(
         d.path(),
         "draft_post",
@@ -192,18 +170,11 @@ fn sales_draft_preview_is_readonly_then_order_delivery_invoice_reconcile() {
     );
     let mut fulfill = ctx(&c, &p, "bridge-invoice");
     fulfill["order_id"] = order["record_id"].clone();
-    assert_eq!(
-        call(d.path(), "fulfill_preview", fulfill.clone())["total"],
-        "39"
-    );
+    assert_eq!(call(d.path(), "fulfill_preview", fulfill.clone())["total"], "39");
     let invoice = call(d.path(), "fulfill_post", fulfill.clone());
     assert_eq!(call(d.path(), "fulfill_post", fulfill), invoice);
     assert!(invoice["journal_id"].as_str().is_some());
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
-    );
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}));
     assert_eq!(r["profit_loss"]["revenue"], "39");
     assert_eq!(r["profit_loss"]["expenses"], "20");
     assert_eq!(r["profit_loss"]["profit"], "19");
@@ -219,21 +190,13 @@ fn journal_rejects_unbalanced_duplicate_payload_and_cross_company_without_writes
     let accounts = &st.state.accounting.accounts;
     let exp = accounts
         .iter()
-        .find(|a| {
-            !a.control
-                && a.postable
-                && a.classification == sarv_quote::accounting::AccountClass::Expense
-        })
+        .find(|a| !a.control && a.postable && a.classification == sarv_quote::accounting::AccountClass::Expense)
         .unwrap()
         .id
         .clone();
     let equity = accounts
         .iter()
-        .find(|a| {
-            !a.control
-                && a.postable
-                && a.classification == sarv_quote::accounting::AccountClass::Equity
-        })
+        .find(|a| !a.control && a.postable && a.classification == sarv_quote::accounting::AccountClass::Equity)
         .unwrap()
         .id
         .clone();
@@ -248,15 +211,7 @@ fn journal_rejects_unbalanced_duplicate_payload_and_cross_company_without_writes
     assert_eq!(preview["total_credit"], "10");
     let result = call(d.path(), "journal_post", cmd.clone());
     assert_eq!(call(d.path(), "journal_post", cmd.clone()), result);
-    assert_eq!(
-        Store::open(d.path())
-            .unwrap()
-            .state
-            .accounting
-            .journals
-            .len(),
-        2
-    );
+    assert_eq!(Store::open(d.path()).unwrap().state.accounting.journals.len(), 2);
     cmd["lines"][0]["debit"] = json!("11");
     cmd["lines"][1]["credit"] = json!("11");
     assert!(dispatch(d.path(), "journal_post", cmd).is_err());
@@ -265,38 +220,16 @@ fn journal_rejects_unbalanced_duplicate_payload_and_cross_company_without_writes
         "setup_company",
         json!({"name":"Second isolated company","fiscal_name":"2026","start_date":"2026-01-01","end_date":"2026-12-31"}),
     );
-    assert!(
-        dispatch(
-            d.path(),
-            "detail",
-            json!({"company_id":c2["company_id"],"id":result})
-        )
-        .is_err()
-    );
-    let w = call(
-        d.path(),
-        "workspace",
-        json!({"company_id":c2["company_id"]}),
-    );
+    assert!(dispatch(d.path(), "detail", json!({"company_id":c2["company_id"],"id":result})).is_err());
+    let w = call(d.path(), "workspace", json!({"company_id":c2["company_id"]}));
     assert_eq!(w["journals"].as_array().unwrap().len(), 0);
     assert_eq!(w["sales"].as_array().unwrap().len(), 0);
 }
 #[test]
 fn report_range_filter_and_formula_safe_export_are_authoritative() {
     let (d, c, _) = fixture();
-    assert!(
-        dispatch(
-            d.path(),
-            "report",
-            json!({"company_id":c,"from":"2026-10-09","to":"2026-10-08"})
-        )
-        .is_err()
-    );
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
-    );
+    assert!(dispatch(d.path(), "report", json!({"company_id":c,"from":"2026-10-09","to":"2026-10-08"})).is_err());
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}));
     assert_eq!(r["profit_loss"]["profit"], "0");
     assert_eq!(r["trial"]["total_debit"], "1251");
     let export = call(
@@ -305,12 +238,7 @@ fn report_range_filter_and_formula_safe_export_are_authoritative() {
         json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
     );
     assert!(export["content"].as_str().unwrap().starts_with('\u{feff}'));
-    assert!(
-        export["content"]
-            .as_str()
-            .unwrap()
-            .contains("Debit IRR,Credit IRR")
-    );
+    assert!(export["content"].as_str().unwrap().contains("Debit IRR,Credit IRR"));
 }
 
 #[test]
@@ -343,10 +271,7 @@ fn partial_receipts_billing_and_both_supplier_returns_conserve_original_costs() 
     order["supplier_id"] = json!("SU-A");
     order["discount"] = json!("2");
     order["lines"] = json!([{"id":"partial-po-line","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"4","line_discount":"0"}]);
-    assert_eq!(
-        call(d.path(), "purchase_preview", order.clone())["total"],
-        "10"
-    );
+    assert_eq!(call(d.path(), "purchase_preview", order.clone())["total"], "10");
     let order = call(d.path(), "purchase_post", order);
     let options = call(
         d.path(),
@@ -357,10 +282,7 @@ fn partial_receipts_billing_and_both_supplier_returns_conserve_original_costs() 
     let mut first = ctx(&c, &p, "partial-receipt-1");
     first["order_id"] = order["record_id"].clone();
     first["lines"] = json!([{"id":"partial-po-line","quantity":"1"}]);
-    assert_eq!(
-        call(d.path(), "receive_preview", first.clone())["total"],
-        "3"
-    );
+    assert_eq!(call(d.path(), "receive_preview", first.clone())["total"], "3");
     let result = call(d.path(), "receive_post", first.clone());
     assert_eq!(call(d.path(), "receive_post", first.clone()), result);
     let before = Store::open(d.path()).unwrap().local_generation();
@@ -369,10 +291,7 @@ fn partial_receipts_billing_and_both_supplier_returns_conserve_original_costs() 
     assert_eq!(before, Store::open(d.path()).unwrap().local_generation());
     let mut second = ctx(&c, &p, "partial-receipt-2");
     second["order_id"] = order["record_id"].clone();
-    assert_eq!(
-        call(d.path(), "receive_preview", second.clone())["total"],
-        "7"
-    );
+    assert_eq!(call(d.path(), "receive_preview", second.clone())["total"], "7");
     let second = call(d.path(), "receive_post", second);
     let options = call(
         d.path(),
@@ -390,25 +309,15 @@ fn partial_receipts_billing_and_both_supplier_returns_conserve_original_costs() 
     assert!(dispatch(d.path(), "bill_post", bill).is_err());
     let mut ret = ctx(&c, &p, "partial-unbilled-return");
     ret["record_id"] = second["record_id"].clone();
-    assert_eq!(
-        call(d.path(), "purchase_return_preview", ret.clone())["total"],
-        "3"
-    );
+    assert_eq!(call(d.path(), "purchase_return_preview", ret.clone())["total"], "3");
     let result = call(d.path(), "purchase_return_post", ret.clone());
     assert_eq!(call(d.path(), "purchase_return_post", ret), result);
     let mut ret = ctx(&c, &p, "partial-billed-return");
     ret["record_id"] = bill_result["record_id"].clone();
-    assert_eq!(
-        call(d.path(), "purchase_return_preview", ret.clone())["total"],
-        "4"
-    );
+    assert_eq!(call(d.path(), "purchase_return_preview", ret.clone())["total"], "4");
     let result = call(d.path(), "purchase_return_post", ret.clone());
     assert_eq!(call(d.path(), "purchase_return_post", ret), result);
-    let report = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}),
-    );
+    let report = call(d.path(), "report", json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}));
     assert_eq!(report["position"]["payables"], "149");
     assert_eq!(report["reconciliation"]["reconciled"], true);
     let stock = report["reconciliation"]["stock"]
@@ -433,15 +342,9 @@ fn partial_receipts_billing_and_both_supplier_returns_conserve_original_costs() 
 #[test]
 fn partial_sales_and_original_cost_credits_preserve_rial_remainders() {
     let (d, c, p) = fixture();
-    let setup = Store::open(d.path()).unwrap().state.accounting.core.setups[0]
-        .id
-        .clone();
+    let setup = Store::open(d.path()).unwrap().state.accounting.core.setups[0].id.clone();
     let draft = json!({"id":"partial-draft","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"partial-sale","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"1","supplied_total":"39","reason":"Partial delivery test","quotation":null,"lines":[{"id":"partial-sale-line","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"2","unit_price":"20","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
-    call(
-        d.path(),
-        "draft_save",
-        json!({"draft":draft,"expected_revision":null}),
-    );
+    call(d.path(), "draft_save", json!({"draft":draft,"expected_revision":null}));
     let order = call(
         d.path(),
         "draft_post",
@@ -450,20 +353,14 @@ fn partial_sales_and_original_cost_credits_preserve_rial_remainders() {
     let mut invoice = ctx(&c, &p, "partial-invoice-1");
     invoice["order_id"] = order["record_id"].clone();
     invoice["lines"] = json!([{"id":"partial-sale-line","quantity":"1"}]);
-    assert_eq!(
-        call(d.path(), "fulfill_preview", invoice.clone())["total"],
-        "20"
-    );
+    assert_eq!(call(d.path(), "fulfill_preview", invoice.clone())["total"], "20");
     let first = call(d.path(), "fulfill_post", invoice.clone());
     assert_eq!(call(d.path(), "fulfill_post", invoice.clone()), first);
     invoice["lines"][0]["quantity"] = json!("2");
     assert!(dispatch(d.path(), "fulfill_post", invoice).is_err());
     let mut invoice = ctx(&c, &p, "partial-invoice-2");
     invoice["order_id"] = order["record_id"].clone();
-    assert_eq!(
-        call(d.path(), "fulfill_preview", invoice.clone())["total"],
-        "19"
-    );
+    assert_eq!(call(d.path(), "fulfill_preview", invoice.clone())["total"], "19");
     call(d.path(), "fulfill_post", invoice);
     let mut ret = ctx(&c, &p, "partial-sale-return");
     ret["record_id"] = first["record_id"].clone();
@@ -482,11 +379,7 @@ fn partial_sales_and_original_cost_credits_preserve_rial_remainders() {
     ret["lines"][0]["quantity"] = json!("0.5");
     assert!(dispatch(d.path(), "sale_return_post", ret).is_err());
     assert_eq!(before, Store::open(d.path()).unwrap().local_generation());
-    let report = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}),
-    );
+    let report = call(d.path(), "report", json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}));
     assert_eq!(report["position"]["receivables"], "219");
     assert_eq!(report["profit_loss"]["profit"], "9");
     let contact = call(
@@ -545,21 +438,11 @@ fn transfers_are_readonly_on_preview_and_preserve_stock_value_on_post_and_retry(
     assert_eq!(call(d.path(), "transfer_post", transfer.clone()), result);
     transfer["quantity"] = json!("6");
     assert!(dispatch(d.path(), "transfer_post", transfer).is_err());
-    let report = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}),
-    );
+    let report = call(d.path(), "report", json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}));
     assert_eq!(report["reconciliation"]["reconciled"], true);
     let rows = report["reconciliation"]["stock"].as_array().unwrap();
-    assert_eq!(
-        rows.iter().find(|x| x["warehouse_id"] == "W1").unwrap()["value"],
-        "190"
-    );
-    assert_eq!(
-        rows.iter().find(|x| x["warehouse_id"] == "W2").unwrap()["value"],
-        "110"
-    );
+    assert_eq!(rows.iter().find(|x| x["warehouse_id"] == "W1").unwrap()["value"], "190");
+    assert_eq!(rows.iter().find(|x| x["warehouse_id"] == "W2").unwrap()["value"], "110");
 }
 
 #[test]
@@ -575,7 +458,14 @@ fn quantity_selection_rejects_unknown_zero_fractional_and_foreign_sources_withou
         json!({"name":"Isolated selection guard company","fiscal_name":"2026","start_date":"2026-01-01","end_date":"2026-12-31"}),
     );
     let before = Store::open(d.path()).unwrap().local_generation();
-    assert!(dispatch(d.path(),"operation_options",json!({"company_id":other["company_id"],"record_id":order["record_id"],"operation":"receive"})).is_err());
+    assert!(
+        dispatch(
+            d.path(),
+            "operation_options",
+            json!({"company_id":other["company_id"],"record_id":order["record_id"],"operation":"receive"})
+        )
+        .is_err()
+    );
     let mut receipt = ctx(&c, &p, "selection-guards-receipt");
     receipt["order_id"] = order["record_id"].clone();
     for rows in [
@@ -591,14 +481,7 @@ fn quantity_selection_rejects_unknown_zero_fractional_and_foreign_sources_withou
         assert_eq!(before, Store::open(d.path()).unwrap().local_generation());
     }
     // Malformed return requests must report validation errors rather than panic.
-    assert!(
-        dispatch(
-            d.path(),
-            "purchase_return_post",
-            json!({"company_id":c,"period_id":p})
-        )
-        .is_err()
-    );
+    assert!(dispatch(d.path(), "purchase_return_post", json!({"company_id":c,"period_id":p})).is_err());
     assert_eq!(before, Store::open(d.path()).unwrap().local_generation());
 }
 
@@ -615,16 +498,8 @@ fn business_profiles_are_company_scoped_and_survive_restore() {
         "setup_company",
         json!({"name":"Second business","fiscal_name":"2026","start_date":"2026-01-01","end_date":"2026-12-31","business_profile":{"phone":"021-87654321","registration_id":"REG-B"}}),
     );
-    let a = call(
-        d.path(),
-        "workspace",
-        json!({"company_id":first["company_id"]}),
-    );
-    let b = call(
-        d.path(),
-        "workspace",
-        json!({"company_id":second["company_id"]}),
-    );
+    let a = call(d.path(), "workspace", json!({"company_id":first["company_id"]}));
+    let b = call(d.path(), "workspace", json!({"company_id":second["company_id"]}));
     assert_eq!(a["business_profile"]["registration_id"], "REG-A");
     assert_eq!(b["business_profile"]["registration_id"], "REG-B");
     assert_eq!(b["settings"]["date_display"], "Jalali");
@@ -637,22 +512,12 @@ fn business_profiles_are_company_scoped_and_survive_restore() {
     let backup = d.path().join("profiles.sarv");
     sarv_quote::store::backup_state(&store.state, &backup).unwrap();
     let restored = Store::restore_preview(&backup).unwrap();
-    assert_eq!(
-        restored.business_profiles[first["company_id"].as_str().unwrap()].tax_id,
-        "TAX-A"
-    );
+    assert_eq!(restored.business_profiles[first["company_id"].as_str().unwrap()].tax_id, "TAX-A");
     assert_eq!(
         restored.business_profiles[second["company_id"].as_str().unwrap()].registration_id,
         "REG-B"
     );
-    assert!(
-        dispatch(
-            d.path(),
-            "business_profile",
-            json!({"company_id":"foreign","profile":{}})
-        )
-        .is_err()
-    );
+    assert!(dispatch(d.path(), "business_profile", json!({"company_id":"foreign","profile":{}})).is_err());
     let before = fs_state(d.path());
     assert!(
         dispatch(
@@ -697,7 +562,14 @@ fn rich_contacts_are_atomic_scoped_editable_and_restore_with_books() {
         "party_profile",
         json!({"company_id":c,"party_id":"rich-contact","profile":profile,"expected_generation":detail["_generation"]}),
     );
-    assert!(dispatch(d.path(),"party_profile",json!({"company_id":c,"party_id":"rich-contact","profile":profile,"expected_generation":detail["_generation"]})).is_err());
+    assert!(
+        dispatch(
+            d.path(),
+            "party_profile",
+            json!({"company_id":c,"party_id":"rich-contact","profile":profile,"expected_generation":detail["_generation"]})
+        )
+        .is_err()
+    );
     // Retrying original creation must not overwrite later edits.
     call(d.path(), "resource", resource);
     let w = call(d.path(), "workspace", json!({"company_id":c}));
@@ -726,10 +598,7 @@ fn rich_contacts_are_atomic_scoped_editable_and_restore_with_books() {
     let backup = d.path().join("contacts.sarv");
     sarv_quote::store::backup_state(&store.state, &backup).unwrap();
     let restored = Store::restore_preview(&backup).unwrap();
-    assert_eq!(
-        restored.party_profiles["rich-contact"].mobile,
-        "09120000000"
-    );
+    assert_eq!(restored.party_profiles["rich-contact"].mobile, "09120000000");
 }
 
 #[test]
@@ -737,25 +606,11 @@ fn banking_preview_post_transfer_expense_reverse_and_restore_conserve_funds() {
     use sarv_quote::accounting::AccountClass;
     let (d, c, p) = fixture();
     let store = Store::open(d.path()).unwrap();
-    let data = call(
-        d.path(),
-        "banking",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
-    );
-    let bank = data["accounts"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|a| a["role"] == "Bank")
-        .unwrap();
+    let data = call(d.path(), "banking", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}));
+    let bank = data["accounts"].as_array().unwrap().iter().find(|a| a["role"] == "Bank").unwrap();
     let bank_id = bank["account"]["id"].clone();
     let bank_open: i64 = bank["balance"].as_str().unwrap().parse().unwrap();
-    let cash = data["accounts"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|a| a["role"] == "Cash")
-        .unwrap();
+    let cash = data["accounts"].as_array().unwrap().iter().find(|a| a["role"] == "Cash").unwrap();
     let cash_id = cash["account"]["id"].clone();
     let cash_open: i64 = cash["balance"].as_str().unwrap().parse().unwrap();
     let equity = store
@@ -763,12 +618,7 @@ fn banking_preview_post_transfer_expense_reverse_and_restore_conserve_funds() {
         .accounting
         .accounts
         .iter()
-        .find(|a| {
-            a.company_id == c
-                && !a.control
-                && a.postable
-                && a.classification == AccountClass::Equity
-        })
+        .find(|a| a.company_id == c && !a.control && a.postable && a.classification == AccountClass::Equity)
         .unwrap()
         .id
         .clone();
@@ -813,22 +663,11 @@ fn banking_preview_post_transfer_expense_reverse_and_restore_conserve_funds() {
     withdrawal["counterpart_id"] = json!(expense);
     withdrawal["amount"] = json!("100");
     let expense_id = call(d.path(), "banking_post", withdrawal.clone());
-    let after = call(
-        d.path(),
-        "banking",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
-    );
+    let after = call(d.path(), "banking", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}));
     for a in after["accounts"].as_array().unwrap() {
         assert_eq!(
             a["balance"],
-            json!(
-                (if a["role"] == "Cash" {
-                    cash_open + 200
-                } else {
-                    bank_open + 700
-                })
-                .to_string()
-            )
+            json!((if a["role"] == "Cash" { cash_open + 200 } else { bank_open + 700 }).to_string())
         );
     }
     let mut reversal = ctx(&c, &p, "undo-bank-expense");
@@ -843,10 +682,7 @@ fn banking_preview_post_transfer_expense_reverse_and_restore_conserve_funds() {
     call(d.path(), "banking_post", alias);
     Store::open(d.path())
         .unwrap()
-        .change(|s| {
-            s.accounting
-                .archive_account(&expense, "bank-test", "Retire expense category")
-        })
+        .change(|s| s.accounting.archive_account(&expense, "bank-test", "Retire expense category"))
         .unwrap();
     let mut alias = withdrawal;
     alias["request_key"] = json!("expense-alias-after-archive");
@@ -854,18 +690,11 @@ fn banking_preview_post_transfer_expense_reverse_and_restore_conserve_funds() {
     let store = Store::open(d.path()).unwrap();
     assert_eq!(store.state.accounting.banking.len(), 4);
     store.state.validate().unwrap();
-    let report = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}),
-    );
+    let report = call(d.path(), "report", json!({"company_id":c,"from":"2026-03-21","to":"2026-10-08"}));
     assert_eq!(report["reconciliation"]["reconciled"], true);
     let backup = d.path().join("bank.sarv");
     sarv_quote::store::backup_state(&store.state, &backup).unwrap();
-    assert_eq!(
-        Store::restore_preview(&backup).unwrap().accounting,
-        store.state.accounting
-    );
+    assert_eq!(Store::restore_preview(&backup).unwrap().accounting, store.state.accounting);
     let mut corrupt = store.state.clone();
     corrupt.accounting.banking.clear();
     assert!(corrupt.validate().is_err());
@@ -903,11 +732,7 @@ fn banking_rejects_control_counterpart_stale_reviews_and_locked_periods() {
         .accounting
         .accounts
         .iter()
-        .find(|a| {
-            !a.control
-                && a.postable
-                && a.classification == sarv_quote::accounting::AccountClass::Equity
-        })
+        .find(|a| !a.control && a.postable && a.classification == sarv_quote::accounting::AccountClass::Equity)
         .unwrap()
         .id
         .clone();
@@ -968,10 +793,7 @@ fn product_prices_estimates_stock_thresholds_and_metadata_do_not_revalue_books()
     assert_eq!(detail["stats"]["low_stock"], true);
     assert_eq!(detail["stats"]["average_stock_cost"], "10");
     let store = Store::open(d.path()).unwrap();
-    assert_eq!(
-        serde_json::to_value(&store.state.accounting).unwrap(),
-        books
-    );
+    assert_eq!(serde_json::to_value(&store.state.accounting).unwrap(), books);
     let backup = d.path().join("products.sarv");
     sarv_quote::store::backup_state(&store.state, &backup).unwrap();
     let restored = Store::restore_preview(&backup).unwrap();
@@ -1070,15 +892,10 @@ fn payment_settlement_settles_receivable_and_reverses_through_bridge() {
         "payment_options",
         json!({"company_id":c,"side":"receive","party_id":"CU-A"}),
     );
-    let ar = options["items"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|x| x["id"] == "AR-125")
-        .unwrap();
+    let ar = options["items"].as_array().unwrap().iter().find(|x| x["id"] == "AR-125").unwrap();
     assert_eq!(ar["remaining"], "125");
     let before = Store::open(d.path()).unwrap().local_generation();
-    let mut preview = call(
+    let preview = call(
         d.path(),
         "payment_preview",
         json!({"company_id":c,"period_id":p,"source_id":"bridge-pay","request_key":"bridge-pay","date":"2026-10-08","reason":"Customer settlement","side":"receive","party_id":"CU-A","funds_role":"bank","reference":"RCP-1","advance_amount":"25","allocations":[{"open_item_id":"AR-125","amount":"100"}]}),
@@ -1101,26 +918,13 @@ fn payment_settlement_settles_receivable_and_reverses_through_bridge() {
         "payment_options",
         json!({"company_id":c,"side":"receive","party_id":"CU-A"}),
     );
-    let ar = options["items"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|x| x["id"] == "AR-125")
-        .unwrap();
+    let ar = options["items"].as_array().unwrap().iter().find(|x| x["id"] == "AR-125").unwrap();
     assert_eq!(ar["remaining"], "25");
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
-    );
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}));
     assert_eq!(r["party_balances"]["customer:CU-A"], "25");
     assert_eq!(r["reconciliation"]["reconciled"], true);
     // Typed reversal through the same bridge.
-    let reversal_preview = call(
-        d.path(),
-        "payment_reverse_preview",
-        json!({"company_id":c,"payment_id":record_id}),
-    );
+    let reversal_preview = call(d.path(), "payment_reverse_preview", json!({"company_id":c,"payment_id":record_id}));
     assert_eq!(reversal_preview["total"], "125");
     call(
         d.path(),
@@ -1132,20 +936,11 @@ fn payment_settlement_settles_receivable_and_reverses_through_bridge() {
         "payment_options",
         json!({"company_id":c,"side":"receive","party_id":"CU-A"}),
     );
-    let ar = options["items"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|x| x["id"] == "AR-125")
-        .unwrap();
+    let ar = options["items"].as_array().unwrap().iter().find(|x| x["id"] == "AR-125").unwrap();
     assert_eq!(ar["remaining"], "125");
     let w = call(d.path(), "workspace", json!({"company_id":c}));
     assert_eq!(w["payment_count"], "2");
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-09"}),
-    );
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-09"}));
     assert_eq!(r["party_balances"]["customer:CU-A"], "125");
     assert_eq!(r["reconciliation"]["reconciled"], true);
 }
@@ -1172,21 +967,9 @@ fn payment_rejects_overallocation_and_make_side_settles_payable() {
         "payment_post",
         json!({"company_id":c,"period_id":p,"source_id":"pay-ap","request_key":"pay-ap","date":"2026-10-08","reason":"Supplier settlement","side":"make","party_id":"SU-A","funds_role":"cash","reference":"PMT-1","advance_amount":"0","allocations":[{"open_item_id":"AP-100","amount":"100"}]}),
     );
-    let options = call(
-        d.path(),
-        "payment_options",
-        json!({"company_id":c,"side":"make","party_id":"SU-A"}),
-    );
-    assert!(options["items"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .all(|x| x["remaining"] != "100"));
-    let r = call(
-        d.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}),
-    );
+    let options = call(d.path(), "payment_options", json!({"company_id":c,"side":"make","party_id":"SU-A"}));
+    assert!(options["items"].as_array().unwrap().iter().all(|x| x["remaining"] != "100"));
+    let r = call(d.path(), "report", json!({"company_id":c,"from":"2026-10-01","to":"2026-10-08"}));
     assert_eq!(r["party_balances"]["vendor:SU-A"], "0");
     assert_eq!(r["reconciliation"]["reconciled"], true);
 }
@@ -1206,35 +989,18 @@ fn quotation_issue_keeps_stable_numbers_and_prints_exact_totals() {
     );
     assert_eq!(rev, "1");
     let w = call(d.path(), "workspace", json!({"company_id":c}));
-    let stored = w["drafts"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|x| x["id"] == "quote-draft")
-        .unwrap();
+    let stored = w["drafts"].as_array().unwrap().iter().find(|x| x["id"] == "quote-draft").unwrap();
     let issue = &stored["quote_issue"];
-    assert_eq!(
-        issue["number"],
-        json!(format!("Q-{next_number}"))
-    );
+    assert_eq!(issue["number"], json!(format!("Q-{next_number}")));
     assert_eq!(issue["valid_until"], "2026-10-15");
     // Editing keeps the same quotation number without issuing again.
     let mut edited = stored.clone();
     edited["reference"] = json!("quote-ref-2");
     edited["revision"] = json!(rev);
-    let rev2 = call(
-        d.path(),
-        "draft_save",
-        json!({"draft":edited,"expected_revision":rev}),
-    );
+    let rev2 = call(d.path(), "draft_save", json!({"draft":edited,"expected_revision":rev}));
     assert_eq!(rev2, "2");
     let w = call(d.path(), "workspace", json!({"company_id":c}));
-    let stored = w["drafts"]
-        .as_array()
-        .unwrap()
-        .iter()
-        .find(|x| x["id"] == "quote-draft")
-        .unwrap();
+    let stored = w["drafts"].as_array().unwrap().iter().find(|x| x["id"] == "quote-draft").unwrap();
     assert_eq!(stored["quote_issue"]["number"], issue["number"]);
     // The quotation still converts to a posted order with the exact total.
     let order = call(
@@ -1245,9 +1011,461 @@ fn quotation_issue_keeps_stable_numbers_and_prints_exact_totals() {
     assert!(order["record_id"].as_str().is_some());
     let s = Store::open(d.path()).unwrap();
     assert_eq!(s.state.settings.next_number, next_number + 1);
-    assert!(s
-        .state
-        .sales_drafts
+    assert!(
+        s.state
+            .sales_drafts
+            .iter()
+            .all(|x| x.quote_issue.is_some() || x.id != "quote-draft")
+    );
+}
+
+#[test]
+fn non_object_payload_is_an_error_not_a_panic() {
+    let (d, _, _) = fixture();
+    assert!(dispatch(d.path(), "payment_preview", json!([1, 2, 3])).is_err());
+    assert!(dispatch(d.path(), "payment_preview", json!("x")).is_err());
+}
+
+#[test]
+fn records_pages_and_filters_match_workspace() {
+    use sarv_quote::accounting::{AccountClass, JournalKind, JournalLineInput, Money, PostCommand};
+
+    let (d, c, p) = fixture();
+    let mut store = Store::open(d.path()).unwrap();
+    let accounts = &store.state.accounting.accounts;
+    let exp = accounts
         .iter()
-        .all(|x| x.quote_issue.is_some() || x.id != "quote-draft"));
+        .find(|a| !a.control && a.postable && a.classification == AccountClass::Expense)
+        .unwrap()
+        .id
+        .clone();
+    let equity = accounts
+        .iter()
+        .find(|a| !a.control && a.postable && a.classification == AccountClass::Equity)
+        .unwrap()
+        .id
+        .clone();
+    store
+        .change(|s| {
+            for i in 0..120 {
+                let date = if i < 10 { "2026-10-05" } else { "2026-10-08" };
+                let key = format!("batch-j-{i:03}");
+                s.accounting.post(PostCommand {
+                    company_id: c.clone(),
+                    period_id: p.clone(),
+                    date: date.into(),
+                    source_id: key.clone(),
+                    source_revision: 1,
+                    event: "journal.post.v1".into(),
+                    request_key: key,
+                    actor: "test".into(),
+                    reason: "Paging test".into(),
+                    kind: JournalKind::Manual,
+                    lines: vec![
+                        JournalLineInput {
+                            account_id: exp.clone(),
+                            debit: Money::from_rials(100 + i),
+                            credit: Money::ZERO,
+                            description: "debit".into(),
+                        },
+                        JournalLineInput {
+                            account_id: equity.clone(),
+                            debit: Money::ZERO,
+                            credit: Money::from_rials(100 + i),
+                            description: "credit".into(),
+                        },
+                    ],
+                })?;
+            }
+            Ok(())
+        })
+        .unwrap();
+    drop(store);
+
+    let ws = call(d.path(), "workspace", json!({"company_id": c}));
+    let page1 = call(d.path(), "records", json!({"company_id": c, "kind": "journals", "offset": 0}));
+    let total: usize = page1["count"].as_str().unwrap().parse().unwrap();
+    assert!(total >= 120);
+    assert_eq!(page1["rows"].as_array().unwrap().len(), 100);
+    assert_eq!(page1["rows"][0], ws["journals"][0]);
+
+    let page2 = call(d.path(), "records", json!({"company_id": c, "kind": "journals", "offset": 100}));
+    assert_eq!(page2["count"], page1["count"]);
+    assert_eq!(page2["rows"].as_array().unwrap().len(), total - 100);
+
+    let date_filtered = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "journals", "from": "2026-10-08", "to": "2026-10-08"}),
+    );
+    let date_total: usize = date_filtered["count"].as_str().unwrap().parse().unwrap();
+    assert!(date_total < total);
+
+    let query_filtered = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "journals", "query": "BATCH-J-005"}),
+    );
+    assert_eq!(query_filtered["count"], "1");
+    assert_eq!(query_filtered["rows"][0]["source_id"], "batch-j-005");
+
+    // Sales record filtering by party_id, date, and query.
+    let setup = Store::open(d.path()).unwrap().state.accounting.core.setups[0].id.clone();
+    let draft = json!({"id":"rec-sale-draft","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"REC-SALE-01","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"Filter test","quotation":null,"lines":[{"id":"l1","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    call(d.path(), "draft_save", json!({"draft": draft, "expected_revision": null}));
+    call(
+        d.path(),
+        "draft_post",
+        json!({"id": "rec-sale-draft", "revision": "1", "request_key": "rec-sale-post"}),
+    );
+
+    let sales_all = call(d.path(), "records", json!({"company_id": c, "kind": "sales"}));
+    let sales_total: usize = sales_all["count"].as_str().unwrap().parse().unwrap();
+    assert!(sales_total >= 1);
+    let sales_party_miss = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "sales", "party_id": "NO-SUCH-CUSTOMER"}),
+    );
+    assert_eq!(sales_party_miss["count"], "0");
+    let sales_party_hit = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "sales", "party_id": "CU-A", "query": "rec-sale-01"}),
+    );
+    assert_eq!(sales_party_hit["count"], "1");
+}
+
+#[test]
+fn ledger_computes_opening_balance_and_running_balance_across_pages() {
+    use sarv_quote::accounting::{AccountClass, JournalKind, JournalLineInput, Money, PostCommand};
+
+    let (d, c, p) = fixture();
+    let mut store = Store::open(d.path()).unwrap();
+    let cash_id = store.state.accounting.core.setups[0]
+        .command
+        .mappings
+        .iter()
+        .find(|m| m.role == sarv_quote::core::CoreRole::Cash)
+        .unwrap()
+        .account_id
+        .clone();
+    let equity = store
+        .state
+        .accounting
+        .accounts
+        .iter()
+        .find(|a| !a.control && a.postable && a.classification == AccountClass::Equity)
+        .unwrap()
+        .id
+        .clone();
+    store
+        .change(|s| {
+            // Prior to `from` ("2026-10-05"): net +500 on cash.
+            s.accounting.post_banking(PostCommand {
+                company_id: c.clone(),
+                period_id: p.clone(),
+                date: "2026-10-02".into(),
+                source_id: "prior-cash".into(),
+                source_revision: 1,
+                event: "banking.deposit.v1".into(),
+                request_key: "prior-cash".into(),
+                actor: "test".into(),
+                reason: "Prior cash".into(),
+                kind: JournalKind::Manual,
+                lines: vec![
+                    JournalLineInput {
+                        account_id: cash_id.clone(),
+                        debit: Money::from_rials(500),
+                        credit: Money::ZERO,
+                        description: "prior debit".into(),
+                    },
+                    JournalLineInput {
+                        account_id: equity.clone(),
+                        debit: Money::ZERO,
+                        credit: Money::from_rials(500),
+                        description: "prior credit".into(),
+                    },
+                ],
+            })?;
+            // 110 lines inside ["2026-10-05", "2026-10-31"] so ledger spans 2 pages.
+            for i in 0..110 {
+                let key = format!("ledger-cash-{i:03}");
+                let (event, debit, credit) = if i % 2 == 0 {
+                    ("banking.deposit.v1", Money::from_rials(100 + i), Money::ZERO)
+                } else {
+                    ("banking.withdrawal.v1", Money::ZERO, Money::from_rials(50 + i))
+                };
+                s.accounting.post_banking(PostCommand {
+                    company_id: c.clone(),
+                    period_id: p.clone(),
+                    date: "2026-10-08".into(),
+                    source_id: key.clone(),
+                    source_revision: 1,
+                    event: event.into(),
+                    request_key: key,
+                    actor: "test".into(),
+                    reason: "Ledger paging".into(),
+                    kind: JournalKind::Manual,
+                    lines: vec![
+                        JournalLineInput {
+                            account_id: cash_id.clone(),
+                            debit,
+                            credit,
+                            description: "cash".into(),
+                        },
+                        JournalLineInput {
+                            account_id: equity.clone(),
+                            debit: credit,
+                            credit: debit,
+                            description: "offset".into(),
+                        },
+                    ],
+                })?;
+            }
+            Ok(())
+        })
+        .unwrap();
+    drop(store);
+
+    let page1 = call(
+        d.path(),
+        "ledger",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-10-05", "to": "2026-10-31", "offset": "0"}),
+    );
+    let rows1 = page1["rows"].as_array().unwrap();
+    assert_eq!(rows1.len(), 100);
+    let open1: i128 = page1["opening_balance"].as_str().unwrap().parse().unwrap();
+    assert!(open1 > 0);
+    let mut expected1 = open1;
+    for r in rows1 {
+        let deb: i128 = r["debit"].as_str().unwrap().parse().unwrap();
+        let cred: i128 = r["credit"].as_str().unwrap().parse().unwrap();
+        expected1 += deb - cred;
+    }
+    let last1: i128 = rows1.last().unwrap()["balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(last1, expected1);
+
+    let page2 = call(
+        d.path(),
+        "ledger",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-10-05", "to": "2026-10-31", "offset": "100"}),
+    );
+    let rows2 = page2["rows"].as_array().unwrap();
+    assert!(!rows2.is_empty());
+    let open2: i128 = page2["opening_balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(open2, last1);
+    let first2_deb: i128 = rows2[0]["debit"].as_str().unwrap().parse().unwrap();
+    let first2_cred: i128 = rows2[0]["credit"].as_str().unwrap().parse().unwrap();
+    let first2_bal: i128 = rows2[0]["balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(first2_bal, open2 + first2_deb - first2_cred);
+    let mut expected2 = open2;
+    for r in rows2 {
+        let deb: i128 = r["debit"].as_str().unwrap().parse().unwrap();
+        let cred: i128 = r["credit"].as_str().unwrap().parse().unwrap();
+        expected2 += deb - cred;
+    }
+    let last2: i128 = rows2.last().unwrap()["balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(last2, expected2);
+
+    let csv_res = call(
+        d.path(),
+        "ledger_csv",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-10-05", "to": "2026-10-31"}),
+    );
+    let content = csv_res["content"].as_str().unwrap();
+    assert!(content.starts_with('\u{feff}'));
+    let mut reader = csv::Reader::from_reader(content.trim_start_matches('\u{feff}').as_bytes());
+    assert_eq!(
+        reader.headers().unwrap().iter().collect::<Vec<_>>(),
+        vec!["Date", "Reference", "Description", "Debit IRR", "Credit IRR", "Balance IRR"]
+    );
+    let records: Vec<_> = reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(records.len(), rows1.len() + rows2.len());
+    assert!(records.len() > 100);
+    assert_eq!(&records.last().unwrap()[5], &last2.to_string());
+}
+
+#[test]
+fn balance_sheet_aging_and_ledger_csv_export_rows_and_neutralize_formulas() {
+    let (d, c, p) = fixture();
+
+    let mut party = ctx(&c, &p, "inj-party");
+    party["id"] = json!("SUP-INJ");
+    party["kind"] = json!("vendor");
+    party["name"] = json!("=HYPERLINK(\"x\")");
+    call(d.path(), "resource", party);
+
+    let mut order = ctx(&c, &p, "inj-po");
+    order["supplier_id"] = json!("SUP-INJ");
+    order["lines"] = json!([{"id":"po-line","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"1","unit_price":"50","line_discount":"0"}]);
+    let po = call(d.path(), "purchase_post", order);
+    let mut receipt = ctx(&c, &p, "inj-rec");
+    receipt["order_id"] = po["record_id"].clone();
+    let rec = call(d.path(), "receive_post", receipt);
+    let mut bill = ctx(&c, &p, "inj-bill");
+    bill["receipt_id"] = rec["record_id"].clone();
+    call(d.path(), "bill_post", bill);
+
+    let w = call(d.path(), "workspace", json!({"company_id": c}));
+    let cash_id = w["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| a["control"] == false && a["postable"] == true && a["classification"] == "Asset")
+        .unwrap()["id"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let equity_id = w["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| a["control"] == false && a["postable"] == true && a["classification"] == "Equity")
+        .unwrap()["id"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let mut j = ctx(&c, &p, "inj-journal");
+    j["lines"] = json!([
+        {"account_id": cash_id, "debit": "10", "credit": "0", "description": "=HYPERLINK(\"x\")"},
+        {"account_id": equity_id, "debit": "0", "credit": "10", "description": "offset"}
+    ]);
+    call(d.path(), "journal_post", j);
+
+    let rep = call(
+        d.path(),
+        "report",
+        json!({"company_id": c, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let bs_expected = rep["balance_sheet"]["assets"].as_array().unwrap().len()
+        + rep["balance_sheet"]["liabilities"].as_array().unwrap().len()
+        + rep["balance_sheet"]["equity"].as_array().unwrap().len();
+    let bs_csv = call(
+        d.path(),
+        "balance_sheet_csv",
+        json!({"company_id": c, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let bs_content = bs_csv["content"].as_str().unwrap();
+    assert!(!bs_content.is_empty());
+    assert!(bs_content.starts_with('\u{feff}'));
+    let mut bs_reader = csv::Reader::from_reader(bs_content.trim_start_matches('\u{feff}').as_bytes());
+    assert_eq!(
+        bs_reader.headers().unwrap().iter().collect::<Vec<_>>(),
+        vec!["Section", "Account code", "Account name", "Amount IRR"]
+    );
+    let bs_rows: Vec<_> = bs_reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(bs_rows.len(), bs_expected);
+
+    let aging_expected =
+        rep["aging"]["receivable"]["rows"].as_array().unwrap().len() + rep["aging"]["payable"]["rows"].as_array().unwrap().len();
+    let aging_csv = call(
+        d.path(),
+        "aging_csv",
+        json!({"company_id": c, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let aging_content = aging_csv["content"].as_str().unwrap();
+    assert!(!aging_content.is_empty());
+    assert!(aging_content.starts_with('\u{feff}'));
+    let mut aging_reader = csv::Reader::from_reader(aging_content.trim_start_matches('\u{feff}').as_bytes());
+    assert_eq!(
+        aging_reader.headers().unwrap().iter().collect::<Vec<_>>(),
+        vec![
+            "Side",
+            "Party",
+            "Not due IRR",
+            "1-30 days IRR",
+            "31-60 days IRR",
+            "61-90 days IRR",
+            "Over 90 days IRR",
+            "Total IRR"
+        ]
+    );
+    let aging_rows: Vec<_> = aging_reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(aging_rows.len(), aging_expected);
+    assert!(
+        aging_rows.iter().any(|r| &r[1] == "'=HYPERLINK(\"x\")"),
+        "expected neutralized formula in aging_csv: {aging_rows:?}"
+    );
+
+    let ledger_page = call(
+        d.path(),
+        "ledger",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-03-21", "to": "2026-10-08", "offset": "0"}),
+    );
+    let ledger_csv = call(
+        d.path(),
+        "ledger_csv",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let ledger_content = ledger_csv["content"].as_str().unwrap();
+    let mut ledger_reader = csv::Reader::from_reader(ledger_content.trim_start_matches('\u{feff}').as_bytes());
+    let ledger_rows: Vec<_> = ledger_reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(ledger_rows.len(), ledger_page["count"].as_str().unwrap().parse::<usize>().unwrap());
+    assert!(
+        ledger_rows.iter().any(|r| &r[2] == "'=HYPERLINK(\"x\")"),
+        "expected neutralized formula in ledger_csv: {ledger_rows:?}"
+    );
+}
+#[test]
+fn fulfill_post_returns_invoice_id_appearing_in_payment_options() {
+    let (d, c, p) = fixture();
+    let s = Store::open(d.path()).unwrap();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    let draft = json!({
+        "id": "inv-id-draft",
+        "revision": "0",
+        "company_id": c,
+        "period_id": p,
+        "setup_id": setup,
+        "customer_id": "CU-A",
+        "reference": "ORD-INV-ID",
+        "document_date": "2026-10-08",
+        "financial_date": "2026-10-08",
+        "date_display": "Iso",
+        "display_unit": "Rial",
+        "document_discount": "0",
+        "supplied_total": "0",
+        "reason": "Invoice id test",
+        "quotation": null,
+        "lines": [{
+            "id": "inv-id-line",
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "unit_id": "PIECE",
+            "quantity": "1",
+            "unit_price": "20",
+            "line_discount": "0",
+            "price_reference": "Manual",
+            "price_date": "2026-10-08",
+            "override_reason": ""
+        }]
+    });
+    let preview = call(d.path(), "draft_preview", json!({"draft": draft}));
+    let mut draft = draft;
+    draft["supplied_total"] = preview["supplied_total"].clone();
+    assert_eq!(
+        call(d.path(), "draft_save", json!({"draft": draft, "expected_revision": null})),
+        "1"
+    );
+    let order = call(
+        d.path(),
+        "draft_post",
+        json!({"id": "inv-id-draft", "revision": "1", "request_key": "inv-id-post"}),
+    );
+    let mut fulfill = ctx(&c, &p, "inv-id-fulfill");
+    fulfill["order_id"] = order["record_id"].clone();
+    let fulfilled = call(d.path(), "fulfill_post", fulfill);
+    let invoice_id = fulfilled["invoice_id"].as_str().unwrap_or("");
+    assert!(!invoice_id.is_empty(), "fulfill_post must return non-empty invoice_id: {fulfilled}");
+    let options = call(
+        d.path(),
+        "payment_options",
+        json!({"company_id": c, "side": "receive", "party_id": "CU-A"}),
+    );
+    let items = options["items"].as_array().unwrap();
+    assert!(
+        items.iter().any(|item| item["id"].as_str() == Some(invoice_id)),
+        "payment_options for CU-A must include returned invoice_id {invoice_id}: {items:?}"
+    );
 }

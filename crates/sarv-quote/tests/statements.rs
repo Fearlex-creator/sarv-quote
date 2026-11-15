@@ -37,7 +37,10 @@ fn receive(s: &AccountingState, key: &str, open_item: &str, amount: i64) -> Paym
         party_id: "CU-A".into(),
         funds_role: CoreRole::Bank,
         reference: key.into(),
-        allocations: vec![PaymentAllocation { open_item_id: open_item.into(), amount: irr(amount) }],
+        allocations: vec![PaymentAllocation {
+            open_item_id: open_item.into(),
+            amount: irr(amount),
+        }],
         advance_amount: irr(0),
     })
 }
@@ -89,7 +92,11 @@ fn rows_are_per_party_and_partial_payments_reduce_the_remainder() {
     let mut s = books();
     s.post_payment_command(receive(&s, "AGE1", "AR-125", 100)).unwrap();
     let a = age(&s, PaymentSide::Receive, "2026-05-02"); // 31 days overdue
-    let by: Vec<_> = a.rows.iter().map(|r| (r.party_id.as_str(), r.days_31_60.rials(), r.total.rials())).collect();
+    let by: Vec<_> = a
+        .rows
+        .iter()
+        .map(|r| (r.party_id.as_str(), r.days_31_60.rials(), r.total.rials()))
+        .collect();
     assert_eq!(by, [("CU-A", 25, 25), ("CU-B", 75, 75)]);
     assert_eq!(a.totals.total.rials(), 100);
     assert_eq!(a.rows.iter().map(|r| r.total.rials()).sum::<i64>(), a.totals.total.rials());
@@ -105,20 +112,37 @@ fn rows_are_per_party_and_partial_payments_reduce_the_remainder() {
 fn balance_sheet_satisfies_the_accounting_identity_and_matches_the_ledger() {
     let s = books();
     let sheet = balance_sheet(&s, &company(&s), "9999-12-31").unwrap();
-    assert!(sheet.balanced, "assets {:?} = liabilities {:?} + equity {:?}", sheet.total_assets, sheet.total_liabilities, sheet.total_equity);
+    assert!(
+        sheet.balanced,
+        "assets {:?} = liabilities {:?} + equity {:?}",
+        sheet.total_assets, sheet.total_liabilities, sheet.total_equity
+    );
     assert!(sheet.total_assets.rials() > 0);
-    assert_eq!(sheet.assets.iter().map(|r| r.amount.rials()).sum::<i64>(), sheet.total_assets.rials());
-    assert_eq!(sheet.liabilities.iter().map(|r| r.amount.rials()).sum::<i64>(), sheet.total_liabilities.rials());
+    assert_eq!(
+        sheet.assets.iter().map(|r| r.amount.rials()).sum::<i64>(),
+        sheet.total_assets.rials()
+    );
+    assert_eq!(
+        sheet.liabilities.iter().map(|r| r.amount.rials()).sum::<i64>(),
+        sheet.total_liabilities.rials()
+    );
     // Independent recomputation straight from the trial balance and account classes.
     let tb = s.trial_balance(&company(&s), "9999-12-31").unwrap();
     let assets: i64 = tb
         .rows
         .iter()
-        .filter(|r| s.accounts.iter().any(|a| a.id == r.account_id && a.classification == AccountClass::Asset))
+        .filter(|r| {
+            s.accounts
+                .iter()
+                .any(|a| a.id == r.account_id && a.classification == AccountClass::Asset)
+        })
         .map(|r| r.debit.rials() - r.credit.rials())
         .sum();
     assert_eq!(assets, sheet.total_assets.rials());
-    assert!(sheet.assets.iter().all(|r| r.amount != Money::ZERO), "zero-balance accounts are omitted");
+    assert!(
+        sheet.assets.iter().all(|r| r.amount != Money::ZERO),
+        "zero-balance accounts are omitted"
+    );
 }
 
 #[test]
@@ -131,7 +155,8 @@ fn a_customer_receipt_moves_value_between_assets_without_changing_the_total() {
     assert_eq!(after.total_assets, before.total_assets, "bank up 125, receivables down 125");
     assert_eq!(after.total_liabilities, before.total_liabilities);
     let bank = s.core.openings[0].frozen_setup.account_id(CoreRole::Bank).unwrap();
-    let amount = |sheet: &sarv_quote::statements::BalanceSheet| sheet.assets.iter().find(|r| r.account_id == bank).map_or(0, |r| r.amount.rials());
+    let amount =
+        |sheet: &sarv_quote::statements::BalanceSheet| sheet.assets.iter().find(|r| r.account_id == bank).map_or(0, |r| r.amount.rials());
     assert_eq!(amount(&after), amount(&before) + 125);
     // As of before the opening date there are no posted balances to report.
     assert!(balance_sheet(&s, &company(&s), "2026-03-20").map_or(true, |b| b.total_assets == Money::ZERO));
@@ -145,8 +170,21 @@ fn report_action_carries_both_statements() {
     let mut store = Store::open(dir.path()).unwrap();
     let accounting = books();
     let company = company(&accounting);
-    store.change(|s| { *s = State { accounting, ..State::default() }; Ok(()) }).unwrap();
-    let r = dispatch_in(&mut store, "report", json!({"company_id": company, "from": "2026-03-21", "to": "2026-05-02"})).unwrap();
+    store
+        .change(|s| {
+            *s = State {
+                accounting,
+                ..State::default()
+            };
+            Ok(())
+        })
+        .unwrap();
+    let r = dispatch_in(
+        &mut store,
+        "report",
+        json!({"company_id": company, "from": "2026-03-21", "to": "2026-05-02"}),
+    )
+    .unwrap();
     assert_eq!(r["balance_sheet"]["balanced"], true);
     assert_eq!(r["aging"]["receivable"]["side"], "receivable");
     assert_eq!(r["aging"]["receivable"]["totals"]["days_31_60"], "200");

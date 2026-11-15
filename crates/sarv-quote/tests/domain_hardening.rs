@@ -3,9 +3,7 @@ use sarv_quote::{domain::*, imports::*};
 
 fn prepared(age: i64) -> State {
     let source = (Utc::now() - Duration::days(age)).to_rfc3339();
-    let input = format!(
-        "code,name,measure,price,currency,source_at,aliases\nSKU-۱,کالای آزمایشی,عدد,۱۲٫۳,toman,{source},كالا|آزمایش\n"
-    );
+    let input = format!("code,name,measure,price,currency,source_at,aliases\nSKU-۱,کالای آزمایشی,عدد,۱۲٫۳,toman,{source},كالا|آزمایش\n");
     let mut state = State::default();
     accept_catalog(&mut state, catalog_csv(&input, "قیمت آزمایشی").unwrap()).unwrap();
     state.draft.customer = "مشتری آزمایشی".into();
@@ -86,10 +84,7 @@ fn optional_metadata_preserves_legacy_serialization_bytes() {
     assert_eq!(serde_json::to_vec(&restored).unwrap(), original);
     assert!(restored.draft.quote_date.is_empty());
     restored.validate().unwrap();
-    assert_eq!(
-        Draft::default().quote_date,
-        Utc::now().format("%Y-%m-%d").to_string()
-    );
+    assert_eq!(Draft::default().quote_date, Utc::now().format("%Y-%m-%d").to_string());
 }
 
 #[test]
@@ -102,14 +97,11 @@ fn stale_ack_is_required_at_approval_but_archives_do_not_age_invalid() {
     state.quotes[0].stale_ack = false;
     assert!(state.validate().is_err());
     let source = state.quotes[0].lines[0].source_at.clone();
-    state.quotes[0].approved_at =
-        (chrono::DateTime::parse_from_rfc3339(&source).unwrap() + Duration::days(1)).to_rfc3339();
+    state.quotes[0].approved_at = (chrono::DateTime::parse_from_rfc3339(&source).unwrap() + Duration::days(1)).to_rfc3339();
     state.validate().unwrap();
     assert!(stale(&source));
     assert!(!stale_at(&source, &state.quotes[0].approved_at));
-    state.quotes[0].approved_at = (chrono::DateTime::parse_from_rfc3339(&source).unwrap()
-        - Duration::seconds(1))
-    .to_rfc3339();
+    state.quotes[0].approved_at = (chrono::DateTime::parse_from_rfc3339(&source).unwrap() - Duration::seconds(1)).to_rfc3339();
     assert!(state.validate().is_err());
 }
 
@@ -139,14 +131,8 @@ fn malformed_inputs_cannot_bypass_review_using_a_chosen_code() {
 #[test]
 fn exact_money_boundaries_and_sum_overflow_never_mutate_approval() {
     for amount in [1, 9, 10, 11, 123, MAX_MONEY - 1, MAX_MONEY] {
-        assert_eq!(
-            Unit::Toman.amount(&Unit::Toman.number(amount)).unwrap(),
-            amount
-        );
-        assert_eq!(
-            Unit::Rial.amount(&Unit::Rial.number(amount)).unwrap(),
-            amount
-        );
+        assert_eq!(Unit::Toman.amount(&Unit::Toman.number(amount)).unwrap(), amount);
+        assert_eq!(Unit::Rial.amount(&Unit::Rial.number(amount)).unwrap(), amount);
     }
     assert!(Unit::Rial.amount(&(MAX_MONEY + 1).to_string()).is_err());
     assert!(Unit::Toman.amount("900000000000000.1").is_err());
@@ -174,9 +160,7 @@ fn revision_chains_reject_missing_versions_and_reversed_approval_time() {
     assert!(state.validate().is_err());
     state = valid;
     state.quotes[1].approved_at =
-        (chrono::DateTime::parse_from_rfc3339(&state.quotes[0].approved_at).unwrap()
-            - Duration::seconds(1))
-        .to_rfc3339();
+        (chrono::DateTime::parse_from_rfc3339(&state.quotes[0].approved_at).unwrap() - Duration::seconds(1)).to_rfc3339();
     assert!(state.validate().is_err());
 }
 

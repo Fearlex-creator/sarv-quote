@@ -61,11 +61,7 @@ struct Preferences {
     digits: DisplayDigits,
 }
 fn unit_key(unit: MoneyUnit) -> &'static str {
-    if unit == MoneyUnit::Rial {
-        "rial"
-    } else {
-        "toman"
-    }
+    if unit == MoneyUnit::Rial { "rial" } else { "toman" }
 }
 fn date(value: &str, display: DateDisplay) -> Result<String> {
     crate::core::civil_date(value)?;
@@ -131,10 +127,7 @@ fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
         "price_date",
         "override_reason",
     ];
-    let return_format = report
-        .rows
-        .iter()
-        .any(|row| row.fields.contains_key("return_id"));
+    let return_format = report.rows.iter().any(|row| row.fields.contains_key("return_id"));
     if return_format {
         fields.extend([
             "record_id",
@@ -237,10 +230,7 @@ fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
     rows.push(&full);
     for row in rows {
         let money = |m: Option<Money>| m.map(|m| m.rials().to_string()).unwrap_or_default();
-        let display = |m: Option<Money>| {
-            m.map(|m| prefs.digits.format(m.display(prefs.unit)))
-                .unwrap_or_default()
-        };
+        let display = |m: Option<Money>| m.map(|m| prefs.digits.format(m.display(prefs.unit))).unwrap_or_default();
         let mut cells = common.clone();
         cells.extend([
             safe_cell(&row.kind),
@@ -251,9 +241,7 @@ fn render_csv(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
             safe_cell(&row.label.replace(['\u{2066}', '\u{2069}'], "")),
             row.quantity.map(|q| q.to_string()).unwrap_or_default(),
             row.base_quantity.map(|q| q.to_string()).unwrap_or_default(),
-            row.remaining_quantity
-                .map(|q| q.to_string())
-                .unwrap_or_default(),
+            row.remaining_quantity.map(|q| q.to_string()).unwrap_or_default(),
             money(row.amount),
             money(row.price),
             display(row.amount),
@@ -328,18 +316,9 @@ fn localized_label(value: &str, digits: DisplayDigits) -> String {
 fn human_line(row: &Row, prefs: Preferences) -> String {
     let mut line = if matches!(
         row.kind.as_str(),
-        "order_line"
-            | "receipt_line"
-            | "bill_match"
-            | "receipt_remaining"
-            | "purchase_return_line"
-            | "supplier_credit_line"
+        "order_line" | "receipt_line" | "bill_match" | "receipt_remaining" | "purchase_return_line" | "supplier_credit_line"
     ) {
-        format!(
-            "{} • {}",
-            ltr(&row.id),
-            localized_label(&row.label, prefs.digits)
-        )
+        format!("{} • {}", ltr(&row.id), localized_label(&row.label, prefs.digits))
     } else {
         localized_label(&row.label, prefs.digits)
     };
@@ -350,10 +329,7 @@ fn human_line(row: &Row, prefs: Preferences) -> String {
             ltr(&prefs.digits.format(qty(row.base_quantity.unwrap_or(q))))
         ));
         if let Some(remaining) = row.remaining_quantity {
-            line.push_str(&format!(
-                " • باقی‌مانده {}",
-                ltr(&prefs.digits.format(qty(remaining)))
-            ));
+            line.push_str(&format!(" • باقی‌مانده {}", ltr(&prefs.digits.format(qty(remaining)))));
         }
     }
     if let Some(price) = row.price {
@@ -372,8 +348,7 @@ fn human_line(row: &Row, prefs: Preferences) -> String {
             ltr(&prefs.digits.format(amount.rials()))
         ));
     }
-    if let (Some(ledger), Some(detail), Some(difference)) = (row.ledger, row.detail, row.difference)
-    {
+    if let (Some(ledger), Some(detail), Some(difference)) = (row.ledger, row.detail, row.difference) {
         line.push_str(&format!(
             "\nدفتر کل {} • جزئیات {} • اختلاف {} {}",
             ltr(&prefs.digits.format(ledger.display(prefs.unit))),
@@ -393,16 +368,12 @@ fn human_line(row: &Row, prefs: Preferences) -> String {
 
 fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
     let displayed = date(&report.as_of, prefs.dates)?;
-    let jalali = date(&report.as_of, DateDisplay::Jalali)
-        .unwrap_or_else(|_| "خارج از دامنهٔ شمسی؛ میلادی معتبر است".into());
+    let jalali = date(&report.as_of, DateDisplay::Jalali).unwrap_or_else(|_| "خارج از دامنهٔ شمسی؛ میلادی معتبر است".into());
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
     // Preserve historical v1 procurement rendering while v2 return documents
     // use their own bundled OFL fonts even in a headless worker process.
-    let bundled = report
-        .rows
-        .iter()
-        .any(|row| row.fields.contains_key("return_id"));
+    let bundled = report.rows.iter().any(|row| row.fields.contains_key("return_id"));
     let map = if bundled {
         crate::pdf_fonts::font_map()
     } else {
@@ -416,13 +387,7 @@ fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
     let heading = |page: usize| -> Result<f64> {
         cr.set_source_rgb(0.08, 0.12, 0.16);
         let mut y = 32.0;
-        y += draw(
-            &cr,
-            &map,
-            &format!("{} • {}", report.title, report.company),
-            y,
-            15,
-        )? + 6.0;
+        y += draw(&cr, &map, &format!("{} • {}", report.title, report.company), y, 15)? + 6.0;
         let header_lines = [
             format!("شناسهٔ شرکت {}", ltr(&report.company_id)),
             format!(
@@ -438,10 +403,7 @@ fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
                 ltr(&prefs.digits.format(&displayed)),
                 ltr(&prefs.digits.format(&jalali))
             ),
-            format!(
-                "تاریخ مالی میلادی {}",
-                ltr(&prefs.digits.format(&report.as_of))
-            ),
+            format!("تاریخ مالی میلادی {}", ltr(&prefs.digits.format(&report.as_of))),
             format!(
                 "پایه IRR • واحد {} • سیاست {} • صفحه {}",
                 unit_key(prefs.unit),
@@ -477,13 +439,7 @@ fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
             )? + 3.0;
         }
         y += 7.0;
-        y += draw(
-            &cr,
-            &map,
-            "کالا / حساب / منبع • مقدار و ارزش دقیق • جزئیات و اختلاف کنترل",
-            y,
-            10,
-        )? + 12.0;
+        y += draw(&cr, &map, "کالا / حساب / منبع • مقدار و ارزش دقیق • جزئیات و اختلاف کنترل", y, 10)? + 12.0;
         ensure!(y < 620.0, "سربرگ در صفحه جا نمی‌شود؛ CSV را انتخاب کنید");
         Ok(y)
     };
@@ -499,10 +455,7 @@ fn render_pdf(report: &Report, prefs: Preferences, path: &Path) -> Result<()> {
             page += 1;
             y = heading(page)?;
         }
-        ensure!(
-            y + height <= 778.0,
-            "ردیف در یک صفحه جا نمی‌شود؛ CSV را انتخاب کنید"
-        );
+        ensure!(y + height <= 778.0, "ردیف در یک صفحه جا نمی‌شود؛ CSV را انتخاب کنید");
         cr.set_source_rgb(0.08, 0.12, 0.16);
         draw(&cr, &map, &value, y, 9)?;
         y += height;
@@ -540,11 +493,7 @@ fn item_row(row: &mut Row, resources: &RegisterResources, item: &CoreItem) -> Re
     field(row, "base_unit_name", &unit.name);
     Ok(())
 }
-fn pack_label(
-    resources: &RegisterResources,
-    item: &CoreItem,
-    selected_unit: &str,
-) -> Result<String> {
+fn pack_label(resources: &RegisterResources, item: &CoreItem, selected_unit: &str) -> Result<String> {
     if selected_unit == item.base_unit_id {
         return Ok(String::new());
     }
@@ -579,35 +528,14 @@ fn item<'a>(resources: &'a RegisterResources, id: &str) -> Result<&'a CoreItem> 
         .find(|x| x.id == id)
         .ok_or_else(|| anyhow::anyhow!("کالای تاریخی گزارش پیدا نشد"))
 }
-fn warehouse(
-    row: &mut Row,
-    resources: &RegisterResources,
-    id: &str,
-    target: bool,
-) -> Result<String> {
+fn warehouse(row: &mut Row, resources: &RegisterResources, id: &str, target: bool) -> Result<String> {
     let w = resources
         .warehouses
         .iter()
         .find(|x| x.id == id)
         .ok_or_else(|| anyhow::anyhow!("انبار تاریخی گزارش پیدا نشد"))?;
-    field(
-        row,
-        if target {
-            "target_warehouse_id"
-        } else {
-            "warehouse_id"
-        },
-        id,
-    );
-    field(
-        row,
-        if target {
-            "target_warehouse_name"
-        } else {
-            "warehouse_name"
-        },
-        &w.name,
-    );
+    field(row, if target { "target_warehouse_id" } else { "warehouse_id" }, id);
+    field(row, if target { "target_warehouse_name" } else { "warehouse_name" }, &w.name);
     Ok(w.name.clone())
 }
 fn unit(row: &mut Row, resources: &RegisterResources, id: &str) -> Result<String> {
@@ -647,11 +575,7 @@ fn source_row(record: &ProcurementRecord, kind: &str, id: &str) -> Row {
         ..Row::default()
     }
 }
-fn source_receipt<'a>(
-    state: &'a AccountingState,
-    company_id: &str,
-    line_id: &str,
-) -> Result<(&'a CoreItem, String, String, String)> {
+fn source_receipt<'a>(state: &'a AccountingState, company_id: &str, line_id: &str) -> Result<(&'a CoreItem, String, String, String)> {
     for record in &state.procurement.records {
         if record.command.context().company_id != company_id {
             continue;
@@ -661,10 +585,7 @@ fn source_receipt<'a>(
         {
             let order = state.procurement_document(&receipt.order_id)?;
             if let ProcurementData::Order(order_data) = &order.data
-                && let Some(order_line) = order_data
-                    .lines
-                    .iter()
-                    .find(|l| l.input.id == line.order_line_id)
+                && let Some(order_line) = order_data.lines.iter().find(|l| l.input.id == line.order_line_id)
             {
                 return Ok((
                     &order_line.item,
@@ -720,11 +641,7 @@ fn selected_master_snapshot(resources: &RegisterResources, rows: &[Row]) -> serd
 }
 /// A credit identity selects its own presentation; resolving a physical return never
 /// guesses a credit, and an unbilled return never acquires one.
-fn resolve_document<'a>(
-    state: &'a AccountingState,
-    company: &str,
-    id: &str,
-) -> Result<(&'a ProcurementRecord, bool)> {
+fn resolve_document<'a>(state: &'a AccountingState, company: &str, id: &str) -> Result<(&'a ProcurementRecord, bool)> {
     let record = state
         .procurement
         .records
@@ -735,10 +652,7 @@ fn resolve_document<'a>(
             if value.return_id == id || value.credit_id.as_deref() == Some(id))
         })
         .ok_or_else(|| anyhow::anyhow!("سند خرید، برگشت یا اعتبار پیدا نشد"))?;
-    ensure!(
-        record.command.context().company_id == company,
-        "سند متعلق به شرکت انتخاب‌شده نیست"
-    );
+    ensure!(record.command.context().company_id == company, "سند متعلق به شرکت انتخاب‌شده نیست");
     let credit = matches!(&record.data, ProcurementData::Return(value) if value.credit_id.as_deref() == Some(id));
     Ok((record, credit))
 }
@@ -796,11 +710,7 @@ fn return_rows<'a>(
         );
         field(metadata, "credit_id", id);
         field(metadata, "credit_state", "posted");
-        field(
-            metadata,
-            "credit_reference",
-            input.credit_reference.as_deref().unwrap_or(""),
-        );
+        field(metadata, "credit_reference", input.credit_reference.as_deref().unwrap_or(""));
     }
     ensure!(
         posted.return_state == PurchaseReturnState::Returned,
@@ -827,10 +737,7 @@ fn return_rows<'a>(
     }
     // Evaluate original allocation cursors at this record, never at today's cursor.
     let mut at_record = state.clone();
-    at_record
-        .procurement
-        .records
-        .retain(|r| r.sequence <= record.sequence);
+    at_record.procurement.records.retain(|r| r.sequence <= record.sequence);
     let mut remaining_payable = None;
     if let Some(bill_id) = &posted.bill_id {
         let bill = state.procurement_document(bill_id)?;
@@ -848,16 +755,17 @@ fn return_rows<'a>(
         remaining_payable = Some(remaining);
         field(metadata, "bill_id", bill_id);
         field(metadata, "remaining_payable_irr", remaining.rials());
-        metadata.label.push_str(&format!("\nفاکتور اصلی {} • ماندهٔ همان فاکتور پس از این رویداد {} IRR • بدهکار پرداختنی / بستانکار موجودی", source_code(bill_id), ltr(&remaining.rials().to_string())));
+        metadata.label.push_str(&format!(
+            "\nفاکتور اصلی {} • ماندهٔ همان فاکتور پس از این رویداد {} IRR • بدهکار پرداختنی / بستانکار موجودی",
+            source_code(bill_id),
+            ltr(&remaining.rials().to_string())
+        ));
         related.push(bill);
     }
     for line in &posted.lines {
-        let (original_item, wh_id, supplier, receipt_id) =
-            source_receipt(state, company, &line.receipt_line_id)?;
+        let (original_item, wh_id, supplier, receipt_id) = source_receipt(state, company, &line.receipt_line_id)?;
         ensure!(
-            original_item.id == line.item_id
-                && wh_id == line.warehouse_id
-                && supplier == posted.supplier_id,
+            original_item.id == line.item_id && wh_id == line.warehouse_id && supplier == posted.supplier_id,
             "نسب برگشت با رسید اصلی ناسازگار است"
         );
         let source = state.procurement_document(&receipt_id)?;
@@ -899,10 +807,8 @@ fn return_rows<'a>(
             ltr(&cursor.remaining_value.rials().to_string())
         ));
         if let Some(id) = &line.bill_line_id {
-            row.label.push_str(&format!(
-                "\nردیف خاص فاکتور {} • برگشت فقط از تخصیص همان ردیف",
-                source_code(id)
-            ));
+            row.label
+                .push_str(&format!("\nردیف خاص فاکتور {} • برگشت فقط از تخصیص همان ردیف", source_code(id)));
             field(&mut row, "bill_line_id", id);
         }
         row.quantity = Some(line.quantity_thousandths);
@@ -933,16 +839,8 @@ fn return_rows<'a>(
             anyhow::bail!("فرمان رسید اصلی ناسازگار است")
         };
         field(&mut row, "receipt_reference", &source_input.reference);
-        field(
-            &mut row,
-            "receipt_document_date",
-            &source_input.document_date,
-        );
-        field(
-            &mut row,
-            "receipt_financial_date",
-            &source_input.context.date,
-        );
+        field(&mut row, "receipt_document_date", &source_input.document_date);
+        field(&mut row, "receipt_financial_date", &source_input.context.date);
         row.label.push_str(&format!(
             "\nمرجع رسید {} • تاریخ سند رسید میلادی {} • تاریخ مالی رسید میلادی {}",
             source_code(&source_input.reference),
@@ -966,21 +864,9 @@ fn return_rows<'a>(
         }
         field(&mut row, "receipt_line_id", &line.receipt_line_id);
         field(&mut row, "source_line_id", &line.receipt_line_id);
-        field(
-            &mut row,
-            "original_quantity_thousandths",
-            cursor.original_quantity_thousandths,
-        );
-        field(
-            &mut row,
-            "original_value_irr",
-            cursor.original_value.rials(),
-        );
-        field(
-            &mut row,
-            "remaining_value_irr",
-            cursor.remaining_value.rials(),
-        );
+        field(&mut row, "original_quantity_thousandths", cursor.original_quantity_thousandths);
+        field(&mut row, "original_value_irr", cursor.original_value.rials());
+        field(&mut row, "remaining_value_irr", cursor.remaining_value.rials());
         field(
             &mut row,
             "allocation_basis",
@@ -1014,30 +900,18 @@ fn return_rows<'a>(
 fn document_report(state: &AccountingState, company_id: &str, document_id: &str) -> Result<Report> {
     let (record, credit_view) = resolve_document(state, company_id, document_id)?;
     let context = record.command.context();
-    ensure!(
-        context.company_id == company_id,
-        "سند متعلق به شرکت انتخاب‌شده نیست"
-    );
+    ensure!(context.company_id == company_id, "سند متعلق به شرکت انتخاب‌شده نیست");
     let mut resources = state.procurement_resources(company_id)?;
     if let ProcurementData::Return(posted) = &record.data {
         for line in &posted.lines {
-            let (original, _, _, receipt_id) =
-                source_receipt(state, company_id, &line.receipt_line_id)?;
-            if let Some(item) = resources
-                .items
-                .iter_mut()
-                .find(|item| item.id == original.id)
-            {
+            let (original, _, _, receipt_id) = source_receipt(state, company_id, &line.receipt_line_id)?;
+            if let Some(item) = resources.items.iter_mut().find(|item| item.id == original.id) {
                 *item = original.clone();
             }
             let receipt = state.procurement_document(&receipt_id)?;
             if let ProcurementData::Receive(receipt) = &receipt.data
-                && let ProcurementData::Order(order) =
-                    &state.procurement_document(&receipt.order_id)?.data
-                && let Some(party) = resources
-                    .parties
-                    .iter_mut()
-                    .find(|party| party.id == order.supplier.id)
+                && let ProcurementData::Order(order) = &state.procurement_document(&receipt.order_id)?.data
+                && let Some(party) = resources.parties.iter_mut().find(|party| party.id == order.supplier.id)
             {
                 *party = order.supplier.clone();
             }
@@ -1050,9 +924,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
         ProcurementData::Bill(_) => ("supplier_bill", "فاکتور خرید"),
         ProcurementData::Transfer(_) => ("warehouse_transfer", "انتقال داخلی انبار"),
         ProcurementData::Return(_) if credit_view => ("supplier_credit", "اعتبار تأمین‌کننده"),
-        ProcurementData::Return(v) if v.credit_id.is_none() => {
-            ("purchase_return", "برگشت رسید انبار")
-        }
+        ProcurementData::Return(v) if v.credit_id.is_none() => ("purchase_return", "برگشت رسید انبار"),
         ProcurementData::Return(_) => ("purchase_return", "برگشت از خرید"),
     };
     let mut report = Report {
@@ -1102,11 +974,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
     field(
         &mut metadata,
         "financial_effect_kind",
-        if record.journal_id.is_some() {
-            "journal"
-        } else {
-            "nonfinancial"
-        },
+        if record.journal_id.is_some() { "journal" } else { "nonfinancial" },
     );
     field(
         &mut metadata,
@@ -1156,11 +1024,9 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             metadata.reference = input.reference.clone();
             field(&mut metadata, "document_date", &input.document_date);
             let name = party(&mut metadata, &resources, &input.supplier_id)?;
-            metadata.label.push_str(&format!(
-                " • تأمین‌کننده {} • تاریخ سند میلادی {}",
-                name,
-                ltr(&input.document_date)
-            ));
+            metadata
+                .label
+                .push_str(&format!(" • تأمین‌کننده {} • تاریخ سند میلادی {}", name, ltr(&input.document_date)));
             for line in &posted.lines {
                 let mut row = source_row(record, "order_line", &line.input.id);
                 item_row(&mut row, &resources, &line.item)?;
@@ -1192,16 +1058,8 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
                 field(&mut row, "document_id", &record.id);
                 field(&mut row, "source_line_id", &line.input.id);
                 field(&mut row, "gross_irr", line.gross.rials());
-                field(
-                    &mut row,
-                    "line_discount_irr",
-                    line.input.line_discount.rials(),
-                );
-                field(
-                    &mut row,
-                    "document_discount_irr",
-                    line.document_discount.rials(),
-                );
+                field(&mut row, "line_discount_irr", line.input.line_discount.rials());
+                field(&mut row, "document_discount_irr", line.document_discount.rials());
                 field(&mut row, "price_reference", &line.input.price_reference);
                 field(&mut row, "price_date", &line.input.price_date);
                 if let Some(reason) = &line.input.override_reason {
@@ -1260,8 +1118,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
                     u,
                     ltr(&line.order_line_id)
                 );
-                row.label
-                    .push_str(&pack_label(&resources, &original.item, &selected.unit_id)?);
+                row.label.push_str(&pack_label(&resources, &original.item, &selected.unit_id)?);
                 row.quantity = Some(selected.quantity_thousandths);
                 row.base_quantity = Some(line.quantity_thousandths);
                 row.amount = Some(line.value);
@@ -1284,10 +1141,14 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
             field(&mut metadata, "document_date", &input.document_date);
             field(&mut metadata, "due_date", &input.due_date);
             let name = party(&mut metadata, &resources, &input.supplier_id)?;
-            metadata.label.push_str(&format!(" • تأمین‌کننده {} • تاریخ سند میلادی {} • سررسید میلادی {} • کالا پیش‌تر دریافت شده؛ بدون دریافت دوباره",name,ltr(&input.document_date),ltr(&input.due_date)));
+            metadata.label.push_str(&format!(
+                " • تأمین‌کننده {} • تاریخ سند میلادی {} • سررسید میلادی {} • کالا پیش‌تر دریافت شده؛ بدون دریافت دوباره",
+                name,
+                ltr(&input.document_date),
+                ltr(&input.due_date)
+            ));
             for line in &posted.lines {
-                let (i, wh_id, _, source) =
-                    source_receipt(state, company_id, &line.receipt_line_id)?;
+                let (i, wh_id, _, source) = source_receipt(state, company_id, &line.receipt_line_id)?;
                 let mut row = source_row(record, "bill_match", &line.id);
                 item_row(&mut row, &resources, i)?;
                 let wh = warehouse(&mut row, &resources, &wh_id, false)?;
@@ -1338,8 +1199,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
                 to,
                 u
             );
-            row.label
-                .push_str(&pack_label(&resources, i, &input.unit_id)?);
+            row.label.push_str(&pack_label(&resources, i, &input.unit_id)?);
             row.quantity = Some(input.quantity_thousandths);
             row.base_quantity = Some(posted.quantity_thousandths);
             row.amount = Some(posted.value);
@@ -1408,11 +1268,7 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
         field(
             &mut row,
             "direction",
-            if movement.direction == StockDirection::In {
-                "in"
-            } else {
-                "out"
-            },
+            if movement.direction == StockDirection::In { "in" } else { "out" },
         );
         field(&mut row, "source_line_id", &movement.source_line_id);
         row.reference = movement.source_line_id.clone();
@@ -1426,20 +1282,12 @@ fn document_report(state: &AccountingState, company_id: &str, document_id: &str)
     )?;
     Ok(report)
 }
-fn source_event(
-    state: &AccountingState,
-    company_id: &str,
-    source: &str,
-    row_id: &str,
-    receipt: bool,
-) -> Result<String> {
+fn source_event(state: &AccountingState, company_id: &str, source: &str, row_id: &str, receipt: bool) -> Result<String> {
     if let Some(record) = state.procurement.records.iter().find(|r| {
         r.command.context().company_id == company_id
             && r.command.context().source_id == source
             && match &r.data {
-                ProcurementData::Receive(data) if receipt => {
-                    data.lines.iter().any(|line| line.id == row_id)
-                }
+                ProcurementData::Receive(data) if receipt => data.lines.iter().any(|line| line.id == row_id),
                 ProcurementData::Bill(_) if !receipt => r.id == row_id,
                 _ => false,
             }
@@ -1462,17 +1310,12 @@ fn source_event(
         .ok_or_else(|| anyhow::anyhow!("شناسهٔ رویداد منبع گزارش پیدا نشد؛ مرجع قابل حدس نیست"))?;
     Ok(opening.journal_id.clone())
 }
-fn receipt_document_date<'a>(
-    state: &'a AccountingState,
-    company_id: &str,
-    line_id: &str,
-) -> Result<&'a str> {
+fn receipt_document_date<'a>(state: &'a AccountingState, company_id: &str, line_id: &str) -> Result<&'a str> {
     for record in &state.procurement.records {
         if record.command.context().company_id != company_id {
             continue;
         }
-        if let (ProcurementCommand::Receive(input), ProcurementData::Receive(posted)) =
-            (&record.command, &record.data)
+        if let (ProcurementCommand::Receive(input), ProcurementData::Receive(posted)) = (&record.command, &record.data)
             && posted.lines.iter().any(|l| l.id == line_id)
         {
             return Ok(&input.document_date);
@@ -1620,16 +1463,8 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         field(&mut row, "document_date", document_date);
         field(&mut row, "availability_date", &receipt.date);
         field(&mut row, "source_line_id", &receipt.id);
-        field(
-            &mut row,
-            "original_quantity_thousandths",
-            receipt.original_quantity_thousandths,
-        );
-        field(
-            &mut row,
-            "original_value_irr",
-            receipt.original_value.rials(),
-        );
+        field(&mut row, "original_quantity_thousandths", receipt.original_quantity_thousandths);
+        field(&mut row, "original_value_irr", receipt.original_value.rials());
         row.label = format!(
             "دریافت فاکتور‌نشده • {} • کد {} • تأمین‌کننده {} • انبار منبع {} • واحد پایه {}\nارزش اولیه {} IRR • تاریخ سند منبع میلادی {} • تاریخ دسترسی مالی میلادی {} • مبلغ نمایش‌شده ارزش باقی‌مانده است",
             i.name,
@@ -1685,10 +1520,7 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         .procurement
         .records
         .iter()
-        .filter(|r| {
-            r.command.context().company_id == company_id
-                && r.command.context().date.as_str() <= as_of
-        })
+        .filter(|r| r.command.context().company_id == company_id && r.command.context().date.as_str() <= as_of)
         .collect::<Vec<_>>();
     for record in &records {
         let context = record.command.context();
@@ -1705,31 +1537,21 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         );
         field(&mut row, "sequence", record.sequence);
         field(&mut row, "document_date", &context.date);
-        if let (ProcurementCommand::Return(input), ProcurementData::Return(posted)) =
-            (&record.command, &record.data)
-        {
+        if let (ProcurementCommand::Return(input), ProcurementData::Return(posted)) = (&record.command, &record.data) {
             field(&mut row, "record_id", &record.id);
             field(&mut row, "financial_date", &context.date);
             field(&mut row, "document_date", &input.document_date);
             field(&mut row, "return_id", &posted.return_id);
             field(&mut row, "return_state", "returned");
             field(&mut row, "return_reference", &input.return_reference);
-            row.label.push_str(&format!(
-                " • برگشت فیزیکی {} • وضعیت برگشت‌شده",
-                source_code(&posted.return_id)
-            ));
+            row.label
+                .push_str(&format!(" • برگشت فیزیکی {} • وضعیت برگشت‌شده", source_code(&posted.return_id)));
             if let Some(id) = &posted.credit_id {
                 field(&mut row, "credit_id", id);
                 field(&mut row, "credit_state", "posted");
-                field(
-                    &mut row,
-                    "credit_reference",
-                    input.credit_reference.as_deref().unwrap_or(""),
-                );
-                row.label.push_str(&format!(
-                    " • اعتبار تأمین‌کننده {} • وضعیت ثبت‌شده",
-                    source_code(id)
-                ));
+                field(&mut row, "credit_reference", input.credit_reference.as_deref().unwrap_or(""));
+                row.label
+                    .push_str(&format!(" • اعتبار تأمین‌کننده {} • وضعیت ثبت‌شده", source_code(id)));
             }
             if let Some(id) = &posted.receipt_id {
                 field(&mut row, "receipt_id", id);
@@ -1741,17 +1563,9 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
         field(
             &mut row,
             "financial_effect_kind",
-            if record.journal_id.is_some() {
-                "journal"
-            } else {
-                "nonfinancial"
-            },
+            if record.journal_id.is_some() { "journal" } else { "nonfinancial" },
         );
-        field(
-            &mut row,
-            "financial_effect_id",
-            record.journal_id.as_deref().unwrap_or(&record.id),
-        );
+        field(&mut row, "financial_effect_id", record.journal_id.as_deref().unwrap_or(&record.id));
         row.snapshot = serde_json::to_string(record)?;
         report.rows.push(row);
         for movement in &record.movements {
@@ -1786,11 +1600,7 @@ fn reconciliation_report(state: &AccountingState, company_id: &str, as_of: &str)
             field(
                 &mut row,
                 "direction",
-                if movement.direction == StockDirection::In {
-                    "in"
-                } else {
-                    "out"
-                },
+                if movement.direction == StockDirection::In { "in" } else { "out" },
             );
             field(&mut row, "source_line_id", &movement.source_line_id);
             row.snapshot = serde_json::to_string(movement)?;
@@ -1813,11 +1623,7 @@ pub fn document_csv(
 ) -> Result<()> {
     render_csv(
         &document_report(state, company_id, document_id)?,
-        Preferences {
-            unit,
-            dates,
-            digits,
-        },
+        Preferences { unit, dates, digits },
         path,
     )
 }
@@ -1832,11 +1638,7 @@ pub fn document_pdf(
 ) -> Result<()> {
     render_pdf(
         &document_report(state, company_id, document_id)?,
-        Preferences {
-            unit,
-            dates,
-            digits,
-        },
+        Preferences { unit, dates, digits },
         path,
     )
 }
@@ -1851,11 +1653,7 @@ pub fn reconciliation_csv(
 ) -> Result<()> {
     render_csv(
         &reconciliation_report(state, company_id, as_of)?,
-        Preferences {
-            unit,
-            dates,
-            digits,
-        },
+        Preferences { unit, dates, digits },
         path,
     )
 }
@@ -1870,11 +1668,7 @@ pub fn reconciliation_pdf(
 ) -> Result<()> {
     render_pdf(
         &reconciliation_report(state, company_id, as_of)?,
-        Preferences {
-            unit,
-            dates,
-            digits,
-        },
+        Preferences { unit, dates, digits },
         path,
     )
 }
@@ -1887,21 +1681,13 @@ pub fn document_preview(
     digits: DisplayDigits,
 ) -> Result<DocumentPreview> {
     let report = document_report(state, company_id, document_id)?;
-    let preferences = Preferences {
-        unit,
-        dates,
-        digits,
-    };
+    let preferences = Preferences { unit, dates, digits };
     Ok(DocumentPreview {
         title: report.title,
         company: report.company,
         as_of: digits.format(date(&report.as_of, dates)?),
         policy_version: report.policy_version,
         status: report.status_label,
-        lines: report
-            .rows
-            .iter()
-            .map(|r| human_line(r, preferences))
-            .collect(),
+        lines: report.rows.iter().map(|r| human_line(r, preferences)).collect(),
     })
 }

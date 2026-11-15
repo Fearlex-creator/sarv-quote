@@ -1,8 +1,7 @@
 use chrono::{Days, NaiveDate};
 use sarv_quote::calendar::{
-    Calendar, CalendarError, JalaliDate, MAX_JALALI_YEAR, MIN_JALALI_YEAR, format_date,
-    from_gregorian, is_jalali_leap_year, jalali_fiscal_year, jalali_month_length, parse_date,
-    to_gregorian,
+    Calendar, CalendarError, JalaliDate, MAX_JALALI_YEAR, MIN_JALALI_YEAR, format_date, from_gregorian, is_jalali_leap_year,
+    jalali_fiscal_year, jalali_month_length, parse_date, to_gregorian,
 };
 
 fn gregorian(year: i32, month: u32, day: u32) -> NaiveDate {
@@ -43,22 +42,11 @@ fn range_endpoints_and_outside_dates_are_explicit() {
     let last = JalaliDate::new(MAX_JALALI_YEAR, 12, 29).unwrap();
     assert_eq!(to_gregorian(first), gregorian(1821, 3, 21));
     assert_eq!(to_gregorian(last), gregorian(2121, 3, 20));
-    for date in [
-        gregorian(1821, 3, 20),
-        gregorian(2121, 3, 21),
-        NaiveDate::MIN,
-        NaiveDate::MAX,
-    ] {
-        assert_eq!(
-            from_gregorian(date),
-            Err(CalendarError::GregorianOutsideJalaliRange { date })
-        );
+    for date in [gregorian(1821, 3, 20), gregorian(2121, 3, 21), NaiveDate::MIN, NaiveDate::MAX] {
+        assert_eq!(from_gregorian(date), Err(CalendarError::GregorianOutsideJalaliRange { date }));
     }
     for year in [i32::MIN, 0, 1199, 1500, i32::MAX] {
-        assert_eq!(
-            JalaliDate::new(year, 1, 1),
-            Err(CalendarError::JalaliYearOutOfRange { year })
-        );
+        assert_eq!(JalaliDate::new(year, 1, 1), Err(CalendarError::JalaliYearOutOfRange { year }));
         assert!(jalali_fiscal_year(year).is_err());
         assert!(is_jalali_leap_year(year).is_err());
     }
@@ -100,46 +88,22 @@ fn jalali_leap_and_every_month_validate_without_rollover() {
 
 #[test]
 fn explicit_input_calendar_never_guesses_the_year() {
-    assert_eq!(
-        parse_date("1404-01-01", Calendar::Gregorian).unwrap(),
-        gregorian(1404, 1, 1)
-    );
-    assert_eq!(
-        parse_date("1404-01-01", Calendar::Jalali).unwrap(),
-        gregorian(2025, 3, 21)
-    );
+    assert_eq!(parse_date("1404-01-01", Calendar::Gregorian).unwrap(), gregorian(1404, 1, 1));
+    assert_eq!(parse_date("1404-01-01", Calendar::Jalali).unwrap(), gregorian(2025, 3, 21));
     assert!(parse_date("2025-03-21", Calendar::Jalali).is_err());
-    assert_eq!(
-        parse_date("0001-01-01", Calendar::Gregorian).unwrap(),
-        gregorian(1, 1, 1)
-    );
-    assert_eq!(
-        parse_date("9999/12/31", Calendar::Gregorian).unwrap(),
-        gregorian(9999, 12, 31)
-    );
+    assert_eq!(parse_date("0001-01-01", Calendar::Gregorian).unwrap(), gregorian(1, 1, 1));
+    assert_eq!(parse_date("9999/12/31", Calendar::Gregorian).unwrap(), gregorian(9999, 12, 31));
     assert!(parse_date("0000-01-01", Calendar::Gregorian).is_err());
 }
 
 #[test]
 fn persian_arabic_and_mixed_digits_produce_identical_canonical_dates() {
-    for input in [
-        "1404/01/01",
-        "۱۴۰۴/۰۱/۰۱",
-        "١٤٠٤/٠١/٠١",
-        "۱4٠۴/0۱/٠1",
-        "۱۴۰۴-۰۱-۰۱",
-    ] {
+    for input in ["1404/01/01", "۱۴۰۴/۰۱/۰۱", "١٤٠٤/٠١/٠١", "۱4٠۴/0۱/٠1", "۱۴۰۴-۰۱-۰۱"] {
         let date = parse_date(input, Calendar::Jalali).unwrap();
-        assert_eq!(
-            format_date(date, Calendar::Gregorian).unwrap(),
-            "2025-03-21"
-        );
+        assert_eq!(format_date(date, Calendar::Gregorian).unwrap(), "2025-03-21");
         assert_eq!(format_date(date, Calendar::Jalali).unwrap(), "1404/01/01");
     }
-    assert_eq!(
-        parse_date("۲۰۲۴-۰۲-۲۹", Calendar::Gregorian).unwrap(),
-        gregorian(2024, 2, 29)
-    );
+    assert_eq!(parse_date("۲۰۲۴-۰۲-۲۹", Calendar::Gregorian).unwrap(), gregorian(2024, 2, 29));
 }
 
 #[test]
@@ -159,63 +123,33 @@ fn malformed_inputs_and_gregorian_leap_centuries_reject_cleanly() {
         "14040/01/01",
         "1404//1/01",
     ] {
-        assert_eq!(
-            parse_date(input, Calendar::Jalali),
-            Err(CalendarError::InvalidFormat),
-            "{input:?}"
-        );
+        assert_eq!(parse_date(input, Calendar::Jalali), Err(CalendarError::InvalidFormat), "{input:?}");
     }
-    for input in [
-        "1900-02-29",
-        "2100-02-29",
-        "2025-02-29",
-        "2025-04-31",
-        "2025-00-01",
-        "2025-01-00",
-    ] {
+    for input in ["1900-02-29", "2100-02-29", "2025-02-29", "2025-04-31", "2025-00-01", "2025-01-00"] {
         assert!(parse_date(input, Calendar::Gregorian).is_err(), "{input}");
     }
-    assert_eq!(
-        parse_date("2000-02-29", Calendar::Gregorian).unwrap(),
-        gregorian(2000, 2, 29)
-    );
+    assert_eq!(parse_date("2000-02-29", Calendar::Gregorian).unwrap(), gregorian(2000, 2, 29));
     assert!(format_date(NaiveDate::MIN, Calendar::Gregorian).is_err());
     assert!(format_date(NaiveDate::MAX, Calendar::Gregorian).is_err());
 }
 
 #[test]
 fn fiscal_boundaries_are_inclusive_and_preserve_chronology() {
-    assert_eq!(
-        jalali_fiscal_year(1403).unwrap(),
-        (gregorian(2024, 3, 20), gregorian(2025, 3, 20))
-    );
-    assert_eq!(
-        jalali_fiscal_year(1404).unwrap(),
-        (gregorian(2025, 3, 21), gregorian(2026, 3, 20))
-    );
+    assert_eq!(jalali_fiscal_year(1403).unwrap(), (gregorian(2024, 3, 20), gregorian(2025, 3, 20)));
+    assert_eq!(jalali_fiscal_year(1404).unwrap(), (gregorian(2025, 3, 21), gregorian(2026, 3, 20)));
     for year in MIN_JALALI_YEAR..=MAX_JALALI_YEAR {
         let (start, end) = jalali_fiscal_year(year).unwrap();
         assert_eq!(
             (end - start).num_days() + 1,
-            if is_jalali_leap_year(year).unwrap() {
-                366
-            } else {
-                365
-            }
+            if is_jalali_leap_year(year).unwrap() { 366 } else { 365 }
         );
-        assert_eq!(
-            from_gregorian(start).unwrap(),
-            JalaliDate::new(year, 1, 1).unwrap()
-        );
+        assert_eq!(from_gregorian(start).unwrap(), JalaliDate::new(year, 1, 1).unwrap());
         assert_eq!(
             from_gregorian(end).unwrap(),
             JalaliDate::new(year, 12, jalali_month_length(year, 12).unwrap()).unwrap()
         );
         if year < MAX_JALALI_YEAR {
-            assert_eq!(
-                end.succ_opt().unwrap(),
-                jalali_fiscal_year(year + 1).unwrap().0
-            );
+            assert_eq!(end.succ_opt().unwrap(), jalali_fiscal_year(year + 1).unwrap().0);
         }
     }
 }
@@ -229,16 +163,9 @@ fn all_supported_days_roundtrip_and_calendar_switch_keeps_canonical_date() {
     while date <= end {
         let jalali = from_gregorian(date).unwrap();
         assert_eq!(to_gregorian(jalali), date);
+        assert_eq!(parse_date(&jalali.to_string(), Calendar::Jalali).unwrap(), date);
         assert_eq!(
-            parse_date(&jalali.to_string(), Calendar::Jalali).unwrap(),
-            date
-        );
-        assert_eq!(
-            parse_date(
-                &format_date(date, Calendar::Gregorian).unwrap(),
-                Calendar::Gregorian
-            )
-            .unwrap(),
+            parse_date(&format_date(date, Calendar::Gregorian).unwrap(), Calendar::Gregorian).unwrap(),
             date
         );
         count += 1;
@@ -250,19 +177,11 @@ fn all_supported_days_roundtrip_and_calendar_switch_keeps_canonical_date() {
 #[test]
 fn presentation_mode_serializes_explicitly_and_errors_explain_limits() {
     assert_eq!(Calendar::default(), Calendar::Gregorian);
-    assert_eq!(
-        serde_json::to_string(&Calendar::Jalali).unwrap(),
-        "\"Jalali\""
-    );
-    assert_eq!(
-        serde_json::from_str::<Calendar>("\"Gregorian\"").unwrap(),
-        Calendar::Gregorian
-    );
+    assert_eq!(serde_json::to_string(&Calendar::Jalali).unwrap(), "\"Jalali\"");
+    assert_eq!(serde_json::from_str::<Calendar>("\"Gregorian\"").unwrap(), Calendar::Gregorian);
     assert!(serde_json::from_str::<Calendar>("\"automatic\"").is_err());
     let error = JalaliDate::new(1404, 12, 30).unwrap_err().to_string();
     assert!(error.contains("29") && error.contains("1404") && error.contains("شمسی"));
-    let error = from_gregorian(gregorian(2121, 3, 21))
-        .unwrap_err()
-        .to_string();
+    let error = from_gregorian(gregorian(2121, 3, 21)).unwrap_err().to_string();
     assert!(error.contains("1821-03-21") && error.contains("2121-03-20"));
 }

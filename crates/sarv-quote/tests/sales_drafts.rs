@@ -7,10 +7,8 @@ use sarv_quote::{
     store::Store,
 };
 fn base() -> State {
-    let envelope: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))
-    .unwrap();
+    let envelope: serde_json::Value =
+        serde_json::from_str(include_str!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let mut state: State = serde_json::from_value(envelope["state"].clone()).unwrap();
     state.schema = CURRENT_SCHEMA;
     state.validate().unwrap();
@@ -99,10 +97,7 @@ fn draft_revision_cas_noop_atomic_submit_and_lost_receipt_retries_after_lock() {
     })
     .unwrap();
     let mut updated = st.state.sales_drafts[0].clone();
-    assert_eq!(
-        st.state.save_sales_draft(updated.clone(), Some(1)).unwrap(),
-        1
-    );
+    assert_eq!(st.state.save_sales_draft(updated.clone(), Some(1)).unwrap(), 1);
     updated.reason = "new synthetic review reason".into();
     st.change(|s| {
         assert_eq!(s.save_sales_draft(updated.clone(), Some(1))?, 2);
@@ -119,56 +114,37 @@ fn draft_revision_cas_noop_atomic_submit_and_lost_receipt_retries_after_lock() {
     );
     assert_eq!(serde_json::to_vec(&st.state).unwrap(), before);
     let mut stale = Store::open(profile.path()).unwrap();
-    let result = st
-        .change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester"))
-        .unwrap();
+    let result = st.change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester")).unwrap();
     assert!(st.state.sales_drafts.is_empty());
     assert!(result.journal_id.is_none());
-    assert!(
-        stale
-            .change(|s| s.post_sales_from_draft(&d.id, 2, "other-key", "tester"))
-            .is_err()
-    );
+    assert!(stale.change(|s| s.post_sales_from_draft(&d.id, 2, "other-key", "tester")).is_err());
     let order_count = st.state.accounting.sales.records.len();
     let audit_count = st.state.accounting.audit.len();
-    let period = st.state.accounting.core.openings[0]
-        .command
-        .period_id
-        .clone();
-    st.change(|s| {
-        s.accounting
-            .set_period_lock(&period, true, "tester", "synthetic lock")
-    })
-    .unwrap();
+    let period = st.state.accounting.core.openings[0].command.period_id.clone();
+    st.change(|s| s.accounting.set_period_lock(&period, true, "tester", "synthetic lock"))
+        .unwrap();
     let locked_audit = st.state.accounting.audit.len();
     assert!(locked_audit > audit_count);
     drop(st);
     let mut st = Store::open(profile.path()).unwrap();
     assert_eq!(
-        st.change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester"))
-            .unwrap(),
+        st.change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester")).unwrap(),
         result
     );
     assert_eq!(
-        st.change(|s| s.post_sales_from_draft(&d.id, 2, "retry-new-key", "tester"))
-            .unwrap(),
+        st.change(|s| s.post_sales_from_draft(&d.id, 2, "retry-new-key", "tester")).unwrap(),
         result
     );
     assert_eq!(st.state.accounting.sales.records.len(), order_count);
     assert_eq!(st.state.accounting.audit.len(), locked_audit);
-    assert!(
-        st.change(|s| s.post_sales_from_draft(&d.id, 2, "bad-actor", "other"))
-            .is_err()
-    );
+    assert!(st.change(|s| s.post_sales_from_draft(&d.id, 2, "bad-actor", "other")).is_err());
     st.state.validate().unwrap();
 }
 fn approved_quote() -> State {
     let mut s = base();
     let at = chrono::Utc::now().format("%Y-%m-%dT00:00:00Z").to_string();
     let cat = catalog_csv(
-        &format!(
-            "code,name,measure,price,currency,source_at,aliases\nSKU-A,کالای الف,عدد,20,rial,{at},"
-        ),
+        &format!("code,name,measure,price,currency,source_at,aliases\nSKU-A,کالای الف,عدد,20,rial,{at},"),
         "synthetic conversion",
     )
     .unwrap();
@@ -195,9 +171,7 @@ fn authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_cha
     d.lines[0].warehouse_id = "W1".into();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "quote-convert", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "quote-convert", "tester").unwrap();
     assert_eq!(order.supplied_total, Money::from_rials(199));
     let before = serde_json::to_vec(&s).unwrap();
     for mutation in 0..5 {
@@ -212,12 +186,8 @@ fn authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_cha
         assert!(s.validate_sales_quotation(&bad).is_err());
     }
     assert_eq!(serde_json::to_vec(&s).unwrap(), before);
-    s.post_sales_from_draft(&id, 1, "quote-convert", "tester")
-        .unwrap();
-    assert_eq!(
-        serde_json::to_vec(&s.quotes[0]).unwrap(),
-        serde_json::to_vec(&q).unwrap()
-    );
+    s.post_sales_from_draft(&id, 1, "quote-convert", "tester").unwrap();
+    assert_eq!(serde_json::to_vec(&s.quotes[0]).unwrap(), serde_json::to_vec(&q).unwrap());
     for mutation in 0..4 {
         let mut bad = s.clone();
         match mutation {
@@ -239,10 +209,7 @@ fn authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_cha
     bad.context.source_id = "fabricated-linked-order".into();
     bad.context.request_key = "fabricated-key".into();
     bad.quotation.as_mut().unwrap().quote_sha256 = "0".repeat(64);
-    forged
-        .accounting
-        .post_sales_command(SalesCommand::Order(bad))
-        .unwrap();
+    forged.accounting.post_sales_command(SalesCommand::Order(bad)).unwrap();
     assert!(forged.validate().is_err());
 }
 #[test]
@@ -259,18 +226,13 @@ fn raw_jalali_dates_exact_toman_conversion_and_fractional_rial_rejection() {
     d.supplied_total = "۱۹٫۹".into();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "jalali-key", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "jalali-key", "tester").unwrap();
     assert_eq!(order.context.date, "2026-10-08");
     assert_eq!(order.supplied_total.rials(), 199);
     let mut d = s.sales_drafts[0].clone();
     d.lines[0].unit_price = "۲٫۰۱".into();
     s.save_sales_draft(d, Some(1)).unwrap();
-    assert!(
-        s.sales_order_from_draft(&id, 2, "fractional-key", "tester")
-            .is_err()
-    );
+    assert!(s.sales_order_from_draft(&id, 2, "fractional-key", "tester").is_err());
 }
 
 #[test]
@@ -283,9 +245,7 @@ fn day_month_year_raw_draft_and_quote_conversion_keep_explicit_date_semantics() 
     d.lines[0].price_date = d.document_date.clone();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "dmy-key", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "dmy-key", "tester").unwrap();
     assert_eq!(order.context.date, "2026-10-08");
     assert_eq!(order.document_date, "2026-10-08");
     let mut s = approved_quote();
@@ -298,8 +258,164 @@ fn day_month_year_raw_draft_and_quote_conversion_keep_explicit_date_semantics() 
     d.lines[0].warehouse_id = "W1".into();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "dmy-quote-key", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "dmy-quote-key", "tester").unwrap();
     assert_eq!(order.document_date, s.quotes.last().unwrap().quote_date);
+}
+
+#[test]
+fn issued_quotation_number_cannot_be_changed_by_the_client() {
+    use sarv_quote::desktop::{dispatch, seed_fixture};
+    use serde_json::json;
+
+    let d = tempfile::tempdir().unwrap();
+    seed_fixture(d.path()).unwrap();
+    let s = Store::open(d.path()).unwrap();
+    let c = s.state.accounting.companies[0].id.clone();
+    let p = s.state.accounting.periods[0].id.clone();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    let next_number = s.state.settings.next_number;
+    drop(s);
+
+    let draft = json!({"id":"q-imm","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"q-ref","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"imm","quotation":null,"lines":[{"id":"q-line","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    let rev = dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+
+    let mut tampered = dispatch(d.path(), "workspace", json!({"company_id": c})).unwrap()["drafts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|x| x["id"] == "q-imm")
+        .unwrap()
+        .clone();
+    tampered["revision"] = rev.clone();
+    tampered["quote_issue"]["number"] = json!("FORGED-999");
+    dispatch(d.path(), "draft_save", json!({"draft":tampered,"expected_revision":rev})).unwrap();
+
+    let s = Store::open(d.path()).unwrap();
+    let stored = s.state.sales_drafts.iter().find(|x| x.id == "q-imm").unwrap();
+    assert_eq!(stored.quote_issue.as_ref().unwrap().number, format!("Q-{next_number}"));
+}
+
+#[test]
+fn stale_settings_save_cannot_move_the_counter_back() {
+    use sarv_quote::desktop::{dispatch, seed_fixture};
+    use serde_json::json;
+
+    let d = tempfile::tempdir().unwrap();
+    seed_fixture(d.path()).unwrap();
+    let s = Store::open(d.path()).unwrap();
+    let c = s.state.accounting.companies[0].id.clone();
+    let p = s.state.accounting.periods[0].id.clone();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    let initial_next = s.state.settings.next_number;
+    drop(s);
+
+    let stale_settings = dispatch(d.path(), "workspace", json!({"company_id": c})).unwrap()["settings"].clone();
+    assert_eq!(stale_settings["next_number"], json!(initial_next.to_string()));
+
+    let draft1 = json!({"id":"q-1","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"q-1","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"q1","quotation":null,"lines":[{"id":"l1","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft1,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+    assert_eq!(Store::open(d.path()).unwrap().state.settings.next_number, initial_next + 1);
+
+    dispatch(d.path(), "settings", stale_settings).unwrap();
+    assert_eq!(Store::open(d.path()).unwrap().state.settings.next_number, initial_next + 1);
+
+    let draft2 = json!({"id":"q-2","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"q-2","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"q2","quotation":null,"lines":[{"id":"l2","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft2,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+    let s = Store::open(d.path()).unwrap();
+    let n1 = &s
+        .state
+        .sales_drafts
+        .iter()
+        .find(|x| x.id == "q-1")
+        .unwrap()
+        .quote_issue
+        .as_ref()
+        .unwrap()
+        .number;
+    let n2 = &s
+        .state
+        .sales_drafts
+        .iter()
+        .find(|x| x.id == "q-2")
+        .unwrap()
+        .quote_issue
+        .as_ref()
+        .unwrap()
+        .number;
+    assert_ne!(n1, n2);
+    assert_eq!(n2, &format!("Q-{}", initial_next + 1));
+}
+
+#[test]
+fn duplicate_quotation_number_is_skipped_when_issuing() {
+    use sarv_quote::desktop::{dispatch, seed_fixture};
+    use serde_json::json;
+
+    let d = tempfile::tempdir().unwrap();
+    seed_fixture(d.path()).unwrap();
+    let mut s = Store::open(d.path()).unwrap();
+    let c = s.state.accounting.companies[0].id.clone();
+    let p = s.state.accounting.periods[0].id.clone();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    s.change(|state| {
+        state.settings.next_number = 1;
+        Ok(())
+    })
+    .unwrap();
+    drop(s);
+
+    // Pre-issue Q-1 on draft-a.
+    let draft_a = json!({"id":"q-a","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"qa","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"qa","quotation":null,"lines":[{"id":"la","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft_a,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+
+    // Force next_number back to 1 directly in state to simulate a collision.
+    let mut s = Store::open(d.path()).unwrap();
+    s.change(|state| {
+        state.settings.next_number = 1;
+        Ok(())
+    })
+    .unwrap();
+    drop(s);
+
+    let draft_b = json!({"id":"q-b","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"qb","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"qb","quotation":null,"lines":[{"id":"lb","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft_b,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+
+    let s = Store::open(d.path()).unwrap();
+    let nb = &s
+        .state
+        .sales_drafts
+        .iter()
+        .find(|x| x.id == "q-b")
+        .unwrap()
+        .quote_issue
+        .as_ref()
+        .unwrap()
+        .number;
+    assert_eq!(nb, "Q-2");
+    assert_eq!(s.state.settings.next_number, 3);
 }

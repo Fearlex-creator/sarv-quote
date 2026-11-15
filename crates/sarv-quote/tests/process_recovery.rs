@@ -43,9 +43,7 @@ fn initialized(directory: &Path) -> State {
 }
 fn integrity(directory: &Path) {
     let conn = Connection::open(directory.join("sarv.sqlite3")).unwrap();
-    let result: String = conn
-        .query_row("PRAGMA integrity_check", [], |row| row.get(0))
-        .unwrap();
+    let result: String = conn.query_row("PRAGMA integrity_check", [], |row| row.get(0)).unwrap();
     assert_eq!(result, "ok");
 }
 fn evidence(case: &str, value: serde_json::Value) {
@@ -58,11 +56,7 @@ fn evidence(case: &str, value: serde_json::Value) {
             "platform": "Unix child-process SIGKILL; software recovery only",
             "evidence": value,
         });
-        fs::write(
-            directory.join(format!("{case}.json")),
-            serde_json::to_vec_pretty(&report).unwrap(),
-        )
-        .unwrap();
+        fs::write(directory.join(format!("{case}.json")), serde_json::to_vec_pretty(&report).unwrap()).unwrap();
     }
 }
 
@@ -73,12 +67,7 @@ struct OwnedWorker {
 impl OwnedWorker {
     fn spawn(mode: &str, directory: &Path) -> Self {
         let mut child = Command::new(std::env::current_exe().unwrap())
-            .args([
-                "--exact",
-                "recovery_worker_entry",
-                "--nocapture",
-                "--test-threads=1",
-            ])
+            .args(["--exact", "recovery_worker_entry", "--nocapture", "--test-threads=1"])
             .env("SARV_RECOVERY_WORKER_MODE", mode)
             .env("SARV_RECOVERY_WORKER_DIR", directory)
             .stdin(Stdio::piped())
@@ -121,9 +110,7 @@ impl OwnedWorker {
         input.flush().unwrap();
     }
     fn kill(&mut self) {
-        self.child
-            .kill()
-            .expect("kill only the spawned owned worker");
+        self.child.kill().expect("kill only the spawned owned worker");
         let status = self.child.wait().unwrap();
         assert_eq!(status.signal(), Some(9), "test must observe actual SIGKILL");
     }
@@ -149,11 +136,7 @@ fn recovery_worker_entry() {
     let Ok(mode) = std::env::var("SARV_RECOVERY_WORKER_MODE") else {
         return;
     };
-    run_worker(
-        &mode,
-        &PathBuf::from(std::env::var_os("SARV_RECOVERY_WORKER_DIR").unwrap()),
-    )
-    .unwrap();
+    run_worker(&mode, &PathBuf::from(std::env::var_os("SARV_RECOVERY_WORKER_DIR").unwrap())).unwrap();
 }
 fn run_worker(mode: &str, directory: &Path) -> Result<()> {
     match mode {
@@ -273,10 +256,7 @@ fn run_worker(mode: &str, directory: &Path) -> Result<()> {
         }
         "staging_only" | "published_only" => {
             let staging = directory.join(".sarv-write-recovery.tmp");
-            let mut file = OpenOptions::new()
-                .create_new(true)
-                .write(true)
-                .open(&staging)?;
+            let mut file = OpenOptions::new().create_new(true).write(true).open(&staging)?;
             if mode == "staging_only" {
                 file.write_all(&payload()[..1024 * 1024])?;
             } else {
@@ -326,13 +306,7 @@ fn interrupted_detached_journal_before_commit_or_before_receipt_has_exact_comple
             .change(|state| {
                 let book = &mut state.accounting;
                 let company = book.add_company("شرکت مصنوعی قطع پردازش", "آزمایشگر")?;
-                book.add_period(
-                    &company,
-                    "سال مصنوعی",
-                    "2026-01-01",
-                    "2026-12-31",
-                    "آزمایشگر",
-                )?;
+                book.add_period(&company, "سال مصنوعی", "2026-01-01", "2026-12-31", "آزمایشگر")?;
                 for (code, classification, normal_balance) in [
                     ("1101", AccountClass::Asset, BalanceSide::Debit),
                     ("3101", AccountClass::Equity, BalanceSide::Credit),
@@ -360,26 +334,17 @@ fn interrupted_detached_journal_before_commit_or_before_receipt_has_exact_comple
         worker.kill();
         let reopened = Store::open(dir.path()).unwrap();
         let committed = mode == "accounting_after_commit";
-        assert_eq!(
-            reopened.state.accounting.journals.len(),
-            usize::from(committed)
-        );
+        assert_eq!(reopened.state.accounting.journals.len(), usize::from(committed));
         if committed {
             let company = &reopened.state.accounting.companies[0].id;
-            let trial = reopened
-                .state
-                .accounting
-                .trial_balance(company, "2026-12-31")
-                .unwrap();
+            let trial = reopened.state.accounting.trial_balance(company, "2026-12-31").unwrap();
             assert_eq!(trial.total_debit.rials(), 1251);
             assert_eq!(trial.total_credit.rials(), 1251);
             let backup = dir.path().join("committed-journal.json");
             reopened.backup(&backup).unwrap();
             let restored_dir = tempfile::tempdir().unwrap();
             let mut restored = Store::open(restored_dir.path()).unwrap();
-            restored
-                .restore(Store::restore_preview(&backup).unwrap())
-                .unwrap();
+            restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();
             assert_eq!(encoded(&restored.state), encoded(&reopened.state));
         } else {
             assert_eq!(encoded(&reopened.state), original);
@@ -402,10 +367,7 @@ fn kill_around_payment_commit_leaves_one_exact_durable_settlement() {
         worker.kill();
         let reopened = Store::open(dir.path()).unwrap();
         let committed = mode == "payment_after_commit";
-        assert_eq!(
-            reopened.state.accounting.payments.records.len(),
-            usize::from(committed)
-        );
+        assert_eq!(reopened.state.accounting.payments.records.len(), usize::from(committed));
         reopened.state.accounting.validate().unwrap();
         integrity(dir.path());
         // The identical retry converges to exactly one payment either way.
@@ -477,9 +439,7 @@ fn sigkill_spilled_uncommitted_wal_recovers_previous_state() {
     let baseline = initialized(dir.path());
     let mut worker = OwnedWorker::spawn("wal_uncommitted", dir.path());
     worker.ready();
-    let wal_bytes = fs::metadata(dir.path().join("sarv.sqlite3-wal"))
-        .unwrap()
-        .len();
+    let wal_bytes = fs::metadata(dir.path().join("sarv.sqlite3-wal")).unwrap().len();
     assert!(wal_bytes > 32 * 1024, "exercise actual spilled WAL frames");
     worker.kill();
     let reopened = Store::open(dir.path()).unwrap();
@@ -521,9 +481,7 @@ fn interrupted_staging_protocol_is_absent_before_link_and_complete_after_link() 
         } else {
             assert_eq!(hash(&fs::read(&target).unwrap()), expected);
         }
-        let orphan_bytes = fs::metadata(dir.path().join(".sarv-write-recovery.tmp"))
-            .unwrap()
-            .len();
+        let orphan_bytes = fs::metadata(dir.path().join(".sarv-write-recovery.tmp")).unwrap().len();
         evidence(
             mode,
             json!({"scope":"exact same-directory write/sync/hard-link protocol, boundary implemented in test worker", "sigkill":true, "destination_exists":target.exists(), "destination_complete":mode == "published_only", "orphan_staging_bytes":orphan_bytes, "orphan_removed_with_isolated_temp_profile":true}),
@@ -554,14 +512,11 @@ fn interrupted_public_export_is_absent_or_complete_and_never_overwrites() {
         let orphans = fs::read_dir(dir.path())
             .unwrap()
             .filter_map(|entry| entry.ok())
-            .filter(|entry| {
-                entry
-                    .file_name()
-                    .to_string_lossy()
-                    .starts_with(".sarv-write-")
-            })
+            .filter(|entry| entry.file_name().to_string_lossy().starts_with(".sarv-write-"))
             .count();
-        trials.push(json!({"kill_delay_ms":delay_ms,"destination_complete":complete,"destination_absent":!complete,"orphan_staging_files":orphans}));
+        trials.push(
+            json!({"kill_delay_ms":delay_ms,"destination_complete":complete,"destination_absent":!complete,"orphan_staging_files":orphans}),
+        );
     }
     let dir = tempfile::tempdir().unwrap();
     let target = dir.path().join("quote.csv");
@@ -582,11 +537,7 @@ fn safety_file(directory: &Path) -> Option<PathBuf> {
         .filter_map(|entry| entry.ok())
         .map(|entry| entry.path())
         .find(|path| {
-            path.file_name()
-                .unwrap()
-                .to_string_lossy()
-                .starts_with("before-restore-")
-                && path.extension().is_some_and(|ext| ext == "json")
+            path.file_name().unwrap().to_string_lossy().starts_with("before-restore-") && path.extension().is_some_and(|ext| ext == "json")
         })
 }
 
@@ -604,10 +555,7 @@ fn killed_public_restore_after_safety_before_commit_retains_original_and_valid_b
         if let Some(path) = safety_file(dir.path()) {
             break path;
         }
-        assert!(
-            Instant::now() < until,
-            "restore did not publish safety backup before timeout"
-        );
+        assert!(Instant::now() < until, "restore did not publish safety backup before timeout");
         thread::sleep(Duration::from_millis(5));
     };
     // Complete valid JSON proves atomic publication, not just path creation.
@@ -645,10 +593,7 @@ fn killed_public_restore_after_commit_retains_restored_state_and_original_safety
     let safety = safety_file(dir.path())
         .context("committed restore should retain safety file")
         .unwrap();
-    assert_eq!(
-        encoded(&Store::restore_preview(&safety).unwrap()),
-        encoded(&baseline)
-    );
+    assert_eq!(encoded(&Store::restore_preview(&safety).unwrap()), encoded(&baseline));
     integrity(dir.path());
     evidence(
         "public_restore_after_commit",

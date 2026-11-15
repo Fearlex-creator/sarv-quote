@@ -74,10 +74,7 @@ impl Row {
     }
     fn integer(&self, key: &str) -> Result<i64> {
         let s = digits(self.get(key));
-        ensure!(
-            !s.is_empty() && s.bytes().all(|b| b.is_ascii_digit()),
-            "عدد صحیح مثبت لازم است"
-        );
+        ensure!(!s.is_empty() && s.bytes().all(|b| b.is_ascii_digit()), "عدد صحیح مثبت لازم است");
         let n = s.parse::<i64>()?;
         ensure!(n > 0, "نسبت باید مثبت باشد");
         Ok(n)
@@ -124,18 +121,8 @@ pub fn opening_csv_report(
         error(&mut report, 0, "file", "فایل بیش از ۱۰ مگابایت است");
         return report;
     }
-    let Some(setup) = state
-        .core
-        .setups
-        .iter()
-        .find(|s| s.command.company_id == company_id)
-    else {
-        error(
-            &mut report,
-            0,
-            "company_id",
-            "ابتدا سیاست و نگاشت شرکت را تنظیم کنید",
-        );
+    let Some(setup) = state.core.setups.iter().find(|s| s.command.company_id == company_id) else {
+        error(&mut report, 0, "company_id", "ابتدا سیاست و نگاشت شرکت را تنظیم کنید");
         return report;
     };
     let mut reader = csv::ReaderBuilder::new()
@@ -148,10 +135,7 @@ pub fn opening_csv_report(
                 &mut report,
                 1,
                 "header",
-                format!(
-                    "سرستون نسخهٔ ۱ باید دقیقاً {} باشد",
-                    OPENING_CSV_HEADER.join(",")
-                ),
+                format!("سرستون نسخهٔ ۱ باید دقیقاً {} باشد", OPENING_CSV_HEADER.join(",")),
             );
             return report;
         }
@@ -164,12 +148,7 @@ pub fn opening_csv_report(
     let mut ids = HashSet::new();
     for (index, record) in reader.records().enumerate() {
         if index >= MAX_ROWS {
-            error(
-                &mut report,
-                index + 2,
-                "row",
-                "حداکثر ۵۰ هزار ردیف در هر فایل",
-            );
+            error(&mut report, index + 2, "row", "حداکثر ۵۰ هزار ردیف در هر فایل");
             break;
         }
         let values = match record {
@@ -179,35 +158,18 @@ pub fn opening_csv_report(
                 continue;
             }
         };
-        let line = values
-            .position()
-            .map_or(index + 2, |p| (p.line() as usize).max(index + 2));
+        let line = values.position().map_or(index + 2, |p| (p.line() as usize).max(index + 2));
         let row = Row { line, values };
         if row.get("version") != OPENING_CSV_VERSION {
-            error(
-                &mut report,
-                line,
-                "version",
-                "نسخهٔ پشتیبانی‌شده sarv-opening-v1 است",
-            );
+            error(&mut report, line, "version", "نسخهٔ پشتیبانی‌شده sarv-opening-v1 است");
         }
         if row.get("company_id") != company_id {
-            error(
-                &mut report,
-                line,
-                "company_id",
-                "شناسهٔ شرکت با شرکت انتخاب‌شده یکسان نیست",
-            );
+            error(&mut report, line, "company_id", "شناسهٔ شرکت با شرکت انتخاب‌شده یکسان نیست");
         }
         match row.required("id") {
             Ok(id) => {
                 if !ids.insert(id) {
-                    error(
-                        &mut report,
-                        line,
-                        "id",
-                        "شناسهٔ ردیف تکراری است؛ ادغام خودکار انجام نمی‌شود",
-                    );
+                    error(&mut report, line, "id", "شناسهٔ ردیف تکراری است؛ ادغام خودکار انجام نمی‌شود");
                 }
             }
             Err(e) => error(&mut report, line, "id", e),
@@ -227,12 +189,7 @@ pub fn opening_csv_report(
     }
     let metadata: Vec<_> = rows.iter().filter(|r| r.get("kind") == "opening").collect();
     if metadata.len() != 1 {
-        error(
-            &mut report,
-            0,
-            "kind",
-            "دقیقاً یک ردیف opening با تاریخ و مرجع منبع لازم است",
-        );
+        error(&mut report, 0, "kind", "دقیقاً یک ردیف opening با تاریخ و مرجع منبع لازم است");
         return report;
     }
     let meta = metadata[0];
@@ -287,25 +244,9 @@ pub fn opening_csv_report(
             "pack" => &["item_id", "unit_id", "numerator", "denominator"],
             "warehouse" => &["name"],
             "cash" => &["name", "amount", "unit", "reference"],
-            "bank" => &[
-                "name",
-                "amount",
-                "statement_amount",
-                "unit",
-                "reference",
-                "bank_reference",
-            ],
-            "ar" | "ap" => &[
-                "party_id",
-                "amount",
-                "unit",
-                "reference",
-                "document_date",
-                "due_date",
-            ],
-            "supplier_advance" | "customer_advance" => {
-                &["party_id", "amount", "unit", "reference", "document_date"]
-            }
+            "bank" => &["name", "amount", "statement_amount", "unit", "reference", "bank_reference"],
+            "ar" | "ap" => &["party_id", "amount", "unit", "reference", "document_date", "due_date"],
+            "supplier_advance" | "customer_advance" => &["party_id", "amount", "unit", "reference", "document_date"],
             "cheque_receivable" | "cheque_payable" => &[
                 "party_id",
                 "amount",
@@ -318,15 +259,7 @@ pub fn opening_csv_report(
                 "document_date",
                 "due_date",
             ],
-            "stock" => &[
-                "item_id",
-                "warehouse_id",
-                "unit_id",
-                "quantity",
-                "amount",
-                "unit",
-                "reference",
-            ],
+            "stock" => &["item_id", "warehouse_id", "unit_id", "quantity", "amount", "unit", "reference"],
             "grni" => &[
                 "party_id",
                 "item_id",
@@ -339,34 +272,19 @@ pub fn opening_csv_report(
                 "document_date",
             ],
             _ => {
-                error(
-                    &mut report,
-                    row.line,
-                    "kind",
-                    "نوع ردیف شناخته‌شده نیست؛ راهنمای قالب را ببینید",
-                );
+                error(&mut report, row.line, "kind", "نوع ردیف شناخته‌شده نیست؛ راهنمای قالب را ببینید");
                 continue;
             }
         };
         let before = report.diagnostics.len();
         for key in fields {
             if row.get(key).is_empty() {
-                error(
-                    &mut report,
-                    row.line,
-                    key,
-                    "این ستون برای نوع ردیف الزامی است",
-                );
+                error(&mut report, row.line, key, "این ستون برای نوع ردیف الزامی است");
             }
         }
         for key in &OPENING_CSV_HEADER[4..] {
             if !fields.contains(key) && !row.get(key).is_empty() {
-                error(
-                    &mut report,
-                    row.line,
-                    key,
-                    "این ستون برای نوع ردیف مجاز نیست؛ مقدار را حذف کنید",
-                );
+                error(&mut report, row.line, key, "این ستون برای نوع ردیف مجاز نیست؛ مقدار را حذف کنید");
             }
         }
         for key in fields {
@@ -574,12 +492,7 @@ pub fn opening_csv_report(
         ] {
             let value = row.get(key);
             if !value.is_empty() && !set.contains(value) {
-                error(
-                    &mut report,
-                    row.line,
-                    key,
-                    "شناسه در همین فایل و شرکت تعریف نشده است",
-                );
+                error(&mut report, row.line, key, "شناسه در همین فایل و شرکت تعریف نشده است");
             }
         }
     }
@@ -619,55 +532,26 @@ pub fn opening_csv_report(
             if let Ok(due) = row.date("due_date")
                 && due < date
             {
-                error(
-                    &mut report,
-                    row.line,
-                    "due_date",
-                    "سررسید نباید پیش از تاریخ منبع باشد",
-                );
+                error(&mut report, row.line, "due_date", "سررسید نباید پیش از تاریخ منبع باشد");
             }
         }
         if kind == "bank"
             && let (Ok(book), Ok(statement)) = (row.money("amount"), row.money("statement_amount"))
             && book != statement
         {
-            error(
-                &mut report,
-                row.line,
-                "statement_amount",
-                "ماندهٔ مستقل بانک و صورت‌حساب برابر نیست",
-            );
+            error(&mut report, row.line, "statement_amount", "ماندهٔ مستقل بانک و صورت‌حساب برابر نیست");
         }
         if matches!(
             kind,
-            "cash"
-                | "bank"
-                | "ar"
-                | "ap"
-                | "customer_advance"
-                | "supplier_advance"
-                | "stock"
-                | "grni"
+            "cash" | "bank" | "ar" | "ap" | "customer_advance" | "supplier_advance" | "stock" | "grni"
         ) {
-            let party = if matches!(
-                kind,
-                "ar" | "ap" | "customer_advance" | "supplier_advance" | "grni"
-            ) {
+            let party = if matches!(kind, "ar" | "ap" | "customer_advance" | "supplier_advance" | "grni") {
                 party_id
             } else {
                 ""
             };
-            if !sources.insert((
-                kind.to_string(),
-                party.to_string(),
-                crate::domain::normalize(row.get("reference")),
-            )) {
-                error(
-                    &mut report,
-                    row.line,
-                    "reference",
-                    "مرجع مالی تکراری است؛ ردیف را صریح اصلاح کنید",
-                );
+            if !sources.insert((kind.to_string(), party.to_string(), crate::domain::normalize(row.get("reference")))) {
+                error(&mut report, row.line, "reference", "مرجع مالی تکراری است؛ ردیف را صریح اصلاح کنید");
             }
         }
         if matches!(kind, "cheque_receivable" | "cheque_payable") {
@@ -675,18 +559,12 @@ pub fn opening_csv_report(
                 crate::domain::normalize(row.get("bank_reference")),
                 crate::domain::normalize(row.get("reference")),
             )) {
-                error(
-                    &mut report,
-                    row.line,
-                    "reference",
-                    "شناسهٔ بانکی چک تکراری است",
-                );
+                error(&mut report, row.line, "reference", "شناسهٔ بانکی چک تکراری است");
             }
             if command.open_items.iter().any(|x| {
                 x.party_id == party_id
                     && (x.side == OpenItemSide::Receivable) == (kind == "cheque_receivable")
-                    && crate::domain::normalize(&x.document_reference)
-                        == crate::domain::normalize(row.get("settlement_reference"))
+                    && crate::domain::normalize(&x.document_reference) == crate::domain::normalize(row.get("settlement_reference"))
             }) {
                 error(
                     &mut report,
@@ -705,13 +583,7 @@ pub fn opening_csv_report(
     }
     report
 }
-pub fn opening_csv(
-    state: &AccountingState,
-    company_id: &str,
-    input: &str,
-    actor: &str,
-    request_key: &str,
-) -> Result<OpeningCommand> {
+pub fn opening_csv(state: &AccountingState, company_id: &str, input: &str, actor: &str, request_key: &str) -> Result<OpeningCommand> {
     opening_csv_report(state, company_id, input, actor, request_key).into_result()
 }
 pub fn opening_file_report(

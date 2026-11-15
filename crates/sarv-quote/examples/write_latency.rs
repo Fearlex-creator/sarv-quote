@@ -10,7 +10,10 @@ fn main() -> Result<()> {
     let mut csv = String::from("code,name,measure,price,currency,source_at,aliases\n");
     let source = (chrono::Utc::now() - chrono::Duration::hours(1)).to_rfc3339();
     for i in 0..products {
-        csv.push_str(&format!("SYN-{i:05},Synthetic product {i},pcs,{},rial,{source},alias {i}\n", 100_000 + i));
+        csv.push_str(&format!(
+            "SYN-{i:05},Synthetic product {i},pcs,{},rial,{source},alias {i}\n",
+            100_000 + i
+        ));
     }
     let mut store = Store::open(dir.path())?;
     let t = Instant::now();

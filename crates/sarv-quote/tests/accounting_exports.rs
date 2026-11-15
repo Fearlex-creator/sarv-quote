@@ -28,13 +28,7 @@ fn exact_report_units_pagination_and_no_overwrite_are_visible_in_exports() {
     let dir = tempfile::tempdir().unwrap();
     let csv = dir.path().join("trial.csv");
     let pdf = dir.path().join("trial.pdf");
-    trial_csv(
-        "شرکت آزمایشی TEST-COMPANY",
-        &balance,
-        MoneyUnit::Toman,
-        &csv,
-    )
-    .unwrap();
+    trial_csv("شرکت آزمایشی TEST-COMPANY", &balance, MoneyUnit::Toman, &csv).unwrap();
     let bytes = std::fs::read(&csv).unwrap();
     let mut reader = csv::Reader::from_reader(&bytes[3..]);
     let headers = reader.headers().unwrap().clone();
@@ -47,18 +41,9 @@ fn exact_report_units_pagination_and_no_overwrite_are_visible_in_exports() {
         ("account_code", "'=DANGEROUS()"),
         ("included_states", "posted_including_reversals"),
     ] {
-        assert_eq!(
-            &first[headers.iter().position(|h| h == field).unwrap()],
-            value
-        );
+        assert_eq!(&first[headers.iter().position(|h| h == field).unwrap()], value);
     }
-    trial_pdf(
-        "شرکت آزمایشی TEST-COMPANY",
-        &balance,
-        MoneyUnit::Toman,
-        &pdf,
-    )
-    .unwrap();
+    trial_pdf("شرکت آزمایشی TEST-COMPANY", &balance, MoneyUnit::Toman, &pdf).unwrap();
     assert!(std::fs::read(&pdf).unwrap().starts_with(b"%PDF"));
     let output = Command::new("pdftotext")
         .arg(&pdf)
@@ -73,36 +58,17 @@ fn exact_report_units_pagination_and_no_overwrite_are_visible_in_exports() {
         "company header repeats across report pages"
     );
     for n in 0..60 {
-        assert!(
-            text.contains(&format!("TEST-{n:03}")),
-            "missing report account {n}"
-        );
+        assert!(text.contains(&format!("TEST-{n:03}")), "missing report account {n}");
     }
     assert!(trial_pdf("شرکت آزمایشی", &balance, MoneyUnit::Rial, &pdf).is_err());
     assert!(trial_csv("شرکت آزمایشی", &balance, MoneyUnit::Rial, &csv).is_err());
     let mut bad = balance.clone();
     bad.total_debit = Money::from_rials(1);
-    assert!(
-        trial_pdf(
-            "شرکت آزمایشی",
-            &bad,
-            MoneyUnit::Rial,
-            &dir.path().join("invalid.pdf")
-        )
-        .is_err()
-    );
+    assert!(trial_pdf("شرکت آزمایشی", &bad, MoneyUnit::Rial, &dir.path().join("invalid.pdf")).is_err());
     assert!(!dir.path().join("invalid.pdf").exists());
     if let Ok(destination) = std::env::var("SARV_ACCOUNTING_EXPORT_ARTIFACT_DIR") {
         std::fs::create_dir_all(&destination).unwrap();
-        std::fs::copy(
-            &pdf,
-            std::path::Path::new(&destination).join("sample-trial-balance.pdf"),
-        )
-        .unwrap();
-        std::fs::copy(
-            &csv,
-            std::path::Path::new(&destination).join("sample-trial-balance.csv"),
-        )
-        .unwrap();
+        std::fs::copy(&pdf, std::path::Path::new(&destination).join("sample-trial-balance.pdf")).unwrap();
+        std::fs::copy(&csv, std::path::Path::new(&destination).join("sample-trial-balance.csv")).unwrap();
     }
 }

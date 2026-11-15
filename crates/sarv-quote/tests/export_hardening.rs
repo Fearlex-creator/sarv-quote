@@ -8,15 +8,19 @@ fn quote(count: usize) -> Quote {
             query: format!("P-{index:03}"),
             code: format!("P-{index:03}/A4"),
             name: if index % 4 == 0 {
-                "کاغذ A4 سفید مخصوص دستگاه چاپ و تکثیر، بستهٔ پانصد برگی با توضیح کامل محصول و اندازهٔ دقیق برای بررسی خوانایی عنوان بلند".into()
-            } else { "خودکار آبی نمونه برای آزمایش".into() },
+                "کاغذ A4 سفید مخصوص دستگاه چاپ و تکثیر، بستهٔ پانصد برگی با توضیح کامل محصول و اندازهٔ دقیق برای بررسی خوانایی عنوان بلند"
+                    .into()
+            } else {
+                "خودکار آبی نمونه برای آزمایش".into()
+            },
             measure: "بسته".into(),
             quantity_milli: 1250,
             price_rial: 125_003,
             total_rial: line_total(125_003, 1250).unwrap(),
             source_at: "2026-09-01T08:00:00Z".into(),
             source_unit: Unit::Rial,
-        }).collect();
+        })
+        .collect();
     let total_rial = lines.iter().map(|line| line.total_rial).sum::<i64>() - 13;
     Quote {
         id: "9d22d792-3f03-49da-81a3-96d55125c711".into(),
@@ -36,7 +40,17 @@ fn quote(count: usize) -> Quote {
         total_rial,
         display_unit: Unit::Toman,
         stale_ack: true,
-        number: String::new(), issuer_name: String::new(), issuer_phone: String::new(), issuer_address: String::new(), header: String::new(), footer: String::new(), terms: String::new(), tax_basis_points: 0, tax_rial: 0, display_digits: DisplayDigits::Persian, date_display: DateDisplay::Iso,
+        number: String::new(),
+        issuer_name: String::new(),
+        issuer_phone: String::new(),
+        issuer_address: String::new(),
+        header: String::new(),
+        footer: String::new(),
+        terms: String::new(),
+        tax_basis_points: 0,
+        tax_rial: 0,
+        display_digits: DisplayDigits::Persian,
+        date_display: DateDisplay::Iso,
         reference: "PO-2026/۱۲۳".into(),
         quote_date: "2026-10-07".into(),
         valid_until: "2026-10-14".into(),
@@ -94,10 +108,7 @@ fn csv_neutralizes_all_untrusted_text_and_keeps_exact_rial_numbers() {
         let index = headers.iter().position(|header| header == name).unwrap();
         assert_eq!(&record[index], expected);
     }
-    assert_eq!(
-        export::safe_cell("ordinary,\"quoted\"\ntext"),
-        "ordinary,\"quoted\"\ntext"
-    );
+    assert_eq!(export::safe_cell("ordinary,\"quoted\"\ntext"), "ordinary,\"quoted\"\ntext");
 }
 
 #[test]
@@ -142,23 +153,23 @@ fn export_refuses_existing_symlink() {
 
 fn pdf_page_count(path: &Path) -> Option<usize> {
     let output = Command::new("pdfinfo").arg(path).output().ok()?;
-    assert!(
-        output.status.success(),
-        "invalid PDF: {}",
-        String::from_utf8_lossy(&output.stderr)
-    );
+    assert!(output.status.success(), "invalid PDF: {}", String::from_utf8_lossy(&output.stderr));
     String::from_utf8_lossy(&output.stdout)
         .lines()
-        .find_map(|line| {
-            line.strip_prefix("Pages:")
-                .and_then(|v| v.trim().parse().ok())
-        })
+        .find_map(|line| line.strip_prefix("Pages:").and_then(|v| v.trim().parse().ok()))
 }
 
 #[test]
 fn multipage_pdf_matches_native_preview_and_long_notes_continue() {
     let mut q = quote(44);
-    q.notes = (0..70).map(|index| format!("یادداشت آزمایشی {}: متن فارسی همراه SKU-X/123 و توضیح شرایط پیش‌فاکتور برای سنجش شکست خط و ادامهٔ متن در صفحهٔ بعد.\n", fa(index + 1))).collect();
+    q.notes = (0..70)
+        .map(|index| {
+            format!(
+                "یادداشت آزمایشی {}: متن فارسی همراه SKU-X/123 و توضیح شرایط پیش‌فاکتور برای سنجش شکست خط و ادامهٔ متن در صفحهٔ بعد.\n",
+                fa(index + 1)
+            )
+        })
+        .collect();
     let dir = tempfile::tempdir().unwrap();
     let pdf = dir.path().join("many.pdf");
     export::pdf(&q, &pdf).unwrap();
@@ -168,11 +179,7 @@ fn multipage_pdf_matches_native_preview_and_long_notes_continue() {
         assert_eq!(count, pngs.len());
     }
     for png in &pngs {
-        assert!(
-            std::fs::read(png)
-                .unwrap()
-                .starts_with(b"\x89PNG\r\n\x1a\n")
-        );
+        assert!(std::fs::read(png).unwrap().starts_with(b"\x89PNG\r\n\x1a\n"));
     }
     let next = export::png_pages(&q, dir.path()).unwrap();
     assert_eq!(next.len(), pngs.len());
@@ -190,11 +197,7 @@ fn multipage_pdf_matches_native_preview_and_long_notes_continue() {
         std::fs::create_dir_all(destination).unwrap();
         std::fs::copy(&pdf, destination.join("multipage-quote.pdf")).unwrap();
         for (index, png) in pngs.iter().enumerate() {
-            std::fs::copy(
-                png,
-                destination.join(format!("multipage-{:02}.png", index + 1)),
-            )
-            .unwrap();
+            std::fs::copy(png, destination.join(format!("multipage-{:02}.png", index + 1))).unwrap();
         }
         let sample = quote(4);
         export::pdf(&sample, &destination.join("quote-table.pdf")).unwrap();
@@ -304,10 +307,7 @@ fn monetary_row_bounds(path: &Path, count: usize) -> Vec<(usize, usize)> {
         }
     }
     assert_eq!(rules.len(), count + 1, "every table row must have a rule");
-    rules
-        .windows(2)
-        .map(|pair| (pair[0] + 3, pair[1] - pair[0] - 6))
-        .collect()
+    rules.windows(2).map(|pair| (pair[0] + 3, pair[1] - pair[0] - 6)).collect()
 }
 
 #[test]
@@ -334,9 +334,7 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
     let draft = export::png_pages(&q, directory.path()).unwrap();
     let approved_bounds = monetary_row_bounds(&approved[0], q.lines.len());
     let draft_bounds = monetary_row_bounds(&draft[0], q.lines.len());
-    let independent_bounds = independent
-        .as_ref()
-        .map(|_| monetary_row_bounds(&independent_png, q.lines.len()));
+    let independent_bounds = independent.as_ref().map(|_| monetary_row_bounds(&independent_png, q.lines.len()));
     // Monetary column positions are fixed. Each measured row region contains
     // only that row's numeric value, excluding headings, totals and rules.
     for (index, &(y, height)) in approved_bounds.iter().enumerate() {
@@ -351,8 +349,7 @@ fn final_raster_has_every_monetary_cell_and_matches_independent_pdf_raster() {
             );
             if let Some(bounds) = &independent_bounds {
                 let (independent_y, independent_height) = bounds[index];
-                let independent_count =
-                    ink_count(&independent_png, x, independent_y, 194, independent_height);
+                let independent_count = ink_count(&independent_png, x, independent_y, 194, independent_height);
                 assert!(
                     count.abs_diff(independent_count) < count / 5,
                     "native monetary cell disagrees with independently rasterized PDF"
@@ -383,11 +380,7 @@ fn configured_quote() -> Quote {
 }
 fn pdf_text(path: &Path, directory: &Path) -> Option<String> {
     let output_path = directory.join("extracted.txt");
-    let result = Command::new("pdftotext")
-        .arg(path)
-        .arg(&output_path)
-        .output()
-        .ok()?;
+    let result = Command::new("pdftotext").arg(path).arg(&output_path).output().ok()?;
     assert!(result.status.success());
     Some(std::fs::read_to_string(output_path).unwrap())
 }
@@ -439,11 +432,7 @@ fn configured_business_number_tax_and_digits_are_in_real_pdf_and_csv() {
         std::fs::copy(&path, destination.join("business-quote.pdf")).unwrap();
         std::fs::copy(&pngs[0], destination.join("business-quote.png")).unwrap();
         for (index, png) in pngs.iter().enumerate() {
-            std::fs::copy(
-                png,
-                destination.join(format!("business-quote-{:02}.png", index + 1)),
-            )
-            .unwrap();
+            std::fs::copy(png, destination.join(format!("business-quote-{:02}.png", index + 1))).unwrap();
         }
         export::csv(&q, &destination.join("business-quote.csv")).unwrap();
     }
@@ -531,28 +520,17 @@ fn legacy_quote_deserializes_without_settings_and_keeps_zero_tax() {
 #[test]
 fn long_valid_business_blocks_are_paginated_without_losing_content() {
     let mut q = configured_quote();
-    q.issuer_address = (0..80)
-        .map(|index| format!("ADDRESS-LONG-{index:03}\n"))
-        .collect();
-    q.header = (0..80)
-        .map(|index| format!("HEADER-LONG-{index:03}\n"))
-        .collect();
-    q.footer = (0..80)
-        .map(|index| format!("FOOTER-LONG-{index:03}\n"))
-        .collect();
-    q.terms = (0..80)
-        .map(|index| format!("TERMS-LONG-{index:03}\n"))
-        .collect();
+    q.issuer_address = (0..80).map(|index| format!("ADDRESS-LONG-{index:03}\n")).collect();
+    q.header = (0..80).map(|index| format!("HEADER-LONG-{index:03}\n")).collect();
+    q.footer = (0..80).map(|index| format!("FOOTER-LONG-{index:03}\n")).collect();
+    q.terms = (0..80).map(|index| format!("TERMS-LONG-{index:03}\n")).collect();
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("long-business.pdf");
     export::pdf(&q, &path).unwrap();
     if let Some(text) = pdf_text(&path, dir.path()) {
         for prefix in ["ADDRESS-LONG", "HEADER-LONG", "FOOTER-LONG", "TERMS-LONG"] {
             for index in 0..80 {
-                assert!(
-                    text.contains(&format!("{prefix}-{index:03}")),
-                    "missing {prefix} row {index}"
-                );
+                assert!(text.contains(&format!("{prefix}-{index:03}")), "missing {prefix} row {index}");
             }
         }
     }
@@ -566,12 +544,7 @@ fn saved_date_display_changes_pdf_but_keeps_csv_canonical_iso() {
     let path = directory.path().join("day-month-year.pdf");
     export::pdf(&q, &path).unwrap();
     if let Some(text) = pdf_text(&path, directory.path()) {
-        for date in [
-            "07/10/2026",
-            "14/10/2026",
-            "01/09/2026 08:00 UTC",
-            "07/10/2026 10:00 UTC",
-        ] {
+        for date in ["07/10/2026", "14/10/2026", "01/09/2026 08:00 UTC", "07/10/2026 10:00 UTC"] {
             assert!(text.contains(date), "missing formatted PDF date {date}");
         }
     }
@@ -587,10 +560,7 @@ fn saved_date_display_changes_pdf_but_keeps_csv_canonical_iso() {
         ("date_display", "day_month_year"),
     ] {
         let index = headers.iter().position(|value| value == column).unwrap();
-        assert_eq!(
-            &first[index], expected,
-            "CSV {column} must retain canonical stored value"
-        );
+        assert_eq!(&first[index], expected, "CSV {column} must retain canonical stored value");
     }
     assert_eq!(q.quote_date, "2026-10-07");
     assert_eq!(q.lines[0].source_at, "2026-09-01T08:00:00Z");
@@ -600,15 +570,10 @@ fn saved_date_display_changes_pdf_but_keeps_csv_canonical_iso() {
 fn customer_snapshot_exports_keep_exact_fields_and_paginate_long_addresses() {
     let mut q = configured_quote();
     q.customer_id = "2d037712-a88d-4303-9a6b-9e859a2b8aa0".into();
-    q.customer = format!(
-        "CUSTOMER-LONG-NAME {}",
-        "فروشگاه نمونه و شعبهٔ مرکزی ".repeat(8)
-    );
+    q.customer = format!("CUSTOMER-LONG-NAME {}", "فروشگاه نمونه و شعبهٔ مرکزی ".repeat(8));
     q.customer_contact = "شخص رابط CONTACT-SNAPSHOT".into();
     q.customer_email = "snapshot@example.test".into();
-    q.customer_address = (0..100)
-        .map(|index| format!("نشانی مشتری CUSTOMER-ADDRESS-{index:03}\n"))
-        .collect();
+    q.customer_address = (0..100).map(|index| format!("نشانی مشتری CUSTOMER-ADDRESS-{index:03}\n")).collect();
     let original_total = q.total_rial;
     let dir = tempfile::tempdir().unwrap();
     let pdf = dir.path().join("customer-snapshot.pdf");
@@ -636,15 +601,9 @@ fn customer_snapshot_exports_keep_exact_fields_and_paginate_long_addresses() {
         ("customer_address", q.customer_address.as_str()),
     ] {
         let index = headers.iter().position(|value| value == column).unwrap();
-        assert_eq!(
-            &first[index], expected,
-            "CSV must retain customer snapshot {column}"
-        );
+        assert_eq!(&first[index], expected, "CSV must retain customer snapshot {column}");
     }
-    let total = headers
-        .iter()
-        .position(|value| value == "quote_total_rial")
-        .unwrap();
+    let total = headers.iter().position(|value| value == "quote_total_rial").unwrap();
     assert_eq!(&first[total], original_total.to_string());
     assert!(pdf_page_count(&pdf).unwrap_or(3) >= 3);
 }
@@ -653,22 +612,14 @@ fn customer_snapshot_exports_keep_exact_fields_and_paginate_long_addresses() {
 fn customer_snapshot_csv_is_formula_safe_and_legacy_defaults_remain_absent() {
     let original = configured_quote();
     let value = serde_json::to_value(&original).unwrap();
-    for field in [
-        "customer_id",
-        "customer_contact",
-        "customer_email",
-        "customer_address",
-    ] {
+    for field in ["customer_id", "customer_contact", "customer_email", "customer_address"] {
         assert!(
             value.get(field).is_none(),
             "empty optional snapshot {field} must preserve legacy serialization"
         );
     }
     let decoded: Quote = serde_json::from_value(value).unwrap();
-    assert_eq!(
-        export::csv_bytes(&original).unwrap(),
-        export::csv_bytes(&decoded).unwrap()
-    );
+    assert_eq!(export::csv_bytes(&original).unwrap(), export::csv_bytes(&decoded).unwrap());
     assert_eq!(decoded.total_rial, original.total_rial);
     let mut q = original;
     q.customer_id = "=unsafe-id".into();
@@ -679,16 +630,8 @@ fn customer_snapshot_csv_is_formula_safe_and_legacy_defaults_remain_absent() {
     let mut reader = csv::Reader::from_reader(&bytes[3..]);
     let headers = reader.headers().unwrap().clone();
     let first = reader.records().next().unwrap().unwrap();
-    for column in [
-        "customer_id",
-        "customer_contact",
-        "customer_email",
-        "customer_address",
-    ] {
+    for column in ["customer_id", "customer_contact", "customer_email", "customer_address"] {
         let index = headers.iter().position(|value| value == column).unwrap();
-        assert!(
-            first[index].starts_with('\''),
-            "unprotected customer snapshot {column}"
-        );
+        assert!(first[index].starts_with('\''), "unprotected customer snapshot {column}");
     }
 }

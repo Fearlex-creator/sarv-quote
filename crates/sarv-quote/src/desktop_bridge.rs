@@ -1,18 +1,18 @@
-//! Shared desktop boundary. Both Tauri and the opt-in local QA adapter call this
+//! Shared desktop boundary. The Rune app calls this in-process. The opt-in local QA adapter calls this
 //! dispatcher; all validation and durable writes still use Store and the kernel.
 use crate::{
     accounting::*,
     core::*,
     domain::{BusinessProfile, DateDisplay, DisplayDigits, Settings, State, id, quantity},
-    payments::{PaymentAllocation, PaymentCommand, PaymentInput, PaymentReversalInput, PaymentSide},
+    payments::{PaymentAllocation, PaymentCommand, PaymentData, PaymentInput, PaymentReversalInput, PaymentSide},
     procurement::*,
     sales::*,
     sales_draft::RawSalesDraft,
     store::{IntegrityStatus, Store},
 };
-use anyhow::{Result, anyhow, ensure};
+use anyhow::{Result, anyhow, bail, ensure};
 use serde_json::{Value, json};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 #[path = "desktop_contacts_banking.rs"]
 mod contacts_banking;
 #[path = "desktop_products.rs"]
@@ -26,12 +26,22 @@ fn actor(p: &Value) -> &str {
     }
 }
 fn string<'a>(p: &'a Value, key: &str) -> Result<&'a str> {
-    p.get(key)
-        .and_then(Value::as_str)
-        .ok_or_else(|| anyhow!("Missing field: {key}"))
+    p.get(key).and_then(Value::as_str).ok_or_else(|| anyhow!("Missing field: {key}"))
 }
 fn optional<'a>(p: &'a Value, key: &str, default: &'a str) -> &'a str {
     p.get(key).and_then(Value::as_str).unwrap_or(default)
+}
+fn usize_opt(p: &Value, key: &str, default: usize) -> Result<usize> {
+    match p.get(key) {
+        None | Some(Value::Null) => Ok(default),
+        Some(Value::String(s)) if s.is_empty() => Ok(default),
+        Some(Value::String(s)) => Ok(s.parse()?),
+        Some(Value::Number(n)) => n
+            .as_u64()
+            .and_then(|v| usize::try_from(v).ok())
+            .ok_or_else(|| anyhow!("Invalid {key}")),
+        _ => Err(anyhow!("Invalid {key}")),
+    }
 }
 fn integer(p: &Value, key: &str) -> Result<u64> {
     Ok(string(p, key)?.parse()?)
@@ -71,14 +81,10 @@ fn journal_totals(value: &mut Value) -> Result<()> {
                 let mut credit = Money::ZERO;
                 for line in lines {
                     debit = debit.checked_add(Money::from_rials(
-                        line["debit"]
-                            .as_i64()
-                            .ok_or_else(|| anyhow!("Invalid journal debit"))?,
+                        line["debit"].as_i64().ok_or_else(|| anyhow!("Invalid journal debit"))?,
                     ))?;
                     credit = credit.checked_add(Money::from_rials(
-                        line["credit"]
-                            .as_i64()
-                            .ok_or_else(|| anyhow!("Invalid journal credit"))?,
+                        line["credit"].as_i64().ok_or_else(|| anyhow!("Invalid journal credit"))?,
                     ))?;
                 }
                 object.insert("total_debit".into(), json!(debit));
@@ -106,10 +112,7 @@ fn context(s: &State, p: &Value) -> Result<ProcurementContext> {
     let c = company(s, p)?;
     let period = string(p, "period_id")?;
     ensure!(
-        s.accounting
-            .periods
-            .iter()
-            .any(|x| x.id == period && x.company_id == c.id),
+        s.accounting.periods.iter().any(|x| x.id == period && x.company_id == c.id),
         "Period does not belong to company"
     );
     let setup = s
@@ -213,10 +216,7 @@ fn purchase_order(s: &State, p: &Value) -> Result<ProcurementCommand> {
             let q = quantity(string(l, "quantity")?)?;
             let price = amount(l, "unit_price")?;
             let discount = Money::parse(optional(l, "line_discount", "0"), MoneyUnit::Rial)?;
-            let gross = Money::from_rials(positive_half_up(
-                i128::from(price.rials()) * i128::from(q),
-                1000,
-            )?);
+            let gross = Money::from_rials(positive_half_up(i128::from(price.rials()) * i128::from(q), 1000)?);
             total = total.checked_add(gross.checked_sub(discount)?)?;
             Ok(OrderLine {
                 id: string(l, "id")?.into(),
@@ -249,34 +249,21 @@ fn selections(p: &Value) -> Result<Option<std::collections::BTreeMap<String, i64
     let Some(value) = p.get("lines") else {
         return Ok(None);
     };
-    let rows = value
-        .as_array()
-        .ok_or_else(|| anyhow!("Selected lines required"))?;
+    let rows = value.as_array().ok_or_else(|| anyhow!("Selected lines required"))?;
     let mut out = std::collections::BTreeMap::new();
     for row in rows {
         let raw = string(row, "quantity")?;
         let q = if raw == "0" { 0 } else { quantity(raw)? };
-        ensure!(
-            out.insert(string(row, "id")?.into(), q).is_none(),
-            "Duplicate source line"
-        );
+        ensure!(out.insert(string(row, "id")?.into(), q).is_none(), "Duplicate source line");
     }
-    ensure!(
-        out.values().any(|q| *q > 0),
-        "Select at least one positive quantity"
-    );
+    ensure!(out.values().any(|q| *q > 0), "Select at least one positive quantity");
     Ok(Some(out))
 }
 fn retry_selection<'a>(p: &Value, rows: impl Iterator<Item = (&'a str, i64)>) -> Result<()> {
     if let Some(selected) = selections(p)? {
-        let selected: std::collections::BTreeMap<_, _> =
-            selected.into_iter().filter(|(_, q)| *q > 0).collect();
-        let prior: std::collections::BTreeMap<_, _> =
-            rows.map(|(id, q)| (id.to_owned(), q)).collect();
-        ensure!(
-            selected == prior,
-            "Posted retry has different selected quantities"
-        );
+        let selected: std::collections::BTreeMap<_, _> = selected.into_iter().filter(|(_, q)| *q > 0).collect();
+        let prior: std::collections::BTreeMap<_, _> = rows.map(|(id, q)| (id.to_owned(), q)).collect();
+        ensure!(selected == prior, "Posted retry has different selected quantities");
     }
     Ok(())
 }
@@ -320,12 +307,7 @@ impl OperationLine {
         )
     }
 }
-fn operation_lines(
-    s: &State,
-    company: &str,
-    record: &str,
-    action: &str,
-) -> Result<Vec<OperationLine>> {
+fn operation_lines(s: &State, company: &str, record: &str, action: &str) -> Result<Vec<OperationLine>> {
     let mut out = vec![];
     if action == "fulfill" || action == "sale_return" {
         let r = s.accounting.sales_document(record)?;
@@ -352,7 +334,11 @@ fn operation_lines(
                 return Err(anyhow!("Not an invoice"));
             };
             for l in s.accounting.sales_invoice_returnable(record)? {
-                let orig = f.lines.iter().find(|x| x.id == l.id).unwrap();
+                let orig = f
+                    .lines
+                    .iter()
+                    .find(|x| x.id == l.id)
+                    .ok_or_else(|| anyhow!("Missing invoice line {}", l.id))?;
                 out.push(OperationLine {
                     id: l.id,
                     item_id: l.item.id,
@@ -400,8 +386,7 @@ fn operation_lines(
                     .filter(|x| x.order_line_id == l.input.id)
                     .try_fold((0i64, Money::ZERO), |(q, v), x| -> Result<_> {
                         Ok((
-                            q.checked_add(x.quantity_thousandths)
-                                .ok_or_else(|| anyhow!("Quantity overflow"))?,
+                            q.checked_add(x.quantity_thousandths).ok_or_else(|| anyhow!("Quantity overflow"))?,
                             v.checked_add(x.value)?,
                         ))
                     })?;
@@ -439,10 +424,7 @@ fn operation_lines(
             };
             for l in eligible {
                 out.push(OperationLine {
-                    id: l
-                        .bill_line_id
-                        .clone()
-                        .unwrap_or_else(|| l.receipt_line_id.clone()),
+                    id: l.bill_line_id.clone().unwrap_or_else(|| l.receipt_line_id.clone()),
                     unit_id: unit(&l.item_id)?,
                     item_id: l.item_id,
                     warehouse_id: l.warehouse_id,
@@ -460,27 +442,18 @@ fn operation_lines(
     }
     Ok(out)
 }
-fn selected_lines(
-    s: &State,
-    p: &Value,
-    record: &str,
-    action: &str,
-) -> Result<Vec<(OperationLine, i64)>> {
+fn selected_lines(s: &State, p: &Value, record: &str, action: &str) -> Result<Vec<(OperationLine, i64)>> {
     let options = operation_lines(s, string(p, "company_id")?, record, action)?;
     let selection = selections(p)?;
     if let Some(selection) = &selection {
         ensure!(
-            selection
-                .keys()
-                .all(|id| options.iter().any(|x| &x.id == id)),
+            selection.keys().all(|id| options.iter().any(|x| &x.id == id)),
             "Source line does not belong to this document"
         );
     }
     let mut out = vec![];
     for l in options {
-        let q = selection
-            .as_ref()
-            .map_or(l.remaining_quantity, |m| *m.get(&l.id).unwrap_or(&0));
+        let q = selection.as_ref().map_or(l.remaining_quantity, |m| *m.get(&l.id).unwrap_or(&0));
         ensure!(
             q >= 0 && q <= l.remaining_quantity,
             "Quantity exceeds the remaining source quantity"
@@ -494,35 +467,19 @@ fn selected_lines(
 }
 fn sale_return(s: &State, p: &Value) -> Result<SalesCommand> {
     let ctx = context(s, p)?;
-    if let Some(prior) = s
-        .accounting
-        .sales
-        .records
-        .iter()
-        .find_map(|r| match &r.command {
-            SalesCommand::Return(x)
-                if x.context.company_id == ctx.company_id
-                    && x.context.source_id == ctx.source_id =>
-            {
-                Some(x)
-            }
-            _ => None,
-        })
-    {
+    if let Some(prior) = s.accounting.sales.records.iter().find_map(|r| match &r.command {
+        SalesCommand::Return(x) if x.context.company_id == ctx.company_id && x.context.source_id == ctx.source_id => Some(x),
+        _ => None,
+    }) {
         let mut previous = prior.context.clone();
         previous.request_key = ctx.request_key.clone();
         ensure!(
-            previous == ctx
-                && prior.fulfillment_id == p["record_id"]
-                && prior.return_reference == p["reference"],
+            previous == ctx && prior.fulfillment_id == p["record_id"] && prior.return_reference == p["reference"],
             "Posted return retry has different contents"
         );
         retry_selection(
             p,
-            prior
-                .lines
-                .iter()
-                .map(|l| (l.fulfillment_line_id.as_str(), l.quantity_thousandths)),
+            prior.lines.iter().map(|l| (l.fulfillment_line_id.as_str(), l.quantity_thousandths)),
         )?;
         let mut repeat = prior.clone();
         repeat.context = ctx;
@@ -563,38 +520,20 @@ fn purchase_return(s: &State, p: &Value) -> Result<ProcurementCommand> {
     let reference = string(p, "reference")?;
     let ctx = context(s, p)?;
     let r = s.accounting.procurement_document(string(p, "record_id")?)?;
-    ensure!(
-        r.command.context().company_id == ctx.company_id,
-        "Wrong company"
-    );
+    ensure!(r.command.context().company_id == ctx.company_id, "Wrong company");
     let (supplier, billed, ids) = match &r.data {
         ProcurementData::Receive(x) => (
             x.supplier_id.clone(),
             false,
             x.lines.iter().map(|l| l.id.clone()).collect::<Vec<_>>(),
         ),
-        ProcurementData::Bill(x) => (
-            x.supplier_id.clone(),
-            true,
-            x.lines.iter().map(|l| l.id.clone()).collect(),
-        ),
+        ProcurementData::Bill(x) => (x.supplier_id.clone(), true, x.lines.iter().map(|l| l.id.clone()).collect()),
         _ => return Err(anyhow!("Return source must be a receipt or bill")),
     };
-    if let Some(prior) = s
-        .accounting
-        .procurement
-        .records
-        .iter()
-        .find_map(|r| match &r.command {
-            ProcurementCommand::Return(x)
-                if x.context.company_id == ctx.company_id
-                    && x.context.source_id == ctx.source_id =>
-            {
-                Some(x)
-            }
-            _ => None,
-        })
-    {
+    if let Some(prior) = s.accounting.procurement.records.iter().find_map(|r| match &r.command {
+        ProcurementCommand::Return(x) if x.context.company_id == ctx.company_id && x.context.source_id == ctx.source_id => Some(x),
+        _ => None,
+    }) {
         let mut previous = prior.context.clone();
         previous.request_key = ctx.request_key.clone();
         ensure!(
@@ -609,12 +548,10 @@ fn purchase_return(s: &State, p: &Value) -> Result<ProcurementCommand> {
         );
         retry_selection(
             p,
-            prior.lines.iter().map(|l| {
-                (
-                    l.bill_line_id.as_deref().unwrap_or(&l.receipt_line_id),
-                    l.quantity_thousandths,
-                )
-            }),
+            prior
+                .lines
+                .iter()
+                .map(|l| (l.bill_line_id.as_deref().unwrap_or(&l.receipt_line_id), l.quantity_thousandths)),
         )?;
         let mut repeat = prior.clone();
         repeat.context = ctx;
@@ -628,7 +565,7 @@ fn purchase_return(s: &State, p: &Value) -> Result<ProcurementCommand> {
             total = total.checked_add(value)?;
             Ok(PurchaseReturnLine {
                 id: format!("{}-{}", ctx.source_id, l.id),
-                receipt_line_id: l.receipt_line_id.unwrap(),
+                receipt_line_id: l.receipt_line_id.ok_or_else(|| anyhow!("Missing receipt line id for {}", l.id))?,
                 bill_line_id: l.bill_line_id,
                 quantity_thousandths: q,
                 supplied_value: value,
@@ -649,21 +586,10 @@ fn purchase_return(s: &State, p: &Value) -> Result<ProcurementCommand> {
 }
 
 fn fulfill(s: &State, p: &Value) -> Result<SalesCommand> {
-    if let Some(prior) = s
-        .accounting
-        .sales
-        .records
-        .iter()
-        .find_map(|r| match &r.command {
-            SalesCommand::Fulfill(x)
-                if x.context.company_id == p["company_id"]
-                    && x.context.source_id == p["source_id"] =>
-            {
-                Some(x)
-            }
-            _ => None,
-        })
-    {
+    if let Some(prior) = s.accounting.sales.records.iter().find_map(|r| match &r.command {
+        SalesCommand::Fulfill(x) if x.context.company_id == p["company_id"] && x.context.source_id == p["source_id"] => Some(x),
+        _ => None,
+    }) {
         let ctx = context(s, p)?;
         let mut previous = prior.context.clone();
         previous.request_key = ctx.request_key.clone();
@@ -674,22 +600,13 @@ fn fulfill(s: &State, p: &Value) -> Result<SalesCommand> {
                 && prior.due_date == p["due_date"],
             "Posted invoice retry has different contents"
         );
-        retry_selection(
-            p,
-            prior
-                .lines
-                .iter()
-                .map(|l| (l.order_line_id.as_str(), l.quantity_thousandths)),
-        )?;
+        retry_selection(p, prior.lines.iter().map(|l| (l.order_line_id.as_str(), l.quantity_thousandths)))?;
         let mut repeat = prior.clone();
         repeat.context = ctx;
         return Ok(SalesCommand::Fulfill(repeat));
     }
     let order = s.accounting.sales_document(string(p, "order_id")?)?;
-    ensure!(
-        order.command.context().company_id == string(p, "company_id")?,
-        "Wrong company"
-    );
+    ensure!(order.command.context().company_id == string(p, "company_id")?, "Wrong company");
     let mut total = Money::ZERO;
     let lines = selected_lines(s, p, &order.id, "fulfill")?
         .into_iter()
@@ -718,21 +635,10 @@ fn fulfill(s: &State, p: &Value) -> Result<SalesCommand> {
     }))
 }
 fn receive(s: &State, p: &Value) -> Result<ProcurementCommand> {
-    if let Some(prior) = s
-        .accounting
-        .procurement
-        .records
-        .iter()
-        .find_map(|r| match &r.command {
-            ProcurementCommand::Receive(x)
-                if x.context.company_id == p["company_id"]
-                    && x.context.source_id == p["source_id"] =>
-            {
-                Some(x)
-            }
-            _ => None,
-        })
-    {
+    if let Some(prior) = s.accounting.procurement.records.iter().find_map(|r| match &r.command {
+        ProcurementCommand::Receive(x) if x.context.company_id == p["company_id"] && x.context.source_id == p["source_id"] => Some(x),
+        _ => None,
+    }) {
         let ctx = context(s, p)?;
         let mut previous = prior.context.clone();
         previous.request_key = ctx.request_key.clone();
@@ -740,13 +646,7 @@ fn receive(s: &State, p: &Value) -> Result<ProcurementCommand> {
             previous == ctx && prior.order_id == p["order_id"] && prior.reference == p["reference"],
             "Posted receipt retry has different contents"
         );
-        retry_selection(
-            p,
-            prior
-                .lines
-                .iter()
-                .map(|l| (l.order_line_id.as_str(), l.quantity_thousandths)),
-        )?;
+        retry_selection(p, prior.lines.iter().map(|l| (l.order_line_id.as_str(), l.quantity_thousandths)))?;
         let mut repeat = prior.clone();
         repeat.context = ctx;
         return Ok(ProcurementCommand::Receive(repeat));
@@ -755,10 +655,7 @@ fn receive(s: &State, p: &Value) -> Result<ProcurementCommand> {
     let ProcurementCommand::Order(o) = &r.command else {
         return Err(anyhow!("Not a purchase order"));
     };
-    ensure!(
-        o.context.company_id == string(p, "company_id")?,
-        "Wrong company"
-    );
+    ensure!(o.context.company_id == string(p, "company_id")?, "Wrong company");
     let mut total = Money::ZERO;
     let lines = selected_lines(s, p, &r.id, "receive")?
         .into_iter()
@@ -783,27 +680,14 @@ fn receive(s: &State, p: &Value) -> Result<ProcurementCommand> {
     }))
 }
 fn bill(s: &State, p: &Value) -> Result<ProcurementCommand> {
-    if let Some(prior) = s
-        .accounting
-        .procurement
-        .records
-        .iter()
-        .find_map(|r| match &r.command {
-            ProcurementCommand::Bill(x)
-                if x.context.company_id == p["company_id"]
-                    && x.context.source_id == p["source_id"] =>
-            {
-                Some(x)
-            }
-            _ => None,
-        })
-    {
+    if let Some(prior) = s.accounting.procurement.records.iter().find_map(|r| match &r.command {
+        ProcurementCommand::Bill(x) if x.context.company_id == p["company_id"] && x.context.source_id == p["source_id"] => Some(x),
+        _ => None,
+    }) {
         let ctx = context(s, p)?;
         let mut previous = prior.context.clone();
         previous.request_key = ctx.request_key.clone();
-        let receipt = s
-            .accounting
-            .procurement_document(string(p, "receipt_id")?)?;
+        let receipt = s.accounting.procurement_document(string(p, "receipt_id")?)?;
         let ProcurementData::Receive(source) = &receipt.data else {
             return Err(anyhow!("Not a receipt"));
         };
@@ -811,33 +695,19 @@ fn bill(s: &State, p: &Value) -> Result<ProcurementCommand> {
             previous == ctx
                 && prior.reference == p["reference"]
                 && prior.due_date == p["due_date"]
-                && prior
-                    .lines
-                    .iter()
-                    .all(|l| source.lines.iter().any(|x| x.id == l.receipt_line_id)),
+                && prior.lines.iter().all(|l| source.lines.iter().any(|x| x.id == l.receipt_line_id)),
             "Posted bill retry has different contents"
         );
-        retry_selection(
-            p,
-            prior
-                .lines
-                .iter()
-                .map(|l| (l.receipt_line_id.as_str(), l.quantity_thousandths)),
-        )?;
+        retry_selection(p, prior.lines.iter().map(|l| (l.receipt_line_id.as_str(), l.quantity_thousandths)))?;
         let mut repeat = prior.clone();
         repeat.context = ctx;
         return Ok(ProcurementCommand::Bill(repeat));
     }
-    let r = s
-        .accounting
-        .procurement_document(string(p, "receipt_id")?)?;
+    let r = s.accounting.procurement_document(string(p, "receipt_id")?)?;
     let ProcurementData::Receive(receipt) = &r.data else {
         return Err(anyhow!("Not a receipt"));
     };
-    ensure!(
-        r.command.context().company_id == string(p, "company_id")?,
-        "Wrong company"
-    );
+    ensure!(r.command.context().company_id == string(p, "company_id")?, "Wrong company");
     let mut total = Money::ZERO;
     let lines = selected_lines(s, p, &r.id, "bill")?
         .into_iter()
@@ -886,12 +756,7 @@ fn report(s: &State, p: &Value) -> Result<Value> {
     let mut rows = vec![];
     let mut revenue = Money::ZERO;
     let mut expense = Money::ZERO;
-    for account in s
-        .accounting
-        .accounts
-        .iter()
-        .filter(|a| a.company_id == c.id)
-    {
+    for account in s.accounting.accounts.iter().filter(|a| a.company_id == c.id) {
         let net = nets.get(account.id.as_str()).copied().unwrap_or(Money::ZERO);
         if account.classification == AccountClass::Revenue {
             let v = Money::ZERO.checked_sub(net)?;
@@ -922,11 +787,7 @@ fn report(s: &State, p: &Value) -> Result<Value> {
             .iter()
             .find(|x| x.command.company_id == c.id)
             .and_then(|x| x.account_id(role).ok());
-        if let Some(row) = tb
-            .rows
-            .iter()
-            .find(|r| Some(r.account_id.as_str()) == account)
-        {
+        if let Some(row) = tb.rows.iter().find(|r| Some(r.account_id.as_str()) == account) {
             if role.normal_balance() == BalanceSide::Debit {
                 row.debit.checked_sub(row.credit)
             } else {
@@ -939,15 +800,11 @@ fn report(s: &State, p: &Value) -> Result<Value> {
     let mut party_balances = std::collections::BTreeMap::<String, Money>::new();
     if let Some(detail) = &reconciliation {
         for item in &detail.receivables {
-            let entry = party_balances
-                .entry(format!("customer:{}", item.party_id))
-                .or_insert(Money::ZERO);
+            let entry = party_balances.entry(format!("customer:{}", item.party_id)).or_insert(Money::ZERO);
             *entry = entry.checked_add(item.remaining)?;
         }
         for item in &detail.payables {
-            let entry = party_balances
-                .entry(format!("vendor:{}", item.party_id))
-                .or_insert(Money::ZERO);
+            let entry = party_balances.entry(format!("vendor:{}", item.party_id)).or_insert(Money::ZERO);
             *entry = entry.checked_add(item.remaining)?;
         }
     }
@@ -975,38 +832,190 @@ fn workspace(s: &State, p: &Value) -> Result<Value> {
     let a = &s.accounting;
     let resources = if a.core.openings.iter().any(|o| o.command.company_id == c) {
         let mut resources = a.procurement_resources(c)?;
-        for party in &mut resources.parties { if let Some(profile) = s.party_profiles.get(&party.id) { if !profile.display_name.trim().is_empty() { party.name = profile.display_name.clone(); } } }
+        for party in &mut resources.parties {
+            if let Some(profile) = s.party_profiles.get(&party.id) {
+                if !profile.display_name.trim().is_empty() {
+                    party.name = profile.display_name.clone();
+                }
+            }
+        }
         Some(resources)
     } else {
         None
     };
     let journal_count = a.journals.iter().filter(|j| j.company_id == c).count();
-    let sales_count = a
-        .sales
-        .records
-        .iter()
-        .filter(|r| r.command.context().company_id == c)
-        .count();
-    let purchase_count = a
-        .procurement
-        .records
-        .iter()
-        .filter(|r| r.command.context().company_id == c)
-        .count();
-    let payment_count = a
-        .payments
-        .records
-        .iter()
-        .filter(|r| r.command.context().company_id == c)
-        .count();
-    let offset = p["offset"]
-        .as_str()
-        .unwrap_or("0")
-        .parse::<usize>()?
-        .min(1_000_000);
+    let sales_count = a.sales.records.iter().filter(|r| r.command.context().company_id == c).count();
+    let purchase_count = a.procurement.records.iter().filter(|r| r.command.context().company_id == c).count();
+    let payment_count = a.payments.records.iter().filter(|r| r.command.context().company_id == c).count();
+    let offset = p["offset"].as_str().unwrap_or("0").parse::<usize>()?.min(1_000_000);
     Ok(
         json!({"companies":a.companies,"periods":a.periods.iter().filter(|x|x.company_id==c).collect::<Vec<_>>(),"accounts":a.accounts.iter().filter(|x|x.company_id==c).collect::<Vec<_>>(),"setups":a.core.setups.iter().filter(|x|x.command.company_id==c).collect::<Vec<_>>(),"initialized":a.core.openings.iter().any(|o|o.command.company_id==c),"resources":resources,"journals":a.journals.iter().filter(|j|j.company_id==c).rev().skip(offset).take(100).collect::<Vec<_>>(),"journal_count":journal_count,"sales":a.sales.records.iter().filter(|r|r.command.context().company_id==c).rev().skip(offset).take(100).collect::<Vec<_>>(),"sales_count":sales_count,"purchases":a.procurement.records.iter().filter(|r|r.command.context().company_id==c).rev().skip(offset).take(100).collect::<Vec<_>>(),"purchase_count":purchase_count,"payments":a.payments.records.iter().filter(|r|r.command.context().company_id==c).rev().skip(offset).take(100).collect::<Vec<_>>(),"payment_count":payment_count,"drafts":s.sales_drafts.iter().filter(|d|d.company_id==c).take(100).collect::<Vec<_>>(),"audit":a.audit.iter().filter(|x|x.company_id==c).rev().take(100).collect::<Vec<_>>(),"settings":s.settings,"business_profile":s.business_profiles.get(c).cloned().unwrap_or_default(),"product_profiles":s.product_profiles.iter().filter(|(_,p)|p.company_id==c).collect::<std::collections::BTreeMap<_,_>>(),"party_profiles":s.party_profiles.iter().filter(|(_,p)|p.company_id==c).collect::<std::collections::BTreeMap<_,_>>(),"capabilities":{"payments":true,"banking":true,"attachments":false,"service_invoices":false}}),
     )
+}
+
+fn matches_query(query_lower: &str, candidates: &[&str]) -> bool {
+    query_lower.is_empty() || candidates.iter().any(|c| c.to_lowercase().contains(query_lower))
+}
+
+fn matches_date(date: &str, from: Option<&str>, to: Option<&str>) -> bool {
+    from.is_none_or(|f| date >= f) && to.is_none_or(|t| date <= t)
+}
+
+fn matches_party(party: Option<&str>, filter: Option<&str>) -> bool {
+    filter.is_none_or(|f| party == Some(f))
+}
+
+fn paginate_records<T: serde::Serialize>(iter: impl Iterator<Item = T>, offset: usize, limit: usize) -> Result<Value> {
+    let mut count = 0usize;
+    let mut rows = Vec::new();
+    for item in iter {
+        if count >= offset && rows.len() < limit {
+            rows.push(serde_json::to_value(item)?);
+        }
+        count += 1;
+    }
+    Ok(json!({ "count": count, "rows": rows }))
+}
+
+fn records(s: &State, p: &Value) -> Result<Value> {
+    let c = company(s, p)?;
+    let kind = string(p, "kind")?;
+    let offset = usize_opt(p, "offset", 0)?.min(1_000_000);
+    let limit = usize_opt(p, "limit", 100)?.min(200);
+    let from_raw = optional(p, "from", "");
+    let to_raw = optional(p, "to", "");
+    let from = (!from_raw.is_empty()).then_some(from_raw);
+    let to = (!to_raw.is_empty()).then_some(to_raw);
+    if let Some(f) = from {
+        civil_date(f)?;
+    }
+    if let Some(t) = to {
+        civil_date(t)?;
+    }
+    if let (Some(f), Some(t)) = (from, to) {
+        ensure!(f <= t, "Invalid date range");
+    }
+    let party_raw = optional(p, "party_id", "");
+    let party = (!party_raw.is_empty()).then_some(party_raw);
+    let query_lower = optional(p, "query", "").to_lowercase();
+    let a = &s.accounting;
+    match kind {
+        "journals" => paginate_records(
+            a.journals.iter().filter(|j| j.company_id == c.id).rev().filter(|j| {
+                matches_party(None, party) && matches_date(j.date.as_str(), from, to) && matches_query(&query_lower, &[&j.source_id])
+            }),
+            offset,
+            limit,
+        ),
+        "sales" => paginate_records(
+            a.sales
+                .records
+                .iter()
+                .filter(|r| r.command.context().company_id == c.id)
+                .rev()
+                .filter(|r| {
+                    let date = match &r.command {
+                        SalesCommand::Order(x) => x.document_date.as_str(),
+                        SalesCommand::Fulfill(x) => x.document_date.as_str(),
+                        SalesCommand::Return(x) => x.document_date.as_str(),
+                    };
+                    let rec_party = match &r.data {
+                        SalesData::Order(x) => x.customer.id.as_str(),
+                        SalesData::Fulfill(x) => x.customer.id.as_str(),
+                        SalesData::Return(x) => x.customer_id.as_str(),
+                    };
+                    let q_match = match &r.command {
+                        SalesCommand::Order(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        SalesCommand::Fulfill(x) => {
+                            matches_query(&query_lower, &[&x.invoice_reference, &x.delivery_reference, &x.context.source_id])
+                        }
+                        SalesCommand::Return(x) => {
+                            matches_query(&query_lower, &[&x.return_reference, &x.credit_reference, &x.context.source_id])
+                        }
+                    };
+                    matches_party(Some(rec_party), party) && matches_date(date, from, to) && q_match
+                }),
+            offset,
+            limit,
+        ),
+        "purchases" => paginate_records(
+            a.procurement
+                .records
+                .iter()
+                .filter(|r| r.command.context().company_id == c.id)
+                .rev()
+                .filter(|r| {
+                    let date = match &r.command {
+                        ProcurementCommand::Resources(x) => x.context.date.as_str(),
+                        ProcurementCommand::Order(x) => x.document_date.as_str(),
+                        ProcurementCommand::Receive(x) => x.document_date.as_str(),
+                        ProcurementCommand::Bill(x) => x.document_date.as_str(),
+                        ProcurementCommand::Transfer(x) => x.context.date.as_str(),
+                        ProcurementCommand::Return(x) => x.document_date.as_str(),
+                    };
+                    let rec_party = match &r.data {
+                        ProcurementData::Order(x) => Some(x.supplier.id.as_str()),
+                        ProcurementData::Receive(x) => Some(x.supplier_id.as_str()),
+                        ProcurementData::Bill(x) => Some(x.supplier_id.as_str()),
+                        ProcurementData::Return(x) => Some(x.supplier_id.as_str()),
+                        ProcurementData::Resources(_) | ProcurementData::Transfer(_) => None,
+                    };
+                    let q_match = match &r.command {
+                        ProcurementCommand::Resources(_) | ProcurementCommand::Transfer(_) => {
+                            matches_query(&query_lower, &[&r.command.context().source_id])
+                        }
+                        ProcurementCommand::Order(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        ProcurementCommand::Receive(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        ProcurementCommand::Bill(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        ProcurementCommand::Return(x) => matches_query(
+                            &query_lower,
+                            &[
+                                &x.return_reference,
+                                x.credit_reference.as_deref().unwrap_or(""),
+                                &x.context.source_id,
+                            ],
+                        ),
+                    };
+                    matches_party(rec_party, party) && matches_date(date, from, to) && q_match
+                }),
+            offset,
+            limit,
+        ),
+        "payments" => paginate_records(
+            a.payments
+                .records
+                .iter()
+                .filter(|r| r.command.context().company_id == c.id)
+                .rev()
+                .filter(|r| {
+                    let date = r.command.context().date.as_str();
+                    let rec_party = match &r.data {
+                        PaymentData::Payment(x) => x.party.id.as_str(),
+                        PaymentData::Reversal(x) => x.party.id.as_str(),
+                    };
+                    let q_match = match (&r.command, &r.data) {
+                        (PaymentCommand::Payment(x), _) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        (PaymentCommand::Reversal(x), PaymentData::Reversal(d)) => {
+                            matches_query(&query_lower, &[&d.reference, &x.context.source_id])
+                        }
+                        (PaymentCommand::Reversal(x), _) => matches_query(&query_lower, &[&x.context.source_id]),
+                    };
+                    matches_party(Some(rec_party), party) && matches_date(date, from, to) && q_match
+                }),
+            offset,
+            limit,
+        ),
+        "drafts" => paginate_records(
+            s.sales_drafts.iter().filter(|d| d.company_id == c.id).filter(|d| {
+                matches_party(Some(d.customer_id.as_str()), party)
+                    && matches_date(d.document_date.as_str(), from, to)
+                    && matches_query(&query_lower, &[&d.reference, &d.id])
+            }),
+            offset,
+            limit,
+        ),
+        _ => bail!("Unsupported record kind: {kind}"),
+    }
 }
 
 fn payment(s: &State, p: &Value) -> Result<PaymentCommand> {
@@ -1066,7 +1075,12 @@ fn cheque_details(p: &Value) -> Result<crate::cheques::ChequeDetails> {
 fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
     use crate::iran::cheque::{Action, State as St, apply};
     let mut rows = vec![];
-    for c in s.cheques.cheques.iter().filter(|c| company_id.is_empty() || c.company_id == company_id) {
+    for c in s
+        .cheques
+        .cheques
+        .iter()
+        .filter(|c| company_id.is_empty() || c.company_id == company_id)
+    {
         let status = s.cheques.status(&c.id)?;
         let dir = match c.direction {
             crate::cheques::ChequeDir::Received => crate::iran::cheque::Direction::Received,
@@ -1103,44 +1117,150 @@ fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
     Ok(json!(rows))
 }
 
+fn backup_file_kind(name: &str) -> Option<&'static str> {
+    if name.contains('/') || name.contains('\\') || name.contains("..") || !name.ends_with(".json") {
+        return None;
+    }
+    if name.starts_with("sarv-backup-") {
+        Some("manual")
+    } else if name.starts_with("before-restore-") {
+        Some("before-restore")
+    } else if let Some(rest) = name.strip_prefix("before-schema") {
+        rest.contains('-').then_some("before-upgrade")
+    } else {
+        None
+    }
+}
+
+fn validated_backup_path(directory: &Path, name: &str) -> Result<PathBuf> {
+    ensure!(backup_file_kind(name).is_some(), "Invalid backup filename");
+    Ok(directory.join(name))
+}
+
+fn backup_summary(s: &State) -> Value {
+    json!({
+        "companies": s.accounting.companies.iter().map(|c| c.name.clone()).collect::<Vec<_>>(),
+        "journals": s.accounting.journals.len(),
+        "sales": s.accounting.sales.records.len(),
+        "purchases": s.accounting.procurement.records.len(),
+        "payments": s.accounting.payments.records.len(),
+        "quotes": s.quotes.len(),
+        "drafts": s.sales_drafts.len(),
+    })
+}
+
+fn list_backups(directory: &Path) -> Result<Value> {
+    let mut entries = vec![];
+    for entry in std::fs::read_dir(directory)? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let Some(kind) = backup_file_kind(&name) else {
+            continue;
+        };
+        let meta = entry.metadata()?;
+        let modified = meta
+            .modified()
+            .map(|t| t.duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0))
+            .unwrap_or(0);
+        entries.push((modified, name, entry.path(), meta.len(), kind));
+    }
+    entries.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.1.cmp(&a.1)));
+    let mut rows = Vec::with_capacity(entries.len());
+    for (idx, (modified, name, path, bytes, kind)) in entries.into_iter().enumerate() {
+        let (companies, journals, valid) = if idx < 20 {
+            let state = Store::restore_preview(&path).ok();
+            (
+                state.as_ref().map(|s| s.accounting.companies.len()).unwrap_or(0),
+                state.as_ref().map(|s| s.accounting.journals.len()).unwrap_or(0),
+                json!(state.is_some()),
+            )
+        } else {
+            (0, 0, Value::Null)
+        };
+        rows.push(json!({
+            "filename": name,
+            "kind": kind,
+            "bytes": bytes,
+            "modified": modified,
+            "companies": companies,
+            "journals": journals,
+            "valid": valid,
+        }));
+    }
+    Ok(json!({"backups": rows}))
+}
+
+fn prune_safety_backups(directory: &Path) -> Result<()> {
+    let mut before_restore = vec![];
+    let mut before_upgrade = vec![];
+    for entry in std::fs::read_dir(directory)? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let Some(kind) = backup_file_kind(&name) else {
+            continue;
+        };
+        if kind != "before-restore" && kind != "before-upgrade" {
+            continue;
+        }
+        let modified = entry
+            .metadata()?
+            .modified()
+            .map(|t| t.duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0))
+            .unwrap_or(0);
+        let item = (modified, name, entry.path());
+        if kind == "before-restore" {
+            before_restore.push(item);
+        } else {
+            before_upgrade.push(item);
+        }
+    }
+    for list in [&mut before_restore, &mut before_upgrade] {
+        list.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.1.cmp(&a.1)));
+        for (_, _, path) in list.iter().skip(5) {
+            let _ = std::fs::remove_file(path);
+        }
+    }
+    Ok(())
+}
+
 pub fn dispatch(directory: &Path, action: &str, p: Value) -> Result<Value> {
-    let mut store = Store::open(directory)?;
-    dispatch_in(&mut store, action, p)
+    match Store::open(directory) {
+        Ok(mut store) => dispatch_in(&mut store, action, p),
+        Err(open_err) => match action {
+            "backup_list" => list_backups(directory),
+            "backup_restore_preview" => {
+                let path = validated_backup_path(directory, string(&p, "filename")?)?;
+                let candidate = Store::restore_preview(&path)?;
+                Ok(json!({"backup": backup_summary(&candidate), "current": Value::Null}))
+            }
+            "recover_from_backup" => {
+                ensure!(p["confirmed"] == true, "Restoring requires explicit confirmation");
+                let path = validated_backup_path(directory, string(&p, "filename")?)?;
+                let preserved = Store::recover_from_backup(directory, &path)?;
+                Ok(json!({
+                    "recovered": true,
+                    "unreadable_backup": preserved.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default(),
+                }))
+            }
+            _ => Err(open_err),
+        },
+    }
 }
 
 /// Dispatch against a store the caller keeps open across commands. The owner
 /// must call `refresh_if_stale` first so a second app or the local agent is
 /// never served a cached snapshot.
 pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
+    ensure!(p.is_object(), "Payload must be an object");
     let key = p["request_key"].as_str().unwrap_or("");
-    let replay = store
-        .state
-        .accounting
-        .requests
-        .iter()
-        .any(|r| r.command.request_key == key)
-        || store
-            .state
-            .accounting
-            .sales
-            .requests
-            .iter()
-            .any(|r| r.request_key == key)
-        || store
-            .state
-            .accounting
-            .procurement
-            .requests
-            .iter()
-            .any(|r| r.request_key == key)
-        || store
-            .state
-            .accounting
-            .core
-            .zero_requests
-            .iter()
-            .any(|r| r.request_key == key);
-    if (action.ends_with("_post") || action == "journal_reverse" || action.starts_with("cheque_"))
+    let replay = !key.is_empty()
+        && (store.state.accounting.requests.iter().any(|r| r.command.request_key == key)
+            || store.state.accounting.sales.requests.iter().any(|r| r.request_key == key)
+            || store.state.accounting.procurement.requests.iter().any(|r| r.request_key == key)
+            || store.state.accounting.core.zero_requests.iter().any(|r| r.request_key == key)
+            || store.state.accounting.payments.requests.iter().any(|r| r.request_key == key)
+            || store.state.cheques.events.iter().any(|e| e.request_key == key));
+    if (action.ends_with("_post") || action == "journal_reverse" || action == "period_lock" || action.starts_with("cheque_"))
         && !replay
         && p.get("expected_generation").is_some()
     {
@@ -1154,60 +1274,19 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         // Backups are a desktop capability: the agent surface never exposes
         // replacing the books. Filenames stay inside the profile directory.
         "backup_create" => {
-            let name = format!(
-                "sarv-backup-{}.json",
-                crate::domain::now().replace(':', "").replace('+', "-")
-            );
+            let name = format!("sarv-backup-{}.json", crate::domain::now().replace(':', "").replace('+', "-"));
             let path = store.directory.join(&name);
             store.backup(&path)?;
+            prune_safety_backups(&store.directory)?;
             json!({"filename": name, "bytes": std::fs::metadata(&path)?.len()})
         }
-        "backup_list" => {
-            let mut rows = vec![];
-            for entry in std::fs::read_dir(&store.directory)? {
-                let entry = entry?;
-                let name = entry.file_name().to_string_lossy().into_owned();
-                if name.starts_with("sarv-backup-") && name.ends_with(".json") {
-                    let meta = entry.metadata()?;
-                    let state = Store::restore_preview(&entry.path()).ok();
-                    rows.push(json!({
-                        "filename": name,
-                        "bytes": meta.len(),
-                        "modified": meta.modified().map(|t| t.duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0)).unwrap_or(0),
-                        "companies": state.as_ref().map(|s| s.accounting.companies.len()).unwrap_or(0),
-                        "journals": state.as_ref().map(|s| s.accounting.journals.len()).unwrap_or(0),
-                        "valid": state.is_some(),
-                    }));
-                }
-            }
-            rows.sort_by(|a, b| b["modified"].as_u64().cmp(&a["modified"].as_u64()));
-            json!({"backups": rows})
-        }
+        "backup_list" => list_backups(&store.directory)?,
         "backup_restore_preview" | "backup_restore" => {
             let name = string(&p, "filename")?;
-            ensure!(
-                !name.contains('/')
-                    && !name.contains('\\')
-                    && !name.contains("..")
-                    && name.starts_with("sarv-backup-")
-                    && name.ends_with(".json"),
-                "Invalid backup filename"
-            );
-            let path = store.directory.join(&name);
+            let path = validated_backup_path(&store.directory, name)?;
             let candidate = Store::restore_preview(&path)?;
-            let summary = |s: &State| {
-                json!({
-                    "companies": s.accounting.companies.iter().map(|c| c.name.clone()).collect::<Vec<_>>(),
-                    "journals": s.accounting.journals.len(),
-                    "sales": s.accounting.sales.records.len(),
-                    "purchases": s.accounting.procurement.records.len(),
-                    "payments": s.accounting.payments.records.len(),
-                    "quotes": s.quotes.len(),
-                    "drafts": s.sales_drafts.len(),
-                })
-            };
             if action.ends_with("preview") {
-                json!({"backup": summary(&candidate), "current": summary(&store.state)})
+                json!({"backup": backup_summary(&candidate), "current": backup_summary(&store.state)})
             } else {
                 ensure!(p["confirmed"] == true, "Restoring requires explicit confirmation");
                 if let Some(expected) = p["expected_generation"].as_str() {
@@ -1220,17 +1299,30 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 json!({"restored": true, "safety_backup": safety.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default()})
             }
         }
+        "recover_from_backup" => bail!("Books load normally; use Restore backup"),
+        "sheet_load" => {
+            let company = string(&p, "company_id")?;
+            match store.load_workbook(company)? {
+                Some(payload) => json!({"workbook": serde_json::from_str::<Value>(&payload)?}),
+                None => json!({"workbook": Value::Null}),
+            }
+        }
+        "sheet_save" => {
+            let company = string(&p, "company_id")?;
+            crate::sheets::validate_workbook(&p["workbook"])?;
+            let payload = serde_json::to_string(&p["workbook"])?;
+            store.save_workbook(company, &payload)?;
+            json!({"saved": true})
+        }
         "workspace" => {
             let mut w = workspace(&store.state, &p)?;
             if let Some(o) = w.as_object_mut() {
                 o.insert("integrity".into(), json!(store.integrity()));
-                o.insert(
-                    "cheques".into(),
-                    cheque_rows(&store.state, p["company_id"].as_str().unwrap_or(""))?,
-                );
+                o.insert("cheques".into(), cheque_rows(&store.state, p["company_id"].as_str().unwrap_or(""))?);
             }
             w
         }
+        "records" => records(&store.state, &p)?,
         "integrity" => json!(store.integrity()),
         "law_data" => json!({
             "notice_en": crate::iran::law::NOT_REVIEWED_NOTICE_EN,
@@ -1247,7 +1339,11 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             )?;
             let details = cheque_details(&p)?;
             let cheque_id = store.change(|s| {
-                if receive { s.receive_cheque(details, input) } else { s.issue_cheque(details, input) }
+                if receive {
+                    s.receive_cheque(details, input)
+                } else {
+                    s.issue_cheque(details, input)
+                }
             })?;
             json!({"cheque_id": cheque_id})
         }
@@ -1292,20 +1388,39 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         "banking" => contacts_banking::banking(&store.state, &p)?,
         "product_detail" => products::detail(&store.state, &p)?,
         "product_profile" => {
-            let item=products::item(&store.state,&p)?;
-            let profile=products::profile(&p["profile"],&item.company_id)?;
-            if let Some(expected)=p["expected_generation"].as_str(){ensure!(expected.parse::<i64>()?==store.local_generation(),"Product changed since it was opened. Reopen before saving.");}
-            store.change(|s|{s.product_profiles.insert(item.id,profile);Ok(())})?;
+            let item = products::item(&store.state, &p)?;
+            let profile = products::profile(&p["profile"], &item.company_id)?;
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Product changed since it was opened. Reopen before saving."
+                );
+            }
+            store.change(|s| {
+                s.product_profiles.insert(item.id, profile);
+                Ok(())
+            })?;
             json!(true)
         }
         "party_profile" => {
             let party = contacts_banking::party(&store.state, &p)?;
             let mut profile: crate::contact_profile::PartyProfile = serde_json::from_value(p["profile"].clone())?;
-            ensure!(profile.company_id.is_empty() || profile.company_id == party.company_id, "Wrong contact company");
+            ensure!(
+                profile.company_id.is_empty() || profile.company_id == party.company_id,
+                "Wrong contact company"
+            );
             profile.company_id = party.company_id;
             profile.validate()?;
-            if let Some(expected) = p["expected_generation"].as_str() { ensure!(expected.parse::<i64>()? == store.local_generation(), "Contact changed since it was opened. Refresh before saving."); }
-            store.change(|s| { s.party_profiles.insert(party.id, profile); Ok(()) })?;
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Contact changed since it was opened. Refresh before saving."
+                );
+            }
+            store.change(|s| {
+                s.party_profiles.insert(party.id, profile);
+                Ok(())
+            })?;
             json!(true)
         }
         "banking_preview" | "banking_post" => {
@@ -1314,7 +1429,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 let mut state = store.state.clone();
                 let id = state.accounting.post_banking(cmd)?;
                 json!(state.accounting.journals.iter().find(|j| j.id == id))
-            } else { json!(store.change(|s| s.accounting.post_banking(cmd))?) }
+            } else {
+                json!(store.change(|s| s.accounting.post_banking(cmd))?)
+            }
         }
         "setup_company" => {
             let result = store.change(|s| {
@@ -1355,10 +1472,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             json!(result)
         }
         "initialize_zero" => {
-            ensure!(
-                p["confirmed"] == true,
-                "Zero balances require explicit confirmation"
-            );
+            ensure!(p["confirmed"] == true, "Zero balances require explicit confirmation");
             let cmd = opening_zero(&store.state, &p)?;
             let out = store.change(|s| s.accounting.post_opening(cmd))?;
             store.start_background_check();
@@ -1414,64 +1528,91 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                     let resources = store.state.accounting.procurement_resources(&company)?;
                     let requested_unit = p["unit_id"].as_str().unwrap_or("").trim();
                     let prior = store.state.accounting.procurement.records.iter().find_map(|record| {
-                        if record.command.context().company_id != company || record.command.context().source_id != cmd.context.source_id { return None; }
+                        if record.command.context().company_id != company || record.command.context().source_id != cmd.context.source_id {
+                            return None;
+                        }
                         if let crate::procurement::ProcurementData::Resources(data) = &record.data {
-                            data.items.iter().find(|item| item.id == rid).map(|item| (item.base_unit_id.clone(), data.units.clone()))
-                        } else { None }
+                            data.items
+                                .iter()
+                                .find(|item| item.id == rid)
+                                .map(|item| (item.base_unit_id.clone(), data.units.clone()))
+                        } else {
+                            None
+                        }
                     });
                     let unit_id = if requested_unit.is_empty() {
-                        if let Some((unit_id, units)) = prior { cmd.units = units; unit_id }
-                        else if let Some(unit) = resources.units.first() { unit.id.clone() }
-                        else {
+                        if let Some((unit_id, units)) = prior {
+                            cmd.units = units;
+                            unit_id
+                        } else if let Some(unit) = resources.units.first() {
+                            unit.id.clone()
+                        } else {
                             let unit_id = format!("unit-{rid}");
-                            cmd.units.push(CoreUnit { id: unit_id.clone(), company_id: company.clone(), name: p["default_unit_name"].as_str().unwrap_or("Piece").to_owned() });
+                            cmd.units.push(CoreUnit {
+                                id: unit_id.clone(),
+                                company_id: company.clone(),
+                                name: p["default_unit_name"].as_str().unwrap_or("Piece").to_owned(),
+                            });
                             unit_id
                         }
-                    } else { requested_unit.to_owned() };
+                    } else {
+                        requested_unit.to_owned()
+                    };
                     let sku = p["sku"].as_str().unwrap_or("").trim();
                     cmd.items.push(CoreItem {
-                    sku: if sku.is_empty() { format!("P-{rid}") } else { sku.into() },
-                    id: rid,
-                    company_id: company,
-                    name,
-                    base_unit_id: unit_id,
-                    indivisible: p["indivisible"] == true,
-                    packs: vec![],
-                }); },
+                        sku: if sku.is_empty() { format!("P-{rid}") } else { sku.into() },
+                        id: rid,
+                        company_id: company,
+                        name,
+                        base_unit_id: unit_id,
+                        indivisible: p["indivisible"] == true,
+                        packs: vec![],
+                    });
+                }
                 _ => return Err(anyhow!("Unknown resource kind")),
             }
             json!(store.change(|s| {
                 let profile = if matches!(p["kind"].as_str(), Some("customer" | "vendor")) && !p["profile"].is_null() {
                     let mut profile: crate::contact_profile::PartyProfile = serde_json::from_value(p["profile"].clone())?;
-                    ensure!(profile.company_id.is_empty() || profile.company_id == cmd.context.company_id, "Wrong contact company");
+                    ensure!(
+                        profile.company_id.is_empty() || profile.company_id == cmd.context.company_id,
+                        "Wrong contact company"
+                    );
                     profile.company_id = cmd.context.company_id.clone();
                     profile.display_name = cmd.parties[0].name.clone();
                     profile.validate()?;
                     Some((cmd.parties[0].id.clone(), profile))
-                } else { None };
+                } else {
+                    None
+                };
                 let product = if p["kind"] == "item" && !p["product_profile"].is_null() {
-                    Some((cmd.items[0].id.clone(),products::profile(&p["product_profile"], &cmd.context.company_id)?))
-                } else {None};
+                    Some((
+                        cmd.items[0].id.clone(),
+                        products::profile(&p["product_profile"], &cmd.context.company_id)?,
+                    ))
+                } else {
+                    None
+                };
                 let result = s.accounting.post_procurement_command(ProcurementCommand::Resources(cmd))?;
-                if let Some((id,profile))=product{s.product_profiles.entry(id).or_insert(profile);}
-                if let Some((id, profile)) = profile { s.party_profiles.entry(id).or_insert(profile); }
+                if let Some((id, profile)) = product {
+                    s.product_profiles.entry(id).or_insert(profile);
+                }
+                if let Some((id, profile)) = profile {
+                    s.party_profiles.entry(id).or_insert(profile);
+                }
                 Ok(result)
             })?)
         }
         "draft_save" => {
             let mut draft = raw_draft(&p["draft"])?;
-            let expected = p["expected_revision"]
-                .as_str()
-                .map(str::parse)
-                .transpose()?;
+            let expected = p["expected_revision"].as_str().map(str::parse).transpose()?;
             // A quotation keeps its issued number across revisions.
-            if draft.quote_issue.is_none()
-                && let Some(stored) = store
-                    .state
-                    .sales_drafts
-                    .iter()
-                    .find(|d| d.id == draft.id)
-                    .and_then(|d| d.quote_issue.clone())
+            if let Some(stored) = store
+                .state
+                .sales_drafts
+                .iter()
+                .find(|d| d.id == draft.id)
+                .and_then(|d| d.quote_issue.clone())
             {
                 draft.quote_issue = Some(stored);
             }
@@ -1479,18 +1620,31 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 json!(store.change(|s| {
                     let series = s.settings.quote_prefix.trim().to_owned();
                     let series = if series.is_empty() { "Q-".to_owned() } else { series };
-                    let number = format!("{series}{}", s.settings.next_number.max(1));
-                    s.settings.next_number = s.settings.next_number.saturating_add(1);
+                    let mut n = s.settings.next_number.max(1);
+                    let mut number = None;
+                    for _ in 0..10_000 {
+                        let candidate = format!("{series}{n}");
+                        let norm = crate::domain::normalize(&candidate);
+                        let taken = s.sales_drafts.iter().any(|d| {
+                            d.id != draft.id
+                                && d.quote_issue
+                                    .as_ref()
+                                    .is_some_and(|qi| crate::domain::normalize(&qi.number) == norm)
+                        }) || s.quotes.iter().any(|q| crate::domain::normalize(&q.number) == norm);
+                        n = n.saturating_add(1);
+                        if !taken {
+                            number = Some(candidate);
+                            break;
+                        }
+                    }
+                    let number = number.ok_or_else(|| anyhow!("Could not allocate a unique quotation number"))?;
+                    s.settings.next_number = n;
                     let issued = draft.document_date.clone();
                     let valid_until = optional(&p, "valid_until", "").to_owned();
                     let valid_until = if valid_until.is_empty() {
                         chrono::NaiveDate::parse_from_str(&issued, "%Y-%m-%d")
                             .ok()
-                            .and_then(|d| {
-                                d.checked_add_days(chrono::Days::new(
-                                    u64::from(s.settings.default_validity_days.max(1)),
-                                ))
-                            })
+                            .and_then(|d| d.checked_add_days(chrono::Days::new(u64::from(s.settings.default_validity_days.max(1)))))
                             .map(|d| d.format("%Y-%m-%d").to_string())
                             .unwrap_or_else(|| issued.clone())
                     } else {
@@ -1521,21 +1675,12 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 let price = Money::parse(&l.unit_price, draft.display_unit)?;
                 let discount = Money::parse(&l.line_discount, draft.display_unit)?;
                 total = total.checked_add(
-                    Money::from_rials(positive_half_up(
-                        i128::from(price.rials()) * i128::from(q),
-                        1000,
-                    )?)
-                    .checked_sub(discount)?,
+                    Money::from_rials(positive_half_up(i128::from(price.rials()) * i128::from(q), 1000)?).checked_sub(discount)?,
                 )?;
             }
-            total =
-                total.checked_sub(Money::parse(&draft.document_discount, draft.display_unit)?)?;
+            total = total.checked_sub(Money::parse(&draft.document_discount, draft.display_unit)?)?;
             draft.supplied_total = total.display(draft.display_unit);
-            let expected = s
-                .sales_drafts
-                .iter()
-                .find(|d| d.id == draft.id)
-                .map(|d| d.revision);
+            let expected = s.sales_drafts.iter().find(|d| d.id == draft.id).map(|d| d.revision);
             let rev = s.save_sales_draft(draft.clone(), expected)?;
             let order = s.sales_order_from_draft(&draft.id, rev, "preview", actor(&p))?;
             json!({"preview":s.accounting.preview_sales(&SalesCommand::Order(order))?,"supplied_total":draft.supplied_total})
@@ -1575,7 +1720,15 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             if action.ends_with("preview") {
                 json!(store.state.accounting.preview_sales(&cmd)?)
             } else {
-                json!(store.change(|s| s.accounting.post_sales_command(cmd))?)
+                let invoice_id = match &cmd {
+                    SalesCommand::Fulfill(f) => Some(f.invoice_id.clone()),
+                    _ => None,
+                };
+                let mut out = json!(store.change(|s| s.accounting.post_sales_command(cmd))?);
+                if let (Some(id), Some(obj)) = (invoice_id, out.as_object_mut()) {
+                    obj.insert("invoice_id".to_owned(), json!(id));
+                }
+                out
             }
         }
         "payment_options" => {
@@ -1588,12 +1741,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             };
             let asof = optional(&p, "as_of", "9999-12-31");
             let party = optional(&p, "party_id", "");
-            let items = s.accounting.payment_open_items(
-                &company_id,
-                if party.is_empty() { None } else { Some(party) },
-                side,
-                asof,
-            )?;
+            let items = s
+                .accounting
+                .payment_open_items(&company_id, if party.is_empty() { None } else { Some(party) }, side, asof)?;
             json!({"items": items})
         }
         "payment_preview" | "payment_post" => {
@@ -1608,10 +1758,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         "payment_reverse_preview" => {
             let s = &store.state;
             let company_id = company(s, &p)?.id.clone();
-            json!(s.accounting.preview_payment_reversal(
-                &company_id,
-                string(&p, "payment_id")?
-            )?)
+            json!(s.accounting.preview_payment_reversal(&company_id, string(&p, "payment_id")?)?)
         }
         "operation_options" => {
             company(&store.state, &p)?;
@@ -1670,16 +1817,16 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 "Wrong company period"
             );
             let closing = p["locked"] == true;
+            ensure!(
+                closing || actor(&p) != "local-agent",
+                "Only the desktop can reopen a locked fiscal period"
+            );
             if closing && let IntegrityStatus::Failed { message, .. } = store.integrity() {
                 anyhow::bail!("Integrity check failed; the period cannot be closed: {message}");
             }
             store.change(|s| {
-                s.accounting.set_period_lock(
-                    string(&p, "period_id")?,
-                    closing,
-                    actor(&p),
-                    string(&p, "reason")?,
-                )?;
+                s.accounting
+                    .set_period_lock(string(&p, "period_id")?, closing, actor(&p), string(&p, "reason")?)?;
                 // Closing a period is a safety point: prove the whole book is consistent with
                 // the full validator, not only the parts this save touched.
                 if closing {
@@ -1688,6 +1835,111 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 Ok(())
             })?;
             json!(true)
+        }
+        "period_add" => {
+            let expected: i64 = string(&p, "expected_generation")?.parse()?;
+            ensure!(
+                expected == store.local_generation(),
+                "Books changed since review. Refresh and review the financial effect again."
+            );
+            let company_id = company(&store.state, &p)?.id.clone();
+            let name = string(&p, "name")?;
+            let start_date = string(&p, "start_date")?;
+            let end_date = string(&p, "end_date")?;
+            let start = civil_date(start_date)?;
+            let _end = civil_date(end_date)?;
+            if let Some(latest_end) = store
+                .state
+                .accounting
+                .periods
+                .iter()
+                .filter(|x| x.company_id == company_id)
+                .filter_map(|x| civil_date(&x.end_date).ok())
+                .max()
+            {
+                let expected_start = latest_end.succ_opt().ok_or_else(|| anyhow!("Invalid fiscal year end date"))?;
+                ensure!(
+                    start == expected_start,
+                    "The new fiscal year must start the day after the previous one ends."
+                );
+            }
+            let actor = actor(&p).to_string();
+            let id = store.change(|s| s.accounting.add_period(&company_id, name, start_date, end_date, &actor))?;
+            json!({"period_id": id})
+        }
+        "account_add" => {
+            let expected: i64 = string(&p, "expected_generation")?.parse()?;
+            ensure!(
+                expected == store.local_generation(),
+                "Books changed since review. Refresh and review the financial effect again."
+            );
+            let company_id = company(&store.state, &p)?.id.clone();
+            ensure!(
+                p.get("control") != Some(&Value::Bool(true)),
+                "Control accounts are reserved for subledgers"
+            );
+            let parent_id = match p.get("parent_id") {
+                None | Some(Value::Null) => None,
+                Some(Value::String(s)) if s.trim().is_empty() => None,
+                Some(Value::String(s)) => Some(s.trim().to_string()),
+                Some(_) => bail!("Invalid field: parent_id"),
+            };
+            let code = string(&p, "code")?.to_string();
+            let name = string(&p, "name")?.to_string();
+            let classification: AccountClass = serde_json::from_value(
+                p.get("classification")
+                    .cloned()
+                    .ok_or_else(|| anyhow!("Missing field: classification"))?,
+            )?;
+            let normal_balance: BalanceSide = serde_json::from_value(
+                p.get("normal_balance")
+                    .cloned()
+                    .ok_or_else(|| anyhow!("Missing field: normal_balance"))?,
+            )?;
+            let postable = match p.get("postable") {
+                None | Some(Value::Null) => true,
+                Some(Value::Bool(b)) => *b,
+                Some(_) => bail!("Invalid field: postable"),
+            };
+            if let Some(pid) = &parent_id {
+                let parent = store
+                    .state
+                    .accounting
+                    .accounts
+                    .iter()
+                    .find(|a| a.id == *pid && a.company_id == company_id && !a.archived)
+                    .ok_or_else(|| anyhow!("حساب والد معتبر در این کسب‌وکار انتخاب کنید"))?;
+                ensure!(
+                    parent.classification == classification,
+                    "Parent account classification must match child classification"
+                );
+            }
+            let actor = actor(&p).to_string();
+            let input = NewAccount {
+                company_id,
+                parent_id,
+                code,
+                name,
+                classification,
+                normal_balance,
+                postable,
+                control: false,
+            };
+            let id = store.change(|s| s.accounting.add_account(input, &actor))?;
+            json!({ "account_id": id })
+        }
+        "account_archive" => {
+            let expected: i64 = string(&p, "expected_generation")?.parse()?;
+            ensure!(
+                expected == store.local_generation(),
+                "Books changed since review. Refresh and review the financial effect again."
+            );
+            let account_id = string(&p, "account_id")?.to_string();
+            let reason = string(&p, "reason")?.to_string();
+            ensure!(!reason.trim().is_empty(), "Missing field: reason");
+            let actor = actor(&p).to_string();
+            store.change(|s| s.accounting.archive_account(&account_id, &actor, &reason))?;
+            json!({ "archived": true })
         }
         "journal_reverse" | "journal_reverse_preview" => {
             company(&store.state, &p)?;
@@ -1726,17 +1978,15 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let company_id = company(&store.state, &p)?.id.clone();
             let profile: BusinessProfile = serde_json::from_value(p["profile"].clone())?;
             profile.validate()?;
-            store.change(|s| { s.business_profiles.insert(company_id, profile); Ok(()) })?;
+            store.change(|s| {
+                s.business_profiles.insert(company_id, profile);
+                Ok(())
+            })?;
             json!(true)
         }
         "settings" => {
             let mut v = p.clone();
-            for k in [
-                "next_number",
-                "default_validity_days",
-                "default_discount_rial",
-                "tax_basis_points",
-            ] {
+            for k in ["next_number", "default_validity_days", "default_discount_rial", "tax_basis_points"] {
                 v[k] = serde_json::from_str(string(&p, k)?)?;
             }
             // The upstream workspace added this numeric preference. Decode its
@@ -1746,7 +1996,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             }
             let settings: Settings = serde_json::from_value(v)?;
             store.change(|s| {
+                let next_number = s.settings.next_number.max(settings.next_number);
                 s.settings = settings;
+                s.settings.next_number = next_number;
                 Ok(())
             })?;
             json!(true)
@@ -1754,13 +2006,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         "detail" => {
             let c = string(&p, "company_id")?;
             let rid = string(&p, "id")?;
-            if let Some(j) = store
-                .state
-                .accounting
-                .journals
-                .iter()
-                .find(|x| x.id == rid && x.company_id == c)
-            {
+            if let Some(j) = store.state.accounting.journals.iter().find(|x| x.id == rid && x.company_id == c) {
                 json!(j)
             } else if let Some(r) = store
                 .state
@@ -1794,25 +2040,41 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             }
         }
         "ledger" => {
-            let c = company(&store.state, &p)?;
-            let aid = string(&p, "account_id")?;
-            let from = string(&p, "from")?;
-            let to = string(&p, "to")?;
-            civil_date(from)?;
-            civil_date(to)?;
-            ensure!(from <= to, "Invalid date range");
-            let offset = optional(&p, "offset", "0").parse::<usize>()?;
-            let lines=store.state.accounting.journals.iter().filter(|j|j.company_id==c.id&&j.date.as_str()>=from&&j.date.as_str()<=to).flat_map(|j|j.lines.iter().filter(move|l|l.account.id==aid).map(move|l|json!({"journal_id":j.id,"date":j.date,"reference":j.source_id,"description":l.description,"debit":l.debit,"credit":l.credit}))).collect::<Vec<_>>();
-            json!({"count":lines.len(),"rows":lines.into_iter().skip(offset).take(100).collect::<Vec<_>>()})
+            let (_, _, _, opening_balance, count, rows) = ledger_rows(&store.state, &p, Some(100))?;
+            json!({
+                "count": count,
+                "opening_balance": opening_balance.to_string(),
+                "rows": rows,
+            })
+        }
+        "ledger_csv" => {
+            let (aid, _, to, _, _, rows) = ledger_rows(&store.state, &p, None)?;
+            let mut writer = csv::Writer::from_writer(vec![]);
+            writer.write_record(["Date", "Reference", "Description", "Debit IRR", "Credit IRR", "Balance IRR"])?;
+            for row in &rows {
+                writer.write_record([
+                    csv_safe(row["date"].as_str().unwrap_or("")),
+                    csv_safe(row["reference"].as_str().unwrap_or("")),
+                    csv_safe(row["description"].as_str().unwrap_or("")),
+                    row["debit"].to_string(),
+                    row["credit"].to_string(),
+                    row["balance"].as_str().unwrap_or("0").into(),
+                ])?;
+            }
+            let safe_aid: String = aid
+                .chars()
+                .map(|c| if c.is_ascii_alphanumeric() || c == '-' { c } else { '-' })
+                .collect();
+            json!({
+                "filename": format!("ledger-{safe_aid}-{to}.csv"),
+                "content": format!("\u{feff}{}", String::from_utf8(writer.into_inner()?)?)
+            })
         }
         "report_csv" => {
             let r = report(&store.state, &p)?;
             let mut writer = csv::Writer::from_writer(vec![]);
             writer.write_record(["Account code", "Account name", "Debit IRR", "Credit IRR"])?;
-            for row in r["trial"]["rows"]
-                .as_array()
-                .ok_or_else(|| anyhow!("Invalid report"))?
-            {
+            for row in r["trial"]["rows"].as_array().ok_or_else(|| anyhow!("Invalid report"))? {
                 writer.write_record([
                     csv_safe(row["code"].as_str().unwrap_or("")),
                     csv_safe(row["name"].as_str().unwrap_or("")),
@@ -1825,16 +2087,8 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
         "profit_csv" => {
             let r = report(&store.state, &p)?;
             let mut writer = csv::Writer::from_writer(vec![]);
-            writer.write_record([
-                "Account code",
-                "Account name",
-                "Classification",
-                "Amount IRR",
-            ])?;
-            for row in r["profit_loss"]["rows"]
-                .as_array()
-                .ok_or_else(|| anyhow!("Invalid report"))?
-            {
+            writer.write_record(["Account code", "Account name", "Classification", "Amount IRR"])?;
+            for row in r["profit_loss"]["rows"].as_array().ok_or_else(|| anyhow!("Invalid report"))? {
                 writer.write_record([
                     csv_safe(row["code"].as_str().unwrap_or("")),
                     csv_safe(row["name"].as_str().unwrap_or("")),
@@ -1842,13 +2096,82 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                     row["amount"].to_string(),
                 ])?;
             }
-            writer.write_record([
-                "",
-                "Net profit",
-                "",
-                &r["profit_loss"]["profit"].to_string(),
-            ])?;
+            writer.write_record(["", "Net profit", "", &r["profit_loss"]["profit"].to_string()])?;
             json!({"filename":format!("profit-loss-{}.csv",string(&p,"to")?),"content":format!("\u{feff}{}",String::from_utf8(writer.into_inner()?)?)})
+        }
+        "balance_sheet_csv" => {
+            let r = report(&store.state, &p)?;
+            let bs = r["balance_sheet"].as_object().ok_or_else(|| anyhow!("Balance sheet unavailable"))?;
+            let mut writer = csv::Writer::from_writer(vec![]);
+            writer.write_record(["Section", "Account code", "Account name", "Amount IRR"])?;
+            for (section, key) in [("Asset", "assets"), ("Liability", "liabilities"), ("Equity", "equity")] {
+                let rows = bs.get(key).and_then(|v| v.as_array()).ok_or_else(|| anyhow!("Invalid report"))?;
+                for row in rows {
+                    writer.write_record([
+                        section.to_string(),
+                        csv_safe(row["code"].as_str().unwrap_or("")),
+                        csv_safe(row["name"].as_str().unwrap_or("")),
+                        row["amount"].to_string(),
+                    ])?;
+                }
+            }
+            json!({
+                "filename": format!("balance-sheet-{}.csv", string(&p, "to")?),
+                "content": format!("\u{feff}{}", String::from_utf8(writer.into_inner()?)?)
+            })
+        }
+        "aging_csv" => {
+            let c = company(&store.state, &p)?;
+            let r = report(&store.state, &p)?;
+            let aging = r["aging"].as_object().ok_or_else(|| anyhow!("Aging unavailable"))?;
+            let resources = store.state.accounting.procurement_resources(&c.id).ok();
+            let party_name = |pid: &str| -> String {
+                if let Some(profile) = store.state.party_profiles.get(pid)
+                    && !profile.display_name.trim().is_empty()
+                {
+                    return profile.display_name.clone();
+                }
+                if let Some(ref res) = resources
+                    && let Some(party) = res.parties.iter().find(|party| party.id == pid)
+                {
+                    return party.name.clone();
+                }
+                pid.to_string()
+            };
+            let mut writer = csv::Writer::from_writer(vec![]);
+            writer.write_record([
+                "Side",
+                "Party",
+                "Not due IRR",
+                "1-30 days IRR",
+                "31-60 days IRR",
+                "61-90 days IRR",
+                "Over 90 days IRR",
+                "Total IRR",
+            ])?;
+            for (label, key) in [("Receivable", "receivable"), ("Payable", "payable")] {
+                let rows = aging
+                    .get(key)
+                    .and_then(|v| v["rows"].as_array())
+                    .ok_or_else(|| anyhow!("Invalid report"))?;
+                for row in rows {
+                    let pid = row["party_id"].as_str().unwrap_or("");
+                    writer.write_record([
+                        label.to_string(),
+                        csv_safe(&party_name(pid)),
+                        row["not_due"].to_string(),
+                        row["days_1_30"].to_string(),
+                        row["days_31_60"].to_string(),
+                        row["days_61_90"].to_string(),
+                        row["days_over_90"].to_string(),
+                        row["total"].to_string(),
+                    ])?;
+                }
+            }
+            json!({
+                "filename": format!("aging-{}.csv", string(&p, "to")?),
+                "content": format!("\u{feff}{}", String::from_utf8(writer.into_inner()?)?)
+            })
         }
         _ => return Err(anyhow!("Unsupported command: {action}")),
     };
@@ -1857,6 +2180,60 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
     }
     journal_totals(&mut out)?;
     Ok(wire(out))
+}
+fn ledger_rows(s: &State, p: &Value, limit: Option<usize>) -> Result<(String, String, String, i128, usize, Vec<Value>)> {
+    let c = company(s, p)?;
+    let aid = string(p, "account_id")?;
+    let from = string(p, "from")?;
+    let to = string(p, "to")?;
+    civil_date(from)?;
+    civil_date(to)?;
+    ensure!(from <= to, "Invalid date range");
+    let offset = usize_opt(p, "offset", 0)?;
+    let mut opening_balance: i128 = 0;
+    let mut in_range = Vec::new();
+    for j in s.accounting.journals.iter().filter(|j| j.company_id == c.id) {
+        let d = j.date.as_str();
+        if d < from {
+            for l in j.lines.iter().filter(|l| l.account.id == aid) {
+                opening_balance = opening_balance
+                    .checked_add(i128::from(l.debit.rials()))
+                    .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+                    .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+            }
+        } else if d <= to {
+            for l in j.lines.iter().filter(|l| l.account.id == aid) {
+                in_range.push((j, l));
+            }
+        }
+    }
+    let count = in_range.len();
+    let mut iter = in_range.into_iter();
+    for (_, l) in iter.by_ref().take(offset) {
+        opening_balance = opening_balance
+            .checked_add(i128::from(l.debit.rials()))
+            .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+            .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+    }
+    let mut running = opening_balance;
+    let mut rows = Vec::new();
+    let take_n = limit.unwrap_or(usize::MAX);
+    for (j, l) in iter.take(take_n) {
+        running = running
+            .checked_add(i128::from(l.debit.rials()))
+            .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+            .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+        rows.push(json!({
+            "journal_id": j.id,
+            "date": j.date,
+            "reference": j.source_id,
+            "description": l.description,
+            "debit": l.debit,
+            "credit": l.credit,
+            "balance": running.to_string(),
+        }));
+    }
+    Ok((aid.to_string(), from.to_string(), to.to_string(), opening_balance, count, rows))
 }
 fn csv_safe(v: &str) -> String {
     if v.trim_start_matches(|c: char| c.is_whitespace() || c.is_control() || c == '\u{feff}')
@@ -1870,13 +2247,8 @@ fn csv_safe(v: &str) -> String {
 /// Explicit QA/demo seed, never invoked by the production dispatcher.
 pub fn seed_fixture(directory: &Path) -> Result<()> {
     let mut store = Store::open(directory)?;
-    ensure!(
-        store.state.accounting.is_empty(),
-        "Fixture requires an empty profile"
-    );
-    let envelope: Value = serde_json::from_str(include_str!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))?;
+    ensure!(store.state.accounting.is_empty(), "Fixture requires an empty profile");
+    let envelope: Value = serde_json::from_str(include_str!("../fixtures/demo-books.json"))?;
     let mut state: State = serde_json::from_value(envelope["state"].clone())?;
     state.schema = crate::domain::CURRENT_SCHEMA;
     store.change(|s| {

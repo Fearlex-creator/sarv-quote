@@ -57,10 +57,8 @@ fn fixture() -> Fixture {
             actor: "آزمایشگر".into(),
         })
         .unwrap();
-    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv")
-        .replace("F2-core-v1", &c.company_id);
-    let opening =
-        core_import::opening_csv(&state, &c.company_id, &input, "آزمایشگر", "opening").unwrap();
+    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv").replace("F2-core-v1", &c.company_id);
+    let opening = core_import::opening_csv(&state, &c.company_id, &input, "آزمایشگر", "opening").unwrap();
     state.post_opening(opening).unwrap();
     let mut f = Fixture {
         invoice_time_state: AccountingState::default(),
@@ -229,16 +227,7 @@ fn fixture() -> Fixture {
         .record_id;
     f.invoice_time_state = f.state.clone();
     for (source, return_id, credit_id, line, quantity, credit, cost, date) in [
-        (
-            "SALE-RETURN",
-            "RETURN-A",
-            "CREDIT-A",
-            "RETURN-LINE-A",
-            2000,
-            40,
-            23,
-            "2026-03-29",
-        ),
+        ("SALE-RETURN", "RETURN-A", "CREDIT-A", "RETURN-LINE-A", 2000, 40, 23, "2026-03-29"),
         (
             "SALE-RETURN-FINAL",
             "RETURN-FINAL",
@@ -354,26 +343,18 @@ fn literal_controls_asof_receivables_and_original_cost_returns() {
             assert_eq!(cell(&h, row, "detail_irr"), value.to_string());
             assert_eq!(cell(&h, row, "difference_irr"), "0");
         }
-        for (kind, value) in [
-            ("profit_total", profit),
-            ("trial_total_debit", tb),
-            ("receivables_total", ar),
-        ] {
-            let row = rows
-                .iter()
-                .find(|r| cell(&h, r, "row_kind") == kind)
-                .unwrap();
+        for (kind, value) in [("profit_total", profit), ("trial_total_debit", tb), ("receivables_total", ar)] {
+            let row = rows.iter().find(|r| cell(&h, r, "row_kind") == kind).unwrap();
             assert_eq!(cell(&h, row, "amount_irr"), value.to_string());
         }
-        assert!(rows.iter().all(|r| cell(&h, r, "base_currency") == "IRR"
-            && cell(&h, r, "basis") == "accrual_perpetual_end_of_day"));
+        assert!(
+            rows.iter()
+                .all(|r| cell(&h, r, "base_currency") == "IRR" && cell(&h, r, "basis") == "accrual_perpetual_end_of_day")
+        );
         if date == "2026-03-29" {
             let invoice = rows
                 .iter()
-                .find(|r| {
-                    cell(&h, r, "row_kind") == "receivable_remaining"
-                        && cell(&h, r, "row_id") == "INVOICE-A"
-                })
+                .find(|r| cell(&h, r, "row_kind") == "receivable_remaining" && cell(&h, r, "row_id") == "INVOICE-A")
                 .unwrap();
             assert_eq!(cell(&h, invoice, "amount_irr"), "60");
             assert_eq!(cell(&h, invoice, "display_amount"), "6");
@@ -408,31 +389,20 @@ fn paired_identities_exact_allocations_formula_guards_and_immutable_snapshots() 
         )
         .unwrap();
         let (h, rows) = read_csv(&path);
-        let line = rows
-            .iter()
-            .find(|r| cell(&h, r, "row_kind") == kind)
-            .unwrap();
+        let line = rows.iter().find(|r| cell(&h, r, "row_kind") == kind).unwrap();
         assert_eq!(cell(&h, line, "gross_irr"), gross.to_string());
-        assert_eq!(
-            cell(&h, line, "document_discount_irr"),
-            discount.to_string()
-        );
+        assert_eq!(cell(&h, line, "document_discount_irr"), discount.to_string());
         assert_eq!(cell(&h, line, "net_irr"), net.to_string());
         if let Some(cost) = cost {
             assert_eq!(cell(&h, line, "cost_irr"), cost.to_string());
         }
-        let snapshot = rows
-            .iter()
-            .find(|r| cell(&h, r, "row_kind") == "complete_snapshot")
-            .unwrap();
-        let raw: serde_json::Value =
-            serde_json::from_str(cell(&h, snapshot, "snapshot_json")).unwrap();
+        let snapshot = rows.iter().find(|r| cell(&h, r, "row_kind") == "complete_snapshot").unwrap();
+        let raw: serde_json::Value = serde_json::from_str(cell(&h, snapshot, "snapshot_json")).unwrap();
         let record: SalesRecord = serde_json::from_value(raw["document"].clone()).unwrap();
         assert!(f.state.sales.records.contains(&record));
         assert!(
             rows.iter()
-                .all(|r| !cell(&h, r, "source_reference").starts_with('=')
-                    && !cell(&h, r, "price_reference").starts_with('='))
+                .all(|r| !cell(&h, r, "source_reference").starts_with('=') && !cell(&h, r, "price_reference").starts_with('='))
         );
         assert_eq!(cell(&h, &rows[0], "quote_id"), "");
         let original = fs::read(&path).unwrap();
@@ -603,8 +573,9 @@ fn real_persian_pdf_embeds_licensed_font_repeated_headings_and_exact_lineage() {
     assert!(fonts.status.success());
     let fonts = String::from_utf8(fonts.stdout).unwrap();
     assert!(
-        fonts.lines().any(|l| l.contains("Vazirmatn")
-            && l.split_whitespace().filter(|c| *c == "yes").count() >= 2),
+        fonts
+            .lines()
+            .any(|l| l.contains("Vazirmatn") && l.split_whitespace().filter(|c| *c == "yes").count() >= 2),
         "bundled Vazirmatn must be embedded and subset: {fonts}"
     );
     if let Ok(destination) = std::env::var("SARV_SALES_EXPORT_ARTIFACT_DIR") {
@@ -663,9 +634,7 @@ fn authentic_approved_quote_provenance_exports_full_hash_and_line_mapping() {
     state.accounting = f.state.clone();
     let at = chrono::Utc::now().format("%Y-%m-%dT00:00:00Z").to_string();
     let catalog = catalog_csv(
-        &format!(
-            "code,name,measure,price,currency,source_at,aliases\nSKU-A,کالای الف,عدد,20,rial,{at},"
-        ),
+        &format!("code,name,measure,price,currency,source_at,aliases\nSKU-A,کالای الف,عدد,20,rial,{at},"),
         "synthetic approved quotation",
     )
     .unwrap();
@@ -701,10 +670,7 @@ fn authentic_approved_quote_provenance_exports_full_hash_and_line_mapping() {
     )
     .unwrap();
     let (h, rows) = read_csv(&path);
-    let row = rows
-        .iter()
-        .find(|r| cell(&h, r, "row_kind") == "order_line")
-        .unwrap();
+    let row = rows.iter().find(|r| cell(&h, r, "row_kind") == "order_line").unwrap();
     assert_eq!(cell(&h, row, "quote_id"), quote.id);
     assert_eq!(cell(&h, row, "quote_number"), quote.number);
     assert_eq!(cell(&h, row, "quote_revision"), quote.version.to_string());
@@ -872,15 +838,9 @@ fn zero_price_and_zero_cost_keep_operational_quantity_without_invented_financial
     )
     .unwrap();
     let (h, rows) = read_csv(&path);
-    assert_eq!(
-        cell(&h, &rows[0], "included_states"),
-        "recorded_nonfinancial_event"
-    );
+    assert_eq!(cell(&h, &rows[0], "included_states"), "recorded_nonfinancial_event");
     assert_eq!(cell(&h, &rows[0], "financial_effect_id"), "");
-    let line = rows
-        .iter()
-        .find(|r| cell(&h, r, "row_kind") == "fulfillment_line")
-        .unwrap();
+    let line = rows.iter().find(|r| cell(&h, r, "row_kind") == "fulfillment_line").unwrap();
     assert_eq!(cell(&h, line, "base_quantity_thousandths"), "1000");
     assert_eq!(cell(&h, line, "net_irr"), "0");
     assert_eq!(cell(&h, line, "cost_irr"), "0");
@@ -899,18 +859,9 @@ fn zero_price_and_zero_cost_keep_operational_quantity_without_invented_financial
 fn ordinary_sales_adjustments_have_journal_lineage_separate_from_typed_invoice_totals() {
     use sarv_quote::accounting::{JournalKind, JournalLineInput, PostCommand};
     let mut f = fixture();
-    let setup = f
-        .state
-        .core
-        .setups
-        .iter()
-        .find(|s| s.id == f.setup)
-        .unwrap();
+    let setup = f.state.core.setups.iter().find(|s| s.id == f.setup).unwrap();
     let sales = setup.account_id(CoreRole::Sales).unwrap().to_string();
-    let expense = setup
-        .account_id(CoreRole::OperatingExpense)
-        .unwrap()
-        .to_string();
+    let expense = setup.account_id(CoreRole::OperatingExpense).unwrap().to_string();
     let id = f
         .state
         .post(PostCommand {
@@ -944,28 +895,15 @@ fn ordinary_sales_adjustments_have_journal_lineage_separate_from_typed_invoice_t
     let path = dir.path().join("adjusted.csv");
     export_csv(&f, "2026-04-01", &path);
     let (h, rows) = read_csv(&path);
-    let find = |kind| {
-        rows.iter()
-            .find(|r| cell(&h, r, "row_kind") == kind)
-            .unwrap()
-    };
+    let find = |kind| rows.iter().find(|r| cell(&h, r, "row_kind") == kind).unwrap();
     assert_eq!(cell(&h, find("sales_total"), "amount_irr"), "206");
     assert_eq!(cell(&h, find("typed_sales_total"), "amount_irr"), "199");
     let adjustment = find("ordinary_journal_adjustment");
     assert_eq!(cell(&h, adjustment, "event_id"), id);
-    assert_eq!(
-        cell(&h, adjustment, "financial_effect_kind"),
-        "ordinary_journal"
-    );
+    assert_eq!(cell(&h, adjustment, "financial_effect_kind"), "ordinary_journal");
     assert_eq!(cell(&h, adjustment, "role"), "sales");
     assert_eq!(cell(&h, adjustment, "amount_irr"), "7");
-    assert!(
-        !f.state
-            .sales
-            .records
-            .iter()
-            .any(|r| r.journal_id.as_deref() == Some(&id))
-    );
+    assert!(!f.state.sales.records.iter().any(|r| r.journal_id.as_deref() == Some(&id)));
 }
 #[test]
 fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
@@ -1055,11 +993,7 @@ fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
         panic!("order")
     };
     assert_eq!(
-        (
-            original.lines[0].gross,
-            original.lines[0].document_discount,
-            original.total
-        ),
+        (original.lines[0].gross, original.lines[0].document_discount, original.total),
         (money(2), money(1), money(1))
     );
     let dir = tempfile::tempdir().unwrap();
@@ -1086,16 +1020,11 @@ fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
                 supplied_total: money(net),
             }))
             .unwrap();
-        let SalesData::Fulfill(posted) = &f.state.sales_document(&result.record_id).unwrap().data
-        else {
+        let SalesData::Fulfill(posted) = &f.state.sales_document(&result.record_id).unwrap().data else {
             panic!("fulfill")
         };
         assert_eq!(
-            (
-                posted.lines[0].gross,
-                posted.lines[0].document_discount,
-                posted.total
-            ),
+            (posted.lines[0].gross, posted.lines[0].document_discount, posted.total),
             (money(gross), money(discount), money(net))
         );
         let path = dir.path().join(format!("partial-{index}.csv"));
@@ -1110,10 +1039,7 @@ fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
         )
         .unwrap();
         let (h, rows) = read_csv(&path);
-        let row = rows
-            .iter()
-            .find(|r| cell(&h, r, "row_kind") == "fulfillment_line")
-            .unwrap();
+        let row = rows.iter().find(|r| cell(&h, r, "row_kind") == "fulfillment_line").unwrap();
         assert_eq!(cell(&h, row, "gross_irr"), gross.to_string());
         assert_eq!(cell(&h, row, "document_discount_irr"), discount.to_string());
         assert_eq!(cell(&h, row, "net_irr"), net.to_string());
@@ -1132,27 +1058,13 @@ fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
             DisplayDigits::Latin,
         )
         .unwrap();
-        assert!(
-            preview
-                .lines
-                .iter()
-                .any(|l| l.contains("ناخالص تخصیص‌یافته از سفارش"))
-        );
+        assert!(preview.lines.iter().any(|l| l.contains("ناخالص تخصیص‌یافته از سفارش")));
         assert!(preview.lines.iter().any(|l| l.contains("قیمت اصلی سفارش")));
-        assert!(
-            preview
-                .lines
-                .iter()
-                .any(|l| l.contains("اختلاف الزاماً یک ریال نیست"))
-        );
+        assert!(preview.lines.iter().any(|l| l.contains("اختلاف الزاماً یک ریال نیست")));
         if let Ok(destination) = std::env::var("SARV_SALES_EXPORT_ARTIFACT_DIR") {
             let destination = Path::new(&destination);
             fs::create_dir_all(destination).unwrap();
-            fs::copy(
-                &path,
-                destination.join(format!("divisible-partial-{index}.csv")),
-            )
-            .unwrap();
+            fs::copy(&path, destination.join(format!("divisible-partial-{index}.csv"))).unwrap();
             document_pdf(
                 &f.state,
                 &f.company,
@@ -1178,9 +1090,19 @@ fn printable_sales_invoice_is_a4_exact_and_embeds_persian_fonts() {
     state.accounting = f.state.clone();
     state.settings.date_display = DateDisplay::Jalali;
     state.settings.display_digits = DisplayDigits::Persian;
-    state.business_profiles.insert(f.company.clone(), sarv_quote::domain::BusinessProfile {
-        phone: "021-12345678".into(), address: "تهران، خیابان سرو".into(), registration_id: "REG-2026".into(), tax_id: "TAX-123".into(), invoice_prefix: "INV".into(), terms: "پرداخت در زمان تحویل کالا".into(), footer: "سپاس از خرید شما".into(), bank_details: String::new(),
-    });
+    state.business_profiles.insert(
+        f.company.clone(),
+        sarv_quote::domain::BusinessProfile {
+            phone: "021-12345678".into(),
+            address: "تهران، خیابان سرو".into(),
+            registration_id: "REG-2026".into(),
+            tax_id: "TAX-123".into(),
+            invoice_prefix: "INV".into(),
+            terms: "پرداخت در زمان تحویل کالا".into(),
+            footer: "سپاس از خرید شما".into(),
+            bank_details: String::new(),
+        },
+    );
     let out = Path::new("/tmp/sarv-printable-pdf");
     fs::create_dir_all(out).unwrap();
     for (language, id) in [("fa", &f.fulfillment), ("en", &f.sale_order), ("fa-credit", &f.returned)] {
@@ -1196,6 +1118,9 @@ fn printable_sales_invoice_is_a4_exact_and_embeds_persian_fonts() {
         let text = String::from_utf8_lossy(&text.stdout);
         assert!(text.contains("REG-2026"), "{text}");
         assert!(text.contains("021-12345678"), "{text}");
+        if language.starts_with("fa") {
+            assert!(text.contains("حروف"), "{text}");
+        }
         assert!(!text.contains("source_line_id"));
         assert!(printable_document_pdf(&state, "foreign-company", id, "en", &out.join("foreign.pdf")).is_err());
     }
@@ -1205,7 +1130,15 @@ fn printable_sales_invoice_is_a4_exact_and_embeds_persian_fonts() {
     printable_document_pdf(&state, &f.company, &f.fulfillment, "en", &pdf).unwrap();
     let info = Command::new("pdfinfo").arg(&pdf).output().unwrap();
     let info = String::from_utf8_lossy(&info.stdout);
-    let pages: usize = info.lines().find(|line| line.starts_with("Pages:")).unwrap().split_whitespace().last().unwrap().parse().unwrap();
+    let pages: usize = info
+        .lines()
+        .find(|line| line.starts_with("Pages:"))
+        .unwrap()
+        .split_whitespace()
+        .last()
+        .unwrap()
+        .parse()
+        .unwrap();
     assert!(pages > 1);
     let text = Command::new("pdftotext").arg("-bbox").arg(&pdf).arg("-").output().unwrap();
     let text = String::from_utf8_lossy(&text.stdout);

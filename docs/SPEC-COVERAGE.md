@@ -1,7 +1,7 @@
 # Spec coverage
 
 How `ACCOUNTING-SPEC.md` and `FRONTEND-UI-GUIDE.md` map onto Sarv today. Written 2026-11-03 from a
-code survey, updated after the second pass. **No checklist box in the two spec files is ticked:**
+code survey, revised 2026-11-15 after the Rune migration. **No checklist box in the two spec files is ticked:**
 the spec says to tick an item only when it is merged with passing tests *and fully matches the item
 as worded*, and no item meets that bar yet. Partial work is listed here instead.
 
@@ -12,19 +12,25 @@ Sarv in its own form · **Not started** · **Deferred** = decided not to do now 
 
 | Item | Where | Tests |
 | --- | --- | --- |
-| Iranian ID validators (national, legal, postal, Sayad shape, Sheba mod-97 + bank name), advisory in the UI | `iran/{ids,sheba}.rs`, `desktop/src/lib/iran-ids.ts` | shared fixtures asserted by Rust and Node |
+| Iranian ID validators (national, legal, postal, Sayad shape, Sheba mod-97 + bank name), advisory in the UI | `iran/{ids,sheba}.rs`, `crates/sarv-desktop/src/ui/views/contacts.rs` | Rust unit tests |
 | Moadian Tax ID (6 + 5 hex date + 10 hex serial + Verhoeff) | `iran/tax_id.rs` | published Verhoeff vectors, tamper detection |
-| Effective-dated law data with `verify` **and** an owner `reviewed` gate (all unreviewed); visible Settings → Law data tab | `iran/law.rs`, `features/law-data.tsx` (ADR-0004) | hand-calculated goldens, gate tests, browser test |
-| **Cheque register in the ledger**: receive, issue, deposit, clear, bounce, return, void, endorse, opening cheques | `cheques.rs`, `payments.rs`, `procurement.rs`, `accounting.rs`, Payments screen (ADR-0005) | 14 Rust tests + browser test |
-| **Incremental validation on save** with full validation at open, restore, backup, period close and a background check after imports (ADR-0007) | `domain.rs`, `store.rs`, `desktop_bridge.rs`, Overview `IntegrityNotice` | 7 agreement/safety-net tests, mutation-checked |
-| **Balance sheet** and **receivable/payable aging** (read-only) | `statements.rs`, Reports tabs | 6 hand-calculated tests + browser test |
-| Amount in Persian words under the invoice total; Persian search normalisation in the command menu | `lib/words-fa.ts`, `lib/normalize-fa.ts`, `lib/command-filter.ts` | 14 unit tests |
-| Fast desktop builds (`--profile fast`, 6 s vs 97 s); one frontend build per release | `desktop/src-tauri/Cargo.toml`, scripts | measured |
-| E2E harness that works out of the box (`pnpm --dir desktop test`) | `playwright.config.ts` | 25 of 25 pass |
+| Effective-dated law data with `verify` **and** an owner `reviewed` gate (all unreviewed); visible Settings → Law data tab | `iran/law.rs`, `crates/sarv-desktop/src/ui/views/settings.rs` (ADR-0004) | hand-calculated goldens, gate tests, desktop test |
+| **Cheque register in the ledger**: receive, issue, deposit, clear, bounce, return, void, endorse, opening cheques | `cheques.rs`, `payments.rs`, `procurement.rs`, `accounting.rs`, `crates/sarv-desktop/src/ui/views/payments.rs` (ADR-0005) | Rust tests + desktop test |
+| **Incremental validation on save** with full validation at open, restore, backup, period close and a background check after imports (ADR-0007) | `domain.rs`, `store.rs`, `desktop_bridge.rs`, `crates/sarv-desktop/src/ui/views/overview.rs` | 7 agreement/safety-net tests, mutation-checked |
+| **Balance sheet** and **receivable/payable aging** (read-only) | `statements.rs`, `crates/sarv-desktop/src/ui/views/reports.rs` | 6 hand-calculated tests + desktop test |
+| Amount in Persian words under the invoice total; Persian search normalisation in the command menu | `iran/words.rs`, `crates/sarv-desktop/src/ui/views/sales.rs`, `crates/sarv-desktop/src/ui/shell.rs` | Rust unit tests + desktop tests |
+| Headless Rune desktop test suite & GPU snapshot scenes | `crates/sarv-desktop/src/tests/`, `crates/sarv-desktop/tests/png_scenes.rs` | `cargo test -p sarv-desktop --bin sarv-desktop` |
 | Licence AGPL-3.0-only for the core (ADR-0006) | `LICENSE`, `Cargo.toml` | — |
 
-Run: `cargo test -p sarv-quote` (264 pass; 307 with `--features pdf-export`) · `pnpm --dir desktop run check` ·
-`run test:unit` (14) · `run lint` · `run test` (25 browser tests).
+Run: `cargo test -p sarv-quote` · `cargo test -p sarv-quote --features pdf-export` · `cargo test -p sarv-desktop --bin sarv-desktop`.
+
+## Regressed with the Rune migration (tracked in `plans/`)
+
+| Item | Status / Tracking |
+| --- | --- |
+| Amount in Persian words, advisory Iranian ID hints, Settings → Law data tab | Restored in Rune desktop (`plans/023-persian-affordances.md`, DONE) |
+| Keyboard shortcuts and Persian-aware command palette | Restored in Rune desktop (`plans/015-shortcuts-and-command-palette.md`, DONE) |
+| Bank statement reconciliation dialog | Not yet in Rune UI (`plans/029-bank-reconciliation-design.md`) |
 
 ## Accounting spec
 
@@ -55,7 +61,7 @@ Run: `cargo test -p sarv-quote` (264 pass; 307 with `--features pdf-export`) · 
 
 | § | Area | Status |
 | --- | --- | --- |
-| 1 | Stack | **Present** with differences: Vite/React/TS strict, shadcn-style UI, Tailwind v4, cmdk. No TanStack Router/Query/Table, react-hook-form/zod, i18next (a custom fa/en dictionary is used), Storybook (ADR-0002) |
+| 1 | Stack | **Present** with differences: native Rust desktop (`crates/sarv-desktop`) on Rune and `rune-kit` calling `sarv_quote::desktop::dispatch` in-process (ADR-0012). Custom `fa`/`en` dictionary (`i18n.rs`, `fa_messages.rs`) |
 | 2 | Onboarding | **Present** (setup wizard with opening-balance confirmation). Not matched step-for-step |
 | 3 | App shell | **Present**: collapsible sidebar, command menu, dark mode. Company switcher, FY selector, notifications, sync indicator, quick-create chords (`N` then letter) differ: Sarv uses Ctrl/⌘+Alt+key |
 | 4 | Dashboard | **Partial** (overview) |
@@ -63,7 +69,7 @@ Run: `cargo test -p sarv-quote` (264 pass; 307 with `--features pdf-export`) · 
 | 6–7 | Close, locks, audit, sharing | **Partial**: period lock, backups. No year-end wizard, approvals, roles, share links, comments |
 | 8 | Design system | **Present** under ADR-0001. Density toggle not started |
 | 9 | Components | **Partial**: money input, Jalali date picker, data grid, status states. No `EntryGrid` with Excel paste/undo, account/tafsili pickers |
-| 10 | State layer | Different (single `command()` bridge). Transport abstraction for web build not started |
+| 10 | State layer | In-process `sarv_quote::desktop::dispatch` call via `crates/sarv-desktop/src/data.rs`. Transport abstraction for web build not started |
 | 11–12 | Offline/sync UX, accessibility, shortcuts | Shortcuts partial; sync UX not started; axe checks not set up |
 | 14 | Checklist | 0 of 81 ticked; see above for partial work |
 

@@ -13,10 +13,7 @@ fn jalali_preference_survives_recovery_and_preserves_approved_document_dates_and
     let mut store = Store::open(profile.path()).unwrap();
     store
         .change(|s| {
-            accept_catalog(
-                s,
-                catalog_csv(include_str!("../../../demo/prices.csv"), "مصنوعی").unwrap(),
-            )?;
+            accept_catalog(s, catalog_csv(include_str!("../../../demo/prices.csv"), "مصنوعی").unwrap())?;
             s.draft.customer = "مشتری مصنوعی".into();
             s.draft.stale_ack = true;
             s.draft.lines = order_csv("item,quantity\nP-101,1")?;
@@ -38,10 +35,7 @@ fn jalali_preference_survives_recovery_and_preserves_approved_document_dates_and
     assert_eq!(serde_json::to_vec(&store.state.quotes).unwrap(), original);
     let after = profile.path().join("after.csv");
     export::csv(&store.state.quotes[0], &after).unwrap();
-    assert_eq!(
-        std::fs::read(before).unwrap(),
-        std::fs::read(after).unwrap()
-    );
+    assert_eq!(std::fs::read(before).unwrap(), std::fs::read(after).unwrap());
     store
         .change(|s| {
             s.new_draft()?;
@@ -64,15 +58,10 @@ fn jalali_preference_survives_recovery_and_preserves_approved_document_dates_and
     store.backup(&backup).unwrap();
     let expected = serde_json::to_vec(&store.state).unwrap();
     drop(store);
-    assert_eq!(
-        serde_json::to_vec(&Store::open(profile.path()).unwrap().state).unwrap(),
-        expected
-    );
+    assert_eq!(serde_json::to_vec(&Store::open(profile.path()).unwrap().state).unwrap(), expected);
     let fresh = tempfile::tempdir().unwrap();
     let mut restored = Store::open(fresh.path()).unwrap();
-    restored
-        .restore(Store::restore_preview(&backup).unwrap())
-        .unwrap();
+    restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();
     assert_eq!(serde_json::to_vec(&restored.state).unwrap(), expected);
 }
 #[test]
@@ -102,14 +91,7 @@ fn jalali_trial_exports_name_both_dates_and_preserve_exact_money() {
     let dir = tempfile::tempdir().unwrap();
     let csv = dir.path().join("trial.csv");
     let pdf = dir.path().join("trial.pdf");
-    trial_csv_with_dates(
-        "شرکت مصنوعی",
-        &trial,
-        MoneyUnit::Toman,
-        DateDisplay::Jalali,
-        &csv,
-    )
-    .unwrap();
+    trial_csv_with_dates("شرکت مصنوعی", &trial, MoneyUnit::Toman, DateDisplay::Jalali, &csv).unwrap();
     let bytes = std::fs::read(&csv).unwrap();
     let mut reader = csv::Reader::from_reader(&bytes[3..]);
     let headers = reader.headers().unwrap().clone();
@@ -121,24 +103,10 @@ fn jalali_trial_exports_name_both_dates_and_preserve_exact_money() {
         ("debit_irr", "1251"),
         ("display_debit", "125.1"),
     ] {
-        assert_eq!(
-            &first[headers.iter().position(|h| h == name).unwrap()],
-            value
-        );
+        assert_eq!(&first[headers.iter().position(|h| h == name).unwrap()], value);
     }
-    trial_pdf_with_dates(
-        "شرکت مصنوعی",
-        &trial,
-        MoneyUnit::Toman,
-        DateDisplay::Jalali,
-        &pdf,
-    )
-    .unwrap();
-    let output = std::process::Command::new("pdftotext")
-        .arg(&pdf)
-        .arg("-")
-        .output()
-        .unwrap();
+    trial_pdf_with_dates("شرکت مصنوعی", &trial, MoneyUnit::Toman, DateDisplay::Jalali, &pdf).unwrap();
+    let output = std::process::Command::new("pdftotext").arg(&pdf).arg("-").output().unwrap();
     assert!(output.status.success());
     let text = String::from_utf8(output.stdout).unwrap();
     for value in ["1403/12/30", "2025-03-20", "125.1"] {
@@ -147,16 +115,7 @@ fn jalali_trial_exports_name_both_dates_and_preserve_exact_money() {
     let mut outside = trial.clone();
     outside.as_of = "1800-01-01".into();
     let bad = dir.path().join("unsupported.csv");
-    assert!(
-        trial_csv_with_dates(
-            "شرکت مصنوعی",
-            &outside,
-            MoneyUnit::Rial,
-            DateDisplay::Jalali,
-            &bad
-        )
-        .is_err()
-    );
+    assert!(trial_csv_with_dates("شرکت مصنوعی", &outside, MoneyUnit::Rial, DateDisplay::Jalali, &bad).is_err());
     assert!(!bad.exists());
     let untouched = State::default();
     assert_eq!(untouched.schema, sarv_quote::domain::CURRENT_SCHEMA);

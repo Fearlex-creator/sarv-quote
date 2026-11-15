@@ -122,10 +122,7 @@ fn historical_fresh_price_approval_remains_restorable_when_price_ages() {
     let dir = tempfile::tempdir().unwrap();
     let backup = dir.path().join("old-valid.json");
     sarv_quote::store::backup_state(&state, &backup).unwrap();
-    assert_eq!(
-        snapshot(&Store::restore_preview(&backup).unwrap()),
-        snapshot(&state)
-    );
+    assert_eq!(snapshot(&Store::restore_preview(&backup).unwrap()), snapshot(&state));
 }
 
 #[test]

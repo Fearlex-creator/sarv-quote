@@ -1,14 +1,13 @@
-# Roadmap: quotation → accounting foundation
+# Sarv Roadmap
 
-The v1 boundary is an approved offer, never a posted transaction. Each following capability requires its own domain model, migrations, audit rules, acceptance tests and subject-matter review before production use.
+1. **Rune desktop foundation (current)**: The Persian RTL/Jalali desktop is the native Rune app (`crates/sarv-desktop`), with a first-run welcome, company and fiscal-year setup, and opening balances.
 
-Current v1 uses native libadwaita with functional settings/managers, quote numbering, issuer snapshots and a configurable local quote tax/addition calculation. These are quotation features; evidence and limits are in `VERIFICATION.md`. A configured percentage is not statutory tax-policy validation, government electronic invoicing or tax submission.
+2. **Workflow depth, imports, exports, and hardening**: Add the remaining accounting and operational workflows (including year-end closing, VAT, bank reconciliation, and engine-owned document numbering), imports/exports, performance validation, and production hardening on the same ledger.
 
-1. **Harden quotation operations**: virtualized native tables, incremental normalized SQLite storage/indexes, schema migrations, explicit draft archives/recovery browser, supplier identity, authorized alias maintenance, expanded customer addresses, audit actor identities, configurable stale thresholds, Jalali display/calendar and richer letterhead. V1 already has direct native order editing, customer name/phone editing, settings-based issuer/header/footer and pre-replacement recovery backups. Add tested migration backups, power-loss fault testing and a large-catalog performance suite.
-2. **Double-entry ledger**: chart of accounts, balanced journal batches, fiscal periods and locks, immutable posting/reversal workflow, opening balances, trial balance and financial statements. Posting is a separate explicit command after business/document validation; quote approval must never invoke ledger posting. Keep canonical integer monetary amounts, currency identity and reproducible rounding rules.
-3. **Inventory**: warehouses, receipt/dispatch documents, stock movements, explicit reservations and availability, lot/serial tracking where applicable, unit conversions approved per product, and a reviewed valuation method. Quotes do not claim stock availability. Product substitutions always require human approval and an auditable reason.
-4. **Sales and payments**: quote acceptance → order → delivery → invoice as separate transitions, receivables/payables, cash/bank accounts, allocations, reconciliation, returns and credit notes. Use offline/manual imports first. Any future live bank/SMS connection requires separate user authorization, credential handling and idempotent integration boundaries.
-5. **Iran-specific tax and statutory review**: have qualified local accountants/legal specialists establish current requirements for invoice fields, tax rounding, fiscal calendars, retention, reporting and government submission. Implement versioned tax policies and sandbox verification only after that review. No present claim of Iranian statutory compliance, electronic invoicing compatibility or tax submission.
-6. **Operational readiness**: role-based permissions, tamper-evident audit records, backup encryption and restore drills, local deployment packaging, signed releases, accessibility, realistic benchmarks and field testing with approved customer/supplier data.
+3. **Optional team server and enterprise workflows**: Add an optional team server, role-based authorization, and enterprise workflows behind the existing transport boundary.
 
-Native Rust modules should expose business commands and validated domain types independently of GTK. Future posting/inventory/payment modules must have separate transactional boundaries and tests; quotation snapshot types remain historical evidence rather than mutable account balances.
+4. **Multi-currency accounting**: Add multi-currency accounting with explicit exchange-rate postings. Rial/Toman comes first.
+
+**Not planned**: payroll, live bank feeds, payment processing.
+
+Engineering plans for active work are tracked in [plans/README.md](../plans/README.md).

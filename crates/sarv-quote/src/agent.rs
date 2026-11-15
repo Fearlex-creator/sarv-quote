@@ -13,7 +13,7 @@ use std::{
         atomic::{AtomicBool, AtomicUsize, Ordering},
     },
     thread,
-    time::Duration,
+    time::{Duration, Instant},
 };
 
 const MAX_MESSAGE: u64 = 2_000_000;
@@ -21,6 +21,7 @@ const POLICY: &str = ".agent-access.json";
 pub const CONNECTION: &str = ".agent-connection.json";
 const READ: &[&str] = &[
     "workspace",
+    "records",
     "report",
     "detail",
     "ledger",
@@ -118,10 +119,15 @@ struct Inner {
 }
 impl Inner {
     fn dispatch(&self, action: &str, payload: Value) -> Result<Value> {
-        let mut store = self
-            .accounting
-            .lock()
-            .map_err(|_| anyhow!("Accounting state interrupted"))?;
+        let mut store = match self.accounting.lock() {
+            Ok(guard) => guard,
+            Err(poisoned) => {
+                let mut guard = poisoned.into_inner();
+                *guard = crate::store::Store::open(&self.directory)?;
+                self.accounting.clear_poison();
+                guard
+            }
+        };
         store.refresh_if_stale()?;
         crate::desktop::dispatch_in(&mut store, action, payload)
     }
@@ -166,11 +172,7 @@ fn remove_connection(directory: &Path) -> Result<()> {
     }
 }
 fn token_matches(a: &str, b: &str) -> bool {
-    a.len() == b.len()
-        && a.bytes()
-            .zip(b.bytes())
-            .fold(0u8, |diff, (x, y)| diff | (x ^ y))
-            == 0
+    a.len() == b.len() && a.bytes().zip(b.bytes()).fold(0u8, |diff, (x, y)| diff | (x ^ y)) == 0
 }
 fn shell_quote(s: &str) -> String {
     #[cfg(windows)]
@@ -210,11 +212,7 @@ impl AgentService {
         Ok(service)
     }
     pub fn status(&self) -> Result<Value> {
-        let state = self
-            .inner
-            .state
-            .lock()
-            .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let state = self.inner.state.lock().map_err(|_| anyhow!("Agent service interrupted"))?;
         let connection = self.inner.directory.join(CONNECTION);
         let cli = &self.inner.cli;
         Ok(json!({
@@ -234,11 +232,7 @@ impl AgentService {
     pub fn configure(&self, enabled: bool, access: Access) -> Result<Value> {
         // Serialize revocation with accepted calls: no previously queued call
         // can write after disable returns.
-        let mut state = self
-            .inner
-            .state
-            .lock()
-            .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let mut state = self.inner.state.lock().map_err(|_| anyhow!("Agent service interrupted"))?;
         let policy = Policy {
             enabled,
             access,
@@ -252,11 +246,7 @@ impl AgentService {
         } else {
             let listener = TcpListener::bind((Ipv4Addr::LOCALHOST, 0))?;
             listener.set_nonblocking(true)?;
-            let token = format!(
-                "{}{}",
-                uuid::Uuid::new_v4().simple(),
-                uuid::Uuid::new_v4().simple()
-            );
+            let token = format!("{}{}", uuid::Uuid::new_v4().simple(), uuid::Uuid::new_v4().simple());
             let connection = Connection {
                 protocol: "sarv-local-v1".into(),
                 address: listener.local_addr()?,
@@ -283,9 +273,7 @@ impl AgentService {
         match action {
             "agent_status" => self.status(),
             "agent_configure" => {
-                let enabled = p["enabled"]
-                    .as_bool()
-                    .ok_or_else(|| anyhow!("Enabled must be boolean"))?;
+                let enabled = p["enabled"].as_bool().ok_or_else(|| anyhow!("Enabled must be boolean"))?;
                 let access = serde_json::from_value(p["access"].clone())?;
                 self.configure(enabled, access)
             }
@@ -310,10 +298,7 @@ fn listen(inner: Arc<Inner>, listener: TcpListener, epoch: String) {
         if inner.shutdown.load(Ordering::Acquire) {
             break;
         }
-        let active = inner
-            .state
-            .lock()
-            .is_ok_and(|s| s.policy.enabled && s.policy.epoch == epoch);
+        let active = inner.state.lock().is_ok_and(|s| s.policy.enabled && s.policy.epoch == epoch);
         if !active {
             break;
         }
@@ -330,21 +315,55 @@ fn listen(inner: Arc<Inner>, listener: TcpListener, epoch: String) {
                     worker.connections.fetch_sub(1, Ordering::AcqRel);
                 });
             }
-            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                thread::sleep(Duration::from_millis(20))
-            }
+            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => thread::sleep(Duration::from_millis(20)),
             Err(_) => break,
         }
     }
 }
+struct TimedReader<R> {
+    inner: R,
+    started: Instant,
+    limit: Duration,
+}
+impl<R: Read> Read for TimedReader<R> {
+    fn read(&mut self, buf: &mut [u8]) -> std::io::Result<usize> {
+        if self.started.elapsed() >= self.limit {
+            return Err(std::io::Error::new(std::io::ErrorKind::TimedOut, "Agent request timed out"));
+        }
+        self.inner.read(buf)
+    }
+}
 fn read_message(reader: impl Read) -> Result<Vec<u8>> {
     let mut bytes = Vec::new();
-    BufReader::new(reader.take(MAX_MESSAGE + 1)).read_until(b'\n', &mut bytes)?;
+    let timed = TimedReader {
+        inner: reader,
+        started: Instant::now(),
+        limit: Duration::from_secs(5),
+    };
+    BufReader::new(timed.take(MAX_MESSAGE + 1)).read_until(b'\n', &mut bytes)?;
     ensure!(
         bytes.len() <= MAX_MESSAGE as usize && bytes.last() == Some(&b'\n'),
         "Invalid or oversized agent message"
     );
     Ok(bytes)
+}
+fn is_financial_post(action: &str) -> bool {
+    matches!(
+        action,
+        "opening_csv_post"
+            | "receive_post"
+            | "bill_post"
+            | "fulfill_post"
+            | "sale_return_post"
+            | "purchase_return_post"
+            | "transfer_post"
+            | "journal_post"
+            | "journal_reverse"
+            | "payment_post"
+            | "draft_post"
+            | "purchase_post"
+            | "period_lock"
+    )
 }
 fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
     stream.set_read_timeout(Some(Duration::from_secs(2)))?;
@@ -352,10 +371,7 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
     let mut changed = false;
     let result = (|| {
         let request: Request = serde_json::from_slice(&read_message(&mut stream)?)?;
-        let state = inner
-            .state
-            .lock()
-            .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let state = inner.state.lock().map_err(|_| anyhow!("Agent service interrupted"))?;
         let disk = load_policy(&inner.directory)?;
         ensure!(
             !inner.shutdown.load(Ordering::Acquire) && state.policy.enabled && disk.enabled,
@@ -365,34 +381,21 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
             disk.epoch == state.policy.epoch && token_matches(&request.token, &state.token),
             "Agent connection expired or unauthorized"
         );
+        ensure!(
+            disk.access == state.policy.access,
+            "Agent access file was changed outside Sarv. Turn agent access off and on in Settings."
+        );
         if request.action == "status" {
-            return Ok(json!({"enabled":true,"access":disk.access,"transport":"local"}));
+            return Ok(json!({"enabled":true,"access":state.policy.access,"transport":"local"}));
         }
         if request.action == "tools" {
             return Ok(tools());
         }
         let readonly = READ.contains(&request.action.as_str());
-        ensure!(
-            readonly || WRITE.contains(&request.action.as_str()),
-            "Unsupported agent action"
-        );
-        ensure!(
-            readonly || disk.access == Access::Full,
-            "Read-only agent access"
-        );
+        ensure!(readonly || WRITE.contains(&request.action.as_str()), "Unsupported agent action");
+        ensure!(readonly || state.policy.access == Access::Full, "Read-only agent access");
         ensure!(request.payload.is_object(), "Payload must be an object");
-        let financial_post = matches!(
-            request.action.as_str(),
-            "opening_csv_post"
-                | "receive_post"
-                | "bill_post"
-                | "fulfill_post"
-                | "sale_return_post"
-                | "purchase_return_post"
-                | "transfer_post"
-                | "journal_post"
-                | "journal_reverse"
-        );
+        let financial_post = is_financial_post(&request.action);
         ensure!(
             !financial_post || request.payload["expected_generation"].as_str().is_some(),
             "Preview first and supply expected_generation"
@@ -420,8 +423,7 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
 
 /// Client transport. Only IPv4 loopback is accepted, even in a modified file.
 pub fn call(connection_path: &Path, action: &str, payload: Value) -> Result<Value> {
-    let metadata =
-        fs::metadata(connection_path).context("Agent access is off or the app is closed")?;
+    let metadata = fs::metadata(connection_path).context("Agent access is off or the app is closed")?;
     ensure!(metadata.len() <= 4096, "Invalid agent connection file");
     #[cfg(unix)]
     {
@@ -433,18 +435,12 @@ pub fn call(connection_path: &Path, action: &str, payload: Value) -> Result<Valu
     }
     let connection: Connection = serde_json::from_slice(&fs::read(connection_path)?)?;
     ensure!(
-        connection.protocol == "sarv-local-v1"
-            && connection.address.ip() == IpAddr::V4(Ipv4Addr::LOCALHOST),
+        connection.protocol == "sarv-local-v1" && connection.address.ip() == IpAddr::V4(Ipv4Addr::LOCALHOST),
         "Agent connection must use local loopback"
     );
-    let message =
-        serde_json::to_vec(&json!({"token":connection.token,"action":action,"payload":payload}))?;
-    ensure!(
-        message.len() < MAX_MESSAGE as usize,
-        "Agent message too large"
-    );
-    let mut stream = TcpStream::connect_timeout(&connection.address, Duration::from_secs(2))
-        .context("Open Sarv to connect the agent")?;
+    let message = serde_json::to_vec(&json!({"token":connection.token,"action":action,"payload":payload}))?;
+    ensure!(message.len() < MAX_MESSAGE as usize, "Agent message too large");
+    let mut stream = TcpStream::connect_timeout(&connection.address, Duration::from_secs(2)).context("Open Sarv to connect the agent")?;
     stream.set_read_timeout(Some(Duration::from_secs(60)))?;
     stream.set_write_timeout(Some(Duration::from_secs(5)))?;
     stream.write_all(&message)?;
@@ -458,10 +454,7 @@ pub fn call(connection_path: &Path, action: &str, payload: Value) -> Result<Valu
     );
     let result: Value = serde_json::from_slice(&response)?;
     if let Some(error) = result.get("error") {
-        return Err(anyhow!(
-            "{}",
-            error["message"].as_str().unwrap_or("Agent request failed")
-        ));
+        return Err(anyhow!("{}", error["message"].as_str().unwrap_or("Agent request failed")));
     }
     Ok(result["result"].clone())
 }
@@ -478,17 +471,24 @@ fn description(action: &str) -> String {
         "workspace" => {
             "Discover company IDs, periods, accounts, resource IDs, settings, drafts and paginated source records. Omit company_id to list companies. All integers and money are strings."
         }
+        "records" => {
+            "Paginated, filterable list of journals, sales, purchases, payments or drafts for one company. Returns count and rows."
+        }
         "draft_preview" => {
             "Validate a raw sales draft without writes. Use supplied_total in draft_save, then draft_post with saved revision. Orders do not move stock; fulfill posts delivery and invoice."
         }
         "operation_options" => {
             "List remaining eligible line IDs and thousandth quantities for receive, bill, fulfill, sale_return or purchase_return. Selected payload quantities are decimal base-unit strings, not thousandths."
         }
-        "settings" => {
-            "Save complete presentation/document settings obtained from workspace. This cannot change agent access."
-        }
+        "settings" => "Save complete presentation/document settings obtained from workspace. This cannot change agent access.",
         "journal_reverse" => {
-            "Create an immutable linked reversal of a supported manual journal. Typed subledger journals must use their return workflow."
+            "Create an immutable linked reversal of a supported manual journal. Typed subledger journals must use their return workflow. Financial posts require expected_generation from journal_reverse_preview."
+        }
+        "period_lock" => {
+            "Lock an open fiscal period (agents cannot reopen locked periods). Financial posts require expected_generation; workspace returns _generation for period_lock and draft_post."
+        }
+        "draft_post" => {
+            "Post a saved sales draft. Financial posts require expected_generation; workspace returns _generation for period_lock and draft_post."
         }
         "initialize_zero" => {
             "Explicit confirmed=true declaration for a fresh company with zero opening balances. Existing businesses use opening CSV instead."
@@ -497,7 +497,7 @@ fn description(action: &str) -> String {
             "Read-only validation. Review amounts, costs and journal lines. Copy _generation into the corresponding post's expected_generation and preserve the exact payload and request_key."
         }
         _ if action.ends_with("_post") => {
-            "Persist the reviewed operation. Financial posts require expected_generation from preview. Reuse request_key only for an identical retry. Locked periods and all kernel validations apply."
+            "Persist the reviewed operation. Financial posts (opening_csv_post, purchase_post, receive_post, bill_post, draft_post, fulfill_post, sale_return_post, purchase_return_post, transfer_post, journal_post, payment_post, journal_reverse, period_lock) require expected_generation from preview (workspace returns _generation for period_lock and draft_post). Reuse request_key only for an identical retry. Locked periods and all kernel validations apply."
         }
         _ => {
             "Use the same validated accounting operation as the desktop app. Money, quantities and revisions are strings; dates are ISO YYYY-MM-DD."
@@ -509,14 +509,7 @@ fn schema(action: &str) -> Value {
     let text = || json!({"type":"string"});
     let mut properties = serde_json::Map::new();
     let mut required: Vec<&str> = Vec::new();
-    let context = [
-        "company_id",
-        "period_id",
-        "source_id",
-        "request_key",
-        "date",
-        "reason",
-    ];
+    let context = ["company_id", "period_id", "source_id", "request_key", "date", "reason"];
     let contextual = matches!(
         action,
         "resource"
@@ -542,6 +535,7 @@ fn schema(action: &str) -> Value {
     }
     let fields: &[&str] = match action {
         "workspace" => &[],
+        "records" => &["company_id", "kind"],
         "report" | "report_csv" | "profit_csv" => &["company_id", "from", "to"],
         "detail" => &["company_id", "id"],
         "ledger" => &["company_id", "account_id", "from", "to"],
@@ -559,23 +553,10 @@ fn schema(action: &str) -> Value {
         "sale_return_preview" | "sale_return_post" => &["record_id", "reference"],
         "purchase_return_preview" | "purchase_return_post" => &["record_id", "reference"],
         "operation_options" => &["company_id", "record_id", "operation"],
-        "transfer_preview" | "transfer_post" => &[
-            "item_id",
-            "source_warehouse_id",
-            "target_warehouse_id",
-            "unit_id",
-            "quantity",
-        ],
+        "transfer_preview" | "transfer_post" => &["item_id", "source_warehouse_id", "target_warehouse_id", "unit_id", "quantity"],
         "journal_preview" | "journal_post" => &["lines"],
         "period_lock" => &["company_id", "period_id", "locked", "reason"],
-        "journal_reverse" | "journal_reverse_preview" => &[
-            "company_id",
-            "journal_id",
-            "period_id",
-            "date",
-            "request_key",
-            "reason",
-        ],
+        "journal_reverse" | "journal_reverse_preview" => &["company_id", "journal_id", "period_id", "date", "request_key", "reason"],
         _ => &[],
     };
     required.extend(fields);
@@ -604,7 +585,19 @@ fn schema(action: &str) -> Value {
         );
     }
     if action == "operation_options" {
-        properties.insert("operation".into(), json!({"type":"string","enum":["receive","bill","fulfill","sale_return","purchase_return"]}));
+        properties.insert(
+            "operation".into(),
+            json!({"type":"string","enum":["receive","bill","fulfill","sale_return","purchase_return"]}),
+        );
+    }
+    if action == "records" {
+        properties.insert(
+            "kind".into(),
+            json!({"type":"string","enum":["journals","sales","purchases","payments","drafts"]}),
+        );
+        for key in ["limit", "party_id", "from", "to", "query"] {
+            properties.insert(key.into(), text());
+        }
     }
     for key in ["confirmed", "locked"] {
         if required.contains(&key) {
@@ -612,10 +605,7 @@ fn schema(action: &str) -> Value {
         }
     }
     if action == "draft_save" {
-        properties.insert(
-            "expected_revision".into(),
-            json!({"type":["string","null"]}),
-        );
+        properties.insert("expected_revision".into(), json!({"type":["string","null"]}));
     }
     if matches!(action, "draft_save" | "draft_preview") {
         properties.insert("draft".into(), draft_schema());
@@ -624,14 +614,7 @@ fn schema(action: &str) -> Value {
         let fields: &[&str] = if action.starts_with("journal_") {
             &["account_id", "debit", "credit"]
         } else if action.starts_with("purchase_") && !action.starts_with("purchase_return_") {
-            &[
-                "id",
-                "item_id",
-                "warehouse_id",
-                "unit_id",
-                "quantity",
-                "unit_price",
-            ]
+            &["id", "item_id", "warehouse_id", "unit_id", "quantity", "unit_price"]
         } else {
             &["id", "quantity"]
         };
@@ -646,18 +629,7 @@ fn schema(action: &str) -> Value {
             json!({"type":"array","items":{"type":"object","properties":lp,"required":fields}}),
         );
     }
-    if matches!(
-        action,
-        "opening_csv_post"
-            | "receive_post"
-            | "bill_post"
-            | "fulfill_post"
-            | "sale_return_post"
-            | "purchase_return_post"
-            | "transfer_post"
-            | "journal_post"
-            | "journal_reverse"
-    ) {
+    if is_financial_post(action) {
         required.push("expected_generation");
     }
     if action == "settings" {
@@ -686,14 +658,8 @@ fn draft_schema() -> Value {
     for key in fields {
         p.insert(key.into(), json!({"type":"string"}));
     }
-    p.insert(
-        "date_display".into(),
-        json!({"type":"string","enum":["Iso","Jalali"]}),
-    );
-    p.insert(
-        "display_unit".into(),
-        json!({"type":"string","enum":["Rial","Toman"]}),
-    );
+    p.insert("date_display".into(), json!({"type":"string","enum":["Iso","Jalali"]}));
+    p.insert("display_unit".into(), json!({"type":"string","enum":["Rial","Toman"]}));
     p.insert("quotation".into(), json!({"type":["object","null"]}));
     let line_fields = [
         "id",
@@ -707,10 +673,7 @@ fn draft_schema() -> Value {
         "price_date",
         "override_reason",
     ];
-    let lp: serde_json::Map<String, Value> = line_fields
-        .iter()
-        .map(|key| ((*key).into(), json!({"type":"string"})))
-        .collect();
+    let lp: serde_json::Map<String, Value> = line_fields.iter().map(|key| ((*key).into(), json!({"type":"string"}))).collect();
     p.insert(
         "lines".into(),
         json!({"type":"array","items":{"type":"object","properties":lp,"required":line_fields}}),
@@ -725,10 +688,7 @@ pub fn mcp(connection: &Path, input: impl BufRead, mut output: impl Write) -> Re
     let mut input = input;
     loop {
         let mut line = Vec::new();
-        let n = input
-            .by_ref()
-            .take(MAX_MESSAGE + 1)
-            .read_until(b'\n', &mut line)?;
+        let n = input.by_ref().take(MAX_MESSAGE + 1).read_until(b'\n', &mut line)?;
         if n == 0 {
             break;
         }

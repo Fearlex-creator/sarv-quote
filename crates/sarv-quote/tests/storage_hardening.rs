@@ -12,7 +12,11 @@ fn prices(rows: &str) -> String {
     format!("code,name,measure,price,currency,source_at,aliases\n{rows}")
 }
 fn catalog() -> sarv_quote::domain::Catalog {
-    catalog_csv(&prices("A-۱,کاغذ,بسته,۱۲۳,toman,2020-01-01T00:00:00Z,کاغذ آ۴|ورق\nB,قلم,عدد,50,rial,2020-01-01T00:00:00Z,قلم آبی"), "نمایشی").unwrap()
+    catalog_csv(
+        &prices("A-۱,کاغذ,بسته,۱۲۳,toman,2020-01-01T00:00:00Z,کاغذ آ۴|ورق\nB,قلم,عدد,50,rial,2020-01-01T00:00:00Z,قلم آبی"),
+        "نمایشی",
+    )
+    .unwrap()
 }
 fn bytes(state: &State) -> Vec<u8> {
     serde_json::to_vec(state).unwrap()
@@ -25,15 +29,16 @@ fn equivalent_csv_is_duplicate_without_changing_legacy_fingerprint() {
     let fingerprint = first.fingerprint.clone();
     accept_catalog(&mut state, first).unwrap();
     let before = bytes(&state);
-    let equivalent = catalog_csv(&prices("B,قلم,عدد,۵۰,rial,2020-01-01T03:30:00+03:30,قلم آبی\na-١,كاغذ,بسته,123,toman,2020-01-01T03:30:00+03:30,ورق|كاغذ آ۴|ورق"), "نام دیگر").unwrap();
+    let equivalent = catalog_csv(
+        &prices("B,قلم,عدد,۵۰,rial,2020-01-01T03:30:00+03:30,قلم آبی\na-١,كاغذ,بسته,123,toman,2020-01-01T03:30:00+03:30,ورق|كاغذ آ۴|ورق"),
+        "نام دیگر",
+    )
+    .unwrap();
     assert_ne!(equivalent.fingerprint, fingerprint);
     assert!(accept_catalog(&mut state, equivalent).is_err());
     assert_eq!(bytes(&state), before);
     assert_eq!(state.catalogs[0].fingerprint, fingerprint);
-    assert_eq!(
-        product_fingerprint(&state.catalogs[0].products).unwrap(),
-        fingerprint
-    );
+    assert_eq!(product_fingerprint(&state.catalogs[0].products).unwrap(), fingerprint);
 }
 
 #[test]
@@ -81,27 +86,10 @@ fn invalid_catalog_approval_is_atomic_and_success_clears_resolutions() {
 fn csv_limits_utf8_bom_controls_and_row_errors() {
     assert!(catalog_csv(&"x".repeat(MAX_IMPORT + 1), "نام").is_err());
     assert!(order_csv(&"x".repeat(MAX_IMPORT + 1)).is_err());
-    assert_eq!(
-        order_csv("\u{feff}item,quantity\nA,١٫٥\nA,2")
-            .unwrap()
-            .len(),
-        2
-    );
+    assert_eq!(order_csv("\u{feff}item,quantity\nA,١٫٥\nA,2").unwrap().len(), 2);
     assert!(format!("{}", order_csv("item,quantity\nA,1,extra").unwrap_err()).contains("ردیف 2"));
-    assert!(
-        catalog_csv(
-            &prices("A,قلم,عدد,1,rial,2020-01-01T00:00:00Z,\"alias\nsecond\""),
-            "نام"
-        )
-        .is_err()
-    );
-    assert!(
-        catalog_csv(
-            &prices("A,قلم,عدد,1,rial,2020-01-01T00:00:00Z,a\u{202e}"),
-            "نام"
-        )
-        .is_err()
-    );
+    assert!(catalog_csv(&prices("A,قلم,عدد,1,rial,2020-01-01T00:00:00Z,\"alias\nsecond\""), "نام").is_err());
+    assert!(catalog_csv(&prices("A,قلم,عدد,1,rial,2020-01-01T00:00:00Z,a\u{202e}"), "نام").is_err());
     assert!(order_csv("item,quantity\nA,1\nB,0").is_err());
 }
 
@@ -149,17 +137,12 @@ fn repeated_noop_does_not_invalidate_another_window_but_stale_noop_fails() {
     assert!(first.backup(&path).is_err());
     assert!(!path.exists());
     assert!(first.restore(State::default()).is_err());
-    assert!(fs::read_dir(dir.path()).unwrap().all(|entry| {
-        !entry
+    assert!(
+        fs::read_dir(dir.path())
             .unwrap()
-            .file_name()
-            .to_string_lossy()
-            .starts_with("before-restore-")
-    }));
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        "مشتری"
+            .all(|entry| { !entry.unwrap().file_name().to_string_lossy().starts_with("before-restore-") })
     );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, "مشتری");
 }
 
 #[test]
@@ -170,11 +153,9 @@ fn lightweight_generation_checks_do_not_write_and_reject_stale_windows() {
     let database = rusqlite::Connection::open(dir.path().join("sarv.sqlite3")).unwrap();
     let snapshot = || {
         database
-            .query_row(
-                "SELECT generation,payload FROM state WHERE id=1",
-                [],
-                |row| Ok((row.get::<_, i64>(0)?, row.get::<_, String>(1)?)),
-            )
+            .query_row("SELECT generation,payload FROM state WHERE id=1", [], |row| {
+                Ok((row.get::<_, i64>(0)?, row.get::<_, String>(1)?))
+            })
             .unwrap()
     };
     let before = snapshot();
@@ -195,10 +176,7 @@ fn lightweight_generation_checks_do_not_write_and_reject_stale_windows() {
     second.verify_current().unwrap();
     assert_eq!(snapshot(), committed);
     assert!(first.state.draft.customer.is_empty());
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        "مشتری تازه"
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, "مشتری تازه");
 }
 
 #[test]
@@ -221,15 +199,9 @@ fn simultaneous_windows_have_one_winner_and_no_lost_update() {
         })
     });
     let results = handles.map(|handle| handle.join().unwrap());
-    let winner = results
-        .iter()
-        .filter(|(_, saved)| *saved)
-        .collect::<Vec<_>>();
+    let winner = results.iter().filter(|(_, saved)| *saved).collect::<Vec<_>>();
     assert_eq!(winner.len(), 1);
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        winner[0].0
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, winner[0].0);
 }
 
 #[test]
@@ -253,10 +225,7 @@ fn restore_is_validated_and_retains_the_committed_safety_snapshot() {
     restored.draft.customer = "پس از بازیابی".into();
     let safety = store.restore(restored).unwrap();
     assert_eq!(bytes(&Store::restore_preview(&safety).unwrap()), before);
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        "پس از بازیابی"
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, "پس از بازیابی");
 }
 
 #[test]
@@ -300,15 +269,9 @@ fn oversized_and_non_file_inputs_are_rejected() {
     assert!(read_import(dir.path()).is_err());
     assert!(Store::restore_preview(dir.path()).is_err());
     let path = dir.path().join("large.csv");
-    fs::File::create(&path)
-        .unwrap()
-        .set_len(MAX_IMPORT as u64 + 1)
-        .unwrap();
+    fs::File::create(&path).unwrap().set_len(MAX_IMPORT as u64 + 1).unwrap();
     assert!(read_import(&path).is_err());
-    fs::File::create(&path)
-        .unwrap()
-        .set_len(64 * 1024 * 1024 + 1)
-        .unwrap();
+    fs::File::create(&path).unwrap().set_len(64 * 1024 * 1024 + 1).unwrap();
     assert!(Store::restore_preview(&path).is_err());
     fs::write(&path, [0xff, 0xfe]).unwrap();
     assert!(read_import(&path).is_err());
@@ -377,12 +340,7 @@ fn export_does_not_follow_or_replace_destination_symlink() {
     std::os::unix::fs::symlink(&original, &link).unwrap();
     assert!(write_new(&link, b"changed").is_err());
     assert_eq!(fs::read(&original).unwrap(), b"original");
-    assert!(
-        fs::symlink_metadata(&link)
-            .unwrap()
-            .file_type()
-            .is_symlink()
-    );
+    assert!(fs::symlink_metadata(&link).unwrap().file_type().is_symlink());
     assert_eq!(fs::read_dir(dir.path()).unwrap().count(), 2);
 }
 
@@ -439,4 +397,38 @@ fn prepared_candidate_becomes_stale_after_a_regular_change_without_losing_either
     assert!(store.commit_prepared(pending).is_err());
     assert_eq!(bytes(&store.state), before);
     assert_eq!(bytes(&Store::open(directory.path()).unwrap().state), before);
+}
+
+#[cfg(unix)]
+#[test]
+fn unix_books_folder_database_and_backups_are_private() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let root = tempfile::tempdir().unwrap();
+    let folder = root.path().join("books");
+    let store = Store::open(&folder).unwrap();
+    let backup = folder.join("backup.json");
+    store.backup(&backup).unwrap();
+
+    for path in [&folder, &folder.join("sarv.sqlite3"), &backup] {
+        let mode = fs::metadata(path).unwrap().permissions().mode();
+        assert_eq!(mode & 0o077, 0, "expected private permissions on {}", path.display());
+    }
+}
+
+#[test]
+fn stale_staging_files_are_swept_on_open() {
+    let dir = tempfile::tempdir().unwrap();
+    let stale = dir.path().join(".sarv-write-x.tmp");
+    let fresh = dir.path().join(".sarv-write-fresh.tmp");
+    let old_file = fs::File::create(&stale).unwrap();
+    let two_hours_ago = std::time::SystemTime::now() - std::time::Duration::from_secs(7200);
+    old_file.set_modified(two_hours_ago).unwrap();
+    drop(old_file);
+    fs::write(&fresh, b"fresh").unwrap();
+
+    Store::open(dir.path()).unwrap();
+
+    assert!(!stale.exists());
+    assert!(fresh.exists());
 }

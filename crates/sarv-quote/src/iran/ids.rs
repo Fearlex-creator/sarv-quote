@@ -41,7 +41,10 @@ fn digits(input: &str, len: usize) -> Result<Vec<u32>, IdError> {
     if s.chars().count() != len {
         return Err(IdError::Length);
     }
-    s.chars().map(|c| c.to_digit(10)).collect::<Option<Vec<_>>>().ok_or(IdError::NotDigits)
+    s.chars()
+        .map(|c| c.to_digit(10))
+        .collect::<Option<Vec<_>>>()
+        .ok_or(IdError::NotDigits)
 }
 
 /// کد ملی: 10 digits, weighted mod-11 check digit.

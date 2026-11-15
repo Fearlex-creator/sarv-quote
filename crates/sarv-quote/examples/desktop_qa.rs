@@ -1,3 +1,4 @@
+//! Historical loopback HTTP adapter kept as a reference for hosting `AgentService`.
 //! Opt-in loopback-only adapter for browser QA of the real Rust kernel.
 //! Not a product backend. Requires a separate profile and explicit token.
 use serde_json::{Value, json};
@@ -6,11 +7,7 @@ use std::{
     net::{TcpListener, TcpStream},
     path::PathBuf,
 };
-fn serve(
-    mut stream: TcpStream,
-    agents: &sarv_quote::agent::AgentService,
-    token: &str,
-) -> anyhow::Result<()> {
+fn serve(mut stream: TcpStream, agents: &sarv_quote::agent::AgentService, token: &str) -> anyhow::Result<()> {
     stream.set_read_timeout(Some(std::time::Duration::from_secs(15)))?;
     let mut bytes = vec![];
     let mut buf = [0; 8192];
@@ -36,33 +33,20 @@ fn serve(
         .unwrap_or(0);
     anyhow::ensure!(length <= 2_000_000, "body too large");
     let authorized = headers.lines().any(|l| {
-        l.split_once(':').is_some_and(|(name, value)| {
-            name.eq_ignore_ascii_case("x-sarv-qa-token") && value.trim() == token
-        })
+        l.split_once(':')
+            .is_some_and(|(name, value)| name.eq_ignore_ascii_case("x-sarv-qa-token") && value.trim() == token)
     });
     let origin = headers
         .lines()
-        .find_map(|l| {
-            l.strip_prefix("Origin: ")
-                .or_else(|| l.strip_prefix("origin: "))
-        })
+        .find_map(|l| l.strip_prefix("Origin: ").or_else(|| l.strip_prefix("origin: ")))
         .unwrap_or("");
-    let allowed = matches!(
-        origin,
-        "http://localhost:1420" | "http://127.0.0.1:1420" | ""
-    );
+    let allowed = matches!(origin, "http://localhost:1420" | "http://127.0.0.1:1420" | "");
     let (status, result) = if !allowed {
-        (
-            "403 Forbidden",
-            json!({"error":{"message":"Origin denied"}}),
-        )
+        ("403 Forbidden", json!({"error":{"message":"Origin denied"}}))
     } else if method == "OPTIONS" {
         ("200 OK", json!({}))
     } else if !authorized || method != "POST" {
-        (
-            "403 Forbidden",
-            json!({"error":{"message":"QA access denied"}}),
-        )
+        ("403 Forbidden", json!({"error":{"message":"QA access denied"}}))
     } else {
         while bytes.len() < head_end + length {
             let n = stream.read(&mut buf)?;
@@ -90,16 +74,11 @@ fn serve(
 fn main() -> anyhow::Result<()> {
     let dir = PathBuf::from(std::env::var("SARV_QA_DATA_DIR")?);
     let token = std::env::var("SARV_QA_TOKEN")?;
-    anyhow::ensure!(
-        token.len() >= 24,
-        "QA token must contain at least 24 characters"
-    );
+    anyhow::ensure!(token.len() >= 24, "QA token must contain at least 24 characters");
     if std::env::var("SARV_QA_SEED").as_deref() == Ok("1") {
         sarv_quote::desktop::seed_fixture(&dir)?;
     }
-    let port: u16 = std::env::var("SARV_QA_PORT")
-        .unwrap_or_else(|_| "1421".into())
-        .parse()?;
+    let port: u16 = std::env::var("SARV_QA_PORT").unwrap_or_else(|_| "1421".into()).parse()?;
     let listener = TcpListener::bind((std::net::Ipv4Addr::LOCALHOST, port))?;
     let agents = std::sync::Arc::new(sarv_quote::agent::AgentService::start(
         &dir,

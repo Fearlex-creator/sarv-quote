@@ -8,10 +8,7 @@ fn irr(v: i64) -> Money {
     Money::from_rials(v)
 }
 fn opening() -> AccountingState {
-    let v: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))
-    .unwrap();
+    let v: serde_json::Value = serde_json::from_str(include_str!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let s: AccountingState = serde_json::from_value(v["state"]["accounting"].clone()).unwrap();
     s.validate().unwrap();
     s
@@ -35,18 +32,8 @@ fn ids(s: &AccountingState) -> (String, String, String, String, String, String) 
     (
         c.items[0].id.clone(),
         c.items[0].base_unit_id.clone(),
-        c.stock
-            .iter()
-            .find(|x| x.value == irr(240))
-            .unwrap()
-            .warehouse_id
-            .clone(),
-        c.stock
-            .iter()
-            .find(|x| x.value == irr(60))
-            .unwrap()
-            .warehouse_id
-            .clone(),
+        c.stock.iter().find(|x| x.value == irr(240)).unwrap().warehouse_id.clone(),
+        c.stock.iter().find(|x| x.value == irr(60)).unwrap().warehouse_id.clone(),
         c.grni[0].party_id.clone(),
         c.open_items
             .iter()
@@ -122,8 +109,7 @@ fn m4() -> AccountingState {
         supplied_total: irr(180),
     }))
     .unwrap();
-    s.post_procurement_command(transfer(&s, "TRANSFER", "2026-03-26", 6000))
-        .unwrap();
+    s.post_procurement_command(transfer(&s, "TRANSFER", "2026-03-26", 6000)).unwrap();
     s.validate().unwrap();
     s
 }
@@ -151,14 +137,7 @@ fn order(s: &AccountingState) -> SalesCommand {
         quotation: None,
     })
 }
-fn fulfill(
-    s: &AccountingState,
-    oid: &str,
-    source: &str,
-    date: &str,
-    q: i64,
-    v: i64,
-) -> SalesCommand {
+fn fulfill(s: &AccountingState, oid: &str, source: &str, date: &str, q: i64, v: i64) -> SalesCommand {
     let (_, u, w, _, _, _) = ids(s);
     SalesCommand::Fulfill(FulfillOrder {
         context: cx(s, source, date),
@@ -179,15 +158,7 @@ fn fulfill(
         supplied_total: irr(v),
     })
 }
-fn ret(
-    s: &AccountingState,
-    fid: &str,
-    source: &str,
-    date: &str,
-    q: i64,
-    credit: i64,
-    cost: i64,
-) -> SalesCommand {
+fn ret(s: &AccountingState, fid: &str, source: &str, date: &str, q: i64, credit: i64, cost: i64) -> SalesCommand {
     SalesCommand::Return(ReturnSale {
         context: cx(s, source, date),
         fulfillment_id: fid.into(),
@@ -264,12 +235,7 @@ fn partial_sale_and_original_cost_returns_match_literal_controls_and_cutoffs() {
         let a = r.stock.iter().find(|p| p.warehouse_id == w1).unwrap();
         let b = r.stock.iter().find(|p| p.warehouse_id == w2).unwrap();
         assert_eq!(
-            (
-                a.quantity_thousandths,
-                a.value.rials(),
-                b.quantity_thousandths,
-                b.value.rials()
-            ),
+            (a.quantity_thousandths, a.value.rials(), b.quantity_thousandths, b.value.rials()),
             (q, v, 12000, 130)
         );
     }
@@ -289,8 +255,7 @@ fn partial_sale_and_original_cost_returns_match_literal_controls_and_cutoffs() {
         0
     );
     s.validate().unwrap();
-    let restored: AccountingState =
-        serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
+    let restored: AccountingState = serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
     restored.validate().unwrap();
     assert_eq!(restored, s);
 }
@@ -386,10 +351,7 @@ fn invalid_quantities_dates_prices_duplicates_and_locks_are_atomic() {
     let period = s.core.openings[0].command.period_id.clone();
     s.set_period_lock(&period, true, "owner", "closed").unwrap();
     let before = s.clone();
-    assert!(
-        s.post_sales_command(ret(&s, &fid, "LOCK", "2026-03-28", 2000, 40, 23))
-            .is_err()
-    );
+    assert!(s.post_sales_command(ret(&s, &fid, "LOCK", "2026-03-28", 2000, 40, 23)).is_err());
     assert_eq!(s, before);
     s.validate().unwrap();
 }
@@ -401,37 +363,27 @@ fn sales_and_procurement_share_audit_stock_order_and_original_return_cost() {
         .post_sales_command(fulfill(&s, &oid, "F1", "2026-03-27", 5000, 100))
         .unwrap()
         .record_id;
-    s.post_procurement_command(transfer(&s, "AFTER-SALE", "2026-03-27", 5000))
-        .unwrap();
+    s.post_procurement_command(transfer(&s, "AFTER-SALE", "2026-03-27", 5000)).unwrap();
     let (_, _, w1, w2, _, _) = ids(&s);
     let tx = &s.procurement.records.last().unwrap().movements;
     assert_eq!(tx[0].before.value, irr(292));
     assert_eq!(tx[0].value, irr(58));
     assert_eq!(tx[0].after.value, irr(234));
     assert_eq!(tx[1].after.value, irr(188));
-    s.post_sales_command(ret(&s, &fid, "R1", "2026-03-27", 2000, 40, 23))
-        .unwrap();
+    s.post_sales_command(ret(&s, &fid, "R1", "2026-03-27", 2000, 40, 23)).unwrap();
     let company = &s.core.openings[0].command.company_id;
     let r = s.sales_reconcile(company, "2026-03-27").unwrap();
     let a = r.stock.iter().find(|p| p.warehouse_id == w1).unwrap();
     let b = r.stock.iter().find(|p| p.warehouse_id == w2).unwrap();
     assert_eq!(
-        (
-            a.quantity_thousandths,
-            a.value.rials(),
-            b.quantity_thousandths,
-            b.value.rials()
-        ),
+        (a.quantity_thousandths, a.value.rials(), b.quantity_thousandths, b.value.rials()),
         (22000, 257, 17000, 188)
     );
     assert_eq!(r.cogs, irr(35));
     assert!(r.reconciled);
     s.validate().unwrap();
     let before = s.clone();
-    assert!(
-        s.post_procurement_command(transfer(&s, "BACK-PUR", "2026-03-26", 1000))
-            .is_err()
-    );
+    assert!(s.post_procurement_command(transfer(&s, "BACK-PUR", "2026-03-26", 1000)).is_err());
     assert_eq!(s, before);
 }
 #[test]
@@ -469,8 +421,7 @@ fn tampered_source_cost_state_lineage_and_duplicate_requests_fail_complete_repla
     }
 }
 #[test]
-fn one_rial_discount_and_zero_cost_quantities_conserve_original_components_without_empty_journals()
-{
+fn one_rial_discount_and_zero_cost_quantities_conserve_original_components_without_empty_journals() {
     let mut s = m4();
     let (_, _, w, _, supplier, customer) = ids(&s);
     let company = s.core.openings[0].command.company_id.clone();
@@ -567,9 +518,7 @@ fn one_rial_discount_and_zero_cost_quantities_conserve_original_components_witho
         .unwrap()
         .record_id;
     let mut fids = Vec::new();
-    for (i, net, cost, gross, ld, dd) in
-        [(0, 0, 0, 0, 0, 0), (1, 1, 1, 3, 1, 1), (2, 0, 0, 0, 0, 0)]
-    {
+    for (i, net, cost, gross, ld, dd) in [(0, 0, 0, 0, 0, 0), (1, 1, 1, 3, 1, 1), (2, 0, 0, 0, 0, 0)] {
         let source = format!("tinyF{i}");
         let posted = s
             .post_sales_command(SalesCommand::Fulfill(FulfillOrder {
@@ -638,14 +587,7 @@ fn one_rial_discount_and_zero_cost_quantities_conserve_original_components_witho
     let r = s.sales_reconcile(&company, "2026-03-28").unwrap();
     let tiny = r.stock.iter().find(|p| p.item_id == "tiny-item").unwrap();
     assert_eq!((tiny.quantity_thousandths, tiny.value.rials()), (3000, 1));
-    assert_eq!(
-        (
-            r.typed_sales.rials(),
-            r.typed_sales_returns.rials(),
-            r.cogs.rials()
-        ),
-        (1, 1, 0)
-    );
+    assert_eq!((r.typed_sales.rials(), r.typed_sales_returns.rials(), r.cogs.rials()), (1, 1, 0));
     assert!(r.reconciled);
     let returning = s.sales_invoice_returnable(&fids[1]).unwrap();
     assert_eq!(
@@ -696,23 +638,15 @@ fn ordinary_sales_adjustments_remain_distinct_from_invoice_provenance_and_revers
         })
         .unwrap();
     let oid = s.post_sales_command(order(&s)).unwrap().record_id;
-    s.post_sales_command(fulfill(&s, &oid, "F1", "2026-03-27", 5000, 100))
-        .unwrap();
+    s.post_sales_command(fulfill(&s, &oid, "F1", "2026-03-27", 5000, 100)).unwrap();
     let r = s.sales_reconcile(&company, "2026-03-27").unwrap();
     assert!(r.reconciled);
     assert_eq!((r.typed_sales, r.sales), (irr(100), irr(107)));
     assert_eq!(r.adjustments.len(), 1);
     assert_eq!(r.adjustments[0].journal_id, journal);
     assert_eq!(r.receivables.len(), 3);
-    s.reverse(
-        &journal,
-        &period,
-        "2026-03-28",
-        "ordinary-reversal",
-        "owner",
-        "ordinary correction",
-    )
-    .unwrap();
+    s.reverse(&journal, &period, "2026-03-28", "ordinary-reversal", "owner", "ordinary correction")
+        .unwrap();
     let old = s.sales_reconcile(&company, "2026-03-27").unwrap();
     let current = s.sales_reconcile(&company, "2026-03-28").unwrap();
     assert_eq!(old.sales, irr(107));
@@ -816,10 +750,7 @@ fn stable_discount_line_id_tiebreak_and_checked_limits() {
         panic!()
     };
     assert_eq!(
-        o.lines
-            .iter()
-            .map(|l| l.document_discount.rials())
-            .collect::<Vec<_>>(),
+        o.lines.iter().map(|l| l.document_discount.rials()).collect::<Vec<_>>(),
         vec![1, 1, 0]
     );
     let before = s.clone();
@@ -928,11 +859,7 @@ fn divisible_quantity_uses_original_net_and_discount_before_derived_gross() {
     };
     assert_eq!(frozen.lines[0].input.unit_price, irr(1));
     assert_eq!(
-        (
-            frozen.lines[0].gross,
-            frozen.lines[0].document_discount,
-            frozen.lines[0].net
-        ),
+        (frozen.lines[0].gross, frozen.lines[0].document_discount, frozen.lines[0].net),
         (irr(2), irr(1), irr(1))
     );
     let mut net = 0;
@@ -989,11 +916,7 @@ fn divisible_quantity_uses_original_net_and_discount_before_derived_gross() {
     assert_eq!(remaining[0].remaining_quantity_thousandths, 0);
     assert_eq!(remaining[0].remaining_net, irr(0));
     let report = s.sales_reconcile(&company, "2026-03-27").unwrap();
-    let pool = report
-        .stock
-        .iter()
-        .find(|p| p.item_id == "fraction-item")
-        .unwrap();
+    let pool = report.stock.iter().find(|p| p.item_id == "fraction-item").unwrap();
     assert_eq!((pool.quantity_thousandths, pool.value), (0, irr(0)));
     assert_eq!((report.typed_sales, report.typed_cogs), (irr(1), irr(0)));
     assert!(report.reconciled);

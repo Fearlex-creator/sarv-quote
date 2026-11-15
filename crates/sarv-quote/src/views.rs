@@ -167,12 +167,7 @@ pub fn dashboard(state: &State) -> DashboardView {
             .into_iter()
             .filter(|a| !a.archived)
             .count()
-            .max(
-                acc.accounts
-                    .iter()
-                    .filter(|a| !a.archived)
-                    .count(),
-            ),
+            .max(acc.accounts.iter().filter(|a| !a.archived).count()),
         journal_count: acc.journals.len() + state.cashbook.entries.len(),
         contact_count: state.customers.iter().filter(|c| !c.archived).count(),
         catalog_count: state.catalogs.len(),
@@ -228,10 +223,7 @@ fn cash_ledger_rows(state: &State) -> Vec<LedgerRow> {
                     credit_rial: credit,
                 }]
             } else {
-                e.splits
-                    .iter()
-                    .map(|s| split_view(e.kind, s))
-                    .collect()
+                e.splits.iter().map(|s| split_view(e.kind, s)).collect()
             };
             LedgerRow {
                 id: e.id.clone(),
@@ -252,11 +244,7 @@ fn cash_ledger_rows(state: &State) -> Vec<LedgerRow> {
                 } else {
                     format!("{} → {}", e.account, e.to_account)
                 },
-                status: if e.status.is_empty() {
-                    "posted".into()
-                } else {
-                    e.status.clone()
-                },
+                status: if e.status.is_empty() { "posted".into() } else { e.status.clone() },
                 attachment_name: e.attachment_name.clone(),
                 splits,
             }
@@ -334,12 +322,7 @@ fn journal_ledger_rows(acc: &AccountingState) -> Vec<LedgerRow> {
 fn wallet_names(state: &State) -> Vec<String> {
     let mut book = state.cashbook.clone();
     book.ensure_default_wallets();
-    let mut names: Vec<_> = book
-        .wallets
-        .iter()
-        .filter(|w| !w.archived)
-        .map(|w| w.name.clone())
-        .collect();
+    let mut names: Vec<_> = book.wallets.iter().filter(|w| !w.archived).map(|w| w.name.clone()).collect();
     for e in &state.cashbook.entries {
         if !names.iter().any(|n| n == &e.account) {
             names.push(e.account.clone());
@@ -406,11 +389,7 @@ pub fn wallet_account_rows(state: &State) -> Vec<AccountRow> {
                 _ => "دارایی".into(),
             },
             account_type: w.kind.label_fa().into(),
-            group: if w.group.is_empty() {
-                "اصلی".into()
-            } else {
-                w.group.clone()
-            },
+            group: if w.group.is_empty() { "اصلی".into() } else { w.group.clone() },
             normal_balance: match w.kind {
                 WalletKind::Loan => "بستانکار".into(),
                 _ => "بدهکار".into(),
@@ -546,10 +525,7 @@ fn party_balances(state: &State) -> (Vec<PartyBalance>, Vec<PartyBalance>) {
     let mut payables = Vec::new();
     for (name, amount) in map {
         if amount > 0 {
-            receivables.push(PartyBalance {
-                name,
-                amount_rial: amount,
-            });
+            receivables.push(PartyBalance { name, amount_rial: amount });
         } else if amount < 0 {
             payables.push(PartyBalance {
                 name,
@@ -557,8 +533,8 @@ fn party_balances(state: &State) -> (Vec<PartyBalance>, Vec<PartyBalance>) {
             });
         }
     }
-    receivables.sort_by(|a, b| b.amount_rial.cmp(&a.amount_rial));
-    payables.sort_by(|a, b| b.amount_rial.cmp(&a.amount_rial));
+    receivables.sort_by_key(|a| std::cmp::Reverse(a.amount_rial));
+    payables.sort_by_key(|a| std::cmp::Reverse(a.amount_rial));
     receivables.truncate(8);
     payables.truncate(8);
     (receivables, payables)
@@ -604,12 +580,8 @@ fn flow_totals(acc: &AccountingState) -> (i64, i64, i64) {
     for j in &acc.journals {
         for line in &j.lines {
             match line.account.classification {
-                AccountClass::Revenue => {
-                    income += line.credit.rials().saturating_sub(line.debit.rials())
-                }
-                AccountClass::Expense => {
-                    expense += line.debit.rials().saturating_sub(line.credit.rials())
-                }
+                AccountClass::Revenue => income += line.credit.rials().saturating_sub(line.debit.rials()),
+                AccountClass::Expense => expense += line.debit.rials().saturating_sub(line.credit.rials()),
                 AccountClass::Asset if looks_like_cash(&line.account.name, &line.account.code) => {
                     cash += line.debit.rials().saturating_sub(line.credit.rials());
                 }
@@ -675,14 +647,8 @@ pub fn upsert_contact(state: &mut State, contact: ContactInput) -> Result<Custom
         contact.is_customer || contact.is_supplier,
         "حداقل یک نقش مشتری یا تأمین‌کننده را انتخاب کنید"
     );
-    ensure!(
-        contact.tax_id.chars().count() <= 32,
-        "شناسهٔ مالیاتی حداکثر ۳۲ نویسه است"
-    );
-    ensure!(
-        contact.notes.chars().count() <= 4000,
-        "یادداشت بیش از حد بلند است"
-    );
+    ensure!(contact.tax_id.chars().count() <= 32, "شناسهٔ مالیاتی حداکثر ۳۲ نویسه است");
+    ensure!(contact.notes.chars().count() <= 4000, "یادداشت بیش از حد بلند است");
     if let Some(existing) = state.customers.iter_mut().find(|c| c.id == contact.id) {
         existing.name = contact.name;
         existing.phone = contact.phone;
@@ -697,11 +663,7 @@ pub fn upsert_contact(state: &mut State, contact: ContactInput) -> Result<Custom
         return Ok(existing.clone());
     }
     let customer = Customer {
-        id: if contact.id.is_empty() {
-            id()
-        } else {
-            contact.id
-        },
+        id: if contact.id.is_empty() { id() } else { contact.id },
         name: contact.name,
         phone: contact.phone,
         contact_name: contact.contact_name,

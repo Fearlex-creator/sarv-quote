@@ -60,10 +60,7 @@ pub enum CalendarError {
 impl fmt::Display for CalendarError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::InvalidFormat => write!(
-                f,
-                "تاریخ را با سال چهاررقمی و ماه و روز دورقمی وارد کنید: YYYY-MM-DD یا YYYY/MM/DD"
-            ),
+            Self::InvalidFormat => write!(f, "تاریخ را با سال چهاررقمی و ماه و روز دورقمی وارد کنید: YYYY-MM-DD یا YYYY/MM/DD"),
             Self::GregorianYearOutOfRange { year } => {
                 write!(f, "سال میلادی {year} خارج از محدودهٔ 1 تا 9999 است")
             }
@@ -90,10 +87,9 @@ impl fmt::Display for CalendarError {
                     "روز {day} برای ماه {month} سال {year} {name} نامعتبر است؛ روز باید از 1 تا {maximum} باشد"
                 )
             }
-            Self::GregorianOutsideJalaliRange { date } => write!(
-                f,
-                "تاریخ میلادی {date} خارج از محدودهٔ تبدیل شمسی است: 1821-03-21 تا 2121-03-20"
-            ),
+            Self::GregorianOutsideJalaliRange { date } => {
+                write!(f, "تاریخ میلادی {date} خارج از محدودهٔ تبدیل شمسی است: 1821-03-21 تا 2121-03-20")
+            }
         }
     }
 }
@@ -170,13 +166,11 @@ fn year_start(year: i32) -> NaiveDate {
     let elapsed = year - pair[0];
     let interval = pair[1] - pair[0];
     let exceptional = i32::from(interval % 33 == 4 && interval - elapsed == 4);
-    let persian_leaps =
-        -14 + preceding + 8 * (elapsed / 33) + ((elapsed % 33) + 3) / 4 + exceptional;
+    let persian_leaps = -14 + preceding + 8 * (elapsed / 33) + ((elapsed % 33) + 3) / 4 + exceptional;
     let gregorian_year = year + 621;
     let gregorian_leaps = gregorian_year / 4 - ((gregorian_year / 100 + 1) * 3) / 4 - 150;
     let march_day = 20 + persian_leaps - gregorian_leaps;
-    NaiveDate::from_ymd_opt(gregorian_year, 3, march_day as u32)
-        .expect("bounded year-start calculation produces a valid March date")
+    NaiveDate::from_ymd_opt(gregorian_year, 3, march_day as u32).expect("bounded year-start calculation produces a valid March date")
 }
 
 pub fn is_jalali_leap_year(year: i32) -> Result<bool, CalendarError> {
@@ -213,11 +207,7 @@ pub fn from_gregorian(date: NaiveDate) -> Result<JalaliDate, CalendarError> {
         return Err(CalendarError::GregorianOutsideJalaliRange { date });
     }
     let candidate = (date.year() - 621).clamp(MIN_JALALI_YEAR, MAX_JALALI_YEAR);
-    let year = if date < year_start(candidate) {
-        candidate - 1
-    } else {
-        candidate
-    };
+    let year = if date < year_start(candidate) { candidate - 1 } else { candidate };
     let ordinal = (date - year_start(year)).num_days() as u32;
     let (month, day) = if ordinal < 186 {
         (ordinal / 31 + 1, ordinal % 31 + 1)
@@ -231,10 +221,7 @@ pub fn from_gregorian(date: NaiveDate) -> Result<JalaliDate, CalendarError> {
 /// This does not select the company's fiscal-year policy or timezone.
 pub fn jalali_fiscal_year(year: i32) -> Result<(NaiveDate, NaiveDate), CalendarError> {
     validate_jalali_year(year)?;
-    Ok((
-        year_start(year),
-        year_start(year + 1).pred_opt().expect("bounded date"),
-    ))
+    Ok((year_start(year), year_start(year + 1).pred_opt().expect("bounded date")))
 }
 
 /// Parse explicitly selected calendar input into the canonical Gregorian date.
@@ -266,11 +253,7 @@ pub fn parse_date(input: &str, calendar: Calendar) -> Result<NaiveDate, Calendar
     {
         return Err(CalendarError::InvalidFormat);
     }
-    let number = |slice: &[u8]| {
-        slice
-            .iter()
-            .fold(0u32, |n, digit| n * 10 + u32::from(digit - b'0'))
-    };
+    let number = |slice: &[u8]| slice.iter().fold(0u32, |n, digit| n * 10 + u32::from(digit - b'0'));
     let year = number(&normalized[..4]) as i32;
     let month = number(&normalized[5..7]);
     let day = number(&normalized[8..]);

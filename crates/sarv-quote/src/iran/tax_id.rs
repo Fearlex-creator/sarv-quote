@@ -5,17 +5,26 @@
 use chrono::NaiveDate;
 
 const D: [[u8; 10]; 10] = [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
-    [2, 3, 4, 0, 1, 7, 8, 9, 5, 6], [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
-    [4, 0, 1, 2, 3, 9, 5, 6, 7, 8], [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
-    [6, 5, 9, 8, 7, 1, 0, 4, 3, 2], [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
-    [8, 7, 6, 5, 9, 3, 2, 1, 0, 4], [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 2, 3, 4, 0, 6, 7, 8, 9, 5],
+    [2, 3, 4, 0, 1, 7, 8, 9, 5, 6],
+    [3, 4, 0, 1, 2, 8, 9, 5, 6, 7],
+    [4, 0, 1, 2, 3, 9, 5, 6, 7, 8],
+    [5, 9, 8, 7, 6, 0, 4, 3, 2, 1],
+    [6, 5, 9, 8, 7, 1, 0, 4, 3, 2],
+    [7, 6, 5, 9, 8, 2, 1, 0, 4, 3],
+    [8, 7, 6, 5, 9, 3, 2, 1, 0, 4],
+    [9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
 ];
 const P: [[u8; 10]; 8] = [
-    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9], [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
-    [5, 8, 0, 3, 7, 9, 6, 1, 4, 2], [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
-    [9, 4, 5, 3, 1, 2, 6, 8, 7, 0], [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
-    [2, 7, 9, 3, 8, 0, 6, 4, 1, 5], [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
+    [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    [1, 5, 7, 6, 2, 8, 3, 0, 9, 4],
+    [5, 8, 0, 3, 7, 9, 6, 1, 4, 2],
+    [8, 9, 1, 6, 0, 4, 3, 5, 2, 7],
+    [9, 4, 5, 3, 1, 2, 6, 8, 7, 0],
+    [4, 2, 8, 6, 5, 7, 3, 9, 0, 1],
+    [2, 7, 9, 3, 8, 0, 6, 4, 1, 5],
+    [7, 0, 4, 6, 9, 1, 3, 2, 5, 8],
 ];
 const INV: [u8; 10] = [0, 4, 3, 2, 1, 5, 6, 7, 8, 9];
 
@@ -26,9 +35,11 @@ fn digit_values(s: &str) -> Option<Vec<u8>> {
 /// Verhoeff check digit for a string of decimal digits.
 pub fn verhoeff_check_digit(number: &str) -> Option<u8> {
     let digits = digit_values(number)?;
-    let c = digits.iter().rev().enumerate().fold(0u8, |c, (i, d)| {
-        D[c as usize][P[(i + 1) % 8][*d as usize] as usize]
-    });
+    let c = digits
+        .iter()
+        .rev()
+        .enumerate()
+        .fold(0u8, |c, (i, d)| D[c as usize][P[(i + 1) % 8][*d as usize] as usize]);
     Some(INV[c as usize])
 }
 
@@ -46,7 +57,13 @@ pub fn verhoeff_valid(number_with_check: &str) -> bool {
 /// Digits stay as they are; letters become their ASCII code (A = 65 …).
 fn to_numeric(s: &str) -> String {
     s.chars()
-        .map(|c| if c.is_ascii_digit() { c.to_string() } else { (c.to_ascii_uppercase() as u32).to_string() })
+        .map(|c| {
+            if c.is_ascii_digit() {
+                c.to_string()
+            } else {
+                (c.to_ascii_uppercase() as u32).to_string()
+            }
+        })
         .collect()
 }
 

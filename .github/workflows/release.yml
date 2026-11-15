@@ -1,0 +1,171 @@
+name: Release
+
+# Builds tested Windows (x64) and Linux (x64) bundles and publishes them with
+# SHA256SUMS.txt to a GitHub pre-release.
+# Run by pushing a `v*` tag, or manually from the Actions tab.
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to create or update (e.g. v0.2.0)"
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    uses: ./.github/workflows/ci.yml
+
+  version-check:
+    runs-on: ubuntu-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify tag matches workspace version
+        run: |
+          set -euo pipefail
+          tag_ver="${TAG#v}"
+          tag_ver="${tag_ver%%-*}"
+          cargo_ver="$(python3 -c 'import tomllib; print(tomllib.load(open("Cargo.toml", "rb"))["workspace"]["package"]["version"])')"
+          if [[ "$tag_ver" != "$cargo_ver" ]]; then
+            echo "Tag version ($tag_ver from $TAG) does not match Cargo.toml workspace.package.version ($cargo_ver)" >&2
+            exit 1
+          fi
+          echo "Verified tag $TAG matches Cargo.toml version $cargo_ver"
+
+  windows:
+    needs: [verify, version-check]
+    runs-on: windows-latest
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      # cairo/pango/fontconfig come from MSYS2's MINGW64 environment (msvcrt, the
+      # same C runtime as Rust's x86_64-pc-windows-gnu target).
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          path-type: inherit
+          install: >-
+            zip
+            mingw-w64-x86_64-binutils
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-cairo
+            mingw-w64-x86_64-pango
+            mingw-w64-x86_64-fontconfig
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-harfbuzz
+
+      - name: Rust (GNU toolchain)
+        run: |
+          set -euo pipefail
+          channel="$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)"
+          rustup toolchain install "${channel}-x86_64-pc-windows-gnu" --profile minimal
+          rustup default "${channel}-x86_64-pc-windows-gnu"
+          rustc --version
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: windows-gnu-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build agent and desktop app
+        run: cargo build --release -p sarv-desktop -p sarv-quote --bin sarv-agent
+
+      - name: Collect portable folder
+        run: |
+          set -euo pipefail
+          out="Sarv-${TAG}-windows-x64"
+          mkdir -p "$out"
+          cp target/release/sarv-desktop.exe "$out/Sarv.exe"
+          # sarv-agent.exe is built above to keep it compiling, but omitted from the user zip.
+          # Every MSYS2 DLL Sarv.exe pulls in (cairo, pango, glib, ...).
+          ldd "$out/Sarv.exe" \
+            | awk '/\/mingw64\// {print $3}' | sort -u \
+            | xargs -I{} cp {} "$out/"
+          cp LICENSE "$out/"
+          ls -l "$out"
+          zip -r "$out.zip" "$out"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-x64
+          path: Sarv-${{ env.TAG }}-windows-x64.zip
+
+  linux:
+    needs: [verify, version-check]
+    runs-on: ubuntu-22.04
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcairo2-dev libpango1.0-dev pkg-config libxkbcommon-dev libwayland-dev libx11-dev
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: linux-ubuntu2204-${{ hashFiles('Cargo.lock') }}
+
+      - name: Build desktop app
+        run: cargo build --release -p sarv-desktop
+
+      - name: Package Linux tarball
+        run: bash scripts/package-linux.sh "$TAG"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: linux-x64
+          path: Sarv-${{ env.TAG }}-linux-x64.tar.gz
+
+  publish:
+    needs: [windows, linux]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      TAG: ${{ inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+          merge-multiple: true
+
+      - name: Generate SHA256SUMS.txt
+        run: |
+          set -euo pipefail
+          cd dist
+          sha256sum Sarv-*.zip Sarv-*.tar.gz > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" dist/Sarv-*.zip dist/Sarv-*.tar.gz dist/SHA256SUMS.txt --clobber
+          else
+            gh release create "$TAG" dist/Sarv-*.zip dist/Sarv-*.tar.gz dist/SHA256SUMS.txt \
+              --title "Sarv $TAG" --prerelease --target "$GITHUB_SHA" \
+              --notes "Pre-release build for Windows (x64) and Linux (x64). Verify downloads with SHA256SUMS.txt."
+          fi

@@ -43,16 +43,12 @@ impl PartyProfile {
                 "Contact field is too long or contains control characters"
             );
         }
-        ensure!(
-            !self.company_id.trim().is_empty(),
-            "Contact company required"
-        );
+        ensure!(!self.company_id.trim().is_empty(), "Contact company required");
         for text in [&self.address, &self.notes] {
             ensure!(text.chars().count() <= 2000, "Contact text is too long");
         }
         ensure!(
-            self.email.is_empty()
-                || (self.email.contains('@') && !self.email.contains(char::is_whitespace)),
+            self.email.is_empty() || (self.email.contains('@') && !self.email.contains(char::is_whitespace)),
             "Invalid contact email"
         );
         Ok(())

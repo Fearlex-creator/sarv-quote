@@ -56,22 +56,13 @@ pub struct RawSalesDraft {
     pub lines: Vec<RawSalesLine>,
 }
 fn bounded(s: &str) -> Result<()> {
-    ensure!(
-        s.len() <= 16_384 && !s.contains('\0'),
-        "متن پیش‌نویس بیش از حد بزرگ یا نامعتبر است"
-    );
+    ensure!(s.len() <= 16_384 && !s.contains('\0'), "متن پیش‌نویس بیش از حد بزرگ یا نامعتبر است");
     Ok(())
 }
 impl RawSalesDraft {
     pub fn validate_raw(&self) -> Result<()> {
-        ensure!(
-            !self.id.trim().is_empty() && self.id.len() <= 128,
-            "شناسهٔ پیش‌نویس نامعتبر است"
-        );
-        ensure!(
-            self.lines.len() <= 10_000,
-            "حداکثر ده هزار ردیف پیش‌نویس مجاز است"
-        );
+        ensure!(!self.id.trim().is_empty() && self.id.len() <= 128, "شناسهٔ پیش‌نویس نامعتبر است");
+        ensure!(self.lines.len() <= 10_000, "حداکثر ده هزار ردیف پیش‌نویس مجاز است");
         for s in [
             &self.id,
             &self.company_id,
@@ -109,18 +100,10 @@ impl RawSalesDraft {
             }
         }
         if let Some(q) = &self.quotation {
-            for s in [
-                &q.quote_id,
-                &q.quote_series,
-                &q.quote_number,
-                &q.quote_sha256,
-            ] {
+            for s in [&q.quote_id, &q.quote_series, &q.quote_number, &q.quote_sha256] {
                 bounded(s)?;
             }
-            ensure!(
-                q.source_line_indices.len() <= 10_000,
-                "پیوند ردیف‌های پیش‌فاکتور بیش از حد بزرگ است"
-            );
+            ensure!(q.source_line_indices.len() <= 10_000, "پیوند ردیف‌های پیش‌فاکتور بیش از حد بزرگ است");
         }
         if let Some(issue) = &self.quote_issue {
             for s in [&issue.series, &issue.number, &issue.issued, &issue.valid_until] {
@@ -131,10 +114,7 @@ impl RawSalesDraft {
                 "شماره یا سری پیش‌فاکتور نامعتبر است"
             );
         }
-        ensure!(
-            serde_json::to_vec(self)?.len() <= 8 * 1024 * 1024,
-            "پیش‌نویس بیش از هشت مگابایت است"
-        );
+        ensure!(serde_json::to_vec(self)?.len() <= 8 * 1024 * 1024, "پیش‌نویس بیش از هشت مگابایت است");
         Ok(())
     }
 }
@@ -145,10 +125,7 @@ fn canonical_date(value: &str, display: DateDisplay) -> Result<String> {
         DateDisplay::Iso => calendar::parse_date(&value, Calendar::Gregorian)?,
         DateDisplay::DayMonthYear => {
             let date = chrono::NaiveDate::parse_from_str(&value, "%d/%m/%Y")?;
-            ensure!(
-                date.format("%d/%m/%Y").to_string() == value,
-                "تاریخ روز/ماه/سال نامعتبر است"
-            );
+            ensure!(date.format("%d/%m/%Y").to_string() == value, "تاریخ روز/ماه/سال نامعتبر است");
             date
         }
     };
@@ -162,24 +139,13 @@ fn quantity_text(q: i64) -> String {
 }
 impl State {
     pub(crate) fn validate_sales_drafts_and_links(&self) -> Result<()> {
-        ensure!(
-            self.sales_drafts.len() <= 1000,
-            "حداکثر هزار پیش‌نویس فروش مجاز است"
-        );
+        ensure!(self.sales_drafts.len() <= 1000, "حداکثر هزار پیش‌نویس فروش مجاز است");
         let mut ids = HashSet::new();
         for d in &self.sales_drafts {
             d.validate_raw()?;
+            ensure!(d.revision > 0 && ids.insert(&d.id), "نسخه یا شناسهٔ پیش‌نویس نامعتبر است");
             ensure!(
-                d.revision > 0 && ids.insert(&d.id),
-                "نسخه یا شناسهٔ پیش‌نویس نامعتبر است"
-            );
-            ensure!(
-                !self
-                    .accounting
-                    .sales
-                    .records
-                    .iter()
-                    .any(|r| r.command.context().source_id == d.id),
+                !self.accounting.sales.records.iter().any(|r| r.command.context().source_id == d.id),
                 "منبع ثبت‌شده نباید پیش‌نویس فعال باشد"
             );
         }
@@ -190,16 +156,9 @@ impl State {
         }
         Ok(())
     }
-    pub fn save_sales_draft(
-        &mut self,
-        mut draft: RawSalesDraft,
-        expected_revision: Option<u64>,
-    ) -> Result<u64> {
+    pub fn save_sales_draft(&mut self, mut draft: RawSalesDraft, expected_revision: Option<u64>) -> Result<u64> {
         draft.validate_raw()?;
-        ensure!(
-            self.schema == crate::domain::CURRENT_SCHEMA,
-            "ابتدا داده را ارتقا دهید"
-        );
+        ensure!(self.schema == crate::domain::CURRENT_SCHEMA, "ابتدا داده را ارتقا دهید");
         ensure!(
             !self
                 .accounting
@@ -227,9 +186,7 @@ impl State {
             Ok(revision)
         } else {
             ensure!(
-                expected_revision.is_none()
-                    && draft.revision == 0
-                    && self.sales_drafts.len() < 1000,
+                expected_revision.is_none() && draft.revision == 0 && self.sales_drafts.len() < 1000,
                 "پیش‌نویس جدید یا نسخهٔ آن نامعتبر است"
             );
             draft.revision = 1;
@@ -246,13 +203,7 @@ impl State {
         self.sales_drafts.remove(index);
         Ok(())
     }
-    pub fn sales_order_from_draft(
-        &self,
-        id: &str,
-        expected_revision: u64,
-        request_key: &str,
-        actor: &str,
-    ) -> Result<SalesOrder> {
+    pub fn sales_order_from_draft(&self, id: &str, expected_revision: u64, request_key: &str, actor: &str) -> Result<SalesOrder> {
         let d = self
             .sales_drafts
             .iter()
@@ -272,8 +223,7 @@ impl State {
                     line_discount: Money::parse(&l.line_discount, d.display_unit)?,
                     price_reference: l.price_reference.clone(),
                     price_date: canonical_date(&l.price_date, d.date_display)?,
-                    override_reason: (!l.override_reason.trim().is_empty())
-                        .then(|| l.override_reason.clone()),
+                    override_reason: (!l.override_reason.trim().is_empty()).then(|| l.override_reason.clone()),
                 })
             })
             .collect::<Result<Vec<_>>>()?;
@@ -298,17 +248,10 @@ impl State {
             quotation: d.quotation.clone(),
         };
         self.validate_sales_quotation(&order)?;
-        self.accounting
-            .preview_sales(&SalesCommand::Order(order.clone()))?;
+        self.accounting.preview_sales(&SalesCommand::Order(order.clone()))?;
         Ok(order)
     }
-    pub fn post_sales_from_draft(
-        &mut self,
-        id: &str,
-        expected_revision: u64,
-        request_key: &str,
-        actor: &str,
-    ) -> Result<SalesResult> {
+    pub fn post_sales_from_draft(&mut self, id: &str, expected_revision: u64, request_key: &str, actor: &str) -> Result<SalesResult> {
         if !self.sales_drafts.iter().any(|d| d.id == id) {
             let original = self
                 .accounting
@@ -316,31 +259,21 @@ impl State {
                 .records
                 .iter()
                 .find_map(|r| match &r.command {
-                    SalesCommand::Order(order)
-                        if order.context.source_id == id
-                            && order.context.source_revision == expected_revision =>
-                    {
+                    SalesCommand::Order(order) if order.context.source_id == id && order.context.source_revision == expected_revision => {
                         Some(order)
                     }
                     _ => None,
                 })
                 .ok_or_else(|| anyhow::anyhow!("پیش‌نویس یا منبع ثبت‌شده با این نسخه پیدا نشد"))?;
-            ensure!(
-                original.context.actor == actor,
-                "عامل تلاش مجدد با ثبت اصلی متفاوت است"
-            );
+            ensure!(original.context.actor == actor, "عامل تلاش مجدد با ثبت اصلی متفاوت است");
             let mut command = original.clone();
             command.context.request_key = request_key.into();
             self.validate_sales_quotation(&command)?;
-            return self
-                .accounting
-                .post_sales_command(SalesCommand::Order(command));
+            return self.accounting.post_sales_command(SalesCommand::Order(command));
         }
         let order = self.sales_order_from_draft(id, expected_revision, request_key, actor)?;
         let mut next = self.clone();
-        let result = next
-            .accounting
-            .post_sales_command(SalesCommand::Order(order))?;
+        let result = next.accounting.post_sales_command(SalesCommand::Order(order))?;
         next.remove_sales_draft(id, expected_revision)?;
         next.validate()?;
         *self = next;
@@ -375,9 +308,7 @@ impl State {
                 && order.supplied_total.rials() == q.total_rial,
             "تبدیل باید تمام ردیف‌ها و مبلغ دقیق پیش‌فاکتور را حفظ کند"
         );
-        let resources = self
-            .accounting
-            .procurement_resources(&order.context.company_id)?;
+        let resources = self.accounting.procurement_resources(&order.context.company_id)?;
         let party = resources
             .parties
             .iter()
@@ -385,16 +316,12 @@ impl State {
             .ok_or_else(|| anyhow::anyhow!("مشتری حسابداری معتبر نیست"))?;
         let mapping_reason = format!("quote-customer-map:{}:{}", q.id, party.id);
         ensure!(
-            normalize(&party.name) == normalize(&q.customer)
-                || order.context.reason.contains(&mapping_reason),
+            normalize(&party.name) == normalize(&q.customer) || order.context.reason.contains(&mapping_reason),
             "نگاشت مشتری متفاوت به دلیل صریح quote-customer-map نیاز دارد"
         );
         let mut indices = HashSet::new();
         for (l, source_index) in order.lines.iter().zip(&link.source_line_indices) {
-            ensure!(
-                indices.insert(*source_index),
-                "ردیف پیش‌فاکتور دوباره استفاده شده است"
-            );
+            ensure!(indices.insert(*source_index), "ردیف پیش‌فاکتور دوباره استفاده شده است");
             let source = q
                 .lines
                 .get(*source_index)
@@ -415,9 +342,7 @@ impl State {
                 .filter(|i| normalize(&i.sku) == normalize(&source.code))
                 .count();
             ensure!(
-                exact_items == 1
-                    && normalize(&item.sku) == normalize(&source.code)
-                    && normalize(&unit.name) == normalize(&source.measure),
+                exact_items == 1 && normalize(&item.sku) == normalize(&source.code) && normalize(&unit.name) == normalize(&source.measure),
                 "کد و واحد کالا باید نگاشت دقیق و یکتا داشته باشد"
             );
             let matching_units: Vec<_> = resources
@@ -425,8 +350,7 @@ impl State {
                 .iter()
                 .filter(|u| {
                     normalize(&u.name) == normalize(&source.measure)
-                        && (item.base_unit_id == u.id
-                            || item.packs.iter().any(|p| p.unit_id == u.id))
+                        && (item.base_unit_id == u.id || item.packs.iter().any(|p| p.unit_id == u.id))
                 })
                 .collect();
             ensure!(
@@ -440,31 +364,20 @@ impl State {
                 "تعداد یا قیمت منبع پیش‌فاکتور تغییر کرده است"
             );
             ensure!(
-                l.price_reference
-                    == format!(
-                        "quotation:{}:line:{}:catalog:{}",
-                        q.id, source_index, q.catalog_id
-                    )
+                l.price_reference == format!("quotation:{}:line:{}:catalog:{}", q.id, source_index, q.catalog_id)
                     && l.price_date == source.source_at.get(..10).unwrap_or_default(),
                 "منبع و تاریخ قیمت پیش‌فاکتور معتبر نیست"
             );
         }
         Ok(())
     }
-    pub fn sales_draft_from_quote(
-        &self,
-        quote_id: &str,
-        company_id: &str,
-    ) -> Result<RawSalesDraft> {
+    pub fn sales_draft_from_quote(&self, quote_id: &str, company_id: &str) -> Result<RawSalesDraft> {
         let q = self
             .quotes
             .iter()
             .find(|q| q.id == quote_id)
             .ok_or_else(|| anyhow::anyhow!("پیش‌فاکتور پیدا نشد"))?;
-        ensure!(
-            q.tax_rial == 0 && q.tax_basis_points == 0,
-            "پیش‌فاکتور دارای مالیات قابل تبدیل نیست"
-        );
+        ensure!(q.tax_rial == 0 && q.tax_basis_points == 0, "پیش‌فاکتور دارای مالیات قابل تبدیل نیست");
         let resources = self.accounting.procurement_resources(company_id)?;
         let parties: Vec<_> = resources
             .parties
@@ -498,24 +411,17 @@ impl State {
                 .iter()
                 .filter(|i| normalize(&i.sku) == normalize(&source.code))
                 .collect();
-            ensure!(
-                items.len() == 1,
-                "ابتدا کد دقیق و یکتای کالای پیش‌فاکتور را تعریف کنید"
-            );
+            ensure!(items.len() == 1, "ابتدا کد دقیق و یکتای کالای پیش‌فاکتور را تعریف کنید");
             let item = items[0];
             let units: Vec<_> = resources
                 .units
                 .iter()
                 .filter(|u| {
                     normalize(&u.name) == normalize(&source.measure)
-                        && (item.base_unit_id == u.id
-                            || item.packs.iter().any(|p| p.unit_id == u.id))
+                        && (item.base_unit_id == u.id || item.packs.iter().any(|p| p.unit_id == u.id))
                 })
                 .collect();
-            ensure!(
-                units.len() == 1,
-                "ابتدا واحد دقیق و یکتای کالای پیش‌فاکتور را تعریف کنید"
-            );
+            ensure!(units.len() == 1, "ابتدا واحد دقیق و یکتای کالای پیش‌فاکتور را تعریف کنید");
             lines.push(RawSalesLine {
                 id: id(),
                 item_id: item.id.clone(),
@@ -524,13 +430,8 @@ impl State {
                 quantity: quantity_text(source.quantity_milli),
                 unit_price: Money::from_rials(source.price_rial).display(display_unit),
                 line_discount: "0".into(),
-                price_reference: format!(
-                    "quotation:{}:line:{}:catalog:{}",
-                    q.id, index, q.catalog_id
-                ),
-                price_date: q
-                    .date_display
-                    .format(source.source_at.get(..10).unwrap_or_default()),
+                price_reference: format!("quotation:{}:line:{}:catalog:{}", q.id, index, q.catalog_id),
+                price_date: q.date_display.format(source.source_at.get(..10).unwrap_or_default()),
                 override_reason: String::new(),
             });
         }
@@ -546,10 +447,7 @@ impl State {
             .periods
             .iter()
             .find(|p| {
-                p.company_id == company_id
-                    && !p.locked
-                    && p.start_date.as_str() <= financial_date
-                    && p.end_date.as_str() >= financial_date
+                p.company_id == company_id && !p.locked && p.start_date.as_str() <= financial_date && p.end_date.as_str() >= financial_date
             })
             .ok_or_else(|| anyhow::anyhow!("سال مالی باز برای تاریخ امروز پیدا نشد"))?;
         Ok(RawSalesDraft {

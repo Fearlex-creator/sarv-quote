@@ -14,13 +14,15 @@ pub(super) fn contact_detail(s: &State, p: &Value) -> Result<Value> {
     let party = party(s, p)?;
     let asof = string(p, "as_of")?;
     chrono::NaiveDate::parse_from_str(asof, "%Y-%m-%d")?;
-    let profile = s.party_profiles.get(&party.id).cloned().unwrap_or_else(|| {
-        crate::contact_profile::PartyProfile {
+    let profile = s
+        .party_profiles
+        .get(&party.id)
+        .cloned()
+        .unwrap_or_else(|| crate::contact_profile::PartyProfile {
             company_id: party.company_id.clone(),
             display_name: party.name.clone(),
             ..Default::default()
-        }
-    });
+        });
     let mut records = Vec::new();
     let mut orders = 0;
     let mut invoices = 0;
@@ -31,10 +33,13 @@ pub(super) fn contact_detail(s: &State, p: &Value) -> Result<Value> {
     let mut monthly = BTreeMap::<String, Money>::new();
     let mut products = BTreeMap::<String, (String, i64, Money)>::new();
     let mut last_activity: Option<String> = None;
-    for r in s.accounting.sales.records.iter().filter(|r| {
-        r.command.context().company_id == party.company_id
-            && r.command.context().date.as_str() <= asof
-    }) {
+    for r in s
+        .accounting
+        .sales
+        .records
+        .iter()
+        .filter(|r| r.command.context().company_id == party.company_id && r.command.context().date.as_str() <= asof)
+    {
         let owner = match &r.data {
             SalesData::Order(d) => &d.customer.id,
             SalesData::Fulfill(d) => &d.customer.id,
@@ -49,10 +54,7 @@ pub(super) fn contact_detail(s: &State, p: &Value) -> Result<Value> {
         } else {
             crate::calendar::Calendar::Gregorian
         };
-        let displayed = crate::calendar::format_date(
-            chrono::NaiveDate::parse_from_str(&date, "%Y-%m-%d")?,
-            calendar,
-        )?;
+        let displayed = crate::calendar::format_date(chrono::NaiveDate::parse_from_str(&date, "%Y-%m-%d")?, calendar)?;
         let month = displayed[..7].to_owned();
         last_activity = Some(last_activity.map_or(date.clone(), |d| d.max(date.clone())));
         match &r.data {
@@ -64,11 +66,9 @@ pub(super) fn contact_detail(s: &State, p: &Value) -> Result<Value> {
                 let prior = monthly.entry(month.clone()).or_insert(Money::ZERO);
                 *prior = prior.checked_add(d.total)?;
                 for line in &d.lines {
-                    let prior = products.entry(line.item.id.clone()).or_insert((
-                        line.item.name.clone(),
-                        0,
-                        Money::ZERO,
-                    ));
+                    let prior = products
+                        .entry(line.item.id.clone())
+                        .or_insert((line.item.name.clone(), 0, Money::ZERO));
                     prior.1 = prior
                         .1
                         .checked_add(line.quantity_thousandths)
@@ -170,10 +170,7 @@ pub(super) fn banking(s: &State, p: &Value) -> Result<Value> {
         }
         accounts.push(json!({"account":account,"role":role,"opening":opening,"incoming":incoming,"outgoing":outgoing,"balance":closing}));
     }
-    let ids: Vec<_> = accounts
-        .iter()
-        .filter_map(|a| a["account"]["id"].as_str())
-        .collect();
+    let ids: Vec<_> = accounts.iter().filter_map(|a| a["account"]["id"].as_str()).collect();
     let mut movements: Vec<_> = s
         .accounting
         .journals
@@ -217,10 +214,7 @@ pub(super) fn movement(s: &State, p: &Value) -> Result<PostCommand> {
         "deposit" => (source, target),
         "withdrawal" => (target, source),
         "transfer" => {
-            ensure!(
-                funds.contains(&target),
-                "Transfer target must be cash or bank"
-            );
+            ensure!(funds.contains(&target), "Transfer target must be cash or bank");
             (target, source)
         }
         _ => return Err(anyhow!("Invalid banking movement")),

@@ -44,26 +44,40 @@ pub struct Line {
     pub credit_rial: i64,
 }
 fn dr(role: Role, a: i64) -> Line {
-    Line { role, debit_rial: a, credit_rial: 0 }
+    Line {
+        role,
+        debit_rial: a,
+        credit_rial: 0,
+    }
 }
 fn cr(role: Role, a: i64) -> Line {
-    Line { role, debit_rial: 0, credit_rial: a }
+    Line {
+        role,
+        debit_rial: 0,
+        credit_rial: a,
+    }
 }
 
 /// Registering a cheque: received = Dr Notes receivable / Cr AR; issued = Dr AP / Cr Notes payable.
 pub fn open(direction: Direction, amount_rial: i64) -> Result<(State, Vec<Line>)> {
     ensure!(amount_rial > 0, "Cheque amount must be positive");
     Ok(match direction {
-        Direction::Received => (State::InHand, vec![dr(Role::NotesReceivable, amount_rial), cr(Role::AccountsReceivable, amount_rial)]),
-        Direction::Issued => (State::Issued, vec![dr(Role::AccountsPayable, amount_rial), cr(Role::NotesPayable, amount_rial)]),
+        Direction::Received => (
+            State::InHand,
+            vec![dr(Role::NotesReceivable, amount_rial), cr(Role::AccountsReceivable, amount_rial)],
+        ),
+        Direction::Issued => (
+            State::Issued,
+            vec![dr(Role::AccountsPayable, amount_rial), cr(Role::NotesPayable, amount_rial)],
+        ),
     })
 }
 
 pub fn apply(direction: Direction, state: State, action: Action, amount_rial: i64) -> Result<(State, Vec<Line>)> {
     ensure!(amount_rial > 0, "Cheque amount must be positive");
-    use {Action::*, Role::*, State::*};
-    use Direction::Received as Rx;
     use Direction::Issued as Tx;
+    use Direction::Received as Rx;
+    use {Action::*, Role::*, State::*};
     let a = amount_rial;
     Ok(match (direction, state, action) {
         (Rx, InHand, Deposit) => (InCollection, vec![dr(NotesInCollection, a), cr(NotesReceivable, a)]),

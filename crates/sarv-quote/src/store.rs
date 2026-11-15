@@ -104,10 +104,7 @@ impl Store {
     }
 
     fn ensure_idle(&self) -> Result<()> {
-        ensure!(
-            !self.write_pending,
-            "ذخیره در حال انجام است؛ پس از پایان دوباره درخواست کنید"
-        );
+        ensure!(!self.write_pending, "ذخیره در حال انجام است؛ پس از پایان دوباره درخواست کنید");
         Ok(())
     }
 
@@ -116,20 +113,37 @@ impl Store {
         self.generation
     }
 
+    /// The company's spreadsheet, stored beside the ledger. It does not change the books.
+    pub fn load_workbook(&self, company_id: &str) -> Result<Option<String>> {
+        self.conn
+            .execute_batch("CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);")?;
+        let mut stmt = self.conn.prepare("SELECT payload FROM workbooks WHERE company_id=?1")?;
+        let mut rows = stmt.query(params![company_id])?;
+        Ok(rows.next()?.map(|row| row.get(0)).transpose()?)
+    }
+
+    /// Replace the company's spreadsheet. The ledger generation stays where it is.
+    pub fn save_workbook(&self, company_id: &str, payload: &str) -> Result<()> {
+        ensure!(!company_id.is_empty() && company_id.len() <= 80, "شرکت نامعتبر است");
+        ensure!(payload.len() <= 512_000, "برگه بیش از حد بزرگ است");
+        self.conn
+            .execute_batch("CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);")?;
+        self.conn.execute(
+            "INSERT INTO workbooks (company_id, payload) VALUES (?1, ?2)
+             ON CONFLICT(company_id) DO UPDATE SET payload=excluded.payload",
+            params![company_id, payload],
+        )?;
+        Ok(())
+    }
+
     /// Run on a worker. Never creates a missing database or replaces a newer
     /// snapshot. Losing a race leaves both the database and owner unchanged.
-    pub fn commit_detached(
-        directory: PathBuf,
-        prepared: PreparedChange,
-    ) -> Result<CommittedChange> {
+    pub fn commit_detached(directory: PathBuf, prepared: PreparedChange) -> Result<CommittedChange> {
         let generation = prepared
             .expected_generation
             .checked_add(1)
             .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
-        let mut conn = Connection::open_with_flags(
-            directory.join("sarv.sqlite3"),
-            rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE,
-        )?;
+        let mut conn = Connection::open_with_flags(directory.join("sarv.sqlite3"), rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE)?;
         conn.busy_timeout(Duration::from_secs(3))?;
         conn.execute_batch("PRAGMA synchronous=FULL;")?;
         let tx = conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
@@ -147,10 +161,7 @@ impl Store {
             "UPDATE state SET generation=generation+1,payload=?1 WHERE id=1 AND generation=?2",
             params![prepared.payload, prepared.expected_generation],
         )?;
-        ensure!(
-            changed == 1,
-            "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
-        );
+        ensure!(changed == 1, "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید");
         tx.commit()?;
         Ok(CommittedChange {
             candidate: prepared.candidate,
@@ -163,37 +174,47 @@ impl Store {
     /// Call only after the worker succeeds. A mismatched owner/profile is never
     /// overwritten. Subsequent writes still verify the database generation.
     pub fn adopt_committed(&mut self, committed: CommittedChange) -> Result<()> {
-        ensure!(
-            self.directory == committed.directory,
-            "نسخهٔ ذخیره‌شده متعلق به این پوشه نیست"
-        );
+        ensure!(self.directory == committed.directory, "نسخهٔ ذخیره‌شده متعلق به این پوشه نیست");
         self.check_generation(committed.expected_generation)?;
         self.state = committed.candidate;
         self.generation = committed.generation;
         Ok(())
     }
     pub fn open(directory: &Path) -> Result<Self> {
+        let dir_existed = directory.exists();
         fs::create_dir_all(directory)?;
+        #[cfg(unix)]
+        if !dir_existed {
+            use std::os::unix::fs::PermissionsExt;
+            fs::set_permissions(directory, fs::Permissions::from_mode(0o700))?;
+        }
+        sweep_stale_staging(directory);
         let conn = Connection::open(directory.join("sarv.sqlite3"))?;
         conn.busy_timeout(Duration::from_secs(3))?;
-        conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL);")?;
+        conn.execute_batch("PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL; CREATE TABLE IF NOT EXISTS state (id INTEGER PRIMARY KEY CHECK(id=1), generation INTEGER NOT NULL, payload TEXT NOT NULL); CREATE TABLE IF NOT EXISTS workbooks (company_id TEXT PRIMARY KEY, payload TEXT NOT NULL);")?;
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+            for name in ["sarv.sqlite3", "sarv.sqlite3-wal", "sarv.sqlite3-shm"] {
+                match fs::set_permissions(directory.join(name), fs::Permissions::from_mode(0o600)) {
+                    Ok(()) => {}
+                    Err(e) if e.kind() == std::io::ErrorKind::NotFound => {}
+                    Err(e) => return Err(e.into()),
+                }
+            }
+        }
         let json = serde_json::to_string(&State::default())?;
         conn.execute("INSERT OR IGNORE INTO state VALUES(1,0,?1)", [json])?;
-        let (generation, payload): (i64, String) =
-            conn.query_row("SELECT generation,payload FROM state WHERE id=1", [], |r| {
-                Ok((r.get(0)?, r.get(1)?))
-            })?;
+        let (generation, payload): (i64, String) = conn.query_row("SELECT generation,payload FROM state WHERE id=1", [], |r| {
+            Ok((r.get(0)?, r.get(1)?))
+        })?;
         ensure!(generation >= 0, "نسخهٔ ذخیره‌سازی نامعتبر است");
-        let mut state: State =
-            serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
+        let mut state: State = serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
         state.validate()?;
         let generation = if state.schema < CURRENT_SCHEMA {
             // Preserve the exact old logical snapshot before touching its row.
             // A failed or interrupted backup leaves the legacy database usable.
-            let recovery = directory.join(format!(
-                "before-schema{CURRENT_SCHEMA}-{}.json",
-                crate::domain::id()
-            ));
+            let recovery = directory.join(format!("before-schema{CURRENT_SCHEMA}-{}.json", crate::domain::id()));
             backup_state(&state, &recovery)?;
             let verified = Self::restore_preview_legacy(&recovery)?;
             ensure!(
@@ -202,18 +223,13 @@ impl Store {
             );
             state.schema = CURRENT_SCHEMA;
             state.validate()?;
-            let next = generation
-                .checked_add(1)
-                .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
+            let next = generation.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
             let upgraded = serde_json::to_string(&state)?;
             let changed = conn.execute(
                 "UPDATE state SET generation=?1,payload=?2 WHERE id=1 AND generation=?3",
                 params![next, upgraded, generation],
             )?;
-            ensure!(
-                changed == 1,
-                "داده هنگام ارتقا تغییر کرده است؛ دوباره باز کنید"
-            );
+            ensure!(changed == 1, "داده هنگام ارتقا تغییر کرده است؛ دوباره باز کنید");
             next
         } else {
             generation
@@ -252,14 +268,11 @@ impl Store {
             .generation
             .checked_add(1)
             .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
-        let tx = self
-            .conn
-            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
-        let (persisted_generation, persisted_payload): (i64, String) = tx.query_row(
-            "SELECT generation,payload FROM state WHERE id=1",
-            [],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        )?;
+        let tx = self.conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        let (persisted_generation, persisted_payload): (i64, String) =
+            tx.query_row("SELECT generation,payload FROM state WHERE id=1", [], |row| {
+                Ok((row.get(0)?, row.get(1)?))
+            })?;
         ensure!(
             persisted_generation == self.generation,
             "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
@@ -274,18 +287,13 @@ impl Store {
             &reparsed
         };
         persisted.desktop.validate_transition(&candidate.desktop)?;
-        persisted
-            .accounting
-            .validate_transition(&candidate.accounting)?;
+        persisted.accounting.validate_transition(&candidate.accounting)?;
         persisted.cheques.validate_transition(&candidate.cheques)?;
         let changed = tx.execute(
             "UPDATE state SET generation=generation+1,payload=?1 WHERE id=1 AND generation=?2",
             params![payload, self.generation],
         )?;
-        ensure!(
-            changed == 1,
-            "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
-        );
+        ensure!(changed == 1, "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید");
         tx.commit()?;
         self.state = candidate;
         self.generation = next_generation;
@@ -297,10 +305,7 @@ impl Store {
     }
     pub fn prepare_candidate(expected_generation: i64, candidate: State) -> Result<PreparedChange> {
         ensure!(expected_generation >= 0, "نسخهٔ ذخیره‌سازی نامعتبر است");
-        ensure!(
-            candidate.schema == CURRENT_SCHEMA,
-            "نسخهٔ نامعتبر برای ذخیره‌سازی"
-        );
+        ensure!(candidate.schema == CURRENT_SCHEMA, "نسخهٔ نامعتبر برای ذخیره‌سازی");
         candidate.validate()?;
         let payload = serde_json::to_string(&candidate)?;
         serde_json::to_writer_pretty(BackupSize(0), &backup_view(&candidate, payload.as_bytes()))
@@ -314,18 +319,10 @@ impl Store {
     }
     /// Explicit whole-profile replacement is permitted only with a verified
     /// recovery copy of the exact generation being replaced.
-    pub fn prepare_replacement(
-        expected_generation: i64,
-        original: &State,
-        candidate: State,
-        safety: &Path,
-    ) -> Result<PreparedChange> {
+    pub fn prepare_replacement(expected_generation: i64, original: &State, candidate: State, safety: &Path) -> Result<PreparedChange> {
         let recovery = Self::restore_preview_legacy(safety)?;
         let bytes = serde_json::to_vec(original)?;
-        ensure!(
-            serde_json::to_vec(&recovery)? == bytes,
-            "پشتیبان ایمنی با دادهٔ جاری تطبیق ندارد"
-        );
+        ensure!(serde_json::to_vec(&recovery)? == bytes, "پشتیبان ایمنی با دادهٔ جاری تطبیق ندارد");
         let mut prepared = Self::prepare_candidate(expected_generation, candidate)?;
         prepared.recovery_hash = Some(hash(&bytes));
         Ok(prepared)
@@ -338,9 +335,7 @@ impl Store {
             );
         } else {
             current.desktop.validate_transition(&prepared.candidate.desktop)?;
-            current
-                .accounting
-                .validate_transition(&prepared.candidate.accounting)?;
+            current.accounting.validate_transition(&prepared.candidate.accounting)?;
             current.cheques.validate_transition(&prepared.candidate.cheques)?;
         }
         Ok(())
@@ -352,14 +347,11 @@ impl Store {
             .generation
             .checked_add(1)
             .ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
-        let tx = self
-            .conn
-            .transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
-        let (persisted_generation, persisted_payload): (i64, String) = tx.query_row(
-            "SELECT generation,payload FROM state WHERE id=1",
-            [],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        )?;
+        let tx = self.conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        let (persisted_generation, persisted_payload): (i64, String) =
+            tx.query_row("SELECT generation,payload FROM state WHERE id=1", [], |row| {
+                Ok((row.get(0)?, row.get(1)?))
+            })?;
         ensure!(
             persisted_generation == prepared.expected_generation,
             "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
@@ -370,10 +362,7 @@ impl Store {
             "UPDATE state SET generation=generation+1,payload=?1 WHERE id=1 AND generation=?2",
             params![prepared.payload, prepared.expected_generation],
         )?;
-        ensure!(
-            changed == 1,
-            "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید"
-        );
+        ensure!(changed == 1, "داده در پنجرهٔ دیگری تغییر کرده است؛ برنامه را دوباره باز کنید");
         tx.commit()?;
         self.state = prepared.candidate;
         self.generation = next_generation;
@@ -382,11 +371,9 @@ impl Store {
     pub fn backup(&self, path: &Path) -> Result<()> {
         self.ensure_idle()?;
         // A backup must contain committed data, not an old window's snapshot.
-        let (generation, payload): (i64, String) = self.conn.query_row(
-            "SELECT generation,payload FROM state WHERE id=1",
-            [],
-            |row| Ok((row.get(0)?, row.get(1)?)),
-        )?;
+        let (generation, payload): (i64, String) = self.conn.query_row("SELECT generation,payload FROM state WHERE id=1", [], |row| {
+            Ok((row.get(0)?, row.get(1)?))
+        })?;
         self.check_generation(generation)?;
         let state = serde_json::from_str::<State>(&payload)?;
         // A backup is the user's recovery path: never write one from data that fails the
@@ -399,10 +386,7 @@ impl Store {
         self.state.validate()
     }
     pub fn integrity(&self) -> IntegrityStatus {
-        self.integrity
-            .lock()
-            .map(|s| s.clone())
-            .unwrap_or(IntegrityStatus::Unchecked)
+        self.integrity.lock().map(|s| s.clone()).unwrap_or(IntegrityStatus::Unchecked)
     }
     /// Validate a copy of the current book in the background and record the verdict.
     /// Call after an import. Never blocks the caller; a newer check supersedes an older one.
@@ -415,7 +399,10 @@ impl Store {
         std::thread::spawn(move || {
             let verdict = match state.validate() {
                 Ok(()) => IntegrityStatus::Ok { generation },
-                Err(e) => IntegrityStatus::Failed { generation, message: e.to_string() },
+                Err(e) => IntegrityStatus::Failed {
+                    generation,
+                    message: e.to_string(),
+                },
             };
             if let Ok(mut s) = slot.lock()
                 && matches!(*s, IntegrityStatus::Running { generation: g } if g == generation)
@@ -433,11 +420,9 @@ impl Store {
     }
     fn ensure_current(&self) -> Result<()> {
         self.ensure_idle()?;
-        let generation =
-            self.conn
-                .query_row("SELECT generation FROM state WHERE id=1", [], |row| {
-                    row.get(0)
-                })?;
+        let generation = self
+            .conn
+            .query_row("SELECT generation FROM state WHERE id=1", [], |row| row.get(0))?;
         self.check_generation(generation)
     }
     /// Reload the committed snapshot when another window or the local agent
@@ -445,25 +430,20 @@ impl Store {
     /// instead of re-reading and parsing the whole book for every command.
     pub fn refresh_if_stale(&mut self) -> Result<()> {
         self.ensure_idle()?;
-        let generation: i64 =
-            self.conn
-                .query_row("SELECT generation FROM state WHERE id=1", [], |row| {
-                    row.get(0)
-                })?;
+        let generation: i64 = self
+            .conn
+            .query_row("SELECT generation FROM state WHERE id=1", [], |row| row.get(0))?;
         if generation == self.generation {
             return Ok(());
         }
+        let (generation, payload): (i64, String) = self.conn.query_row("SELECT generation,payload FROM state WHERE id=1", [], |row| {
+            Ok((row.get(0)?, row.get(1)?))
+        })?;
         ensure!(
             generation > self.generation,
             "نسخهٔ ذخیره‌سازی عقب افتاده است؛ برنامه را دوباره باز کنید"
         );
-        let payload: String =
-            self.conn
-                .query_row("SELECT payload FROM state WHERE id=1", [], |row| {
-                    row.get(0)
-                })?;
-        let state: State =
-            serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
+        let state: State = serde_json::from_str(&payload).context("دادهٔ محلی نامعتبر؛ فایل را نگه دارید")?;
         state.validate()?;
         ensure!(
             state.schema == CURRENT_SCHEMA,
@@ -486,14 +466,9 @@ impl Store {
     }
     fn restore_preview_legacy(path: &Path) -> Result<State> {
         let mut file = open_regular(path)?;
-        ensure!(
-            file.metadata()?.len() <= MAX_BACKUP,
-            "پشتیبان بیش از ۶۴ مگابایت است"
-        );
+        ensure!(file.metadata()?.len() <= MAX_BACKUP, "پشتیبان بیش از ۶۴ مگابایت است");
         let mut bytes = vec![];
-        Read::by_ref(&mut file)
-            .take(MAX_BACKUP + 1)
-            .read_to_end(&mut bytes)?;
+        Read::by_ref(&mut file).take(MAX_BACKUP + 1).read_to_end(&mut bytes)?;
         ensure!(bytes.len() as u64 <= MAX_BACKUP, "پشتیبان بزرگ است");
         let b: Backup = serde_json::from_slice(&bytes).context("قالب پشتیبان نامعتبر")?;
         ensure!(
@@ -506,10 +481,7 @@ impl Store {
                 || (b.format == "sarv-accounting-backup-v7" && b.state.schema == CURRENT_SCHEMA),
             "قالب پشتیبان ناشناخته"
         );
-        ensure!(
-            b.checksum == hash(&serde_json::to_vec(&b.state)?),
-            "اثر انگشت پشتیبان تطبیق ندارد"
-        );
+        ensure!(b.checksum == hash(&serde_json::to_vec(&b.state)?), "اثر انگشت پشتیبان تطبیق ندارد");
         b.state.validate()?;
         Ok(b.state)
     }
@@ -517,13 +489,45 @@ impl Store {
         self.ensure_idle()?;
         candidate.validate()?;
         candidate.schema = CURRENT_SCHEMA;
-        let safety = self
-            .directory
-            .join(format!("before-restore-{}.json", crate::domain::id()));
+        let safety = self.directory.join(format!("before-restore-{}.json", crate::domain::id()));
         self.backup(&safety)?;
         let prepared = Self::prepare_replacement(self.generation, &self.state, candidate, &safety)?;
         self.commit_prepared(prepared)?;
         Ok(safety)
+    }
+    /// Replace books that fail to load with a verified backup. The unreadable row is
+    /// first copied to `unreadable-{id}.json` (raw payload, not a backup envelope) so
+    /// nothing is destroyed. Never call this when `Store::open` succeeds.
+    pub fn recover_from_backup(directory: &Path, backup: &Path) -> Result<PathBuf> {
+        ensure!(Store::open(directory).is_err(), "Books load normally; use Restore backup");
+        let candidate = Self::restore_preview(backup)?;
+        let mut conn = Connection::open_with_flags(directory.join("sarv.sqlite3"), rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE)?;
+        conn.busy_timeout(Duration::from_secs(3))?;
+        conn.execute_batch("PRAGMA synchronous=FULL;")?;
+        let tx = conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        let (generation, payload): (i64, String) = tx.query_row("SELECT generation,payload FROM state WHERE id=1", [], |r| {
+            Ok((r.get(0)?, r.get(1)?))
+        })?;
+        let preserved = directory.join(format!("unreadable-{}.json", crate::domain::id()));
+        write_new_private(&preserved, payload.as_bytes())?;
+        let next = generation.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
+        let replaced = serde_json::to_string(&candidate)?;
+        let changed = tx.execute(
+            "UPDATE state SET generation=?1,payload=?2 WHERE id=1 AND generation=?3",
+            params![next, replaced, generation],
+        )?;
+        ensure!(changed == 1, "داده هنگام بازیابی تغییر کرده است؛ دوباره تلاش کنید");
+        tx.commit()?;
+        drop(conn);
+        Store::open(directory)?;
+        Ok(preserved)
+    }
+    #[cfg(any(test, feature = "test-support"))]
+    #[doc(hidden)]
+    pub fn corrupt_for_test(directory: &Path) -> Result<()> {
+        let conn = Connection::open(directory.join("sarv.sqlite3"))?;
+        conn.execute("UPDATE state SET generation=generation+1, payload='{' WHERE id=1", [])?;
+        Ok(())
     }
 }
 pub fn backup_state(state: &State, path: &Path) -> Result<()> {
@@ -531,13 +535,54 @@ pub fn backup_state(state: &State, path: &Path) -> Result<()> {
     let payload = serde_json::to_vec(state)?;
     let b = backup_view(state, &payload);
     let bytes = serde_json::to_vec_pretty(&b)?;
-    ensure!(
-        bytes.len() as u64 <= MAX_BACKUP,
-        "پشتیبان بیش از حد بزرگ است"
-    );
-    write_new(path, &bytes)
+    ensure!(bytes.len() as u64 <= MAX_BACKUP, "پشتیبان بیش از حد بزرگ است");
+    write_new_private(path, &bytes)
 }
+
+fn open_new_file(path: &Path, private: bool) -> std::io::Result<fs::File> {
+    let mut opts = OpenOptions::new();
+    opts.write(true).create_new(true);
+    #[cfg(unix)]
+    if private {
+        use std::os::unix::fs::OpenOptionsExt;
+        opts.mode(0o600);
+    }
+    opts.open(path)
+}
+
+fn sweep_stale_staging(directory: &Path) {
+    let Ok(entries) = fs::read_dir(directory) else {
+        return;
+    };
+    let Some(cutoff) = std::time::SystemTime::now().checked_sub(Duration::from_secs(3600)) else {
+        return;
+    };
+    for entry in entries.flatten() {
+        let path = entry.path();
+        let Some(name) = path.file_name().and_then(|n| n.to_str()) else {
+            continue;
+        };
+        if name.starts_with(".sarv-write-")
+            && name.ends_with(".tmp")
+            && let Ok(meta) = entry.metadata()
+            && let Ok(modified) = meta.modified()
+            && modified < cutoff
+        {
+            let _ = fs::remove_file(path);
+        }
+    }
+}
+
 pub fn write_new(path: &Path, bytes: &[u8]) -> Result<()> {
+    write_new_inner(path, bytes, false)
+}
+
+pub fn write_new_private(path: &Path, bytes: &[u8]) -> Result<()> {
+    write_new_inner(path, bytes, true)
+}
+
+fn write_new_inner(path: &Path, bytes: &[u8], private: bool) -> Result<()> {
+    const EXISTING_MSG: &str = "فایل موجود است یا مسیر قابل نوشتن نیست؛ نام تازه انتخاب کنید";
     let parent = path
         .parent()
         .filter(|p| !p.as_os_str().is_empty())
@@ -545,22 +590,39 @@ pub fn write_new(path: &Path, bytes: &[u8]) -> Result<()> {
     // Same-directory staging plus a no-replace hard link publishes only complete,
     // synced data. Neither an existing file nor a symlink can be overwritten.
     let staging = parent.join(format!(".sarv-write-{}.tmp", crate::domain::id()));
-    let mut file = OpenOptions::new()
-        .write(true)
-        .create_new(true)
-        .open(&staging)
-        .context("فایل موجود است یا مسیر قابل نوشتن نیست؛ نام تازه انتخاب کنید")?;
+    let mut file = open_new_file(&staging, private).context(EXISTING_MSG)?;
     if let Err(e) = file.write_all(bytes).and_then(|()| file.sync_all()) {
         drop(file);
         let _ = fs::remove_file(&staging);
         return Err(e.into());
     }
     drop(file);
-    if let Err(error) = fs::hard_link(&staging, path) {
-        let _ = fs::remove_file(&staging);
-        return Err(error).context("فایل موجود است یا مسیر قابل نوشتن نیست؛ نام تازه انتخاب کنید");
+    match fs::hard_link(&staging, path) {
+        Ok(()) => {
+            let _ = fs::remove_file(&staging);
+        }
+        Err(error) if error.kind() == std::io::ErrorKind::AlreadyExists => {
+            let _ = fs::remove_file(&staging);
+            return Err(error).context(EXISTING_MSG);
+        }
+        Err(_) => {
+            let mut dest = match open_new_file(path, private) {
+                Ok(f) => f,
+                Err(error) => {
+                    let _ = fs::remove_file(&staging);
+                    return Err(error).context(EXISTING_MSG);
+                }
+            };
+            if let Err(e) = dest.write_all(bytes).and_then(|()| dest.sync_all()) {
+                drop(dest);
+                let _ = fs::remove_file(path);
+                let _ = fs::remove_file(&staging);
+                return Err(e.into());
+            }
+            let _ = fs::remove_file(&staging);
+        }
     }
-    fs::remove_file(&staging)?;
+    #[cfg(unix)]
     fs::File::open(parent)?.sync_all()?;
     Ok(())
 }
@@ -577,8 +639,7 @@ pub fn read_import(path: &Path) -> Result<String> {
         "فایل بیش از ۱۰ مگابایت است"
     );
     let mut s = String::new();
-    f.take(crate::imports::MAX_IMPORT as u64 + 1)
-        .read_to_string(&mut s)?;
+    f.take(crate::imports::MAX_IMPORT as u64 + 1).read_to_string(&mut s)?;
     ensure!(s.len() <= crate::imports::MAX_IMPORT, "فایل بزرگ است");
     Ok(s)
 }

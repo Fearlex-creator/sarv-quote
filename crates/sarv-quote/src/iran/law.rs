@@ -19,10 +19,8 @@ pub struct LawValue<T> {
 }
 
 /// Shown wherever a legal value is displayed or used.
-pub const NOT_REVIEWED_NOTICE_EN: &str =
-    "Not yet reviewed. Do not use these values for real invoices, payslips or tax filings.";
-pub const NOT_REVIEWED_NOTICE_FA: &str =
-    "هنوز بازبینی نشده است. از این مقادیر برای فاکتور، فیش حقوقی یا اظهارنامهٔ واقعی استفاده نکنید.";
+pub const NOT_REVIEWED_NOTICE_EN: &str = "Not yet reviewed. Do not use these values for real invoices, payslips or tax filings.";
+pub const NOT_REVIEWED_NOTICE_FA: &str = "هنوز بازبینی نشده است. از این مقادیر برای فاکتور، فیش حقوقی یا اظهارنامهٔ واقعی استفاده نکنید.";
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct NotReviewed;
@@ -35,7 +33,11 @@ impl std::error::Error for NotReviewed {}
 
 /// The gate for real documents: only reviewed values with no open `verify` flag pass.
 pub fn require_reviewed<T>(value: &LawValue<T>) -> Result<(), NotReviewed> {
-    if value.reviewed && !value.verify { Ok(()) } else { Err(NotReviewed) }
+    if value.reviewed && !value.verify {
+        Ok(())
+    } else {
+        Err(NotReviewed)
+    }
 }
 impl<T: Copy> LawValue<T> {
     fn for_year(table: &[LawValue<T>], year: i32) -> Option<LawValue<T>> {
@@ -69,12 +71,30 @@ pub struct Bracket {
 const T: i64 = 10; // 1 toman = 10 rial
 const M: i64 = 1_000_000;
 const SALARY_1405: [Bracket; 6] = [
-    Bracket { up_to_rial: Some(40 * M * T), rate_bp: 0 },
-    Bracket { up_to_rial: Some(80 * M * T), rate_bp: 1000 },
-    Bracket { up_to_rial: Some(100 * M * T), rate_bp: 1500 },
-    Bracket { up_to_rial: Some(120 * M * T), rate_bp: 2000 },
-    Bracket { up_to_rial: Some(140 * M * T), rate_bp: 2500 },
-    Bracket { up_to_rial: None, rate_bp: 3000 },
+    Bracket {
+        up_to_rial: Some(40 * M * T),
+        rate_bp: 0,
+    },
+    Bracket {
+        up_to_rial: Some(80 * M * T),
+        rate_bp: 1000,
+    },
+    Bracket {
+        up_to_rial: Some(100 * M * T),
+        rate_bp: 1500,
+    },
+    Bracket {
+        up_to_rial: Some(120 * M * T),
+        rate_bp: 2000,
+    },
+    Bracket {
+        up_to_rial: Some(140 * M * T),
+        rate_bp: 2500,
+    },
+    Bracket {
+        up_to_rial: None,
+        rate_bp: 3000,
+    },
 ];
 /// Monthly salary-tax brackets. `verify`: interpretation of the thresholds as cumulative
 /// monthly income (not income after the exemption) must be confirmed against the 1405
@@ -118,8 +138,11 @@ pub struct Insurance {
 }
 /// Standard 7% / 20% / 3%. `verify`: special workshops, hard/harmful jobs and exemptions
 /// differ, and the monthly ceiling/floor is a yearly figure that is not shipped here.
-pub const INSURANCE_STANDARD_VERIFY: Insurance =
-    Insurance { employee_bp: 700, employer_bp: 2000, unemployment_bp: 300 };
+pub const INSURANCE_STANDARD_VERIFY: Insurance = Insurance {
+    employee_bp: 700,
+    employer_bp: 2000,
+    unemployment_bp: 300,
+};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct InsuranceAmounts {

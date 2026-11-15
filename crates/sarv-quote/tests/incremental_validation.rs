@@ -147,7 +147,12 @@ fn store_with_hidden_corruption() -> (tempfile::TempDir, Store, String) {
 fn fast_save_misses_hidden_corruption_but_every_safety_net_catches_it() {
     let (dir, mut store, company) = store_with_hidden_corruption();
     // 1. An unrelated save passes the fast path (this is the accepted trade-off)…
-    store.change(|s| { s.settings.business_name = "unrelated".into(); Ok(()) }).unwrap();
+    store
+        .change(|s| {
+            s.settings.business_name = "unrelated".into();
+            Ok(())
+        })
+        .unwrap();
     // 2. …but the full validator, backup and period close all refuse the same book.
     assert!(store.validate_full().is_err());
     assert!(store.backup(&dir.path().join("b.json")).is_err(), "backup must not be written");
@@ -176,12 +181,17 @@ fn background_check_reports_ok_or_failed_and_failed_blocks_close_with_the_reason
     let good = Store::open(dir.path()).unwrap();
     assert_eq!(good.integrity(), IntegrityStatus::Unchecked);
     good.start_background_check();
-    assert!(matches!(wait_for(&good, |s| !matches!(s, IntegrityStatus::Running { .. })), IntegrityStatus::Ok { .. }));
+    assert!(matches!(
+        wait_for(&good, |s| !matches!(s, IntegrityStatus::Running { .. })),
+        IntegrityStatus::Ok { .. }
+    ));
 
     let (_d, mut bad, company) = store_with_hidden_corruption();
     bad.start_background_check();
     let status = wait_for(&bad, |s| !matches!(s, IntegrityStatus::Running { .. }));
-    let IntegrityStatus::Failed { message, .. } = status else { panic!("expected Failed, got {status:?}") };
+    let IntegrityStatus::Failed { message, .. } = status else {
+        panic!("expected Failed, got {status:?}")
+    };
     assert!(!message.is_empty());
     // The status is visible to the UI through the workspace and the dedicated action.
     let w: Value = dispatch_in(&mut bad, "workspace", json!({"company_id": company})).unwrap();
@@ -190,9 +200,13 @@ fn background_check_reports_ok_or_failed_and_failed_blocks_close_with_the_reason
     assert_eq!(direct["status"], "failed");
     // Failed integrity blocks close and names the cause.
     let period = bad.state.accounting.periods[0].id.clone();
-    let err = dispatch_in(&mut bad, "period_lock", json!({"company_id": company, "period_id": period, "locked": true, "reason": "close", "request_key": "k2"}))
-        .unwrap_err()
-        .to_string();
+    let err = dispatch_in(
+        &mut bad,
+        "period_lock",
+        json!({"company_id": company, "period_id": period, "locked": true, "reason": "close", "request_key": "k2"}),
+    )
+    .unwrap_err()
+    .to_string();
     assert!(err.contains("Integrity check failed") && err.contains(&message), "{err}");
 }
 
@@ -207,7 +221,12 @@ fn closing_a_healthy_period_still_works() {
     if locked {
         return; // fixture already closed; nothing to prove here
     }
-    dispatch_in(&mut store, "period_lock", json!({"company_id": company, "period_id": period, "locked": true, "reason": "month end", "request_key": "close-1"})).unwrap();
+    dispatch_in(
+        &mut store,
+        "period_lock",
+        json!({"company_id": company, "period_id": period, "locked": true, "reason": "month end", "request_key": "close-1"}),
+    )
+    .unwrap();
     assert!(store.state.accounting.periods[0].locked);
 }
 

@@ -13,18 +13,13 @@ use std::{
 };
 
 fn equal_state(actual: &State, expected: &State) {
-    assert_eq!(
-        serde_json::to_value(actual).unwrap(),
-        serde_json::to_value(expected).unwrap()
-    );
+    assert_eq!(serde_json::to_value(actual).unwrap(), serde_json::to_value(expected).unwrap());
 }
 
 fn row(path: &Path) -> (i64, String) {
     Connection::open(path.join("sarv.sqlite3"))
         .unwrap()
-        .query_row("SELECT generation,payload FROM state", [], |r| {
-            Ok((r.get(0)?, r.get(1)?))
-        })
+        .query_row("SELECT generation,payload FROM state", [], |r| Ok((r.get(0)?, r.get(1)?)))
         .unwrap()
 }
 
@@ -37,16 +32,12 @@ fn procurement_migration_child() {
 
 #[test]
 fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_once() {
-    let envelope: Value = serde_json::from_slice(include_bytes!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))
-    .unwrap();
+    let envelope: Value = serde_json::from_slice(include_bytes!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let original: State = serde_json::from_value(envelope["state"].clone()).unwrap();
     let profile = tempfile::tempdir().unwrap();
     seed(profile.path(), &original);
     let held = Connection::open(profile.path().join("sarv.sqlite3")).unwrap();
-    held.execute_batch("PRAGMA journal_mode=WAL; BEGIN IMMEDIATE;")
-        .unwrap();
+    held.execute_batch("PRAGMA journal_mode=WAL; BEGIN IMMEDIATE;").unwrap();
     let preceding = row(profile.path());
     let mut child = Command::new(std::env::current_exe().unwrap())
         .args(["--exact", "procurement_migration_child", "--nocapture"])
@@ -66,10 +57,7 @@ fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_o
         e.unwrap()
             .file_name()
             .to_string_lossy()
-            .starts_with(&format!(
-                "before-schema{}-",
-                sarv_quote::domain::CURRENT_SCHEMA
-            ))
+            .starts_with(&format!("before-schema{}-", sarv_quote::domain::CURRENT_SCHEMA))
     }));
     held.execute_batch("ROLLBACK").unwrap();
     drop(held);
@@ -81,19 +69,20 @@ fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_o
     drop(opened);
     assert_eq!(Store::open(profile.path()).unwrap().local_generation(), 42);
     let db = Connection::open(profile.path().join("sarv.sqlite3")).unwrap();
-    assert_eq!(
-        db.query_row("PRAGMA integrity_check", [], |r| r.get::<_, String>(0))
-            .unwrap(),
-        "ok"
-    );
+    assert_eq!(db.query_row("PRAGMA integrity_check", [], |r| r.get::<_, String>(0)).unwrap(), "ok");
     if let Ok(root) = std::env::var("SARV_M4_MIGRATION_ARTIFACT_DIR") {
         fs::create_dir_all(&root).unwrap();
-        fs::write(Path::new(&root).join("interrupted-startup.json"), serde_json::to_vec_pretty(&serde_json::json!({
-            "result":"passed", "schema_before":4,"schema_after":sarv_quote::domain::CURRENT_SCHEMA,
-            "scope":"owned-child kill while startup INSERT waits, before schema UPDATE; software interruption only",
-            "exact_old_row_after_kill":true,"no_recovery_before_kill":true,"next_open_generation":42,
-            "repeat_open_generation":42,"integrity":"ok"
-        })).unwrap()).unwrap();
+        fs::write(
+            Path::new(&root).join("interrupted-startup.json"),
+            serde_json::to_vec_pretty(&serde_json::json!({
+                "result":"passed", "schema_before":4,"schema_after":sarv_quote::domain::CURRENT_SCHEMA,
+                "scope":"owned-child kill while startup INSERT waits, before schema UPDATE; software interruption only",
+                "exact_old_row_after_kill":true,"no_recovery_before_kill":true,"next_open_generation":42,
+                "repeat_open_generation":42,"integrity":"ok"
+            }))
+            .unwrap(),
+        )
+        .unwrap();
     }
 }
 
@@ -101,19 +90,13 @@ fn interrupted_schema4_startup_before_migration_retains_exact_row_and_recovers_o
 #[ignore = "requires retained immutable M3 executable in SARV_M3_COMPAT_BINARY"]
 fn actual_m3_binary_rejects_current_schema_without_modifying_committed_row() {
     let binary = std::env::var("SARV_M3_COMPAT_BINARY").expect("retained M3 executable required");
-    let envelope: Value = serde_json::from_slice(include_bytes!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))
-    .unwrap();
+    let envelope: Value = serde_json::from_slice(include_bytes!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let original: State = serde_json::from_value(envelope["state"].clone()).unwrap();
     let profile = tempfile::tempdir().unwrap();
     seed(profile.path(), &original);
     drop(Store::open(profile.path()).unwrap());
     let preceding = row(profile.path());
-    let output = Command::new(&binary)
-        .env("SARV_DATA_DIR", profile.path())
-        .output()
-        .unwrap();
+    let output = Command::new(&binary).env("SARV_DATA_DIR", profile.path()).output().unwrap();
     assert!(!output.status.success());
     let diagnostic = String::from_utf8_lossy(&output.stderr);
     assert!(
@@ -137,28 +120,18 @@ fn actual_m3_binary_rejects_current_schema_without_modifying_committed_row() {
 
 fn seed(path: &Path, state: &State) {
     let db = Connection::open(path.join("sarv.sqlite3")).unwrap();
-    db.execute_batch("CREATE TABLE state(id INTEGER PRIMARY KEY CHECK(id=1),generation INTEGER NOT NULL,payload TEXT NOT NULL)").unwrap();
-    db.execute(
-        "INSERT INTO state VALUES(1,41,?1)",
-        params![serde_json::to_string(state).unwrap()],
-    )
-    .unwrap();
+    db.execute_batch("CREATE TABLE state(id INTEGER PRIMARY KEY CHECK(id=1),generation INTEGER NOT NULL,payload TEXT NOT NULL)")
+        .unwrap();
+    db.execute("INSERT INTO state VALUES(1,41,?1)", params![serde_json::to_string(state).unwrap()])
+        .unwrap();
 }
 
 // M3 permitted these event names in ordinary manual books. The independent
 // archived-M3 probe also creates and validates such original/reversed v4 books.
 fn legacy_named_journal(kind: JournalKind, event: &str) -> State {
-    let envelope: Value = serde_json::from_slice(include_bytes!(
-        "../../../docs/assets/accounting-m3/migration/current-v4.json"
-    ))
-    .unwrap();
+    let envelope: Value = serde_json::from_slice(include_bytes!("../../../docs/assets/accounting-m3/migration/current-v4.json")).unwrap();
     let mut state: State = serde_json::from_value(envelope["state"].clone()).unwrap();
-    let journal = state
-        .accounting
-        .journals
-        .iter_mut()
-        .find(|journal| journal.kind == kind)
-        .unwrap();
+    let journal = state.accounting.journals.iter_mut().find(|journal| journal.kind == kind).unwrap();
     journal.event = event.into();
     let id = journal.id.clone();
     for request in &mut state.accounting.requests {
@@ -189,10 +162,7 @@ fn legacy_procurement_named_manual_and_linked_reversal_migrate_with_exact_histor
                 path.file_name()
                     .unwrap()
                     .to_string_lossy()
-                    .starts_with(&format!(
-                        "before-schema{}-",
-                        sarv_quote::domain::CURRENT_SCHEMA
-                    ))
+                    .starts_with(&format!("before-schema{}-", sarv_quote::domain::CURRENT_SCHEMA))
             })
             .unwrap();
         let raw: Value = serde_json::from_slice(&fs::read(&recovery).unwrap()).unwrap();
@@ -202,9 +172,7 @@ fn legacy_procurement_named_manual_and_linked_reversal_migrate_with_exact_histor
         store.backup(&backup).unwrap();
         let fresh = tempfile::tempdir().unwrap();
         let mut restored = Store::open(fresh.path()).unwrap();
-        restored
-            .restore(Store::restore_preview(&backup).unwrap())
-            .unwrap();
+        restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();
         equal_state(&restored.state, &expected);
         drop(restored);
         equal_state(&Store::open(fresh.path()).unwrap().state, &expected);
@@ -265,12 +233,7 @@ fn legacy_namespace_can_reverse_but_new_reserved_manual_append_cannot_commit() {
         .find(|journal| journal.event == "procurement.receive.v1")
         .unwrap();
     assert!(!before.accounting.has_typed_journal_source(&legacy.id));
-    let period = before
-        .accounting
-        .periods
-        .iter()
-        .find(|period| !period.locked)
-        .unwrap();
+    let period = before.accounting.periods.iter().find(|period| !period.locked).unwrap();
     let mut command = before.accounting.requests[0].command.clone();
     command.kind = JournalKind::Manual;
     command.period_id = period.id.clone();
@@ -340,13 +303,7 @@ fn legacy_namespace_can_reverse_but_new_reserved_manual_append_cannot_commit() {
             )
         })
         .unwrap();
-    assert!(
-        store
-            .state
-            .accounting
-            .journals
-            .starts_with(&before.accounting.journals)
-    );
+    assert!(store.state.accounting.journals.starts_with(&before.accounting.journals));
     let exact = store.state.clone();
     drop(store);
     equal_state(&Store::open(profile.path()).unwrap().state, &exact);
@@ -383,10 +340,7 @@ fn retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recove
                 p.file_name()
                     .unwrap()
                     .to_string_lossy()
-                    .starts_with(&format!(
-                        "before-schema{}-",
-                        sarv_quote::domain::CURRENT_SCHEMA
-                    ))
+                    .starts_with(&format!("before-schema{}-", sarv_quote::domain::CURRENT_SCHEMA))
             })
             .unwrap();
         let raw: Value = serde_json::from_slice(&fs::read(&recovery).unwrap()).unwrap();
@@ -399,9 +353,7 @@ fn retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recove
         assert_eq!(current["format"], "sarv-accounting-backup-v7");
         let fresh = tempfile::tempdir().unwrap();
         let mut restored = Store::open(fresh.path()).unwrap();
-        restored
-            .restore(Store::restore_preview(&backup).unwrap())
-            .unwrap();
+        restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();
         equal_state(&restored.state, &expected);
         drop(restored);
         equal_state(&Store::open(fresh.path()).unwrap().state, &expected);
@@ -417,10 +369,7 @@ fn retained_schema4_quotations_and_detailed_opening_upgrade_with_exact_v4_recove
                     .unwrap()
                     .file_name()
                     .to_string_lossy()
-                    .starts_with(&format!(
-                        "before-schema{}-",
-                        sarv_quote::domain::CURRENT_SCHEMA
-                    )))
+                    .starts_with(&format!("before-schema{}-", sarv_quote::domain::CURRENT_SCHEMA)))
                 .count(),
             1
         );

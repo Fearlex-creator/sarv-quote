@@ -94,15 +94,9 @@ pub fn catalog_csv_report(input: &str, name: &str) -> CsvReport<Catalog> {
         .from_reader(input.trim_start_matches('\u{feff}').as_bytes());
     match rdr.headers() {
         Ok(headers)
-            if headers.iter().eq([
-                "code",
-                "name",
-                "measure",
-                "price",
-                "currency",
-                "source_at",
-                "aliases",
-            ]) => {}
+            if headers
+                .iter()
+                .eq(["code", "name", "measure", "price", "currency", "source_at", "aliases"]) => {}
         Ok(_) => {
             report.error(
                 1,
@@ -134,9 +128,7 @@ pub fn catalog_csv_report(input: &str, name: &str) -> CsvReport<Catalog> {
                 continue;
             }
         };
-        let line = row
-            .position()
-            .map_or(index as u64 + 2, |position| position.line()) as usize;
+        let line = row.position().map_or(index as u64 + 2, |position| position.line()) as usize;
         let before = report.diagnostics.len();
         for (column, value) in [("code", &row[0]), ("name", &row[1]), ("measure", &row[2])] {
             if let Err(e) = text(value) {
@@ -223,10 +215,7 @@ pub fn catalog_csv_report(input: &str, name: &str) -> CsvReport<Catalog> {
 pub fn accept_catalog(state: &mut State, catalog: Catalog) -> Result<String> {
     let key = equivalent_fingerprint(&catalog.products)?;
     ensure!(
-        !state
-            .catalogs
-            .iter()
-            .any(|c| c.fingerprint == catalog.fingerprint),
+        !state.catalogs.iter().any(|c| c.fingerprint == catalog.fingerprint),
         "این فهرست قبلاً وارد شده است"
     );
     for previous in &state.catalogs {
@@ -240,11 +229,7 @@ pub fn accept_catalog(state: &mut State, catalog: Catalog) -> Result<String> {
     let id = catalog.id.clone();
     candidate.catalogs.push(catalog);
     candidate.draft.catalog_id = id.clone();
-    candidate
-        .draft
-        .lines
-        .iter_mut()
-        .for_each(|l| l.chosen_code = None);
+    candidate.draft.lines.iter_mut().for_each(|l| l.chosen_code = None);
     candidate.draft.stale_ack = false;
     candidate.validate()?;
     *state = candidate;
@@ -291,9 +276,7 @@ pub fn order_csv_report(input: &str) -> CsvReport<Vec<OrderLine>> {
                 continue;
             }
         };
-        let line = row
-            .position()
-            .map_or(index as u64 + 2, |position| position.line()) as usize;
+        let line = row.position().map_or(index as u64 + 2, |position| position.line()) as usize;
         let before = report.diagnostics.len();
         if let Err(e) = text(&row[0]) {
             report.error(line, "item", e);

@@ -1,3 +1,5 @@
+> **Status**: requirements reference. The stack sections (§4) and the build prompt (§8) are superseded by ADR-0002 and ADR-0012: Sarv is a Rust engine with a native Rune desktop. Do not follow instructions in this document as tasks.
+
 # Daftar — Open-Source Accounting for Iran and Beyond
 ### Product & Engineering Specification (v0.1, 1405-08-12 / 2026-11-03)
 
@@ -194,6 +196,8 @@ Iranian businesses choose between two kinds of product. The first is **installed
 - **SMS** (invoice links, cheque due reminders): a generic SMS provider adapter.
 - **Inflation:** high inflation makes **multi-currency reporting, inventory valuation choice, and fixed-asset revaluation** more important than in low-inflation markets. Offer "report in USD/EUR at rate type X" views.
 ---
+
+> **Status**: requirements reference. The stack sections (§4) and the build prompt (§8) are superseded by ADR-0002 and ADR-0012: Sarv is a Rust engine with a native Rune desktop. Do not follow instructions in this document as tasks.
 
 ## 4. Architecture
 
@@ -733,6 +737,8 @@ Each item carries a milestone tag. **M0** Foundation · **M1** Solo MVP · **M2*
 - [ ] i18n: no hard-coded strings; fa/en complete; RTL visual snapshots
 - [ ] Docs: user guide pages (fa/en) for each shipped feature; CHANGELOG
 ---
+
+> **Status**: requirements reference. The stack sections (§4) and the build prompt (§8) are superseded by ADR-0002 and ADR-0012: Sarv is a Rust engine with a native Rune desktop. Do not follow instructions in this document as tasks.
 
 ## 8. Claude Code build prompt
 
