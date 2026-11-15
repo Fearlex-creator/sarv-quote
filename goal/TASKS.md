@@ -55,7 +55,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 - [x] **P07-T01**: Add `Store::recover_from_backup` in `store.rs`, handle `backup_list`/`backup_restore_preview`/`recover_from_backup` when `Store::open` fails in `desktop_bridge.rs`, add `backup_file_kind` + safety backup retention, add `crates/sarv-quote/tests/recovery.rs`.
   - Files: `crates/sarv-quote/src/store.rs`, `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/recovery.rs`
   - Done when: `cargo test -p sarv-quote --test recovery && cargo test -p sarv-quote`
-- [ ] **P07-T02**: Add `Books::load_failed()` in `data.rs`, route to `views::recovery::view` in `ui/mod.rs`, create `src/ui/views/recovery.rs`, update `settings.rs` restore list + `fa_messages.rs`, add test, update `plans/README.md`.
+- [x] **P07-T02**: Add `Books::load_failed()` in `data.rs`, route to `views::recovery::view` in `ui/mod.rs`, create `src/ui/views/recovery.rs`, update `settings.rs` restore list + `fa_messages.rs`, add test, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/data.rs`, `crates/sarv-desktop/src/ui/mod.rs`, `crates/sarv-desktop/src/ui/views/{mod.rs,recovery.rs,settings.rs}`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

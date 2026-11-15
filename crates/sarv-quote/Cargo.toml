@@ -24,6 +24,7 @@ pango = { version = "0.22", optional = true }
 [features]
 default = []
 pdf-export = ["dep:cairo-rs", "dep:pangocairo", "dep:pango"]
+test-support = []
 
 [dev-dependencies]
 tempfile.workspace = true

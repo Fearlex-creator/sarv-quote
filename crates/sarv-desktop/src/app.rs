@@ -189,6 +189,7 @@ pub struct State {
     pub sheets: views::sheets::SheetsState,
     pub settings: views::settings::SettingsState,
     pub setup: views::setup::SetupState,
+    pub recovery: views::recovery::RecoveryState,
     /// Open state for kit `Select` fields, keyed by select id.
     pub selects: HashMap<String, bool>,
     /// Counter page. Loaded from settings; off until the owner turns it on.
@@ -226,10 +227,12 @@ impl State {
             sheets: Default::default(),
             settings: Default::default(),
             setup: Default::default(),
+            recovery: Default::default(),
             selects: HashMap::new(),
             show_pos: false,
         };
         s.apply_settings();
+        s.refresh_recovery_if_failed();
         s
     }
 
@@ -338,6 +341,15 @@ impl State {
 
     pub fn refresh(&mut self) {
         self.books.refresh(&self.engine);
+        self.refresh_recovery_if_failed();
+    }
+
+    fn refresh_recovery_if_failed(&mut self) {
+        if self.books.load_failed() {
+            self.recovery.backups = self.query("backup_list", serde_json::json!({})).unwrap_or_default();
+        } else {
+            self.recovery = Default::default();
+        }
     }
 
     pub fn select_company(&mut self, id: &str) {

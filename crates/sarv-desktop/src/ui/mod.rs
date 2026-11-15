@@ -20,7 +20,9 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     let dir = if s.lang().is_rtl() { Direction::Rtl } else { Direction::Ltr };
     let mut layer = Vec::new();
 
-    let content = if !s.books.has_company() || !s.books.initialized() {
+    let content = if s.books.load_failed() {
+        views::recovery::view(s, cx, &ui, &mut layer)
+    } else if !s.books.has_company() || !s.books.initialized() {
         views::setup::view(s, cx, &ui, &mut layer)
     } else {
         match s.page {
@@ -42,7 +44,7 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     shell::mount_palette(s, &ui, &mut layer);
     shell::mount_toasts(s, &ui, &mut layer);
 
-    let ready = s.books.has_company() && s.books.initialized();
+    let ready = !s.books.load_failed() && s.books.has_company() && s.books.initialized();
     let window = if ready {
         shell::app_shell(s, &ui, cx, content)
     } else {

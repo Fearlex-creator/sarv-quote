@@ -91,3 +91,45 @@ fn backup_then_restore_returns_the_books_to_the_snapshot() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_recovery_screen_restores_a_backup() {
+    let mut rt = make_test_runtime();
+    let pre_count = count(&rt, "journal_count");
+
+    let created = rt.state.run("backup_create", serde_json::json!({}), None).expect("create backup");
+    let filename = data::s(&created["filename"]);
+    assert!(!filename.is_empty(), "backup filename should be returned");
+
+    let dir = rt.state.engine.dir.clone();
+    drop(rt);
+    sarv_quote::store::Store::corrupt_for_test(&dir).expect("corrupt db");
+
+    let env = rune::Env {
+        system_dark: true,
+        scale: 2.0,
+    };
+    let mut rt = rune::Runtime::new(
+        State::with_engine(data::Engine::with_dir(&dir), true),
+        crate::ui::root_view,
+        (1180.0, 780.0),
+        env,
+    );
+    rt.frame(0.0);
+
+    assert!(rt.state.books.load_failed(), "books should report load_failed");
+    assert!(rt.find("recovery-screen").is_some(), "recovery screen should render");
+
+    click(&mut rt, &format!("btn-backup-{filename}"));
+    assert!(!rt.state.recovery.preview_note.is_empty(), "{}", blow(&rt, "preview backup"));
+    click(&mut rt, "btn-Restore this backup");
+
+    assert!(!rt.state.books.load_failed(), "{}", blow(&rt, "recover from backup"));
+    assert!(
+        rt.find("recovery-screen").is_none(),
+        "recovery screen should disappear after restore"
+    );
+    assert_eq!(count(&rt, "journal_count"), pre_count);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

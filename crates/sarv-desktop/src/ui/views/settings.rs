@@ -327,29 +327,61 @@ fn open_restore(st: &mut State) {
     }
 }
 
-fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
-    let rows = s.settings.backups["backups"].as_array().cloned().unwrap_or_default();
-    let mut form = col().gap(8.0);
+pub(crate) fn backup_kind_label(ui: &Ui, kind: &str) -> String {
+    match kind {
+        "manual" => ui.t("Manual backup"),
+        "before-restore" => ui.t("Before restore"),
+        "before-upgrade" => ui.t("Before upgrade"),
+        other => other.to_string(),
+    }
+}
+
+pub(crate) fn preview_summary(v: &serde_json::Value) -> String {
+    let companies = v["backup"]["companies"].as_array().map(|a| a.len()).unwrap_or(0);
+    let journals = crate::data::s(&v["backup"]["journals"]);
+    format!("{companies} · {journals}")
+}
+
+pub(crate) fn backup_list(
+    ui: &Ui,
+    backups: &serde_json::Value,
+    selected: &str,
+    on_pick: impl Fn(&mut State, String) + Clone + 'static,
+) -> El {
+    let rows = backups["backups"].as_array().cloned().unwrap_or_default();
     if rows.is_empty() {
-        form = form.child(ui.empty(&icons::DOWNLOAD, "No backups yet. Create one before your first closing.", "Backup"));
+        return ui.empty(&icons::DOWNLOAD, "No backups yet. Create one before your first closing.", "Backup");
     }
-    for row in rows.iter().take(6) {
+    let mut list = col().w_full().gap(6.0);
+    for row in rows {
         let name = crate::data::s(&row["filename"]);
+        let kind = backup_kind_label(ui, &crate::data::s(&row["kind"]));
+        let label = if kind.is_empty() {
+            name.clone()
+        } else {
+            format!("{name} · {kind}")
+        };
         let key = format!("backup-{name}");
-        form = form.child(ui.button(Btn::Glass, &key, &name, None, {
-            let name = name.clone();
-            move |st| match st.query("backup_restore_preview", json!({ "filename": name })) {
-                Ok(v) => {
-                    let companies = v["backup"]["companies"].as_array().map(|a| a.len()).unwrap_or(0);
-                    let journals = crate::data::s(&v["backup"]["journals"]);
-                    st.settings.restore_name = name.clone();
-                    st.settings.restore_note = format!("{companies} · {journals}");
-                    st.settings.generation_note = crate::data::s(&v["_generation"]);
-                }
-                Err(e) => st.toast_err(e),
-            }
-        }));
+        let btn_kind = if selected == name { Btn::Primary } else { Btn::Glass };
+        let on_pick = on_pick.clone();
+        let picked = name.clone();
+        list = list.child(ui.button(btn_kind, &key, &label, None, move |st| on_pick(st, picked.clone())));
     }
+    list.scroll(rune::ScrollSpec { stick_bottom: false }).w_full().max_h(240.0)
+}
+
+fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    let mut form = col().gap(8.0);
+    form = form.child(backup_list(ui, &s.settings.backups, &s.settings.restore_name, |st, name| match st
+        .query("backup_restore_preview", json!({ "filename": name }))
+    {
+        Ok(v) => {
+            st.settings.restore_name = name;
+            st.settings.restore_note = preview_summary(&v);
+            st.settings.generation_note = crate::data::s(&v["_generation"]);
+        }
+        Err(e) => st.toast_err(e),
+    }));
     if !s.settings.restore_note.is_empty() {
         form = form.child(ui.muted(s.settings.restore_note.clone()));
     }

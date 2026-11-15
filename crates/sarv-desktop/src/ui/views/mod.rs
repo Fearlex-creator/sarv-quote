@@ -6,6 +6,7 @@ pub mod overview;
 pub mod payments;
 pub mod pos;
 pub mod purchases;
+pub mod recovery;
 pub mod reports;
 pub mod sales;
 pub mod settings;

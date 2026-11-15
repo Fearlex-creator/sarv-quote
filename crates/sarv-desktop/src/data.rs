@@ -74,8 +74,13 @@ impl Engine {
     /// Run an action; the error is the engine's user-facing message.
     pub fn call(&self, action: &str, payload: Value) -> Result<Value, String> {
         let mut slot = self.store.lock().map_err(|_| "Books are busy".to_string())?;
-        let store = self.ensure_store(&mut slot)?;
-        sarv_quote::desktop::dispatch_in(store, action, payload).map_err(|e| e.to_string())
+        match self.ensure_store(&mut slot) {
+            Ok(store) => sarv_quote::desktop::dispatch_in(store, action, payload).map_err(|e| e.to_string()),
+            Err(_) if matches!(action, "backup_list" | "backup_restore_preview" | "recover_from_backup") => {
+                sarv_quote::desktop::dispatch(&self.dir, action, payload).map_err(|e| e.to_string())
+            }
+            Err(e) => Err(e),
+        }
     }
 
     /// Read the current validated state from the held store.
@@ -169,6 +174,10 @@ impl Books {
         }
         let y = &today()[..4];
         (format!("{y}-01-01"), format!("{y}-12-31"))
+    }
+
+    pub fn load_failed(&self) -> bool {
+        !self.error.is_empty() && self.workspace.is_null()
     }
 
     pub fn initialized(&self) -> bool {

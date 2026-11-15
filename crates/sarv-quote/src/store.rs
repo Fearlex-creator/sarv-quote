@@ -504,6 +504,13 @@ impl Store {
         Store::open(directory)?;
         Ok(preserved)
     }
+    #[cfg(any(test, feature = "test-support"))]
+    #[doc(hidden)]
+    pub fn corrupt_for_test(directory: &Path) -> Result<()> {
+        let conn = Connection::open(directory.join("sarv.sqlite3"))?;
+        conn.execute("UPDATE state SET generation=generation+1, payload='{' WHERE id=1", [])?;
+        Ok(())
+    }
 }
 pub fn backup_state(state: &State, path: &Path) -> Result<()> {
     state.validate()?;
