@@ -132,7 +132,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 - [x] **P19-T01**: Add `"records"` paged/filtered action and `"ledger"` running balance (`opening_balance`, `balance`) in `desktop_bridge.rs` + tests in `crates/sarv-quote/tests/desktop_bridge.rs`.
   - Files: `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/src/agent.rs`, `crates/sarv-quote/tests/desktop_bridge.rs`
   - Done when: `cargo test -p sarv-quote`
-- [ ] **P19-T02**: Add `Books::load_more` + "Load older" footer on lists, create `ui/detail.rs` mounted in `ui/mod.rs` and wired across views, upgrade `mount_ledger` to full `Table` with running balance & pager + drill-down from `reports.rs`, add 4 desktop tests, update `plans/README.md`.
+- [x] **P19-T02**: Add `Books::load_more` + "Load older" footer on lists, create `ui/detail.rs` mounted in `ui/mod.rs` and wired across views, upgrade `mount_ledger` to full `Table` with running balance & pager + drill-down from `reports.rs`, add 4 desktop tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/data.rs`, `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/{mod.rs,detail.rs}`, `crates/sarv-desktop/src/ui/views/{sales,purchases,payments,accounting,reports,banking,overview}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

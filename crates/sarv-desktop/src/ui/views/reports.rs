@@ -14,6 +14,7 @@ use crate::ui::rows::{Row, SortKey, reapply_sort, sort_rows};
 pub struct ReportsState {
     pub tab_idx: usize,
     pub table: TableState,
+    pub selected_account_id: String,
     pub rows: Vec<Row>,
     pub rows_stamp: u64,
 }
@@ -207,6 +208,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     let tab_bar = ui.tabs("reports-tabs", &tabs, |st, idx| {
         st.reports.tab_idx = idx;
         st.reports.table = TableState::new();
+        st.reports.selected_account_id.clear();
         st.reports.rows_stamp = 0;
         ensure(st);
     });
@@ -249,6 +251,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 }
             })
             .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
+            .on_select(|st, id, _| {
+                st.reports.selected_account_id = id.strip_prefix("tb-").unwrap_or("").to_string();
+            })
+            .on_open(|st, id, _| {
+                if let Some(aid) = id.strip_prefix("tb-") {
+                    crate::ui::views::accounting::open_ledger_for(st, aid);
+                }
+            })
             .zebra(true)
             .build(s, &ui.k)
             .key("trial-table")
@@ -393,7 +403,19 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         "reports-screen",
         &ui.t("Reports"),
         &ui.t("Reports for this fiscal period"),
-        vec![ui.btn(Btn::Glass, "Export CSV", Some(&icons::DOWNLOAD), export_csv)],
+        vec![
+            ui.btn_enabled(
+                Btn::Glass,
+                "Ledger",
+                None,
+                !s.reports.selected_account_id.is_empty() && matches!(s.reports.tab_idx, 1 | 3),
+                |st| {
+                    let aid = st.reports.selected_account_id.clone();
+                    crate::ui::views::accounting::open_ledger_for(st, &aid);
+                },
+            ),
+            ui.btn(Btn::Glass, "Export CSV", Some(&icons::DOWNLOAD), export_csv),
+        ],
         body,
     )
 }
@@ -446,6 +468,14 @@ fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
         }
     })
     .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
+    .on_select(|st, id, _| {
+        st.reports.selected_account_id = id.strip_prefix("bs-").unwrap_or("").to_string();
+    })
+    .on_open(|st, id, _| {
+        if let Some(aid) = id.strip_prefix("bs-") {
+            crate::ui::views::accounting::open_ledger_for(st, aid);
+        }
+    })
     .zebra(true)
     .build(s, &ui.k)
     .key("balance-sheet-table")

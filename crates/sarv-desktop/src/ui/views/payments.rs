@@ -19,12 +19,22 @@ pub struct PaymentsState {
     pub modal_open: bool,
     pub receive: bool,
     pub party_id: String,
+    pub selected: String,
     pub party_combo: rune_kit::ComboboxState,
     pub funds: usize, // 0 cash, 1 bank, 2 cheque
     pub post_key: String,
     pub posting: bool,
     pub rows: Vec<Row>,
     pub rows_stamp: u64,
+}
+
+fn load_more_payments(st: &mut State) {
+    if let Err(e) = st.books.load_more(&st.engine, "payments") {
+        st.toast_err(e);
+        return;
+    }
+    st.stamp += 1;
+    ensure(st);
 }
 
 pub fn open_payment(st: &mut State, receive: bool) {
@@ -202,26 +212,30 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         }
     })
     .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
+    .on_select(|st, id, _| st.payments.selected = id.strip_prefix("payment-").unwrap_or(id).to_string())
+    .on_open(|st, id, _| crate::ui::detail::open(st, id.strip_prefix("payment-").unwrap_or(id)))
     .zebra(true)
     .build(s, &ui.k)
     .key("payments-table")
     .grow(1.0)
     .min_h(0.0);
 
-    let body = col()
-        .w_full()
-        .gap(16.0)
-        .grow(1.0)
-        .min_h(0.0)
-        .child(metrics)
-        .child(ui.fill_or_empty(
-            s.payments.rows.len(),
-            "No payments recorded yet",
-            "Settle invoices and bills",
-            &icons::PAYMENTS,
-            table,
-        ))
-        .child(cheque_strip(s, ui));
+    let mut body = col().w_full().gap(16.0).grow(1.0).min_h(0.0).child(metrics).child(ui.fill_or_empty(
+        s.payments.rows.len(),
+        "No payments recorded yet",
+        "Settle invoices and bills",
+        &icons::PAYMENTS,
+        table,
+    ));
+    if let Some(footer) = ui.load_more_footer(
+        "payments-load-more",
+        s.books.list("payments").len(),
+        s.books.count("payment_count"),
+        load_more_payments,
+    ) {
+        body = body.child(footer);
+    }
+    body = body.child(cheque_strip(s, ui));
 
     if s.payments.modal_open {
         mount_payment_dialog(s, ui, layer);
@@ -234,6 +248,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         vec![
             ui.btn(Btn::Primary, "Receive money", Some(&icons::ARROW), |st| open_payment(st, true)),
             ui.btn(Btn::Glass, "Pay bill", Some(&icons::PURCHASES), |st| open_payment(st, false)),
+            ui.btn_enabled(Btn::Glass, "Open", None, !s.payments.selected.is_empty(), |st| {
+                let id = st.payments.selected.clone();
+                crate::ui::detail::open(st, &id);
+            }),
         ],
         body,
     )

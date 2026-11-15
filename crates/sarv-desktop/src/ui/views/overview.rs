@@ -569,6 +569,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 _ => Cell::text(s.fmt.money(&crate::data::s(&j["total_credit"]))).mono(),
             }
         })
+        .on_open(|st, id, _| crate::ui::detail::open(st, id.strip_prefix("rec-").unwrap_or(id)))
         .zebra(true)
         .build(s, &ui.k)
         .key("recent-table")

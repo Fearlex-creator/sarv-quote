@@ -186,6 +186,24 @@ impl Ui {
         self.button_enabled(kind, key, &label, glyph, enabled, on_press)
     }
 
+    /// Muted "{shown} of {total}" + Ghost "Load older" footer when `shown < total`.
+    pub fn load_more_footer(&self, key: &str, shown: usize, total: usize, on_more: fn(&mut State)) -> Option<El> {
+        if shown >= total {
+            return None;
+        }
+        let shown_fmt = self.f.number(shown);
+        let total_fmt = self.f.number(total);
+        Some(
+            row()
+                .key(key)
+                .w_full()
+                .center_y()
+                .justify_between()
+                .child(self.muted(self.f.tf("{shown} of {total}", &[("shown", &shown_fmt), ("total", &total_fmt)])))
+                .child(self.btn(Btn::Ghost, "Load older", None, on_more)),
+        )
+    }
+
     pub fn field(&self, s: &State, key: &str, placeholder: &str) -> El {
         let k = key.to_string();
         let edit = s.forms.view(key);

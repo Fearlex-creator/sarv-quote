@@ -20,6 +20,12 @@ pub struct AccountingState {
     pub selected: String,
     pub ledger_open: bool,
     pub ledger: serde_json::Value,
+    pub ledger_account_id: String,
+    pub ledger_table: TableState,
+    pub ledger_selected: String,
+    pub ledger_rows: Vec<serde_json::Value>,
+    pub ledger_count: usize,
+    pub ledger_opening: String,
     pub post_key: String,
     pub posting: bool,
     pub period_add_open: bool,
@@ -274,6 +280,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         })
         .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.accounting.selected = id.to_string())
+        .on_open(|st, id, _| open_ledger_for(st, id.strip_prefix("acc-").unwrap_or(id)))
         .zebra(true)
         .build(s, &ui.k)
         .key("coa-table")
@@ -346,6 +353,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         })
         .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.accounting.selected = id.to_string())
+        .on_open(|st, id, _| crate::ui::detail::open(st, id.strip_prefix("journal-").unwrap_or(id)))
         .zebra(true)
         .build(s, &ui.k)
         .key("journals-table")
@@ -372,7 +380,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         row().w_full().child(ui.muted(ui.t(hint)))
     };
 
-    let body = col()
+    let mut body = col()
         .w_full()
         .gap(14.0)
         .grow(1.0)
@@ -380,12 +388,19 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .child(tab_bar)
         .child(hint_bar)
         .child(ui.fill_or_empty(empty_count, empty_title, hint, &icons::REPORTS, table));
+    if s.accounting.tab_idx == 0
+        && let Some(footer) = ui.load_more_footer(
+            "journals-load-more",
+            s.books.list("journals").len(),
+            s.books.count("journal_count"),
+            load_more_journals,
+        )
+    {
+        body = body.child(footer);
+    }
 
     if s.accounting.modal_open {
         mount_journal_dialog(s, ui, layer);
-    }
-    if s.accounting.ledger_open {
-        mount_ledger(s, ui, layer);
     }
     if s.accounting.acct_open {
         mount_account_dialog(s, ui, layer);
@@ -423,6 +438,15 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         ));
     }
     actions.extend([
+        ui.btn_enabled(Btn::Glass, "Open", None, s.accounting.selected.starts_with("journal-"), |st| {
+            let id = st
+                .accounting
+                .selected
+                .strip_prefix("journal-")
+                .unwrap_or(&st.accounting.selected)
+                .to_string();
+            crate::ui::detail::open(st, &id);
+        }),
         ui.btn_enabled(Btn::Glass, "Ledger", None, s.accounting.selected.starts_with("acc-"), open_ledger),
         ui.btn_enabled(
             Btn::Glass,
@@ -575,20 +599,79 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     );
 }
 
-fn open_ledger(st: &mut State) {
-    if !st.accounting.selected.starts_with("acc-") {
+fn load_more_journals(st: &mut State) {
+    if let Err(e) = st.books.load_more(&st.engine, "journals") {
+        st.toast_err(e);
+        return;
+    }
+    st.stamp += 1;
+    ensure(st);
+}
+
+pub(crate) fn open_ledger_for(st: &mut State, account_id: &str) {
+    let account_id = account_id.trim();
+    if account_id.is_empty() {
         st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     }
-    let id = st.accounting.selected.strip_prefix("acc-").unwrap_or(&st.accounting.selected);
     let (from, to) = st.books.range();
-    match st.query("ledger", serde_json::json!({ "account_id": id, "from": from, "to": to })) {
+    match st.query(
+        "ledger",
+        serde_json::json!({ "account_id": account_id, "from": from, "to": to, "offset": 0 }),
+    ) {
         Ok(v) => {
+            st.accounting.ledger_account_id = account_id.to_string();
+            st.accounting.ledger_rows = v["rows"].as_array().cloned().unwrap_or_default();
+            st.accounting.ledger_count = v["count"].as_u64().map(|n| n as usize).unwrap_or(st.accounting.ledger_rows.len());
+            st.accounting.ledger_opening = crate::data::s(&v["opening_balance"]);
+            st.accounting.ledger_selected.clear();
+            st.accounting.ledger_table = TableState::new();
             st.accounting.ledger = v;
             st.accounting.ledger_open = true;
         }
         Err(e) => st.toast_err(e),
     }
+}
+
+fn load_more_ledger(st: &mut State) {
+    if st.accounting.ledger_account_id.is_empty() {
+        return;
+    }
+    let (from, to) = st.books.range();
+    let offset = st.accounting.ledger_rows.len();
+    match st.query(
+        "ledger",
+        serde_json::json!({
+            "account_id": st.accounting.ledger_account_id,
+            "from": from,
+            "to": to,
+            "offset": offset,
+        }),
+    ) {
+        Ok(v) => {
+            if let Some(rows) = v["rows"].as_array() {
+                st.accounting.ledger_rows.extend(rows.iter().cloned());
+            }
+            if let Some(c) = v["count"].as_u64() {
+                st.accounting.ledger_count = c as usize;
+            }
+        }
+        Err(e) => st.toast_err(e),
+    }
+}
+
+fn open_ledger(st: &mut State) {
+    if !st.accounting.selected.starts_with("acc-") {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return;
+    }
+    let id = st
+        .accounting
+        .selected
+        .strip_prefix("acc-")
+        .unwrap_or(&st.accounting.selected)
+        .to_string();
+    open_ledger_for(st, &id);
 }
 
 fn reverse_selected(st: &mut State) {
@@ -694,23 +777,86 @@ fn toggle_period(st: &mut State) {
     ));
 }
 
-fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
-    let rows = s.accounting.ledger["rows"].as_array().cloned().unwrap_or_default();
-    let mut body = col()
-        .gap(8.0)
-        .child(ui.muted(format!("{} {}", ui.t("Ledger"), crate::data::s(&s.accounting.ledger["count"]))));
-    for row in rows.iter().take(12) {
-        let line = format!(
-            "{}  {}  {}",
-            s.fmt.date(&crate::data::s(&row["date"])),
-            s.fmt.money(&crate::data::s(&row["debit"])),
-            s.fmt.money(&crate::data::s(&row["credit"]))
-        );
-        body = body.child(ui.body(line));
+pub(crate) fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    if !s.accounting.ledger_open {
+        return;
     }
-    if rows.is_empty() {
+    let mut body = col().w_full().gap(10.0).child(
+        row()
+            .key("ledger-opening-row")
+            .w_full()
+            .center_y()
+            .justify_between()
+            .child(ui.muted(ui.t("Opening balance")))
+            .child(ui.muted(ui.f.money(&s.accounting.ledger_opening))),
+    );
+
+    if s.accounting.ledger_rows.is_empty() {
         body = body.child(ui.empty(&icons::REPORTS, "No entries in this period", "Ledger"));
+    } else {
+        let table = Table::new(
+            |s: &State| &s.accounting.ledger_table,
+            |s: &mut State| &mut s.accounting.ledger_table,
+            |s: &State| s.accounting.ledger_rows.len(),
+            |s: &State, i| {
+                let jid = s
+                    .accounting
+                    .ledger_rows
+                    .get(i)
+                    .map(|r| crate::data::s(&r["journal_id"]))
+                    .unwrap_or_default();
+                Cow::Owned(format!("{i}:{jid}"))
+            },
+        )
+        .name(ui.t("Ledger"))
+        .column(TableColumn::new("date", ui.t("Date")).width(105.0).min(88.0))
+        .column(TableColumn::new("ref", ui.t("Reference")).width(110.0).min(80.0))
+        .column(TableColumn::new("desc", ui.t("Description")).flex(2.0).min(120.0))
+        .column(TableColumn::new("debit", ui.t("Debit")).width(120.0).min(88.0).align(Align::End))
+        .column(TableColumn::new("credit", ui.t("Credit")).width(120.0).min(88.0).align(Align::End))
+        .column(
+            TableColumn::new("balance", ui.t("Balance"))
+                .width(130.0)
+                .min(96.0)
+                .align(Align::End),
+        )
+        .cell(|s: &State, i, col| {
+            let Some(r) = s.accounting.ledger_rows.get(i) else {
+                return Cell::text("");
+            };
+            match col {
+                "date" => Cell::text(s.fmt.date(&crate::data::s(&r["date"]))).muted(),
+                "ref" => Cell::text(crate::data::s(&r["reference"])),
+                "desc" => Cell::text(crate::data::s(&r["description"])),
+                "debit" => Cell::text(s.fmt.money(&crate::data::s(&r["debit"]))).mono(),
+                "credit" => Cell::text(s.fmt.money(&crate::data::s(&r["credit"]))).mono(),
+                _ => Cell::text(s.fmt.money(&crate::data::s(&r["balance"]))).mono(),
+            }
+        })
+        .on_select(|st, id, _| {
+            st.accounting.ledger_selected = id.split_once(':').map(|(_, jid)| jid.to_string()).unwrap_or_default();
+        })
+        .on_open(|st, id, _| {
+            if let Some((_, jid)) = id.split_once(':') {
+                crate::ui::detail::open(st, jid);
+            }
+        })
+        .zebra(true)
+        .build(s, &ui.k)
+        .key("ledger-table")
+        .h(300.0);
+
+        body = body.child(table);
+        if let Some(footer) = ui.load_more_footer(
+            "ledger-load-more",
+            s.accounting.ledger_rows.len(),
+            s.accounting.ledger_count,
+            load_more_ledger,
+        ) {
+            body = body.child(footer);
+        }
     }
+
     let mut portals = Vec::new();
     ui.dialog_described(
         layer,
@@ -719,9 +865,15 @@ fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Ledger"),
         &ui.t("Every entry behind your numbers."),
         true,
-        DIALOG_MD,
+        DIALOG_LG,
         body,
-        vec![ui.btn(Btn::Ghost, "Close", None, |st| st.accounting.ledger_open = false)],
+        vec![
+            ui.btn_enabled(Btn::Glass, "Open", None, !s.accounting.ledger_selected.is_empty(), |st| {
+                let jid = st.accounting.ledger_selected.clone();
+                crate::ui::detail::open(st, &jid);
+            }),
+            ui.btn(Btn::Ghost, "Close", None, |st| st.accounting.ledger_open = false),
+        ],
         |st| st.accounting.ledger_open = false,
     );
 }

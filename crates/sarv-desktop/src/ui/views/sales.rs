@@ -601,6 +601,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         })
         .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.sales.selected = id.strip_prefix("sale-").unwrap_or(id).to_string())
+        .on_open(|st, id, _| crate::ui::detail::open(st, id.strip_prefix("sale-").unwrap_or(id)))
         .zebra(true)
         .build(s, &ui.k)
         .key("sales-table")
@@ -639,6 +640,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         })
         .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
         .on_select(|st, id, _| st.sales.selected = id.strip_prefix("draft-").unwrap_or(id).to_string())
+        .on_open(|st, id, _| crate::ui::detail::open(st, id.strip_prefix("draft-").unwrap_or(id)))
         .zebra(true)
         .build(s, &ui.k)
         .key("sales-table")
@@ -652,12 +654,47 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_sale_dialog(s, ui, layer);
     }
 
+    let mut body = col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.fill_or_empty(
+        if s.sales.tab_idx == 0 {
+            s.sales.rows.len()
+        } else {
+            s.sales.draft_rows.len()
+        },
+        if s.sales.tab_idx == 0 { "No invoices" } else { "No drafts" },
+        "Sales that are delivered and billed.",
+        &icons::SALES,
+        table,
+    ));
+    let footer = if s.sales.tab_idx == 0 {
+        let shown = s.books.list("sales").len();
+        let total = s.books.count("sales_count");
+        ui.load_more_footer("sales-load-more", shown, total, load_more_sales)
+    } else {
+        let shown = s.books.list("drafts").len();
+        let count = s.books.count("drafts_count");
+        let total = if count > 0 {
+            count
+        } else if shown >= 100 {
+            shown + 1
+        } else {
+            shown
+        };
+        ui.load_more_footer("drafts-load-more", shown, total, load_more_drafts)
+    };
+    if let Some(f) = footer {
+        body = body.child(f);
+    }
+
     ui.page(
         "sales-screen",
         &ui.t("Sales"),
         &ui.t("Sales that are delivered and billed."),
         vec![
             add_btn,
+            ui.btn_enabled(Btn::Glass, "Open", None, !s.sales.selected.is_empty(), |st| {
+                let id = st.sales.selected.clone();
+                crate::ui::detail::open(st, &id);
+            }),
             ui.btn_enabled(
                 Btn::Glass,
                 "Print / save PDF",
@@ -667,18 +704,26 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ),
             ui.btn_enabled(Btn::Glass, "Return", None, !s.sales.selected.is_empty(), return_selected),
         ],
-        col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.fill_or_empty(
-            if s.sales.tab_idx == 0 {
-                s.sales.rows.len()
-            } else {
-                s.sales.draft_rows.len()
-            },
-            if s.sales.tab_idx == 0 { "No invoices" } else { "No drafts" },
-            "Sales that are delivered and billed.",
-            &icons::SALES,
-            table,
-        )),
+        body,
     )
+}
+
+fn load_more_sales(st: &mut State) {
+    if let Err(e) = st.books.load_more(&st.engine, "sales") {
+        st.toast_err(e);
+        return;
+    }
+    st.stamp += 1;
+    ensure(st);
+}
+
+fn load_more_drafts(st: &mut State) {
+    if let Err(e) = st.books.load_more(&st.engine, "drafts") {
+        st.toast_err(e);
+        return;
+    }
+    st.stamp += 1;
+    ensure(st);
 }
 
 fn estimate_total(s: &State) -> i64 {

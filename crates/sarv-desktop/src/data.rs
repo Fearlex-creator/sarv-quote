@@ -272,6 +272,44 @@ impl Books {
         self.workspace[key].as_array().cloned().unwrap_or_default()
     }
 
+    /// Load the next page of `key` (`journals`, `sales`, `purchases`, `payments`, `drafts`)
+    /// from the engine and append the returned rows to `self.workspace[key]`.
+    pub fn load_more(&mut self, engine: &Engine, key: &str) -> Result<usize, String> {
+        let current_len = self.workspace[key].as_array().map(|a| a.len()).unwrap_or(0);
+        let resp = engine.call(
+            "records",
+            json!({
+                "company_id": self.company_id,
+                "kind": key,
+                "offset": current_len,
+                "limit": 100,
+            }),
+        )?;
+        let rows = resp["rows"].as_array().cloned().unwrap_or_default();
+        let added = rows.len();
+        if !rows.is_empty() {
+            if let Some(arr) = self.workspace[key].as_array_mut() {
+                arr.extend(rows);
+            } else {
+                self.workspace[key] = Value::Array(rows);
+            }
+        }
+        let count_key = match key {
+            "journals" => Some("journal_count"),
+            "sales" => Some("sales_count"),
+            "purchases" => Some("purchase_count"),
+            "payments" => Some("payment_count"),
+            "drafts" => Some("drafts_count"),
+            _ => None,
+        };
+        if let Some(ck) = count_key
+            && !resp["count"].is_null()
+        {
+            self.workspace[ck] = resp["count"].clone();
+        }
+        Ok(added)
+    }
+
     pub fn count(&self, key: &str) -> usize {
         match &self.workspace[key] {
             Value::Number(n) => n.as_u64().unwrap_or(0) as usize,

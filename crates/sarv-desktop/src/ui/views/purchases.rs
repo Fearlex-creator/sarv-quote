@@ -73,6 +73,15 @@ impl PurchasesState {
     }
 }
 
+pub fn load_more_purchases(st: &mut State) {
+    if let Err(e) = st.books.load_more(&st.engine, "purchases") {
+        st.toast_err(e);
+        return;
+    }
+    st.stamp += 1;
+    ensure(st);
+}
+
 pub fn open_purchase(st: &mut State) {
     st.purchases.start_new();
     st.forms.clear_prefix("buy-");
@@ -382,6 +391,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     })
     .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
     .on_select(|st, id, _| st.purchases.selected = id.strip_prefix("purchase-").unwrap_or(id).to_string())
+    .on_open(|st, id, _| crate::ui::detail::open(st, id.strip_prefix("purchase-").unwrap_or(id)))
     .zebra(true)
     .build(s, &ui.k)
     .key("purchases-table")
@@ -399,7 +409,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_purchase_dialog(s, ui, layer);
     }
 
-    let body = col()
+    let mut body = col()
         .w_full()
         .gap(14.0)
         .grow(1.0)
@@ -407,6 +417,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .child(tab_bar)
         .child(ui.muted(ui.t(hint)))
         .child(ui.fill_or_empty(s.purchases.rows.len(), "No records", hint, &icons::PURCHASES, table));
+    if let Some(footer) = ui.load_more_footer(
+        "purchases-load-more",
+        s.books.list("purchases").len(),
+        s.books.count("purchase_count"),
+        load_more_purchases,
+    ) {
+        body = body.child(footer);
+    }
 
     ui.page(
         "purchases-screen",
@@ -414,6 +432,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Orders, receipts, and bills"),
         vec![
             ui.btn(Btn::Primary, "New purchase order", Some(&icons::PLUS), open_purchase),
+            ui.btn_enabled(Btn::Glass, "Open", None, !s.purchases.selected.is_empty(), |st| {
+                let id = st.purchases.selected.clone();
+                crate::ui::detail::open(st, &id);
+            }),
             ui.btn_enabled(Btn::Glass, "Return", None, !s.purchases.selected.is_empty(), return_selected),
         ],
         body,

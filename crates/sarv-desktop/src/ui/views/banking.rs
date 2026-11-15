@@ -129,6 +129,9 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         }
     })
     .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
+    .on_open(|st, id, _| {
+        crate::ui::views::accounting::open_ledger_for(st, id.strip_prefix("bank-acc-").unwrap_or(id));
+    })
     .zebra(true)
     .build(s, &ui.k)
     .key("banking-table")

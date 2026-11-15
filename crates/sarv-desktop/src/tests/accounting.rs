@@ -601,3 +601,127 @@ fn test_duplicate_account_code_shows_one_error_toast() {
     assert!(rt.state.accounting.acct_open, "dialog stays open on validation error");
     assert_eq!(danger_toasts(&rt).len(), 1, "expected exactly one danger toast");
 }
+
+#[test]
+fn test_load_older_appends_records() {
+    let mut rt = make_test_runtime();
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2, "need two postable accounts");
+    let debit = accounts[0].0.clone();
+    let credit = accounts[1].0.clone();
+    let company_id = rt.state.books.company_id.clone();
+    let period_id = rt.state.books.period_id.clone();
+    let date = data::today();
+
+    for i in 0..105 {
+        let payload = serde_json::json!({
+            "company_id": company_id,
+            "period_id": period_id,
+            "date": date,
+            "source_id": format!("paging-{i}"),
+            "reason": format!("Paging journal {i}"),
+            "request_key": format!("paging-req-{i}"),
+            "lines": [
+                { "account_id": debit, "debit": "100", "credit": "0", "description": "D" },
+                { "account_id": credit, "debit": "0", "credit": "100", "description": "C" },
+            ],
+        });
+        rt.state.engine.call("journal_post", payload).expect("seed journal_post");
+    }
+    rt.state.books.refresh(&rt.state.engine);
+    rt.state.stamp += 1;
+
+    click(&mut rt, Page::Accounting.key());
+    assert_eq!(rt.state.books.list("journals").len(), 100);
+    assert!(rt.find("journals-load-more").is_some(), "footer must be visible when >100 journals");
+    assert!(rt.find("btn-Load older").is_some());
+
+    click(&mut rt, "btn-Load older");
+    assert_no_danger(&rt);
+    assert!(rt.state.books.list("journals").len() > 100, "load older must append journals");
+    assert!(
+        rt.state.accounting.rows.len() > 100,
+        "cached accounting rows must rebuild after load older"
+    );
+}
+
+#[test]
+fn test_invoice_detail_shows_lines_and_journal() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.fmt.unit = crate::i18n::Unit::Toman;
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.pay_method = 0;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.forms.set("sale-qty-0", "1");
+    rt.state.forms.set("sale-price-0", "10000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "complete sale"));
+
+    let sale_id = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .find(|r| r["command"].get("Fulfill").is_some() || r["data"].get("Fulfill").is_some())
+        .map(|r| data::s(&r["id"]))
+        .expect("completed sale should produce a fulfilled invoice");
+
+    rt.state.sales.selected = sale_id;
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "btn-Open");
+
+    assert_no_danger(&rt);
+    assert!(rt.state.detail.open, "detail dialog must open");
+    assert!(rt.find("detail-dialog").is_some());
+    assert!(rt.find("detail-lines").is_some(), "invoice detail must show lines");
+    assert!(rt.find("detail-journal").is_some(), "invoice detail must show journal");
+}
+
+#[test]
+fn test_ledger_shows_running_balance() {
+    let mut rt = make_test_runtime();
+    let acc_id = rt.state.books.report["trial"]["rows"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .map(|r| data::s(&r["account_id"]))
+        .expect("demo fixture trial balance should have at least one posted account");
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "segment1");
+    rt.state.accounting.selected = format!("acc-{acc_id}");
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "btn-Ledger");
+
+    assert_no_danger(&rt);
+    assert!(rt.state.accounting.ledger_open);
+    assert!(rt.find("ledger-dialog").is_some());
+    assert!(rt.find("ledger-opening-row").is_some());
+    assert!(rt.find("ledger-table").is_some());
+    assert!(!rt.state.accounting.ledger_rows.is_empty());
+    assert!(
+        !data::s(&rt.state.accounting.ledger_rows[0]["balance"]).is_empty(),
+        "ledger row must include running balance"
+    );
+}
+
+#[test]
+fn test_trial_balance_row_opens_the_ledger() {
+    let mut rt = make_test_runtime();
+    let acc_id = rt.state.books.report["trial"]["rows"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .map(|r| data::s(&r["account_id"]))
+        .expect("demo fixture trial balance should have an account");
+
+    click(&mut rt, Page::Reports.key());
+    click(&mut rt, "segment1");
+    rt.state.reports.selected_account_id = acc_id;
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "btn-Ledger");
+
+    assert_no_danger(&rt);
+    assert!(rt.state.accounting.ledger_open);
+    assert!(rt.find("ledger-dialog").is_some());
+}
