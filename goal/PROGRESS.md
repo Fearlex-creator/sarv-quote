@@ -119,3 +119,13 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - **Changes**: Added `"period_add"` action in `crates/sarv-quote/src/desktop_bridge.rs` (requires `expected_generation`, enforces contiguous start date after previous period's end, not exposed in `agent.rs`); created `crates/sarv-quote/tests/fiscal_years.rs` verifying multi-period P&L isolation, cumulative balance-sheet/position carry-over, and `period_add` happy/overlap/gap/stale-generation paths.
 - **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet -p sarv-quote --all-targets -- -D warnings && cargo test -p sarv-quote --test fiscal_years && cargo test -p sarv-quote`
 - **Result**: PASS (`fiscal_years`: 2 tests covering all 5 scenarios; all `sarv-quote` non-ignored tests pass).
+
+## 2026-11-15 — P17-T02 (Plan 017 Steps 3–5: Desktop fiscal-year switcher & "New fiscal year")
+- **Changes**: Updated `Books::pick_period` in `crates/sarv-desktop/src/data.rs` to select latest period when `today()` is past the last period; replaced static fiscal-year badge in `shell.rs` with clickable `fiscal-year-switch` dialog + `"Viewing a past fiscal year"` warning badge; added `next_fiscal_period` in `setup.rs`; added `"New fiscal year"` dialog in `accounting.rs` and 30-day/past expiry notice in `overview.rs`; added FA translations and 2 desktop tests (`test_open_next_fiscal_year_and_post_in_it`, `test_switching_fiscal_year_changes_the_report_range`); marked Plan 017 `DONE` in `plans/README.md`.
+- **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet --workspace --all-targets -- -D warnings && cargo test -p sarv-desktop --bin sarv-desktop`
+- **Result**: PASS (`sarv-desktop`: 98 passed, 2 ignored).
+
+## 2026-11-15 — P19-T01 (Plan 019 Steps 1–2: Paged `records` & `ledger` running balance)
+- **Changes**: Added read-only `"records"` action (paged, filtered by `party_id`/`from`/`to`/`query`) and `"opening_balance"` + per-row running `"balance"` on `"ledger"` in `crates/sarv-quote/src/desktop_bridge.rs`; exposed `sarv_records` in `crates/sarv-quote/src/agent.rs` `READ`; added `records_pages_and_filters_match_workspace` and `ledger_computes_opening_balance_and_running_balance_across_pages` in `crates/sarv-quote/tests/desktop_bridge.rs` (and updated tool count in `agent_access.rs`).
+- **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet --workspace --all-targets -- -D warnings && cargo test -p sarv-quote --test desktop_bridge --test agent_access`
+- **Result**: PASS (`desktop_bridge`: 24 passed; `agent_access`: 9 passed, 1 ignored).

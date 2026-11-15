@@ -119,7 +119,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 - [x] **P17-T01**: Verify multi-period books in `crates/sarv-quote/tests/fiscal_years.rs`, add `"period_add"` action in `desktop_bridge.rs` (gapless check, `expected_generation`), test happy/overlap/gap/stale paths.
   - Files: `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/fiscal_years.rs`
   - Done when: `cargo test -p sarv-quote --test fiscal_years && cargo test -p sarv-quote`
-- [ ] **P17-T02**: Add fiscal-year switcher + past-year badge in `shell.rs`, update `data.rs::pick_period`, add "New fiscal year" dialog in `accounting.rs` + proactive notice in `overview.rs`, add 2 desktop tests, update `plans/README.md`.
+- [x] **P17-T02**: Add fiscal-year switcher + past-year badge in `shell.rs`, update `data.rs::pick_period`, add "New fiscal year" dialog in `accounting.rs` + proactive notice in `overview.rs`, add 2 desktop tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/data.rs`, `crates/sarv-desktop/src/ui/shell.rs`, `crates/sarv-desktop/src/ui/views/{accounting,overview,setup}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
@@ -129,7 +129,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-quote --test chart_accounts && cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 019: History paging and record detail
-- [ ] **P19-T01**: Add `"records"` paged/filtered action and `"ledger"` running balance (`opening_balance`, `balance`) in `desktop_bridge.rs` + tests in `crates/sarv-quote/tests/desktop_bridge.rs`.
+- [x] **P19-T01**: Add `"records"` paged/filtered action and `"ledger"` running balance (`opening_balance`, `balance`) in `desktop_bridge.rs` + tests in `crates/sarv-quote/tests/desktop_bridge.rs`.
   - Files: `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/src/agent.rs`, `crates/sarv-quote/tests/desktop_bridge.rs`
   - Done when: `cargo test -p sarv-quote`
 - [ ] **P19-T02**: Add `Books::load_more` + "Load older" footer on lists, create `ui/detail.rs` mounted in `ui/mod.rs` and wired across views, upgrade `mount_ledger` to full `Table` with running balance & pager + drill-down from `reports.rs`, add 4 desktop tests, update `plans/README.md`.

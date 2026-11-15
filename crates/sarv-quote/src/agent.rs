@@ -21,6 +21,7 @@ const POLICY: &str = ".agent-access.json";
 pub const CONNECTION: &str = ".agent-connection.json";
 const READ: &[&str] = &[
     "workspace",
+    "records",
     "report",
     "detail",
     "ledger",
@@ -470,6 +471,9 @@ fn description(action: &str) -> String {
         "workspace" => {
             "Discover company IDs, periods, accounts, resource IDs, settings, drafts and paginated source records. Omit company_id to list companies. All integers and money are strings."
         }
+        "records" => {
+            "Paginated, filterable list of journals, sales, purchases, payments or drafts for one company. Returns count and rows."
+        }
         "draft_preview" => {
             "Validate a raw sales draft without writes. Use supplied_total in draft_save, then draft_post with saved revision. Orders do not move stock; fulfill posts delivery and invoice."
         }
@@ -531,6 +535,7 @@ fn schema(action: &str) -> Value {
     }
     let fields: &[&str] = match action {
         "workspace" => &[],
+        "records" => &["company_id", "kind"],
         "report" | "report_csv" | "profit_csv" => &["company_id", "from", "to"],
         "detail" => &["company_id", "id"],
         "ledger" => &["company_id", "account_id", "from", "to"],
@@ -584,6 +589,15 @@ fn schema(action: &str) -> Value {
             "operation".into(),
             json!({"type":"string","enum":["receive","bill","fulfill","sale_return","purchase_return"]}),
         );
+    }
+    if action == "records" {
+        properties.insert(
+            "kind".into(),
+            json!({"type":"string","enum":["journals","sales","purchases","payments","drafts"]}),
+        );
+        for key in ["limit", "party_id", "from", "to", "query"] {
+            properties.insert(key.into(), text());
+        }
     }
     for key in ["confirmed", "locked"] {
         if required.contains(&key) {

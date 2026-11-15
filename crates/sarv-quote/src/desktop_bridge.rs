@@ -4,7 +4,7 @@ use crate::{
     accounting::*,
     core::*,
     domain::{BusinessProfile, DateDisplay, DisplayDigits, Settings, State, id, quantity},
-    payments::{PaymentAllocation, PaymentCommand, PaymentInput, PaymentReversalInput, PaymentSide},
+    payments::{PaymentAllocation, PaymentCommand, PaymentData, PaymentInput, PaymentReversalInput, PaymentSide},
     procurement::*,
     sales::*,
     sales_draft::RawSalesDraft,
@@ -30,6 +30,18 @@ fn string<'a>(p: &'a Value, key: &str) -> Result<&'a str> {
 }
 fn optional<'a>(p: &'a Value, key: &str, default: &'a str) -> &'a str {
     p.get(key).and_then(Value::as_str).unwrap_or(default)
+}
+fn usize_opt(p: &Value, key: &str, default: usize) -> Result<usize> {
+    match p.get(key) {
+        None | Some(Value::Null) => Ok(default),
+        Some(Value::String(s)) if s.is_empty() => Ok(default),
+        Some(Value::String(s)) => Ok(s.parse()?),
+        Some(Value::Number(n)) => n
+            .as_u64()
+            .and_then(|v| usize::try_from(v).ok())
+            .ok_or_else(|| anyhow!("Invalid {key}")),
+        _ => Err(anyhow!("Invalid {key}")),
+    }
 }
 fn integer(p: &Value, key: &str) -> Result<u64> {
     Ok(string(p, key)?.parse()?)
@@ -841,6 +853,171 @@ fn workspace(s: &State, p: &Value) -> Result<Value> {
     )
 }
 
+fn matches_query(query_lower: &str, candidates: &[&str]) -> bool {
+    query_lower.is_empty() || candidates.iter().any(|c| c.to_lowercase().contains(query_lower))
+}
+
+fn matches_date(date: &str, from: Option<&str>, to: Option<&str>) -> bool {
+    from.is_none_or(|f| date >= f) && to.is_none_or(|t| date <= t)
+}
+
+fn matches_party(party: Option<&str>, filter: Option<&str>) -> bool {
+    filter.is_none_or(|f| party == Some(f))
+}
+
+fn paginate_records<T: serde::Serialize>(iter: impl Iterator<Item = T>, offset: usize, limit: usize) -> Result<Value> {
+    let mut count = 0usize;
+    let mut rows = Vec::new();
+    for item in iter {
+        if count >= offset && rows.len() < limit {
+            rows.push(serde_json::to_value(item)?);
+        }
+        count += 1;
+    }
+    Ok(json!({ "count": count, "rows": rows }))
+}
+
+fn records(s: &State, p: &Value) -> Result<Value> {
+    let c = company(s, p)?;
+    let kind = string(p, "kind")?;
+    let offset = usize_opt(p, "offset", 0)?.min(1_000_000);
+    let limit = usize_opt(p, "limit", 100)?.min(200);
+    let from_raw = optional(p, "from", "");
+    let to_raw = optional(p, "to", "");
+    let from = (!from_raw.is_empty()).then_some(from_raw);
+    let to = (!to_raw.is_empty()).then_some(to_raw);
+    if let Some(f) = from {
+        civil_date(f)?;
+    }
+    if let Some(t) = to {
+        civil_date(t)?;
+    }
+    if let (Some(f), Some(t)) = (from, to) {
+        ensure!(f <= t, "Invalid date range");
+    }
+    let party_raw = optional(p, "party_id", "");
+    let party = (!party_raw.is_empty()).then_some(party_raw);
+    let query_lower = optional(p, "query", "").to_lowercase();
+    let a = &s.accounting;
+    match kind {
+        "journals" => paginate_records(
+            a.journals.iter().filter(|j| j.company_id == c.id).rev().filter(|j| {
+                matches_party(None, party) && matches_date(j.date.as_str(), from, to) && matches_query(&query_lower, &[&j.source_id])
+            }),
+            offset,
+            limit,
+        ),
+        "sales" => paginate_records(
+            a.sales
+                .records
+                .iter()
+                .filter(|r| r.command.context().company_id == c.id)
+                .rev()
+                .filter(|r| {
+                    let date = match &r.command {
+                        SalesCommand::Order(x) => x.document_date.as_str(),
+                        SalesCommand::Fulfill(x) => x.document_date.as_str(),
+                        SalesCommand::Return(x) => x.document_date.as_str(),
+                    };
+                    let rec_party = match &r.data {
+                        SalesData::Order(x) => x.customer.id.as_str(),
+                        SalesData::Fulfill(x) => x.customer.id.as_str(),
+                        SalesData::Return(x) => x.customer_id.as_str(),
+                    };
+                    let q_match = match &r.command {
+                        SalesCommand::Order(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        SalesCommand::Fulfill(x) => {
+                            matches_query(&query_lower, &[&x.invoice_reference, &x.delivery_reference, &x.context.source_id])
+                        }
+                        SalesCommand::Return(x) => {
+                            matches_query(&query_lower, &[&x.return_reference, &x.credit_reference, &x.context.source_id])
+                        }
+                    };
+                    matches_party(Some(rec_party), party) && matches_date(date, from, to) && q_match
+                }),
+            offset,
+            limit,
+        ),
+        "purchases" => paginate_records(
+            a.procurement
+                .records
+                .iter()
+                .filter(|r| r.command.context().company_id == c.id)
+                .rev()
+                .filter(|r| {
+                    let date = match &r.command {
+                        ProcurementCommand::Resources(x) => x.context.date.as_str(),
+                        ProcurementCommand::Order(x) => x.document_date.as_str(),
+                        ProcurementCommand::Receive(x) => x.document_date.as_str(),
+                        ProcurementCommand::Bill(x) => x.document_date.as_str(),
+                        ProcurementCommand::Transfer(x) => x.context.date.as_str(),
+                        ProcurementCommand::Return(x) => x.document_date.as_str(),
+                    };
+                    let rec_party = match &r.data {
+                        ProcurementData::Order(x) => Some(x.supplier.id.as_str()),
+                        ProcurementData::Receive(x) => Some(x.supplier_id.as_str()),
+                        ProcurementData::Bill(x) => Some(x.supplier_id.as_str()),
+                        ProcurementData::Return(x) => Some(x.supplier_id.as_str()),
+                        ProcurementData::Resources(_) | ProcurementData::Transfer(_) => None,
+                    };
+                    let q_match = match &r.command {
+                        ProcurementCommand::Resources(_) | ProcurementCommand::Transfer(_) => {
+                            matches_query(&query_lower, &[&r.command.context().source_id])
+                        }
+                        ProcurementCommand::Order(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        ProcurementCommand::Receive(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        ProcurementCommand::Bill(x) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        ProcurementCommand::Return(x) => matches_query(
+                            &query_lower,
+                            &[
+                                &x.return_reference,
+                                x.credit_reference.as_deref().unwrap_or(""),
+                                &x.context.source_id,
+                            ],
+                        ),
+                    };
+                    matches_party(rec_party, party) && matches_date(date, from, to) && q_match
+                }),
+            offset,
+            limit,
+        ),
+        "payments" => paginate_records(
+            a.payments
+                .records
+                .iter()
+                .filter(|r| r.command.context().company_id == c.id)
+                .rev()
+                .filter(|r| {
+                    let date = r.command.context().date.as_str();
+                    let rec_party = match &r.data {
+                        PaymentData::Payment(x) => x.party.id.as_str(),
+                        PaymentData::Reversal(x) => x.party.id.as_str(),
+                    };
+                    let q_match = match (&r.command, &r.data) {
+                        (PaymentCommand::Payment(x), _) => matches_query(&query_lower, &[&x.reference, &x.context.source_id]),
+                        (PaymentCommand::Reversal(x), PaymentData::Reversal(d)) => {
+                            matches_query(&query_lower, &[&d.reference, &x.context.source_id])
+                        }
+                        (PaymentCommand::Reversal(x), _) => matches_query(&query_lower, &[&x.context.source_id]),
+                    };
+                    matches_party(Some(rec_party), party) && matches_date(date, from, to) && q_match
+                }),
+            offset,
+            limit,
+        ),
+        "drafts" => paginate_records(
+            s.sales_drafts.iter().filter(|d| d.company_id == c.id).filter(|d| {
+                matches_party(Some(d.customer_id.as_str()), party)
+                    && matches_date(d.document_date.as_str(), from, to)
+                    && matches_query(&query_lower, &[&d.reference, &d.id])
+            }),
+            offset,
+            limit,
+        ),
+        _ => bail!("Unsupported record kind: {kind}"),
+    }
+}
+
 fn payment(s: &State, p: &Value) -> Result<PaymentCommand> {
     if p["payment_id"].is_string() {
         return Ok(PaymentCommand::Reversal(PaymentReversalInput {
@@ -1145,6 +1322,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             }
             w
         }
+        "records" => records(&store.state, &p)?,
         "integrity" => json!(store.integrity()),
         "law_data" => json!({
             "notice_en": crate::iran::law::NOT_REVIEWED_NOTICE_EN,
@@ -1787,9 +1965,54 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             civil_date(from)?;
             civil_date(to)?;
             ensure!(from <= to, "Invalid date range");
-            let offset = optional(&p, "offset", "0").parse::<usize>()?;
-            let lines=store.state.accounting.journals.iter().filter(|j|j.company_id==c.id&&j.date.as_str()>=from&&j.date.as_str()<=to).flat_map(|j|j.lines.iter().filter(move|l|l.account.id==aid).map(move|l|json!({"journal_id":j.id,"date":j.date,"reference":j.source_id,"description":l.description,"debit":l.debit,"credit":l.credit}))).collect::<Vec<_>>();
-            json!({"count":lines.len(),"rows":lines.into_iter().skip(offset).take(100).collect::<Vec<_>>()})
+            let offset = usize_opt(&p, "offset", 0)?;
+            let mut opening_balance: i128 = 0;
+            let mut in_range = Vec::new();
+            for j in store.state.accounting.journals.iter().filter(|j| j.company_id == c.id) {
+                let d = j.date.as_str();
+                if d < from {
+                    for l in j.lines.iter().filter(|l| l.account.id == aid) {
+                        opening_balance = opening_balance
+                            .checked_add(i128::from(l.debit.rials()))
+                            .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+                            .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+                    }
+                } else if d <= to {
+                    for l in j.lines.iter().filter(|l| l.account.id == aid) {
+                        in_range.push((j, l));
+                    }
+                }
+            }
+            let count = in_range.len();
+            let mut iter = in_range.into_iter();
+            for (_, l) in iter.by_ref().take(offset) {
+                opening_balance = opening_balance
+                    .checked_add(i128::from(l.debit.rials()))
+                    .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+                    .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+            }
+            let mut running = opening_balance;
+            let mut rows = Vec::new();
+            for (j, l) in iter.take(100) {
+                running = running
+                    .checked_add(i128::from(l.debit.rials()))
+                    .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+                    .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+                rows.push(json!({
+                    "journal_id": j.id,
+                    "date": j.date,
+                    "reference": j.source_id,
+                    "description": l.description,
+                    "debit": l.debit,
+                    "credit": l.credit,
+                    "balance": running.to_string(),
+                }));
+            }
+            json!({
+                "count": count,
+                "opening_balance": opening_balance.to_string(),
+                "rows": rows,
+            })
         }
         "report_csv" => {
             let r = report(&store.state, &p)?;

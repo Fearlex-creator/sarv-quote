@@ -1025,3 +1025,246 @@ fn non_object_payload_is_an_error_not_a_panic() {
     assert!(dispatch(d.path(), "payment_preview", json!([1, 2, 3])).is_err());
     assert!(dispatch(d.path(), "payment_preview", json!("x")).is_err());
 }
+
+#[test]
+fn records_pages_and_filters_match_workspace() {
+    use sarv_quote::accounting::{AccountClass, JournalKind, JournalLineInput, Money, PostCommand};
+
+    let (d, c, p) = fixture();
+    let mut store = Store::open(d.path()).unwrap();
+    let accounts = &store.state.accounting.accounts;
+    let exp = accounts
+        .iter()
+        .find(|a| !a.control && a.postable && a.classification == AccountClass::Expense)
+        .unwrap()
+        .id
+        .clone();
+    let equity = accounts
+        .iter()
+        .find(|a| !a.control && a.postable && a.classification == AccountClass::Equity)
+        .unwrap()
+        .id
+        .clone();
+    store
+        .change(|s| {
+            for i in 0..120 {
+                let date = if i < 10 { "2026-10-05" } else { "2026-10-08" };
+                let key = format!("batch-j-{i:03}");
+                s.accounting.post(PostCommand {
+                    company_id: c.clone(),
+                    period_id: p.clone(),
+                    date: date.into(),
+                    source_id: key.clone(),
+                    source_revision: 1,
+                    event: "journal.post.v1".into(),
+                    request_key: key,
+                    actor: "test".into(),
+                    reason: "Paging test".into(),
+                    kind: JournalKind::Manual,
+                    lines: vec![
+                        JournalLineInput {
+                            account_id: exp.clone(),
+                            debit: Money::from_rials(100 + i),
+                            credit: Money::ZERO,
+                            description: "debit".into(),
+                        },
+                        JournalLineInput {
+                            account_id: equity.clone(),
+                            debit: Money::ZERO,
+                            credit: Money::from_rials(100 + i),
+                            description: "credit".into(),
+                        },
+                    ],
+                })?;
+            }
+            Ok(())
+        })
+        .unwrap();
+    drop(store);
+
+    let ws = call(d.path(), "workspace", json!({"company_id": c}));
+    let page1 = call(d.path(), "records", json!({"company_id": c, "kind": "journals", "offset": 0}));
+    let total: usize = page1["count"].as_str().unwrap().parse().unwrap();
+    assert!(total >= 120);
+    assert_eq!(page1["rows"].as_array().unwrap().len(), 100);
+    assert_eq!(page1["rows"][0], ws["journals"][0]);
+
+    let page2 = call(d.path(), "records", json!({"company_id": c, "kind": "journals", "offset": 100}));
+    assert_eq!(page2["count"], page1["count"]);
+    assert_eq!(page2["rows"].as_array().unwrap().len(), total - 100);
+
+    let date_filtered = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "journals", "from": "2026-10-08", "to": "2026-10-08"}),
+    );
+    let date_total: usize = date_filtered["count"].as_str().unwrap().parse().unwrap();
+    assert!(date_total < total);
+
+    let query_filtered = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "journals", "query": "BATCH-J-005"}),
+    );
+    assert_eq!(query_filtered["count"], "1");
+    assert_eq!(query_filtered["rows"][0]["source_id"], "batch-j-005");
+
+    // Sales record filtering by party_id, date, and query.
+    let setup = Store::open(d.path()).unwrap().state.accounting.core.setups[0].id.clone();
+    let draft = json!({"id":"rec-sale-draft","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"REC-SALE-01","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"Filter test","quotation":null,"lines":[{"id":"l1","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    call(d.path(), "draft_save", json!({"draft": draft, "expected_revision": null}));
+    call(
+        d.path(),
+        "draft_post",
+        json!({"id": "rec-sale-draft", "revision": "1", "request_key": "rec-sale-post"}),
+    );
+
+    let sales_all = call(d.path(), "records", json!({"company_id": c, "kind": "sales"}));
+    let sales_total: usize = sales_all["count"].as_str().unwrap().parse().unwrap();
+    assert!(sales_total >= 1);
+    let sales_party_miss = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "sales", "party_id": "NO-SUCH-CUSTOMER"}),
+    );
+    assert_eq!(sales_party_miss["count"], "0");
+    let sales_party_hit = call(
+        d.path(),
+        "records",
+        json!({"company_id": c, "kind": "sales", "party_id": "CU-A", "query": "rec-sale-01"}),
+    );
+    assert_eq!(sales_party_hit["count"], "1");
+}
+
+#[test]
+fn ledger_computes_opening_balance_and_running_balance_across_pages() {
+    use sarv_quote::accounting::{AccountClass, JournalKind, JournalLineInput, Money, PostCommand};
+
+    let (d, c, p) = fixture();
+    let mut store = Store::open(d.path()).unwrap();
+    let cash_id = store.state.accounting.core.setups[0]
+        .command
+        .mappings
+        .iter()
+        .find(|m| m.role == sarv_quote::core::CoreRole::Cash)
+        .unwrap()
+        .account_id
+        .clone();
+    let equity = store
+        .state
+        .accounting
+        .accounts
+        .iter()
+        .find(|a| !a.control && a.postable && a.classification == AccountClass::Equity)
+        .unwrap()
+        .id
+        .clone();
+    store
+        .change(|s| {
+            // Prior to `from` ("2026-10-05"): net +500 on cash.
+            s.accounting.post_banking(PostCommand {
+                company_id: c.clone(),
+                period_id: p.clone(),
+                date: "2026-10-02".into(),
+                source_id: "prior-cash".into(),
+                source_revision: 1,
+                event: "banking.deposit.v1".into(),
+                request_key: "prior-cash".into(),
+                actor: "test".into(),
+                reason: "Prior cash".into(),
+                kind: JournalKind::Manual,
+                lines: vec![
+                    JournalLineInput {
+                        account_id: cash_id.clone(),
+                        debit: Money::from_rials(500),
+                        credit: Money::ZERO,
+                        description: "prior debit".into(),
+                    },
+                    JournalLineInput {
+                        account_id: equity.clone(),
+                        debit: Money::ZERO,
+                        credit: Money::from_rials(500),
+                        description: "prior credit".into(),
+                    },
+                ],
+            })?;
+            // 110 lines inside ["2026-10-05", "2026-10-31"] so ledger spans 2 pages.
+            for i in 0..110 {
+                let key = format!("ledger-cash-{i:03}");
+                let (event, debit, credit) = if i % 2 == 0 {
+                    ("banking.deposit.v1", Money::from_rials(100 + i), Money::ZERO)
+                } else {
+                    ("banking.withdrawal.v1", Money::ZERO, Money::from_rials(50 + i))
+                };
+                s.accounting.post_banking(PostCommand {
+                    company_id: c.clone(),
+                    period_id: p.clone(),
+                    date: "2026-10-08".into(),
+                    source_id: key.clone(),
+                    source_revision: 1,
+                    event: event.into(),
+                    request_key: key,
+                    actor: "test".into(),
+                    reason: "Ledger paging".into(),
+                    kind: JournalKind::Manual,
+                    lines: vec![
+                        JournalLineInput {
+                            account_id: cash_id.clone(),
+                            debit,
+                            credit,
+                            description: "cash".into(),
+                        },
+                        JournalLineInput {
+                            account_id: equity.clone(),
+                            debit: credit,
+                            credit: debit,
+                            description: "offset".into(),
+                        },
+                    ],
+                })?;
+            }
+            Ok(())
+        })
+        .unwrap();
+    drop(store);
+
+    let page1 = call(
+        d.path(),
+        "ledger",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-10-05", "to": "2026-10-31", "offset": "0"}),
+    );
+    let rows1 = page1["rows"].as_array().unwrap();
+    assert_eq!(rows1.len(), 100);
+    let open1: i128 = page1["opening_balance"].as_str().unwrap().parse().unwrap();
+    assert!(open1 > 0);
+    let mut expected1 = open1;
+    for r in rows1 {
+        let deb: i128 = r["debit"].as_str().unwrap().parse().unwrap();
+        let cred: i128 = r["credit"].as_str().unwrap().parse().unwrap();
+        expected1 += deb - cred;
+    }
+    let last1: i128 = rows1.last().unwrap()["balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(last1, expected1);
+
+    let page2 = call(
+        d.path(),
+        "ledger",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-10-05", "to": "2026-10-31", "offset": "100"}),
+    );
+    let rows2 = page2["rows"].as_array().unwrap();
+    assert!(!rows2.is_empty());
+    let open2: i128 = page2["opening_balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(open2, last1);
+    let first2_deb: i128 = rows2[0]["debit"].as_str().unwrap().parse().unwrap();
+    let first2_cred: i128 = rows2[0]["credit"].as_str().unwrap().parse().unwrap();
+    let first2_bal: i128 = rows2[0]["balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(first2_bal, open2 + first2_deb - first2_cred);
+    let mut expected2 = open2;
+    for r in rows2 {
+        let deb: i128 = r["debit"].as_str().unwrap().parse().unwrap();
+        let cred: i128 = r["credit"].as_str().unwrap().parse().unwrap();
+        expected2 += deb - cred;
+    }
+    let last2: i128 = rows2.last().unwrap()["balance"].as_str().unwrap().parse().unwrap();
+    assert_eq!(last2, expected2);
+}
