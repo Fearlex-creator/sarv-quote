@@ -250,3 +250,63 @@ fn test_second_payment_from_overview_posts() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_cheque_clear_offers_fund_accounts() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Cheque Clear Buyer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = party.clone();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "80000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "80000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "credit sale for cheque clear"));
+
+    click(&mut rt, Page::Payments.key());
+    click(&mut rt, "btn-Receive money");
+    rt.state.payments.party_id = party;
+    rt.state.payments.funds = 2;
+    rt.frame(1.0 / 60.0);
+    type_into(&mut rt, "pay-amount", "80000");
+    type_into(&mut rt, "pay-sayad", "1234567890123457");
+    type_into(&mut rt, "pay-cheque-no", "CHQ-CLR-1");
+    type_into(&mut rt, "pay-bank", "Melli");
+    type_into(&mut rt, "pay-due", &data::today());
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "receive cheque"));
+
+    let (cheque_id, status) = cheque_entry(&rt, "CHQ-CLR-1");
+    assert_eq!(status, "in_hand");
+
+    crate::ui::views::payments::open_cheque_confirm(&mut rt.state, &cheque_id, "deposit");
+    assert!(rt.state.confirm.is_some(), "deposit must ask for confirmation");
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "btn-Deposit for collection");
+    let (_, status) = cheque_entry(&rt, "CHQ-CLR-1");
+    assert_eq!(status, "in_collection", "{}", blow(&rt, "deposit cheque"));
+
+    crate::ui::views::payments::open_cheque_confirm(&mut rt.state, &cheque_id, "clear");
+    let confirm = rt.state.confirm.as_ref().expect("clear must open confirm with fund accounts");
+    assert!(
+        !confirm.choices.is_empty(),
+        "clear confirm must offer at least one fund account choice"
+    );
+    let chosen_key = confirm.choices.last().unwrap().key.clone();
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, &format!("btn-{chosen_key}"));
+
+    let (_, status) = cheque_entry(&rt, "CHQ-CLR-1");
+    assert_eq!(status, "cleared", "{}", blow(&rt, "clear cheque"));
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

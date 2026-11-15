@@ -348,7 +348,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         .child(ui.frost("sheet-card", sheet).grow(1.0).min_h(0.0))
         .child(tabs);
 
-    ui.page("sheets-screen", &ui.t("Sheets"), &s.books.company_name(), Vec::new(), body)
+    let title = if s.sheets.dirty {
+        format!("{}{}", ui.t("Sheets"), ui.t(" · unsaved changes"))
+    } else {
+        ui.t("Sheets")
+    };
+    ui.page("sheets-screen", &title, &s.books.company_name(), Vec::new(), body)
 }
 
 fn formula_field(ui: &Ui, s: &State) -> El {

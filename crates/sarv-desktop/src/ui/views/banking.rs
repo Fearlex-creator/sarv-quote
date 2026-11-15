@@ -170,7 +170,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
 
     let title = move_dialog_title(s.banking.kind);
 
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "banking-move",
@@ -180,7 +180,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_LG,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.banking.modal_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 if st.banking.from_id.is_empty() || st.banking.to_id.is_empty() {
                     st.toast(Tone::Danger, st.fmt.t("Select account"));
@@ -229,8 +229,20 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             }),
         ],
-        |st| st.banking.modal_open = false,
+        close_or_confirm,
     );
+}
+
+fn is_dirty(st: &State) -> bool {
+    st.forms.any_with_prefix("bank-") || !st.banking.from_id.is_empty() || !st.banking.to_id.is_empty()
+}
+
+pub fn close_or_confirm(st: &mut State) {
+    if !is_dirty(st) {
+        st.banking.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.banking.modal_open = false);
 }
 
 fn open_move(st: &mut State, kind: usize) {

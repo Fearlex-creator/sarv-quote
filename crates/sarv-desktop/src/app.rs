@@ -161,6 +161,19 @@ impl Forms {
     pub fn clear_prefix(&mut self, prefix: &str) {
         self.map.retain(|k, _| !k.starts_with(prefix));
     }
+    pub fn any_with_prefix(&self, prefix: &str) -> bool {
+        self.map.iter().any(|(k, v)| k.starts_with(prefix) && !v.text.trim().is_empty())
+    }
+    pub fn snapshot_prefix(&self, prefix: &str) -> String {
+        let mut entries: Vec<_> = self
+            .map
+            .iter()
+            .filter(|(k, v)| k.starts_with(prefix) && !v.text.is_empty())
+            .map(|(k, v)| format!("{k}={}", v.text))
+            .collect();
+        entries.sort();
+        entries.join("\n")
+    }
 }
 
 pub struct State {
@@ -293,6 +306,22 @@ impl State {
             self.toast(Tone::Info, self.fmt.t("Turn on Point of sale in Settings."));
             return;
         }
+        if self.page == Page::Sheets && page != Page::Sheets && self.sheets.dirty {
+            self.confirm = Some(crate::ui::confirm::Confirm::one(
+                self.fmt.t("Leave without saving the sheet?"),
+                self.fmt.t("Unsaved changes on this sheet will be lost."),
+                Vec::new(),
+                "Leave",
+                self.fmt.t("Leave"),
+                true,
+                move |st| st.apply_nav(page),
+            ));
+            return;
+        }
+        self.apply_nav(page);
+    }
+
+    fn apply_nav(&mut self, page: Page) {
         self.page = page;
         self.palette_open = false;
         if page == Page::Sheets {
@@ -302,6 +331,89 @@ impl State {
             // Barcode scans land in the catalog search as soon as POS opens.
             self.forms.edit("pos-search").focused = true;
         }
+    }
+
+    /// Close the topmost open overlay/dialog, running dirty checks for form dialogs.
+    pub fn request_close_top_dialog(&mut self) -> bool {
+        if self.confirm.is_some() {
+            self.confirm = None;
+            return true;
+        }
+        if self.palette_open {
+            self.palette_open = false;
+            return true;
+        }
+        if self.sales.creating_item_for_line.is_some() {
+            self.sales.creating_item_for_line = None;
+            return true;
+        }
+        if self.purchases.creating_item_for_line.is_some() {
+            self.purchases.creating_item_for_line = None;
+            return true;
+        }
+        if self.accounting.ledger_open {
+            self.accounting.ledger_open = false;
+            return true;
+        }
+        if self.settings.restore_open {
+            self.settings.restore_open = false;
+            return true;
+        }
+        if self.overview.starter_open {
+            if !self.overview.starter_busy {
+                self.overview.starter_open = false;
+            }
+            return true;
+        }
+        if self.overview.named_open {
+            self.overview.named_open = false;
+            return true;
+        }
+        if self.sales.modal_open {
+            views::sales::close_or_confirm(self);
+            return true;
+        }
+        if self.purchases.modal_open {
+            views::purchases::close_or_confirm(self);
+            return true;
+        }
+        if self.payments.modal_open {
+            views::payments::close_or_confirm(self);
+            return true;
+        }
+        if self.accounting.modal_open {
+            views::accounting::close_or_confirm(self);
+            return true;
+        }
+        if self.banking.modal_open {
+            views::banking::close_or_confirm(self);
+            return true;
+        }
+        if self.contacts.modal_open {
+            views::contacts::close_or_confirm(self);
+            return true;
+        }
+        if !self.contacts.open_id.is_empty() {
+            views::contacts::close_profile_or_confirm(self);
+            return true;
+        }
+        if self.inventory.modal_open {
+            views::inventory::close_new_or_confirm(self);
+            return true;
+        }
+        if self.inventory.profile_open {
+            views::inventory::close_profile_or_confirm(self);
+            return true;
+        }
+        if self.inventory.transfer_open {
+            views::inventory::close_transfer_or_confirm(self);
+            return true;
+        }
+        if self.settings.business_open {
+            views::settings::close_business_or_confirm(self);
+            return true;
+        }
+        false
     }
 
     pub fn toggle_sidebar(&mut self) {
@@ -355,9 +467,27 @@ impl State {
     }
 
     pub fn select_company(&mut self, id: &str) {
+        if self.page == Page::Sheets && self.sheets.dirty {
+            let id = id.to_string();
+            self.confirm = Some(crate::ui::confirm::Confirm::one(
+                self.fmt.t("Leave without saving the sheet?"),
+                self.fmt.t("Unsaved changes on this sheet will be lost."),
+                Vec::new(),
+                "Leave",
+                self.fmt.t("Leave"),
+                true,
+                move |st| st.apply_select_company(&id),
+            ));
+            return;
+        }
+        self.apply_select_company(id);
+    }
+
+    fn apply_select_company(&mut self, id: &str) {
         self.books.company_id = id.to_string();
         self.books.period_id.clear();
         self.sheets.loaded = false;
+        self.sheets.dirty = false;
         self.pos = views::pos::PosState::default();
         self.refresh();
     }

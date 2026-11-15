@@ -35,6 +35,18 @@ pub fn open_payment(st: &mut State, receive: bool) {
     st.payments.modal_open = true;
 }
 
+fn is_dirty(st: &State) -> bool {
+    st.forms.any_with_prefix("pay-") || !st.payments.party_id.is_empty()
+}
+
+pub fn close_or_confirm(st: &mut State) {
+    if !is_dirty(st) {
+        st.payments.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.payments.modal_open = false);
+}
+
 fn first_nonempty(a: String, b: String) -> String {
     if a.is_empty() { b } else { a }
 }
@@ -244,7 +256,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     } else {
         ui.t("Pay bill")
     };
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "payment",
@@ -254,7 +266,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.payments.modal_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 if st.payments.posting || !st.payments.modal_open {
                     return;
@@ -385,7 +397,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             }),
         ],
-        |st| st.payments.modal_open = false,
+        close_or_confirm,
     );
 }
 
@@ -455,8 +467,6 @@ fn cheque_strip(s: &State, ui: &Ui) -> El {
     for entry in rows.iter().take(8) {
         let id = crate::data::s(&entry["cheque"]["id"]);
         let number = crate::data::s(&entry["cheque"]["details"]["number"]);
-        let amount_raw = crate::data::s(&entry["cheque"]["amount"]);
-        let due_date_raw = crate::data::s(&entry["cheque"]["details"]["due_date"]);
         let status = crate::data::s(&entry["status"]);
         let allowed = entry["allowed"].as_array().cloned().unwrap_or_default();
         let label = if number.is_empty() { id.clone() } else { number.clone() };
@@ -472,79 +482,10 @@ fn cheque_strip(s: &State, ui: &Ui) -> El {
             };
             has_action = true;
             let cheque_id = id.clone();
-            let cheque_number = label.clone();
-            let amount_raw = amount_raw.clone();
-            let due_date_raw = due_date_raw.clone();
-            let needs_fund = action == "cheque_clear";
+            let act_owned = act.to_string();
             let key = format!("cheque-{action}-{cheque_id}");
             actions = actions.child(ui.button(Btn::Glass, &key, &ui.t(button_label), None, move |st| {
-                let req = st.mint_key(action);
-                let mut payload = json!({ "cheque_id": cheque_id, "request_key": req, "source_id": req });
-                let generation = crate::data::s(&st.books.workspace["_generation"]);
-                if !generation.is_empty() {
-                    payload["expected_generation"] = json!(generation);
-                }
-                let lines = vec![
-                    (st.fmt.t("Cheque number"), cheque_number.clone()),
-                    (st.fmt.t("Amount"), st.fmt.money(&amount_raw)),
-                    (st.fmt.t("Cheque due date"), st.fmt.date(&due_date_raw)),
-                    (st.fmt.t("Action"), st.fmt.t(button_label)),
-                ];
-                let danger = matches!(action, "cheque_bounce" | "cheque_return" | "cheque_void");
-                if needs_fund {
-                    let accounts = fund_accounts(st);
-                    if accounts.is_empty() {
-                        st.toast(Tone::Danger, st.fmt.t("Select account"));
-                        return;
-                    }
-                    let choices = if accounts.len() == 1 {
-                        let fund = accounts[0].0.clone();
-                        let mut p = payload.clone();
-                        p["fund_account_id"] = json!(fund);
-                        vec![crate::ui::confirm::ConfirmChoice {
-                            key: button_label.to_string(),
-                            label: st.fmt.t(button_label),
-                            danger,
-                            action: std::rc::Rc::new(move |st| {
-                                let _ = st.run(action, p.clone(), Some("Posted"));
-                            }),
-                        }]
-                    } else {
-                        accounts
-                            .into_iter()
-                            .map(|(acc_id, acc_name)| {
-                                let mut p = payload.clone();
-                                p["fund_account_id"] = json!(acc_id);
-                                crate::ui::confirm::ConfirmChoice {
-                                    key: acc_name.clone(),
-                                    label: acc_name,
-                                    danger,
-                                    action: std::rc::Rc::new(move |st| {
-                                        let _ = st.run(action, p.clone(), Some("Posted"));
-                                    }),
-                                }
-                            })
-                            .collect()
-                    };
-                    st.confirm = Some(crate::ui::confirm::Confirm {
-                        title: st.fmt.t(button_label),
-                        message: st.fmt.t("Confirm this cheque action."),
-                        lines,
-                        choices,
-                    });
-                } else {
-                    st.confirm = Some(crate::ui::confirm::Confirm::one(
-                        st.fmt.t(button_label),
-                        st.fmt.t("Confirm this cheque action."),
-                        lines,
-                        button_label,
-                        st.fmt.t(button_label),
-                        danger,
-                        move |st| {
-                            let _ = st.run(action, payload.clone(), Some("Posted"));
-                        },
-                    ));
-                }
+                open_cheque_confirm(st, &cheque_id, &act_owned);
             }));
         }
         let mut line = col().key(format!("cheque-row-{id}")).w_full().gap(6.0).child(
@@ -561,4 +502,90 @@ fn cheque_strip(s: &State, ui: &Ui) -> El {
         col_el = col_el.child(line);
     }
     col_el
+}
+
+pub fn open_cheque_confirm(st: &mut State, cheque_id: &str, act: &str) {
+    let Some(button_label) = cheque_action_label(act) else {
+        return;
+    };
+    let Some(action) = cheque_dispatch_action(act) else {
+        return;
+    };
+    let entry = st.books.workspace["cheques"]
+        .as_array()
+        .and_then(|rows| rows.iter().find(|e| crate::data::s(&e["cheque"]["id"]) == cheque_id))
+        .cloned()
+        .unwrap_or(serde_json::Value::Null);
+    let number = crate::data::s(&entry["cheque"]["details"]["number"]);
+    let cheque_number = if number.is_empty() { cheque_id.to_string() } else { number };
+    let amount_raw = crate::data::s(&entry["cheque"]["amount"]);
+    let due_date_raw = crate::data::s(&entry["cheque"]["details"]["due_date"]);
+
+    let req = st.mint_key(action);
+    let mut payload = json!({ "cheque_id": cheque_id, "request_key": req, "source_id": req });
+    let generation = crate::data::s(&st.books.workspace["_generation"]);
+    if !generation.is_empty() {
+        payload["expected_generation"] = json!(generation);
+    }
+    let lines = vec![
+        (st.fmt.t("Cheque number"), cheque_number),
+        (st.fmt.t("Amount"), st.fmt.money(&amount_raw)),
+        (st.fmt.t("Cheque due date"), st.fmt.date(&due_date_raw)),
+        (st.fmt.t("Action"), st.fmt.t(button_label)),
+    ];
+    let danger = matches!(action, "cheque_bounce" | "cheque_return" | "cheque_void");
+    if action == "cheque_clear" {
+        let accounts = fund_accounts(st);
+        if accounts.is_empty() {
+            st.toast(Tone::Danger, st.fmt.t("Select account"));
+            return;
+        }
+        let choices = if accounts.len() == 1 {
+            let fund = accounts[0].0.clone();
+            let mut p = payload.clone();
+            p["fund_account_id"] = json!(fund);
+            vec![crate::ui::confirm::ConfirmChoice {
+                key: button_label.to_string(),
+                label: st.fmt.t(button_label),
+                danger,
+                action: std::rc::Rc::new(move |st| {
+                    let _ = st.run(action, p.clone(), Some("Posted"));
+                }),
+            }]
+        } else {
+            accounts
+                .into_iter()
+                .map(|(acc_id, acc_name)| {
+                    let mut p = payload.clone();
+                    p["fund_account_id"] = json!(acc_id);
+                    crate::ui::confirm::ConfirmChoice {
+                        key: acc_name.clone(),
+                        label: acc_name,
+                        danger,
+                        action: std::rc::Rc::new(move |st| {
+                            let _ = st.run(action, p.clone(), Some("Posted"));
+                        }),
+                    }
+                })
+                .collect()
+        };
+        st.confirm = Some(crate::ui::confirm::Confirm {
+            title: st.fmt.t(button_label),
+            message: st.fmt.t("Confirm this cheque action."),
+            lines,
+            choices,
+        });
+    } else {
+        st.confirm = Some(crate::ui::confirm::Confirm::one(
+            st.fmt.t(button_label),
+            st.fmt.t("Confirm this cheque action."),
+            lines,
+            button_label,
+            st.fmt.t(button_label),
+            danger,
+            move |st| {
+                let _ = st.run(action, payload.clone(), Some("Posted"));
+            },
+        ));
+    }
 }

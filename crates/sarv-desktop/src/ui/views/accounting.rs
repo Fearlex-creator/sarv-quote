@@ -36,6 +36,18 @@ pub fn open_journal(st: &mut State) {
     st.accounting.modal_open = true;
 }
 
+fn is_dirty(st: &State) -> bool {
+    st.forms.any_with_prefix("journal-") || !st.accounting.debit_account.is_empty() || !st.accounting.credit_account.is_empty()
+}
+
+pub fn close_or_confirm(st: &mut State) {
+    if !is_dirty(st) {
+        st.accounting.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.accounting.modal_open = false);
+}
+
 pub fn period_status_key(locked: bool) -> &'static str {
     if locked { "Locked" } else { "Open" }
 }
@@ -284,7 +296,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.labeled("Amount", ui.money_field(s, "journal-amount")))
         .child(ui.labeled("Description", ui.field(s, "journal-reason", &ui.t("Note (optional)"))));
 
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "journal",
@@ -294,7 +306,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_LG,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.accounting.modal_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 if st.accounting.posting || !st.accounting.modal_open {
                     return;
@@ -353,7 +365,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             }),
         ],
-        |st| st.accounting.modal_open = false,
+        close_or_confirm,
     );
 }
 

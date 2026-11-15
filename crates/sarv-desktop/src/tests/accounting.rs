@@ -137,6 +137,7 @@ fn locked_period_refuses_a_journal() {
     );
     assert_eq!(count(&rt, "journal_count"), before_count, "locked period must refuse journal");
     click(&mut rt, "btn-Cancel");
+    click(&mut rt, "btn-Discard");
 
     click(&mut rt, "segment2");
     for _ in 0..8 {
@@ -270,4 +271,46 @@ fn test_engine_error_toasts_once() {
         "expected exactly 1 danger toast from create_party, got {:?}",
         rt.state.toasts
     );
+}
+
+#[test]
+fn test_reverse_requires_confirmation() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "15000");
+    type_into(&mut rt, "journal-reason", "Confirm reverse test");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal post"));
+
+    let after_post_count = count(&rt, "journal_count");
+    let journal_id = rt
+        .state
+        .books
+        .list("journals")
+        .into_iter()
+        .find(|j| data::s(&j["reason"]) == "Confirm reverse test")
+        .map(|j| data::s(&j["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "journal id")));
+
+    click(&mut rt, &format!("journal-{journal_id}"));
+    click(&mut rt, "btn-Reverse");
+    assert!(rt.state.confirm.is_some(), "reverse must open confirmation dialog");
+    assert_eq!(
+        count(&rt, "journal_count"),
+        after_post_count,
+        "journal count unchanged before confirm"
+    );
+
+    click(&mut rt, "btn-Reverse entry");
+    assert!(rt.state.confirm.is_none());
+    assert_eq!(count(&rt, "journal_count"), after_post_count + 1, "reversal posted after confirm");
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }

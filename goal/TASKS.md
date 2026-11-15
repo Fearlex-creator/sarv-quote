@@ -87,7 +87,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 - [x] **P13-T01**: Create `ui/confirm.rs` (`Confirm` dialog) mounted in `ui/mod.rs`, split `ops::review_operation`/`post_reviewed`, wire confirmations for sales/purchase return, journal reverse, period lock/reopen, and cheques (with fund account choice + `mint_key` + `_generation`).
   - Files: `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/{mod.rs,confirm.rs,ops.rs}`, `crates/sarv-desktop/src/ui/views/{sales,purchases,accounting,payments}.rs`, `crates/sarv-desktop/src/fa_messages.rs`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
-- [ ] **P13-T02**: Add `Ui::form_dialog` in `glass.rs` (no outside-click dismiss), dirty checks (`Forms::any_with_prefix`, `close_or_confirm`, profile snapshots) across all form dialogs, Sheets dirty guard on `nav`/`select_company`, add 5 tests, update `plans/README.md`.
+- [x] **P13-T02**: Add `Ui::form_dialog` in `glass.rs` (no outside-click dismiss), dirty checks (`Forms::any_with_prefix`, `close_or_confirm`, profile snapshots) across all form dialogs, Sheets dirty guard on `nav`/`select_company`, add 5 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/main.rs`, `crates/sarv-desktop/src/ui/glass.rs`, `crates/sarv-desktop/src/ui/views/*.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

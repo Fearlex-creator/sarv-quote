@@ -76,6 +76,18 @@ pub fn open_purchase(st: &mut State) {
     st.purchases.post_key = st.mint_key("po");
 }
 
+fn is_dirty(st: &State) -> bool {
+    st.forms.any_with_prefix("buy-") || !st.purchases.supplier_id.is_empty() || st.purchases.lines.iter().any(|l| !l.item_id.is_empty())
+}
+
+pub fn close_or_confirm(st: &mut State) {
+    if !is_dirty(st) {
+        st.purchases.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.purchases.modal_open = false);
+}
+
 fn record_kind(record: &serde_json::Value) -> &str {
     let cmd = &record["command"];
     if cmd.get("Order").is_some() {
@@ -462,7 +474,7 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 .key("buy-receive-bill"),
         );
 
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "purchase",
@@ -472,10 +484,10 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.purchases.modal_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), post_purchase),
         ],
-        |st| st.purchases.modal_open = false,
+        close_or_confirm,
     );
 
     if s.purchases.creating_item_for_line.is_some() {

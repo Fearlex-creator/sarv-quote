@@ -39,7 +39,7 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
 | [011](011-sarv-identity-and-design-system.md) | Teal Sarv identity restored; design system documented | P1 | M | — | DONE |
-| [013](013-confirmations-and-unsaved-guards.md) | Confirm irreversible actions; forms survive a stray click | P1 | M | 004 | TODO |
+| [013](013-confirmations-and-unsaved-guards.md) | Confirm irreversible actions; forms survive a stray click | P1 | M | 004 | DONE |
 | [014](014-jalali-date-field.md) | Jalali-aware date field in every posting dialog | P1 | M | 004 | TODO |
 | [016](016-copy-validation-and-settings.md) | Real validation messages; Persian defaults; settings persist | P2 | M | 004, 005 | TODO |
 | [012](012-table-sorting-and-row-models.md) | Sortable tables; rows computed once per refresh | P2 | M–L | 004, 006 | TODO |

@@ -28,6 +28,8 @@ pub struct ContactsState {
     pub selected: String,
     pub generation: String,
     pub detail: Value,
+    pub new_snapshot: String,
+    pub profile_snapshot: String,
 }
 
 fn all_parties(s: &State) -> &[serde_json::Value] {
@@ -104,7 +106,24 @@ pub fn open_new_contact(st: &mut State, supplier: bool) {
         st.forms.set("contact-search", &search);
     }
     st.contacts.is_supplier = supplier;
+    st.contacts.new_snapshot = st.forms.snapshot_prefix("contact-");
     st.contacts.modal_open = true;
+}
+
+pub fn close_or_confirm(st: &mut State) {
+    if st.forms.snapshot_prefix("contact-") == st.contacts.new_snapshot {
+        st.contacts.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.contacts.modal_open = false);
+}
+
+pub fn close_profile_or_confirm(st: &mut State) {
+    if st.forms.snapshot_prefix("profile-") == st.contacts.profile_snapshot {
+        st.contacts.open_id.clear();
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.contacts.open_id.clear());
 }
 
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
@@ -390,7 +409,7 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         }
     });
     let mut portals = Vec::new();
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "contact",
@@ -399,8 +418,8 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         true,
         DIALOG_MD,
         form,
-        vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.contacts.modal_open = false), save_btn],
-        |st| st.contacts.modal_open = false,
+        vec![ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm), save_btn],
+        close_or_confirm,
     );
 }
 
@@ -427,6 +446,7 @@ fn open_contact(st: &mut State, row_id: &str) {
             st.forms.set("profile-notes", &crate::data::s(&profile["notes"]));
             st.contacts.generation = crate::data::s(&v["_generation"]);
             st.contacts.detail = v;
+            st.contacts.profile_snapshot = st.forms.snapshot_prefix("profile-");
             st.contacts.open_id = party_id;
         }
         Err(e) => st.toast_err(e),
@@ -469,7 +489,7 @@ fn mount_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
 
     let form = col().gap(14.0).child(metrics).child(contact_form_fields(s, ui, "profile"));
     let mut portals = Vec::new();
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "contact-profile",
@@ -479,7 +499,7 @@ fn mount_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.contacts.open_id.clear()),
+            ui.btn(Btn::Ghost, "Cancel", None, close_profile_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 let id = st.contacts.open_id.clone();
                 if id.is_empty() {
@@ -496,6 +516,6 @@ fn mount_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             }),
         ],
-        |st| st.contacts.open_id.clear(),
+        close_profile_or_confirm,
     );
 }

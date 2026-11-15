@@ -359,6 +359,43 @@ impl Ui {
         footer: Vec<El>,
         on_close: impl Fn(&mut State) + Clone + 'static,
     ) {
+        self.dialog_inner(layer, portals, key, title, description, open, width, body, footer, true, on_close);
+    }
+
+    /// Form dialog that does not close on an outside click; only Cancel, the ✕ button, or Esc
+    /// (via `on_close`) can close it.
+    #[allow(clippy::too_many_arguments)]
+    pub fn form_dialog(
+        &self,
+        layer: &mut Vec<El>,
+        portals: &mut Vec<El>,
+        key: &str,
+        title: &str,
+        description: &str,
+        open: bool,
+        width: f32,
+        body: El,
+        footer: Vec<El>,
+        on_close: impl Fn(&mut State) + Clone + 'static,
+    ) {
+        self.dialog_inner(layer, portals, key, title, description, open, width, body, footer, false, on_close);
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    fn dialog_inner(
+        &self,
+        layer: &mut Vec<El>,
+        portals: &mut Vec<El>,
+        key: &str,
+        title: &str,
+        description: &str,
+        open: bool,
+        width: f32,
+        body: El,
+        footer: Vec<El>,
+        click_outside: bool,
+        on_close: impl Fn(&mut State) + Clone + 'static,
+    ) {
         if !open {
             return;
         }
@@ -409,7 +446,7 @@ impl Ui {
             .child(el().w_full().h(0.5).fill(k.c.border_base))
             .child(foot)
             .token_motion(k.motion.overlay)
-            .modal(true, on_close);
+            .modal(click_outside, on_close);
         for shadow in k.shadow_layers(&k.elevation.overlay) {
             panel = panel.box_shadow(shadow);
         }

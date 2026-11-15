@@ -163,6 +163,7 @@ fn opening_the_sale_dialog_twice_starts_clean() {
     type_into(&mut rt, "sale-qty-0", "3");
     type_into(&mut rt, "sale-price-0", "50000");
     click(&mut rt, "btn-Cancel");
+    click(&mut rt, "btn-Discard");
     assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "cancel sale dialog"));
 
     click(&mut rt, "btn-New sales invoice");
@@ -198,4 +199,67 @@ fn test_new_sale_does_not_inherit_line_fields() {
     rt.state.forms.set("sale-qty-0", "7");
     crate::ui::views::sales::open_sale(&mut rt.state);
     assert!(rt.state.forms.get("sale-qty-0").is_empty());
+}
+
+#[test]
+fn test_return_requires_confirmation() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Confirm Return Buyer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = party;
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "100000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "100000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "sale before return"));
+
+    let sales_before = rt.state.books.list("sales").len();
+    let invoice_id = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .find(|r| r["command"].get("Fulfill").is_some())
+        .map(|r| data::s(&r["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "invoice id")));
+
+    click(&mut rt, &format!("sale-{invoice_id}"));
+    click(&mut rt, "btn-Return");
+    assert!(rt.state.confirm.is_some(), "return must open confirmation dialog");
+    assert_eq!(rt.state.books.list("sales").len(), sales_before, "no return posted before confirm");
+
+    click(&mut rt, "btn-Post return");
+    assert!(rt.state.confirm.is_none(), "confirm must close after posting");
+    assert_eq!(rt.state.books.list("sales").len(), sales_before + 1, "return posted after confirm");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_dirty_sale_survives_cancel() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    assert!(rt.state.sales.modal_open);
+
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-price-0", "50000");
+
+    click(&mut rt, "btn-Cancel");
+    assert!(rt.state.confirm.is_some(), "dirty sale must ask before discarding");
+    assert!(rt.state.sales.modal_open, "sale dialog must remain open until Discard is clicked");
+
+    click(&mut rt, "btn-Discard");
+    assert!(rt.state.confirm.is_none());
+    assert!(!rt.state.sales.modal_open, "sale dialog must close after Discard");
+    assert_no_danger(&rt);
 }

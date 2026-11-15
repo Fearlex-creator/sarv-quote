@@ -401,10 +401,12 @@ pub static FA: &[(&str, &str)] = &[
     ("Difference", "اختلاف"),
     ("Difference ·", "اختلاف ·"),
     ("Digits", "ارقام"),
+    ("Discard", "کنارگذاشتن"),
     ("Discard and close", "کنارگذاشتن و بستن"),
     ("Discard changes", "کنارگذاشتن تغییرات"),
     ("Discard editor", "کنارگذاشتن ویرایش"),
     ("Discard purchase editor?", "تغییرات سفارش خرید کنار گذاشته شود؟"),
+    ("Discard this form?", "تغییرات این فرم کنار گذاشته شود؟"),
     (
         "Discard purchase order {value1} and its unsaved edits.",
         "سفارش خرید {value1} و تغییرات ذخیره‌نشدهٔ آن کنار گذاشته می‌شود.",
@@ -637,6 +639,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Latin", "لاتین"),
     ("Latin (0-9)", "لاتین (0 تا 9)"),
     ("Law data", "داده‌های قانونی"),
+    ("Leave", "خروج"),
     (
         "Leave blank to generate a unique product code.",
         "برای ایجاد خودکار کد یکتا، خالی بگذارید.",
@@ -647,6 +650,7 @@ pub static FA: &[(&str, &str)] = &[
     ),
     ("Leave empty if paid in full.", "اگر کامل پرداخت شده خالی بگذارید."),
     ("Leave unsaved changes?", "تغییرات ذخیره‌نشده کنار گذاشته شود؟"),
+    ("Leave without saving the sheet?", "خروج بدون ذخیرهٔ صفحه؟"),
     ("Ledger", "دفتر کل"),
     ("Ledger and accounting", "دفتر حسابداری"),
     ("Ledger ·", "دفتر کل ·"),
@@ -1473,6 +1477,14 @@ pub static FA: &[(&str, &str)] = &[
     ("Unmarked entries", "ردیف‌های بی‌علامت"),
     ("Unreadable", "خوانا نیست"),
     ("Unsaved changes", "تغییرات ذخیره‌نشده"),
+    (
+        "Unsaved changes in this form will be lost.",
+        "تغییرات ذخیره‌نشدهٔ این فرم از بین می‌رود.",
+    ),
+    (
+        "Unsaved changes on this sheet will be lost.",
+        "تغییرات ذخیره‌نشدهٔ این صفحه از بین می‌رود.",
+    ),
     ("Untitled order", "سفارش بدون عنوان"),
     (
         "Use Back to sales to save or discard your current draft.",

@@ -19,6 +19,7 @@ pub struct SettingsState {
     pub restore_name: String,
     pub restore_note: String,
     pub generation_note: String,
+    pub business_snapshot: String,
 }
 
 fn setting_row(ui: &Ui, key: &str, label: &str, detail: &str, control: El) -> El {
@@ -278,7 +279,16 @@ pub fn open_business(st: &mut State) {
     st.forms.set("biz-prefix", &profile_field(st, "invoice_prefix"));
     st.forms.set("biz-footer", &profile_field(st, "footer"));
     st.forms.set("biz-bank", &profile_field(st, "bank_details"));
+    st.settings.business_snapshot = st.forms.snapshot_prefix("biz-");
     st.settings.business_open = true;
+}
+
+pub fn close_business_or_confirm(st: &mut State) {
+    if st.forms.snapshot_prefix("biz-") == st.settings.business_snapshot {
+        st.settings.business_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.settings.business_open = false);
 }
 
 fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
@@ -293,7 +303,7 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.labeled("Footer", ui.field(s, "biz-footer", "")))
         .child(ui.labeled("Bank details", ui.field(s, "biz-bank", "")));
     let mut portals = Vec::new();
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "business-profile",
@@ -303,7 +313,7 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.settings.business_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_business_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 let profile = json!({
                     "phone": st.forms.get("biz-phone"),
@@ -320,7 +330,7 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             }),
         ],
-        |st| st.settings.business_open = false,
+        close_business_or_confirm,
     );
 }
 

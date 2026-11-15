@@ -32,6 +32,33 @@ pub struct InventoryState {
     pub brand_filter: String,
     pub category_filter: String,
     pub detail: Value,
+    pub new_snapshot: String,
+    pub profile_snapshot: String,
+    pub transfer_snapshot: String,
+}
+
+fn new_product_snapshot(st: &State) -> String {
+    format!(
+        "{}\nunit={}\nsupplier={}\nservice={}",
+        st.forms.snapshot_prefix("item-"),
+        st.inventory.unit_id,
+        st.inventory.supplier_id,
+        st.inventory.is_service
+    )
+}
+
+fn product_profile_snapshot(st: &State) -> String {
+    format!("{}\nsupplier={}", st.forms.snapshot_prefix("prod-"), st.inventory.supplier_id)
+}
+
+fn transfer_snapshot(st: &State) -> String {
+    format!(
+        "{}\nitem={}\nfrom={}\nto={}",
+        st.forms.snapshot_prefix("transfer-"),
+        st.inventory.transfer_item,
+        st.inventory.transfer_from,
+        st.inventory.transfer_to
+    )
 }
 
 pub fn open_new_product(st: &mut State) {
@@ -40,7 +67,16 @@ pub fn open_new_product(st: &mut State) {
     st.inventory.unit_id = pickers::first_unit(st);
     st.inventory.supplier_id.clear();
     st.inventory.is_service = false;
+    st.inventory.new_snapshot = new_product_snapshot(st);
     st.inventory.modal_open = true;
+}
+
+pub fn close_new_or_confirm(st: &mut State) {
+    if new_product_snapshot(st) == st.inventory.new_snapshot {
+        st.inventory.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.inventory.modal_open = false);
 }
 
 pub fn open_transfer(st: &mut State) {
@@ -51,7 +87,24 @@ pub fn open_transfer(st: &mut State) {
     st.inventory.transfer_to.clear();
     st.inventory.transfer_key = st.mint_key("transfer");
     st.inventory.transfer_posting = false;
+    st.inventory.transfer_snapshot = transfer_snapshot(st);
     st.inventory.transfer_open = true;
+}
+
+pub fn close_transfer_or_confirm(st: &mut State) {
+    if transfer_snapshot(st) == st.inventory.transfer_snapshot {
+        st.inventory.transfer_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.inventory.transfer_open = false);
+}
+
+pub fn close_profile_or_confirm(st: &mut State) {
+    if product_profile_snapshot(st) == st.inventory.profile_snapshot {
+        st.inventory.profile_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.inventory.profile_open = false);
 }
 
 fn items(s: &State) -> &[serde_json::Value] {
@@ -423,7 +476,7 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             st.inventory.modal_open = false;
         }
     });
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "product",
@@ -432,8 +485,8 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         true,
         DIALOG_MD,
         form,
-        vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.modal_open = false), save_btn],
-        |st| st.inventory.modal_open = false,
+        vec![ui.btn(Btn::Ghost, "Cancel", None, close_new_or_confirm), save_btn],
+        close_new_or_confirm,
     );
 }
 
@@ -495,7 +548,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.form_grid(ui.labeled("From", from), ui.labeled("To", to)))
         .child(ui.labeled("Qty", ui.field(s, "transfer-qty", "1")));
 
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "transfer",
@@ -505,7 +558,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.transfer_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_transfer_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 if st.inventory.transfer_posting || !st.inventory.transfer_open {
                     return;
@@ -553,7 +606,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 st.inventory.transfer_posting = false;
             }),
         ],
-        |st| st.inventory.transfer_open = false,
+        close_transfer_or_confirm,
     );
 }
 
@@ -577,6 +630,7 @@ fn open_product(st: &mut State, item_id: &str) {
             st.inventory.generation = crate::data::s(&v["_generation"]);
             st.inventory.detail = v;
             st.inventory.selected = item_id.to_string();
+            st.inventory.profile_snapshot = product_profile_snapshot(st);
             st.inventory.profile_open = true;
         }
         Err(e) => st.toast_err(e),
@@ -673,7 +727,7 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             ),
         );
 
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "product-profile",
@@ -683,7 +737,7 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.profile_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_profile_or_confirm),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
                 let id = st.inventory.selected.clone();
                 let sale_typed = st.forms.get("prod-price");
@@ -737,6 +791,6 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             }),
         ],
-        |st| st.inventory.profile_open = false,
+        close_profile_or_confirm,
     );
 }

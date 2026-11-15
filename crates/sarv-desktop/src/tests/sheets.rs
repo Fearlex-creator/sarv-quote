@@ -44,3 +44,24 @@ fn test_sheet_formulas_save_beside_the_books() {
             .any(|t| t.message.contains("برگه") || t.message.contains("Sheet"))
     );
 }
+
+#[test]
+fn test_sheet_dirty_blocks_navigation() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Sheets.key());
+    assert_eq!(rt.state.page, Page::Sheets);
+
+    click(&mut rt, "cell-C1");
+    rt.state.forms.set("sheet-formula", "42");
+    click(&mut rt, "btn-sheet-apply");
+    assert!(rt.state.sheets.dirty);
+
+    rt.state.nav(Page::Overview);
+    rt.frame(1.0 / 60.0);
+    assert_eq!(rt.state.page, Page::Sheets, "dirty sheet must block immediate navigation");
+    assert!(rt.state.confirm.is_some(), "dirty sheet must show leave confirmation");
+
+    click(&mut rt, "btn-Leave");
+    assert!(rt.state.confirm.is_none());
+    assert_eq!(rt.state.page, Page::Overview, "confirming Leave must navigate to Overview");
+}

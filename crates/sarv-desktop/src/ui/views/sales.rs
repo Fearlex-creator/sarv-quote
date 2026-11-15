@@ -83,6 +83,18 @@ pub fn open_sale(st: &mut State) {
     st.sales.draft_id = st.mint_key("draft");
 }
 
+fn is_dirty(st: &State) -> bool {
+    st.forms.any_with_prefix("sale-") || !st.sales.customer_id.is_empty() || st.sales.lines.iter().any(|l| !l.item_id.is_empty())
+}
+
+pub fn close_or_confirm(st: &mut State) {
+    if !is_dirty(st) {
+        st.sales.modal_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.sales.modal_open = false);
+}
+
 fn sales_records(s: &State) -> Vec<serde_json::Value> {
     s.books.list("sales")
 }
@@ -741,7 +753,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         complete_sale(st);
     });
 
-    ui.dialog_described(
+    ui.form_dialog(
         layer,
         &mut portals,
         "sale",
@@ -751,7 +763,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_MD,
         form,
         vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.sales.modal_open = false),
+            ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm),
             ui.btn(Btn::Glass, "Issue quotation", None, |st| {
                 for (i, line) in st.sales.lines.iter_mut().enumerate() {
                     let q = st.forms.get(&format!("sale-qty-{i}"));
@@ -767,7 +779,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             }),
             save_btn,
         ],
-        |st| st.sales.modal_open = false,
+        close_or_confirm,
     );
 
     if s.sales.creating_item_for_line.is_some() {

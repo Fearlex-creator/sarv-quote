@@ -47,6 +47,19 @@ impl Confirm {
     }
 }
 
+/// Ask whether to discard unsaved form changes before closing a form dialog.
+pub fn discard_form(st: &mut State, close: impl Fn(&mut State) + 'static) {
+    st.confirm = Some(Confirm::one(
+        st.fmt.t("Discard this form?"),
+        st.fmt.t("Unsaved changes in this form will be lost."),
+        Vec::new(),
+        "Discard",
+        st.fmt.t("Discard"),
+        true,
+        close,
+    ));
+}
+
 pub fn mount(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let Some(c) = &s.confirm else {
         return;

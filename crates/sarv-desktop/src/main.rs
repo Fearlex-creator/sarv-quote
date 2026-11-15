@@ -18,8 +18,7 @@ const VAZIRMATN_BOLD: &[u8] = include_bytes!("../../../assets/fonts/Vazirmatn-Bo
 fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
     use rune::Key;
     if matches!(ev.key, Key::Escape) {
-        if s.palette_open {
-            s.palette_open = false;
+        if s.request_close_top_dialog() {
             return true;
         }
         if s.sidebar.is_peeking() {
