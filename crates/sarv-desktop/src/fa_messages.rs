@@ -1109,6 +1109,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Remove purchase line {index}", "حذف ردیف خرید {index}"),
     ("Reopen", "بازگشایی"),
     ("Reopen fiscal period", "بازگشایی دورهٔ مالی"),
+    ("Reopen this form and try again.", "فرم را ببندید و دوباره باز کنید."),
     (
         "Reopen {period}. Allows posting in this period and records an audit event.",
         "دورهٔ {period} بازگشایی شود؟ ثبت سند در این دوره مجاز می‌شود و رویداد در سابقهٔ حسابرسی ثبت می‌شود.",

@@ -27,6 +27,15 @@ fn accounts(s: &State) -> &[serde_json::Value] {
     s.books.workspace["accounts"].as_array().map(|a| a.as_slice()).unwrap_or(&[])
 }
 
+pub fn open_journal(st: &mut State) {
+    st.forms.clear_prefix("journal-");
+    st.accounting.debit_account.clear();
+    st.accounting.credit_account.clear();
+    st.accounting.post_key = st.mint_key("journal");
+    st.accounting.posting = false;
+    st.accounting.modal_open = true;
+}
+
 pub fn period_status_key(locked: bool) -> &'static str {
     if locked { "Locked" } else { "Open" }
 }
@@ -181,15 +190,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Accounting"),
         &ui.t("Ledger and accounting"),
         vec![
-            ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), |st| {
-                st.accounting.modal_open = true;
-                st.accounting.debit_account.clear();
-                st.accounting.credit_account.clear();
-                st.accounting.post_key = format!("journal-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
-                st.accounting.posting = false;
-                st.forms.set("journal-amount", "");
-                st.forms.set("journal-reason", "");
-            }),
+            ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), open_journal),
             ui.btn(Btn::Glass, "Ledger", None, open_ledger),
             ui.btn(Btn::Glass, "Reverse", None, reverse_selected),
             ui.btn(Btn::Glass, "Lock fiscal period", None, toggle_period),
@@ -273,11 +274,12 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     let r = st.forms.get("journal-reason");
                     if r.trim().is_empty() { "Manual journal".into() } else { r }
                 };
-                let key = if st.accounting.post_key.is_empty() {
-                    format!("journal-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0))
-                } else {
-                    st.accounting.post_key.clone()
-                };
+                if st.accounting.post_key.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+                    st.accounting.posting = false;
+                    return;
+                }
+                let key = st.accounting.post_key.clone();
                 let mut payload = json!({
                     "reason": reason,
                     "source_id": key,
@@ -299,6 +301,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     Ok(_) => {
                         st.accounting.modal_open = false;
                         st.accounting.posting = false;
+                        st.accounting.post_key.clear();
                     }
                     Err(_) => {
                         // `run` already toasted the engine error.

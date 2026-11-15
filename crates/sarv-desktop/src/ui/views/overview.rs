@@ -176,50 +176,27 @@ fn step(ui: &Ui, key: &str, n: usize, title: &str, detail: &str, done: bool, bad
 }
 
 fn open_sale(st: &mut State) {
-    st.sales.start_new();
-    st.forms.set("sale-note", "");
-    st.forms.set("sale-received", "");
+    crate::ui::views::sales::open_sale(st);
     st.nav(Page::Sales);
 }
 
 fn open_purchase(st: &mut State) {
-    st.purchases.start_new();
+    crate::ui::views::purchases::open_purchase(st);
     st.nav(Page::Purchases);
 }
 
 fn open_customer(st: &mut State, supplier: bool) {
-    st.contacts.modal_open = true;
-    st.contacts.is_supplier = supplier;
-    st.forms.set("contact-name", "");
-    st.forms.set("contact-phone", "");
-    st.forms.set("contact-email", "");
-    st.forms.set("contact-notes", "");
+    crate::ui::views::contacts::open_new_contact(st, supplier);
     st.nav(Page::Contacts);
 }
 
 fn open_product(st: &mut State) {
-    st.inventory.modal_open = true;
-    st.inventory.unit_id = crate::ui::pickers::first_unit(st);
-    st.inventory.supplier_id.clear();
-    st.inventory.is_service = false;
-    st.forms.set("item-name", "");
-    st.forms.set("item-sku", "");
-    st.forms.set("item-price", "");
-    st.forms.set("item-cost", "");
-    st.forms.set("item-barcode", "");
-    st.forms.set("item-notes", "");
+    crate::ui::views::inventory::open_new_product(st);
     st.nav(Page::Inventory);
 }
 
 fn open_payment(st: &mut State) {
-    st.payments.modal_open = true;
-    st.payments.receive = true;
-    st.payments.party_id.clear();
-    st.payments.party_combo = Default::default();
-    st.payments.funds = 0;
-    st.forms.set("pay-amount", "");
-    st.forms.set("pay-ref", "");
-    st.forms.set("pay-reason", "");
+    crate::ui::views::payments::open_payment(st, true);
     st.nav(Page::Payments);
 }
 
@@ -792,11 +769,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Overview"),
         &s.books.company_name(),
         vec![ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), |st| {
-            st.accounting.modal_open = true;
-            st.accounting.debit_account.clear();
-            st.accounting.credit_account.clear();
-            st.forms.set("journal-amount", "");
-            st.forms.set("journal-reason", "");
+            crate::ui::views::accounting::open_journal(st);
             st.nav(Page::Accounting);
         })],
         body,

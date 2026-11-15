@@ -204,3 +204,67 @@ fn reverse_creates_a_mirror_journal() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_second_journal_from_overview_posts() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 3);
+    let before = count(&rt, "journal_count");
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "10000");
+    type_into(&mut rt, "journal-reason", "First journal");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "first journal"));
+
+    click(&mut rt, Page::Overview.key());
+    click(&mut rt, "btn-New journal");
+    assert!(rt.state.accounting.modal_open, "{}", blow(&rt, "overview new journal"));
+    rt.state.accounting.debit_account = accounts[1].0.clone();
+    rt.state.accounting.credit_account = accounts[2].0.clone();
+    type_into(&mut rt, "journal-amount", "20000");
+    type_into(&mut rt, "journal-reason", "Second journal from overview");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "second journal"));
+
+    assert_eq!(count(&rt, "journal_count"), before + 2);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_engine_error_toasts_once() {
+    let mut rt = make_test_runtime();
+
+    rt.update(|s, _| s.toasts.clear());
+    let res = crate::ui::ops::post_operation(
+        &mut rt.state,
+        "nonexistent-record",
+        "fulfill",
+        "REF-ERR",
+        "Test error toast",
+        "err-key-1",
+    );
+    assert!(res.is_err());
+    let danger_count = rt.state.toasts.iter().filter(|t| t.tone == crate::app::Tone::Danger).count();
+    assert_eq!(
+        danger_count, 1,
+        "expected exactly 1 danger toast from post_operation, got {:?}",
+        rt.state.toasts
+    );
+
+    rt.update(|s, _| s.toasts.clear());
+    let res = rt.state.create_party(crate::ui::resources::ResourceKind::Customer, "", "", "", "");
+    assert!(res.is_err());
+    let danger_count = rt.state.toasts.iter().filter(|t| t.tone == crate::app::Tone::Danger).count();
+    assert_eq!(
+        danger_count, 1,
+        "expected exactly 1 danger toast from create_party, got {:?}",
+        rt.state.toasts
+    );
+}

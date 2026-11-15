@@ -36,9 +36,17 @@ impl ResourceKind {
     }
 }
 
+static UID_COUNTER: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+
 impl State {
     pub fn uid(&self) -> String {
-        format!("ui-{}", chrono::Utc::now().timestamp_millis())
+        let n = UID_COUNTER.fetch_add(1, std::sync::atomic::Ordering::Relaxed) + 1;
+        format!(
+            "ui-{}-{}-{}",
+            std::process::id(),
+            chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0),
+            n
+        )
     }
 
     pub fn setup_id(&self) -> String {

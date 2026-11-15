@@ -28,6 +28,7 @@ pub fn typed_display_amount(raw: &str) -> String {
 }
 
 /// Preview then post `fulfill`, `receive`, or `bill`. Empty remaining quantity is an error.
+/// Every `Err` returned has already been toasted (from `query`, validation, or `run`).
 pub fn post_operation(
     st: &mut State,
     record_id: &str,
@@ -36,7 +37,13 @@ pub fn post_operation(
     reason: &str,
     request_key: &str,
 ) -> Result<Value, String> {
-    let opts = st.query("operation_options", json!({ "record_id": record_id, "operation": operation }))?;
+    let opts = match st.query("operation_options", json!({ "record_id": record_id, "operation": operation })) {
+        Ok(v) => v,
+        Err(e) => {
+            st.toast_err(e.clone());
+            return Err(e);
+        }
+    };
     let lines: Vec<Value> = opts["lines"]
         .as_array()
         .into_iter()
@@ -51,7 +58,9 @@ pub fn post_operation(
         })
         .collect();
     if lines.is_empty() {
-        return Err(st.fmt.t("No quantities remaining"));
+        let msg = st.fmt.t("No quantities remaining");
+        st.toast_err(msg.clone());
+        return Err(msg);
     }
     let date = crate::data::today();
     let mut payload = json!({
@@ -66,7 +75,13 @@ pub fn post_operation(
         "reason": reason,
         "lines": lines
     });
-    let review = st.query(&format!("{operation}_preview"), payload.clone())?;
+    let review = match st.query(&format!("{operation}_preview"), payload.clone()) {
+        Ok(v) => v,
+        Err(e) => {
+            st.toast_err(e.clone());
+            return Err(e);
+        }
+    };
     payload["expected_generation"] = review["_generation"].clone();
     st.run(&format!("{operation}_post"), payload, None)
 }

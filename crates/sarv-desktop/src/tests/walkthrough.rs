@@ -229,7 +229,7 @@ fn test_owner_walks_profiles_documents_and_books() {
     assert!(!rt.state.books.company_name().is_empty(), "books still open after restore");
 }
 
-fn double_click(rt: &mut rune::Runtime<crate::app::State>, key: &str) {
+pub(super) fn double_click(rt: &mut rune::Runtime<crate::app::State>, key: &str) {
     let target = key.to_string();
     rt.update(|_, tx| tx.scroll_into_view(target));
     rt.frame(1.0 / 60.0);
@@ -242,7 +242,6 @@ fn double_click(rt: &mut rune::Runtime<crate::app::State>, key: &str) {
 }
 
 #[test]
-#[ignore = "fixed by plans/004-dialog-open-and-request-keys.md"]
 fn double_click_on_save_posts_once() {
     let mut rt = make_test_runtime();
     rt.state.fmt.unit = crate::i18n::Unit::Rial;
@@ -273,7 +272,14 @@ fn double_click_on_save_posts_once() {
     assert_eq!(rt.state.books.list("payments").len(), payments_before + 1, "payment must post once");
 
     // 3. Sale
-    let sales_before = rt.state.books.list("sales").len();
+    let invoices = |s: &crate::app::State| {
+        s.books
+            .list("sales")
+            .into_iter()
+            .filter(|r| r["command"].get("Fulfill").is_some())
+            .count()
+    };
+    let sales_before = invoices(&rt.state);
     click(&mut rt, Page::Sales.key());
     click(&mut rt, "btn-New sales invoice");
     rt.state.sales.customer_id = "CU-A".into();
@@ -285,7 +291,7 @@ fn double_click_on_save_posts_once() {
     type_into(&mut rt, "sale-price-0", "20000");
     double_click(&mut rt, "btn-Complete sale");
     assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "double click sale"));
-    assert_eq!(rt.state.books.list("sales").len(), sales_before + 1, "sale must post once");
+    assert_eq!(invoices(&rt.state), sales_before + 1, "sale must post once");
 
     assert_no_danger(&rt);
     books_validate(&rt);

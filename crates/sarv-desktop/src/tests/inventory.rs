@@ -145,3 +145,34 @@ fn product_profile_save_round_trips_every_field() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_transfer_double_click_posts_once() {
+    let mut rt = make_test_runtime();
+    rt.state
+        .run(
+            "resource",
+            serde_json::json!({ "kind": "warehouse", "id": "WH-DBL", "name": "Double Click Depot", "reason": "Test" }),
+            None,
+        )
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    let src = crate::ui::pickers::first_warehouse(&rt.state);
+    let dst = "WH-DBL".to_string();
+    let src_before = warehouse_qty(&mut rt, "ITEM-A", &src);
+    let dst_before = warehouse_qty(&mut rt, "ITEM-A", &dst);
+
+    click(&mut rt, Page::Inventory.key());
+    click(&mut rt, "btn-Transfer stock");
+    rt.state.inventory.transfer_item = "ITEM-A".into();
+    rt.state.inventory.transfer_from = src.clone();
+    rt.state.inventory.transfer_to = dst.clone();
+    type_into(&mut rt, "transfer-qty", "2");
+    crate::tests::walkthrough::double_click(&mut rt, "btn-Save");
+
+    assert!(!rt.state.inventory.transfer_open, "{}", blow(&rt, "double click transfer"));
+    assert_eq!(warehouse_qty(&mut rt, "ITEM-A", &src), src_before - 2000);
+    assert_eq!(warehouse_qty(&mut rt, "ITEM-A", &dst), dst_before + 2000);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

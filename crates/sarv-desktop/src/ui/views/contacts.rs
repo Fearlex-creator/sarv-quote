@@ -97,31 +97,14 @@ fn balance_for(s: &State, id: &str) -> String {
         .unwrap_or_else(|| "0".into())
 }
 
-fn clear_contact_forms(st: &mut State) {
-    for key in [
-        "contact-name",
-        "contact-first",
-        "contact-last",
-        "contact-org",
-        "contact-phone",
-        "contact-mobile",
-        "contact-email",
-        "contact-website",
-        "contact-address",
-        "contact-city",
-        "contact-postal",
-        "contact-national",
-        "contact-tax",
-        "contact-notes",
-    ] {
-        st.forms.set(key, "");
+pub fn open_new_contact(st: &mut State, supplier: bool) {
+    let search = st.forms.get("contact-search");
+    st.forms.clear_prefix("contact-");
+    if !search.is_empty() {
+        st.forms.set("contact-search", &search);
     }
-}
-
-fn open_new(st: &mut State, supplier: bool) {
-    st.contacts.modal_open = true;
     st.contacts.is_supplier = supplier;
-    clear_contact_forms(st);
+    st.contacts.modal_open = true;
 }
 
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El {
@@ -212,8 +195,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         };
     });
 
-    let add_btn = ui.btn(Btn::Primary, "New customer", Some(&icons::PLUS), |st| open_new(st, false));
-    let add_supp_btn = ui.btn(Btn::Glass, "Add supplier", Some(&icons::PLUS), |st| open_new(st, true));
+    let add_btn = ui.btn(Btn::Primary, "New customer", Some(&icons::PLUS), |st| open_new_contact(st, false));
+    let add_supp_btn = ui.btn(Btn::Glass, "Add supplier", Some(&icons::PLUS), |st| open_new_contact(st, true));
 
     if !s.contacts.open_id.is_empty() {
         mount_profile(s, ui, layer);

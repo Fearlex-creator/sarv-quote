@@ -76,6 +76,13 @@ impl SalesState {
     }
 }
 
+pub fn open_sale(st: &mut State) {
+    st.sales.start_new();
+    st.forms.clear_prefix("sale-");
+    st.sales.post_key = st.mint_key("sale");
+    st.sales.draft_id = st.mint_key("draft");
+}
+
 fn sales_records(s: &State) -> Vec<serde_json::Value> {
     s.books.list("sales")
 }
@@ -168,24 +175,17 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
     let customer = if ticket.customer_id.is_empty() {
         match st.ensure_walk_in_customer() {
             Ok(id) => id,
-            Err(e) => {
-                st.toast_err(e);
-                return false;
-            }
+            Err(_) => return false,
         }
     } else {
         ticket.customer_id.clone()
     };
-    let post_key = if ticket.post_key.is_empty() {
-        st.uid()
-    } else {
-        ticket.post_key.clone()
-    };
-    let draft_id = if ticket.draft_id.is_empty() {
-        st.uid()
-    } else {
-        ticket.draft_id.clone()
-    };
+    if ticket.post_key.is_empty() || ticket.draft_id.is_empty() {
+        st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+        return false;
+    }
+    let post_key = ticket.post_key.clone();
+    let draft_id = ticket.draft_id.clone();
     let reference = next_order_ref(st, &post_key);
     let invoice = next_invoice_ref(st, &post_key);
     let mut note = ticket.note.trim().to_string();
@@ -239,15 +239,12 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         return false;
     }
     let fulfill_key = format!("{post_key}-fulfill");
-    if let Err(e) = crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, "Deliver goods and issue invoice", &fulfill_key) {
-        if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
-            st.toast_err(e);
-        }
+    if crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, "Deliver goods and issue invoice", &fulfill_key).is_err() {
         return false;
     }
     if ticket.pay_method < 2 {
         let invoice_id = format!("{fulfill_key}-invoice");
-        if let Err(e) = settle_invoice(
+        if settle_invoice(
             st,
             &customer,
             &invoice,
@@ -255,10 +252,9 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
             &format!("{post_key}-pay"),
             ticket.pay_method,
             &ticket.received,
-        ) {
-            if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
-                st.toast_err(e);
-            }
+        )
+        .is_err()
+        {
             return false;
         }
     }
@@ -288,6 +284,8 @@ fn complete_sale(st: &mut State) {
     };
     if post_ticket(st, &ticket) {
         st.sales.modal_open = false;
+        st.sales.post_key.clear();
+        st.sales.draft_id.clear();
         st.sales.tab_idx = 0;
         st.toast(Tone::Success, st.fmt.t("Posted"));
     }
@@ -303,7 +301,13 @@ fn settle_invoice(
     pay_method: usize,
     received_display: &str,
 ) -> Result<(), String> {
-    let open = st.query("payment_options", json!({ "side": "receive", "party_id": customer }))?;
+    let open = match st.query("payment_options", json!({ "side": "receive", "party_id": customer })) {
+        Ok(v) => v,
+        Err(e) => {
+            st.toast_err(e.clone());
+            return Err(e);
+        }
+    };
     let owed: i64 = open["items"]
         .as_array()
         .into_iter()
@@ -312,7 +316,9 @@ fn settle_invoice(
         .map(|i| crate::data::s(&i["remaining"]).parse().unwrap_or(0))
         .unwrap_or(0);
     if owed <= 0 {
-        return Err(st.fmt.t("No open customer invoices"));
+        let msg = st.fmt.t("No open customer invoices");
+        st.toast_err(msg.clone());
+        return Err(msg);
     }
     let received = {
         let parsed = st.parse_money_input(received_display);
@@ -320,7 +326,9 @@ fn settle_invoice(
     };
     let paid = received.min(owed);
     if paid <= 0 {
-        return Err(st.fmt.t("Amount"));
+        let msg = st.fmt.t("Amount");
+        st.toast_err(msg.clone());
+        return Err(msg);
     }
     let funds = if pay_method == 0 { "cash" } else { "bank" };
     let mut pay = json!({
@@ -334,7 +342,13 @@ fn settle_invoice(
         "advance_amount": "0",
         "allocations": [{ "open_item_id": invoice_id, "amount": paid.to_string() }]
     });
-    let pr = st.query("payment_preview", pay.clone())?;
+    let pr = match st.query("payment_preview", pay.clone()) {
+        Ok(v) => v,
+        Err(e) => {
+            st.toast_err(e.clone());
+            return Err(e);
+        }
+    };
     pay["expected_generation"] = pr["_generation"].clone();
     st.run("payment_post", pay, None).map(|_| ())
 }
@@ -354,8 +368,7 @@ fn issue_quotation(st: &mut State) {
     let customer = if st.sales.customer_id.is_empty() {
         match st.ensure_walk_in_customer() {
             Ok(id) => id,
-            Err(e) => {
-                st.toast_err(e);
+            Err(_) => {
                 finish_posting(st);
                 return;
             }
@@ -363,16 +376,17 @@ fn issue_quotation(st: &mut State) {
     } else {
         st.sales.customer_id.clone()
     };
+    if st.sales.draft_id.is_empty() {
+        st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+        finish_posting(st);
+        return;
+    }
     let reference = next_order_ref(st, &st.sales.post_key);
     let note = {
         let note = st.forms.get("sale-note").trim().to_string();
         if note.is_empty() { "Quotation".into() } else { note }
     };
-    let draft_id = if st.sales.draft_id.is_empty() {
-        st.uid()
-    } else {
-        st.sales.draft_id.clone()
-    };
+    let draft_id = st.sales.draft_id.clone();
     let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note);
     let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
         Ok(v) => v,
@@ -390,6 +404,8 @@ fn issue_quotation(st: &mut State) {
     ) {
         Ok(_) => {
             st.sales.modal_open = false;
+            st.sales.post_key.clear();
+            st.sales.draft_id.clear();
             st.sales.tab_idx = 1;
             finish_posting(st);
         }
@@ -475,11 +491,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .min_h(0.0)
     };
 
-    let add_btn = ui.btn(Btn::Primary, "New sales invoice", Some(&icons::PLUS), |st| {
-        st.sales.start_new();
-        st.forms.set("sale-note", "");
-        st.forms.set("sale-received", "");
-    });
+    let add_btn = ui.btn(Btn::Primary, "New sales invoice", Some(&icons::PLUS), open_sale);
 
     if s.sales.modal_open {
         mount_sale_dialog(s, ui, layer);
@@ -552,9 +564,8 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         pickers::PICKER_WIDTH,
         |st, id| {
             if let Some(name) = pickers::create_text(id) {
-                match st.create_party(ResourceKind::Customer, name, "", "", "") {
-                    Ok(cid) => st.sales.customer_id = cid,
-                    Err(e) => st.toast_err(e),
+                if let Ok(cid) = st.create_party(ResourceKind::Customer, name, "", "", "") {
+                    st.sales.customer_id = cid;
                 }
             } else {
                 st.sales.customer_id = id.to_string();
@@ -564,9 +575,8 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let add_customer = pickers::add_new_btn(ui, "New customer", |st| {
         let name = st.sales.customer_combo.search().text.trim().to_string();
         let name = if name.is_empty() { st.fmt.t("Walk-in customer") } else { name };
-        match st.create_party(ResourceKind::Customer, &name, "", "", "") {
-            Ok(cid) => st.sales.customer_id = cid,
-            Err(e) => st.toast_err(e),
+        if let Ok(cid) = st.create_party(ResourceKind::Customer, &name, "", "", "") {
+            st.sales.customer_id = cid;
         }
     });
 
@@ -744,19 +754,16 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             } else {
                 Some(st.parse_money_input(&cost_raw).to_string())
             };
-            match st.create_item(&name, "", "", &sale, cost.as_deref(), "", "", "", "", "", "0", false) {
-                Ok(id) => {
-                    if let Some(l) = st.sales.lines.get_mut(idx) {
-                        l.item_id = id;
-                        l.price = st.forms.get("quick-item-price");
-                    }
-                    st.sales.creating_item_for_line = None;
-                    if st.sales.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
-                        st.sales.lines.push(SaleLine::blank());
-                        st.sales.line_combos.push(ComboboxState::default());
-                    }
+            if let Ok(id) = st.create_item(&name, "", "", &sale, cost.as_deref(), "", "", "", "", "", "0", false) {
+                if let Some(l) = st.sales.lines.get_mut(idx) {
+                    l.item_id = id;
+                    l.price = st.forms.get("quick-item-price");
                 }
-                Err(e) => st.toast_err(e),
+                st.sales.creating_item_for_line = None;
+                if st.sales.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
+                    st.sales.lines.push(SaleLine::blank());
+                    st.sales.line_combos.push(ComboboxState::default());
+                }
             }
         });
         ui.dialog_described(
@@ -870,12 +877,7 @@ fn return_selected(st: &mut State) {
     let id = st.sales.selected.clone();
     let reference = format!("RET-{}", &id[..id.len().min(6)]);
     let key = format!("return-{id}");
-    match crate::ui::ops::post_operation(st, &id, "sale_return", &reference, "Restock customer return and issue credit", &key) {
-        Ok(_) => st.toast(Tone::Success, st.fmt.t("Goods operation posted")),
-        Err(e) => {
-            if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
-                st.toast_err(e);
-            }
-        }
+    if crate::ui::ops::post_operation(st, &id, "sale_return", &reference, "Restock customer return and issue credit", &key).is_ok() {
+        st.toast(Tone::Success, st.fmt.t("Goods operation posted"));
     }
 }

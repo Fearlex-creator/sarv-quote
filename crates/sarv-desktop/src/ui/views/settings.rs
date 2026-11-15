@@ -209,9 +209,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ui.btn(Btn::Glass, "Your business", None, open_business),
             ui.btn(Btn::Glass, "Restore backup", None, open_restore),
             ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), |st| {
-                match st.run("backup_create", json!({}), None) {
-                    Ok(v) => st.toast(Tone::Success, crate::data::s(&v["filename"])),
-                    Err(e) => st.toast_err(e),
+                if let Ok(v) = st.run("backup_create", json!({}), None) {
+                    st.toast(Tone::Success, crate::data::s(&v["filename"]));
                 }
             }),
             ui.btn(Btn::Glass, "Law data", None, |st| match st.query("law_data", json!({})) {
@@ -307,9 +306,8 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "footer": st.forms.get("biz-footer"),
                     "bank_details": st.forms.get("biz-bank")
                 });
-                match st.run("business_profile", json!({ "profile": profile }), Some("Saved")) {
-                    Ok(_) => st.settings.business_open = false,
-                    Err(e) => st.toast_err(e),
+                if st.run("business_profile", json!({ "profile": profile }), Some("Saved")).is_ok() {
+                    st.settings.business_open = false;
                 }
             }),
         ],
@@ -377,9 +375,8 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "confirmed": true,
                     "expected_generation": st.settings.generation_note
                 });
-                match st.run("backup_restore", payload, Some("Saved")) {
-                    Ok(_) => st.settings.restore_open = false,
-                    Err(e) => st.toast_err(e),
+                if st.run("backup_restore", payload, Some("Saved")).is_ok() {
+                    st.settings.restore_open = false;
                 }
             }),
         ],

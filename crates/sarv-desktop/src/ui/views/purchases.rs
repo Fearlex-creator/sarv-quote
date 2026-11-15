@@ -70,6 +70,12 @@ impl PurchasesState {
     }
 }
 
+pub fn open_purchase(st: &mut State) {
+    st.purchases.start_new();
+    st.forms.clear_prefix("buy-");
+    st.purchases.post_key = st.mint_key("po");
+}
+
 fn record_kind(record: &serde_json::Value) -> &str {
     let cmd = &record["command"];
     if cmd.get("Order").is_some() {
@@ -137,11 +143,12 @@ fn post_purchase(st: &mut State) {
             })
         })
         .collect();
-    let key = if st.purchases.post_key.is_empty() {
-        format!("po-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0))
-    } else {
-        st.purchases.post_key.clone()
-    };
+    if st.purchases.post_key.is_empty() {
+        st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+        st.purchases.posting = false;
+        return;
+    }
+    let key = st.purchases.post_key.clone();
     let reference = format!("PO-{}", &key[key.len().saturating_sub(6)..]);
     let mut payload = json!({
         "supplier_id": st.purchases.supplier_id,
@@ -188,33 +195,30 @@ fn post_purchase(st: &mut State) {
             &format!("{key}-recv"),
         ) {
             Ok(v) => v,
-            Err(e) => {
-                if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
-                    st.toast_err(e);
-                }
+            Err(_) => {
                 st.purchases.posting = false;
                 return;
             }
         };
         let receipt_id = crate::data::s(&receipt["record_id"]);
         let bill_against = if receipt_id.is_empty() { order_id } else { receipt_id };
-        if let Err(e) = crate::ui::ops::post_operation(
+        if crate::ui::ops::post_operation(
             st,
             &bill_against,
             "bill",
             &format!("B-{reference}"),
             "Bill received goods",
             &format!("{key}-bill"),
-        ) {
-            if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
-                st.toast_err(e);
-            }
+        )
+        .is_err()
+        {
             st.purchases.posting = false;
             return;
         }
     }
     st.purchases.modal_open = false;
     st.purchases.posting = false;
+    st.purchases.post_key.clear();
     st.toast(Tone::Success, st.fmt.t("Posted"));
 }
 
@@ -333,9 +337,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Purchases"),
         &ui.t("Orders, receipts, and bills"),
         vec![
-            ui.btn(Btn::Primary, "New purchase order", Some(&icons::PLUS), |st| {
-                st.purchases.start_new();
-            }),
+            ui.btn(Btn::Primary, "New purchase order", Some(&icons::PLUS), open_purchase),
             ui.btn(Btn::Glass, "Return", None, return_selected),
         ],
         body,
@@ -364,9 +366,8 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         pickers::PICKER_WIDTH,
         |st, id| {
             if let Some(name) = pickers::create_text(id) {
-                match st.create_party(ResourceKind::Vendor, name, "", "", "") {
-                    Ok(sid) => st.purchases.supplier_id = sid,
-                    Err(e) => st.toast_err(e),
+                if let Ok(sid) = st.create_party(ResourceKind::Vendor, name, "", "", "") {
+                    st.purchases.supplier_id = sid;
                 }
             } else {
                 st.purchases.supplier_id = id.to_string();
@@ -379,9 +380,8 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             st.toast(Tone::Info, st.fmt.t("Select supplier"));
             return;
         }
-        match st.create_party(ResourceKind::Vendor, &name, "", "", "") {
-            Ok(id) => st.purchases.supplier_id = id,
-            Err(e) => st.toast_err(e),
+        if let Ok(id) = st.create_party(ResourceKind::Vendor, &name, "", "", "") {
+            st.purchases.supplier_id = id;
         }
     });
 
@@ -500,19 +500,16 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     }
                     let cost = st.parse_money_input(&st.forms.get("quick-item-cost")).to_string();
                     let sale = st.parse_money_input(&st.forms.get("quick-item-price")).to_string();
-                    match st.create_item(&name, "", "", &sale, Some(&cost), "", "", "", "", "", "0", false) {
-                        Ok(id) => {
-                            if let Some(l) = st.purchases.lines.get_mut(idx) {
-                                l.item_id = id;
-                                l.price = st.forms.get("quick-item-cost");
-                            }
-                            st.purchases.creating_item_for_line = None;
-                            if st.purchases.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
-                                st.purchases.lines.push(PurchaseLine::blank());
-                                st.purchases.line_combos.push(ComboboxState::default());
-                            }
+                    if let Ok(id) = st.create_item(&name, "", "", &sale, Some(&cost), "", "", "", "", "", "0", false) {
+                        if let Some(l) = st.purchases.lines.get_mut(idx) {
+                            l.item_id = id;
+                            l.price = st.forms.get("quick-item-cost");
                         }
-                        Err(e) => st.toast_err(e),
+                        st.purchases.creating_item_for_line = None;
+                        if st.purchases.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
+                            st.purchases.lines.push(PurchaseLine::blank());
+                            st.purchases.line_combos.push(ComboboxState::default());
+                        }
                     }
                 }),
             ],
@@ -539,12 +536,7 @@ fn return_selected(st: &mut State) {
     let id = st.purchases.selected.clone();
     let reference = format!("PRET-{}", &id[..id.len().min(6)]);
     let key = format!("preturn-{id}");
-    match crate::ui::ops::post_operation(st, &id, "purchase_return", &reference, "Return goods to the supplier", &key) {
-        Ok(_) => st.toast(Tone::Success, st.fmt.t("Goods operation posted")),
-        Err(e) => {
-            if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
-                st.toast_err(e);
-            }
-        }
+    if crate::ui::ops::post_operation(st, &id, "purchase_return", &reference, "Return goods to the supplier", &key).is_ok() {
+        st.toast(Tone::Success, st.fmt.t("Goods operation posted"));
     }
 }

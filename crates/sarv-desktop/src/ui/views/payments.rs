@@ -24,6 +24,17 @@ pub struct PaymentsState {
     pub posting: bool,
 }
 
+pub fn open_payment(st: &mut State, receive: bool) {
+    st.forms.clear_prefix("pay-");
+    st.payments.receive = receive;
+    st.payments.party_id.clear();
+    st.payments.party_combo = Default::default();
+    st.payments.funds = 0;
+    st.payments.post_key = st.mint_key("pay");
+    st.payments.posting = false;
+    st.payments.modal_open = true;
+}
+
 fn first_nonempty(a: String, b: String) -> String {
     if a.is_empty() { b } else { a }
 }
@@ -154,30 +165,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Payments"),
         &ui.t("Settle invoices and bills"),
         vec![
-            ui.btn(Btn::Primary, "Receive money", Some(&icons::ARROW), |st| {
-                st.payments.modal_open = true;
-                st.payments.receive = true;
-                st.payments.party_id.clear();
-                st.payments.party_combo = Default::default();
-                st.payments.funds = 0;
-                st.forms.set("pay-amount", "");
-                st.forms.set("pay-ref", "");
-                st.forms.set("pay-reason", "");
-                st.payments.post_key = format!("pay-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
-                st.payments.posting = false;
-            }),
-            ui.btn(Btn::Glass, "Pay bill", Some(&icons::PURCHASES), |st| {
-                st.payments.modal_open = true;
-                st.payments.receive = false;
-                st.payments.party_id.clear();
-                st.payments.party_combo = Default::default();
-                st.payments.funds = 0;
-                st.forms.set("pay-amount", "");
-                st.forms.set("pay-ref", "");
-                st.forms.set("pay-reason", "");
-                st.payments.post_key = format!("pay-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
-                st.payments.posting = false;
-            }),
+            ui.btn(Btn::Primary, "Receive money", Some(&icons::ARROW), |st| open_payment(st, true)),
+            ui.btn(Btn::Glass, "Pay bill", Some(&icons::PURCHASES), |st| open_payment(st, false)),
         ],
         body,
     )
@@ -212,9 +201,8 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 } else {
                     ResourceKind::Vendor
                 };
-                match st.create_party(kind, name, "", "", "") {
-                    Ok(pid) => st.payments.party_id = pid,
-                    Err(e) => st.toast_err(e),
+                if let Ok(pid) = st.create_party(kind, name, "", "", "") {
+                    st.payments.party_id = pid;
                 }
             } else {
                 st.payments.party_id = id.to_string();
@@ -326,11 +314,12 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     let r = st.forms.get("pay-reason");
                     if r.trim().is_empty() { "Payment".into() } else { r }
                 };
-                let key = if st.payments.post_key.is_empty() {
-                    format!("pay-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0))
-                } else {
-                    st.payments.post_key.clone()
-                };
+                if st.payments.post_key.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+                    st.payments.posting = false;
+                    return;
+                }
+                let key = st.payments.post_key.clone();
                 let reference = {
                     let r = st.forms.get("pay-ref");
                     if r.trim().is_empty() { key.clone() } else { r }
@@ -385,6 +374,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     Ok(_) => {
                         st.payments.modal_open = false;
                         st.payments.posting = false;
+                        st.payments.post_key.clear();
                     }
                     Err(_) => {
                         // `run` already toasted the engine error.

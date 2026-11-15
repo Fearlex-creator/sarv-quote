@@ -150,7 +150,6 @@ fn sale_return_restocks_and_credits_the_customer() {
 }
 
 #[test]
-#[ignore = "fixed by plans/004-dialog-open-and-request-keys.md"]
 fn opening_the_sale_dialog_twice_starts_clean() {
     let mut rt = make_test_runtime();
     click(&mut rt, Page::Sales.key());
@@ -176,4 +175,12 @@ fn opening_the_sale_dialog_twice_starts_clean() {
         "leftover sale-price-0 must be cleared"
     );
     assert_no_danger(&rt);
+}
+
+#[test]
+fn test_new_sale_does_not_inherit_line_fields() {
+    let mut rt = make_test_runtime();
+    rt.state.forms.set("sale-qty-0", "7");
+    crate::ui::views::sales::open_sale(&mut rt.state);
+    assert!(rt.state.forms.get("sale-qty-0").is_empty());
 }

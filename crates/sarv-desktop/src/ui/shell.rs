@@ -54,7 +54,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
                     .icon(&icons::PLUS)
                     .height(32.0)
                     .on_select(|st: &mut State, _| {
-                        st.sales.start_new();
+                        crate::ui::views::sales::open_sale(st);
                         st.nav(Page::Sales);
                     })
                     .build(k)
@@ -306,7 +306,7 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     type PaletteAction = (&'static str, &'static str, &'static rune::Icon, fn(&mut State));
     let actions: [PaletteAction; 4] = [
         ("action-new-order", "New sales invoice", &icons::PLUS, |st| {
-            st.sales.start_new();
+            crate::ui::views::sales::open_sale(st);
             st.nav(Page::Sales);
         }),
         ("action-theme", "Toggle theme", &icons::SUN, |st| st.dark = !st.dark),

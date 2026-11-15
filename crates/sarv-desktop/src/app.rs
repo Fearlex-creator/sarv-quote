@@ -172,6 +172,7 @@ pub struct State {
     pub forms: Forms,
     pub toasts: Vec<Toast>,
     next_toast: u64,
+    key_counter: u64,
     pub palette_open: bool,
     pub sidebar: PaneState,
     pub guide_open: bool,
@@ -207,6 +208,7 @@ impl State {
             forms: Forms::default(),
             toasts: Vec::new(),
             next_toast: 1,
+            key_counter: 0,
             palette_open: false,
             // Match rune-kit shell example: full close to 0, resize 136…640.
             sidebar: PaneState::new(276.0).range(136.0, 640.0),
@@ -321,6 +323,17 @@ impl State {
         if self.toasts.len() > 4 {
             self.toasts.remove(0);
         }
+    }
+
+    /// A request key unique within and across runs: prefix, process id, nanoseconds, counter.
+    pub fn mint_key(&mut self, prefix: &str) -> String {
+        self.key_counter += 1;
+        format!(
+            "{prefix}-{}-{}-{}",
+            std::process::id(),
+            chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0),
+            self.key_counter
+        )
     }
 
     pub fn refresh(&mut self) {

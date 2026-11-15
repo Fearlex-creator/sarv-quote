@@ -204,3 +204,49 @@ fn bounced_cheque_reopens_the_receivable() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_second_payment_from_overview_posts() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Overview Payer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    // Create an open receivable so both payments allocate against it.
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = party.clone();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "100000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "100000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "credit sale"));
+
+    let payments_before = rt.state.books.list("payments").len();
+
+    click(&mut rt, Page::Payments.key());
+    click(&mut rt, "btn-Receive money");
+    rt.state.payments.party_id = party.clone();
+    rt.state.payments.funds = 0;
+    type_into(&mut rt, "pay-amount", "15000");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "first payment"));
+
+    click(&mut rt, Page::Overview.key());
+    click(&mut rt, "btn-Record a payment");
+    assert!(rt.state.payments.modal_open, "{}", blow(&rt, "overview record payment"));
+    rt.state.payments.party_id = party;
+    rt.state.payments.funds = 0;
+    type_into(&mut rt, "pay-amount", "25000");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "second payment"));
+
+    assert_eq!(rt.state.books.list("payments").len(), payments_before + 2);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

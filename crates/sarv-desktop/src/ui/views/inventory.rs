@@ -23,6 +23,8 @@ pub struct InventoryState {
     pub transfer_item: String,
     pub transfer_from: String,
     pub transfer_to: String,
+    pub transfer_key: String,
+    pub transfer_posting: bool,
     pub selected: String,
     pub profile_open: bool,
     pub stock_label: String,
@@ -30,6 +32,26 @@ pub struct InventoryState {
     pub brand_filter: String,
     pub category_filter: String,
     pub detail: Value,
+}
+
+pub fn open_new_product(st: &mut State) {
+    st.forms.clear_prefix("item-");
+    st.forms.set("item-min-stock", "0");
+    st.inventory.unit_id = pickers::first_unit(st);
+    st.inventory.supplier_id.clear();
+    st.inventory.is_service = false;
+    st.inventory.modal_open = true;
+}
+
+pub fn open_transfer(st: &mut State) {
+    st.forms.clear_prefix("transfer-");
+    st.forms.set("transfer-qty", "1");
+    st.inventory.transfer_item.clear();
+    st.inventory.transfer_from = pickers::first_warehouse(st);
+    st.inventory.transfer_to.clear();
+    st.inventory.transfer_key = st.mint_key("transfer");
+    st.inventory.transfer_posting = false;
+    st.inventory.transfer_open = true;
 }
 
 fn items(s: &State) -> &[serde_json::Value] {
@@ -209,26 +231,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         |st, id| st.inventory.category_filter = id.to_string(),
     );
 
-    let add_btn = ui.btn(Btn::Primary, "New product", Some(&icons::PLUS), |st| {
-        st.inventory.modal_open = true;
-        st.inventory.unit_id = pickers::first_unit(st);
-        st.inventory.supplier_id.clear();
-        st.inventory.is_service = false;
-        for key in [
-            "item-name",
-            "item-sku",
-            "item-price",
-            "item-cost",
-            "item-barcode",
-            "item-brand",
-            "item-category",
-            "item-min-stock",
-            "item-notes",
-        ] {
-            st.forms.set(key, "");
-        }
-        st.forms.set("item-min-stock", "0");
-    });
+    let add_btn = ui.btn(Btn::Primary, "New product", Some(&icons::PLUS), open_new_product);
 
     if s.inventory.modal_open {
         mount_create(s, ui, layer);
@@ -263,13 +266,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Inventory"),
         &ui.t("Organize products by brand and category"),
         vec![
-            ui.btn(Btn::Glass, "Transfer stock", Some(&icons::ARROW), |st| {
-                st.inventory.transfer_open = true;
-                st.inventory.transfer_item.clear();
-                st.inventory.transfer_from = pickers::first_warehouse(st);
-                st.inventory.transfer_to.clear();
-                st.forms.set("transfer-qty", "1");
-            }),
+            ui.btn(Btn::Glass, "Transfer stock", Some(&icons::ARROW), open_transfer),
             add_btn,
             ui.btn(Btn::Glass, "Product details", None, |st| {
                 if st.inventory.selected.is_empty() {
@@ -394,22 +391,24 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         let service = st.inventory.is_service;
         let min_raw = crate::i18n::latin_digits(&st.forms.get("item-min-stock")).replace(',', "");
         let min_stock = if min_raw.trim().is_empty() { "0".into() } else { min_raw };
-        match st.create_item(
-            &name,
-            &sku,
-            &unit,
-            &sale,
-            cost.as_deref(),
-            &barcode,
-            &notes,
-            &supplier,
-            &brand,
-            &category,
-            &min_stock,
-            service,
-        ) {
-            Ok(_) => st.inventory.modal_open = false,
-            Err(e) => st.toast_err(e),
+        if st
+            .create_item(
+                &name,
+                &sku,
+                &unit,
+                &sale,
+                cost.as_deref(),
+                &barcode,
+                &notes,
+                &supplier,
+                &brand,
+                &category,
+                &min_stock,
+                service,
+            )
+            .is_ok()
+        {
+            st.inventory.modal_open = false;
         }
     });
     ui.dialog_described(
@@ -496,14 +495,26 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.transfer_open = false),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
+                if st.inventory.transfer_posting || !st.inventory.transfer_open {
+                    return;
+                }
+                st.inventory.transfer_posting = true;
                 if st.inventory.transfer_item.is_empty() || st.inventory.transfer_from.is_empty() || st.inventory.transfer_to.is_empty() {
                     st.toast(Tone::Danger, st.fmt.t("Select product"));
+                    st.inventory.transfer_posting = false;
                     return;
                 }
                 if st.inventory.transfer_from == st.inventory.transfer_to {
                     st.toast(Tone::Danger, st.fmt.t("Select warehouse"));
+                    st.inventory.transfer_posting = false;
                     return;
                 }
+                if st.inventory.transfer_key.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
+                    st.inventory.transfer_posting = false;
+                    return;
+                }
+                let key = st.inventory.transfer_key.clone();
                 let qty = crate::i18n::latin_digits(&st.forms.get("transfer-qty")).replace(',', "");
                 let unit = pickers::item_unit(st, &st.inventory.transfer_item);
                 let mut payload = json!({
@@ -511,18 +522,23 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     "source_warehouse_id": st.inventory.transfer_from,
                     "target_warehouse_id": st.inventory.transfer_to,
                     "unit_id": unit,
-                    "quantity": qty
+                    "quantity": qty,
+                    "source_id": key,
+                    "request_key": key
                 });
                 match st.query("transfer_preview", payload.clone()) {
                     Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
                     Err(e) => {
                         st.toast_err(e);
+                        st.inventory.transfer_posting = false;
                         return;
                     }
                 }
                 if st.run("transfer_post", payload, Some("Posted")).is_ok() {
                     st.inventory.transfer_open = false;
+                    st.inventory.transfer_key.clear();
                 }
+                st.inventory.transfer_posting = false;
             }),
         ],
         |st| st.inventory.transfer_open = false,

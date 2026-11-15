@@ -92,7 +92,7 @@ fn main() {
             }),
             ("invoice", |s| {
                 s.nav(Page::Sales);
-                s.sales.start_new();
+                ui::views::sales::open_sale(s);
                 s.sales.customer_combo.step(rune_kit::ComboboxEvent::Toggle { current: None });
             }),
             ("purchases", |s| s.nav(Page::Purchases)),
