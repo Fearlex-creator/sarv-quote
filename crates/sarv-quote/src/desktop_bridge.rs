@@ -322,7 +322,11 @@ fn operation_lines(s: &State, company: &str, record: &str, action: &str) -> Resu
                 return Err(anyhow!("Not an invoice"));
             };
             for l in s.accounting.sales_invoice_returnable(record)? {
-                let orig = f.lines.iter().find(|x| x.id == l.id).unwrap();
+                let orig = f
+                    .lines
+                    .iter()
+                    .find(|x| x.id == l.id)
+                    .ok_or_else(|| anyhow!("Missing invoice line {}", l.id))?;
                 out.push(OperationLine {
                     id: l.id,
                     item_id: l.item.id,
@@ -549,7 +553,7 @@ fn purchase_return(s: &State, p: &Value) -> Result<ProcurementCommand> {
             total = total.checked_add(value)?;
             Ok(PurchaseReturnLine {
                 id: format!("{}-{}", ctx.source_id, l.id),
-                receipt_line_id: l.receipt_line_id.unwrap(),
+                receipt_line_id: l.receipt_line_id.ok_or_else(|| anyhow!("Missing receipt line id for {}", l.id))?,
                 bill_line_id: l.bill_line_id,
                 quantity_thousandths: q,
                 supplied_value: value,
@@ -1070,11 +1074,15 @@ pub fn dispatch(directory: &Path, action: &str, p: Value) -> Result<Value> {
 /// must call `refresh_if_stale` first so a second app or the local agent is
 /// never served a cached snapshot.
 pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
+    ensure!(p.is_object(), "Payload must be an object");
     let key = p["request_key"].as_str().unwrap_or("");
-    let replay = store.state.accounting.requests.iter().any(|r| r.command.request_key == key)
-        || store.state.accounting.sales.requests.iter().any(|r| r.request_key == key)
-        || store.state.accounting.procurement.requests.iter().any(|r| r.request_key == key)
-        || store.state.accounting.core.zero_requests.iter().any(|r| r.request_key == key);
+    let replay = !key.is_empty()
+        && (store.state.accounting.requests.iter().any(|r| r.command.request_key == key)
+            || store.state.accounting.sales.requests.iter().any(|r| r.request_key == key)
+            || store.state.accounting.procurement.requests.iter().any(|r| r.request_key == key)
+            || store.state.accounting.core.zero_requests.iter().any(|r| r.request_key == key)
+            || store.state.accounting.payments.requests.iter().any(|r| r.request_key == key)
+            || store.state.cheques.events.iter().any(|e| e.request_key == key));
     if (action.ends_with("_post") || action == "journal_reverse" || action.starts_with("cheque_"))
         && !replay
         && p.get("expected_generation").is_some()
@@ -1421,13 +1429,12 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let mut draft = raw_draft(&p["draft"])?;
             let expected = p["expected_revision"].as_str().map(str::parse).transpose()?;
             // A quotation keeps its issued number across revisions.
-            if draft.quote_issue.is_none()
-                && let Some(stored) = store
-                    .state
-                    .sales_drafts
-                    .iter()
-                    .find(|d| d.id == draft.id)
-                    .and_then(|d| d.quote_issue.clone())
+            if let Some(stored) = store
+                .state
+                .sales_drafts
+                .iter()
+                .find(|d| d.id == draft.id)
+                .and_then(|d| d.quote_issue.clone())
             {
                 draft.quote_issue = Some(stored);
             }
@@ -1435,8 +1442,25 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 json!(store.change(|s| {
                     let series = s.settings.quote_prefix.trim().to_owned();
                     let series = if series.is_empty() { "Q-".to_owned() } else { series };
-                    let number = format!("{series}{}", s.settings.next_number.max(1));
-                    s.settings.next_number = s.settings.next_number.saturating_add(1);
+                    let mut n = s.settings.next_number.max(1);
+                    let mut number = None;
+                    for _ in 0..10_000 {
+                        let candidate = format!("{series}{n}");
+                        let norm = crate::domain::normalize(&candidate);
+                        let taken = s.sales_drafts.iter().any(|d| {
+                            d.id != draft.id
+                                && d.quote_issue
+                                    .as_ref()
+                                    .is_some_and(|qi| crate::domain::normalize(&qi.number) == norm)
+                        }) || s.quotes.iter().any(|q| crate::domain::normalize(&q.number) == norm);
+                        n = n.saturating_add(1);
+                        if !taken {
+                            number = Some(candidate);
+                            break;
+                        }
+                    }
+                    let number = number.ok_or_else(|| anyhow!("Could not allocate a unique quotation number"))?;
+                    s.settings.next_number = n;
                     let issued = draft.document_date.clone();
                     let valid_until = optional(&p, "valid_until", "").to_owned();
                     let valid_until = if valid_until.is_empty() {
@@ -1677,7 +1701,9 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             }
             let settings: Settings = serde_json::from_value(v)?;
             store.change(|s| {
+                let next_number = s.settings.next_number.max(settings.next_number);
                 s.settings = settings;
+                s.settings.next_number = next_number;
                 Ok(())
             })?;
             json!(true)

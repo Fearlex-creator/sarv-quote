@@ -118,7 +118,15 @@ struct Inner {
 }
 impl Inner {
     fn dispatch(&self, action: &str, payload: Value) -> Result<Value> {
-        let mut store = self.accounting.lock().map_err(|_| anyhow!("Accounting state interrupted"))?;
+        let mut store = match self.accounting.lock() {
+            Ok(guard) => guard,
+            Err(poisoned) => {
+                let mut guard = poisoned.into_inner();
+                *guard = crate::store::Store::open(&self.directory)?;
+                self.accounting.clear_poison();
+                guard
+            }
+        };
         store.refresh_if_stale()?;
         crate::desktop::dispatch_in(&mut store, action, payload)
     }

@@ -1018,3 +1018,10 @@ fn quotation_issue_keeps_stable_numbers_and_prints_exact_totals() {
             .all(|x| x.quote_issue.is_some() || x.id != "quote-draft")
     );
 }
+
+#[test]
+fn non_object_payload_is_an_error_not_a_panic() {
+    let (d, _, _) = fixture();
+    assert!(dispatch(d.path(), "payment_preview", json!([1, 2, 3])).is_err());
+    assert!(dispatch(d.path(), "payment_preview", json!("x")).is_err());
+}

@@ -578,3 +578,58 @@ fn law_data_action_lists_every_value_as_unreviewed() {
     let entries = out["entries"].as_array().unwrap();
     assert!(!entries.is_empty() && entries.iter().all(|e| e["reviewed"] == false));
 }
+
+#[test]
+fn retry_of_the_same_deposit_is_a_no_op() {
+    let mut s = fixture();
+    let cheque = s
+        .receive_cheque(
+            details("1234567800000011"),
+            pay(&s, "R1", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
+    let dep_ctx = ctx(&s, "DEP-1", "2026-03-26");
+    s.deposit_cheque(&dep_ctx, &cheque).unwrap();
+    let event_count = s.cheques.events.len();
+    s.deposit_cheque(&dep_ctx, &cheque).unwrap();
+    assert_eq!(s.cheques.events.len(), event_count);
+    assert_eq!(s.cheques.status(&cheque).unwrap(), machine::State::InCollection);
+}
+
+#[test]
+fn key_reused_for_another_cheque_is_rejected() {
+    let mut s = fixture();
+    let c1 = s
+        .receive_cheque(
+            details("1234567800000012"),
+            pay(&s, "R2", PaymentSide::Receive, "CU-A", "AR-125", 50),
+        )
+        .unwrap();
+    let c2 = s
+        .receive_cheque(
+            details("1234567800000013"),
+            pay(&s, "R3", PaymentSide::Receive, "CU-A", "AR-125", 50),
+        )
+        .unwrap();
+    let dep_ctx = ctx(&s, "DEP-2", "2026-03-26");
+    s.deposit_cheque(&dep_ctx, &c1).unwrap();
+    assert!(s.deposit_cheque(&dep_ctx, &c2).is_err());
+    assert_eq!(s.cheques.status(&c2).unwrap(), machine::State::InHand);
+}
+
+#[test]
+fn key_reused_for_another_action_is_rejected() {
+    let mut s = fixture();
+    let cheque = s
+        .receive_cheque(
+            details("1234567800000014"),
+            pay(&s, "R4", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
+    let dep_ctx = ctx(&s, "DEP-3", "2026-03-26");
+    s.deposit_cheque(&dep_ctx, &cheque).unwrap();
+    let event_count = s.cheques.events.len();
+    assert!(s.reverse_cheque(&dep_ctx, &cheque, ChequeAct::Bounced).is_err());
+    assert_eq!(s.cheques.events.len(), event_count);
+    assert_eq!(s.cheques.status(&cheque).unwrap(), machine::State::InCollection);
+}

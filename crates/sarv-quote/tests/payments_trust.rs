@@ -295,3 +295,20 @@ fn quotation_drafts_and_settings_survive_backup_and_restart() {
     let preview = call(d.path(), "backup_restore_preview", json!({"filename":name}));
     assert_eq!(preview["backup"]["drafts"], "1");
 }
+
+#[test]
+fn payment_retry_with_old_generation_after_unrelated_save_is_idempotent() {
+    let (d, c, p) = fixture();
+    let generation = Store::open(d.path()).unwrap().local_generation().to_string();
+    let mut payload = receive_payload(&c, &p, "trust-stale-gen-retry", "2026-10-08", "125", "0");
+    payload["expected_generation"] = json!(generation);
+    let first = call(d.path(), "payment_post", payload.clone());
+    let mut settings = call(d.path(), "workspace", json!({"company_id": c}))["settings"].clone();
+    settings["business_name"] = json!("Unrelated save");
+    call(d.path(), "settings", settings);
+    let second = call(d.path(), "payment_post", payload);
+    assert_eq!(first["record_id"], second["record_id"]);
+    assert_eq!(first["journal_id"], second["journal_id"]);
+    let store = Store::open(d.path()).unwrap();
+    assert_eq!(store.state.accounting.payments.records.len(), 1);
+}

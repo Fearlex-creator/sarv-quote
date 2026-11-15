@@ -167,6 +167,17 @@ impl ChequeRegister {
     fn by_request(&self, key: &str) -> Option<&ChequeEvent> {
         self.events.iter().find(|e| e.request_key == key)
     }
+    /// Ok(true) = exact retry, nothing to do. Ok(false) = new request. Err = key reused for something else.
+    fn replayed(&self, key: &str, cheque_id: &str, action: ChequeAct) -> Result<bool> {
+        let Some(prior) = self.by_request(key) else {
+            return Ok(false);
+        };
+        ensure!(
+            prior.cheque_id == cheque_id && prior.action == action,
+            "کلید درخواست با محتوای متفاوت استفاده شده است"
+        );
+        Ok(true)
+    }
 }
 
 fn account_for(setup: &CoreSetup, role: Role, fund_account: &str) -> Result<String> {
@@ -241,6 +252,21 @@ impl State {
     fn register_with_payment(&mut self, direction: ChequeDir, details: ChequeDetails, payment: &mut PaymentInput) -> Result<String> {
         let ctx = payment.context.clone();
         if let Some(prior) = self.cheques.by_request(&ctx.request_key) {
+            ensure!(
+                prior.action == ChequeAct::Registered,
+                "کلید درخواست با محتوای متفاوت استفاده شده است"
+            );
+            let cheque = self.cheques.cheque(&prior.cheque_id)?;
+            let amount = payment.total()?;
+            ensure!(
+                cheque.company_id == ctx.company_id
+                    && cheque.direction == direction
+                    && cheque.amount == amount
+                    && cheque.party_id == payment.party_id
+                    && cheque.details == details
+                    && cheque.opening_id.is_none(),
+                "کلید درخواست با محتوای متفاوت استفاده شده است"
+            );
             return Ok(prior.cheque_id.clone());
         }
         ensure!(payment.side == direction.payment_side(), "جهت پرداخت با نوع چک سازگار نیست");
@@ -276,6 +302,15 @@ impl State {
     /// Bring a cheque that was on hand at the opening into the register.
     pub fn register_opening_cheque(&mut self, ctx: &PaymentContext, opening_id: &str, details: ChequeDetails) -> Result<String> {
         if let Some(prior) = self.cheques.by_request(&ctx.request_key) {
+            ensure!(
+                prior.action == ChequeAct::Registered,
+                "کلید درخواست با محتوای متفاوت استفاده شده است"
+            );
+            let cheque = self.cheques.cheque(&prior.cheque_id)?;
+            ensure!(
+                cheque.company_id == ctx.company_id && cheque.opening_id.as_deref() == Some(opening_id) && cheque.details == details,
+                "کلید درخواست با محتوای متفاوت استفاده شده است"
+            );
             return Ok(prior.cheque_id.clone());
         }
         validate_details(&details, false)?;
@@ -317,7 +352,7 @@ impl State {
 
     /// Hand a received cheque to the bank for collection. Status only: no journal.
     pub fn deposit_cheque(&mut self, ctx: &PaymentContext, cheque_id: &str) -> Result<()> {
-        if self.cheques.by_request(&ctx.request_key).is_some() {
+        if self.cheques.replayed(&ctx.request_key, cheque_id, ChequeAct::Deposited)? {
             return Ok(());
         }
         let (cheque, status) = self.cheque_for_action(cheque_id, ctx)?;
@@ -328,7 +363,11 @@ impl State {
 
     /// The bank paid (received) or paid out (issued) the cheque: post the clearing movement.
     pub fn clear_cheque(&mut self, ctx: &PaymentContext, cheque_id: &str, fund_account_id: &str) -> Result<String> {
-        if let Some(prior) = self.cheques.by_request(&ctx.request_key) {
+        if self.cheques.replayed(&ctx.request_key, cheque_id, ChequeAct::Cleared)? {
+            let prior = self
+                .cheques
+                .by_request(&ctx.request_key)
+                .ok_or_else(|| anyhow!("درخواست تکراری با نتیجهٔ ناسازگار"))?;
             return prior.journal_id.clone().ok_or_else(|| anyhow!("درخواست تکراری با نتیجهٔ ناسازگار"));
         }
         let (cheque, status) = self.cheque_for_action(cheque_id, ctx)?;
@@ -368,7 +407,7 @@ impl State {
             matches!(act, ChequeAct::Bounced | ChequeAct::Returned | ChequeAct::Voided),
             "عملیات برگشت نامعتبر است"
         );
-        if self.cheques.by_request(&ctx.request_key).is_some() {
+        if self.cheques.replayed(&ctx.request_key, cheque_id, act)? {
             return Ok(());
         }
         let (cheque, status) = self.cheque_for_action(cheque_id, ctx)?;
@@ -397,7 +436,7 @@ impl State {
     /// Endorse a received cheque to a supplier: a supplier payment funded by cheques receivable.
     pub fn spend_cheque(&mut self, cheque_id: &str, mut payment: PaymentInput) -> Result<()> {
         let ctx = payment.context.clone();
-        if self.cheques.by_request(&ctx.request_key).is_some() {
+        if self.cheques.replayed(&ctx.request_key, cheque_id, ChequeAct::Spent)? {
             return Ok(());
         }
         let (cheque, status) = self.cheque_for_action(cheque_id, &ctx)?;

@@ -37,7 +37,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 ## Phase 1 — Correctness and Data Safety
 
 ### Plan 004: Dialog open & request keys
-- [ ] **P04-T01**: Add `State::mint_key` in `app.rs`, atomic `uid()` in `resources.rs`, one `open_*` per dialog (`accounting::open_journal`, `payments::open_payment`, `sales::open_sale`, `purchases::open_purchase`, `contacts::open_new_contact`, `inventory::open_new_product`, `inventory::open_transfer`), transfer `request_key`+`posting` guard, clear keys on success, remove double toasts, add 5 tests, update `plans/README.md`.
+- [x] **P04-T01**: Add `State::mint_key` in `app.rs`, atomic `uid()` in `resources.rs`, one `open_*` per dialog (`accounting::open_journal`, `payments::open_payment`, `sales::open_sale`, `purchases::open_purchase`, `contacts::open_new_contact`, `inventory::open_new_product`, `inventory::open_transfer`), transfer `request_key`+`posting` guard, clear keys on success, remove double toasts, add 5 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/resources.rs`, `crates/sarv-desktop/src/ui/ops.rs`, `crates/sarv-desktop/src/ui/shell.rs`, `crates/sarv-desktop/src/ui/views/{accounting,payments,sales,purchases,contacts,inventory,overview,banking,pos}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/main.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
@@ -65,7 +65,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-quote --test export_hardening --test storage_hardening --test process_recovery && cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 010: Engine idempotency and panics
-- [ ] **P10-T01**: Strict cheque retry matching (`replayed`) in `cheques.rs`, bridge `replay` covers payments & cheques, unique quotation numbering + `max(stored, incoming)` settings `next_number`, non-object payload guard & unwrap removal in `desktop_bridge.rs`, poisoned mutex recovery in `agent.rs`, add 8 engine tests, update `plans/README.md`.
+- [x] **P10-T01**: Strict cheque retry matching (`replayed`) in `cheques.rs`, bridge `replay` covers payments & cheques, unique quotation numbering + `max(stored, incoming)` settings `next_number`, non-object payload guard & unwrap removal in `desktop_bridge.rs`, poisoned mutex recovery in `agent.rs`, add 8 engine tests, update `plans/README.md`.
   - Files: `crates/sarv-quote/src/cheques.rs`, `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/src/agent.rs`, `crates/sarv-quote/tests/{cheques,payments_trust,sales_drafts,settings,desktop_bridge}.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote && cargo test -p sarv-desktop --bin sarv-desktop`
 

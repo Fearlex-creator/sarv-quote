@@ -261,3 +261,161 @@ fn day_month_year_raw_draft_and_quote_conversion_keep_explicit_date_semantics() 
     let order = s.sales_order_from_draft(&id, 1, "dmy-quote-key", "tester").unwrap();
     assert_eq!(order.document_date, s.quotes.last().unwrap().quote_date);
 }
+
+#[test]
+fn issued_quotation_number_cannot_be_changed_by_the_client() {
+    use sarv_quote::desktop::{dispatch, seed_fixture};
+    use serde_json::json;
+
+    let d = tempfile::tempdir().unwrap();
+    seed_fixture(d.path()).unwrap();
+    let s = Store::open(d.path()).unwrap();
+    let c = s.state.accounting.companies[0].id.clone();
+    let p = s.state.accounting.periods[0].id.clone();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    let next_number = s.state.settings.next_number;
+    drop(s);
+
+    let draft = json!({"id":"q-imm","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"q-ref","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"imm","quotation":null,"lines":[{"id":"q-line","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    let rev = dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+
+    let mut tampered = dispatch(d.path(), "workspace", json!({"company_id": c})).unwrap()["drafts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|x| x["id"] == "q-imm")
+        .unwrap()
+        .clone();
+    tampered["revision"] = rev.clone();
+    tampered["quote_issue"]["number"] = json!("FORGED-999");
+    dispatch(d.path(), "draft_save", json!({"draft":tampered,"expected_revision":rev})).unwrap();
+
+    let s = Store::open(d.path()).unwrap();
+    let stored = s.state.sales_drafts.iter().find(|x| x.id == "q-imm").unwrap();
+    assert_eq!(stored.quote_issue.as_ref().unwrap().number, format!("Q-{next_number}"));
+}
+
+#[test]
+fn stale_settings_save_cannot_move_the_counter_back() {
+    use sarv_quote::desktop::{dispatch, seed_fixture};
+    use serde_json::json;
+
+    let d = tempfile::tempdir().unwrap();
+    seed_fixture(d.path()).unwrap();
+    let s = Store::open(d.path()).unwrap();
+    let c = s.state.accounting.companies[0].id.clone();
+    let p = s.state.accounting.periods[0].id.clone();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    let initial_next = s.state.settings.next_number;
+    drop(s);
+
+    let stale_settings = dispatch(d.path(), "workspace", json!({"company_id": c})).unwrap()["settings"].clone();
+    assert_eq!(stale_settings["next_number"], json!(initial_next.to_string()));
+
+    let draft1 = json!({"id":"q-1","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"q-1","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"q1","quotation":null,"lines":[{"id":"l1","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft1,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+    assert_eq!(Store::open(d.path()).unwrap().state.settings.next_number, initial_next + 1);
+
+    dispatch(d.path(), "settings", stale_settings).unwrap();
+    assert_eq!(Store::open(d.path()).unwrap().state.settings.next_number, initial_next + 1);
+
+    let draft2 = json!({"id":"q-2","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"q-2","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"q2","quotation":null,"lines":[{"id":"l2","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft2,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+    let s = Store::open(d.path()).unwrap();
+    let n1 = &s
+        .state
+        .sales_drafts
+        .iter()
+        .find(|x| x.id == "q-1")
+        .unwrap()
+        .quote_issue
+        .as_ref()
+        .unwrap()
+        .number;
+    let n2 = &s
+        .state
+        .sales_drafts
+        .iter()
+        .find(|x| x.id == "q-2")
+        .unwrap()
+        .quote_issue
+        .as_ref()
+        .unwrap()
+        .number;
+    assert_ne!(n1, n2);
+    assert_eq!(n2, &format!("Q-{}", initial_next + 1));
+}
+
+#[test]
+fn duplicate_quotation_number_is_skipped_when_issuing() {
+    use sarv_quote::desktop::{dispatch, seed_fixture};
+    use serde_json::json;
+
+    let d = tempfile::tempdir().unwrap();
+    seed_fixture(d.path()).unwrap();
+    let mut s = Store::open(d.path()).unwrap();
+    let c = s.state.accounting.companies[0].id.clone();
+    let p = s.state.accounting.periods[0].id.clone();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    s.change(|state| {
+        state.settings.next_number = 1;
+        Ok(())
+    })
+    .unwrap();
+    drop(s);
+
+    // Pre-issue Q-1 on draft-a.
+    let draft_a = json!({"id":"q-a","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"qa","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"qa","quotation":null,"lines":[{"id":"la","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft_a,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+
+    // Force next_number back to 1 directly in state to simulate a collision.
+    let mut s = Store::open(d.path()).unwrap();
+    s.change(|state| {
+        state.settings.next_number = 1;
+        Ok(())
+    })
+    .unwrap();
+    drop(s);
+
+    let draft_b = json!({"id":"q-b","revision":"0","company_id":c,"period_id":p,"setup_id":setup,"customer_id":"CU-A","reference":"qb","document_date":"2026-10-08","financial_date":"2026-10-08","date_display":"Iso","display_unit":"Rial","document_discount":"0","supplied_total":"30","reason":"qb","quotation":null,"lines":[{"id":"lb","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"3","unit_price":"10","line_discount":"0","price_reference":"Manual","price_date":"2026-10-08","override_reason":""}]});
+    dispatch(
+        d.path(),
+        "draft_save",
+        json!({"draft":draft_b,"expected_revision":null,"issue_quotation":true}),
+    )
+    .unwrap();
+
+    let s = Store::open(d.path()).unwrap();
+    let nb = &s
+        .state
+        .sales_drafts
+        .iter()
+        .find(|x| x.id == "q-b")
+        .unwrap()
+        .quote_issue
+        .as_ref()
+        .unwrap()
+        .number;
+    assert_eq!(nb, "Q-2");
+    assert_eq!(s.state.settings.next_number, 3);
+}

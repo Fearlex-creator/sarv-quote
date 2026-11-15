@@ -26,12 +26,12 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| [004](004-dialog-open-and-request-keys.md) | One `open_*` per dialog: reset fields, mint the request key | P1 | M | — | TODO |
+| [004](004-dialog-open-and-request-keys.md) | One `open_*` per dialog: reset fields, mint the request key | P1 | M | — | DONE |
 | [005](005-money-input.md) | Strict money parser; money field shows its unit | P1 | M | 004 | TODO |
 | [006](006-desktop-correctness-fixes.md) | Six small confirmed desktop bugs | P1 | M | — | TODO |
 | [007](007-backup-recovery.md) | Restore a backup even when the books fail to load | P1 | M | 003 | TODO |
 | [008](008-data-dir-and-file-safety.md) | Correct data folder per OS; private permissions; portable writes | P1 | M | 003 | TODO |
-| [010](010-engine-idempotency-and-panics.md) | Strict retries, unique quotation numbers, no payload panics | P2 | M | — | TODO |
+| [010](010-engine-idempotency-and-panics.md) | Strict retries, unique quotation numbers, no payload panics | P2 | M | — | DONE |
 | [009](009-agent-access-hardening.md) | Agent access decided by the app, not an editable file | P2 | S–M | — | TODO |
 
 ### Phase 2 — UI system
