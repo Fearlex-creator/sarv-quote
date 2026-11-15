@@ -147,7 +147,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo test -p sarv-quote`
 
 ### Plan 022: Add company and switcher
-- [ ] **P22-T01**: Add `adding_company` mode to `setup.rs` with Cancel, "Add company" in `settings.rs` (always show company list), sidebar `org-selector` company-switch dialog with dirty guard, add 3 tests, update `plans/README.md`.
+- [x] **P22-T01**: Add `adding_company` mode to `setup.rs` with Cancel, "Add company" in `settings.rs` (always show company list), sidebar `org-selector` company-switch dialog with dirty guard, add 3 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/ui/views/{setup,settings}.rs`, `crates/sarv-desktop/src/ui/{shell.rs,mod.rs}`, `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

@@ -193,6 +193,7 @@ pub struct State {
     pub palette_cursor: usize,
     pub palette_last_query: String,
     pub period_switch_open: bool,
+    pub company_switch_open: bool,
     pub confirm: Option<crate::ui::confirm::Confirm>,
     pub detail: crate::ui::detail::DetailState,
     pub operation: crate::ui::operation_dialog::OperationState,
@@ -238,6 +239,7 @@ impl State {
             palette_cursor: 0,
             palette_last_query: String::new(),
             period_switch_open: false,
+            company_switch_open: false,
             confirm: None,
             detail: Default::default(),
             operation: Default::default(),
@@ -445,6 +447,10 @@ impl State {
             self.period_switch_open = false;
             return true;
         }
+        if self.company_switch_open {
+            self.company_switch_open = false;
+            return true;
+        }
         if self.accounting.period_add_open {
             self.accounting.period_add_open = false;
             return true;
@@ -628,6 +634,7 @@ impl State {
         self.sheets.dirty = false;
         self.pos = views::pos::PosState::default();
         self.refresh();
+        self.apply_settings();
     }
 
     /// Fill company/period and the usual procurement context fields when a screen omits them.

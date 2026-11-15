@@ -84,7 +84,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
         let mut company = SidebarRow::new(title)
             .icon(&icons::BUILDING)
             .height(40.0)
-            .on_select(|st: &mut State, _| st.nav(Page::Settings));
+            .on_select(|st: &mut State, _| st.company_switch_open = true);
         if !sub.is_empty() {
             company = company.subtitle(sub);
         }
@@ -496,6 +496,54 @@ pub fn mount_toasts(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         region = region.toast(toast);
     }
     layer.push(region.build(&ui.k));
+}
+
+pub fn mount_company_switcher(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    if !s.company_switch_open {
+        return;
+    }
+    let companies = s.books.companies();
+    let mut list = col().w_full().gap(6.0);
+    for (id, name) in companies {
+        let active = id == s.books.company_id;
+        let label = if name.is_empty() { ui.t("Your business") } else { name };
+        let display = if active { format!("{label}  ({})", ui.t("Current")) } else { label };
+        let target_id = id.clone();
+        let row_btn = Button::new(display)
+            .variant(if active { ButtonVariant::Submit } else { ButtonVariant::Outline })
+            .control_size(ControlSize::Regular)
+            .on_press(move |st: &mut State| {
+                st.company_switch_open = false;
+                if target_id != st.books.company_id {
+                    st.select_company(&target_id);
+                }
+            })
+            .build(&ui.k)
+            .key(format!("switch-company-{id}"))
+            .w_full();
+        list = list.child(row_btn);
+    }
+
+    let add_btn = Button::new(ui.t("Add company"))
+        .variant(ButtonVariant::Outline)
+        .control_size(ControlSize::Regular)
+        .on_press(crate::ui::views::setup::start_add_company)
+        .build(&ui.k)
+        .key("switch-add-company");
+
+    let mut portals = Vec::new();
+    ui.dialog_described(
+        layer,
+        &mut portals,
+        "company-switch",
+        &ui.t("Switch company"),
+        &ui.t("Choose a business"),
+        true,
+        DIALOG_SM,
+        list,
+        vec![add_btn, ui.btn(Btn::Ghost, "Close", None, |st| st.company_switch_open = false)],
+        |st| st.company_switch_open = false,
+    );
 }
 
 pub fn mount_period_switcher(s: &State, ui: &Ui, layer: &mut Vec<El>) {

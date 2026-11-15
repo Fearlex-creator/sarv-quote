@@ -178,3 +178,69 @@ fn test_language_switch_keeps_digit_choice() {
     assert_eq!(again.lang(), crate::i18n::Lang::Fa);
     assert!(!again.fmt.persian_digits);
 }
+
+#[test]
+fn test_add_second_company_from_settings() {
+    let mut rt = make_test_runtime();
+    let first_id = rt.state.books.company_id.clone();
+
+    click(&mut rt, Page::Settings.key());
+    assert!(rt.find("company-switch").is_some(), "company list must show even with one company");
+    click(&mut rt, "btn-Add company");
+    assert!(rt.find("setup-screen").is_some(), "{}", blow(&rt, "setup-screen"));
+    assert!(rt.find("sidebar-search").is_none(), "sidebar must hide while adding company");
+    assert!(rt.find("btn-Cancel").is_some());
+
+    type_into(&mut rt, "setup-name", "Second Business");
+    click(&mut rt, "btn-Create a company and fiscal period");
+    assert!(rt.find("setup-opening").is_some(), "{}", blow(&rt, "setup-opening"));
+
+    click(&mut rt, "btn-Start fresh");
+    assert_eq!(rt.state.books.companies().len(), 2);
+    assert_ne!(rt.state.books.company_id, first_id);
+    assert!(rt.state.books.initialized());
+    assert!(!rt.state.setup.adding_company);
+    assert!(rt.find("sidebar-search").is_some(), "sidebar must return after opening");
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_switch_company_from_sidebar() {
+    let mut rt = make_test_runtime();
+    let first_id = rt.state.books.company_id.clone();
+    let first_sales = count(&rt, "sales_count");
+
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "btn-Add company");
+    type_into(&mut rt, "setup-name", "Branch Two");
+    click(&mut rt, "btn-Create a company and fiscal period");
+    click(&mut rt, "btn-Start fresh");
+    let second_id = rt.state.books.company_id.clone();
+    assert_ne!(second_id, first_id);
+    assert_eq!(count(&rt, "sales_count"), 0);
+
+    click(&mut rt, "org-selector");
+    assert!(rt.find("company-switch-dialog").is_some(), "{}", blow(&rt, "company-switch-dialog"));
+    click(&mut rt, &format!("switch-company-{first_id}"));
+    assert!(!rt.state.company_switch_open);
+    assert_eq!(rt.state.books.company_id, first_id);
+    assert_eq!(count(&rt, "sales_count"), first_sales);
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_cancel_adding_company_returns_to_books() {
+    let mut rt = make_test_runtime();
+    let first_id = rt.state.books.company_id.clone();
+
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "btn-Add company");
+    assert!(rt.find("setup-screen").is_some());
+    assert!(rt.find("sidebar-search").is_none());
+
+    click(&mut rt, "btn-Cancel");
+    assert!(!rt.state.setup.adding_company);
+    assert_eq!(rt.state.books.company_id, first_id);
+    assert!(rt.find("sidebar-search").is_some(), "sidebar must return on cancel");
+    assert_no_danger(&rt);
+}

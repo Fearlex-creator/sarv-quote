@@ -26,7 +26,7 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
 
     let content = if s.books.load_failed() {
         views::recovery::view(s, cx, &ui, &mut layer)
-    } else if !s.books.has_company() || !s.books.initialized() {
+    } else if !s.books.has_company() || !s.books.initialized() || s.setup.adding_company {
         views::setup::view(s, cx, &ui, &mut layer)
     } else {
         match s.page {
@@ -51,10 +51,11 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     views::accounting::mount_ledger(s, &ui, &mut layer);
     views::accounting::mount_period_add_dialog(s, &ui, &mut layer);
     shell::mount_period_switcher(s, &ui, &mut layer);
+    shell::mount_company_switcher(s, &ui, &mut layer);
     shell::mount_palette(s, &ui, &mut layer);
     shell::mount_toasts(s, &ui, &mut layer);
 
-    let ready = !s.books.load_failed() && s.books.has_company() && s.books.initialized();
+    let ready = !s.books.load_failed() && s.books.has_company() && s.books.initialized() && !s.setup.adding_company;
     let window = if ready {
         shell::app_shell(s, &ui, cx, content)
     } else {

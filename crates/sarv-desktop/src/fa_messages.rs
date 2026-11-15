@@ -234,6 +234,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Cheque to endorse", "چک برای خرج‌کردن"),
     ("Cheque updated", "چک به‌روز شد"),
     ("Cheques", "چک‌ها"),
+    ("Choose a business", "یک کسب‌وکار انتخاب کنید"),
     ("Choose a customer for a sale on account.", "برای فروش نسیه یک مشتری انتخاب کنید."),
     ("Choose date", "انتخاب تاریخ"),
     ("Choose how to initialize your ledger", "روش شروع مانده‌های دفتر کل را انتخاب کنید"),
@@ -263,6 +264,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Comfortable", "معمولی"),
     ("Command menu", "فهرست فرمان‌ها"),
     ("Compact", "فشرده"),
+    ("Companies", "کسب‌وکارها"),
     ("Company", "کسب‌وکار"),
     ("Company / organization", "شرکت / سازمان"),
     ("Company and fiscal period created", "کسب‌وکار و دورهٔ مالی ایجاد شد"),
@@ -1393,6 +1395,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Supplier payment method", "روش پرداخت به تأمین‌کننده"),
     ("Suppliers", "تأمین‌کنندگان"),
     ("Suppliers for this product", "تأمین‌کنندگان این کالا"),
+    ("Switch company", "تغییر کسب‌وکار"),
     (
         "Switch seamlessly between Persian (Jalali) and English (Gregorian) with exact integer Rial/Toman math.",
         "پشتیبانی کامل از تقویم خورشیدی و میلادی همراه با محاسبات دقیق ریال و تومان.",

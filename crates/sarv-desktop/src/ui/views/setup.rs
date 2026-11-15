@@ -79,13 +79,39 @@ fn iso_or_parsed(s: &State, raw: &str, fallback: &str) -> Result<String, String>
 #[derive(Default)]
 pub struct SetupState {
     pub step: usize,
+    pub adding_company: bool,
+    pub previous_company_id: String,
+}
+
+/// Enter setup in "add another company" mode, skipping the welcome step.
+pub fn start_add_company(st: &mut State) {
+    let previous_company_id = st.books.company_id.clone();
+    st.forms.clear_prefix("setup-");
+    st.forms.clear_prefix("opening-");
+    st.setup = SetupState {
+        step: 1,
+        adding_company: true,
+        previous_company_id,
+    };
+    st.company_switch_open = false;
+}
+
+fn cancel_adding(st: &mut State) {
+    let prev = std::mem::take(&mut st.setup.previous_company_id);
+    st.setup.adding_company = false;
+    st.setup.step = 0;
+    st.forms.clear_prefix("setup-");
+    st.forms.clear_prefix("opening-");
+    if !prev.is_empty() && prev != st.books.company_id {
+        st.select_company(&prev);
+    }
 }
 
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El {
     if s.books.has_company() && !s.books.initialized() {
         return opening_step(s, ui);
     }
-    if s.setup.step == 0 {
+    if s.setup.step == 0 && !s.setup.adding_company {
         return welcome(s, ui);
     }
 
@@ -160,13 +186,23 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         }
     });
 
-    let hero = col().w_full().max_w(560.0).gap(16.0).child(form).child(
-        row()
-            .w_full()
-            .gap(8.0)
-            .child(ui.btn(Btn::Ghost, "Back", None, |st| st.setup.step = 0))
-            .child(create),
-    );
+    let mut hero = col().w_full().max_w(560.0).gap(16.0);
+    if s.setup.adding_company {
+        hero = hero.child(
+            row()
+                .w_full()
+                .center_y()
+                .justify_between()
+                .child(ui.title(ui.t("Add company")))
+                .child(ui.btn(Btn::Ghost, "Cancel", None, cancel_adding)),
+        );
+    }
+    let mut actions = row().w_full().gap(8.0);
+    if !s.setup.adding_company {
+        actions = actions.child(ui.btn(Btn::Ghost, "Back", None, |st| st.setup.step = 0));
+    }
+    actions = actions.child(create);
+    hero = hero.child(form).child(actions);
 
     stage("setup-screen", hero)
 }
@@ -290,10 +326,24 @@ fn opening_step(s: &State, ui: &Ui) -> El {
                 post_opening(st, cash, bank, &source)
             };
             if res.is_ok() {
+                st.setup.adding_company = false;
+                st.setup.previous_company_id.clear();
+                st.setup.step = 0;
                 st.nav(Page::Overview);
             }
         }))
         .build(&ui.k);
+
+    let header = if s.setup.adding_company {
+        row()
+            .w_full()
+            .center_y()
+            .justify_between()
+            .child(ui.title(ui.t("Opening balances")))
+            .child(ui.btn(Btn::Ghost, "Cancel", None, cancel_adding))
+    } else {
+        row().w_full().child(ui.title(ui.t("Opening balances")))
+    };
 
     stage(
         "setup-opening",
@@ -301,7 +351,7 @@ fn opening_step(s: &State, ui: &Ui) -> El {
             .w_full()
             .max_w(480.0)
             .gap(16.0)
-            .child(ui.title(ui.t("Opening balances")))
+            .child(header)
             .child(ui.muted(ui.t("Start fresh or bring in your existing balances.")))
             .child(card)
             .child(ui.muted(ui.t("Works offline · Saved on this device"))),

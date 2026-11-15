@@ -207,20 +207,24 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             column = column.child(ui.muted(s.settings.law_notice.clone()).key("law-notice"));
         }
         let companies = s.books.companies();
-        if companies.len() > 1 {
-            let mut switcher = row().w_full().gap(8.0).key("company-switch");
-            for (id, name) in companies {
-                let current = id == s.books.company_id;
-                let label = name.clone();
-                switcher = switcher.child(ui.button(
-                    if current { Btn::Primary } else { Btn::Glass },
-                    &format!("company-{id}"),
-                    &label,
-                    None,
-                    move |st| st.select_company(&id),
-                ));
-            }
-            column = column.child(switcher);
+        if !companies.is_empty() {
+            let rows: Vec<El> = companies
+                .into_iter()
+                .map(|(id, name)| {
+                    let current = id == s.books.company_id;
+                    let label = if name.is_empty() { ui.t("Your business") } else { name };
+                    let control = if current {
+                        ui.badge(Tone::Info, ui.t("Current"))
+                    } else {
+                        let target = id.clone();
+                        ui.button(Btn::Glass, &format!("company-{id}"), &ui.t("Open"), None, move |st| {
+                            st.select_company(&target);
+                        })
+                    };
+                    setting_row(ui, &format!("company-row-{id}"), &label, "", control)
+                })
+                .collect();
+            column = column.child(ui.section("companies", &ui.t("Companies"), ui.panel_rows("company-switch", rows)));
         }
         column
     };
@@ -237,6 +241,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Settings"),
         &ui.t("Appearance, language, and business defaults"),
         vec![
+            ui.btn(
+                Btn::Glass,
+                "Add company",
+                Some(&icons::PLUS),
+                crate::ui::views::setup::start_add_company,
+            ),
             ui.btn(Btn::Glass, "Your business", None, open_business),
             ui.btn(Btn::Glass, "Restore backup", None, open_restore),
             ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), |st| {
