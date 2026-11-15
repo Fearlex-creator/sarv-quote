@@ -27,3 +27,8 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - Added `test_engine_sees_writes_from_another_store` and `test_integrity_status_survives_between_calls` in `main.rs`; marked Plan 003 `DONE`.
 - Verified: `cargo test -p sarv-desktop --bin sarv-desktop` (37 passed), `cargo test -p sarv-quote --test storage_hardening --test process_recovery --test agent_access` (32 passed).
 
+## P33-T01 — Move desktop test suite out of main.rs + harness helpers
+- Moved `mod tests` from `crates/sarv-desktop/src/main.rs` (now 122 lines) into `crates/sarv-desktop/src/tests/` (`mod.rs`, `harness.rs`, and 11 area files).
+- Added harness helpers `type_into`, `danger_toasts`, `assert_no_danger`, `count`, `trial_balance_is_balanced`, `books_validate`.
+- Verified: `cargo fmt --all -- --check`, `cargo clippy --quiet --workspace --all-targets -- -D warnings`, `cargo test -p sarv-desktop --bin sarv-desktop` (37 passed).
+

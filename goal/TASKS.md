@@ -25,7 +25,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo test -p sarv-quote --test storage_hardening --test process_recovery --test agent_access`
 
 ### Plan 033: Desktop test coverage & suite organization
-- [ ] **P33-T01**: Move `mod tests` out of `main.rs` into `crates/sarv-desktop/src/tests/{mod.rs,harness.rs,shell.rs,sales.rs,purchases.rs,payments.rs,accounting.rs,inventory.rs,settings.rs,setup.rs,sheets.rs,pos.rs,walkthrough.rs}` with harness helpers (`type_into`, `danger_toasts`, `assert_no_danger`, `count`, `trial_balance_is_balanced`, `books_validate`).
+- [x] **P33-T01**: Move `mod tests` out of `main.rs` into `crates/sarv-desktop/src/tests/{mod.rs,harness.rs,shell.rs,sales.rs,purchases.rs,payments.rs,accounting.rs,inventory.rs,settings.rs,setup.rs,sheets.rs,pos.rs,walkthrough.rs}` with harness helpers (`type_into`, `danger_toasts`, `assert_no_danger`, `count`, `trial_balance_is_balanced`, `books_validate`).
   - Files: `crates/sarv-desktop/src/main.rs`, `crates/sarv-desktop/src/test_helper.rs`, `crates/sarv-desktop/src/tests/*.rs`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && test $(wc -l < crates/sarv-desktop/src/main.rs) -lt 140`
 - [ ] **P33-T02**: Add 15 characterization tests in `crates/sarv-desktop/src/tests/` (`banking.rs` etc.), add engine tests `crates/sarv-quote/tests/{sheets_bridge,contact_profile}.rs`, check `cashbook`/`views` usage, document ignored migration tests, update `plans/README.md`.
