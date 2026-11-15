@@ -570,3 +570,134 @@ fn test_sale_total_shows_amount_in_words_in_persian() {
     assert_no_danger(&rt_en);
     assert_no_danger(&rt);
 }
+
+#[test]
+fn test_sale_retry_after_failed_payment_does_not_duplicate_the_order() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    assert!(rt.state.sales.modal_open);
+
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.pay_method = 0; // Cash -> triggers settle_invoice
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "0".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "0");
+
+    let orders_before = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .filter(|r| r["command"].get("Order").is_some())
+        .count();
+    let fulfills_before = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .filter(|r| r["command"].get("Fulfill").is_some())
+        .count();
+    let payments_before = rt.state.books.list("payments").len();
+
+    // First attempt: order and fulfill succeed, but settle_invoice fails because owed == 0.
+    click(&mut rt, "btn-Complete sale");
+    assert!(rt.state.sales.modal_open, "modal must stay open when settlement fails");
+    assert!(rt.state.sales.posted_record_id.is_some(), "order progress must be recorded");
+    assert!(rt.state.sales.fulfilled, "fulfill progress must be recorded");
+    assert!(rt.state.sales.invoice_id.is_some(), "invoice_id must be recorded");
+
+    let orders_mid = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .filter(|r| r["command"].get("Order").is_some())
+        .count();
+    let fulfills_mid = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .filter(|r| r["command"].get("Fulfill").is_some())
+        .count();
+    assert_eq!(orders_mid, orders_before + 1, "exactly one order created");
+    assert_eq!(fulfills_mid, fulfills_before + 1, "exactly one invoice created");
+    assert_eq!(rt.state.books.list("payments").len(), payments_before);
+
+    // Fix payment method to On account and retry: must resume without duplicating order or invoice.
+    rt.state.sales.pay_method = 2;
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "retry complete sale"));
+
+    let orders_after = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .filter(|r| r["command"].get("Order").is_some())
+        .count();
+    let fulfills_after = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .filter(|r| r["command"].get("Fulfill").is_some())
+        .count();
+    assert_eq!(orders_after, orders_before + 1, "retry must not duplicate the order");
+    assert_eq!(fulfills_after, fulfills_before + 1, "retry must not duplicate the invoice");
+    assert_eq!(rt.state.books.list("payments").len(), payments_before);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_sale_reference_is_stable_across_attempts() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    assert!(rt.state.sales.modal_open);
+
+    let initial_order_ref = rt.state.sales.order_ref.clone();
+    let initial_invoice_ref = rt.state.sales.invoice_ref.clone();
+    assert!(!initial_order_ref.is_empty());
+    assert!(!initial_invoice_ref.is_empty());
+
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.pay_method = 0;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "50000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "50000");
+    type_into(&mut rt, "sale-received", "not-a-number");
+
+    // Failed attempt must not mutate the dialog's order_ref or invoice_ref.
+    click(&mut rt, "btn-Complete sale");
+    assert!(rt.state.sales.modal_open);
+    assert_eq!(rt.state.sales.order_ref, initial_order_ref);
+    assert_eq!(rt.state.sales.invoice_ref, initial_invoice_ref);
+
+    // Fix received amount and retry: posted documents must carry the exact initial references.
+    type_into(&mut rt, "sale-received", "50000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "stable ref sale"));
+
+    let sales = rt.state.books.list("sales");
+    assert!(
+        sales
+            .iter()
+            .any(|r| data::s(&r["command"]["Order"]["reference"]) == initial_order_ref),
+        "posted order must use initial order_ref {initial_order_ref}"
+    );
+    assert!(
+        sales
+            .iter()
+            .any(|r| data::s(&r["command"]["Fulfill"]["invoice_reference"]) == initial_invoice_ref),
+        "posted fulfill must use initial invoice_ref {initial_invoice_ref}"
+    );
+    books_validate(&rt);
+}

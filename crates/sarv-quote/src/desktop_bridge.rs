@@ -1720,7 +1720,15 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             if action.ends_with("preview") {
                 json!(store.state.accounting.preview_sales(&cmd)?)
             } else {
-                json!(store.change(|s| s.accounting.post_sales_command(cmd))?)
+                let invoice_id = match &cmd {
+                    SalesCommand::Fulfill(f) => Some(f.invoice_id.clone()),
+                    _ => None,
+                };
+                let mut out = json!(store.change(|s| s.accounting.post_sales_command(cmd))?);
+                if let (Some(id), Some(obj)) = (invoice_id, out.as_object_mut()) {
+                    obj.insert("invoice_id".to_owned(), json!(id));
+                }
+                out
             }
         }
         "payment_options" => {

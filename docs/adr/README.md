@@ -12,4 +12,8 @@ The older register in `decisions.md` stays the record for earlier product decisi
 | [0005](0005-cheque-lifecycle-and-ledger-integration.md) | Cheque lifecycle is a pure state machine integrated with the ledger through an additive register |
 | [0006](0006-licence-unchanged.md) | Licence is AGPL-3.0-only for the core (owner decision); Apache-2.0 for future SDKs |
 | [0007](0007-save-cost-and-incremental-validation.md) | Incremental validation on save, full validation at safety points — implemented |
+| [0008](0008-engine-owned-numbering.md) | Proposed: engine-owned gap-free document numbering, `sale_quick_*`, and `opening_simple_*` |
+| [0009](0009-year-end-closing.md) | Proposed: explicit year-end closing journal into `RetainedEarnings` and closing-aware P&L |
+| [0010](0010-vat-on-documents.md) | Proposed: user-entered VAT on sales/purchases with integer-rial rounding and `VatPayable`/`VatReceivable` |
+| [0011](0011-bank-reconciliation.md) | Proposed: additive bank reconciliation register over `(journal_id, line_index)` and CSV import |
 | [0012](0012-rune-desktop.md) | Native Rune desktop (`crates/sarv-desktop`) calling `sarv_quote::desktop::dispatch` in-process |

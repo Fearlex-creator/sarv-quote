@@ -233,3 +233,18 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
   - `cargo build --workspace --all-targets` -> exit 0
   - `cargo test -p sarv-quote --features pdf-export` -> exit 0
   - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`138 passed; 0 failed`)
+
+## P26-T01, P27-T01, P28-T01, P29-T01: Phase 5 Design Spikes & First Slice (Plans 026–029)
+- **Changed**:
+  - **P26-T01 (Plan 026)**: Created `docs/adr/0008-engine-owned-numbering.md` (status: proposed; 8 topics + 6 open questions), updated `fulfill_post` in `crates/sarv-quote/src/desktop_bridge.rs` to return `invoice_id`, added `fulfill_post_returns_invoice_id_appearing_in_payment_options`, updated `crates/sarv-desktop/src/ui/views/{sales,pos}.rs` to use returned `invoice_id` and resume half-posted sales/POS charges with stable references, and added `test_sale_retry_after_failed_payment_does_not_duplicate_the_order` + `test_sale_reference_is_stable_across_attempts`.
+  - **P27-T01 (Plan 027)**: Created `docs/adr/0009-year-end-closing.md` (status: proposed) and `crates/sarv-quote/tests/year_end_prototype.rs` proving cross-year carry-forward and documenting the P&L closing gap (`// GAP:`) + `control = true` role constraint.
+  - **P28-T01 (Plan 028)**: Created `docs/adr/0010-vat-on-documents.md` (status: proposed; user-entered rates, ADR-0004 compliant, posting matrix + migration plan) and `crates/sarv-quote/tests/vat_prototype.rs` (15 golden cases + overflow guards).
+  - **P29-T01 (Plan 029)**: Created `docs/adr/0011-bank-reconciliation.md` (status: proposed; additive register over `(journal_id, line_index)`) and `crates/sarv-quote/tests/reconciliation_prototype.rs` (3 scenarios + `banking` vs `ledger` agreement check).
+  - Updated `docs/adr/README.md` (indexed ADRs 0008–0011) and `plans/README.md` (marked Plans 026–029 as `DONE`).
+- **Checks**:
+  - `cargo test -p sarv-quote --test year_end_prototype` -> exit 0 (`1 passed`)
+  - `cargo test -p sarv-quote --test vat_prototype` -> exit 0 (`2 passed`)
+  - `cargo test -p sarv-quote --test reconciliation_prototype` -> exit 0 (`1 passed`)
+  - `cargo test -p sarv-quote` -> exit 0
+  - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`140 passed; 0 failed`)
+  - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0

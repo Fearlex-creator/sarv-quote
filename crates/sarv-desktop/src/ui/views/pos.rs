@@ -7,7 +7,7 @@ use rune_kit::ComboboxState;
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, Ui};
 use crate::ui::pickers;
-use crate::ui::views::sales::{SaleLine, Ticket, post_ticket};
+use crate::ui::views::sales::{SaleLine, SaleProgress, Ticket, next_invoice_ref, next_order_ref, post_ticket};
 
 pub struct PosLine {
     pub item_id: String,
@@ -25,6 +25,11 @@ pub struct PosState {
     pub posting: bool,
     pub post_key: String,
     pub draft_id: String,
+    pub order_ref: String,
+    pub invoice_ref: String,
+    pub posted_record_id: Option<String>,
+    pub fulfilled: bool,
+    pub invoice_id: Option<String>,
 }
 
 fn items(s: &State) -> Vec<serde_json::Value> {
@@ -72,6 +77,8 @@ fn ensure_keys(st: &mut State) {
     let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
     st.pos.post_key = format!("pos-{stamp}");
     st.pos.draft_id = format!("draft-{stamp}");
+    st.pos.order_ref = next_order_ref(st, &st.pos.post_key);
+    st.pos.invoice_ref = next_invoice_ref(st, &st.pos.post_key);
 }
 
 fn add_item(st: &mut State, item_id: String) {
@@ -117,6 +124,11 @@ fn step(st: &mut State, item_id: &str, delta: i64) {
     if st.pos.lines.is_empty() {
         st.pos.post_key.clear();
         st.pos.draft_id.clear();
+        st.pos.order_ref.clear();
+        st.pos.invoice_ref.clear();
+        st.pos.posted_record_id = None;
+        st.pos.fulfilled = false;
+        st.pos.invoice_id = None;
     }
 }
 
@@ -126,6 +138,11 @@ fn clear_ticket(st: &mut State) {
     st.pos.customer_combo = ComboboxState::default();
     st.pos.post_key.clear();
     st.pos.draft_id.clear();
+    st.pos.order_ref.clear();
+    st.pos.invoice_ref.clear();
+    st.pos.posted_record_id = None;
+    st.pos.fulfilled = false;
+    st.pos.invoice_id = None;
     st.pos.posting = false;
     st.forms.set("pos-received", "");
 }
@@ -180,9 +197,22 @@ fn charge(st: &mut State, method: usize) {
         received: String::new(),
         date: crate::data::today(),
     };
-    if post_ticket(st, &ticket) {
+    let mut progress = SaleProgress {
+        order_ref: st.pos.order_ref.clone(),
+        invoice_ref: st.pos.invoice_ref.clone(),
+        posted_record_id: st.pos.posted_record_id.clone(),
+        fulfilled: st.pos.fulfilled,
+        invoice_id: st.pos.invoice_id.clone(),
+    };
+    if post_ticket(st, &ticket, &mut progress) {
         clear_ticket(st);
         st.toast(Tone::Success, st.fmt.t("Posted"));
+    } else {
+        st.pos.order_ref = progress.order_ref;
+        st.pos.invoice_ref = progress.invoice_ref;
+        st.pos.posted_record_id = progress.posted_record_id;
+        st.pos.fulfilled = progress.fulfilled;
+        st.pos.invoice_id = progress.invoice_id;
     }
     st.pos.posting = false;
 }

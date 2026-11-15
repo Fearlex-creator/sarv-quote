@@ -49,6 +49,11 @@ pub struct SalesState {
     /// Stable across a double-click of Complete sale. A new dialog mints a new key.
     pub post_key: String,
     pub draft_id: String,
+    pub order_ref: String,
+    pub invoice_ref: String,
+    pub posted_record_id: Option<String>,
+    pub fulfilled: bool,
+    pub invoice_id: Option<String>,
     pub editing_revision: Option<String>,
     pub posting: bool,
     pub selected: String,
@@ -70,6 +75,11 @@ impl SalesState {
         let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
         self.post_key = format!("sale-{stamp}");
         self.draft_id = format!("draft-{stamp}");
+        self.order_ref.clear();
+        self.invoice_ref.clear();
+        self.posted_record_id = None;
+        self.fulfilled = false;
+        self.invoice_id = None;
         self.editing_revision = None;
         self.posting = false;
     }
@@ -99,6 +109,11 @@ impl SalesState {
         self.creating_item_for_line = None;
         self.new_item_name.clear();
         self.draft_id = crate::data::s(&draft["id"]);
+        self.order_ref.clear();
+        self.invoice_ref.clear();
+        self.posted_record_id = None;
+        self.fulfilled = false;
+        self.invoice_id = None;
         self.editing_revision = Some(crate::data::s(&draft["revision"]));
         self.posting = false;
     }
@@ -116,6 +131,8 @@ pub fn open_sale(st: &mut State) {
     st.forms.clear_prefix("sale-");
     st.sales.post_key = st.mint_key("sale");
     st.sales.draft_id = st.mint_key("draft");
+    st.sales.order_ref = next_order_ref(st, &st.sales.post_key);
+    st.sales.invoice_ref = next_invoice_ref(st, &st.sales.post_key);
 }
 
 fn is_dirty(st: &State) -> bool {
@@ -193,13 +210,23 @@ fn ref_tail(post_key: &str) -> String {
     post_key.chars().rev().take(4).collect::<String>().chars().rev().collect()
 }
 
-fn next_order_ref(s: &State, post_key: &str) -> String {
+pub(crate) fn next_order_ref(s: &State, post_key: &str) -> String {
     format!("ORD-{}-{}", s.books.count("sales_count") + 1, ref_tail(post_key))
 }
 
-fn next_invoice_ref(s: &State, post_key: &str) -> String {
+pub(crate) fn next_invoice_ref(s: &State, post_key: &str) -> String {
     let prefix = s.books.workspace["business_profile"]["invoice_prefix"].as_str().unwrap_or("INV");
     format!("{prefix}-{}-{}", s.books.count("sales_count") + 1, ref_tail(post_key))
+}
+
+/// Step-level progress and stable references for a multi-step counter sale.
+#[derive(Default, Clone)]
+pub struct SaleProgress {
+    pub order_ref: String,
+    pub invoice_ref: String,
+    pub posted_record_id: Option<String>,
+    pub fulfilled: bool,
+    pub invoice_id: Option<String>,
 }
 
 /// One counter sale: preview, save, deliver, invoice, and optionally take the money.
@@ -215,7 +242,7 @@ pub struct Ticket {
     pub date: String,
 }
 
-pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
+pub fn post_ticket(st: &mut State, ticket: &Ticket, progress: &mut SaleProgress) -> bool {
     let filled: Vec<_> = ticket.lines.iter().filter(|l| !l.item_id.is_empty()).cloned().collect();
     if filled.is_empty() {
         st.toast(Tone::Danger, st.fmt.t("Add at least one product."));
@@ -256,68 +283,96 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
     }
     let post_key = ticket.post_key.clone();
     let draft_id = ticket.draft_id.clone();
-    let reference = next_order_ref(st, &post_key);
-    let invoice = next_invoice_ref(st, &post_key);
+    if progress.order_ref.is_empty() {
+        progress.order_ref = next_order_ref(st, &post_key);
+    }
+    if progress.invoice_ref.is_empty() {
+        progress.invoice_ref = next_invoice_ref(st, &post_key);
+    }
+    let reference = progress.order_ref.clone();
+    let invoice = progress.invoice_ref.clone();
     let mut note = ticket.note.trim().to_string();
     if note.is_empty() {
         note = st.fmt.t("Goods sales order");
     }
-    let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &ticket.date);
-    let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
-        Ok(v) => v,
-        Err(e) => {
-            st.toast_err(e);
+    let record_id = if let Some(ref existing) = progress.posted_record_id {
+        existing.clone()
+    } else {
+        let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &ticket.date);
+        let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
+            Ok(v) => v,
+            Err(e) => {
+                st.toast_err(e);
+                return false;
+            }
+        };
+        draft["supplied_total"] = preview["supplied_total"].clone();
+        if st
+            .run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None)
+            .is_err()
+        {
+            return false; // `run` already toasted
+        }
+        let saved = st
+            .books
+            .list("drafts")
+            .into_iter()
+            .find(|d| d["id"] == draft["id"])
+            .or_else(|| st.books.list("drafts").into_iter().find(|d| d["reference"] == reference));
+        let Some(saved) = saved else {
+            st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
+            return false;
+        };
+        let revision = saved["revision"]
+            .as_u64()
+            .or_else(|| saved["revision"].as_str().and_then(|s| s.parse().ok()))
+            .unwrap_or(1);
+        let posted = match st.run(
+            "draft_post",
+            json!({
+                "id": saved["id"],
+                "revision": revision.to_string(),
+                "request_key": post_key
+            }),
+            None,
+        ) {
+            Ok(v) => v,
+            Err(_) => return false, // `run` already toasted
+        };
+        let record_id = crate::data::s(&posted["record_id"]);
+        if record_id.is_empty() {
+            st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
             return false;
         }
+        progress.posted_record_id = Some(record_id.clone());
+        record_id
     };
-    draft["supplied_total"] = preview["supplied_total"].clone();
-    if st
-        .run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None)
-        .is_err()
-    {
-        return false; // `run` already toasted
-    }
-    let saved = st
-        .books
-        .list("drafts")
-        .into_iter()
-        .find(|d| d["id"] == draft["id"])
-        .or_else(|| st.books.list("drafts").into_iter().find(|d| d["reference"] == reference));
-    let Some(saved) = saved else {
-        st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
-        return false;
-    };
-    let revision = saved["revision"]
-        .as_u64()
-        .or_else(|| saved["revision"].as_str().and_then(|s| s.parse().ok()))
-        .unwrap_or(1);
-    let posted = match st.run(
-        "draft_post",
-        json!({
-            "id": saved["id"],
-            "revision": revision.to_string(),
-            "request_key": post_key
-        }),
-        None,
-    ) {
-        Ok(v) => v,
-        Err(_) => return false, // `run` already toasted
-    };
-    let record_id = crate::data::s(&posted["record_id"]);
-    if record_id.is_empty() {
-        st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
-        return false;
-    }
     let fulfill_key = format!("{post_key}-fulfill");
-    let fulfill_note = st.fmt.t("Deliver goods and issue invoice");
-    if crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, &fulfill_note, &fulfill_key, &ticket.date).is_err() {
+    let invoice_id = if progress.fulfilled {
+        progress.invoice_id.clone().unwrap_or_else(|| {
+            // Plan 026 fallback when resuming without a recorded invoice_id.
+            format!("{fulfill_key}-invoice")
+        })
+    } else {
+        let fulfill_note = st.fmt.t("Deliver goods and issue invoice");
+        let fulfill_res =
+            match crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, &fulfill_note, &fulfill_key, &ticket.date) {
+                Ok(v) => v,
+                Err(_) => return false,
+            };
+        let returned = crate::data::s(&fulfill_res["invoice_id"]);
+        let invoice_id = if !returned.is_empty() {
+            returned
+        } else {
+            // Plan 026 fallback: older engine responses without `invoice_id`.
+            format!("{fulfill_key}-invoice")
+        };
+        progress.fulfilled = true;
+        progress.invoice_id = Some(invoice_id.clone());
+        invoice_id
+    };
+    if ticket.pay_method < 2 && settle_invoice(st, ticket, &customer, &invoice, &invoice_id, &format!("{post_key}-pay")).is_err() {
         return false;
-    }
-    if ticket.pay_method < 2 {
-        let invoice_id = format!("{fulfill_key}-invoice");
-        if settle_invoice(st, ticket, &customer, &invoice, &invoice_id, &format!("{post_key}-pay")).is_err() {
-            return false;
-        }
     }
     true
 }
@@ -348,13 +403,31 @@ fn complete_sale(st: &mut State) {
         received: st.forms.get("sale-received"),
         date,
     };
-    if post_ticket(st, &ticket) {
+    let mut progress = SaleProgress {
+        order_ref: st.sales.order_ref.clone(),
+        invoice_ref: st.sales.invoice_ref.clone(),
+        posted_record_id: st.sales.posted_record_id.clone(),
+        fulfilled: st.sales.fulfilled,
+        invoice_id: st.sales.invoice_id.clone(),
+    };
+    if post_ticket(st, &ticket, &mut progress) {
         st.sales.modal_open = false;
         st.sales.post_key.clear();
         st.sales.draft_id.clear();
+        st.sales.order_ref.clear();
+        st.sales.invoice_ref.clear();
+        st.sales.posted_record_id = None;
+        st.sales.fulfilled = false;
+        st.sales.invoice_id = None;
         st.sales.editing_revision = None;
         st.sales.tab_idx = 0;
         st.toast(Tone::Success, st.fmt.t("Posted"));
+    } else {
+        st.sales.order_ref = progress.order_ref;
+        st.sales.invoice_ref = progress.invoice_ref;
+        st.sales.posted_record_id = progress.posted_record_id;
+        st.sales.fulfilled = progress.fulfilled;
+        st.sales.invoice_id = progress.invoice_id;
     }
     finish_posting(st);
 }
@@ -1215,6 +1288,8 @@ fn edit_selected_draft(st: &mut State) {
     st.forms.clear_prefix("sale-");
     st.sales.start_edit(&draft);
     st.sales.post_key = st.mint_key("sale");
+    st.sales.order_ref = next_order_ref(st, &st.sales.post_key);
+    st.sales.invoice_ref = next_invoice_ref(st, &st.sales.post_key);
     for (i, line) in st.sales.lines.iter().enumerate() {
         if !line.item_id.is_empty() {
             st.forms.set(&format!("sale-qty-{i}"), &line.qty);

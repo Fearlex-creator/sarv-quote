@@ -190,21 +190,21 @@ Ordered by Phase and dependency from `plans/README.md`.
 ## Phase 5 — Design Spikes
 
 ### Plan 026: Engine-owned numbering and quick sale (ADR-0008 + Part B)
-- [ ] **P26-T01**: Write `docs/adr/0008-engine-owned-numbering.md` (status proposed, 8 topics + open questions) and index in `docs/adr/README.md`. Implement Part B: `fulfill_post`/`receive_post`/`bill_post` return created ids in `desktop_bridge.rs` (+ engine test), `sales.rs`/`pos.rs` use returned `invoice_id` and resume half-posted sales without duplicating (+ 2 desktop tests), update `plans/README.md`.
+- [x] **P26-T01**: Write `docs/adr/0008-engine-owned-numbering.md` (status proposed, 8 topics + open questions) and index in `docs/adr/README.md`. Implement Part B: `fulfill_post`/`receive_post`/`bill_post` return created ids in `desktop_bridge.rs` (+ engine test), `sales.rs`/`pos.rs` use returned `invoice_id` and resume half-posted sales without duplicating (+ 2 desktop tests), update `plans/README.md`.
   - Files: `docs/adr/0008-engine-owned-numbering.md`, `docs/adr/README.md`, `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/desktop_bridge.rs`, `crates/sarv-desktop/src/ui/views/{sales,pos}.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote && cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 027: Year-end closing design (ADR-0009 + prototype)
-- [ ] **P27-T01**: Create `crates/sarv-quote/tests/year_end_prototype.rs`, write `docs/adr/0009-year-end-closing.md` (status proposed, 7 questions + open questions), index in `docs/adr/README.md`, update `plans/README.md`.
+- [x] **P27-T01**: Create `crates/sarv-quote/tests/year_end_prototype.rs`, write `docs/adr/0009-year-end-closing.md` (status proposed, 7 questions + open questions), index in `docs/adr/README.md`, update `plans/README.md`.
   - Files: `crates/sarv-quote/tests/year_end_prototype.rs`, `docs/adr/0009-year-end-closing.md`, `docs/adr/README.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --test year_end_prototype`
 
 ### Plan 028: VAT design (ADR-0010 + goldens)
-- [ ] **P28-T01**: Create `crates/sarv-quote/tests/vat_prototype.rs` (≥12 golden cases), write `docs/adr/0010-vat-on-documents.md` (status proposed, posting matrix, user-entered rate, open questions), index in `docs/adr/README.md`, update `plans/README.md`.
+- [x] **P28-T01**: Create `crates/sarv-quote/tests/vat_prototype.rs` (≥12 golden cases), write `docs/adr/0010-vat-on-documents.md` (status proposed, posting matrix, user-entered rate, open questions), index in `docs/adr/README.md`, update `plans/README.md`.
   - Files: `crates/sarv-quote/tests/vat_prototype.rs`, `docs/adr/0010-vat-on-documents.md`, `docs/adr/README.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --test vat_prototype`
 
 ### Plan 029: Bank reconciliation design (ADR-0011 + prototype)
-- [ ] **P29-T01**: Create `crates/sarv-quote/tests/reconciliation_prototype.rs` (3 scenarios), write `docs/adr/0011-bank-reconciliation.md` (status proposed, 10 questions, open questions), index in `docs/adr/README.md`, update `plans/README.md`.
+- [x] **P29-T01**: Create `crates/sarv-quote/tests/reconciliation_prototype.rs` (3 scenarios), write `docs/adr/0011-bank-reconciliation.md` (status proposed, 10 questions, open questions), index in `docs/adr/README.md`, update `plans/README.md`.
   - Files: `crates/sarv-quote/tests/reconciliation_prototype.rs`, `docs/adr/0011-bank-reconciliation.md`, `docs/adr/README.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --test reconciliation_prototype`

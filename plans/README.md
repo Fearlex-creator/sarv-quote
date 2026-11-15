@@ -71,10 +71,10 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
-| [026](026-engine-owned-numbering-and-quick-sale.md) | Engine-issued document numbers; one-action counter sale (ADR-0008 + first slice) | P2 | L | 003, 004, 010 | TODO |
-| [027](027-year-end-closing-design.md) | Year-end closing (ADR-0009 + prototype) | P2 | M | 017 DONE | TODO |
-| [028](028-vat-design.md) | VAT with a user-entered rate (ADR-0010 + goldens) | P2 | M | — | TODO |
-| [029](029-bank-reconciliation-design.md) | Bank reconciliation (ADR-0011 + prototype) | P3 | M | — | TODO |
+| [026](026-engine-owned-numbering-and-quick-sale.md) | Engine-issued document numbers; one-action counter sale (ADR-0008 + first slice) | P2 | L | 003, 004, 010 | DONE (Part A+B; open questions in ADR-0008: FY reset, series scope, prefix/padding, POS series, opening locale, schema 7 vs 8) |
+| [027](027-year-end-closing-design.md) | Year-end closing (ADR-0009 + prototype) | P2 | M | 017 DONE | DONE |
+| [028](028-vat-design.md) | VAT with a user-entered rate (ADR-0010 + goldens) | P2 | M | — | DONE |
+| [029](029-bank-reconciliation-design.md) | Bank reconciliation (ADR-0011 + prototype) | P3 | M | — | DONE |
 
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 

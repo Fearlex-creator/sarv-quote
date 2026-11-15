@@ -1407,3 +1407,65 @@ fn balance_sheet_aging_and_ledger_csv_export_rows_and_neutralize_formulas() {
         "expected neutralized formula in ledger_csv: {ledger_rows:?}"
     );
 }
+#[test]
+fn fulfill_post_returns_invoice_id_appearing_in_payment_options() {
+    let (d, c, p) = fixture();
+    let s = Store::open(d.path()).unwrap();
+    let setup = s.state.accounting.core.setups[0].id.clone();
+    let draft = json!({
+        "id": "inv-id-draft",
+        "revision": "0",
+        "company_id": c,
+        "period_id": p,
+        "setup_id": setup,
+        "customer_id": "CU-A",
+        "reference": "ORD-INV-ID",
+        "document_date": "2026-10-08",
+        "financial_date": "2026-10-08",
+        "date_display": "Iso",
+        "display_unit": "Rial",
+        "document_discount": "0",
+        "supplied_total": "0",
+        "reason": "Invoice id test",
+        "quotation": null,
+        "lines": [{
+            "id": "inv-id-line",
+            "item_id": "ITEM-A",
+            "warehouse_id": "W1",
+            "unit_id": "PIECE",
+            "quantity": "1",
+            "unit_price": "20",
+            "line_discount": "0",
+            "price_reference": "Manual",
+            "price_date": "2026-10-08",
+            "override_reason": ""
+        }]
+    });
+    let preview = call(d.path(), "draft_preview", json!({"draft": draft}));
+    let mut draft = draft;
+    draft["supplied_total"] = preview["supplied_total"].clone();
+    assert_eq!(
+        call(d.path(), "draft_save", json!({"draft": draft, "expected_revision": null})),
+        "1"
+    );
+    let order = call(
+        d.path(),
+        "draft_post",
+        json!({"id": "inv-id-draft", "revision": "1", "request_key": "inv-id-post"}),
+    );
+    let mut fulfill = ctx(&c, &p, "inv-id-fulfill");
+    fulfill["order_id"] = order["record_id"].clone();
+    let fulfilled = call(d.path(), "fulfill_post", fulfill);
+    let invoice_id = fulfilled["invoice_id"].as_str().unwrap_or("");
+    assert!(!invoice_id.is_empty(), "fulfill_post must return non-empty invoice_id: {fulfilled}");
+    let options = call(
+        d.path(),
+        "payment_options",
+        json!({"company_id": c, "side": "receive", "party_id": "CU-A"}),
+    );
+    let items = options["items"].as_array().unwrap();
+    assert!(
+        items.iter().any(|item| item["id"].as_str() == Some(invoice_id)),
+        "payment_options for CU-A must include returned invoice_id {invoice_id}: {items:?}"
+    );
+}
