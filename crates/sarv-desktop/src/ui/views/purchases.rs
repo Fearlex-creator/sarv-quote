@@ -7,7 +7,7 @@ use rune_kit::{Cell, ComboboxState, Switch, Table, TableColumn, TableState};
 use serde_json::json;
 
 use crate::app::{State, Tone};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
 use crate::ui::pickers;
 use crate::ui::resources::ResourceKind;
@@ -469,7 +469,7 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("New purchase order"),
         &ui.t("Pick a supplier and products, or type to add new ones."),
         true,
-        760.0,
+        DIALOG_MD,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.purchases.modal_open = false),
@@ -493,7 +493,7 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             &ui.t("New product"),
             &ui.t("Add it to your inventory and this purchase at the same time."),
             true,
-            440.0,
+            DIALOG_SM,
             quick,
             vec![
                 ui.btn(Btn::Ghost, "Cancel", None, |st| st.purchases.creating_item_for_line = None),

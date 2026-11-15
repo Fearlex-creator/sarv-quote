@@ -79,7 +79,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 ## Phase 2 — UI System
 
 ### Plan 011: Sarv identity and design system
-- [ ] **P11-T01**: Restore teal `sarv_accent` in `kit.rs` (+ unit test), tone-aware toast icons in `shell.rs`/`icons.rs`, tone-aware `badge()` and `DIALOG_SM`/`DIALOG_MD`/`DIALOG_LG`/`SHEET_RADIUS` tokens in `glass.rs` & views, archive old `docs/DESIGN.md` to `docs/milestones/design-gtk-v1.md`, write new `docs/DESIGN.md` + update `docs/FRONTEND-UI-GUIDE.md`, update `plans/README.md`.
+- [x] **P11-T01**: Restore teal `sarv_accent` in `kit.rs` (+ unit test), tone-aware toast icons in `shell.rs`/`icons.rs`, tone-aware `badge()` and `DIALOG_SM`/`DIALOG_MD`/`DIALOG_LG`/`SHEET_RADIUS` tokens in `glass.rs` & views, archive old `docs/DESIGN.md` to `docs/milestones/design-gtk-v1.md`, write new `docs/DESIGN.md` + update `docs/FRONTEND-UI-GUIDE.md`, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/ui/{kit.rs,glass.rs,shell.rs,icons.rs}`, `crates/sarv-desktop/src/ui/views/*.rs`, `docs/DESIGN.md`, `docs/milestones/design-gtk-v1.md`, `docs/FRONTEND-UI-GUIDE.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && test $(grep -c "libadwaita\|GTK" docs/DESIGN.md) -eq 0`
 

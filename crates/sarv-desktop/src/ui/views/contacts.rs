@@ -7,7 +7,7 @@ use rune_kit::{Cell, Switch, Table, TableColumn, TableState};
 use serde_json::{Value, json};
 
 use crate::app::{State, Tone};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_MD, Ui};
 use crate::ui::icons;
 
 #[derive(Clone, Copy, PartialEq, Eq, Default)]
@@ -397,7 +397,7 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &title,
         &ui.t("Save contact details for sales and purchases."),
         true,
-        640.0,
+        DIALOG_MD,
         form,
         vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.contacts.modal_open = false), save_btn],
         |st| st.contacts.modal_open = false,
@@ -476,7 +476,7 @@ fn mount_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Contact details"),
         &ui.t("Contact details, linked documents and performance for this business."),
         true,
-        720.0,
+        DIALOG_MD,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.contacts.open_id.clear()),

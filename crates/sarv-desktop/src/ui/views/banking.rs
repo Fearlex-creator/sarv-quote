@@ -6,7 +6,7 @@ use rune::{Cx, El, col, row};
 use rune_kit::{Cell, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_LG, Ui};
 use crate::ui::icons;
 
 #[derive(Default)]
@@ -177,7 +177,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t(title),
         &ui.t("Move money between cash and bank accounts."),
         true,
-        900.0,
+        DIALOG_LG,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.banking.modal_open = false),

@@ -8,7 +8,7 @@ use rune_kit::{Cell, Table, TableColumn, TableState};
 use serde_json::json;
 
 use crate::app::{State, Tone};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_MD, Ui};
 use crate::ui::icons;
 
 #[derive(Default)]
@@ -251,7 +251,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &title,
         &ui.t("Record a cash or bank settlement."),
         true,
-        520.0,
+        DIALOG_MD,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.payments.modal_open = false),

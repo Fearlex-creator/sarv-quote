@@ -7,7 +7,7 @@ use rune_kit::{Cell, Switch, Table, TableColumn, TableState};
 use serde_json::json;
 
 use crate::app::{Page, State, Tone};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_SM, Ui};
 use crate::ui::icons;
 use crate::ui::resources::ResourceKind;
 
@@ -350,7 +350,7 @@ fn mount_starter(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Starter kit: Warehouses & units"),
         &ui.t("Select standard units and warehouses to add to this business in one click."),
         true,
-        520.0,
+        DIALOG_SM,
         body,
         vec![
             ui.button(Btn::Ghost, "overview-cancel-starter", &ui.t("Cancel"), None, |st| {
@@ -381,7 +381,7 @@ fn mount_named(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &title,
         "",
         true,
-        420.0,
+        DIALOG_SM,
         body,
         vec![
             ui.button(Btn::Ghost, "overview-cancel-named", &ui.t("Cancel"), None, |st| {

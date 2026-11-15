@@ -6,7 +6,7 @@ use serde_json::json;
 
 use crate::app::{State, Tone};
 use crate::i18n::{CalendarKind, Lang, Unit};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
 
 #[derive(Default)]
@@ -300,7 +300,7 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Your business"),
         &ui.t("Local-first accounting"),
         true,
-        560.0,
+        DIALOG_MD,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.settings.business_open = false),
@@ -402,7 +402,7 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Restore backup"),
         &ui.t("Restore books from backup?"),
         true,
-        560.0,
+        DIALOG_SM,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.settings.restore_open = false),

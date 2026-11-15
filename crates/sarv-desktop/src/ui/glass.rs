@@ -10,6 +10,11 @@ use crate::app::{State, Tone};
 use crate::i18n::Fmt;
 use crate::ui::kit::sarv_kit;
 
+pub const DIALOG_SM: f32 = 480.0;
+pub const DIALOG_MD: f32 = 640.0;
+pub const DIALOG_LG: f32 = 900.0;
+pub const SHEET_RADIUS: f32 = 14.0;
+
 #[derive(Clone)]
 pub struct Ui {
     pub k: Kit,
@@ -142,7 +147,7 @@ impl Ui {
         col()
             .key(key.to_string())
             .w_full()
-            .radius(14.0)
+            .radius(SHEET_RADIUS)
             .system_material(rune::SystemMaterial::Glass)
             .backdrop_blur(18.0)
             .fill(tint)
@@ -182,11 +187,27 @@ impl Ui {
     }
 
     pub fn badge(&self, tone: Tone, s: impl Into<String>) -> El {
-        let variant = match tone {
-            Tone::Info => BadgeVariant::Accent,
-            _ => BadgeVariant::Subtle,
+        let label = s.into();
+        let sc = match tone {
+            Tone::Info => {
+                return Badge::new(label).variant(BadgeVariant::Accent).build(&self.k).self_start();
+            }
+            Tone::Success => &self.k.c.success,
+            Tone::Warning => &self.k.c.warning,
+            Tone::Danger => &self.k.c.danger,
         };
-        Badge::new(s.into()).variant(variant).build(&self.k).self_start()
+        row()
+            .role("status")
+            .label(label.clone())
+            .center()
+            .gap(4.0)
+            .h(18.0)
+            .px(6.0)
+            .radius(self.k.radius.sm)
+            .fill(sc.bg)
+            .border(0.5, sc.border)
+            .child(text(label).font(self.k.ty.text_xsmall_medium).color(sc.fg).a11y_hidden())
+            .self_start()
     }
 
     pub fn tabs(&self, id: &str, items: &[(&str, bool)], on_pick: impl Fn(&mut State, usize) + Clone + 'static) -> El {
@@ -371,7 +392,7 @@ impl Ui {
             .description(description.to_string())
             .w_full()
             .max_w(width)
-            .radius(14.0)
+            .radius(SHEET_RADIUS)
             .fill(k.c.layer_01)
             .border(0.5, k.c.border_base)
             .child(

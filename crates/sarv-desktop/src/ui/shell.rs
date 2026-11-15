@@ -11,7 +11,7 @@ use rune_kit::{
 
 use crate::app::{Page, State, Tone};
 use crate::i18n::Lang;
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_SM, Ui};
 use crate::ui::icons;
 
 fn ms(n: u64) -> Duration {
@@ -400,7 +400,7 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         "palette",
         &ui.t("Command menu"),
         true,
-        480.0,
+        DIALOG_SM,
         body,
         vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.palette_open = false)],
         |st| st.palette_open = false,
@@ -414,8 +414,13 @@ pub fn mount_toasts(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let mut region = ToastRegion::new();
     for t in &s.toasts {
         let id = t.id;
+        let glyph = match t.tone {
+            Tone::Success => &icons::CHECK,
+            Tone::Warning | Tone::Danger => &icons::WARNING,
+            Tone::Info => &icons::INFO,
+        };
         let toast = Toast::new(format!("toast-{id}"), t.message.clone())
-            .lead(icon(&icons::INFO, 16.0).color(ui.tone_accent(t.tone)))
+            .lead(icon(glyph, 16.0).color(ui.tone_accent(t.tone)))
             .on_close(move |st: &mut State| st.toasts.retain(|x| x.id != id))
             .build(&ui.k);
         region = region.toast(toast);

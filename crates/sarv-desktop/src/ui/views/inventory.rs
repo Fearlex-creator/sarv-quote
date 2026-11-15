@@ -8,7 +8,7 @@ use rune_kit::{Cell, Table, TableColumn, TableState};
 use serde_json::{Value, json};
 
 use crate::app::{State, Tone};
-use crate::ui::glass::{Btn, Ui};
+use crate::ui::glass::{Btn, DIALOG_MD, Ui};
 use crate::ui::icons;
 use crate::ui::pickers;
 
@@ -430,7 +430,7 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("New product"),
         &ui.t("Track stock, pricing, brands, and preferred suppliers."),
         true,
-        640.0,
+        DIALOG_MD,
         form,
         vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.modal_open = false), save_btn],
         |st| st.inventory.modal_open = false,
@@ -502,7 +502,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Transfer stock"),
         &ui.t("Move stock between warehouses at carried cost."),
         true,
-        520.0,
+        DIALOG_MD,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.transfer_open = false),
@@ -680,7 +680,7 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &ui.t("Product details"),
         &ui.t("Product details, stock costs and performance from posted documents."),
         true,
-        720.0,
+        DIALOG_MD,
         form,
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.profile_open = false),
