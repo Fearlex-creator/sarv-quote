@@ -435,6 +435,14 @@ impl State {
             self.accounting.period_add_open = false;
             return true;
         }
+        if self.accounting.acct_archive_open {
+            self.accounting.acct_archive_open = false;
+            return true;
+        }
+        if self.accounting.acct_open {
+            crate::ui::views::accounting::close_acct_or_confirm(self);
+            return true;
+        }
         if self.sales.creating_item_for_line.is_some() {
             self.sales.creating_item_for_line = None;
             return true;

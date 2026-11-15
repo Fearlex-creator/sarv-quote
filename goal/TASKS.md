@@ -124,7 +124,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 018: Chart of accounts
-- [ ] **P18-T01**: Add `"account_add"` and `"account_archive"` in `desktop_bridge.rs` + `crates/sarv-quote/tests/chart_accounts.rs`, add "New account" and "Archive account" dialogs + "Show archived" toggle in `accounting.rs`, filter archived/non-postable in `pickers.rs`, add 3 desktop tests, update `plans/README.md`.
+- [x] **P18-T01**: Add `"account_add"` and `"account_archive"` in `desktop_bridge.rs` + `crates/sarv-quote/tests/chart_accounts.rs`, add "New account" and "Archive account" dialogs + "Show archived" toggle in `accounting.rs`, filter archived/non-postable in `pickers.rs`, add 3 desktop tests, update `plans/README.md`.
   - Files: `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/chart_accounts.rs`, `crates/sarv-desktop/src/ui/views/accounting.rs`, `crates/sarv-desktop/src/ui/pickers.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --test chart_accounts && cargo test -p sarv-desktop --bin sarv-desktop`
 

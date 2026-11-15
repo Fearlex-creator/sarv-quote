@@ -485,3 +485,119 @@ fn test_switching_fiscal_year_changes_the_report_range() {
     assert_eq!(rt.state.books.range(), second_range);
     assert_no_danger(&rt);
 }
+
+#[test]
+fn test_new_expense_account_appears_in_chart_and_pickers() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "segment1");
+    for _ in 0..4 {
+        rt.frame(1.0 / 60.0);
+    }
+
+    click(&mut rt, "btn-New account");
+    assert!(rt.find("acct-dialog").is_some(), "new account dialog must open");
+
+    click(&mut rt, "segment4"); // Expense
+    type_into(&mut rt, "acct-code", "5910");
+    type_into(&mut rt, "acct-name", "Office Rent");
+    click(&mut rt, "btn-Save");
+
+    assert!(!rt.state.accounting.acct_open, "{}", blow(&rt, "new account save"));
+    let rent = rt.state.books.workspace["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| data::s(&a["code"]) == "5910" && data::s(&a["name"]) == "Office Rent")
+        .expect("Office Rent account must be in workspace.accounts");
+    let rent_id = data::s(&rent["id"]);
+    assert_eq!(data::s(&rent["classification"]), "Expense");
+    assert_eq!(data::s(&rent["normal_balance"]), "Debit");
+    assert!(
+        rt.find(&format!("acc-{rent_id}")).is_some(),
+        "new account must appear in chart table"
+    );
+
+    let picker_ids: Vec<String> = crate::ui::pickers::account_options(&rt.state)
+        .into_iter()
+        .map(|(id, _)| id)
+        .collect();
+    assert!(picker_ids.contains(&rent_id), "new account must appear in account pickers");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_archived_account_leaves_the_pickers() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "segment1");
+    for _ in 0..4 {
+        rt.frame(1.0 / 60.0);
+    }
+
+    click(&mut rt, "btn-New account");
+    click(&mut rt, "segment4"); // Expense
+    type_into(&mut rt, "acct-code", "5920");
+    type_into(&mut rt, "acct-name", "Temporary Expense");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.acct_open, "{}", blow(&rt, "create temp account"));
+
+    let temp_id = rt.state.books.workspace["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| data::s(&a["code"]) == "5920")
+        .map(|a| data::s(&a["id"]))
+        .unwrap();
+
+    assert!(
+        crate::ui::pickers::account_options(&rt.state).iter().any(|(id, _)| id == &temp_id),
+        "new account should be in pickers before archiving"
+    );
+
+    click(&mut rt, &format!("acc-{temp_id}"));
+    click(&mut rt, "btn-Archive account");
+    assert!(rt.find("acct-archive-dialog").is_some(), "archive dialog must open");
+    type_into(&mut rt, "acct-archive-reason", "No longer used");
+    click(&mut rt, "btn-Archive");
+
+    assert!(!rt.state.accounting.acct_archive_open, "{}", blow(&rt, "archive account"));
+    assert!(
+        !crate::ui::pickers::account_options(&rt.state).iter().any(|(id, _)| id == &temp_id),
+        "archived account must leave account pickers"
+    );
+    assert!(
+        rt.find(&format!("acc-{temp_id}")).is_none(),
+        "archived account is hidden when Show archived is off"
+    );
+
+    click(&mut rt, "acct-show-archived");
+    assert!(rt.state.accounting.acct_show_archived);
+    assert!(
+        rt.find(&format!("acc-{temp_id}")).is_some(),
+        "archived account appears when Show archived is toggled on"
+    );
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_duplicate_account_code_shows_one_error_toast() {
+    let mut rt = make_test_runtime();
+    let existing_code = data::s(&rt.state.books.workspace["accounts"][0]["code"]);
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "segment1");
+    for _ in 0..4 {
+        rt.frame(1.0 / 60.0);
+    }
+
+    click(&mut rt, "btn-New account");
+    type_into(&mut rt, "acct-code", &existing_code);
+    type_into(&mut rt, "acct-name", "Duplicate Code Account");
+    click(&mut rt, "btn-Save");
+
+    assert!(rt.state.accounting.acct_open, "dialog stays open on validation error");
+    assert_eq!(danger_toasts(&rt).len(), 1, "expected exactly one danger toast");
+}

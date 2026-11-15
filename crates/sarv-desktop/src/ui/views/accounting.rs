@@ -2,8 +2,8 @@
 
 use std::borrow::Cow;
 
-use rune::{Align, Cx, El, col};
-use rune_kit::{Cell, SortDir, Table, TableColumn, TableState};
+use rune::{Align, Cx, El, col, row};
+use rune_kit::{Cell, SortDir, Switch, Table, TableColumn, TableState};
 
 use crate::app::{State, Tone};
 use crate::ui::glass::{Btn, DIALOG_LG, DIALOG_MD, DIALOG_SM, Ui};
@@ -26,8 +26,45 @@ pub struct AccountingState {
     pub period_add_busy: bool,
     pub next_period_start: String,
     pub next_period_end: String,
+    pub acct_open: bool,
+    pub acct_busy: bool,
+    pub acct_class_idx: usize,
+    pub acct_parent: String,
+    pub acct_generation: String,
+    pub acct_archive_open: bool,
+    pub acct_archive_busy: bool,
+    pub acct_show_archived: bool,
     pub rows: Vec<Row>,
     pub rows_stamp: u64,
+}
+
+const ACCOUNT_CLASSES: [(&str, &str); 5] = [
+    ("Asset", "Debit"),
+    ("Liability", "Credit"),
+    ("Equity", "Credit"),
+    ("Revenue", "Credit"),
+    ("Expense", "Debit"),
+];
+
+pub fn open_account(st: &mut State) {
+    st.forms.clear_prefix("acct-");
+    st.accounting.acct_open = true;
+    st.accounting.acct_busy = false;
+    st.accounting.acct_class_idx = 0;
+    st.accounting.acct_parent.clear();
+    st.accounting.acct_generation = crate::data::s(&st.books.workspace["_generation"]);
+}
+
+fn acct_is_dirty(st: &State) -> bool {
+    st.forms.any_with_prefix("acct-") || !st.accounting.acct_parent.is_empty()
+}
+
+pub(crate) fn close_acct_or_confirm(st: &mut State) {
+    if !acct_is_dirty(st) {
+        st.accounting.acct_open = false;
+        return;
+    }
+    crate::ui::confirm::discard_form(st, |s| s.accounting.acct_open = false);
 }
 
 fn accounts(s: &State) -> &[serde_json::Value] {
@@ -82,6 +119,7 @@ fn col_index(tab_idx: usize, col: &str) -> Option<usize> {
             "code" => Some(0),
             "name" => Some(1),
             "class" => Some(2),
+            "status" => Some(3),
             _ => None,
         },
         2 => match col {
@@ -106,14 +144,25 @@ fn build_rows(s: &State) -> Vec<Row> {
     match s.accounting.tab_idx {
         1 => accounts(s)
             .iter()
+            .filter(|acc| s.accounting.acct_show_archived || !acc["archived"].as_bool().unwrap_or(false))
             .map(|acc| {
                 let code = crate::data::s(&acc["code"]);
                 let name = crate::data::s(&acc["name"]);
                 let class = s.fmt.t(&crate::data::s(&acc["classification"]));
+                let archived = if acc["archived"].as_bool().unwrap_or(false) {
+                    s.fmt.t("Archived")
+                } else {
+                    String::new()
+                };
                 Row {
                     id: format!("acc-{}", crate::data::s(&acc["id"])),
-                    cells: vec![code.clone(), name.clone(), class.clone()],
-                    keys: vec![SortKey::text(&code), SortKey::text(&name), SortKey::text(&class)],
+                    cells: vec![code.clone(), name.clone(), class.clone(), archived.clone()],
+                    keys: vec![
+                        SortKey::text(&code),
+                        SortKey::text(&name),
+                        SortKey::text(&class),
+                        SortKey::text(&archived),
+                    ],
                 }
             })
             .collect(),
@@ -211,6 +260,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
         .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
         .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0).sortable())
+        .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0).sortable())
         .cell(|s: &State, i, col| {
             let Some(row) = s.accounting.rows.get(i) else {
                 return Cell::text("");
@@ -218,7 +268,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             match col {
                 "code" => Cell::text(&row.cells[0]),
                 "name" => Cell::text(&row.cells[1]),
-                _ => Cell::text(&row.cells[2]).muted(),
+                "class" => Cell::text(&row.cells[2]).muted(),
+                _ => Cell::text(&row.cells[3]).muted(),
             }
         })
         .on_sort(|st, col, dir, _tx| apply_sort(st, col, dir))
@@ -305,13 +356,29 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let (hint, empty_title) = tab_empty_copy(s.accounting.tab_idx);
     let empty_count = s.accounting.rows.len();
 
+    let hint_bar = if s.accounting.tab_idx == 1 {
+        row().w_full().center_y().justify_between().child(ui.muted(ui.t(hint))).child(
+            Switch::new(s.accounting.acct_show_archived)
+                .label(ui.t("Show archived"))
+                .on_toggle(|st: &mut State| {
+                    st.accounting.acct_show_archived = !st.accounting.acct_show_archived;
+                    st.accounting.rows_stamp = 0;
+                    ensure(st);
+                })
+                .build(&ui.k)
+                .key("acct-show-archived"),
+        )
+    } else {
+        row().w_full().child(ui.muted(ui.t(hint)))
+    };
+
     let body = col()
         .w_full()
         .gap(14.0)
         .grow(1.0)
         .min_h(0.0)
         .child(tab_bar)
-        .child(ui.muted(ui.t(hint)))
+        .child(hint_bar)
         .child(ui.fill_or_empty(empty_count, empty_title, hint, &icons::REPORTS, table));
 
     if s.accounting.modal_open {
@@ -319,6 +386,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     }
     if s.accounting.ledger_open {
         mount_ledger(s, ui, layer);
+    }
+    if s.accounting.acct_open {
+        mount_account_dialog(s, ui, layer);
+    }
+    if s.accounting.acct_archive_open {
+        mount_archive_dialog(s, ui, layer);
     }
 
     let period_locked = s
@@ -338,29 +411,41 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         "Lock fiscal period"
     };
 
+    let mut actions = vec![ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), open_journal)];
+    if s.accounting.tab_idx == 1 {
+        actions.push(ui.btn(Btn::Glass, "New account", Some(&icons::PLUS), open_account));
+        actions.push(ui.btn_enabled(
+            Btn::Glass,
+            "Archive account",
+            None,
+            s.accounting.selected.starts_with("acc-"),
+            open_archive_account,
+        ));
+    }
+    actions.extend([
+        ui.btn_enabled(Btn::Glass, "Ledger", None, s.accounting.selected.starts_with("acc-"), open_ledger),
+        ui.btn_enabled(
+            Btn::Glass,
+            "Reverse",
+            None,
+            s.accounting.selected.starts_with("journal-"),
+            reverse_selected,
+        ),
+        ui.btn_enabled(
+            Btn::Glass,
+            period_btn_label,
+            None,
+            s.accounting.selected.starts_with("period-"),
+            toggle_period,
+        ),
+        ui.btn(Btn::Glass, "New fiscal year", Some(&icons::PLUS), open_new_period),
+    ]);
+
     ui.page(
         "accounting-screen",
         &ui.t("Accounting"),
         &ui.t("Ledger and accounting"),
-        vec![
-            ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), open_journal),
-            ui.btn_enabled(Btn::Glass, "Ledger", None, s.accounting.selected.starts_with("acc-"), open_ledger),
-            ui.btn_enabled(
-                Btn::Glass,
-                "Reverse",
-                None,
-                s.accounting.selected.starts_with("journal-"),
-                reverse_selected,
-            ),
-            ui.btn_enabled(
-                Btn::Glass,
-                period_btn_label,
-                None,
-                s.accounting.selected.starts_with("period-"),
-                toggle_period,
-            ),
-            ui.btn(Btn::Glass, "New fiscal year", Some(&icons::PLUS), open_new_period),
-        ],
+        actions,
         body,
     )
 }
@@ -713,5 +798,197 @@ pub(crate) fn mount_period_add_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             }),
         ],
         |st| st.accounting.period_add_open = false,
+    );
+}
+
+fn suggested_account_code(s: &State, class_name: &str, parent_id: &str) -> String {
+    let max = accounts(s)
+        .iter()
+        .filter(|a| {
+            if parent_id.is_empty() {
+                crate::data::s(&a["classification"]) == class_name
+            } else {
+                crate::data::s(&a["parent_id"]) == parent_id
+            }
+        })
+        .filter_map(|a| crate::data::s(&a["code"]).trim().parse::<u64>().ok())
+        .max();
+    max.map(|n| (n + 1).to_string()).unwrap_or_default()
+}
+
+fn mount_account_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    use crate::ui::pickers;
+
+    let mut portals = Vec::new();
+    let class_idx = s.accounting.acct_class_idx.min(ACCOUNT_CLASSES.len() - 1);
+    let class_name = ACCOUNT_CLASSES[class_idx].0;
+    let labels: Vec<String> = ACCOUNT_CLASSES.iter().map(|(c, _)| ui.t(c)).collect();
+    let tabs: Vec<(&str, bool)> = labels.iter().enumerate().map(|(i, l)| (l.as_str(), i == class_idx)).collect();
+    let class_tabs = ui.tabs("acct-class", &tabs, |st, idx| {
+        st.accounting.acct_class_idx = idx;
+        st.accounting.acct_parent.clear();
+    });
+
+    let mut parent_opts = vec![(String::new(), ui.t("Optional"))];
+    for acc in accounts(s) {
+        if !acc["archived"].as_bool().unwrap_or(false) && crate::data::s(&acc["classification"]) == class_name {
+            let id = crate::data::s(&acc["id"]);
+            let code = crate::data::s(&acc["code"]);
+            let name = crate::data::s(&acc["name"]);
+            parent_opts.push((id, format!("{code} · {name}")));
+        }
+    }
+    let parent_open = s.selects.get("acct-parent").copied().unwrap_or(false);
+    let current_parent = if s.accounting.acct_parent.is_empty() {
+        None
+    } else {
+        Some(s.accounting.acct_parent.as_str())
+    };
+    let parent_picker = pickers::select_field(
+        ui,
+        &mut portals,
+        "acct-parent",
+        &parent_opts,
+        current_parent,
+        &ui.t("Optional"),
+        pickers::ACCOUNT_PICKER_WIDTH,
+        parent_open,
+        |st, id| st.accounting.acct_parent = id.to_string(),
+    );
+
+    let code_placeholder = suggested_account_code(s, class_name, &s.accounting.acct_parent);
+    let form = col()
+        .gap(14.0)
+        .child(ui.labeled("Type", class_tabs))
+        .child(ui.labeled("Parent account", parent_picker))
+        .child(ui.form_grid(
+            ui.labeled("Account code", ui.field(s, "acct-code", &code_placeholder)),
+            ui.labeled("Name", ui.field(s, "acct-name", &ui.t("Name"))),
+        ));
+
+    ui.form_dialog(
+        layer,
+        &mut portals,
+        "acct",
+        &ui.t("New account"),
+        &ui.t("Add an account to your chart of accounts."),
+        true,
+        DIALOG_MD,
+        form,
+        vec![
+            ui.btn(Btn::Ghost, "Cancel", None, close_acct_or_confirm),
+            ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
+                if st.accounting.acct_busy || !st.accounting.acct_open {
+                    return;
+                }
+                let code = st.forms.get("acct-code").trim().to_string();
+                if code.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Account code"));
+                    return;
+                }
+                let name = st.forms.get("acct-name").trim().to_string();
+                if name.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Name"));
+                    return;
+                }
+                st.accounting.acct_busy = true;
+                let idx = st.accounting.acct_class_idx.min(ACCOUNT_CLASSES.len() - 1);
+                let (classification, normal_balance) = ACCOUNT_CLASSES[idx];
+                let generation = if st.accounting.acct_generation.is_empty() {
+                    crate::data::s(&st.books.workspace["_generation"])
+                } else {
+                    st.accounting.acct_generation.clone()
+                };
+                let mut payload = serde_json::json!({
+                    "code": code,
+                    "name": name,
+                    "classification": classification,
+                    "normal_balance": normal_balance,
+                    "postable": true,
+                    "control": false,
+                    "expected_generation": generation,
+                });
+                if !st.accounting.acct_parent.is_empty() {
+                    payload["parent_id"] = serde_json::json!(st.accounting.acct_parent);
+                }
+                match st.run("account_add", payload, Some("Account added")) {
+                    Ok(_) => {
+                        st.accounting.acct_open = false;
+                        st.accounting.acct_busy = false;
+                        st.forms.clear_prefix("acct-");
+                        st.accounting.acct_parent.clear();
+                    }
+                    Err(_) => {
+                        st.accounting.acct_busy = false;
+                    }
+                }
+            }),
+        ],
+        close_acct_or_confirm,
+    );
+}
+
+fn open_archive_account(st: &mut State) {
+    if !st.accounting.selected.starts_with("acc-") {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return;
+    }
+    st.forms.set("acct-archive-reason", "");
+    st.accounting.acct_archive_busy = false;
+    st.accounting.acct_archive_open = true;
+}
+
+fn mount_archive_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    let mut portals = Vec::new();
+    let form = col()
+        .gap(14.0)
+        .child(ui.labeled("Reason", ui.field(s, "acct-archive-reason", &ui.t("Reason"))));
+
+    ui.form_dialog(
+        layer,
+        &mut portals,
+        "acct-archive",
+        &ui.t("Archive account"),
+        &ui.t("Archived accounts stay in historical reports and leave pickers."),
+        true,
+        DIALOG_SM,
+        form,
+        vec![
+            ui.btn(Btn::Ghost, "Cancel", None, |st| st.accounting.acct_archive_open = false),
+            ui.btn(Btn::Danger, "Archive", None, |st| {
+                if st.accounting.acct_archive_busy || !st.accounting.acct_archive_open {
+                    return;
+                }
+                let reason = st.forms.get("acct-archive-reason").trim().to_string();
+                if reason.is_empty() {
+                    st.toast(Tone::Danger, st.fmt.t("Reason"));
+                    return;
+                }
+                let account_id = st
+                    .accounting
+                    .selected
+                    .strip_prefix("acc-")
+                    .unwrap_or(&st.accounting.selected)
+                    .to_string();
+                st.accounting.acct_archive_busy = true;
+                let generation = crate::data::s(&st.books.workspace["_generation"]);
+                let payload = serde_json::json!({
+                    "account_id": account_id,
+                    "reason": reason,
+                    "expected_generation": generation,
+                });
+                match st.run("account_archive", payload, Some("Saved")) {
+                    Ok(_) => {
+                        st.accounting.acct_archive_open = false;
+                        st.accounting.acct_archive_busy = false;
+                        st.forms.set("acct-archive-reason", "");
+                    }
+                    Err(_) => {
+                        st.accounting.acct_archive_busy = false;
+                    }
+                }
+            }),
+        ],
+        |st| st.accounting.acct_archive_open = false,
     );
 }

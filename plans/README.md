@@ -50,7 +50,7 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 | Plan | Title | Priority | Effort | Depends on | Status |
 |------|-------|----------|--------|------------|--------|
 | [017](017-fiscal-years.md) | Open the next fiscal year; switch years | P1 | M | 002, (014) | DONE |
-| [018](018-chart-of-accounts.md) | Add and archive accounts | P1 | M | — | TODO |
+| [018](018-chart-of-accounts.md) | Add and archive accounts | P1 | M | — | DONE |
 | [019](019-history-paging-and-record-detail.md) | Reach records beyond the latest 100; record detail; full ledger | P1 | M–L | (012), (003) | TODO |
 | [020](020-document-lifecycle.md) | Continue documents: receive, bill, deliver, return in part; edit/convert/delete quotations | P1 | L | 004, 013, 014 | TODO |
 | [021](021-payments-and-cheques.md) | Reverse payments; endorse cheques; cheque register with due dates | P2 | M | 004, 010, 013, 014 | TODO |

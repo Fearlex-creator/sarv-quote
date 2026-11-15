@@ -1859,6 +1859,80 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let id = store.change(|s| s.accounting.add_period(&company_id, name, start_date, end_date, &actor))?;
             json!({"period_id": id})
         }
+        "account_add" => {
+            let expected: i64 = string(&p, "expected_generation")?.parse()?;
+            ensure!(
+                expected == store.local_generation(),
+                "Books changed since review. Refresh and review the financial effect again."
+            );
+            let company_id = company(&store.state, &p)?.id.clone();
+            ensure!(
+                p.get("control") != Some(&Value::Bool(true)),
+                "Control accounts are reserved for subledgers"
+            );
+            let parent_id = match p.get("parent_id") {
+                None | Some(Value::Null) => None,
+                Some(Value::String(s)) if s.trim().is_empty() => None,
+                Some(Value::String(s)) => Some(s.trim().to_string()),
+                Some(_) => bail!("Invalid field: parent_id"),
+            };
+            let code = string(&p, "code")?.to_string();
+            let name = string(&p, "name")?.to_string();
+            let classification: AccountClass = serde_json::from_value(
+                p.get("classification")
+                    .cloned()
+                    .ok_or_else(|| anyhow!("Missing field: classification"))?,
+            )?;
+            let normal_balance: BalanceSide = serde_json::from_value(
+                p.get("normal_balance")
+                    .cloned()
+                    .ok_or_else(|| anyhow!("Missing field: normal_balance"))?,
+            )?;
+            let postable = match p.get("postable") {
+                None | Some(Value::Null) => true,
+                Some(Value::Bool(b)) => *b,
+                Some(_) => bail!("Invalid field: postable"),
+            };
+            if let Some(pid) = &parent_id {
+                let parent = store
+                    .state
+                    .accounting
+                    .accounts
+                    .iter()
+                    .find(|a| a.id == *pid && a.company_id == company_id && !a.archived)
+                    .ok_or_else(|| anyhow!("حساب والد معتبر در این کسب‌وکار انتخاب کنید"))?;
+                ensure!(
+                    parent.classification == classification,
+                    "Parent account classification must match child classification"
+                );
+            }
+            let actor = actor(&p).to_string();
+            let input = NewAccount {
+                company_id,
+                parent_id,
+                code,
+                name,
+                classification,
+                normal_balance,
+                postable,
+                control: false,
+            };
+            let id = store.change(|s| s.accounting.add_account(input, &actor))?;
+            json!({ "account_id": id })
+        }
+        "account_archive" => {
+            let expected: i64 = string(&p, "expected_generation")?.parse()?;
+            ensure!(
+                expected == store.local_generation(),
+                "Books changed since review. Refresh and review the financial effect again."
+            );
+            let account_id = string(&p, "account_id")?.to_string();
+            let reason = string(&p, "reason")?.to_string();
+            ensure!(!reason.trim().is_empty(), "Missing field: reason");
+            let actor = actor(&p).to_string();
+            store.change(|s| s.accounting.archive_account(&account_id, &actor, &reason))?;
+            json!({ "archived": true })
+        }
         "journal_reverse" | "journal_reverse_preview" => {
             company(&store.state, &p)?;
             ensure!(
