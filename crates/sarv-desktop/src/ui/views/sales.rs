@@ -84,14 +84,7 @@ fn drafts(s: &State) -> Vec<serde_json::Value> {
     s.books.list("drafts")
 }
 
-fn build_draft_json(
-    s: &State,
-    draft_id: &str,
-    customer: &str,
-    reference: &str,
-    lines: &[SaleLine],
-    note: &str,
-) -> serde_json::Value {
+fn build_draft_json(s: &State, draft_id: &str, customer: &str, reference: &str, lines: &[SaleLine], note: &str) -> serde_json::Value {
     let date = crate::data::today();
     let wh = pickers::first_warehouse(s);
     let display_unit = if s.fmt.unit == crate::i18n::Unit::Toman { "Toman" } else { "Rial" };
@@ -183,8 +176,16 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
     } else {
         ticket.customer_id.clone()
     };
-    let post_key = if ticket.post_key.is_empty() { st.uid() } else { ticket.post_key.clone() };
-    let draft_id = if ticket.draft_id.is_empty() { st.uid() } else { ticket.draft_id.clone() };
+    let post_key = if ticket.post_key.is_empty() {
+        st.uid()
+    } else {
+        ticket.post_key.clone()
+    };
+    let draft_id = if ticket.draft_id.is_empty() {
+        st.uid()
+    } else {
+        ticket.draft_id.clone()
+    };
     let reference = next_order_ref(st, &post_key);
     let invoice = next_invoice_ref(st, &post_key);
     let mut note = ticket.note.trim().to_string();
@@ -200,7 +201,10 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         }
     };
     draft["supplied_total"] = preview["supplied_total"].clone();
-    if st.run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None).is_err() {
+    if st
+        .run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None)
+        .is_err()
+    {
         return false; // `run` already toasted
     }
     let saved = st
@@ -213,7 +217,10 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
         return false;
     };
-    let revision = saved["revision"].as_u64().or_else(|| saved["revision"].as_str().and_then(|s| s.parse().ok())).unwrap_or(1);
+    let revision = saved["revision"]
+        .as_u64()
+        .or_else(|| saved["revision"].as_str().and_then(|s| s.parse().ok()))
+        .unwrap_or(1);
     let posted = match st.run(
         "draft_post",
         json!({
@@ -232,14 +239,7 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         return false;
     }
     let fulfill_key = format!("{post_key}-fulfill");
-    if let Err(e) = crate::ui::ops::post_operation(
-        st,
-        &record_id,
-        "fulfill",
-        &invoice,
-        "Deliver goods and issue invoice",
-        &fulfill_key,
-    ) {
+    if let Err(e) = crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, "Deliver goods and issue invoice", &fulfill_key) {
         if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
             st.toast_err(e);
         }
@@ -247,7 +247,15 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
     }
     if ticket.pay_method < 2 {
         let invoice_id = format!("{fulfill_key}-invoice");
-        if let Err(e) = settle_invoice(st, &customer, &invoice, &invoice_id, &format!("{post_key}-pay"), ticket.pay_method, &ticket.received) {
+        if let Err(e) = settle_invoice(
+            st,
+            &customer,
+            &invoice,
+            &invoice_id,
+            &format!("{post_key}-pay"),
+            ticket.pay_method,
+            &ticket.received,
+        ) {
             if st.toasts.last().map(|t| t.message.as_str()) != Some(e.as_str()) {
                 st.toast_err(e);
             }
@@ -360,7 +368,11 @@ fn issue_quotation(st: &mut State) {
         let note = st.forms.get("sale-note").trim().to_string();
         if note.is_empty() { "Quotation".into() } else { note }
     };
-    let draft_id = if st.sales.draft_id.is_empty() { st.uid() } else { st.sales.draft_id.clone() };
+    let draft_id = if st.sales.draft_id.is_empty() {
+        st.uid()
+    } else {
+        st.sales.draft_id.clone()
+    };
     let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note);
     let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
         Ok(v) => v,
@@ -407,7 +419,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
         .column(TableColumn::new("customer", ui.t("Customer")).flex(2.0).min(140.0).sortable())
         .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
-        .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(100.0).align(Align::End).sortable())
+        .column(
+            TableColumn::new("amount", ui.t("Amount"))
+                .width(160.0)
+                .min(100.0)
+                .align(Align::End)
+                .sortable(),
+        )
         .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
         .cell(|s: &State, i, col| {
             let record = &sales_records(s)[i];
@@ -477,7 +495,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ui.btn(Btn::Glass, "Return", None, return_selected),
         ],
         col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.fill_or_empty(
-            if s.sales.tab_idx == 0 { sales_records(s).len() } else { drafts(s).len() },
+            if s.sales.tab_idx == 0 {
+                sales_records(s).len()
+            } else {
+                drafts(s).len()
+            },
             if s.sales.tab_idx == 0 { "No invoices" } else { "No drafts" },
             "Sales that are delivered and billed.",
             &icons::SALES,
@@ -521,7 +543,11 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &s.sales.customer_combo,
         |st| &mut st.sales.customer_combo,
         &customer_opts,
-        if s.sales.customer_id.is_empty() { None } else { Some(s.sales.customer_id.as_str()) },
+        if s.sales.customer_id.is_empty() {
+            None
+        } else {
+            Some(s.sales.customer_id.as_str())
+        },
         &ui.t("Select customer"),
         pickers::PICKER_WIDTH,
         |st, id| {
@@ -578,7 +604,11 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 &mut st.sales.line_combos[i]
             },
             &item_opts,
-            if line.item_id.is_empty() { None } else { Some(line.item_id.as_str()) },
+            if line.item_id.is_empty() {
+                None
+            } else {
+                Some(line.item_id.as_str())
+            },
             &ui.t("Select product"),
             pickers::PICKER_WIDTH,
             move |st, id| {
@@ -627,7 +657,11 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .center_y()
         .justify_between()
         .child(ui.muted(ui.t("Amount")))
-        .child(text(ui.f.money(&total.to_string())).font(ui.k.ty.body_medium).color(ui.k.c.text_base));
+        .child(
+            text(ui.f.money(&total.to_string()))
+                .font(ui.k.ty.body_medium)
+                .color(ui.k.c.text_base),
+        );
 
     let form = col()
         .gap(16.0)
@@ -734,10 +768,7 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             true,
             440.0,
             quick,
-            vec![
-                ui.btn(Btn::Ghost, "Cancel", None, |st| st.sales.creating_item_for_line = None),
-                add,
-            ],
+            vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.sales.creating_item_for_line = None), add],
             |st| st.sales.creating_item_for_line = None,
         );
     }
@@ -749,7 +780,11 @@ fn variant<'a>(record: &'a serde_json::Value, key: &str) -> &'a serde_json::Valu
 }
 
 fn sales_ref(record: &serde_json::Value) -> String {
-    for (kind, field) in [("Order", "reference"), ("Fulfill", "invoice_reference"), ("Return", "return_reference")] {
+    for (kind, field) in [
+        ("Order", "reference"),
+        ("Fulfill", "invoice_reference"),
+        ("Return", "return_reference"),
+    ] {
         let value = crate::data::s(&record["command"][kind][field]);
         if !value.is_empty() {
             return value;
@@ -819,7 +854,12 @@ fn print_selected(st: &mut State) {
 }
 
 fn return_selected(st: &mut State) {
-    let Some(record) = st.books.list("sales").into_iter().find(|r| crate::data::s(&r["id"]) == st.sales.selected) else {
+    let Some(record) = st
+        .books
+        .list("sales")
+        .into_iter()
+        .find(|r| crate::data::s(&r["id"]) == st.sales.selected)
+    else {
         st.toast(Tone::Info, st.fmt.t("No invoices"));
         return;
     };

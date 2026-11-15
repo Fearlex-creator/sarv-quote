@@ -71,11 +71,18 @@ fn matches(s: &State, item: &serde_json::Value, query: &str) -> bool {
 }
 
 fn display_digits(s: &State, rials: i64) -> String {
-    if s.fmt.unit == crate::i18n::Unit::Toman { (rials / 10).to_string() } else { rials.to_string() }
+    if s.fmt.unit == crate::i18n::Unit::Toman {
+        (rials / 10).to_string()
+    } else {
+        rials.to_string()
+    }
 }
 
 fn total_rials(s: &State) -> i64 {
-    s.pos.lines.iter().fold(0i64, |sum, line| sum.saturating_add(line.price_rials.saturating_mul(line.qty)))
+    s.pos
+        .lines
+        .iter()
+        .fold(0i64, |sum, line| sum.saturating_add(line.price_rials.saturating_mul(line.qty)))
 }
 
 fn ensure_keys(st: &mut State) {
@@ -106,7 +113,12 @@ fn add_item(st: &mut State, item_id: String) {
         .find(|i| crate::data::s(&i["id"]) == item_id)
         .map(|i| crate::data::s(&i["name"]))
         .unwrap_or_else(|| item_id.clone());
-    st.pos.lines.push(PosLine { item_id, name, qty: 1, price_rials: rials });
+    st.pos.lines.push(PosLine {
+        item_id,
+        name,
+        qty: 1,
+        price_rials: rials,
+    });
 }
 
 fn step(st: &mut State, item_id: &str, delta: i64) {
@@ -231,7 +243,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         tile = tile.child(text(name).font(ui.k.ty.ui_medium).color(ui.k.c.text_base).truncate());
         let mut foot = row().w_full().center_y().child(ui.muted(price_label).grow(1.0).min_w(0.0));
         if count > 0 {
-            foot = foot.child(text(ui.f.digits(&count.to_string())).font(ui.k.ty.ui_medium).color(ui.k.c.text_base));
+            foot = foot.child(
+                text(ui.f.digits(&count.to_string()))
+                    .font(ui.k.ty.ui_medium)
+                    .color(ui.k.c.text_base),
+            );
         }
         tiles = tiles.child(tile.child(foot));
     }
@@ -281,17 +297,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                         .center_y()
                         .child(step_btn(ui, format!("pos-minus-{id}"), "−", move |st| step(st, &minus_id, -1)))
                         .child(
-                            row()
-                                .w(28.0)
-                                .center()
-                                .child(text(ui.f.digits(&line.qty.to_string())).font(ui.k.ty.ui_medium).color(ui.k.c.text_base)),
+                            row().w(28.0).center().child(
+                                text(ui.f.digits(&line.qty.to_string()))
+                                    .font(ui.k.ty.ui_medium)
+                                    .color(ui.k.c.text_base),
+                            ),
                         )
                         .child(step_btn(ui, format!("pos-plus-{plus_id}"), "+", move |st| step(st, &plus_id, 1))),
                 )
                 .child(
-                    row()
-                        .w(96.0)
-                        .child(text(ui.f.money(&amount.to_string())).font(ui.k.ty.ui).color(ui.k.c.text_base).truncate()),
+                    row().w(96.0).child(
+                        text(ui.f.money(&amount.to_string()))
+                            .font(ui.k.ty.ui)
+                            .color(ui.k.c.text_base)
+                            .truncate(),
+                    ),
                 ),
         );
     }
@@ -299,7 +319,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let total = total_rials(s);
     let tendered = s.parse_money_input(&s.forms.get("pos-received"));
     let change = tendered.saturating_sub(total);
-    let total_style = TextStyle { size: 34.0, weight: 600.0, line_height: 40.0, ..ui.k.ty.body_medium };
+    let total_style = TextStyle {
+        size: 34.0,
+        weight: 600.0,
+        line_height: 40.0,
+        ..ui.k.ty.body_medium
+    };
     let mut summary = col().w_full().gap(4.0).child(
         row()
             .w_full()
@@ -319,7 +344,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     }
 
     let customers = pickers::party_options(s, true, false);
-    let current = if s.pos.customer_id.is_empty() { None } else { Some(s.pos.customer_id.as_str()) };
+    let current = if s.pos.customer_id.is_empty() {
+        None
+    } else {
+        Some(s.pos.customer_id.as_str())
+    };
     let customer = pickers::entity_combo(
         ui,
         layer,
@@ -349,7 +378,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             row()
                 .w_full()
                 .gap(8.0)
-                .child(ui.button(Btn::Primary, "pos-cash", &ui.t("Cash"), None, |st| charge(st, 0)).grow(1.0))
+                .child(
+                    ui.button(Btn::Primary, "pos-cash", &ui.t("Cash"), None, |st| charge(st, 0))
+                        .grow(1.0),
+                )
                 .child(ui.button(Btn::Glass, "pos-card", &ui.t("Card"), None, |st| charge(st, 1)).grow(1.0)),
         )
         .child(ui.button(Btn::Ghost, "pos-account", &ui.t("On account"), None, |st| charge(st, 2)));

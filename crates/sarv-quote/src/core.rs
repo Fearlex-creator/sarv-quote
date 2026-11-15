@@ -1,8 +1,7 @@
 //! Guided, immutable trading defaults and a reconciled fresh-company opening.
 //! This is an opening boundary, not operational trade, treasury or statutory software.
 use crate::accounting::{
-    AccountClass, AccountingState, AuditOperation, BalanceSide, JournalKind, JournalLineInput,
-    Money, NewAccount, PostCommand,
+    AccountClass, AccountingState, AuditOperation, BalanceSide, JournalKind, JournalLineInput, Money, NewAccount, PostCommand,
 };
 use crate::domain::{id, normalize, text};
 use anyhow::{Result, ensure};
@@ -202,14 +201,8 @@ impl CoreRole {
             | Self::Inventory
             | Self::SupplierAdvances
             | Self::FixedAssets => AccountClass::Asset,
-            Self::Payables
-            | Self::ChequesPayable
-            | Self::Grni
-            | Self::CustomerAdvances
-            | Self::Loans => AccountClass::Liability,
-            Self::OwnerCapital | Self::OwnerDrawings | Self::RetainedEarnings => {
-                AccountClass::Equity
-            }
+            Self::Payables | Self::ChequesPayable | Self::Grni | Self::CustomerAdvances | Self::Loans => AccountClass::Liability,
+            Self::OwnerCapital | Self::OwnerDrawings | Self::RetainedEarnings => AccountClass::Equity,
             Self::Sales | Self::SalesReturns => AccountClass::Revenue,
             _ => AccountClass::Expense,
         }
@@ -254,8 +247,8 @@ pub struct ChartLeaf {
 }
 pub fn default_chart() -> Vec<ChartLeaf> {
     let codes = [
-        "1101", "1102", "1201", "1202", "1301", "1401", "1501", "2101", "2102", "2201", "2301",
-        "2401", "3101", "3102", "3201", "4101", "4102", "5101", "5201", "5202", "5301",
+        "1101", "1102", "1201", "1202", "1301", "1401", "1501", "2101", "2102", "2201", "2301", "2401", "3101", "3102", "3201", "4101",
+        "4102", "5101", "5201", "5202", "5301",
     ];
     CoreRole::ALL
         .into_iter()
@@ -503,12 +496,8 @@ record!(ControlDifference {
 record!(OpeningPreview { company_id: String, as_of: String, controls: Vec<ControlDifference>, total_debit: Money, total_credit: Money, balanced: bool, reconciled: bool });
 
 pub fn civil_date(value: &str) -> Result<NaiveDate> {
-    let date = NaiveDate::parse_from_str(value, "%Y-%m-%d")
-        .map_err(|_| anyhow::anyhow!("تاریخ مدنی معتبر YYYY-MM-DD وارد کنید"))?;
-    ensure!(
-        date.format("%Y-%m-%d").to_string() == value,
-        "قالب تاریخ مدنی نامعتبر است"
-    );
+    let date = NaiveDate::parse_from_str(value, "%Y-%m-%d").map_err(|_| anyhow::anyhow!("تاریخ مدنی معتبر YYYY-MM-DD وارد کنید"))?;
+    ensure!(date.format("%Y-%m-%d").to_string() == value, "قالب تاریخ مدنی نامعتبر است");
     Ok(date)
 }
 /// Nonnegative exact rational rounded once, with positive half-up ties.
@@ -522,12 +511,7 @@ pub fn positive_half_up(numerator: i128, denominator: i128) -> Result<i64> {
     i64::try_from(rounded).map_err(|_| anyhow::anyhow!("سرریز مبلغ ریالی"))
 }
 impl OpeningCommand {
-    pub fn base_quantity(
-        &self,
-        item_id: &str,
-        unit_id: &str,
-        selected_thousandths: i64,
-    ) -> Result<i64> {
+    pub fn base_quantity(&self, item_id: &str, unit_id: &str, selected_thousandths: i64) -> Result<i64> {
         ensure!(
             (1..=MAX_SOURCE_QUANTITY).contains(&selected_thousandths),
             "مقدار ورودی باید مثبت و در محدودهٔ منبع باشد"
@@ -551,12 +535,8 @@ impl OpeningCommand {
         let product = i128::from(selected_thousandths)
             .checked_mul(i128::from(n))
             .ok_or_else(|| anyhow::anyhow!("سرریز تبدیل واحد"))?;
-        ensure!(
-            product % i128::from(d) == 0,
-            "مقدار تبدیل‌شده در هزارم واحد پایه دقیق نیست"
-        );
-        let base = i64::try_from(product / i128::from(d))
-            .map_err(|_| anyhow::anyhow!("سرریز مقدار پایه"))?;
+        ensure!(product % i128::from(d) == 0, "مقدار تبدیل‌شده در هزارم واحد پایه دقیق نیست");
+        let base = i64::try_from(product / i128::from(d)).map_err(|_| anyhow::anyhow!("سرریز مقدار پایه"))?;
         ensure!(
             base > 0 && (!item.indivisible || base % QUANTITY_SCALE == 0),
             "کالا به مقدار غیرقابل‌تقسیم نیاز دارد"
@@ -571,10 +551,7 @@ impl AccountingState {
         let mut next = self.clone();
         let mut roles = HashSet::new();
         let mut codes = HashSet::new();
-        ensure!(
-            command.chart.len() == CoreRole::ALL.len(),
-            "تمام نقش‌های نمودار حساب لازم است"
-        );
+        ensure!(command.chart.len() == CoreRole::ALL.len(), "تمام نقش‌های نمودار حساب لازم است");
         for leaf in &command.chart {
             text(&leaf.code)?;
             text(&leaf.name)?;
@@ -595,12 +572,7 @@ impl AccountingState {
         for (code, name, class, normal) in [
             ("1", "دارایی‌ها", AccountClass::Asset, BalanceSide::Debit),
             ("2", "بدهی‌ها", AccountClass::Liability, BalanceSide::Credit),
-            (
-                "3",
-                "حقوق مالکانه",
-                AccountClass::Equity,
-                BalanceSide::Credit,
-            ),
+            ("3", "حقوق مالکانه", AccountClass::Equity, BalanceSide::Credit),
             ("4", "درآمدها", AccountClass::Revenue, BalanceSide::Credit),
             ("5", "هزینه‌ها", AccountClass::Expense, BalanceSide::Debit),
         ] {
@@ -622,12 +594,7 @@ impl AccountingState {
         let mut mappings = Vec::new();
         for leaf in &command.chart {
             let role = leaf.role;
-            let parent = groups
-                .iter()
-                .find(|(c, _)| *c == role.classification())
-                .unwrap()
-                .1
-                .clone();
+            let parent = groups.iter().find(|(c, _)| *c == role.classification()).unwrap().1.clone();
             let account_id = next.add_account(
                 NewAccount {
                     company_id: company_id.clone(),
@@ -678,27 +645,17 @@ impl AccountingState {
             "سیاست افتتاحیه باید از شروع سال مالی معتبر باشد"
         );
         ensure!(
-            !self
-                .journals
-                .iter()
-                .any(|j| j.company_id == command.company_id),
+            !self.journals.iter().any(|j| j.company_id == command.company_id),
             "راه‌اندازی هسته فقط برای کسب‌وکار بدون سابقهٔ مالی است؛ اتصال ماندهٔ موجود پشتیبانی نمی‌شود"
         );
         ensure!(
-            !self
-                .core
-                .setups
-                .iter()
-                .any(|s| s.command.company_id == command.company_id),
+            !self.core.setups.iter().any(|s| s.command.company_id == command.company_id),
             "تنظیمات هستهٔ کسب‌وکار قبلاً ثبت شده است"
         );
         self.validate_role_mappings(command, true)
     }
     fn validate_role_mappings(&self, command: &ConfigureCore, active: bool) -> Result<()> {
-        ensure!(
-            command.mappings.len() == CoreRole::ALL.len(),
-            "نگاشت تمام نقش‌های هسته لازم است"
-        );
+        ensure!(command.mappings.len() == CoreRole::ALL.len(), "نگاشت تمام نقش‌های هسته لازم است");
         let mut roles = HashSet::new();
         let mut accounts = HashSet::new();
         for m in &command.mappings {
@@ -762,10 +719,7 @@ impl AccountingState {
             setup.command_sha256 == command_hash(&setup.command)?,
             "محتوای تصویر سیاست با هش ثبت‌شده برابر نیست"
         );
-        ensure!(
-            !self.core.setups.iter().any(|s| s.id == setup.id),
-            "شناسهٔ تنظیمات تکراری است"
-        );
+        ensure!(!self.core.setups.iter().any(|s| s.id == setup.id), "شناسهٔ تنظیمات تکراری است");
         self.activity(
             &setup.command.company_id,
             &setup.id,
@@ -788,15 +742,9 @@ impl AccountingState {
     }
     fn post_opening_inner(&mut self, command: OpeningCommand) -> Result<String> {
         text(&command.request_key)?;
-        if let Some(prior) = self
-            .core
-            .openings
-            .iter()
-            .find(|o| o.command.company_id == command.company_id)
-        {
+        if let Some(prior) = self.core.openings.iter().find(|o| o.command.company_id == command.company_id) {
             ensure!(
-                prior.command_sha256 == opening_hash(&prior.command)?
-                    && self.core.setups.contains(&prior.frozen_setup),
+                prior.command_sha256 == opening_hash(&prior.command)? && self.core.setups.contains(&prior.frozen_setup),
                 "تصویر افتتاحیهٔ موجود نامعتبر است"
             );
             let mut old = prior.command.clone();
@@ -816,45 +764,26 @@ impl AccountingState {
         }
         let preview = self.validate_opening(&command, true)?;
         ensure!(
-            !self
-                .journals
-                .iter()
-                .any(|j| j.company_id == command.company_id),
+            !self.journals.iter().any(|j| j.company_id == command.company_id),
             "افتتاحیه باید پیش از تمام سابقهٔ مالی باشد؛ اتصال به ماندهٔ موجود پشتیبانی نمی‌شود"
         );
-        ensure!(
-            preview.balanced,
-            "جمع مستقل افتتاحیه برابر نیست؛ سرمایه را صریحاً اصلاح کنید"
-        );
-        ensure!(
-            preview.reconciled,
-            "جزئیات افتتاحیه با تمام حساب‌های کنترلی برابر نیست"
-        );
-        let (journal_id, effect) =
-            if preview.total_debit == Money::ZERO && preview.total_credit == Money::ZERO {
-                let initialization_id = id();
-                self.record_zero_request(&command, &initialization_id)?;
-                self.activity(
-                    &command.company_id,
-                    &initialization_id,
-                    AuditOperation::CoreOpeningInitialized,
-                    &command.actor,
-                    &command.reason,
-                );
-                (initialization_id, OpeningEffect::ZeroBalanceInitialization)
-            } else {
-                (
-                    self.post_core_opening(opening_post(&command))?,
-                    OpeningEffect::Journal,
-                )
-            };
-        let frozen_setup = self
-            .core
-            .setups
-            .iter()
-            .find(|s| s.id == command.setup_id)
-            .unwrap()
-            .clone();
+        ensure!(preview.balanced, "جمع مستقل افتتاحیه برابر نیست؛ سرمایه را صریحاً اصلاح کنید");
+        ensure!(preview.reconciled, "جزئیات افتتاحیه با تمام حساب‌های کنترلی برابر نیست");
+        let (journal_id, effect) = if preview.total_debit == Money::ZERO && preview.total_credit == Money::ZERO {
+            let initialization_id = id();
+            self.record_zero_request(&command, &initialization_id)?;
+            self.activity(
+                &command.company_id,
+                &initialization_id,
+                AuditOperation::CoreOpeningInitialized,
+                &command.actor,
+                &command.reason,
+            );
+            (initialization_id, OpeningEffect::ZeroBalanceInitialization)
+        } else {
+            (self.post_core_opening(opening_post(&command))?, OpeningEffect::Journal)
+        };
+        let frozen_setup = self.core.setups.iter().find(|s| s.id == command.setup_id).unwrap().clone();
         let command_sha256 = opening_hash(&command)?;
         self.core.openings.push(OpeningRecord {
             command,
@@ -868,16 +797,9 @@ impl AccountingState {
     pub(crate) fn replay_core_opening(&mut self, command: OpeningCommand) -> Result<String> {
         self.post_opening(command)
     }
-    fn record_zero_request(
-        &mut self,
-        command: &OpeningCommand,
-        initialization_id: &str,
-    ) -> Result<String> {
+    fn record_zero_request(&mut self, command: &OpeningCommand, initialization_id: &str) -> Result<String> {
         ensure!(
-            !self
-                .requests
-                .iter()
-                .any(|r| r.command.request_key == command.request_key),
+            !self.requests.iter().any(|r| r.command.request_key == command.request_key),
             "کلید درخواست قبلاً برای عملیات مالی استفاده شده است"
         );
         ensure!(
@@ -894,16 +816,8 @@ impl AccountingState {
             command_sha256: opening_business_hash(command)?,
             initialization_id: initialization_id.into(),
         };
-        if let Some(prior) = self
-            .core
-            .zero_requests
-            .iter()
-            .find(|r| r.request_key == record.request_key)
-        {
-            ensure!(
-                *prior == record,
-                "کلید درخواست با محتوای متفاوت استفاده شده است"
-            );
+        if let Some(prior) = self.core.zero_requests.iter().find(|r| r.request_key == record.request_key) {
+            ensure!(*prior == record, "کلید درخواست با محتوای متفاوت استفاده شده است");
         } else {
             self.core.zero_requests.push(record);
         }
@@ -919,9 +833,7 @@ impl AccountingState {
                     && o.journal_id == request.initialization_id
                     && o.effect == OpeningEffect::ZeroBalanceInitialization
             })
-            .ok_or_else(|| {
-                anyhow::anyhow!("درخواست راه‌اندازی صفر به افتتاحیهٔ معتبر اشاره نمی‌کند")
-            })?;
+            .ok_or_else(|| anyhow::anyhow!("درخواست راه‌اندازی صفر به افتتاحیهٔ معتبر اشاره نمی‌کند"))?;
         ensure!(
             request.command_sha256 == opening_business_hash(&opening.command)?,
             "هش درخواست راه‌اندازی صفر نامعتبر است"
@@ -939,10 +851,7 @@ impl AccountingState {
             .iter()
             .find(|o| o.command.company_id == company_id)
             .ok_or_else(|| anyhow::anyhow!("افتتاحیهٔ تطبیق‌شده وجود ندارد؛ صفر تأییدشده نیست"))?;
-        ensure!(
-            as_of == opening.command.as_of,
-            "این گزارش فقط مرز آغاز روز افتتاحیه را تأیید می‌کند"
-        );
+        ensure!(as_of == opening.command.as_of, "این گزارش فقط مرز آغاز روز افتتاحیه را تأیید می‌کند");
         ensure!(
             opening.command_sha256 == opening_hash(&opening.command)?,
             "محتوای جزئیات افتتاحیه با هش ثبت‌شده برابر نیست"
@@ -954,9 +863,7 @@ impl AccountingState {
         let mut preview = self.validate_opening(&opening.command, false)?;
         if opening.effect == OpeningEffect::ZeroBalanceInitialization {
             ensure!(
-                preview.total_debit == Money::ZERO
-                    && preview.total_credit == Money::ZERO
-                    && preview.reconciled,
+                preview.total_debit == Money::ZERO && preview.total_credit == Money::ZERO && preview.reconciled,
                 "راه‌اندازی بدون مانده نمی‌تواند مبلغ مالی داشته باشد"
             );
             ensure!(
@@ -989,11 +896,7 @@ impl AccountingState {
         for row in &mut preview.controls {
             let mut debit = Money::ZERO;
             let mut credit = Money::ZERO;
-            for line in journal
-                .lines
-                .iter()
-                .filter(|l| l.account.id == row.account_id)
-            {
+            for line in journal.lines.iter().filter(|l| l.account.id == row.account_id) {
                 debit = debit.checked_add(line.debit)?;
                 credit = credit.checked_add(line.credit)?;
             }
@@ -1024,14 +927,8 @@ impl AccountingState {
             .core
             .setups
             .iter()
-            .find(|s| {
-                s.id == c.setup_id
-                    && s.command.company_id == c.company_id
-                    && s.command.period_id == c.period_id
-            })
-            .ok_or_else(|| {
-                anyhow::anyhow!("تنظیمات افتتاحیه متعلق به این کسب‌وکار و سال مالی نیست")
-            })?;
+            .find(|s| s.id == c.setup_id && s.command.company_id == c.company_id && s.command.period_id == c.period_id)
+            .ok_or_else(|| anyhow::anyhow!("تنظیمات افتتاحیه متعلق به این کسب‌وکار و سال مالی نیست"))?;
         setup.command.policy.validate()?;
         ensure!(
             setup.command_sha256 == command_hash(&setup.command)?,
@@ -1050,11 +947,7 @@ impl AccountingState {
         );
         if active {
             ensure!(
-                !self
-                    .core
-                    .openings
-                    .iter()
-                    .any(|o| o.command.company_id == c.company_id),
+                !self.core.openings.iter().any(|o| o.command.company_id == c.company_id),
                 "افتتاحیهٔ این کسب‌وکار قبلاً نهایی شده است؛ پیش‌نمایش جدید مجاز نیست"
             );
             ensure!(
@@ -1074,12 +967,7 @@ impl AccountingState {
             .chain(self.core.openings.iter().map(|o| o.journal_id.as_str()))
             .collect();
         ids.extend(self.procurement_entity_ids());
-        for opening in self
-            .core
-            .openings
-            .iter()
-            .filter(|o| o.command.company_id != c.company_id)
-        {
+        for opening in self.core.openings.iter().filter(|o| o.command.company_id != c.company_id) {
             for (entity, _) in opening_entities(&opening.command) {
                 ids.insert(entity);
             }
@@ -1098,20 +986,14 @@ impl AccountingState {
         }
         for p in &c.parties {
             text(&p.name)?;
-            ensure!(
-                p.customer || p.supplier,
-                "شخص باید نقش مشتری یا تأمین‌کننده داشته باشد"
-            );
+            ensure!(p.customer || p.supplier, "شخص باید نقش مشتری یا تأمین‌کننده داشته باشد");
         }
         let mut skus = HashSet::new();
         for item in &c.items {
             text(&item.sku)?;
             text(&item.name)?;
             ensure!(skus.insert(normalize(&item.sku)), "کد کالا تکراری است");
-            ensure!(
-                c.units.iter().any(|u| u.id == item.base_unit_id),
-                "واحد پایهٔ کالا مشخص نیست"
-            );
+            ensure!(c.units.iter().any(|u| u.id == item.base_unit_id), "واحد پایهٔ کالا مشخص نیست");
             let mut packs = HashSet::new();
             for pack in &item.packs {
                 ensure!(
@@ -1150,13 +1032,9 @@ impl AccountingState {
             text(&bank.source_reference)?;
             amount(bank.balance, false)?;
             amount(bank.statement_balance, false)?;
+            ensure!(bank.balance == bank.statement_balance, "ماندهٔ بانک و صورت‌حساب مستقل برابر نیست");
             ensure!(
-                bank.balance == bank.statement_balance,
-                "ماندهٔ بانک و صورت‌حساب مستقل برابر نیست"
-            );
-            ensure!(
-                bank_ids.insert(normalize(&bank.bank_reference))
-                    && sources.insert((CoreRole::Bank, normalize(&bank.source_reference))),
+                bank_ids.insert(normalize(&bank.bank_reference)) && sources.insert((CoreRole::Bank, normalize(&bank.source_reference))),
                 "حساب بانک یا مرجع آن تکراری است"
             );
             add_detail(&mut detail, CoreRole::Bank, bank.balance)?;
@@ -1168,16 +1046,9 @@ impl AccountingState {
             text(&open.document_reference)?;
             historical_date(&open.document_date, &c.as_of)?;
             civil_date(&open.due_date)?;
-            ensure!(
-                open.due_date >= open.document_date,
-                "سررسید پیش از تاریخ سند است"
-            );
+            ensure!(open.due_date >= open.document_date, "سررسید پیش از تاریخ سند است");
             amount(open.remaining, true)?;
-            let role = if customer {
-                CoreRole::Receivables
-            } else {
-                CoreRole::Payables
-            };
+            let role = if customer { CoreRole::Receivables } else { CoreRole::Payables };
             ensure!(
                 documents.insert((role, &open.party_id, normalize(&open.document_reference))),
                 "فاکتور باز تکراری است"
@@ -1196,11 +1067,7 @@ impl AccountingState {
                 CoreRole::SupplierAdvances
             };
             ensure!(
-                documents.insert((
-                    role,
-                    &advance.party_id,
-                    normalize(&advance.source_reference)
-                )),
+                documents.insert((role, &advance.party_id, normalize(&advance.source_reference))),
                 "مرجع پیش‌پرداخت/پیش‌دریافت تکراری است"
             );
             add_detail(&mut detail, role, advance.remaining)?;
@@ -1219,10 +1086,7 @@ impl AccountingState {
             }
             historical_date(&cheque.issue_date, &c.as_of)?;
             civil_date(&cheque.due_date)?;
-            ensure!(
-                cheque.due_date >= cheque.issue_date,
-                "سررسید چک پیش از تاریخ صدور است"
-            );
+            ensure!(cheque.due_date >= cheque.issue_date, "سررسید چک پیش از تاریخ صدور است");
             ensure!(
                 cheque.state
                     == if customer {
@@ -1240,10 +1104,7 @@ impl AccountingState {
                 "مرجع تسویهٔ چک با فاکتور باز هم‌پوشانی دارد؛ افتتاحیهٔ جزئی ترکیبی پشتیبانی نمی‌شود"
             );
             ensure!(
-                cheques.insert((
-                    normalize(&cheque.bank_reference),
-                    normalize(&cheque.cheque_reference)
-                )),
+                cheques.insert((normalize(&cheque.bank_reference), normalize(&cheque.cheque_reference))),
                 "شناسهٔ بانکی چک تکراری است"
             );
             let role = if customer {
@@ -1263,15 +1124,9 @@ impl AccountingState {
                 stock_sources.insert(normalize(&stock.source_reference)),
                 "مرجع موجودی افتتاحیه تکراری است"
             );
-            let qty =
-                c.base_quantity(&stock.item_id, &stock.unit_id, stock.quantity_thousandths)?;
-            let pool = pools
-                .entry((&stock.item_id, &stock.warehouse_id))
-                .or_insert((0, Money::ZERO));
-            pool.0 = pool
-                .0
-                .checked_add(qty)
-                .ok_or_else(|| anyhow::anyhow!("سرریز مقدار موجودی"))?;
+            let qty = c.base_quantity(&stock.item_id, &stock.unit_id, stock.quantity_thousandths)?;
+            let pool = pools.entry((&stock.item_id, &stock.warehouse_id)).or_insert((0, Money::ZERO));
+            pool.0 = pool.0.checked_add(qty).ok_or_else(|| anyhow::anyhow!("سرریز مقدار موجودی"))?;
             pool.1 = pool.1.checked_add(stock.value)?;
             add_detail(&mut detail, CoreRole::Inventory, stock.value)?;
         }
@@ -1287,11 +1142,7 @@ impl AccountingState {
                 receipt_refs.insert((&receipt.party_id, normalize(&receipt.receipt_reference))),
                 "رسید فاکتور‌نشده تکراری است"
             );
-            let qty = c.base_quantity(
-                &receipt.item_id,
-                &receipt.unit_id,
-                receipt.quantity_thousandths,
-            )?;
+            let qty = c.base_quantity(&receipt.item_id, &receipt.unit_id, receipt.quantity_thousandths)?;
             let pool = unbilled
                 .entry((&receipt.item_id, &receipt.warehouse_id))
                 .or_insert((0, Money::ZERO));
@@ -1303,9 +1154,9 @@ impl AccountingState {
             add_detail(&mut detail, CoreRole::Grni, receipt.value)?;
         }
         for (key, (qty, value)) in unbilled {
-            let pool = pools.get(&key).ok_or_else(|| {
-                anyhow::anyhow!("کالای فاکتور‌نشده باید در همان موجودی کالا/انبار منظور شده باشد")
-            })?;
+            let pool = pools
+                .get(&key)
+                .ok_or_else(|| anyhow::anyhow!("کالای فاکتور‌نشده باید در همان موجودی کالا/انبار منظور شده باشد"))?;
             ensure!(
                 qty <= pool.0 && value.rials() <= pool.1.rials(),
                 "کالای فاکتور‌نشده از زیرمجموعهٔ موجودی همان کالا/انبار بیشتر است"
@@ -1327,31 +1178,20 @@ impl AccountingState {
                 .iter()
                 .find(|a| a.id == balance.account_id && a.company_id == c.company_id)
                 .ok_or_else(|| anyhow::anyhow!("حساب مانده متعلق به کسب‌وکار نیست"))?;
+            ensure!(a.postable && (!active || !a.archived), "حساب مانده بایگانی یا گروه غیرقابل ثبت است");
             ensure!(
-                a.postable && (!active || !a.archived),
-                "حساب مانده بایگانی یا گروه غیرقابل ثبت است"
-            );
-            ensure!(
-                !matches!(
-                    a.classification,
-                    AccountClass::Revenue | AccountClass::Expense
-                ) || (balance.debit == Money::ZERO && balance.credit == Money::ZERO),
+                !matches!(a.classification, AccountClass::Revenue | AccountClass::Expense)
+                    || (balance.debit == Money::ZERO && balance.credit == Money::ZERO),
                 "افتتاحیهٔ تازه نباید درآمد یا هزینهٔ تاریخی ایجاد کند"
             );
             if a.control {
                 ensure!(
-                    setup
-                        .command
-                        .mappings
-                        .iter()
-                        .any(|m| m.account_id == a.id && m.role.is_control()),
+                    setup.command.mappings.iter().any(|m| m.account_id == a.id && m.role.is_control()),
                     "حساب کنترلی مانده نگاشت معتبر ندارد"
                 );
             }
             ensure!(
-                balances
-                    .insert(balance.account_id.as_str(), balance)
-                    .is_none(),
+                balances.insert(balance.account_id.as_str(), balance).is_none(),
                 "ماندهٔ حساب افتتاحیه تکراری است"
             );
             debit = debit.checked_add(balance.debit)?;
@@ -1360,12 +1200,9 @@ impl AccountingState {
         let mut controls = Vec::new();
         for role in CoreRole::ALL.into_iter().filter(|r| r.is_control()) {
             let account_id = setup.account_id(role)?;
-            let balance = balances.get(account_id).ok_or_else(|| {
-                anyhow::anyhow!(
-                    "ماندهٔ مستقل {} باید حتی در حالت صفر صریحاً اعلام شود",
-                    role.label()
-                )
-            })?;
+            let balance = balances
+                .get(account_id)
+                .ok_or_else(|| anyhow::anyhow!("ماندهٔ مستقل {} باید حتی در حالت صفر صریحاً اعلام شود", role.label()))?;
             let ledger = if role.normal_balance() == BalanceSide::Debit {
                 balance.debit.checked_sub(balance.credit)?
             } else {
@@ -1439,66 +1276,23 @@ fn party(c: &OpeningCommand, id: &str, customer: bool) -> Result<()> {
     Ok(())
 }
 fn warehouse(c: &OpeningCommand, id: &str) -> Result<()> {
-    ensure!(
-        c.warehouses.iter().any(|w| w.id == id),
-        "انبار مقدار پیدا نشد"
-    );
+    ensure!(c.warehouses.iter().any(|w| w.id == id), "انبار مقدار پیدا نشد");
     Ok(())
 }
 fn opening_entities(c: &OpeningCommand) -> Vec<(&str, &str)> {
     c.parties
         .iter()
         .map(|x| (x.id.as_str(), x.company_id.as_str()))
-        .chain(
-            c.units
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.items
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.warehouses
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.cash
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.banks
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.open_items
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.advances
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.cheques
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.stock
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
-        .chain(
-            c.grni
-                .iter()
-                .map(|x| (x.id.as_str(), x.company_id.as_str())),
-        )
+        .chain(c.units.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.items.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.warehouses.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.cash.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.banks.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.open_items.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.advances.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.cheques.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.stock.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
+        .chain(c.grni.iter().map(|x| (x.id.as_str(), x.company_id.as_str())))
         .collect()
 }
 fn opening_post(c: &OpeningCommand) -> PostCommand {
@@ -1528,17 +1322,11 @@ fn opening_post(c: &OpeningCommand) -> PostCommand {
 }
 
 fn command_hash(command: &ConfigureCore) -> Result<String> {
-    Ok(format!(
-        "{:x}",
-        Sha256::digest(serde_json::to_vec(command)?)
-    ))
+    Ok(format!("{:x}", Sha256::digest(serde_json::to_vec(command)?)))
 }
 
 fn opening_hash(command: &OpeningCommand) -> Result<String> {
-    Ok(format!(
-        "{:x}",
-        Sha256::digest(serde_json::to_vec(command)?)
-    ))
+    Ok(format!("{:x}", Sha256::digest(serde_json::to_vec(command)?)))
 }
 
 fn opening_business_hash(command: &OpeningCommand) -> Result<String> {

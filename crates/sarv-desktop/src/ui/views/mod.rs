@@ -9,5 +9,5 @@ pub mod purchases;
 pub mod reports;
 pub mod sales;
 pub mod settings;
-pub mod sheets;
 pub mod setup;
+pub mod sheets;

@@ -1,10 +1,10 @@
 //! Simple money-in / money-out book that works without a full company chart.
 //! Each entry implies a balanced pair of journal sides (personal mode language).
 
-use anyhow::{ensure, Result};
+use anyhow::{Result, ensure};
 use serde::{Deserialize, Serialize};
 
-use crate::domain::{id, now, MAX_MONEY};
+use crate::domain::{MAX_MONEY, id, now};
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "camelCase")]
@@ -159,15 +159,9 @@ impl Cashbook {
     pub fn add(&mut self, input: CashEntryInput) -> Result<CashEntry> {
         self.ensure_default_wallets();
         let amount_rial = input.amount_rial;
-        ensure!(
-            (1..=MAX_MONEY).contains(&amount_rial),
-            "مبلغ باید بزرگ‌تر از صفر باشد"
-        );
+        ensure!((1..=MAX_MONEY).contains(&amount_rial), "مبلغ باید بزرگ‌تر از صفر باشد");
         let payee = input.payee.trim().to_string();
-        ensure!(
-            !payee.is_empty() && payee.chars().count() <= 160,
-            "طرف حساب را وارد کنید"
-        );
+        ensure!(!payee.is_empty() && payee.chars().count() <= 160, "طرف حساب را وارد کنید");
         let account = {
             let trimmed = input.account.trim();
             if trimmed.is_empty() {
@@ -243,10 +237,7 @@ impl Cashbook {
         self.ensure_default_wallets();
         let name = input.name.trim().to_string();
         ensure!(!name.is_empty() && name.chars().count() <= 80, "نام حساب الزامی است");
-        ensure!(
-            input.opening_balance_rial.abs() <= MAX_MONEY,
-            "ماندهٔ افتتاحیه نامعتبر است"
-        );
+        ensure!(input.opening_balance_rial.abs() <= MAX_MONEY, "ماندهٔ افتتاحیه نامعتبر است");
         if let Some(existing) = self.wallets.iter_mut().find(|w| w.id == input.id) {
             existing.name = name;
             existing.kind = input.kind;
@@ -258,11 +249,7 @@ impl Cashbook {
             return Ok(existing.clone());
         }
         let wallet = Wallet {
-            id: if input.id.is_empty() {
-                id()
-            } else {
-                input.id
-            },
+            id: if input.id.is_empty() { id() } else { input.id },
             name,
             kind: input.kind,
             group: input.group.trim().to_string(),
@@ -292,15 +279,8 @@ impl Cashbook {
     }
 
     pub fn net_cash(&self) -> i64 {
-        let opening: i64 = self
-            .wallets
-            .iter()
-            .filter(|w| !w.archived)
-            .map(|w| w.opening_balance_rial)
-            .sum();
-        opening
-            .saturating_add(self.income_total())
-            .saturating_sub(self.expense_total())
+        let opening: i64 = self.wallets.iter().filter(|w| !w.archived).map(|w| w.opening_balance_rial).sum();
+        opening.saturating_add(self.income_total()).saturating_sub(self.expense_total())
     }
 
     pub fn balance_for(&self, name: &str) -> i64 {
@@ -375,9 +355,7 @@ fn remember(memory: &mut UiMemory, entry: &CashEntry) {
     push_unique(&mut memory.payees, &entry.payee, 24);
     if !entry.category.is_empty() {
         push_unique(&mut memory.categories, &entry.category, 24);
-        memory
-            .payee_category
-            .insert(entry.payee.clone(), entry.category.clone());
+        memory.payee_category.insert(entry.payee.clone(), entry.category.clone());
         while memory.payee_category.len() > 64 {
             if let Some(k) = memory.payee_category.keys().next().cloned() {
                 memory.payee_category.remove(&k);

@@ -6,13 +6,12 @@ use std::sync::Mutex;
 use anyhow::{Context, Result};
 use serde::Serialize;
 
+use crate::cashbook::{CashEntry, CashEntryInput, Wallet, WalletInput};
 use crate::domain::{Draft, Settings, State};
 use crate::store::Store;
-use crate::cashbook::{CashEntry, CashEntryInput, Wallet, WalletInput};
 use crate::views::{
-    account_rows, all_ledger_rows, contact_rows, dashboard, settings_view, suggestions,
-    upsert_contact, wallet_account_rows, AccountRow, ContactInput, ContactRow, DashboardView,
-    LedgerRow, SettingsView, SuggestView,
+    AccountRow, ContactInput, ContactRow, DashboardView, LedgerRow, SettingsView, SuggestView, account_rows, all_ledger_rows, contact_rows,
+    dashboard, settings_view, suggestions, upsert_contact, wallet_account_rows,
 };
 
 #[derive(Debug, Clone, Serialize)]
@@ -34,9 +33,7 @@ pub struct AppService {
 impl AppService {
     pub fn open(data_dir: impl AsRef<Path>) -> Result<Self> {
         let store = Store::open(data_dir.as_ref()).context("باز کردن پایگاه داده")?;
-        Ok(Self {
-            store: Mutex::new(store),
-        })
+        Ok(Self { store: Mutex::new(store) })
     }
 
     pub fn open_default() -> Result<Self> {
@@ -48,10 +45,7 @@ impl AppService {
 
     pub fn snapshot(&self) -> Result<Snapshot> {
         let store = self.store.lock().expect("store lock");
-        Ok(snapshot_from_state(
-            &store.state,
-            store.local_generation() as u64,
-        ))
+        Ok(snapshot_from_state(&store.state, store.local_generation() as u64))
     }
 
     pub fn dashboard(&self) -> Result<DashboardView> {

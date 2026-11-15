@@ -26,7 +26,9 @@ pub struct SheetsState {
 impl Default for SheetsState {
     fn default() -> Self {
         Self {
-            book: Workbook { sheets: vec![blank_sheet("Sheet 1")] },
+            book: Workbook {
+                sheets: vec![blank_sheet("Sheet 1")],
+            },
             active: 0,
             col: 0,
             row: 0,
@@ -38,7 +40,10 @@ impl Default for SheetsState {
 }
 
 fn blank_sheet(name: &str) -> Sheet {
-    Sheet { name: name.to_string(), cells: BTreeMap::new() }
+    Sheet {
+        name: name.to_string(),
+        cells: BTreeMap::new(),
+    }
 }
 
 fn starter(st: &State) -> Workbook {
@@ -54,7 +59,12 @@ fn starter(st: &State) -> Workbook {
         cells.insert(b.to_string(), formula);
     }
     cells.insert("A6".to_string(), st.fmt.t("Notes"));
-    Workbook { sheets: vec![Sheet { name: st.fmt.t("Sheet 1"), cells }] }
+    Workbook {
+        sheets: vec![Sheet {
+            name: st.fmt.t("Sheet 1"),
+            cells,
+        }],
+    }
 }
 
 fn current<'a>(st: &'a State) -> &'a Sheet {
@@ -209,7 +219,10 @@ fn save(st: &mut State) {
     let Ok(workbook) = serde_json::to_value(&st.sheets.book) else {
         return;
     };
-    if st.run("sheet_save", serde_json::json!({ "workbook": workbook }), Some("Sheet saved")).is_ok() {
+    if st
+        .run("sheet_save", serde_json::json!({ "workbook": workbook }), Some("Sheet saved"))
+        .is_ok()
+    {
         st.sheets.dirty = false;
     }
 }
@@ -263,7 +276,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     let mut grid = col().key("sheet-grid").w_full().gap(0.0);
     for row_i in 0..ROWS {
         let mut line = row().key(format!("sheet-row-{}", row_i + 1)).gap(0.0).child(
-            row().w(44.0).h(28.0).center().child(ui.muted(ui.f.digits(&(row_i + 1).to_string()))),
+            row()
+                .w(44.0)
+                .h(28.0)
+                .center()
+                .child(ui.muted(ui.f.digits(&(row_i + 1).to_string()))),
         );
         for col in 0..COLS {
             let address = addr(col, row_i);

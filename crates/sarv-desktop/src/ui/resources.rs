@@ -99,11 +99,7 @@ impl State {
         } else {
             category
         };
-        let min_stock = if minimum_stock.trim().is_empty() {
-            "0"
-        } else {
-            minimum_stock
-        };
+        let min_stock = if minimum_stock.trim().is_empty() { "0" } else { minimum_stock };
         let mut payload = json!({
             "kind": "item",
             "id": id,
@@ -158,9 +154,7 @@ impl State {
 
     pub fn ensure_walk_in_customer(&mut self) -> Result<String, String> {
         let label = self.fmt.t("Walk-in customer");
-        if let Some(id) = self
-            .books
-            .workspace["resources"]["parties"]
+        if let Some(id) = self.books.workspace["resources"]["parties"]
             .as_array()
             .into_iter()
             .flatten()

@@ -13,12 +13,7 @@ fn main() -> anyhow::Result<()> {
     println!("generation: {}", store.local_generation());
     println!("companies: {}", s.accounting.companies.len());
     for c in &s.accounting.companies {
-        let journals = s
-            .accounting
-            .journals
-            .iter()
-            .filter(|j| j.company_id == c.id)
-            .count();
+        let journals = s.accounting.journals.iter().filter(|j| j.company_id == c.id).count();
         let sales = s
             .accounting
             .sales
@@ -56,10 +51,7 @@ fn main() -> anyhow::Result<()> {
     let backup = dir.join("doctor-backup.json");
     store.backup(&backup)?;
     let restored = Store::restore_preview(&backup)?;
-    println!(
-        "backup+restore-preview: OK ({} bytes)",
-        std::fs::metadata(&backup)?.len()
-    );
+    println!("backup+restore-preview: OK ({} bytes)", std::fs::metadata(&backup)?.len());
     std::fs::remove_file(&backup)?;
     let fresh = tempfile::tempdir()?;
     let mut target = Store::open(fresh.path())?;

@@ -243,7 +243,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
     .column(TableColumn::new("vendor", ui.t("Vendor")).flex(2.0).min(140.0).sortable())
     .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
-    .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(100.0).align(Align::End).sortable())
+    .column(
+        TableColumn::new("amount", ui.t("Amount"))
+            .width(160.0)
+            .min(100.0)
+            .align(Align::End)
+            .sortable(),
+    )
     .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
     .cell(|s: &State, i, col| {
         let list = filtered(s);
@@ -401,7 +407,11 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 &mut st.purchases.line_combos[i]
             },
             &item_opts,
-            if line.item_id.is_empty() { None } else { Some(line.item_id.as_str()) },
+            if line.item_id.is_empty() {
+                None
+            } else {
+                Some(line.item_id.as_str())
+            },
             &ui.t("Select product"),
             pickers::PICKER_WIDTH,
             move |st, id| {
@@ -512,7 +522,12 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
 }
 
 fn return_selected(st: &mut State) {
-    let Some(record) = st.books.list("purchases").into_iter().find(|r| crate::data::s(&r["id"]) == st.purchases.selected) else {
+    let Some(record) = st
+        .books
+        .list("purchases")
+        .into_iter()
+        .find(|r| crate::data::s(&r["id"]) == st.purchases.selected)
+    else {
         st.toast(Tone::Info, st.fmt.t("No records"));
         return;
     };

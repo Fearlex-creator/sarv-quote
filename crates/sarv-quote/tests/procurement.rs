@@ -28,12 +28,7 @@ fn second_zero_company(s: &mut AccountingState) -> sarv_quote::core::OpeningComm
     empty.cheques.clear();
     empty.stock.clear();
     empty.grni.clear();
-    let setup = s
-        .core
-        .setups
-        .iter()
-        .find(|p| p.id == second.setup_id)
-        .unwrap();
+    let setup = s.core.setups.iter().find(|p| p.id == second.setup_id).unwrap();
     empty.balances = CoreRole::ALL
         .into_iter()
         .filter(|r| r.is_control())
@@ -56,10 +51,7 @@ fn irr(v: i64) -> Money {
     Money::from_rials(v)
 }
 fn fixture() -> AccountingState {
-    let v: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))
-    .unwrap();
+    let v: serde_json::Value = serde_json::from_str(include_str!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let s: AccountingState = serde_json::from_value(v["state"]["accounting"].clone()).unwrap();
     s.validate().unwrap();
     s
@@ -83,18 +75,8 @@ fn ids(s: &AccountingState) -> (String, String, String, String, String) {
     (
         o.items[0].id.clone(),
         o.items[0].base_unit_id.clone(),
-        o.stock
-            .iter()
-            .find(|x| x.value == irr(240))
-            .unwrap()
-            .warehouse_id
-            .clone(),
-        o.stock
-            .iter()
-            .find(|x| x.value == irr(60))
-            .unwrap()
-            .warehouse_id
-            .clone(),
+        o.stock.iter().find(|x| x.value == irr(240)).unwrap().warehouse_id.clone(),
+        o.stock.iter().find(|x| x.value == irr(60)).unwrap().warehouse_id.clone(),
         o.grni[0].party_id.clone(),
     )
 }
@@ -121,14 +103,7 @@ fn order(s: &AccountingState) -> ProcurementCommand {
         supplied_total: irr(180),
     })
 }
-fn receive(
-    s: &AccountingState,
-    order: &str,
-    source: &str,
-    date: &str,
-    q: i64,
-    v: i64,
-) -> ProcurementCommand {
+fn receive(s: &AccountingState, order: &str, source: &str, date: &str, q: i64, v: i64) -> ProcurementCommand {
     let (_, unit, w, _, _) = ids(s);
     ProcurementCommand::Receive(ReceiveOrder {
         context: context(s, source, date),
@@ -145,12 +120,7 @@ fn receive(
         supplied_total: irr(v),
     })
 }
-fn bill(
-    s: &AccountingState,
-    source: &str,
-    date: &str,
-    lines: &[(&str, i64, i64)],
-) -> ProcurementCommand {
+fn bill(s: &AccountingState, source: &str, date: &str, lines: &[(&str, i64, i64)]) -> ProcurementCommand {
     let (_, _, _, _, party) = ids(s);
     ProcurementCommand::Bill(MatchBill {
         context: context(s, source, date),
@@ -192,25 +162,14 @@ fn main_sequence() -> (AccountingState, Vec<ProcurementCommand>) {
     s.post_procurement_command(rb.clone()).unwrap();
     let ba = bill(&s, "BA", "2026-03-24", &[("RA-L", 2000, 30)]);
     s.post_procurement_command(ba.clone()).unwrap();
-    let bb = bill(
-        &s,
-        "BB",
-        "2026-03-25",
-        &[("RA-L", 3000, 45), ("RB-L", 7000, 105)],
-    );
+    let bb = bill(&s, "BB", "2026-03-25", &[("RA-L", 3000, 45), ("RB-L", 7000, 105)]);
     s.post_procurement_command(bb.clone()).unwrap();
     let tx = transfer(&s, "TX", "2026-03-26", 6000);
     s.post_procurement_command(tx.clone()).unwrap();
     (s, vec![po, ra, rb, ba, bb, tx])
 }
 fn control(report: &ProcurementReconciliation, role: CoreRole) -> i64 {
-    report
-        .controls
-        .iter()
-        .find(|r| r.role == role)
-        .unwrap()
-        .detail
-        .rials()
+    report.controls.iter().find(|r| r.role == role).unwrap().detail.rials()
 }
 #[test]
 fn literal_partial_order_receipts_bills_and_transfer_reconcile_at_every_cutoff() {
@@ -241,12 +200,7 @@ fn literal_partial_order_receipts_bills_and_transfer_reconcile_at_every_cutoff()
         let a = r.stock.iter().find(|p| p.warehouse_id == w1).unwrap();
         let b = r.stock.iter().find(|p| p.warehouse_id == w2).unwrap();
         assert_eq!(
-            (
-                a.quantity_thousandths,
-                a.value.rials(),
-                b.quantity_thousandths,
-                b.value.rials()
-            ),
+            (a.quantity_thousandths, a.value.rials(), b.quantity_thousandths, b.value.rials()),
             (q1, v1, q2, v2)
         );
         for (role, expected) in [
@@ -268,19 +222,10 @@ fn literal_partial_order_receipts_bills_and_transfer_reconcile_at_every_cutoff()
     assert_eq!(tx.movements.len(), 2);
     assert_eq!(tx.movements[0].value, irr(70));
     assert_eq!(tx.movements[1].value, irr(70));
-    assert_eq!(
-        s.audit.last().unwrap().operation,
-        AuditOperation::ProcurementRecorded
-    );
-    assert_eq!(
-        s.reconcile_opening(company, "2026-03-21")
-            .unwrap()
-            .total_debit,
-        irr(1251)
-    );
+    assert_eq!(s.audit.last().unwrap().operation, AuditOperation::ProcurementRecorded);
+    assert_eq!(s.reconcile_opening(company, "2026-03-21").unwrap().total_debit, irr(1251));
     s.validate().unwrap();
-    let restored: AccountingState =
-        serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
+    let restored: AccountingState = serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
     restored.validate().unwrap();
     assert_eq!(restored, s);
 }
@@ -290,12 +235,7 @@ fn opening_grni_is_matched_without_receiving_historical_stock_again() {
     let opening = s.core.openings[0].command.grni[0].id.clone();
     let b = bill(&s, "OPENING-BILL", "2026-03-27", &[(&opening, 2000, 20)]);
     s.post_procurement_command(b).unwrap();
-    let b = bill(
-        &s,
-        "OPENING-BILL-FINAL",
-        "2026-03-28",
-        &[(&opening, 3000, 30)],
-    );
+    let b = bill(&s, "OPENING-BILL-FINAL", "2026-03-28", &[(&opening, 3000, 30)]);
     s.post_procurement_command(b).unwrap();
     let r = s
         .procurement_reconcile(&s.core.openings[0].command.company_id, "2026-03-28")
@@ -308,10 +248,7 @@ fn opening_grni_is_matched_without_receiving_historical_stock_again() {
         ),
         (379, 0, 480)
     );
-    assert_eq!(
-        r.stock.iter().map(|p| p.quantity_thousandths).sum::<i64>(),
-        42000
-    );
+    assert_eq!(r.stock.iter().map(|p| p.quantity_thousandths).sum::<i64>(), 42000);
     s.validate().unwrap();
 }
 #[test]
@@ -320,10 +257,7 @@ fn exact_retry_aliases_and_changed_source_revision_dates_cost_or_provenance_reje
     let once = s.clone();
     for cmd in &commands {
         let result = s.post_procurement_command(cmd.clone()).unwrap();
-        assert_eq!(
-            s.procurement_document(&result.record_id).unwrap().command,
-            *cmd
-        );
+        assert_eq!(s.procurement_document(&result.record_id).unwrap().command, *cmd);
     }
     assert_eq!(s, once);
     for (i, cmd) in commands.iter().enumerate() {
@@ -388,13 +322,9 @@ fn invalid_overreceipt_overbill_variance_transfer_backdate_and_lock_are_atomic()
         assert_eq!(s, before);
     }
     let period = s.core.openings[0].command.period_id.clone();
-    s.set_period_lock(&period, true, "owner", "period lock")
-        .unwrap();
+    s.set_period_lock(&period, true, "owner", "period lock").unwrap();
     let locked = s.clone();
-    assert!(
-        s.post_procurement_command(transfer(&s, "LOCKED", "2026-03-27", 1000))
-            .is_err()
-    );
+    assert!(s.post_procurement_command(transfer(&s, "LOCKED", "2026-03-27", 1000)).is_err());
     assert_eq!(s, locked);
     s.validate().unwrap();
 }
@@ -443,8 +373,7 @@ fn zero_and_residual_costs_preserve_full_original_allocation_and_empty_pool() {
             name: "new warehouse".into(),
         }],
     };
-    s.post_procurement_command(ProcurementCommand::Resources(resources))
-        .unwrap();
+    s.post_procurement_command(ProcurementCommand::Resources(resources)).unwrap();
     assert!(
         s.procurement_resources(&company)
             .unwrap()
@@ -472,9 +401,7 @@ fn zero_and_residual_costs_preserve_full_original_allocation_and_empty_pool() {
         document_discount: Money::ZERO,
         supplied_total: irr(1),
     };
-    let p = s
-        .post_procurement_command(ProcurementCommand::Order(po))
-        .unwrap();
+    let p = s.post_procurement_command(ProcurementCommand::Order(po)).unwrap();
     for (source, value, date) in [("TINY-A", 1, "2026-03-22"), ("TINY-B", 0, "2026-03-23")] {
         let cmd = ProcurementCommand::Receive(ReceiveOrder {
             context: context(&s, source, date),
@@ -498,12 +425,7 @@ fn zero_and_residual_costs_preserve_full_original_allocation_and_empty_pool() {
         x.supplier_id = ids(&s).4;
     }
     s.post_procurement_command(first).unwrap();
-    let next = bill(
-        &s,
-        "TINY-BILL-B",
-        "2026-03-25",
-        &[("TINY-A-L", 3000, 0), ("TINY-B-L", 6000, 0)],
-    );
+    let next = bill(&s, "TINY-BILL-B", "2026-03-25", &[("TINY-A-L", 3000, 0), ("TINY-B-L", 6000, 0)]);
     let zero = s.post_procurement_command(next).unwrap();
     assert!(zero.journal_id.is_none());
     let tx = ProcurementCommand::Transfer(TransferStock {
@@ -555,28 +477,17 @@ fn document_discount_uses_independent_largest_remainder_and_receipt_cost_is_froz
         document_discount: irr(101),
         supplied_total: irr(1499),
     };
-    let p = s
-        .post_procurement_command(ProcurementCommand::Order(input))
-        .unwrap();
+    let p = s.post_procurement_command(ProcurementCommand::Order(input)).unwrap();
     let ProcurementData::Order(order) = &s.procurement_document(&p.record_id).unwrap().data else {
         panic!()
     };
     assert_eq!(
-        (
-            order.lines[0].document_discount.rials(),
-            order.lines[1].document_discount.rials()
-        ),
+        (order.lines[0].document_discount.rials(), order.lines[1].document_discount.rials()),
         (79, 22)
     );
-    assert_eq!(
-        (order.lines[0].net.rials(), order.lines[1].net.rials()),
-        (1172, 327)
-    );
+    assert_eq!((order.lines[0].net.rials(), order.lines[1].net.rials()), (1172, 327));
     let baseunit = s.core.openings[0].command.items[0].base_unit_id.clone();
-    for (source, date, q, v) in [
-        ("DISC-R1", "2026-03-22", 3000, 293),
-        ("DISC-R2", "2026-03-23", 9000, 879),
-    ] {
+    for (source, date, q, v) in [("DISC-R1", "2026-03-22", 3000, 293), ("DISC-R2", "2026-03-23", 9000, 879)] {
         let r = ReceiveOrder {
             context: context(&s, source, date),
             order_id: p.record_id.clone(),
@@ -591,8 +502,7 @@ fn document_discount_uses_independent_largest_remainder_and_receipt_cost_is_froz
             }],
             supplied_total: irr(v),
         };
-        s.post_procurement_command(ProcurementCommand::Receive(r))
-            .unwrap();
+        s.post_procurement_command(ProcurementCommand::Receive(r)).unwrap();
     }
     s.validate().unwrap();
 }
@@ -658,10 +568,7 @@ fn namespace_and_malformed_source_failures_leave_every_record_unchanged() {
         items: vec![],
         warehouses: vec![],
     };
-    assert!(
-        s.post_procurement_command(ProcurementCommand::Resources(resources))
-            .is_err()
-    );
+    assert!(s.post_procurement_command(ProcurementCommand::Resources(resources)).is_err());
     assert_eq!(s, original);
 }
 
@@ -762,9 +669,7 @@ fn matched_frozen_receipt_from_locked_prior_period_posts_only_in_current_unlocke
     let oldperiod = s.core.openings[0].command.period_id.clone();
     s.set_period_lock(&oldperiod, true, "owner", "completed prior financial year")
         .unwrap();
-    let newperiod = s
-        .add_period(&company, "next year", "2027-03-21", "2028-03-19", "owner")
-        .unwrap();
+    let newperiod = s.add_period(&company, "next year", "2027-03-21", "2028-03-19", "owner").unwrap();
     let history = s.procurement.records.clone();
     let mut b = bill(&s, "NEXT-YEAR-BILL", "2027-03-21", &[("RA-L", 5000, 75)]);
     if let ProcurementCommand::Bill(x) = &mut b {
@@ -774,19 +679,10 @@ fn matched_frozen_receipt_from_locked_prior_period_posts_only_in_current_unlocke
     s.post_procurement_command(b).unwrap();
     assert!(s.procurement.records.starts_with(&history));
     let old = s.procurement_reconcile(&company, "2026-03-22").unwrap();
-    assert_eq!(
-        (
-            control(&old, CoreRole::Payables),
-            control(&old, CoreRole::Grni)
-        ),
-        (149, 125)
-    );
+    assert_eq!((control(&old, CoreRole::Payables), control(&old, CoreRole::Grni)), (149, 125));
     let current = s.procurement_reconcile(&company, "2027-03-21").unwrap();
     assert_eq!(
-        (
-            control(&current, CoreRole::Payables),
-            control(&current, CoreRole::Grni)
-        ),
+        (control(&current, CoreRole::Payables), control(&current, CoreRole::Grni)),
         (224, 50)
     );
     s.validate().unwrap();
@@ -836,19 +732,13 @@ fn recomputed_backup_checksum_cannot_hide_zero_initialization_procurement_key_co
         let envelope = serde_json::json!({
             "format": "sarv-accounting-backup-v7", "checksum": checksum, "state": bad_state
         });
-        let path = dir
-            .path()
-            .join(format!("invalid-cross-module-{index}.json"));
+        let path = dir.path().join(format!("invalid-cross-module-{index}.json"));
         std::fs::write(&path, serde_json::to_vec(&envelope).unwrap()).unwrap();
         // The outer envelope is internally consistent. Complete domain replay
         // must reject the conflicting alias in either direction.
-        let parsed: serde_json::Value =
-            serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        let parsed: serde_json::Value = serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
         let typed: State = serde_json::from_value(parsed["state"].clone()).unwrap();
-        assert_eq!(
-            parsed["checksum"].as_str().unwrap(),
-            hash(&serde_json::to_vec(&typed).unwrap())
-        );
+        assert_eq!(parsed["checksum"].as_str().unwrap(), hash(&serde_json::to_vec(&typed).unwrap()));
         assert!(Store::restore_preview(&path).is_err());
     }
 }

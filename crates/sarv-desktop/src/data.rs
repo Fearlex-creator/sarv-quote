@@ -106,7 +106,9 @@ impl Books {
         let now = today();
         let chosen = periods
             .iter()
-            .find(|p| p["start_date"].as_str().is_some_and(|s| s <= now.as_str()) && p["end_date"].as_str().is_some_and(|e| e >= now.as_str()))
+            .find(|p| {
+                p["start_date"].as_str().is_some_and(|s| s <= now.as_str()) && p["end_date"].as_str().is_some_and(|e| e >= now.as_str())
+            })
             .or_else(|| periods.first());
         self.period_id = chosen.and_then(|p| p["id"].as_str()).unwrap_or("").to_string();
     }
@@ -115,7 +117,10 @@ impl Books {
     pub fn range(&self) -> (String, String) {
         let periods = self.workspace["periods"].as_array().cloned().unwrap_or_default();
         if let Some(p) = periods.iter().find(|p| p["id"].as_str() == Some(self.period_id.as_str())) {
-            return (p["start_date"].as_str().unwrap_or("").into(), p["end_date"].as_str().unwrap_or("").into());
+            return (
+                p["start_date"].as_str().unwrap_or("").into(),
+                p["end_date"].as_str().unwrap_or("").into(),
+            );
         }
         let y = &today()[..4];
         (format!("{y}-01-01"), format!("{y}-12-31"))
@@ -137,7 +142,11 @@ impl Books {
     }
 
     pub fn company_name(&self) -> String {
-        self.companies().into_iter().find(|(id, _)| *id == self.company_id).map(|(_, n)| n).unwrap_or_default()
+        self.companies()
+            .into_iter()
+            .find(|(id, _)| *id == self.company_id)
+            .map(|(_, n)| n)
+            .unwrap_or_default()
     }
 
     pub fn period_name(&self) -> String {

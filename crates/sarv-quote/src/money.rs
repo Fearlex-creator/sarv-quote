@@ -1,9 +1,9 @@
 //! Exact rial money via `rust_decimal` (scale 0).
 //! SQLite and legacy domain fields still use integer rials; convert at boundaries.
 
-use anyhow::{bail, Result};
-use rust_decimal::prelude::*;
+use anyhow::{Result, bail};
 use rust_decimal::Decimal;
+use rust_decimal::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::domain::MAX_MONEY;
@@ -29,10 +29,7 @@ impl Money {
         if self.0.scale() > 0 && self.0.fract() != Decimal::ZERO {
             bail!("مبلغ باید عدد صحیح ریال باشد");
         }
-        let rial = self
-            .0
-            .to_i64()
-            .ok_or_else(|| anyhow::anyhow!("مبلغ قابل تبدیل به ریال نیست"))?;
+        let rial = self.0.to_i64().ok_or_else(|| anyhow::anyhow!("مبلغ قابل تبدیل به ریال نیست"))?;
         if !(0..=MAX_MONEY).contains(&rial) {
             bail!("مبلغ خارج از محدوده مجاز است");
         }
@@ -51,9 +48,7 @@ impl Money {
             bail!("مبلغ نمی‌تواند منفی باشد");
         }
         let normalized = value.trunc();
-        let rial = normalized
-            .to_i64()
-            .ok_or_else(|| anyhow::anyhow!("مبلغ قابل تبدیل به ریال نیست"))?;
+        let rial = normalized.to_i64().ok_or_else(|| anyhow::anyhow!("مبلغ قابل تبدیل به ریال نیست"))?;
         Self::from_rial(rial)
     }
 }

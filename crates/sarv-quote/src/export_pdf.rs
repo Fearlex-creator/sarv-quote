@@ -26,17 +26,8 @@ struct Text {
 #[derive(Clone)]
 enum Element {
     Text(Text),
-    Rule {
-        x: f64,
-        y: f64,
-        width: f64,
-    },
-    Fill {
-        x: f64,
-        y: f64,
-        width: f64,
-        height: f64,
-    },
+    Rule { x: f64, y: f64, width: f64 },
+    Fill { x: f64, y: f64, width: f64, height: f64 },
 }
 #[derive(Default)]
 struct Page {
@@ -62,9 +53,7 @@ impl Drop for FontScope {
 fn layout(cr: &cairo::Context, text: &Text) -> pango::Layout {
     // Each measurement/render scope owns a font map. Reuse within one surface
     // is fast, while PDF and scaled raster contexts never share glyph caches.
-    let font_map = FONT_MAP
-        .with(|map| map.borrow().clone())
-        .unwrap_or_else(pangocairo::FontMap::new);
+    let font_map = FONT_MAP.with(|map| map.borrow().clone()).unwrap_or_else(pangocairo::FontMap::new);
     let context = font_map.create_context();
     pangocairo::functions::update_context(cr, &context);
     let layout = pango::Layout::new(&context);
@@ -105,13 +94,7 @@ fn rule(page: &mut Page, x: f64, y: f64, width: f64) {
 }
 fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f64)> {
     let mut page = Page::default();
-    let mut title = label(
-        "پیش‌فاکتور",
-        300.0,
-        30.0,
-        259.0,
-        if first { 22.0 } else { 15.0 },
-    );
+    let mut title = label("پیش‌فاکتور", 300.0, 30.0, 259.0, if first { 22.0 } else { 15.0 });
     title.bold = true;
     add(&mut page, title);
     let mut brand = label(
@@ -139,13 +122,7 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
     status_text.color = MUTED;
     add(&mut page, status_text);
     if !first {
-        let mut identification = label(
-            number(q),
-            LEFT,
-            59.0_f64.max(brand_bottom + 2.0),
-            250.0,
-            7.5,
-        );
+        let mut identification = label(number(q), LEFT, 59.0_f64.max(brand_bottom + 2.0), 250.0, 7.5);
         identification.align = pango::Alignment::Left;
         identification.color = MUTED;
         add(&mut page, identification);
@@ -161,10 +138,7 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
         if q.issuer_phone.is_empty() {
             String::new()
         } else {
-            format!(
-                "تلفن کسب‌وکار: {}",
-                ltr(&document_digits(q, &q.issuer_phone))
-            )
+            format!("تلفن کسب‌وکار: {}", ltr(&document_digits(q, &q.issuer_phone)))
         },
         if q.issuer_address.is_empty() {
             String::new()
@@ -186,13 +160,7 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
     if !q.issuer_phone.is_empty() || !q.issuer_address.is_empty() || !q.header.is_empty() {
         customer_y += 3.0;
     }
-    let mut customer = label(
-        format!("مشتری: {}", q.customer),
-        LEFT,
-        customer_y,
-        WIDTH,
-        12.0,
-    );
+    let mut customer = label(format!("مشتری: {}", q.customer), LEFT, customer_y, WIDTH, 12.0);
     customer.bold = true;
     let mut y = customer_y + height(cr, &customer) + 6.0;
     add(&mut page, customer);
@@ -250,22 +218,13 @@ fn page_heading(q: &Quote, cr: &cairo::Context, first: bool) -> Result<(Page, f6
         ),
     ];
     for pair in metadata.chunks(2) {
-        let right = label(
-            format!("{}: {}", pair[0].0, pair[0].1),
-            307.0,
-            y,
-            252.0,
-            8.5,
-        );
+        let right = label(format!("{}: {}", pair[0].0, pair[0].1), 307.0, y, 252.0, 8.5);
         let left = label(format!("{}: {}", pair[1].0, pair[1].1), LEFT, y, 253.0, 8.5);
         y += height(cr, &right).max(height(cr, &left)) + 3.0;
         add(&mut page, right);
         add(&mut page, left);
     }
-    ensure!(
-        y < BOTTOM - 90.0,
-        "اطلاعات سربرگ برای یک صفحه بسیار بلند است"
-    );
+    ensure!(y < BOTTOM - 90.0, "اطلاعات سربرگ برای یک صفحه بسیار بلند است");
     Ok((page, y + 10.0))
 }
 fn customer_blocks(q: &Quote) -> [String; 3] {
@@ -342,21 +301,11 @@ fn row(cr: &cairo::Context, q: &Quote, index: usize, y: f64) -> (Vec<Text>, f64)
         }
         if column == 4 {
             let name_height = height(cr, &text);
-            let mut code = label(
-                ltr(&l.code),
-                x + 5.0,
-                y + 6.0 + name_height + 1.0,
-                width - 10.0,
-                8.5,
-            );
+            let mut code = label(ltr(&l.code), x + 5.0, y + 6.0 + name_height + 1.0, width - 10.0, 8.5);
             code.color = MUTED;
             let code_height = height(cr, &code);
             let mut source = label(
-                format!(
-                    "منبع: {} · {}",
-                    ltr(&display_timestamp(q, &l.source_at)),
-                    l.source_unit.label()
-                ),
+                format!("منبع: {} · {}", ltr(&display_timestamp(q, &l.source_at)), l.source_unit.label()),
                 x + 5.0,
                 code.y + code_height + 1.0,
                 width - 10.0,
@@ -374,22 +323,11 @@ fn row(cr: &cairo::Context, q: &Quote, index: usize, y: f64) -> (Vec<Text>, f64)
 }
 fn next_page(doc: &mut Document, q: &Quote, cr: &cairo::Context, table: bool) -> Result<f64> {
     let (mut page, y) = page_heading(q, cr, false)?;
-    let y = if table {
-        table_heading(&mut page, y, q.display_unit)
-    } else {
-        y
-    };
+    let y = if table { table_heading(&mut page, y, q.display_unit) } else { y };
     doc.pages.push(page);
     Ok(y)
 }
-fn paragraph(
-    doc: &mut Document,
-    q: &Quote,
-    cr: &cairo::Context,
-    value: &str,
-    y: &mut f64,
-    size: f64,
-) -> Result<()> {
+fn paragraph(doc: &mut Document, q: &Quote, cr: &cairo::Context, value: &str, y: &mut f64, size: f64) -> Result<()> {
     // Pango determines the actual word wraps. Drawing one shaped line at a time
     // permits unlimited notes to continue on following pages without clipping.
     let template = label(value, LEFT, 0.0, WIDTH, size);
@@ -397,13 +335,7 @@ fn paragraph(
     for line in wrapped.lines_readonly() {
         let start = line.start_index() as usize;
         let end = start + line.length() as usize;
-        let mut text = label(
-            value[start..end].trim_end_matches('\n'),
-            LEFT,
-            *y,
-            WIDTH,
-            size,
-        );
+        let mut text = label(value[start..end].trim_end_matches('\n'), LEFT, *y, WIDTH, size);
         text.color = MUTED;
         let h = height(cr, &text).max(size + 5.0);
         if *y + h > BOTTOM {
@@ -422,10 +354,7 @@ fn document(q: &Quote) -> Result<Document> {
     let cr = cairo::Context::new(&surface)?;
     let (page, mut y) = page_heading(q, &cr, true)?;
     let mut doc = Document { pages: vec![page] };
-    for (title, value) in [
-        ("نشانی کسب‌وکار", &q.issuer_address),
-        ("سربرگ کسب‌وکار", &q.header),
-    ] {
+    for (title, value) in [("نشانی کسب‌وکار", &q.issuer_address), ("سربرگ کسب‌وکار", &q.header)] {
         let display = if title == "نشانی کسب‌وکار" {
             format!("نشانی: {value}")
         } else {
@@ -468,10 +397,7 @@ fn document(q: &Quote) -> Result<Document> {
     y += 12.0;
     // Keep monetary rows together; the configured tax is an explicit optional
     // whole-document amount after discount, never a guessed statutory rate.
-    let mut totals = vec![
-        ("جمع کالاها".to_string(), subtotal),
-        ("تخفیف کل".to_string(), q.discount_rial),
-    ];
+    let mut totals = vec![("جمع کالاها".to_string(), subtotal), ("تخفیف کل".to_string(), q.discount_rial)];
     if q.tax_basis_points != 0 {
         totals.push((tax_label(q), q.tax_rial));
     }
@@ -482,10 +408,9 @@ fn document(q: &Quote) -> Result<Document> {
         .enumerate()
         .map(|(index, (title, value))| {
             let size = if index == last { 11.0 } else { 9.0 };
-            height(&cr, &label(title, LEFT + 133.0, 0.0, 127.0, size)).max(height(
-                &cr,
-                &label(display_amount(q, *value), LEFT, 0.0, 130.0, size),
-            )) + 5.0
+            height(&cr, &label(title, LEFT + 133.0, 0.0, 127.0, size))
+                .max(height(&cr, &label(display_amount(q, *value), LEFT, 0.0, 130.0, size)))
+                + 5.0
         })
         .sum::<f64>()
         + 5.0;
@@ -585,11 +510,7 @@ fn document(q: &Quote) -> Result<Document> {
         footer.color = MUTED;
         add(page, footer);
         let mut number = label(
-            format!(
-                "صفحهٔ {} از {}",
-                document_digits(q, index + 1),
-                document_digits(q, count)
-            ),
+            format!("صفحهٔ {} از {}", document_digits(q, index + 1), document_digits(q, count)),
             LEFT,
             803.0,
             180.0,
@@ -619,12 +540,7 @@ fn render_page(cr: &cairo::Context, page: &Page) -> Result<()> {
                 cr.line_to(x + width, *y);
                 cr.stroke()?;
             }
-            Element::Fill {
-                x,
-                y,
-                width,
-                height,
-            } => {
+            Element::Fill { x, y, width, height } => {
                 cr.set_source_rgb(0.955, 0.96, 0.965);
                 cr.rectangle(*x, *y, *width, *height);
                 cr.fill()?;

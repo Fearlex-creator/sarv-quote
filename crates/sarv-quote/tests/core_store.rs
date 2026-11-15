@@ -1,8 +1,5 @@
 //! Durable core commands use the same CAS/immutable transition boundary as quotes.
-use sarv_quote::{
-    accounting::Money, core::*, core_import::opening_csv, domain::State, imports::hash,
-    store::Store,
-};
+use sarv_quote::{accounting::Money, core::*, core_import::opening_csv, domain::State, imports::hash, store::Store};
 fn installed(store: &mut Store) -> String {
     store
         .change(|s| {
@@ -21,8 +18,7 @@ fn installed(store: &mut Store) -> String {
         .unwrap()
 }
 fn command(state: &State, company: &str, key: &str) -> OpeningCommand {
-    let input =
-        include_str!("../../../docs/assets/accounting-m3/opening.csv").replace("F2-core-v1", company);
+    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv").replace("F2-core-v1", company);
     opening_csv(&state.accounting, company, &input, "test", key).unwrap()
 }
 fn exact(s: &State) -> Vec<u8> {
@@ -35,14 +31,8 @@ fn concurrent_prepared_opening_has_one_durable_effect_then_different_key_retry_r
     let company = installed(&mut store);
     let (generation, mut first) = store.snapshot().unwrap();
     let mut second = first.clone();
-    first
-        .accounting
-        .post_opening(command(&first, &company, "worker-1"))
-        .unwrap();
-    second
-        .accounting
-        .post_opening(command(&second, &company, "worker-2"))
-        .unwrap();
+    first.accounting.post_opening(command(&first, &company, "worker-1")).unwrap();
+    second.accounting.post_opening(command(&second, &company, "worker-2")).unwrap();
     let first = Store::prepare_candidate(generation, first).unwrap();
     let second = Store::prepare_candidate(generation, second).unwrap();
     let path = dir.path().to_owned();
@@ -57,22 +47,12 @@ fn concurrent_prepared_opening_has_one_durable_effect_then_different_key_retry_r
     assert_eq!(stored.state.accounting.core.openings.len(), 1);
     let original = stored.state.accounting.core.openings[0].journal_id.clone();
     let retry = command_from_record(&stored.state, "worker-2");
-    assert_eq!(
-        store.change(|s| s.accounting.post_opening(retry)).unwrap(),
-        original
-    );
+    assert_eq!(store.change(|s| s.accounting.post_opening(retry)).unwrap(), original);
     assert_eq!(store.state.accounting.journals.len(), 1);
     assert_eq!(store.state.accounting.requests.len(), 2);
     assert_eq!(store.state.accounting.core.openings.len(), 1);
-    let p = store
-        .state
-        .accounting
-        .reconcile_opening(&company, "2026-03-21")
-        .unwrap();
-    assert_eq!(
-        (p.total_debit.rials(), p.total_credit.rials()),
-        (1251, 1251)
-    );
+    let p = store.state.accounting.reconcile_opening(&company, "2026-03-21").unwrap();
+    assert_eq!((p.total_debit.rials(), p.total_credit.rials()), (1251, 1251));
     assert_eq!(p.controls.len(), 12);
     assert!(p.controls.iter().all(|r| r.difference == Money::ZERO));
     let expected = store.state.accounting.clone();
@@ -115,7 +95,11 @@ fn immutable_details_policy_and_recomputed_backup_checksum_cannot_bypass_restore
     forged.accounting.core.openings[0].command.open_items[0].due_date = "2026-06-01".into();
     let payload = exact(&forged);
     let p = dir.path().join("forged.json");
-    std::fs::write(&p,serde_json::to_vec(&serde_json::json!({"format":"sarv-accounting-backup-v7","checksum":hash(&payload),"state":forged})).unwrap()).unwrap();
+    std::fs::write(
+        &p,
+        serde_json::to_vec(&serde_json::json!({"format":"sarv-accounting-backup-v7","checksum":hash(&payload),"state":forged})).unwrap(),
+    )
+    .unwrap();
     assert!(Store::restore_preview(&p).is_err());
     assert_eq!(exact(&Store::open(dir.path()).unwrap().state), before);
 }
@@ -131,9 +115,7 @@ fn complete_core_backup_fresh_restore_and_restart_keep_all_financial_and_source_
     store.backup(&backup).unwrap();
     let fresh = tempfile::tempdir().unwrap();
     let mut restored = Store::open(fresh.path()).unwrap();
-    restored
-        .restore(Store::restore_preview(&backup).unwrap())
-        .unwrap();
+    restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();
     assert_eq!(exact(&restored.state), before);
     drop(restored);
     let restored = Store::open(fresh.path()).unwrap();
@@ -183,14 +165,9 @@ fn zero_value_initialization_and_its_retry_restore_without_an_empty_financial_jo
     for x in &mut c.grni {
         x.value = Money::ZERO;
     }
-    let marker = store
-        .change(|s| s.accounting.post_opening(c.clone()))
-        .unwrap();
+    let marker = store.change(|s| s.accounting.post_opening(c.clone())).unwrap();
     c.request_key = "zero-other-key".into();
-    assert_eq!(
-        store.change(|s| s.accounting.post_opening(c)).unwrap(),
-        marker
-    );
+    assert_eq!(store.change(|s| s.accounting.post_opening(c)).unwrap(), marker);
     assert!(store.state.accounting.journals.is_empty());
     assert!(store.state.accounting.requests.is_empty());
     assert_eq!(store.state.accounting.core.zero_requests.len(), 2);
@@ -198,11 +175,7 @@ fn zero_value_initialization_and_its_retry_restore_without_an_empty_financial_jo
         store.state.accounting.core.openings[0].effect,
         OpeningEffect::ZeroBalanceInitialization
     );
-    let p = store
-        .state
-        .accounting
-        .reconcile_opening(&company, "2026-03-21")
-        .unwrap();
+    let p = store.state.accounting.reconcile_opening(&company, "2026-03-21").unwrap();
     assert_eq!(p.total_debit, Money::ZERO);
     assert_eq!(p.total_credit, Money::ZERO);
     assert_eq!(p.controls.len(), 12);
@@ -219,9 +192,7 @@ fn zero_value_initialization_and_its_retry_restore_without_an_empty_financial_jo
     store.backup(&backup).unwrap();
     let fresh = tempfile::tempdir().unwrap();
     let mut restored = Store::open(fresh.path()).unwrap();
-    restored
-        .restore(Store::restore_preview(&backup).unwrap())
-        .unwrap();
+    restored.restore(Store::restore_preview(&backup).unwrap()).unwrap();
     assert_eq!(exact(&restored.state), expected);
     drop(restored);
     assert_eq!(exact(&Store::open(fresh.path()).unwrap().state), expected);

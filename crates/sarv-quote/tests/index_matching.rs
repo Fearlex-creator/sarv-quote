@@ -65,33 +65,14 @@ fn index_matches_legacy_semantics_across_scripts_and_exact_priority() {
         "missing",
         "",
     ] {
-        let legacy = catalog
-            .matches(query)
-            .iter()
-            .map(|p| p.code.as_str())
-            .collect::<Vec<_>>();
-        let indexed = index
-            .matches(query)
-            .iter()
-            .map(|p| p.code.as_str())
-            .collect::<Vec<_>>();
+        let legacy = catalog.matches(query).iter().map(|p| p.code.as_str()).collect::<Vec<_>>();
+        let indexed = index.matches(query).iter().map(|p| p.code.as_str()).collect::<Vec<_>>();
         assert_eq!(indexed, legacy, "query {query}");
     }
-    assert_eq!(
-        index
-            .matches("x")
-            .iter()
-            .map(|p| p.code.as_str())
-            .collect::<Vec<_>>(),
-        ["X"]
-    );
+    assert_eq!(index.matches("x").iter().map(|p| p.code.as_str()).collect::<Vec<_>>(), ["X"]);
     assert_eq!(index.matches("نام فارسی").len(), 1); // Three equivalent aliases on one product are one candidate.
     assert_eq!(
-        index
-            .matches("مشترک")
-            .iter()
-            .map(|p| p.code.as_str())
-            .collect::<Vec<_>>(),
+        index.matches("مشترک").iter().map(|p| p.code.as_str()).collect::<Vec<_>>(),
         ["K-۱", "X", "ك-ي٢"]
     );
     assert_eq!(index.product_by_code("X").unwrap().price_rial, 205);

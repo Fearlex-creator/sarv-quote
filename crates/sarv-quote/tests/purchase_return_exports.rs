@@ -63,8 +63,7 @@ fn fixture_with_sku(sku: &str) -> Fixture {
     let input = include_str!("../../../docs/assets/accounting-m3/opening.csv")
         .replace("F2-core-v1", &c.company_id)
         .replace("SKU-A", sku);
-    let opening =
-        core_import::opening_csv(&state, &c.company_id, &input, "آزمایشگر", "opening").unwrap();
+    let opening = core_import::opening_csv(&state, &c.company_id, &input, "آزمایشگر", "opening").unwrap();
     state.post_opening(opening).unwrap();
     let mut f = Fixture {
         invoice_time_state: AccountingState::default(),
@@ -233,16 +232,7 @@ fn fixture_with_sku(sku: &str) -> Fixture {
         .record_id;
     f.invoice_time_state = f.state.clone();
     for (source, return_id, credit_id, line, quantity, credit, cost, date) in [
-        (
-            "SALE-RETURN",
-            "RETURN-A",
-            "CREDIT-A",
-            "RETURN-LINE-A",
-            2000,
-            40,
-            23,
-            "2026-03-29",
-        ),
+        ("SALE-RETURN", "RETURN-A", "CREDIT-A", "RETURN-LINE-A", 2000, 40, 23, "2026-03-29"),
         (
             "SALE-RETURN-FINAL",
             "RETURN-FINAL",
@@ -316,15 +306,7 @@ fn read_csv(path: &Path) -> (csv::StringRecord, Vec<csv::StringRecord>) {
 fn cell<'a>(h: &csv::StringRecord, r: &'a csv::StringRecord, k: &str) -> &'a str {
     &r[h.iter().position(|x| x == k).unwrap()]
 }
-fn returned(
-    f: &mut Fixture,
-    id: &str,
-    receipt_line: &str,
-    bill_line: Option<&str>,
-    quantity: i64,
-    value: i64,
-    date: &str,
-) -> String {
+fn returned(f: &mut Fixture, id: &str, receipt_line: &str, bill_line: Option<&str>, quantity: i64, value: i64, date: &str) -> String {
     let cmd = ProcurementCommand::Return(ReturnPurchase {
         context: context(f, id, date),
         supplier_id: "SU-A".into(),
@@ -356,14 +338,8 @@ fn document(f: &Fixture, id: &str, path: &Path) {
     )
     .unwrap();
 }
-fn row<'a>(
-    headers: &csv::StringRecord,
-    rows: &'a [csv::StringRecord],
-    kind: &str,
-) -> &'a csv::StringRecord {
-    rows.iter()
-        .find(|r| cell(headers, r, "row_kind") == kind)
-        .unwrap()
+fn row<'a>(headers: &csv::StringRecord, rows: &'a [csv::StringRecord], kind: &str) -> &'a csv::StringRecord {
+    rows.iter().find(|r| cell(headers, r, "row_kind") == kind).unwrap()
 }
 #[test]
 fn persian_return_preview_preserves_numeric_and_mixed_source_identities() {
@@ -400,19 +376,8 @@ fn persian_return_preview_preserves_numeric_and_mixed_source_identities() {
         )
         .unwrap();
         let text = preview.lines.join("\n");
-        for source in [
-            "RETURN-123",
-            "CREDIT-456",
-            "67890",
-            "12345",
-            "BILL-B-LINE-B",
-            "R-B-LINE",
-            "123456",
-        ] {
-            assert!(
-                text.contains(source),
-                "source identity was transformed: {source}"
-            );
+        for source in ["RETURN-123", "CREDIT-456", "67890", "12345", "BILL-B-LINE-B", "R-B-LINE", "123456"] {
+            assert!(text.contains(source), "source identity was transformed: {source}");
         }
         let record = f.state.procurement_document(&posted.record_id).unwrap();
         assert!(text.contains(record.journal_id.as_deref().unwrap()));
@@ -434,19 +399,10 @@ fn persian_return_preview_preserves_numeric_and_mixed_source_identities() {
             &path,
         )
         .unwrap();
-        let output = Command::new("pdftotext")
-            .arg("-layout")
-            .arg(&path)
-            .arg("-")
-            .output()
-            .unwrap();
+        let output = Command::new("pdftotext").arg("-layout").arg(&path).arg("-").output().unwrap();
         assert!(output.status.success());
         let text = String::from_utf8(output.stdout).unwrap();
-        fs::write(
-            destination.join("persian-identities-reconciliation.txt"),
-            &text,
-        )
-        .unwrap();
+        fs::write(destination.join("persian-identities-reconciliation.txt"), &text).unwrap();
         for code in ["RETURN-123", "CREDIT-456", "123456"] {
             assert!(text.contains(code), "reconciliation lost code {code}");
         }
@@ -458,55 +414,22 @@ fn persian_return_preview_preserves_numeric_and_mixed_source_identities() {
 #[test]
 fn billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historical_snapshot() {
     let mut f = fixture();
-    let initial = f
-        .state
-        .procurement_reconcile(&f.company, "2026-03-31")
-        .unwrap();
-    for (role, expected) in [
-        (CoreRole::Inventory, 422),
-        (CoreRole::Payables, 329),
-        (CoreRole::Grni, 50),
-    ] {
-        assert_eq!(
-            initial
-                .controls
-                .iter()
-                .find(|c| c.role == role)
-                .unwrap()
-                .ledger,
-            money(expected)
-        );
+    let initial = f.state.procurement_reconcile(&f.company, "2026-03-31").unwrap();
+    for (role, expected) in [(CoreRole::Inventory, 422), (CoreRole::Payables, 329), (CoreRole::Grni, 50)] {
+        assert_eq!(initial.controls.iter().find(|c| c.role == role).unwrap().ledger, money(expected));
     }
     assert_eq!(initial.total_debit, money(1630));
-    let id = returned(
-        &mut f,
-        "PART",
-        "R-B-LINE",
-        Some("BILL-B-LINE-B"),
-        3000,
-        45,
-        "2026-04-01",
-    );
+    let id = returned(&mut f, "PART", "R-B-LINE", Some("BILL-B-LINE-B"), 3000, 45, "2026-04-01");
     let state_after = f.state.clone();
     let dir = tempfile::tempdir().unwrap();
     let before = dir.path().join("before.csv");
     document(&f, &id, &before);
     for (doc_id, kind, line_kind) in [
         (&id, "purchase_return", "purchase_return_line"),
-        (
-            &"RETURN-PART".into(),
-            "purchase_return",
-            "purchase_return_line",
-        ),
-        (
-            &"CREDIT-PART".into(),
-            "supplier_credit",
-            "supplier_credit_line",
-        ),
+        (&"RETURN-PART".into(), "purchase_return", "purchase_return_line"),
+        (&"CREDIT-PART".into(), "supplier_credit", "supplier_credit_line"),
     ] {
-        let path = dir
-            .path()
-            .join(format!("{kind}-{}.csv", doc_id.replace('/', "_")));
+        let path = dir.path().join(format!("{kind}-{}.csv", doc_id.replace('/', "_")));
         document(&f, doc_id, &path);
         let (h, rows) = read_csv(&path);
         let line = row(&h, &rows, line_kind);
@@ -543,29 +466,14 @@ fn billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historica
             }
         }
         assert_eq!(
-            rows.iter()
-                .filter(|r| cell(&h, r, "row_kind") == "stock_movement")
-                .count(),
+            rows.iter().filter(|r| cell(&h, r, "row_kind") == "stock_movement").count(),
             usize::from(kind == "purchase_return")
         );
-        let snapshot: serde_json::Value = serde_json::from_str(cell(
-            &h,
-            row(&h, &rows, "complete_snapshot"),
-            "snapshot_json",
-        ))
-        .unwrap();
+        let snapshot: serde_json::Value = serde_json::from_str(cell(&h, row(&h, &rows, "complete_snapshot"), "snapshot_json")).unwrap();
         assert_eq!(snapshot["related_sources"].as_array().unwrap().len(), 3);
     }
     assert_eq!(f.state, state_after, "exports must be read-only");
-    let final_id = returned(
-        &mut f,
-        "PURCHASE-FINAL",
-        "R-B-LINE",
-        Some("BILL-B-LINE-B"),
-        4000,
-        60,
-        "2026-04-02",
-    );
+    let final_id = returned(&mut f, "PURCHASE-FINAL", "R-B-LINE", Some("BILL-B-LINE-B"), 4000, 60, "2026-04-02");
     let path = dir.path().join("final.csv");
     document(&f, &final_id, &path);
     let (h, rows) = read_csv(&path);
@@ -573,10 +481,7 @@ fn billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historica
     assert_eq!(cell(&h, line, "amount_irr"), "60");
     assert_eq!(cell(&h, line, "remaining_value_irr"), "0");
     assert_eq!(cell(&h, line, "remaining_payable_irr"), "45");
-    for (date, inventory, ap, tb) in [
-        ("2026-04-01", 377, 284, 1585),
-        ("2026-04-02", 317, 224, 1525),
-    ] {
+    for (date, inventory, ap, tb) in [("2026-04-01", 377, 284, 1585), ("2026-04-02", 317, 224, 1525)] {
         let path = dir.path().join(format!("reconcile-{date}.csv"));
         reconciliation_csv(
             &f.state,
@@ -597,10 +502,7 @@ fn billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historica
             assert_eq!(cell(&h, control, "ledger_irr"), expected.to_string());
             assert_eq!(cell(&h, control, "difference_irr"), "0");
         }
-        assert_eq!(
-            cell(&h, row(&h, &rows, "trial_total_debit"), "amount_irr"),
-            tb.to_string()
-        );
+        assert_eq!(cell(&h, row(&h, &rows, "trial_total_debit"), "amount_irr"), tb.to_string());
     }
     // Later allocations and unrelated appended catalogue resources cannot rewrite issued exports.
     f.state
@@ -635,14 +537,7 @@ fn billed_return_credit_identities_exact_cost_lineage_remaining_ap_and_historica
         .is_err()
     );
 }
-fn tiny_receipt(
-    f: &mut Fixture,
-    id: &str,
-    count: usize,
-    quantity: i64,
-    price: i64,
-    discount: i64,
-) -> Vec<String> {
+fn tiny_receipt(f: &mut Fixture, id: &str, count: usize, quantity: i64, price: i64, discount: i64) -> Vec<String> {
     let date = f
         .state
         .procurement
@@ -677,9 +572,7 @@ fn tiny_receipt(
         supplied_total: money(total),
     });
     let order_id = f.state.post_procurement_command(order).unwrap().record_id;
-    let lines = (0..count)
-        .map(|n| format!("{id}-R-{n}"))
-        .collect::<Vec<_>>();
+    let lines = (0..count).map(|n| format!("{id}-R-{n}")).collect::<Vec<_>>();
     f.state
         .post_procurement_command(ProcurementCommand::Receive(ReceiveOrder {
             context: context(f, &format!("{id}-R"), &date),
@@ -691,10 +584,7 @@ fn tiny_receipt(
                 .enumerate()
                 .map(|(n, id)| ReceiveLine {
                     id: id.clone(),
-                    order_line_id: format!(
-                        "{id_prefix}-PO-{n}",
-                        id_prefix = id.split("-R-").next().unwrap()
-                    ),
+                    order_line_id: format!("{id_prefix}-PO-{n}", id_prefix = id.split("-R-").next().unwrap()),
                     warehouse_id: "W1".into(),
                     unit_id: "PIECE".into(),
                     quantity_thousandths: quantity,
@@ -739,11 +629,7 @@ fn artifact(f: &Fixture, id: &str, name: &str) {
         )
         .unwrap();
         let pdf = destination.join(format!("{name}.pdf"));
-        let text = Command::new("pdftotext")
-            .arg(&pdf)
-            .arg("-")
-            .output()
-            .unwrap();
+        let text = Command::new("pdftotext").arg(&pdf).arg("-").output().unwrap();
         assert!(text.status.success());
         fs::write(destination.join(format!("{name}-text.txt")), text.stdout).unwrap();
         let fonts = Command::new("pdffonts").arg(&pdf).output().unwrap();
@@ -767,15 +653,7 @@ fn unbilled_interleaving_tiny_zero_credit_and_final_residual_remain_operational_
     bill(&mut f, "ZERO-FIRST", &receipt, 1000, 0, "2026-04-02");
     let unbilled = returned(&mut f, "UNBILLED", &receipt, None, 1000, 1, "2026-04-03");
     bill(&mut f, "ZERO-FINAL", &receipt, 1000, 0, "2026-04-04");
-    let zero = returned(
-        &mut f,
-        "ZERO-CREDIT",
-        &receipt,
-        Some("ZERO-FIRST-LINE"),
-        1000,
-        0,
-        "2026-04-05",
-    );
+    let zero = returned(&mut f, "ZERO-CREDIT", &receipt, Some("ZERO-FIRST-LINE"), 1000, 0, "2026-04-05");
     let dir = tempfile::tempdir().unwrap();
     let path = dir.path().join("unbilled.csv");
     document(&f, &unbilled, &path);
@@ -823,12 +701,7 @@ fn unbilled_interleaving_tiny_zero_credit_and_final_residual_remain_operational_
     let record = f.state.procurement_document(&zero).unwrap();
     assert!(record.journal_id.is_none());
     assert_eq!(record.movements.len(), 1);
-    let snapshot: serde_json::Value = serde_json::from_str(cell(
-        &h,
-        row(&h, &rows, "complete_snapshot"),
-        "snapshot_json",
-    ))
-    .unwrap();
+    let snapshot: serde_json::Value = serde_json::from_str(cell(&h, row(&h, &rows, "complete_snapshot"), "snapshot_json")).unwrap();
     assert!(snapshot["document"]["journal_id"].is_null());
     artifact(&f, &unbilled, "unbilled-return-one-rial");
     artifact(&f, "CREDIT-ZERO-CREDIT", "zero-supplier-credit");
@@ -851,15 +724,7 @@ fn unbilled_interleaving_tiny_zero_credit_and_final_residual_remain_operational_
 #[test]
 fn physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_on_every_page() {
     let mut f = fixture();
-    let id = returned(
-        &mut f,
-        "PDF",
-        "R-B-LINE",
-        Some("BILL-B-LINE-B"),
-        3000,
-        45,
-        "2026-04-01",
-    );
+    let id = returned(&mut f, "PDF", "R-B-LINE", Some("BILL-B-LINE-B"), 3000, 45, "2026-04-01");
     artifact(&f, &id, "billed-physical-return");
     artifact(&f, "CREDIT-PDF", "billed-supplier-credit");
     let lines = tiny_receipt(&mut f, "LONG", 12, 1000, 15, 0);
@@ -890,11 +755,7 @@ fn physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_
         .record_id;
     artifact(&f, &long_id, "long-physical-return");
     let dir = tempfile::tempdir().unwrap();
-    for (doc, kind) in [
-        (id.as_str(), "physical"),
-        ("CREDIT-PDF", "credit"),
-        (long_id.as_str(), "long"),
-    ] {
+    for (doc, kind) in [(id.as_str(), "physical"), ("CREDIT-PDF", "credit"), (long_id.as_str(), "long")] {
         let path = dir.path().join(format!("{kind}.pdf"));
         document_pdf(
             &f.state,
@@ -906,17 +767,10 @@ fn physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_
             &path,
         )
         .unwrap();
-        let output = Command::new("pdftotext")
-            .arg(&path)
-            .arg("-")
-            .output()
-            .unwrap();
+        let output = Command::new("pdftotext").arg(&path).arg("-").output().unwrap();
         assert!(output.status.success());
         let text = String::from_utf8(output.stdout).unwrap();
-        let pages = text
-            .split('\u{c}')
-            .filter(|p| !p.trim().is_empty())
-            .collect::<Vec<_>>();
+        let pages = text.split('\u{c}').filter(|p| !p.trim().is_empty()).collect::<Vec<_>>();
         assert!(!pages.is_empty());
         if kind == "long" {
             assert!(pages.len() >= 4);
@@ -925,25 +779,12 @@ fn physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_
             }
         }
         for page in &pages {
-            for token in [
-                "TEST-PURCHASE-RETURNS",
-                "IRR",
-                "toman",
-                "core-policy-v1",
-                "2026-04",
-            ] {
+            for token in ["TEST-PURCHASE-RETURNS", "IRR", "toman", "core-policy-v1", "2026-04"] {
                 assert!(page.contains(token), "missing repeated {token} in {kind}");
             }
         }
         if kind != "long" {
-            for token in [
-                "RETURN-PDF",
-                "CREDIT-PDF",
-                "R-B-LINE",
-                "BILL-B-LINE-B",
-                "4.5",
-                "2026-03-31",
-            ] {
+            for token in ["RETURN-PDF", "CREDIT-PDF", "R-B-LINE", "BILL-B-LINE-B", "4.5", "2026-03-31"] {
                 assert!(text.contains(token), "missing {token}");
             }
         }
@@ -967,10 +808,7 @@ fn physical_and_credit_pdf_layouts_repeat_headings_and_embed_local_persian_font_
             fs::read_dir(dir.path())
                 .unwrap()
                 .filter_map(Result::ok)
-                .filter(|e| e
-                    .file_name()
-                    .to_string_lossy()
-                    .starts_with(&format!("{kind}-page-")))
+                .filter(|e| e.file_name().to_string_lossy().starts_with(&format!("{kind}-page-")))
                 .count(),
             pages.len()
         );

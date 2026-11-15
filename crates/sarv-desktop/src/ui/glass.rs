@@ -2,8 +2,8 @@
 
 use rune::{Color, El, Icon, Transition, col, el, icon, row, text};
 use rune_kit::{
-    Badge, BadgeVariant, Button, ButtonVariant, Card, ControlSize, Divider, Field, IconButton,
-    IconButtonVariant, Kit, SegmentedControl, TextInput,
+    Badge, BadgeVariant, Button, ButtonVariant, Card, ControlSize, Divider, Field, IconButton, IconButtonVariant, Kit, SegmentedControl,
+    TextInput,
 };
 
 use crate::app::{State, Tone};
@@ -26,7 +26,10 @@ pub enum Btn {
 
 impl Ui {
     pub fn new(s: &State) -> Ui {
-        Ui { k: sarv_kit(s.dark), f: s.fmt }
+        Ui {
+            k: sarv_kit(s.dark),
+            f: s.fmt,
+        }
     }
 
     pub fn t(&self, key: &str) -> String {
@@ -78,7 +81,10 @@ impl Ui {
             Btn::Glass => ButtonVariant::Outline,
             Btn::Ghost => ButtonVariant::Ghost,
         };
-        let mut b = Button::new(label.to_string()).variant(variant).control_size(ControlSize::Large).on_press(on_press);
+        let mut b = Button::new(label.to_string())
+            .variant(variant)
+            .control_size(ControlSize::Large)
+            .on_press(on_press);
         if let Some(g) = glyph {
             b = b.icon(g);
         }
@@ -94,7 +100,10 @@ impl Ui {
             Btn::Ghost => ButtonVariant::Ghost,
         };
         let label = self.t(key);
-        let mut b = Button::new(label).variant(variant).control_size(ControlSize::Small).on_press(on_press);
+        let mut b = Button::new(label)
+            .variant(variant)
+            .control_size(ControlSize::Small)
+            .on_press(on_press);
         if let Some(g) = glyph {
             b = b.icon(g);
         }
@@ -195,7 +204,12 @@ impl Ui {
         col()
             .key(key.to_string())
             .gap(8.0)
-            .child(text(title.to_string()).font(self.k.ty.text_xsmall_medium).color(self.k.c.text_muted).ml(8.0))
+            .child(
+                text(title.to_string())
+                    .font(self.k.ty.text_xsmall_medium)
+                    .color(self.k.c.text_muted)
+                    .ml(8.0),
+            )
             .child(body)
     }
 
@@ -208,22 +222,25 @@ impl Ui {
                 body = body.child(Divider::horizontal().build(&self.k).ml(12.0).mr(12.0));
             }
         }
-        self.k
-            .elevate(
-                col()
-                    .key(key.to_string())
-                    .w_full()
-                    .radius(self.k.radius.md)
-                    .fill(self.k.c.layer_01)
-                    .border(0.5, self.k.c.border_base)
-                    .child(body),
-                &self.k.elevation.raised,
-            )
+        self.k.elevate(
+            col()
+                .key(key.to_string())
+                .w_full()
+                .radius(self.k.radius.md)
+                .fill(self.k.c.layer_01)
+                .border(0.5, self.k.c.border_base)
+                .child(body),
+            &self.k.elevation.raised,
+        )
     }
 
     /// The page's primary action stays in the toolbar. An empty list shows that instead of a blank table.
     pub fn fill_or_empty(&self, count: usize, title: &str, detail: &str, glyph: &'static Icon, table: El) -> El {
-        if count == 0 { self.empty(glyph, title, detail).grow(1.0).min_h(0.0) } else { table }
+        if count == 0 {
+            self.empty(glyph, title, detail).grow(1.0).min_h(0.0)
+        } else {
+            table
+        }
     }
 
     pub fn empty(&self, glyph: &'static Icon, title: &str, detail: &str) -> El {
@@ -389,7 +406,10 @@ impl Ui {
 
     /// Compact two-column field row for facture editors.
     pub fn form_grid(&self, left: El, right: El) -> El {
-        row().w_full().gap(12.0).child(left.grow(1.0).min_w(0.0)).child(right.grow(1.0).min_w(0.0))
+        row()
+            .w_full()
+            .gap(12.0)
+            .child(left.grow(1.0).min_w(0.0))
+            .child(right.grow(1.0).min_w(0.0))
     }
-
 }

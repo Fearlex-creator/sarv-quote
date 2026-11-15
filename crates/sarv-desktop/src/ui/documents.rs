@@ -17,7 +17,12 @@ fn locale(st: &State) -> &'static str {
     if st.lang() == Lang::Fa { "fa" } else { "en" }
 }
 
-fn write(st: &State, stem: &str, id: &str, paint: impl FnOnce(&sarv_quote::domain::State, &std::path::Path) -> Result<(), String>) -> Result<PathBuf, String> {
+fn write(
+    st: &State,
+    stem: &str,
+    id: &str,
+    paint: impl FnOnce(&sarv_quote::domain::State, &std::path::Path) -> Result<(), String>,
+) -> Result<PathBuf, String> {
     let dir = st.engine.dir.join("exports");
     std::fs::create_dir_all(&dir).map_err(|e| e.to_string())?;
     let path = dir.join(format!("{stem}-{}.pdf", safe_name(id)));

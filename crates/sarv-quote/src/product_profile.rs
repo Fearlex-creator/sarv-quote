@@ -18,10 +18,7 @@ pub struct ProductProfile {
 }
 impl ProductProfile {
     pub fn validate(&self) -> Result<()> {
-        ensure!(
-            !self.company_id.trim().is_empty(),
-            "Product company required"
-        );
+        ensure!(!self.company_id.trim().is_empty(), "Product company required");
         for s in [
             &self.company_id,
             &self.barcode,
@@ -44,10 +41,7 @@ impl ProductProfile {
             (0..=1_000_000_000).contains(&self.minimum_stock_thousandths),
             "Invalid minimum stock"
         );
-        ensure!(
-            self.notes.chars().count() <= 2000,
-            "Product notes are too long"
-        );
+        ensure!(self.notes.chars().count() <= 2000, "Product notes are too long");
         Ok(())
     }
 }

@@ -118,10 +118,7 @@ struct Inner {
 }
 impl Inner {
     fn dispatch(&self, action: &str, payload: Value) -> Result<Value> {
-        let mut store = self
-            .accounting
-            .lock()
-            .map_err(|_| anyhow!("Accounting state interrupted"))?;
+        let mut store = self.accounting.lock().map_err(|_| anyhow!("Accounting state interrupted"))?;
         store.refresh_if_stale()?;
         crate::desktop::dispatch_in(&mut store, action, payload)
     }
@@ -166,11 +163,7 @@ fn remove_connection(directory: &Path) -> Result<()> {
     }
 }
 fn token_matches(a: &str, b: &str) -> bool {
-    a.len() == b.len()
-        && a.bytes()
-            .zip(b.bytes())
-            .fold(0u8, |diff, (x, y)| diff | (x ^ y))
-            == 0
+    a.len() == b.len() && a.bytes().zip(b.bytes()).fold(0u8, |diff, (x, y)| diff | (x ^ y)) == 0
 }
 fn shell_quote(s: &str) -> String {
     #[cfg(windows)]
@@ -210,11 +203,7 @@ impl AgentService {
         Ok(service)
     }
     pub fn status(&self) -> Result<Value> {
-        let state = self
-            .inner
-            .state
-            .lock()
-            .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let state = self.inner.state.lock().map_err(|_| anyhow!("Agent service interrupted"))?;
         let connection = self.inner.directory.join(CONNECTION);
         let cli = &self.inner.cli;
         Ok(json!({
@@ -234,11 +223,7 @@ impl AgentService {
     pub fn configure(&self, enabled: bool, access: Access) -> Result<Value> {
         // Serialize revocation with accepted calls: no previously queued call
         // can write after disable returns.
-        let mut state = self
-            .inner
-            .state
-            .lock()
-            .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let mut state = self.inner.state.lock().map_err(|_| anyhow!("Agent service interrupted"))?;
         let policy = Policy {
             enabled,
             access,
@@ -252,11 +237,7 @@ impl AgentService {
         } else {
             let listener = TcpListener::bind((Ipv4Addr::LOCALHOST, 0))?;
             listener.set_nonblocking(true)?;
-            let token = format!(
-                "{}{}",
-                uuid::Uuid::new_v4().simple(),
-                uuid::Uuid::new_v4().simple()
-            );
+            let token = format!("{}{}", uuid::Uuid::new_v4().simple(), uuid::Uuid::new_v4().simple());
             let connection = Connection {
                 protocol: "sarv-local-v1".into(),
                 address: listener.local_addr()?,
@@ -283,9 +264,7 @@ impl AgentService {
         match action {
             "agent_status" => self.status(),
             "agent_configure" => {
-                let enabled = p["enabled"]
-                    .as_bool()
-                    .ok_or_else(|| anyhow!("Enabled must be boolean"))?;
+                let enabled = p["enabled"].as_bool().ok_or_else(|| anyhow!("Enabled must be boolean"))?;
                 let access = serde_json::from_value(p["access"].clone())?;
                 self.configure(enabled, access)
             }
@@ -310,10 +289,7 @@ fn listen(inner: Arc<Inner>, listener: TcpListener, epoch: String) {
         if inner.shutdown.load(Ordering::Acquire) {
             break;
         }
-        let active = inner
-            .state
-            .lock()
-            .is_ok_and(|s| s.policy.enabled && s.policy.epoch == epoch);
+        let active = inner.state.lock().is_ok_and(|s| s.policy.enabled && s.policy.epoch == epoch);
         if !active {
             break;
         }
@@ -330,9 +306,7 @@ fn listen(inner: Arc<Inner>, listener: TcpListener, epoch: String) {
                     worker.connections.fetch_sub(1, Ordering::AcqRel);
                 });
             }
-            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => {
-                thread::sleep(Duration::from_millis(20))
-            }
+            Err(e) if e.kind() == std::io::ErrorKind::WouldBlock => thread::sleep(Duration::from_millis(20)),
             Err(_) => break,
         }
     }
@@ -352,10 +326,7 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
     let mut changed = false;
     let result = (|| {
         let request: Request = serde_json::from_slice(&read_message(&mut stream)?)?;
-        let state = inner
-            .state
-            .lock()
-            .map_err(|_| anyhow!("Agent service interrupted"))?;
+        let state = inner.state.lock().map_err(|_| anyhow!("Agent service interrupted"))?;
         let disk = load_policy(&inner.directory)?;
         ensure!(
             !inner.shutdown.load(Ordering::Acquire) && state.policy.enabled && disk.enabled,
@@ -372,14 +343,8 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
             return Ok(tools());
         }
         let readonly = READ.contains(&request.action.as_str());
-        ensure!(
-            readonly || WRITE.contains(&request.action.as_str()),
-            "Unsupported agent action"
-        );
-        ensure!(
-            readonly || disk.access == Access::Full,
-            "Read-only agent access"
-        );
+        ensure!(readonly || WRITE.contains(&request.action.as_str()), "Unsupported agent action");
+        ensure!(readonly || disk.access == Access::Full, "Read-only agent access");
         ensure!(request.payload.is_object(), "Payload must be an object");
         let financial_post = matches!(
             request.action.as_str(),
@@ -420,8 +385,7 @@ fn serve(inner: &Inner, mut stream: TcpStream) -> Result<()> {
 
 /// Client transport. Only IPv4 loopback is accepted, even in a modified file.
 pub fn call(connection_path: &Path, action: &str, payload: Value) -> Result<Value> {
-    let metadata =
-        fs::metadata(connection_path).context("Agent access is off or the app is closed")?;
+    let metadata = fs::metadata(connection_path).context("Agent access is off or the app is closed")?;
     ensure!(metadata.len() <= 4096, "Invalid agent connection file");
     #[cfg(unix)]
     {
@@ -433,18 +397,12 @@ pub fn call(connection_path: &Path, action: &str, payload: Value) -> Result<Valu
     }
     let connection: Connection = serde_json::from_slice(&fs::read(connection_path)?)?;
     ensure!(
-        connection.protocol == "sarv-local-v1"
-            && connection.address.ip() == IpAddr::V4(Ipv4Addr::LOCALHOST),
+        connection.protocol == "sarv-local-v1" && connection.address.ip() == IpAddr::V4(Ipv4Addr::LOCALHOST),
         "Agent connection must use local loopback"
     );
-    let message =
-        serde_json::to_vec(&json!({"token":connection.token,"action":action,"payload":payload}))?;
-    ensure!(
-        message.len() < MAX_MESSAGE as usize,
-        "Agent message too large"
-    );
-    let mut stream = TcpStream::connect_timeout(&connection.address, Duration::from_secs(2))
-        .context("Open Sarv to connect the agent")?;
+    let message = serde_json::to_vec(&json!({"token":connection.token,"action":action,"payload":payload}))?;
+    ensure!(message.len() < MAX_MESSAGE as usize, "Agent message too large");
+    let mut stream = TcpStream::connect_timeout(&connection.address, Duration::from_secs(2)).context("Open Sarv to connect the agent")?;
     stream.set_read_timeout(Some(Duration::from_secs(60)))?;
     stream.set_write_timeout(Some(Duration::from_secs(5)))?;
     stream.write_all(&message)?;
@@ -458,10 +416,7 @@ pub fn call(connection_path: &Path, action: &str, payload: Value) -> Result<Valu
     );
     let result: Value = serde_json::from_slice(&response)?;
     if let Some(error) = result.get("error") {
-        return Err(anyhow!(
-            "{}",
-            error["message"].as_str().unwrap_or("Agent request failed")
-        ));
+        return Err(anyhow!("{}", error["message"].as_str().unwrap_or("Agent request failed")));
     }
     Ok(result["result"].clone())
 }
@@ -484,9 +439,7 @@ fn description(action: &str) -> String {
         "operation_options" => {
             "List remaining eligible line IDs and thousandth quantities for receive, bill, fulfill, sale_return or purchase_return. Selected payload quantities are decimal base-unit strings, not thousandths."
         }
-        "settings" => {
-            "Save complete presentation/document settings obtained from workspace. This cannot change agent access."
-        }
+        "settings" => "Save complete presentation/document settings obtained from workspace. This cannot change agent access.",
         "journal_reverse" => {
             "Create an immutable linked reversal of a supported manual journal. Typed subledger journals must use their return workflow."
         }
@@ -509,14 +462,7 @@ fn schema(action: &str) -> Value {
     let text = || json!({"type":"string"});
     let mut properties = serde_json::Map::new();
     let mut required: Vec<&str> = Vec::new();
-    let context = [
-        "company_id",
-        "period_id",
-        "source_id",
-        "request_key",
-        "date",
-        "reason",
-    ];
+    let context = ["company_id", "period_id", "source_id", "request_key", "date", "reason"];
     let contextual = matches!(
         action,
         "resource"
@@ -559,23 +505,10 @@ fn schema(action: &str) -> Value {
         "sale_return_preview" | "sale_return_post" => &["record_id", "reference"],
         "purchase_return_preview" | "purchase_return_post" => &["record_id", "reference"],
         "operation_options" => &["company_id", "record_id", "operation"],
-        "transfer_preview" | "transfer_post" => &[
-            "item_id",
-            "source_warehouse_id",
-            "target_warehouse_id",
-            "unit_id",
-            "quantity",
-        ],
+        "transfer_preview" | "transfer_post" => &["item_id", "source_warehouse_id", "target_warehouse_id", "unit_id", "quantity"],
         "journal_preview" | "journal_post" => &["lines"],
         "period_lock" => &["company_id", "period_id", "locked", "reason"],
-        "journal_reverse" | "journal_reverse_preview" => &[
-            "company_id",
-            "journal_id",
-            "period_id",
-            "date",
-            "request_key",
-            "reason",
-        ],
+        "journal_reverse" | "journal_reverse_preview" => &["company_id", "journal_id", "period_id", "date", "request_key", "reason"],
         _ => &[],
     };
     required.extend(fields);
@@ -604,7 +537,10 @@ fn schema(action: &str) -> Value {
         );
     }
     if action == "operation_options" {
-        properties.insert("operation".into(), json!({"type":"string","enum":["receive","bill","fulfill","sale_return","purchase_return"]}));
+        properties.insert(
+            "operation".into(),
+            json!({"type":"string","enum":["receive","bill","fulfill","sale_return","purchase_return"]}),
+        );
     }
     for key in ["confirmed", "locked"] {
         if required.contains(&key) {
@@ -612,10 +548,7 @@ fn schema(action: &str) -> Value {
         }
     }
     if action == "draft_save" {
-        properties.insert(
-            "expected_revision".into(),
-            json!({"type":["string","null"]}),
-        );
+        properties.insert("expected_revision".into(), json!({"type":["string","null"]}));
     }
     if matches!(action, "draft_save" | "draft_preview") {
         properties.insert("draft".into(), draft_schema());
@@ -624,14 +557,7 @@ fn schema(action: &str) -> Value {
         let fields: &[&str] = if action.starts_with("journal_") {
             &["account_id", "debit", "credit"]
         } else if action.starts_with("purchase_") && !action.starts_with("purchase_return_") {
-            &[
-                "id",
-                "item_id",
-                "warehouse_id",
-                "unit_id",
-                "quantity",
-                "unit_price",
-            ]
+            &["id", "item_id", "warehouse_id", "unit_id", "quantity", "unit_price"]
         } else {
             &["id", "quantity"]
         };
@@ -686,14 +612,8 @@ fn draft_schema() -> Value {
     for key in fields {
         p.insert(key.into(), json!({"type":"string"}));
     }
-    p.insert(
-        "date_display".into(),
-        json!({"type":"string","enum":["Iso","Jalali"]}),
-    );
-    p.insert(
-        "display_unit".into(),
-        json!({"type":"string","enum":["Rial","Toman"]}),
-    );
+    p.insert("date_display".into(), json!({"type":"string","enum":["Iso","Jalali"]}));
+    p.insert("display_unit".into(), json!({"type":"string","enum":["Rial","Toman"]}));
     p.insert("quotation".into(), json!({"type":["object","null"]}));
     let line_fields = [
         "id",
@@ -707,10 +627,7 @@ fn draft_schema() -> Value {
         "price_date",
         "override_reason",
     ];
-    let lp: serde_json::Map<String, Value> = line_fields
-        .iter()
-        .map(|key| ((*key).into(), json!({"type":"string"})))
-        .collect();
+    let lp: serde_json::Map<String, Value> = line_fields.iter().map(|key| ((*key).into(), json!({"type":"string"}))).collect();
     p.insert(
         "lines".into(),
         json!({"type":"array","items":{"type":"object","properties":lp,"required":line_fields}}),
@@ -725,10 +642,7 @@ pub fn mcp(connection: &Path, input: impl BufRead, mut output: impl Write) -> Re
     let mut input = input;
     loop {
         let mut line = Vec::new();
-        let n = input
-            .by_ref()
-            .take(MAX_MESSAGE + 1)
-            .read_until(b'\n', &mut line)?;
+        let n = input.by_ref().take(MAX_MESSAGE + 1).read_until(b'\n', &mut line)?;
         if n == 0 {
             break;
         }

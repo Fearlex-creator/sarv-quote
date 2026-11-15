@@ -40,7 +40,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             "",
             vec![],
             ui.kit_card()
-                .title(ui.t("Confirm starting balances to settle invoices and bills."), Some(&icons::PAYMENTS))
+                .title(
+                    ui.t("Confirm starting balances to settle invoices and bills."),
+                    Some(&icons::PAYMENTS),
+                )
                 .action(ui.btn(Btn::Primary, "Record opening balances", Some(&icons::CHECK), |st| {
                     st.nav(crate::app::Page::Settings);
                 }))
@@ -81,7 +84,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
     .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
     .column(TableColumn::new("date", ui.t("Date")).width(110.0).min(88.0))
-    .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(100.0).align(Align::End).sortable())
+    .column(
+        TableColumn::new("amount", ui.t("Amount"))
+            .width(160.0)
+            .min(100.0)
+            .align(Align::End)
+            .sortable(),
+    )
     .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
     .cell(|s: &State, i, col| {
         let list = payments(s);
@@ -127,7 +136,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .grow(1.0)
         .min_h(0.0)
         .child(metrics)
-        .child(ui.fill_or_empty(payments(s).len(), "No payments recorded yet", "Settle invoices and bills", &icons::PAYMENTS, table))
+        .child(ui.fill_or_empty(
+            payments(s).len(),
+            "No payments recorded yet",
+            "Settle invoices and bills",
+            &icons::PAYMENTS,
+            table,
+        ))
         .child(cheque_strip(s, ui));
 
     if s.payments.modal_open {
@@ -175,11 +190,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let customers = s.payments.receive;
     let mut opts = pickers::party_options(s, customers, !customers);
     let q = s.payments.party_combo.search().text.clone();
-    opts = pickers::with_create_option(
-        opts,
-        &q,
-        &if customers { ui.t("New customer") } else { ui.t("New supplier") },
-    );
+    opts = pickers::with_create_option(opts, &q, &if customers { ui.t("New customer") } else { ui.t("New supplier") });
     let party = pickers::entity_combo(
         ui,
         &mut portals,
@@ -187,12 +198,20 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &s.payments.party_combo,
         |st| &mut st.payments.party_combo,
         &opts,
-        if s.payments.party_id.is_empty() { None } else { Some(s.payments.party_id.as_str()) },
+        if s.payments.party_id.is_empty() {
+            None
+        } else {
+            Some(s.payments.party_id.as_str())
+        },
         &ui.t("Select contact"),
         pickers::PICKER_WIDTH,
         move |st, id| {
             if let Some(name) = pickers::create_text(id) {
-                let kind = if st.payments.receive { ResourceKind::Customer } else { ResourceKind::Vendor };
+                let kind = if st.payments.receive {
+                    ResourceKind::Customer
+                } else {
+                    ResourceKind::Vendor
+                };
                 match st.create_party(kind, name, "", "", "") {
                     Ok(pid) => st.payments.party_id = pid,
                     Err(e) => st.toast_err(e),
@@ -221,16 +240,22 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         ))
         .child(ui.labeled("Description", ui.field(s, "pay-reason", &ui.t("Note (optional)"))));
     if s.payments.funds == 2 {
-        form = form.child(ui.form_grid(
-            ui.labeled("Cheque", ui.field(s, "pay-sayad", "")),
-            ui.labeled("Number", ui.field(s, "pay-cheque-no", "")),
-        )).child(ui.form_grid(
-            ui.labeled("Bank", ui.field(s, "pay-bank", "")),
-            ui.labeled("Due date", ui.field(s, "pay-due", &crate::data::today())),
-        ));
+        form = form
+            .child(ui.form_grid(
+                ui.labeled("Cheque", ui.field(s, "pay-sayad", "")),
+                ui.labeled("Number", ui.field(s, "pay-cheque-no", "")),
+            ))
+            .child(ui.form_grid(
+                ui.labeled("Bank", ui.field(s, "pay-bank", "")),
+                ui.labeled("Due date", ui.field(s, "pay-due", &crate::data::today())),
+            ));
     }
 
-    let title = if s.payments.receive { ui.t("Receive money") } else { ui.t("Pay bill") };
+    let title = if s.payments.receive {
+        ui.t("Receive money")
+    } else {
+        ui.t("Pay bill")
+    };
     ui.dialog_described(
         layer,
         &mut portals,
@@ -262,7 +287,13 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 let funds_role = match st.payments.funds {
                     0 => "cash",
                     1 => "bank",
-                    _ => if st.payments.receive { "cheques_receivable" } else { "cheques_payable" },
+                    _ => {
+                        if st.payments.receive {
+                            "cheques_receivable"
+                        } else {
+                            "cheques_payable"
+                        }
+                    }
                 };
                 let opts = st.query(
                     "payment_options",
@@ -341,7 +372,11 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 } else {
                     "payment_post"
                 };
-                let preview_action = if st.payments.funds == 2 { "payment_preview" } else { "payment_preview" };
+                let preview_action = if st.payments.funds == 2 {
+                    "payment_preview"
+                } else {
+                    "payment_preview"
+                };
                 match st.query(preview_action, payload.clone()) {
                     Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
                     Err(e) => {
@@ -414,13 +449,11 @@ fn first_fund_account(s: &State) -> Option<String> {
             .map(|r| crate::data::s(&r["account"]["id"]))
             .filter(|id| !id.is_empty())
     };
-    pick("Bank")
-        .or_else(|| pick("Cash"))
-        .or_else(|| {
-            rows.first()
-                .map(|r| crate::data::s(&r["account"]["id"]))
-                .filter(|id| !id.is_empty())
-        })
+    pick("Bank").or_else(|| pick("Cash")).or_else(|| {
+        rows.first()
+            .map(|r| crate::data::s(&r["account"]["id"]))
+            .filter(|id| !id.is_empty())
+    })
 }
 
 fn cheque_strip(s: &State, ui: &Ui) -> El {
@@ -462,18 +495,14 @@ fn cheque_strip(s: &State, ui: &Ui) -> El {
                 let _ = st.run(action, payload, Some("Posted"));
             }));
         }
-        let mut line = col()
-            .key(format!("cheque-row-{id}"))
-            .w_full()
-            .gap(6.0)
-            .child(
-                row()
-                    .w_full()
-                    .gap(8.0)
-                    .center_y()
-                    .child(ui.body(label).grow(1.0).min_w(0.0))
-                    .child(ui.muted(status_label)),
-            );
+        let mut line = col().key(format!("cheque-row-{id}")).w_full().gap(6.0).child(
+            row()
+                .w_full()
+                .gap(8.0)
+                .center_y()
+                .child(ui.body(label).grow(1.0).min_w(0.0))
+                .child(ui.muted(status_label)),
+        );
         if has_action {
             line = line.child(actions);
         }

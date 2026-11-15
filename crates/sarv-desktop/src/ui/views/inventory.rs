@@ -33,7 +33,10 @@ pub struct InventoryState {
 }
 
 fn items(s: &State) -> &[serde_json::Value] {
-    s.books.workspace["resources"]["items"].as_array().map(|a| a.as_slice()).unwrap_or(&[])
+    s.books.workspace["resources"]["items"]
+        .as_array()
+        .map(|a| a.as_slice())
+        .unwrap_or(&[])
 }
 
 fn product_profile<'a>(s: &'a State, id: &str) -> &'a Value {
@@ -42,11 +45,7 @@ fn product_profile<'a>(s: &'a State, id: &str) -> &'a Value {
 
 fn sale_price(s: &State, id: &str) -> String {
     let p = &product_profile(s, id)["sale_price"];
-    if p.is_null() {
-        "0".into()
-    } else {
-        crate::data::s(p)
-    }
+    if p.is_null() { "0".into() } else { crate::data::s(p) }
 }
 
 fn unit_name(s: &State, unit_id: &str) -> String {
@@ -88,12 +87,19 @@ fn item_matches(s: &State, item: &Value, query: &str) -> bool {
     let name = crate::data::s(&item["name"]);
     let sku = crate::data::s(&item["sku"]);
     let barcode = crate::data::s(&profile["barcode"]);
-    [name.as_str(), sku.as_str(), barcode.as_str(), brand.as_str(), category.as_str(), id.as_str()]
-        .iter()
-        .any(|field| {
-            let field = field.to_lowercase();
-            field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
-        })
+    [
+        name.as_str(),
+        sku.as_str(),
+        barcode.as_str(),
+        brand.as_str(),
+        category.as_str(),
+        id.as_str(),
+    ]
+    .iter()
+    .any(|field| {
+        let field = field.to_lowercase();
+        field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
+    })
 }
 
 fn filtered_items(s: &State) -> Vec<serde_json::Value> {
@@ -129,7 +135,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .column(TableColumn::new("category", ui.t("Category")).width(120.0).min(88.0).sortable())
     .column(TableColumn::new("code", ui.t("Code")).width(110.0).min(72.0).sortable())
     .column(TableColumn::new("unit", ui.t("Unit")).width(90.0).min(64.0))
-    .column(TableColumn::new("price", ui.t("Price")).width(130.0).min(96.0).align(Align::End).sortable())
+    .column(
+        TableColumn::new("price", ui.t("Price"))
+            .width(130.0)
+            .min(96.0)
+            .align(Align::End)
+            .sortable(),
+    )
     .cell(|s: &State, i, col| {
         let list = filtered_items(s);
         let Some(item) = list.get(i) else {
@@ -236,19 +248,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .child(brand_select)
         .child(category_select);
 
-    let body = col()
-        .w_full()
-        .gap(14.0)
-        .grow(1.0)
-        .min_h(0.0)
-        .child(filters)
-        .child(ui.fill_or_empty(
-            list.len(),
-            if items(s).is_empty() { "No products" } else { "Nothing to show" },
-            "Products and services you sell",
-            &icons::INVENTORY,
-            table,
-        ));
+    let body = col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(filters).child(ui.fill_or_empty(
+        list.len(),
+        if items(s).is_empty() { "No products" } else { "Nothing to show" },
+        "Products and services you sell",
+        &icons::INVENTORY,
+        table,
+    ));
 
     layer.append(&mut portals);
 
@@ -287,7 +293,11 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "item-unit",
         &units,
-        if s.inventory.unit_id.is_empty() { None } else { Some(s.inventory.unit_id.as_str()) },
+        if s.inventory.unit_id.is_empty() {
+            None
+        } else {
+            Some(s.inventory.unit_id.as_str())
+        },
         &ui.t("Select unit"),
         pickers::PICKER_WIDTH,
         unit_open,
@@ -325,36 +335,40 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(16.0)
         .child(kind_bar)
-        .child(ui.section(
-            "item-basics",
-            &ui.t("Product"),
-            col()
-                .gap(12.0)
-                .child(ui.labeled("Name", ui.field(s, "item-name", &ui.t("Enter a product name."))))
-                .child(ui.form_grid(
-                    ui.labeled("Code", ui.field(s, "item-sku", "PRD-101")),
-                    ui.labeled("Unit", unit_select),
-                ))
-                .child(ui.form_grid(
-                    ui.labeled("Brand", ui.field(s, "item-brand", &ui.t("Brand"))),
-                    ui.labeled("Category", ui.field(s, "item-category", &ui.t("Category"))),
-                )),
-        ))
-        .child(ui.section(
-            "item-pricing",
-            &ui.t("Pricing"),
-            col()
-                .gap(12.0)
-                .child(ui.form_grid(
-                    ui.labeled("Your cost", ui.field(s, "item-cost", "۰")),
-                    ui.labeled("Unit price", ui.field(s, "item-price", "۱۵۰٬۰۰۰")),
-                ))
-                .child(ui.form_grid(
-                    ui.labeled("Barcode", ui.field(s, "item-barcode", "")),
-                    ui.labeled("Preferred supplier", supplier_select),
-                ))
-                .child(ui.labeled("Minimum stock · base units", ui.field(s, "item-min-stock", "0"))),
-        ))
+        .child(
+            ui.section(
+                "item-basics",
+                &ui.t("Product"),
+                col()
+                    .gap(12.0)
+                    .child(ui.labeled("Name", ui.field(s, "item-name", &ui.t("Enter a product name."))))
+                    .child(ui.form_grid(
+                        ui.labeled("Code", ui.field(s, "item-sku", "PRD-101")),
+                        ui.labeled("Unit", unit_select),
+                    ))
+                    .child(ui.form_grid(
+                        ui.labeled("Brand", ui.field(s, "item-brand", &ui.t("Brand"))),
+                        ui.labeled("Category", ui.field(s, "item-category", &ui.t("Category"))),
+                    )),
+            ),
+        )
+        .child(
+            ui.section(
+                "item-pricing",
+                &ui.t("Pricing"),
+                col()
+                    .gap(12.0)
+                    .child(ui.form_grid(
+                        ui.labeled("Your cost", ui.field(s, "item-cost", "۰")),
+                        ui.labeled("Unit price", ui.field(s, "item-price", "۱۵۰٬۰۰۰")),
+                    ))
+                    .child(ui.form_grid(
+                        ui.labeled("Barcode", ui.field(s, "item-barcode", "")),
+                        ui.labeled("Preferred supplier", supplier_select),
+                    ))
+                    .child(ui.labeled("Minimum stock · base units", ui.field(s, "item-min-stock", "0"))),
+            ),
+        )
         .child(ui.labeled("Description", ui.field(s, "item-notes", &ui.t("Note (optional)"))));
 
     let save_btn = ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), move |st| {
@@ -407,10 +421,7 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         true,
         640.0,
         form,
-        vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.modal_open = false),
-            save_btn,
-        ],
+        vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.modal_open = false), save_btn],
         |st| st.inventory.modal_open = false,
     );
 }
@@ -427,7 +438,11 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "transfer-item",
         &items,
-        if s.inventory.transfer_item.is_empty() { None } else { Some(s.inventory.transfer_item.as_str()) },
+        if s.inventory.transfer_item.is_empty() {
+            None
+        } else {
+            Some(s.inventory.transfer_item.as_str())
+        },
         &ui.t("Select product"),
         pickers::PICKER_WIDTH,
         item_open,
@@ -438,7 +453,11 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "transfer-from",
         &wh,
-        if s.inventory.transfer_from.is_empty() { None } else { Some(s.inventory.transfer_from.as_str()) },
+        if s.inventory.transfer_from.is_empty() {
+            None
+        } else {
+            Some(s.inventory.transfer_from.as_str())
+        },
         &ui.t("Select warehouse"),
         pickers::PICKER_WIDTH,
         from_open,
@@ -449,7 +468,11 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "transfer-to",
         &wh,
-        if s.inventory.transfer_to.is_empty() { None } else { Some(s.inventory.transfer_to.as_str()) },
+        if s.inventory.transfer_to.is_empty() {
+            None
+        } else {
+            Some(s.inventory.transfer_to.as_str())
+        },
         &ui.t("Select warehouse"),
         pickers::PICKER_WIDTH,
         to_open,
@@ -473,10 +496,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, |st| st.inventory.transfer_open = false),
             ui.btn(Btn::Primary, "Save", Some(&icons::CHECK), |st| {
-                if st.inventory.transfer_item.is_empty()
-                    || st.inventory.transfer_from.is_empty()
-                    || st.inventory.transfer_to.is_empty()
-                {
+                if st.inventory.transfer_item.is_empty() || st.inventory.transfer_from.is_empty() || st.inventory.transfer_to.is_empty() {
                     st.toast(Tone::Danger, st.fmt.t("Select product"));
                     return;
                 }
@@ -517,13 +537,13 @@ fn open_product(st: &mut State, item_id: &str) {
             st.forms.set("prod-brand", &crate::data::s(&profile["brand"]));
             st.forms.set("prod-category", &crate::data::s(&profile["category"]));
             st.forms.set("prod-notes", &crate::data::s(&profile["notes"]));
-            st.forms.set("prod-price", &money_field_from_rial(st, &crate::data::s(&profile["sale_price"])));
-            st.forms.set("prod-cost", &money_field_from_rial(st, &crate::data::s(&profile["purchase_price"])));
+            st.forms
+                .set("prod-price", &money_field_from_rial(st, &crate::data::s(&profile["sale_price"])));
+            st.forms
+                .set("prod-cost", &money_field_from_rial(st, &crate::data::s(&profile["purchase_price"])));
             let min_th = profile["minimum_stock_thousandths"].as_i64().unwrap_or(0);
-            st.forms.set(
-                "prod-min-stock",
-                &crate::ui::ops::qty_from_thousandths(&min_th.to_string()),
-            );
+            st.forms
+                .set("prod-min-stock", &crate::ui::ops::qty_from_thousandths(&min_th.to_string()));
             st.inventory.supplier_id = crate::data::s(&profile["preferred_supplier_id"]);
             let stock = crate::data::s(&v["stats"]["stock_quantity"]);
             st.inventory.stock_label = crate::ui::ops::qty_from_thousandths(&stock);
@@ -541,11 +561,7 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let stock_value = ui.f.money(&crate::data::s(&stats["stock_value"]));
     let net_sales = ui.f.money(&crate::data::s(&stats["net_sales"]));
     let low = stats["low_stock"].as_bool().unwrap_or(false);
-    let stock_sub = if low {
-        ui.t("Low stock")
-    } else {
-        ui.t("On hand")
-    };
+    let stock_sub = if low { ui.t("Low stock") } else { ui.t("On hand") };
     let metrics = row()
         .w_full()
         .gap(10.0)
@@ -599,32 +615,36 @@ fn mount_product_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let form = col()
         .gap(16.0)
         .child(metrics)
-        .child(ui.section(
-            "prod-catalog",
-            &ui.t("Catalog"),
-            col()
-                .gap(12.0)
-                .child(ui.form_grid(
-                    ui.labeled("Brand", ui.field(s, "prod-brand", "")),
-                    ui.labeled("Category", ui.field(s, "prod-category", "")),
-                ))
-                .child(ui.form_grid(
-                    ui.labeled("Barcode", ui.field(s, "prod-barcode", "")),
-                    ui.labeled("Preferred supplier", supplier_select),
-                )),
-        ))
-        .child(ui.section(
-            "prod-commerce",
-            &ui.t("Pricing"),
-            col()
-                .gap(12.0)
-                .child(ui.form_grid(
-                    ui.labeled("Your cost", ui.field(s, "prod-cost", "0")),
-                    ui.labeled("Unit price", ui.field(s, "prod-price", "0")),
-                ))
-                .child(ui.labeled("Minimum stock · base units", ui.field(s, "prod-min-stock", "0")))
-                .child(ui.labeled("Product notes", ui.field(s, "prod-notes", ""))),
-        ));
+        .child(
+            ui.section(
+                "prod-catalog",
+                &ui.t("Catalog"),
+                col()
+                    .gap(12.0)
+                    .child(ui.form_grid(
+                        ui.labeled("Brand", ui.field(s, "prod-brand", "")),
+                        ui.labeled("Category", ui.field(s, "prod-category", "")),
+                    ))
+                    .child(ui.form_grid(
+                        ui.labeled("Barcode", ui.field(s, "prod-barcode", "")),
+                        ui.labeled("Preferred supplier", supplier_select),
+                    )),
+            ),
+        )
+        .child(
+            ui.section(
+                "prod-commerce",
+                &ui.t("Pricing"),
+                col()
+                    .gap(12.0)
+                    .child(ui.form_grid(
+                        ui.labeled("Your cost", ui.field(s, "prod-cost", "0")),
+                        ui.labeled("Unit price", ui.field(s, "prod-price", "0")),
+                    ))
+                    .child(ui.labeled("Minimum stock · base units", ui.field(s, "prod-min-stock", "0")))
+                    .child(ui.labeled("Product notes", ui.field(s, "prod-notes", ""))),
+            ),
+        );
 
     ui.dialog_described(
         layer,

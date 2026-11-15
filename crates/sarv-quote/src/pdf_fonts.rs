@@ -22,8 +22,7 @@ unsafe extern "C" {
 /// PangoCairo map is the Win32 one, which cannot take private font files.
 pub fn font_map() -> pango::FontMap {
     if cfg!(windows) {
-        pangocairo::FontMap::for_font_type(cairo::FontType::FontTypeFt)
-            .unwrap_or_else(pangocairo::FontMap::new)
+        pangocairo::FontMap::for_font_type(cairo::FontType::FontTypeFt).unwrap_or_else(pangocairo::FontMap::new)
     } else {
         pangocairo::FontMap::new()
     }
@@ -50,22 +49,13 @@ pub fn private(map: &pango::FontMap, scope: &str) -> Result<PrivateFonts> {
     builder.create(&dir)?;
     let guard = PrivateFonts(dir);
     let fonts: &[(&str, &[u8])] = &[
-        (
-            "Vazirmatn-Regular.ttf",
-            include_bytes!("../assets/fonts/Vazirmatn-Regular.ttf"),
-        ),
-        (
-            "Vazirmatn-Bold.ttf",
-            include_bytes!("../assets/fonts/Vazirmatn-Bold.ttf"),
-        ),
+        ("Vazirmatn-Regular.ttf", include_bytes!("../assets/fonts/Vazirmatn-Regular.ttf")),
+        ("Vazirmatn-Bold.ttf", include_bytes!("../assets/fonts/Vazirmatn-Bold.ttf")),
     ];
     for &(name, bytes) in fonts {
         write_new(&guard.0.join(name), bytes)?;
     }
-    write_new(
-        &guard.0.join("OFL.txt"),
-        include_bytes!("../assets/fonts/OFL.txt"),
-    )?;
+    write_new(&guard.0.join("OFL.txt"), include_bytes!("../assets/fonts/OFL.txt"))?;
     // Fontconfig owns the config; Pango takes its own reference when assigned.
     let config = unsafe { FcConfigCreate() };
     ensure!(!config.is_null(), "پیکربندی قلم PDF در دسترس نیست");

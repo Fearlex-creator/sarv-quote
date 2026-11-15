@@ -34,13 +34,20 @@ pub enum CellValue {
 
 /// Reject a workbook that is not a small grid of text cells.
 pub fn validate_workbook(value: &Value) -> Result<()> {
-    let sheets = value["sheets"].as_array().ok_or_else(|| anyhow::anyhow!("Workbook has no sheets"))?;
+    let sheets = value["sheets"]
+        .as_array()
+        .ok_or_else(|| anyhow::anyhow!("Workbook has no sheets"))?;
     ensure!((1..=12).contains(&sheets.len()), "A workbook has between 1 and 12 sheets");
     let mut count = 0usize;
     for sheet in sheets {
         let name = sheet["name"].as_str().unwrap_or("");
-        ensure!(!name.trim().is_empty() && name.chars().count() <= 40, "Sheet name is empty or too long");
-        let cells = sheet["cells"].as_object().ok_or_else(|| anyhow::anyhow!("Sheet cells are missing"))?;
+        ensure!(
+            !name.trim().is_empty() && name.chars().count() <= 40,
+            "Sheet name is empty or too long"
+        );
+        let cells = sheet["cells"]
+            .as_object()
+            .ok_or_else(|| anyhow::anyhow!("Sheet cells are missing"))?;
         count = count.saturating_add(cells.len());
         ensure!(count <= 4_000, "A workbook holds at most 4000 cells");
         for (addr, raw) in cells {
@@ -60,7 +67,9 @@ pub fn parse_addr(raw: &str) -> Option<(u32, u32)> {
         if i == 2 {
             return None;
         }
-        col = col.checked_mul(26)?.checked_add(u32::from(bytes[i].to_ascii_uppercase() - b'A' + 1))?;
+        col = col
+            .checked_mul(26)?
+            .checked_add(u32::from(bytes[i].to_ascii_uppercase() - b'A' + 1))?;
         i += 1;
     }
     if col == 0 || col > 26 * 26 || i == bytes.len() {
@@ -122,7 +131,10 @@ fn eval_expr(
     books: &mut dyn FnMut(&str) -> Option<i64>,
     stack: &mut HashSet<String>,
 ) -> Result<Number, ()> {
-    let mut p = Parser { s: formula.as_bytes(), i: 0 };
+    let mut p = Parser {
+        s: formula.as_bytes(),
+        i: 0,
+    };
     let n = p.expr(cell, books, stack)?;
     p.skip();
     if p.i != p.s.len() {
@@ -164,8 +176,15 @@ impl<'a> Parser<'a> {
             }
             self.bump();
             let right = self.term(cell, books, stack)?;
-            let value = if op == b'+' { left.value.checked_add(right.value) } else { left.value.checked_sub(right.value) };
-            left = Number { value: value.ok_or(())?, money: left.money || right.money };
+            let value = if op == b'+' {
+                left.value.checked_add(right.value)
+            } else {
+                left.value.checked_sub(right.value)
+            };
+            left = Number {
+                value: value.ok_or(())?,
+                money: left.money || right.money,
+            };
         }
         Ok(left)
     }
@@ -187,7 +206,10 @@ impl<'a> Parser<'a> {
             } else {
                 left.value.checked_div(right.value)
             };
-            left = Number { value: value.ok_or(())?, money: left.money || right.money };
+            left = Number {
+                value: value.ok_or(())?,
+                money: left.money || right.money,
+            };
         }
         Ok(left)
     }
@@ -205,7 +227,10 @@ impl<'a> Parser<'a> {
         if c == b'-' {
             self.bump();
             let n = self.factor(cell, books, stack)?;
-            return Ok(Number { value: n.value.checked_neg().ok_or(())?, money: n.money });
+            return Ok(Number {
+                value: n.value.checked_neg().ok_or(())?,
+                money: n.money,
+            });
         }
         if c == b'(' {
             self.bump();
@@ -216,7 +241,10 @@ impl<'a> Parser<'a> {
             return Ok(n);
         }
         if c.is_ascii_digit() {
-            return Ok(Number { value: self.number()?, money: false });
+            return Ok(Number {
+                value: self.number()?,
+                money: false,
+            });
         }
         if c.is_ascii_alphabetic() {
             let name = self.word()?;
@@ -262,7 +290,10 @@ impl<'a> Parser<'a> {
             total
         } else if upper == "BOOKS" {
             let key = self.quoted()?.to_ascii_lowercase();
-            Number { value: books(&key).ok_or(())?, money: true }
+            Number {
+                value: books(&key).ok_or(())?,
+                money: true,
+            }
         } else {
             return Err(());
         };
@@ -296,7 +327,10 @@ impl<'a> Parser<'a> {
         if start == self.i {
             return Err(());
         }
-        std::str::from_utf8(&self.s[start..self.i]).ok().and_then(|s| s.parse().ok()).ok_or(())
+        std::str::from_utf8(&self.s[start..self.i])
+            .ok()
+            .and_then(|s| s.parse().ok())
+            .ok_or(())
     }
     fn quoted(&mut self) -> Result<String, ()> {
         let quote = self.bump().ok_or(())?;
@@ -360,10 +394,22 @@ mod tests {
 
     #[test]
     fn formulas_sum_cells_and_read_the_books() {
-        let grid = cells(&[("A1", "10"), ("A2", "25"), ("B1", "=A1+A2"), ("C1", "=SUM(A1:A2)"), ("D1", "=BOOKS(\"cash\")")]);
-        assert_eq!(run("=B1*2", &grid, &[("cash", 1500)]), CellValue::Number(Number { value: 70, money: false }));
+        let grid = cells(&[
+            ("A1", "10"),
+            ("A2", "25"),
+            ("B1", "=A1+A2"),
+            ("C1", "=SUM(A1:A2)"),
+            ("D1", "=BOOKS(\"cash\")"),
+        ]);
+        assert_eq!(
+            run("=B1*2", &grid, &[("cash", 1500)]),
+            CellValue::Number(Number { value: 70, money: false })
+        );
         assert_eq!(run("=C1", &grid, &[]), CellValue::Number(Number { value: 35, money: false }));
-        assert_eq!(run("=D1", &grid, &[("cash", 1500)]), CellValue::Number(Number { value: 1500, money: true }));
+        assert_eq!(
+            run("=D1", &grid, &[("cash", 1500)]),
+            CellValue::Number(Number { value: 1500, money: true })
+        );
         assert_eq!(run("=A1/0", &grid, &[]), CellValue::Text("err".into()));
     }
 

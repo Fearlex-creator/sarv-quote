@@ -7,10 +7,8 @@ use sarv_quote::{
     store::Store,
 };
 fn base() -> State {
-    let envelope: serde_json::Value = serde_json::from_str(include_str!(
-        "../../../docs/assets/accounting-m3/restore/core-v4.json"
-    ))
-    .unwrap();
+    let envelope: serde_json::Value =
+        serde_json::from_str(include_str!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let mut state: State = serde_json::from_value(envelope["state"].clone()).unwrap();
     state.schema = CURRENT_SCHEMA;
     state.validate().unwrap();
@@ -99,10 +97,7 @@ fn draft_revision_cas_noop_atomic_submit_and_lost_receipt_retries_after_lock() {
     })
     .unwrap();
     let mut updated = st.state.sales_drafts[0].clone();
-    assert_eq!(
-        st.state.save_sales_draft(updated.clone(), Some(1)).unwrap(),
-        1
-    );
+    assert_eq!(st.state.save_sales_draft(updated.clone(), Some(1)).unwrap(), 1);
     updated.reason = "new synthetic review reason".into();
     st.change(|s| {
         assert_eq!(s.save_sales_draft(updated.clone(), Some(1))?, 2);
@@ -119,56 +114,37 @@ fn draft_revision_cas_noop_atomic_submit_and_lost_receipt_retries_after_lock() {
     );
     assert_eq!(serde_json::to_vec(&st.state).unwrap(), before);
     let mut stale = Store::open(profile.path()).unwrap();
-    let result = st
-        .change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester"))
-        .unwrap();
+    let result = st.change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester")).unwrap();
     assert!(st.state.sales_drafts.is_empty());
     assert!(result.journal_id.is_none());
-    assert!(
-        stale
-            .change(|s| s.post_sales_from_draft(&d.id, 2, "other-key", "tester"))
-            .is_err()
-    );
+    assert!(stale.change(|s| s.post_sales_from_draft(&d.id, 2, "other-key", "tester")).is_err());
     let order_count = st.state.accounting.sales.records.len();
     let audit_count = st.state.accounting.audit.len();
-    let period = st.state.accounting.core.openings[0]
-        .command
-        .period_id
-        .clone();
-    st.change(|s| {
-        s.accounting
-            .set_period_lock(&period, true, "tester", "synthetic lock")
-    })
-    .unwrap();
+    let period = st.state.accounting.core.openings[0].command.period_id.clone();
+    st.change(|s| s.accounting.set_period_lock(&period, true, "tester", "synthetic lock"))
+        .unwrap();
     let locked_audit = st.state.accounting.audit.len();
     assert!(locked_audit > audit_count);
     drop(st);
     let mut st = Store::open(profile.path()).unwrap();
     assert_eq!(
-        st.change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester"))
-            .unwrap(),
+        st.change(|s| s.post_sales_from_draft(&d.id, 2, "submit-key", "tester")).unwrap(),
         result
     );
     assert_eq!(
-        st.change(|s| s.post_sales_from_draft(&d.id, 2, "retry-new-key", "tester"))
-            .unwrap(),
+        st.change(|s| s.post_sales_from_draft(&d.id, 2, "retry-new-key", "tester")).unwrap(),
         result
     );
     assert_eq!(st.state.accounting.sales.records.len(), order_count);
     assert_eq!(st.state.accounting.audit.len(), locked_audit);
-    assert!(
-        st.change(|s| s.post_sales_from_draft(&d.id, 2, "bad-actor", "other"))
-            .is_err()
-    );
+    assert!(st.change(|s| s.post_sales_from_draft(&d.id, 2, "bad-actor", "other")).is_err());
     st.state.validate().unwrap();
 }
 fn approved_quote() -> State {
     let mut s = base();
     let at = chrono::Utc::now().format("%Y-%m-%dT00:00:00Z").to_string();
     let cat = catalog_csv(
-        &format!(
-            "code,name,measure,price,currency,source_at,aliases\nSKU-A,کالای الف,عدد,20,rial,{at},"
-        ),
+        &format!("code,name,measure,price,currency,source_at,aliases\nSKU-A,کالای الف,عدد,20,rial,{at},"),
         "synthetic conversion",
     )
     .unwrap();
@@ -195,9 +171,7 @@ fn authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_cha
     d.lines[0].warehouse_id = "W1".into();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "quote-convert", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "quote-convert", "tester").unwrap();
     assert_eq!(order.supplied_total, Money::from_rials(199));
     let before = serde_json::to_vec(&s).unwrap();
     for mutation in 0..5 {
@@ -212,12 +186,8 @@ fn authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_cha
         assert!(s.validate_sales_quotation(&bad).is_err());
     }
     assert_eq!(serde_json::to_vec(&s).unwrap(), before);
-    s.post_sales_from_draft(&id, 1, "quote-convert", "tester")
-        .unwrap();
-    assert_eq!(
-        serde_json::to_vec(&s.quotes[0]).unwrap(),
-        serde_json::to_vec(&q).unwrap()
-    );
+    s.post_sales_from_draft(&id, 1, "quote-convert", "tester").unwrap();
+    assert_eq!(serde_json::to_vec(&s.quotes[0]).unwrap(), serde_json::to_vec(&q).unwrap());
     for mutation in 0..4 {
         let mut bad = s.clone();
         match mutation {
@@ -239,10 +209,7 @@ fn authentic_quote_conversion_preserves_full_snapshot_and_rejects_tax_or_any_cha
     bad.context.source_id = "fabricated-linked-order".into();
     bad.context.request_key = "fabricated-key".into();
     bad.quotation.as_mut().unwrap().quote_sha256 = "0".repeat(64);
-    forged
-        .accounting
-        .post_sales_command(SalesCommand::Order(bad))
-        .unwrap();
+    forged.accounting.post_sales_command(SalesCommand::Order(bad)).unwrap();
     assert!(forged.validate().is_err());
 }
 #[test]
@@ -259,18 +226,13 @@ fn raw_jalali_dates_exact_toman_conversion_and_fractional_rial_rejection() {
     d.supplied_total = "۱۹٫۹".into();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "jalali-key", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "jalali-key", "tester").unwrap();
     assert_eq!(order.context.date, "2026-10-08");
     assert_eq!(order.supplied_total.rials(), 199);
     let mut d = s.sales_drafts[0].clone();
     d.lines[0].unit_price = "۲٫۰۱".into();
     s.save_sales_draft(d, Some(1)).unwrap();
-    assert!(
-        s.sales_order_from_draft(&id, 2, "fractional-key", "tester")
-            .is_err()
-    );
+    assert!(s.sales_order_from_draft(&id, 2, "fractional-key", "tester").is_err());
 }
 
 #[test]
@@ -283,9 +245,7 @@ fn day_month_year_raw_draft_and_quote_conversion_keep_explicit_date_semantics() 
     d.lines[0].price_date = d.document_date.clone();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "dmy-key", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "dmy-key", "tester").unwrap();
     assert_eq!(order.context.date, "2026-10-08");
     assert_eq!(order.document_date, "2026-10-08");
     let mut s = approved_quote();
@@ -298,8 +258,6 @@ fn day_month_year_raw_draft_and_quote_conversion_keep_explicit_date_semantics() 
     d.lines[0].warehouse_id = "W1".into();
     let id = d.id.clone();
     s.save_sales_draft(d, None).unwrap();
-    let order = s
-        .sales_order_from_draft(&id, 1, "dmy-quote-key", "tester")
-        .unwrap();
+    let order = s.sales_order_from_draft(&id, 1, "dmy-quote-key", "tester").unwrap();
     assert_eq!(order.document_date, s.quotes.last().unwrap().quote_date);
 }

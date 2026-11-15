@@ -4,9 +4,7 @@ use sarv_quote::{domain::*, imports::*, store::Store};
 fn prepared() -> State {
     let mut state = State::default();
     let source = (Utc::now() - Duration::hours(1)).to_rfc3339();
-    let csv = format!(
-        "code,name,measure,price,currency,source_at,aliases\nA,نمونه,عدد,1001,rial,{source},\n"
-    );
+    let csv = format!("code,name,measure,price,currency,source_at,aliases\nA,نمونه,عدد,1001,rial,{source},\n");
     accept_catalog(&mut state, catalog_csv(&csv, "نمایشی").unwrap()).unwrap();
     state.draft.customer = "مشتری".into();
     state.draft.lines = order_csv("item,quantity\nA,1\n").unwrap();
@@ -54,10 +52,7 @@ fn defaults_are_real_new_draft_snapshots() {
     assert_eq!(state.draft.tax_basis_points, 975);
     assert_eq!(state.draft.display_digits, DisplayDigits::Latin);
     assert_eq!(state.draft.date_display, DateDisplay::DayMonthYear);
-    assert_eq!(
-        state.draft.valid_until,
-        (Utc::now().date_naive() + Duration::days(14)).to_string()
-    );
+    assert_eq!(state.draft.valid_until, (Utc::now().date_naive() + Duration::days(14)).to_string());
     fill(&mut state);
     let preview = state.preview().unwrap();
     assert_eq!(preview.number, "SALE-42");
@@ -175,10 +170,7 @@ fn every_setting_persists_and_backup_restore_keeps_quote_snapshots() {
     drop(store);
     let reopened = Store::open(dir.path()).unwrap();
     assert_eq!(reopened.state.settings, settings);
-    assert_eq!(
-        serde_json::to_vec(&reopened.state.quotes[0]).unwrap(),
-        quote
-    );
+    assert_eq!(serde_json::to_vec(&reopened.state.quotes[0]).unwrap(), quote);
     let restored = Store::restore_preview(&backup).unwrap();
     assert_eq!(restored.settings, settings);
     assert_eq!(serde_json::to_vec(&restored.quotes[0]).unwrap(), quote);
@@ -260,13 +252,7 @@ fn invalid_settings_and_digit_preferences_have_meaningful_behavior() {
         DisplayDigits::Persian.format(DateDisplay::DayMonthYear.format("2026-10-07")),
         "۰۷/۱۰/۲۰۲۶"
     );
-    for invalid in [
-        "",
-        "2026-02-29",
-        "2026-10-07junk",
-        "2026-10-07T99:00:00Z",
-        "نامشخص",
-    ] {
+    for invalid in ["", "2026-02-29", "2026-10-07junk", "2026-10-07T99:00:00Z", "نامشخص"] {
         assert_eq!(DateDisplay::DayMonthYear.format(invalid), invalid);
     }
 }

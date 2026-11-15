@@ -81,7 +81,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         let defaults = fiscal_period(st.fmt.calendar, chrono::Local::now().date_naive());
         let fiscal = {
             let f = st.forms.get("setup-fiscal").trim().to_string();
-            if f.is_empty() { defaults.0.clone() } else { crate::i18n::latin_digits(&f) }
+            if f.is_empty() {
+                defaults.0.clone()
+            } else {
+                crate::i18n::latin_digits(&f)
+            }
         };
         let start = iso_or_parsed(st, &st.forms.get("setup-start"), &defaults.1);
         let end = iso_or_parsed(st, &st.forms.get("setup-end"), &defaults.2);
@@ -108,18 +112,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         }
     });
 
-    let hero = col()
-        .w_full()
-        .max_w(560.0)
-        .gap(16.0)
-        .child(form)
-        .child(
-            row()
-                .w_full()
-                .gap(8.0)
-                .child(ui.btn(Btn::Ghost, "Back", None, |st| st.setup.step = 0))
-                .child(create),
-        );
+    let hero = col().w_full().max_w(560.0).gap(16.0).child(form).child(
+        row()
+            .w_full()
+            .gap(8.0)
+            .child(ui.btn(Btn::Ghost, "Back", None, |st| st.setup.step = 0))
+            .child(create),
+    );
 
     stage("setup-screen", hero)
 }
@@ -137,12 +136,7 @@ fn welcome(s: &State, ui: &Ui) -> El {
     ];
     let mut list = col().gap(14.0);
     for (title, detail) in steps {
-        list = list.child(
-            col()
-                .gap(2.0)
-                .child(ui.body(ui.t(title)))
-                .child(ui.muted(ui.t(detail))),
-        );
+        list = list.child(col().gap(2.0).child(ui.body(ui.t(title))).child(ui.muted(ui.t(detail))));
     }
     let card = ui
         .kit_card()
@@ -161,9 +155,7 @@ fn welcome(s: &State, ui: &Ui) -> El {
             .max_w(520.0)
             .gap(16.0)
             .child(ui.title(ui.t("Welcome to Sarv")))
-            .child(ui.muted(ui.t(
-                "Set up your company, choose your financial year, and begin with balances you can trust.",
-            )))
+            .child(ui.muted(ui.t("Set up your company, choose your financial year, and begin with balances you can trust.")))
             .child(card)
             .child(ui.muted(ui.t("Works offline · Saved on this device"))),
     )
@@ -181,7 +173,12 @@ fn language_row(s: &State, ui: &Ui) -> El {
             st.fmt.calendar = CalendarKind::Gregorian;
         }
     });
-    row().w_full().gap(16.0).center_y().child(ui.muted(ui.t("Interface language")).grow(1.0)).child(ctrl)
+    row()
+        .w_full()
+        .gap(16.0)
+        .center_y()
+        .child(ui.muted(ui.t("Interface language")).grow(1.0))
+        .child(ctrl)
 }
 
 fn theme_row(s: &State, ui: &Ui) -> El {
@@ -189,7 +186,12 @@ fn theme_row(s: &State, ui: &Ui) -> El {
     let light = ui.t("Light");
     let items = [(dark.as_str(), s.dark), (light.as_str(), !s.dark)];
     let ctrl = ui.tabs("setup-theme", &items, |st, idx| st.dark = idx == 0);
-    row().w_full().gap(16.0).center_y().child(ui.muted(ui.t("Theme")).grow(1.0)).child(ctrl)
+    row()
+        .w_full()
+        .gap(16.0)
+        .center_y()
+        .child(ui.muted(ui.t("Theme")).grow(1.0))
+        .child(ctrl)
 }
 
 fn stage(key: &str, body: El) -> El {

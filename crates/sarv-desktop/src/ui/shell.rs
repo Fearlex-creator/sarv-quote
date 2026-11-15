@@ -5,8 +5,8 @@ use std::time::Duration;
 use rune::{Cx, El, Spring, col, icon, row};
 use rune_kit::shell::{PaneMotion, SidebarPeek, SidebarToggle};
 use rune_kit::{
-    Badge, BadgeVariant, ControlSize, IconButton, IconButtonVariant, SegmentedControl, Sidebar, SidebarRow,
-    SidebarSection, SplitView, Toast, ToastRegion, Toolbar,
+    Badge, BadgeVariant, ControlSize, IconButton, IconButtonVariant, SegmentedControl, Sidebar, SidebarRow, SidebarSection, SplitView,
+    Toast, ToastRegion, Toolbar,
 };
 
 use crate::app::{Page, State, Tone};
@@ -227,7 +227,14 @@ pub fn app_shell(s: &State, ui: &Ui, cx: &mut Cx<State>, content: El) -> El {
         .build(&ui.k)
 }
 
-fn palette_item(ui: &Ui, key: &str, glyph: &'static rune::Icon, title: String, hint: String, on_press: impl Fn(&mut State) + 'static) -> El {
+fn palette_item(
+    ui: &Ui,
+    key: &str,
+    glyph: &'static rune::Icon,
+    title: String,
+    hint: String,
+    on_press: impl Fn(&mut State) + 'static,
+) -> El {
     let k = &ui.k;
     k.interactive(
         row()
@@ -290,12 +297,7 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             continue;
         }
         count += group.len();
-        items = items.child(
-            ui.muted(ui.t(title))
-                .key(format!("palette-group-{id}"))
-                .ml(8.0)
-                .mt(8.0),
-        );
+        items = items.child(ui.muted(ui.t(title)).key(format!("palette-group-{id}")).ml(8.0).mt(8.0));
         for row in group {
             items = items.child(row);
         }
@@ -411,7 +413,13 @@ pub fn mount_toasts(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     layer.push(region.build(&ui.k));
 }
 
-pub fn segmented(ui: &Ui, id: &str, labels: &[String], selected: Option<usize>, on_pick: impl Fn(&mut State, usize) + Clone + 'static) -> El {
+pub fn segmented(
+    ui: &Ui,
+    id: &str,
+    labels: &[String],
+    selected: Option<usize>,
+    on_pick: impl Fn(&mut State, usize) + Clone + 'static,
+) -> El {
     SegmentedControl::new(labels, selected)
         .fit()
         .label(id.to_string())

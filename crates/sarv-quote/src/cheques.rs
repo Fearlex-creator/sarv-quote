@@ -201,7 +201,14 @@ fn validate_details(d: &ChequeDetails, require_sayad: bool) -> Result<()> {
 }
 
 impl State {
-    fn push_event(&mut self, cheque_id: &str, ctx: &PaymentContext, action: ChequeAct, payment_id: Option<String>, journal_id: Option<String>) {
+    fn push_event(
+        &mut self,
+        cheque_id: &str,
+        ctx: &PaymentContext,
+        action: ChequeAct,
+        payment_id: Option<String>,
+        journal_id: Option<String>,
+    ) {
         self.cheques.events.push(ChequeEvent {
             id: id(),
             cheque_id: cheque_id.into(),
@@ -242,12 +249,24 @@ impl State {
         let amount = payment.total()?;
         ensure!(amount.rials() > 0, "مبلغ چک باید مثبت باشد");
         ensure!(
-            !self.cheques.cheques.iter().any(|c| c.company_id == ctx.company_id && c.details.sayad_id == details.sayad_id),
+            !self
+                .cheques
+                .cheques
+                .iter()
+                .any(|c| c.company_id == ctx.company_id && c.details.sayad_id == details.sayad_id),
             "شناسهٔ صیاد تکراری است"
         );
         let party_id = payment.party_id.clone();
         let result = self.accounting.post_payment_command(PaymentCommand::Payment(payment.clone()))?;
-        let cheque = Cheque { id: id(), company_id: ctx.company_id.clone(), direction, amount, party_id, details, opening_id: None };
+        let cheque = Cheque {
+            id: id(),
+            company_id: ctx.company_id.clone(),
+            direction,
+            amount,
+            party_id,
+            details,
+            opening_id: None,
+        };
         let cheque_id = cheque.id.clone();
         self.cheques.cheques.push(cheque);
         self.push_event(&cheque_id, &ctx, ChequeAct::Registered, Some(result.record_id), None);
@@ -345,22 +364,32 @@ impl State {
 
     /// Bounce, return or void: reverse the originating payment so invoice items re-open.
     pub fn reverse_cheque(&mut self, ctx: &PaymentContext, cheque_id: &str, act: ChequeAct) -> Result<()> {
-        ensure!(matches!(act, ChequeAct::Bounced | ChequeAct::Returned | ChequeAct::Voided), "عملیات برگشت نامعتبر است");
+        ensure!(
+            matches!(act, ChequeAct::Bounced | ChequeAct::Returned | ChequeAct::Voided),
+            "عملیات برگشت نامعتبر است"
+        );
         if self.cheques.by_request(&ctx.request_key).is_some() {
             return Ok(());
         }
         let (cheque, status) = self.cheque_for_action(cheque_id, ctx)?;
-        machine::apply(cheque.direction.machine(), status, act.machine().ok_or_else(|| anyhow!("عملیات نامعتبر"))?, cheque.amount.rials())?;
+        machine::apply(
+            cheque.direction.machine(),
+            status,
+            act.machine().ok_or_else(|| anyhow!("عملیات نامعتبر"))?,
+            cheque.amount.rials(),
+        )?;
         let origin = self
             .cheques
             .events_of(cheque_id)
             .find(|e| e.action == ChequeAct::Registered)
             .and_then(|e| e.payment_id.clone())
             .ok_or_else(|| anyhow!("چک افتتاحیه سند پرداخت ندارد؛ برگشت یا ابطال آن پشتیبانی نمی‌شود"))?;
-        let reversal = self.accounting.post_payment_command(PaymentCommand::Reversal(PaymentReversalInput {
-            context: ctx.clone(),
-            payment_id: origin,
-        }))?;
+        let reversal = self
+            .accounting
+            .post_payment_command(PaymentCommand::Reversal(PaymentReversalInput {
+                context: ctx.clone(),
+                payment_id: origin,
+            }))?;
         self.push_event(cheque_id, ctx, act, Some(reversal.record_id), None);
         Ok(())
     }
@@ -394,7 +423,10 @@ impl State {
         for c in &reg.cheques {
             ensure!(cheque_ids.insert(&c.id), "شناسهٔ چک تکراری است");
             ensure!(c.amount.rials() > 0, "مبلغ چک باید مثبت باشد");
-            ensure!(self.accounting.companies.iter().any(|x| x.id == c.company_id), "کسب‌وکار چک پیدا نشد");
+            ensure!(
+                self.accounting.companies.iter().any(|x| x.id == c.company_id),
+                "کسب‌وکار چک پیدا نشد"
+            );
             validate_details(&c.details, c.opening_id.is_none())?;
             if !c.details.sayad_id.is_empty() {
                 ensure!(sayads.insert((&c.company_id, &c.details.sayad_id)), "شناسهٔ صیاد تکراری است");
@@ -415,12 +447,18 @@ impl State {
                     (crate::core::ChequeDirection::Receivable, ChequeDir::Received)
                         | (crate::core::ChequeDirection::Payable, ChequeDir::Issued)
                 );
-                ensure!(same_dir && oc.amount == c.amount && oc.party_id == c.party_id, "چک با سطر افتتاحیه سازگار نیست");
+                ensure!(
+                    same_dir && oc.amount == c.amount && oc.party_id == c.party_id,
+                    "چک با سطر افتتاحیه سازگار نیست"
+                );
             }
         }
         for e in &reg.events {
             ensure!(keys.insert(&e.request_key), "کلید درخواست چک تکراری است");
-            ensure!(e.company_id == reg.cheque(&e.cheque_id)?.company_id, "رویداد چک متعلق به کسب‌وکار دیگری است");
+            ensure!(
+                e.company_id == reg.cheque(&e.cheque_id)?.company_id,
+                "رویداد چک متعلق به کسب‌وکار دیگری است"
+            );
         }
         for c in &reg.cheques {
             let status = reg.status(&c.id)?; // proves the transition order
@@ -446,7 +484,9 @@ impl State {
                             (None, Some(pid)) => {
                                 ensure!(claimed.insert(pid.clone()), "سند پرداخت چند بار به چک‌ها نسبت داده شده است");
                                 let r = self.accounting.payment_document(&c.company_id, pid)?;
-                                let PaymentData::Payment(p) = &r.data else { bail!("سند ثبت چک باید پرداخت باشد") };
+                                let PaymentData::Payment(p) = &r.data else {
+                                    bail!("سند ثبت چک باید پرداخت باشد")
+                                };
                                 ensure!(
                                     p.side == c.direction.payment_side()
                                         && r.funds_role() == notes_role
@@ -492,14 +532,21 @@ impl State {
                         let pid = e.payment_id.as_deref().ok_or_else(|| anyhow!("برگشت چک سند ندارد"))?;
                         ensure!(claimed.insert(pid.to_owned()), "سند به چند چک نسبت داده شده است");
                         let r = self.accounting.payment_document(&c.company_id, pid)?;
-                        let PaymentData::Reversal(rev) = &r.data else { bail!("برگشت چک باید ابطال پرداخت باشد") };
-                        ensure!(Some(rev.payment_id.as_str()) == origin && rev.total == c.amount, "ابطال به پرداخت چک مربوط نیست");
+                        let PaymentData::Reversal(rev) = &r.data else {
+                            bail!("برگشت چک باید ابطال پرداخت باشد")
+                        };
+                        ensure!(
+                            Some(rev.payment_id.as_str()) == origin && rev.total == c.amount,
+                            "ابطال به پرداخت چک مربوط نیست"
+                        );
                     }
                     ChequeAct::Spent => {
                         let pid = e.payment_id.as_deref().ok_or_else(|| anyhow!("خرج چک سند ندارد"))?;
                         ensure!(claimed.insert(pid.to_owned()), "سند به چند چک نسبت داده شده است");
                         let r = self.accounting.payment_document(&c.company_id, pid)?;
-                        let PaymentData::Payment(p) = &r.data else { bail!("خرج چک باید پرداخت باشد") };
+                        let PaymentData::Payment(p) = &r.data else {
+                            bail!("خرج چک باید پرداخت باشد")
+                        };
                         ensure!(
                             p.side == PaymentSide::Make && r.funds_role() == CoreRole::ChequesReceivable && p.total == c.amount,
                             "پرداخت خرج چک سازگار نیست"

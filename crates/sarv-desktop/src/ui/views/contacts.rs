@@ -31,7 +31,10 @@ pub struct ContactsState {
 }
 
 fn all_parties(s: &State) -> &[serde_json::Value] {
-    s.books.workspace["resources"]["parties"].as_array().map(|a| a.as_slice()).unwrap_or(&[])
+    s.books.workspace["resources"]["parties"]
+        .as_array()
+        .map(|a| a.as_slice())
+        .unwrap_or(&[])
 }
 
 fn profile<'a>(s: &'a State, id: &str) -> &'a Value {
@@ -52,12 +55,20 @@ pub fn party_matches(s: &State, party: &serde_json::Value, query: &str) -> bool 
     let email = crate::data::s(&p["email"]);
     let org = crate::data::s(&p["organization"]);
     let city = crate::data::s(&p["city"]);
-    [name.as_str(), phone.as_str(), mobile.as_str(), email.as_str(), org.as_str(), city.as_str(), id.as_str()]
-        .iter()
-        .any(|field| {
-            let field = field.to_lowercase();
-            field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
-        })
+    [
+        name.as_str(),
+        phone.as_str(),
+        mobile.as_str(),
+        email.as_str(),
+        org.as_str(),
+        city.as_str(),
+        id.as_str(),
+    ]
+    .iter()
+    .any(|field| {
+        let field = field.to_lowercase();
+        field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
+    })
 }
 
 fn filtered_parties(s: &State) -> Vec<serde_json::Value> {
@@ -127,7 +138,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .column(TableColumn::new("role", ui.t("Role")).width(110.0).min(80.0))
     .column(TableColumn::new("phone", ui.t("Phone")).width(130.0).min(96.0))
     .column(TableColumn::new("city", ui.t("City")).width(110.0).min(80.0))
-    .column(TableColumn::new("balance", ui.t("Balance")).width(150.0).min(110.0).align(Align::End).sortable())
+    .column(
+        TableColumn::new("balance", ui.t("Balance"))
+            .width(150.0)
+            .min(110.0)
+            .align(Align::End)
+            .sortable(),
+    )
     .cell(|s: &State, i, col| {
         let list = filtered_parties(s);
         let Some(party) = list.get(i) else {
@@ -155,7 +172,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             "phone" => {
                 let phone = crate::data::s(&p["phone"]);
                 let mobile = crate::data::s(&p["mobile"]);
-                let shown = if !mobile.is_empty() { mobile } else if !phone.is_empty() { phone } else { "—".into() };
+                let shown = if !mobile.is_empty() {
+                    mobile
+                } else if !phone.is_empty() {
+                    phone
+                } else {
+                    "—".into()
+                };
                 Cell::text(shown).muted()
             }
             "city" => {
@@ -263,54 +286,62 @@ fn contact_form_fields(s: &State, ui: &Ui, prefix: &str) -> El {
 
     col()
         .gap(16.0)
-        .child(ui.section(
-            &format!("{prefix}-identity"),
-            &ui.t("Identity"),
-            col()
-                .gap(12.0)
-                .child(ui.labeled("Name", ui.field(s, &name, &ui.t("Contact name"))))
-                .child(ui.form_grid(
-                    ui.labeled("First name", ui.field(s, &first, "")),
-                    ui.labeled("Last name", ui.field(s, &last, "")),
-                ))
-                .child(ui.labeled("Organization", ui.field(s, &org, &ui.t("Organization")))),
-        ))
-        .child(ui.section(
-            &format!("{prefix}-reach"),
-            &ui.t("Contact details"),
-            col()
-                .gap(12.0)
-                .child(ui.form_grid(
-                    ui.labeled("Phone", ui.field(s, &phone, "۰۲۱-۸۸۸۸۸۸۸۸")),
-                    ui.labeled("Mobile", ui.field(s, &mobile, "")),
-                ))
-                .child(ui.form_grid(
-                    ui.labeled("Email", ui.field(s, &email, "name@example.com")),
-                    ui.labeled("Website", ui.field(s, &website, "")),
-                )),
-        ))
-        .child(ui.section(
-            &format!("{prefix}-place"),
-            &ui.t("Address"),
-            col()
-                .gap(12.0)
-                .child(ui.labeled("Address", ui.field(s, &address, "")))
-                .child(ui.form_grid(
-                    ui.labeled("City", ui.field(s, &city, "")),
-                    ui.labeled("Postal code", ui.field(s, &postal, "")),
-                )),
-        ))
-        .child(ui.section(
-            &format!("{prefix}-legal"),
-            &ui.t("Identity & registration"),
-            col()
-                .gap(12.0)
-                .child(ui.form_grid(
-                    ui.labeled("National / registration ID", ui.field(s, &national, "")),
-                    ui.labeled("Tax / economic ID", ui.field(s, &tax, "")),
-                ))
-                .child(ui.labeled("Contact notes", ui.field(s, &notes, &ui.t("Note (optional)")))),
-        ))
+        .child(
+            ui.section(
+                &format!("{prefix}-identity"),
+                &ui.t("Identity"),
+                col()
+                    .gap(12.0)
+                    .child(ui.labeled("Name", ui.field(s, &name, &ui.t("Contact name"))))
+                    .child(ui.form_grid(
+                        ui.labeled("First name", ui.field(s, &first, "")),
+                        ui.labeled("Last name", ui.field(s, &last, "")),
+                    ))
+                    .child(ui.labeled("Organization", ui.field(s, &org, &ui.t("Organization")))),
+            ),
+        )
+        .child(
+            ui.section(
+                &format!("{prefix}-reach"),
+                &ui.t("Contact details"),
+                col()
+                    .gap(12.0)
+                    .child(ui.form_grid(
+                        ui.labeled("Phone", ui.field(s, &phone, "۰۲۱-۸۸۸۸۸۸۸۸")),
+                        ui.labeled("Mobile", ui.field(s, &mobile, "")),
+                    ))
+                    .child(ui.form_grid(
+                        ui.labeled("Email", ui.field(s, &email, "name@example.com")),
+                        ui.labeled("Website", ui.field(s, &website, "")),
+                    )),
+            ),
+        )
+        .child(
+            ui.section(
+                &format!("{prefix}-place"),
+                &ui.t("Address"),
+                col()
+                    .gap(12.0)
+                    .child(ui.labeled("Address", ui.field(s, &address, "")))
+                    .child(ui.form_grid(
+                        ui.labeled("City", ui.field(s, &city, "")),
+                        ui.labeled("Postal code", ui.field(s, &postal, "")),
+                    )),
+            ),
+        )
+        .child(
+            ui.section(
+                &format!("{prefix}-legal"),
+                &ui.t("Identity & registration"),
+                col()
+                    .gap(12.0)
+                    .child(ui.form_grid(
+                        ui.labeled("National / registration ID", ui.field(s, &national, "")),
+                        ui.labeled("Tax / economic ID", ui.field(s, &tax, "")),
+                    ))
+                    .child(ui.labeled("Contact notes", ui.field(s, &notes, &ui.t("Note (optional)")))),
+            ),
+        )
 }
 
 fn profile_json(st: &State, prefix: &str, company_id: &str, display_fallback: &str) -> Value {
@@ -385,20 +416,14 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         true,
         640.0,
         form,
-        vec![
-            ui.btn(Btn::Ghost, "Cancel", None, |st| st.contacts.modal_open = false),
-            save_btn,
-        ],
+        vec![ui.btn(Btn::Ghost, "Cancel", None, |st| st.contacts.modal_open = false), save_btn],
         |st| st.contacts.modal_open = false,
     );
 }
 
 fn open_contact(st: &mut State, row_id: &str) {
     let party_id = row_id.strip_prefix("contact-").unwrap_or(row_id).to_string();
-    match st.query(
-        "contact_detail",
-        json!({ "party_id": party_id, "as_of": crate::data::today() }),
-    ) {
+    match st.query("contact_detail", json!({ "party_id": party_id, "as_of": crate::data::today() })) {
         Ok(v) => {
             let profile = &v["profile"];
             let display = crate::data::s(&profile["display_name"]);
@@ -434,9 +459,30 @@ fn mount_profile(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let metrics = row()
         .w_full()
         .gap(10.0)
-        .child(ui.metric("contact-outstanding", &icons::PAYMENTS, &ui.t("Balance"), outstanding, ui.t("Open customer invoices"), Tone::Warning))
-        .child(ui.metric("contact-overdue", &icons::PAYMENTS, &ui.t("Overdue"), overdue, ui.t("Past due"), Tone::Danger))
-        .child(ui.metric("contact-net", &icons::SALES, &ui.t("Net sales"), net, format!("{} {invoices}", ui.t("Invoices")), Tone::Success));
+        .child(ui.metric(
+            "contact-outstanding",
+            &icons::PAYMENTS,
+            &ui.t("Balance"),
+            outstanding,
+            ui.t("Open customer invoices"),
+            Tone::Warning,
+        ))
+        .child(ui.metric(
+            "contact-overdue",
+            &icons::PAYMENTS,
+            &ui.t("Overdue"),
+            overdue,
+            ui.t("Past due"),
+            Tone::Danger,
+        ))
+        .child(ui.metric(
+            "contact-net",
+            &icons::SALES,
+            &ui.t("Net sales"),
+            net,
+            format!("{} {invoices}", ui.t("Invoices")),
+            Tone::Success,
+        ));
 
     let form = col().gap(14.0).child(metrics).child(contact_form_fields(s, ui, "profile"));
     let mut portals = Vec::new();

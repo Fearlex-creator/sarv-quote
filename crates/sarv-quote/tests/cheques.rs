@@ -3,7 +3,7 @@
 //! replay (`State::validate`) and a serialise/reload round trip unchanged.
 use sarv_quote::{
     accounting::{AccountingState, Money},
-    cheques::{ChequeAct, ChequeDetails, ChequeRegister, CHEQUE_CLEAR_EVENT},
+    cheques::{CHEQUE_CLEAR_EVENT, ChequeAct, ChequeDetails, ChequeRegister},
     core::CoreRole,
     desktop::dispatch_in,
     domain::State,
@@ -21,7 +21,10 @@ fn irr(v: i64) -> Money {
 fn fixture() -> State {
     let v: serde_json::Value = serde_json::from_str(include_str!("../../../docs/assets/accounting-m3/restore/core-v4.json")).unwrap();
     let accounting: AccountingState = serde_json::from_value(v["state"]["accounting"].clone()).unwrap();
-    let state = State { accounting, ..State::default() };
+    let state = State {
+        accounting,
+        ..State::default()
+    };
     state.validate().expect("fixture is a valid book");
     state
 }
@@ -62,7 +65,10 @@ fn pay(s: &State, key: &str, side: PaymentSide, party: &str, open_item: &str, am
         // The register overrides the funds role; Cash here proves it cannot be smuggled in.
         funds_role: CoreRole::Cash,
         reference: format!("CHQ-{key}"),
-        allocations: vec![PaymentAllocation { open_item_id: open_item.into(), amount: irr(amount) }],
+        allocations: vec![PaymentAllocation {
+            open_item_id: open_item.into(),
+            amount: irr(amount),
+        }],
         advance_amount: irr(0),
     }
 }
@@ -73,13 +79,26 @@ fn account(s: &State, role: CoreRole) -> String {
 fn net(s: &State, role: CoreRole) -> i64 {
     let id = account(s, role);
     let tb = s.accounting.trial_balance(&company(s), FAR).unwrap();
-    tb.rows.iter().find(|r| r.account_id == id).map_or(0, |r| r.debit.rials() - r.credit.rials())
+    tb.rows
+        .iter()
+        .find(|r| r.account_id == id)
+        .map_or(0, |r| r.debit.rials() - r.credit.rials())
 }
 fn receivable(s: &State, id: &str) -> i64 {
-    s.accounting.sales_receivables(&company(s), FAR).unwrap().into_iter().find(|r| r.id == id).map_or(0, |r| r.remaining.rials())
+    s.accounting
+        .sales_receivables(&company(s), FAR)
+        .unwrap()
+        .into_iter()
+        .find(|r| r.id == id)
+        .map_or(0, |r| r.remaining.rials())
 }
 fn payable(s: &State, id: &str) -> i64 {
-    s.accounting.procurement_open_payables(&company(s), FAR).unwrap().into_iter().find(|r| r.id == id).map_or(0, |r| r.remaining.rials())
+    s.accounting
+        .procurement_open_payables(&company(s), FAR)
+        .unwrap()
+        .into_iter()
+        .find(|r| r.id == id)
+        .map_or(0, |r| r.remaining.rials())
 }
 
 /// The invariant every cheque step must leave behind.
@@ -88,7 +107,8 @@ fn assert_sound(s: &State, what: &str) {
     assert_eq!(tb.total_debit, tb.total_credit, "{what}: trial balance must balance");
     let rec = s.accounting.procurement_reconcile(&company(s), FAR).unwrap();
     assert!(rec.reconciled, "{what}: control accounts must reconcile: {:?}", rec.controls);
-    s.validate().unwrap_or_else(|e| panic!("{what}: full replay rejected the book: {e}"));
+    s.validate()
+        .unwrap_or_else(|e| panic!("{what}: full replay rejected the book: {e}"));
     // Serialise → reload: identical value, still valid.
     let reloaded: State = serde_json::from_str(&serde_json::to_string(s).unwrap()).unwrap();
     assert_eq!(&reloaded, s, "{what}: round trip must be lossless");
@@ -108,7 +128,11 @@ fn received_cheque_deposit_then_clear() {
 
     let journals = s.accounting.journals.len();
     s.deposit_cheque(&ctx(&s, "D1", "2026-03-26"), &cheque).unwrap();
-    assert_eq!(s.accounting.journals.len(), journals, "deposit is status-only (spec: optional step)");
+    assert_eq!(
+        s.accounting.journals.len(),
+        journals,
+        "deposit is status-only (spec: optional step)"
+    );
     assert_eq!(s.cheques.status(&cheque).unwrap(), machine::State::InCollection);
     assert_sound(&s, "deposited");
 
@@ -116,7 +140,11 @@ fn received_cheque_deposit_then_clear() {
     let journal = s.clear_cheque(&ctx(&s, "C1", "2026-03-27"), &cheque, &bank_account).unwrap();
     assert_eq!(s.cheques.status(&cheque).unwrap(), machine::State::Cleared);
     assert_eq!(net(&s, CoreRole::Bank), bank0 + 125, "cash reached the bank");
-    assert_eq!(net(&s, CoreRole::ChequesReceivable), notes0, "the notes account is back to its opening balance");
+    assert_eq!(
+        net(&s, CoreRole::ChequesReceivable),
+        notes0,
+        "the notes account is back to its opening balance"
+    );
     assert_sound(&s, "cleared");
 
     // The posted entry is exactly what the pure state machine prescribes for this step.
@@ -129,7 +157,12 @@ fn received_cheque_deposit_then_clear() {
             _ => CoreRole::ChequesReceivable,
         };
         let posted = rec.command.lines.iter().find(|p| p.account_id == account(&s, role)).unwrap();
-        assert_eq!((posted.debit.rials(), posted.credit.rials()), (l.debit_rial, l.credit_rial), "{:?}", l.role);
+        assert_eq!(
+            (posted.debit.rials(), posted.credit.rials()),
+            (l.debit_rial, l.credit_rial),
+            "{:?}",
+            l.role
+        );
     }
 }
 
@@ -137,7 +170,12 @@ fn received_cheque_deposit_then_clear() {
 fn bounced_cheque_reopens_the_invoice() {
     let mut s = fixture();
     let notes0 = net(&s, CoreRole::ChequesReceivable);
-    let cheque = s.receive_cheque(details("2234567890123456"), pay(&s, "R2", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let cheque = s
+        .receive_cheque(
+            details("2234567890123456"),
+            pay(&s, "R2", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
     s.deposit_cheque(&ctx(&s, "D2", "2026-03-26"), &cheque).unwrap();
     s.reverse_cheque(&ctx(&s, "B2", "2026-03-30"), &cheque, ChequeAct::Bounced).unwrap();
     assert_eq!(s.cheques.status(&cheque).unwrap(), machine::State::Bounced);
@@ -149,9 +187,18 @@ fn bounced_cheque_reopens_the_invoice() {
 #[test]
 fn cheque_returned_to_the_customer_while_in_hand() {
     let mut s = fixture();
-    let cheque = s.receive_cheque(details("3234567890123456"), pay(&s, "R3", PaymentSide::Receive, "CU-B", "AR-75", 75)).unwrap();
-    s.reverse_cheque(&ctx(&s, "T3", "2026-03-28"), &cheque, ChequeAct::Returned).unwrap();
-    assert_eq!((s.cheques.status(&cheque).unwrap(), receivable(&s, "AR-75")), (machine::State::Returned, 75));
+    let cheque = s
+        .receive_cheque(
+            details("3234567890123456"),
+            pay(&s, "R3", PaymentSide::Receive, "CU-B", "AR-75", 75),
+        )
+        .unwrap();
+    s.reverse_cheque(&ctx(&s, "T3", "2026-03-28"), &cheque, ChequeAct::Returned)
+        .unwrap();
+    assert_eq!(
+        (s.cheques.status(&cheque).unwrap(), receivable(&s, "AR-75")),
+        (machine::State::Returned, 75)
+    );
     assert_sound(&s, "returned");
 }
 
@@ -159,7 +206,12 @@ fn cheque_returned_to_the_customer_while_in_hand() {
 fn received_cheque_endorsed_to_a_supplier() {
     let mut s = fixture();
     let notes0 = net(&s, CoreRole::ChequesReceivable);
-    let cheque = s.receive_cheque(details("4234567890123456"), pay(&s, "R4", PaymentSide::Receive, "CU-B", "AR-75", 75)).unwrap();
+    let cheque = s
+        .receive_cheque(
+            details("4234567890123456"),
+            pay(&s, "R4", PaymentSide::Receive, "CU-B", "AR-75", 75),
+        )
+        .unwrap();
     let spend = pay(&s, "S4", PaymentSide::Make, "SU-A", "AP-100", 75);
     s.spend_cheque(&cheque, spend).unwrap();
     assert_eq!(s.cheques.status(&cheque).unwrap(), machine::State::Spent);
@@ -169,7 +221,11 @@ fn received_cheque_endorsed_to_a_supplier() {
     // A spent cheque can no longer be deposited, cleared or returned.
     let mut again = s.clone();
     assert!(again.deposit_cheque(&ctx(&s, "X1", "2026-04-01"), &cheque).is_err());
-    assert!(again.reverse_cheque(&ctx(&s, "X2", "2026-04-01"), &cheque, ChequeAct::Returned).is_err());
+    assert!(
+        again
+            .reverse_cheque(&ctx(&s, "X2", "2026-04-01"), &cheque, ChequeAct::Returned)
+            .is_err()
+    );
     assert_eq!(again, s, "a refused step changes nothing");
 }
 
@@ -177,9 +233,15 @@ fn received_cheque_endorsed_to_a_supplier() {
 fn issued_cheque_clears_out_of_the_bank() {
     let mut s = fixture();
     let (bank0, payable0) = (net(&s, CoreRole::Bank), net(&s, CoreRole::ChequesPayable));
-    let cheque = s.issue_cheque(details("5234567890123456"), pay(&s, "I5", PaymentSide::Make, "SU-A", "AP-100", 100)).unwrap();
+    let cheque = s
+        .issue_cheque(details("5234567890123456"), pay(&s, "I5", PaymentSide::Make, "SU-A", "AP-100", 100))
+        .unwrap();
     assert_eq!(payable(&s, "AP-100"), 0);
-    assert_eq!(net(&s, CoreRole::ChequesPayable), payable0 - 100, "liability to the bank/holder rises (credit)");
+    assert_eq!(
+        net(&s, CoreRole::ChequesPayable),
+        payable0 - 100,
+        "liability to the bank/holder rises (credit)"
+    );
     assert_sound(&s, "issued");
     let bank_account = account(&s, CoreRole::Bank);
     s.clear_cheque(&ctx(&s, "C5", "2026-04-02"), &cheque, &bank_account).unwrap();
@@ -191,9 +253,14 @@ fn issued_cheque_clears_out_of_the_bank() {
 #[test]
 fn issued_cheque_voided_restores_the_supplier_payable() {
     let mut s = fixture();
-    let cheque = s.issue_cheque(details("6234567890123456"), pay(&s, "I6", PaymentSide::Make, "SU-A", "AP-100", 100)).unwrap();
+    let cheque = s
+        .issue_cheque(details("6234567890123456"), pay(&s, "I6", PaymentSide::Make, "SU-A", "AP-100", 100))
+        .unwrap();
     s.reverse_cheque(&ctx(&s, "V6", "2026-03-30"), &cheque, ChequeAct::Voided).unwrap();
-    assert_eq!((s.cheques.status(&cheque).unwrap(), payable(&s, "AP-100")), (machine::State::Voided, 100));
+    assert_eq!(
+        (s.cheques.status(&cheque).unwrap(), payable(&s, "AP-100")),
+        (machine::State::Voided, 100)
+    );
     assert_sound(&s, "voided");
 }
 
@@ -204,8 +271,15 @@ fn opening_cheque_joins_the_lifecycle_but_cannot_be_reversed() {
     let cheque = s.register_opening_cheque(&ctx(&s, "O1", "2026-03-22"), "CR1", details("")).unwrap();
     assert_sound(&s, "opening registered");
     // No originating payment exists, so bounce / return would break the invoice subledger.
-    assert!(s.clone().reverse_cheque(&ctx(&s, "O2", "2026-03-23"), &cheque, ChequeAct::Returned).is_err());
-    assert!(s.register_opening_cheque(&ctx(&s, "O3", "2026-03-22"), "CR1", details("")).is_err(), "registered once");
+    assert!(
+        s.clone()
+            .reverse_cheque(&ctx(&s, "O2", "2026-03-23"), &cheque, ChequeAct::Returned)
+            .is_err()
+    );
+    assert!(
+        s.register_opening_cheque(&ctx(&s, "O3", "2026-03-22"), "CR1", details("")).is_err(),
+        "registered once"
+    );
     let bank_account = account(&s, CoreRole::Bank);
     s.clear_cheque(&ctx(&s, "O4", "2026-03-25"), &cheque, &bank_account).unwrap();
     assert_eq!(net(&s, CoreRole::Bank), bank0 + 200);
@@ -216,7 +290,12 @@ fn opening_cheque_joins_the_lifecycle_but_cannot_be_reversed() {
 #[test]
 fn refused_operations_leave_the_book_untouched() {
     let mut s = fixture();
-    let cheque = s.receive_cheque(details("7234567890123456"), pay(&s, "R7", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let cheque = s
+        .receive_cheque(
+            details("7234567890123456"),
+            pay(&s, "R7", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
     let bank_account = account(&s, CoreRole::Bank);
     s.clear_cheque(&ctx(&s, "C7", "2026-03-27"), &cheque, &bank_account).unwrap();
     let before = s.clone();
@@ -224,23 +303,49 @@ fn refused_operations_leave_the_book_untouched() {
     assert!(s.clear_cheque(&c, &cheque, &bank_account).is_err(), "cleared twice");
     assert!(s.deposit_cheque(&c, &cheque).is_err());
     assert!(s.reverse_cheque(&c, &cheque, ChequeAct::Bounced).is_err());
-    assert!(s.clear_cheque(&ctx(&s, "N8", "2026-03-28"), "no-such-cheque", &bank_account).is_err());
-    assert!(s.reverse_cheque(&ctx(&s, "N9", "2026-03-28"), &cheque, ChequeAct::Cleared).is_err(), "not a reversal");
+    assert!(
+        s.clear_cheque(&ctx(&s, "N8", "2026-03-28"), "no-such-cheque", &bank_account)
+            .is_err()
+    );
+    assert!(
+        s.reverse_cheque(&ctx(&s, "N9", "2026-03-28"), &cheque, ChequeAct::Cleared).is_err(),
+        "not a reversal"
+    );
     assert_eq!(s, before);
 }
 
 #[test]
 fn registration_guards() {
     let mut s = fixture();
-    let ok = s.receive_cheque(details("8234567890123456"), pay(&s, "G1", PaymentSide::Receive, "CU-A", "AR-125", 50)).unwrap();
+    let ok = s
+        .receive_cheque(
+            details("8234567890123456"),
+            pay(&s, "G1", PaymentSide::Receive, "CU-A", "AR-125", 50),
+        )
+        .unwrap();
     let before = s.clone();
     // Duplicate Sayad ID, malformed Sayad ID, wrong side, bad due date.
-    assert!(s.receive_cheque(details("8234567890123456"), pay(&s, "G2", PaymentSide::Receive, "CU-B", "AR-75", 75)).is_err());
-    assert!(s.receive_cheque(details("123"), pay(&s, "G3", PaymentSide::Receive, "CU-B", "AR-75", 75)).is_err());
-    assert!(s.receive_cheque(details("9234567890123456"), pay(&s, "G4", PaymentSide::Make, "SU-A", "AP-100", 10)).is_err());
+    assert!(
+        s.receive_cheque(
+            details("8234567890123456"),
+            pay(&s, "G2", PaymentSide::Receive, "CU-B", "AR-75", 75)
+        )
+        .is_err()
+    );
+    assert!(
+        s.receive_cheque(details("123"), pay(&s, "G3", PaymentSide::Receive, "CU-B", "AR-75", 75))
+            .is_err()
+    );
+    assert!(
+        s.receive_cheque(details("9234567890123456"), pay(&s, "G4", PaymentSide::Make, "SU-A", "AP-100", 10))
+            .is_err()
+    );
     let mut late = details("9234567890123457");
     late.due_date = "1405/02/01".into();
-    assert!(s.receive_cheque(late, pay(&s, "G5", PaymentSide::Receive, "CU-B", "AR-75", 75)).is_err());
+    assert!(
+        s.receive_cheque(late, pay(&s, "G5", PaymentSide::Receive, "CU-B", "AR-75", 75))
+            .is_err()
+    );
     assert_eq!(s, before);
     let _ = ok;
 }
@@ -248,9 +353,19 @@ fn registration_guards() {
 #[test]
 fn retrying_a_request_key_is_idempotent() {
     let mut s = fixture();
-    let first = s.receive_cheque(details("1034567890123456"), pay(&s, "K1", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let first = s
+        .receive_cheque(
+            details("1034567890123456"),
+            pay(&s, "K1", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
     let snapshot = s.clone();
-    let again = s.receive_cheque(details("1034567890123456"), pay(&s, "K1", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let again = s
+        .receive_cheque(
+            details("1034567890123456"),
+            pay(&s, "K1", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
     assert_eq!(first, again);
     assert_eq!(s, snapshot);
     let bank_account = account(&s, CoreRole::Bank);
@@ -263,7 +378,12 @@ fn retrying_a_request_key_is_idempotent() {
 #[test]
 fn tampering_with_the_register_is_caught_by_replay() {
     let mut s = fixture();
-    let cheque = s.receive_cheque(details("1134567890123456"), pay(&s, "T1", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let cheque = s
+        .receive_cheque(
+            details("1134567890123456"),
+            pay(&s, "T1", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
     let bank_account = account(&s, CoreRole::Bank);
     s.clear_cheque(&ctx(&s, "T2", "2026-03-27"), &cheque, &bank_account).unwrap();
     s.validate().unwrap();
@@ -277,8 +397,12 @@ fn tampering_with_the_register_is_caught_by_replay() {
             s.cheques.events[1].journal_id = Some(pay);
         }),
         ("receipt payment link removed", |s| s.cheques.events[0].payment_id = None),
-        ("a cheque cleared without ever being registered", |s| { s.cheques.events.remove(0); }),
-        ("status forged to bounced without a reversal", |s| s.cheques.events[1].action = ChequeAct::Bounced),
+        ("a cheque cleared without ever being registered", |s| {
+            s.cheques.events.remove(0);
+        }),
+        ("status forged to bounced without a reversal", |s| {
+            s.cheques.events[1].action = ChequeAct::Bounced
+        }),
         ("same journal claimed by a second cheque", |s| {
             let mut c = s.cheques.cheques[0].clone();
             c.id = "forged".into();
@@ -316,7 +440,12 @@ fn bridge_actions_persist_and_the_workspace_lists_allowed_next_steps() {
     let company = company(&seeded);
     let period = seeded.accounting.core.openings[0].command.period_id.clone();
     let bank = account(&seeded, CoreRole::Bank);
-    store.change(|s| { *s = seeded; Ok(()) }).unwrap();
+    store
+        .change(|s| {
+            *s = seeded;
+            Ok(())
+        })
+        .unwrap();
 
     let base = |key: &str, date: &str| json!({"company_id": company, "period_id": period, "source_id": key, "request_key": key, "date": date, "reason": "bridge cheque test"});
     let mut receive = base("br-1", "2026-03-25");
@@ -331,7 +460,11 @@ fn bridge_actions_persist_and_the_workspace_lists_allowed_next_steps() {
     let row = &ws["cheques"][0];
     assert_eq!(row["status"], "in_hand");
     let allowed: Vec<_> = row["allowed"].as_array().unwrap().iter().map(|v| v.as_str().unwrap()).collect();
-    assert_eq!(allowed, ["deposit", "clear", "spend", "return"], "bounce needs a deposit first; void is for issued cheques");
+    assert_eq!(
+        allowed,
+        ["deposit", "clear", "spend", "return"],
+        "bounce needs a deposit first; void is for issued cheques"
+    );
 
     let mut deposit = base("br-2", "2026-03-26");
     deposit["cheque_id"] = json!(cheque_id);
@@ -393,8 +526,14 @@ fn ledger_rejects_malformed_cheque_clearing_movements() {
     assert!(post(cmd("ok1", vec![line(&bank, 50, 0), line(&recv, 0, 50)])).is_ok());
     assert!(post(cmd("ok2", vec![line(&pay, 50, 0), line(&bank, 0, 50)])).is_ok());
     // Wrong direction for each notes account.
-    assert!(post(cmd("bad1", vec![line(&bank, 0, 50), line(&recv, 50, 0)])).is_err(), "received cheque paying out of the bank");
-    assert!(post(cmd("bad2", vec![line(&pay, 0, 50), line(&bank, 50, 0)])).is_err(), "issued cheque paying into the bank");
+    assert!(
+        post(cmd("bad1", vec![line(&bank, 0, 50), line(&recv, 50, 0)])).is_err(),
+        "received cheque paying out of the bank"
+    );
+    assert!(
+        post(cmd("bad2", vec![line(&pay, 0, 50), line(&bank, 50, 0)])).is_err(),
+        "issued cheque paying into the bank"
+    );
     // Unequal amounts, same-side lines, a non-notes counterpart, and no fund line at all.
     assert!(post(cmd("bad3", vec![line(&bank, 50, 0), line(&recv, 0, 40)])).is_err());
     assert!(post(cmd("bad4", vec![line(&bank, 50, 0), line(&recv, 50, 0)])).is_err());
@@ -406,18 +545,27 @@ fn ledger_rejects_malformed_cheque_clearing_movements() {
 fn a_cheque_payment_cannot_be_reversed_behind_the_registers_back() {
     use sarv_quote::payments::{PaymentCommand, PaymentReversalInput};
     let mut s = fixture();
-    let cheque = s.receive_cheque(details("1234567800000001"), pay(&s, "Z1", PaymentSide::Receive, "CU-A", "AR-125", 125)).unwrap();
+    let cheque = s
+        .receive_cheque(
+            details("1234567800000001"),
+            pay(&s, "Z1", PaymentSide::Receive, "CU-A", "AR-125", 125),
+        )
+        .unwrap();
     let payment_id = s.cheques.events[0].payment_id.clone().unwrap();
     // The generic payment reversal posts fine at the accounting level…
     let mut sneaky = s.clone();
     sneaky
         .accounting
-        .post_payment_command(PaymentCommand::Reversal(PaymentReversalInput { context: ctx(&s, "Z2", "2026-03-26"), payment_id }))
+        .post_payment_command(PaymentCommand::Reversal(PaymentReversalInput {
+            context: ctx(&s, "Z2", "2026-03-26"),
+            payment_id,
+        }))
         .unwrap();
     // …but the book is no longer valid: the cheque would still claim to be in hand.
     assert!(sneaky.validate().is_err());
     // Through the register it is the supported, status-consistent path.
-    s.reverse_cheque(&ctx(&s, "Z3", "2026-03-26"), &cheque, ChequeAct::Returned).unwrap();
+    s.reverse_cheque(&ctx(&s, "Z3", "2026-03-26"), &cheque, ChequeAct::Returned)
+        .unwrap();
     assert_sound(&s, "returned via register");
 }
 

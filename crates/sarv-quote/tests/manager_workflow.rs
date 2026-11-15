@@ -1,7 +1,11 @@
 use sarv_quote::{domain::*, export, imports::*, store::Store};
 
 fn catalog(name: &str, price: i64) -> Catalog {
-    catalog_csv(&format!("code,name,measure,price,currency,source_at,aliases\nSKU-۱,کاغذ,بسته,{price},rial,2020-01-01T00:00:00Z,كاغذ آ۴"), name).unwrap()
+    catalog_csv(
+        &format!("code,name,measure,price,currency,source_at,aliases\nSKU-۱,کاغذ,بسته,{price},rial,2020-01-01T00:00:00Z,كاغذ آ۴"),
+        name,
+    )
+    .unwrap()
 }
 fn prepared() -> State {
     let mut state = State::default();
@@ -35,9 +39,7 @@ fn customer_edit_and_use_leave_approved_snapshot_unchanged() {
     let approved = state.approve().unwrap();
     let archive = serde_json::to_vec(&state.quotes).unwrap();
     let customer = state.customers[0].id.clone();
-    state
-        .edit_customer(&customer, "نام تازه", "۰۹۳۵۰۰۰۰۰۰۰")
-        .unwrap();
+    state.edit_customer(&customer, "نام تازه", "۰۹۳۵۰۰۰۰۰۰۰").unwrap();
     assert_eq!(state.draft.customer, "مشتری نمایشی");
     let series = state.draft.series.clone();
     let catalog = state.draft.catalog_id.clone();
@@ -67,27 +69,11 @@ fn rejected_manager_actions_are_atomic() {
         .unwrap();
     let before = json(&store.state);
     let customer = store.state.customers[0].id.clone();
-    assert!(
-        store
-            .change(|state| state.edit_customer(&customer, "دیگر", "١٢٣"))
-            .is_err()
-    );
-    assert!(
-        store
-            .change(|state| state.edit_customer(&customer, "bad\u{202e}", "123"))
-            .is_err()
-    );
+    assert!(store.change(|state| state.edit_customer(&customer, "دیگر", "١٢٣")).is_err());
+    assert!(store.change(|state| state.edit_customer(&customer, "bad\u{202e}", "123")).is_err());
     assert!(store.change(|state| state.use_customer("missing")).is_err());
-    assert!(
-        store
-            .change(|state| state.select_catalog("missing"))
-            .is_err()
-    );
-    assert!(
-        store
-            .change(|state| state.duplicate_quote("missing"))
-            .is_err()
-    );
+    assert!(store.change(|state| state.select_catalog("missing")).is_err());
+    assert!(store.change(|state| state.duplicate_quote("missing")).is_err());
     assert_eq!(json(&store.state), before);
     assert_eq!(json(&Store::open(dir.path()).unwrap().state), before);
 }
@@ -154,10 +140,7 @@ fn duplicate_clears_expired_validity_and_updates_date() {
     state.draft.valid_until = "2020-01-03".into();
     let original = state.approve().unwrap();
     state.duplicate_quote(&original).unwrap();
-    assert_eq!(
-        state.draft.quote_date,
-        chrono::Utc::now().format("%Y-%m-%d").to_string()
-    );
+    assert_eq!(state.draft.quote_date, chrono::Utc::now().format("%Y-%m-%d").to_string());
     assert!(state.draft.valid_until.is_empty());
     assert_eq!(state.quotes[0].quote_date, "2020-01-01");
     assert_eq!(state.quotes[0].valid_until, "2020-01-03");
@@ -186,27 +169,16 @@ fn managed_data_restarts_backs_up_and_exports_the_archived_quote() {
     assert_eq!(reopened.state.customers[0].name, "مشتری ویرایش‌شده");
     assert_eq!(reopened.state.quotes[0].customer, "مشتری نمایشی");
     assert_eq!(reopened.state.quotes[0].id, quote_id);
-    assert_eq!(
-        json(&Store::restore_preview(&backup).unwrap()),
-        json(&reopened.state)
-    );
+    assert_eq!(json(&Store::restore_preview(&backup).unwrap()), json(&reopened.state));
     let csv = dir.path().join("archive.csv");
     let pdf = dir.path().join("archive.pdf");
     export::csv(&approved, &csv).unwrap();
     export::pdf(&approved, &pdf).unwrap();
     assert!(std::fs::read(&pdf).unwrap().starts_with(b"%PDF"));
-    assert!(
-        String::from_utf8(std::fs::read(&csv).unwrap())
-            .unwrap()
-            .contains("مشتری نمایشی")
-    );
+    assert!(String::from_utf8(std::fs::read(&csv).unwrap()).unwrap().contains("مشتری نمایشی"));
     let previews = export::png_pages(&approved, dir.path()).unwrap();
     assert!(!previews.is_empty());
     for preview in previews {
-        assert!(
-            std::fs::read(preview)
-                .unwrap()
-                .starts_with(b"\x89PNG\r\n\x1a\n")
-        );
+        assert!(std::fs::read(preview).unwrap().starts_with(b"\x89PNG\r\n\x1a\n"));
     }
 }

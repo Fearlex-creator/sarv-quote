@@ -16,8 +16,7 @@ fn fixture() -> (AccountingState, String, String) {
             actor: "آزمایشگر".into(),
         })
         .unwrap();
-    let csv = include_str!("../../../docs/assets/accounting-m3/opening.csv")
-        .replace("F2-core-v1", &setup.company_id);
+    let csv = include_str!("../../../docs/assets/accounting-m3/opening.csv").replace("F2-core-v1", &setup.company_id);
     (state, setup.company_id, csv)
 }
 fn change(csv: &str, id: &str, col: &str, value: &str) -> String {
@@ -49,14 +48,8 @@ fn independent_literal_opening_stages_without_mutation_and_preserves_provenance(
     assert!(p.balanced && p.reconciled);
     assert!(p.controls.len() >= 10);
     assert!(p.controls.iter().all(|c| c.difference == Money::ZERO));
-    assert_eq!(
-        command.base_quantity("ITEM-A", "CARTON", 2000).unwrap(),
-        24000
-    );
-    assert_eq!(
-        command.stock.iter().map(|s| s.value.rials()).sum::<i64>(),
-        300
-    );
+    assert_eq!(command.base_quantity("ITEM-A", "CARTON", 2000).unwrap(), 24000);
+    assert_eq!(command.stock.iter().map(|s| s.value.rials()).sum::<i64>(), 300);
     assert_eq!(
         command
             .open_items
@@ -71,19 +64,9 @@ fn independent_literal_opening_stages_without_mutation_and_preserves_provenance(
         sarv_quote::imports::hash(input.as_bytes())
     );
     let source = command.import_source.as_ref().unwrap();
-    assert!(
-        source
-            .rows
-            .iter()
-            .any(|r| r.id == "R1" && r.original_values[20] == "RECEIPT-R1")
-    );
+    assert!(source.rows.iter().any(|r| r.id == "R1" && r.original_values[20] == "RECEIPT-R1"));
     state.post_opening(command).unwrap();
-    assert!(
-        state
-            .reconcile_opening(&co, "2026-03-21")
-            .unwrap()
-            .reconciled
-    );
+    assert!(state.reconcile_opening(&co, "2026-03-21").unwrap().reconciled);
 }
 #[test]
 fn invalid_content_reports_row_and_column_and_never_writes() {
@@ -137,11 +120,7 @@ fn one_rial_difference_remains_reviewable_and_post_rejects() {
 fn explicit_units_safe_digits_duplicates_unknown_columns_and_empty_files() {
     let (state, co, input) = fixture();
     let bad = change(&input, "GL-bank", "id", "GL-cash");
-    assert!(
-        opening_csv_report(&state, &co, &bad, "actor", "key")
-            .value
-            .is_none()
-    );
+    assert!(opening_csv_report(&state, &co, &bad, "actor", "key").value.is_none());
     let header = input.replacen("statement_amount", "unknown", 1);
     assert_eq!(
         opening_csv_report(&state, &co, &header, "actor", "key").diagnostics[0].column,
@@ -150,22 +129,11 @@ fn explicit_units_safe_digits_duplicates_unknown_columns_and_empty_files() {
     assert!(opening_csv(&state, &co, "", "actor", "key").is_err());
     let persian = change(&input, "GL-cash", "amount", "۲۵۱");
     let persian = change(&persian, "C1", "amount", "٢٥١");
-    assert!(
-        opening_csv(&state, &co, &persian, "actor", "key")
-            .unwrap()
-            .cash[0]
-            .balance
-            .rials()
-            == 251
-    );
+    assert!(opening_csv(&state, &co, &persian, "actor", "key").unwrap().cash[0].balance.rials() == 251);
     let toman = change(&input, "C1", "unit", "toman");
     let toman = change(&toman, "C1", "amount", "25.1");
     assert_eq!(
-        opening_csv(&state, &co, &toman, "actor", "key")
-            .unwrap()
-            .cash[0]
-            .balance
-            .rials(),
+        opening_csv(&state, &co, &toman, "actor", "key").unwrap().cash[0].balance.rials(),
         251
     );
     let bad = change(&input, "ST-W1", "name", "ignored data");
@@ -195,11 +163,7 @@ fn bounded_read_and_exact_original_values() {
     let d = tempfile::tempdir().unwrap();
     let p = d.path().join("opening.csv");
     std::fs::write(&p, input).unwrap();
-    assert!(
-        opening_file_report(&state, &co, &p, "actor", "key")
-            .value
-            .is_some()
-    );
+    assert!(opening_file_report(&state, &co, &p, "actor", "key").value.is_some());
     std::fs::write(&p, vec![b'x'; sarv_quote::imports::MAX_IMPORT + 1]).unwrap();
     let r = opening_file_report(&state, &co, &p, "actor", "key");
     assert!(r.value.is_none());
@@ -211,11 +175,7 @@ fn crlf_source_diagnostics_and_original_refs_point_to_actual_data_row() {
     let (state, co, input) = fixture();
     let input = change(&input, "OPEN-F2-2026", "company_id", "OTHER").replace('\n', "\r\n");
     let r = opening_csv_report(&state, &co, &input, "actor", "key");
-    let d = r
-        .diagnostics
-        .iter()
-        .find(|d| d.column == "company_id")
-        .unwrap();
+    let d = r.diagnostics.iter().find(|d| d.column == "company_id").unwrap();
     assert_eq!(d.row, 2);
 }
 

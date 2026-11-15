@@ -104,7 +104,12 @@ fn recent_journals(s: &State) -> Vec<serde_json::Value> {
 }
 
 fn figure(ui: &Ui, key: &str, icon: &'static rune::Icon, label: &str, value: String, detail: String, tone: Tone) -> El {
-    let style = TextStyle { size: 22.0, weight: 560.0, line_height: 28.0, ..ui.k.ty.body_medium };
+    let style = TextStyle {
+        size: 22.0,
+        weight: 560.0,
+        line_height: 28.0,
+        ..ui.k.ty.body_medium
+    };
     col()
         .key(key)
         .grow(1.0)
@@ -126,7 +131,9 @@ fn mark(ui: &Ui, n: usize, done: bool) -> El {
     let inner = if done {
         ui.ic(&icons::CHECK, 12.0, ui.k.c.success.fg)
     } else {
-        text(ui.f.digits(&format!("{}", n))).font(ui.k.ty.caption()).color(ui.k.c.text_muted)
+        text(ui.f.digits(&format!("{}", n)))
+            .font(ui.k.ty.caption())
+            .color(ui.k.c.text_muted)
     };
     row().w(22.0).h(22.0).center().radius(11.0).fill(fill).child(inner)
 }
@@ -164,12 +171,7 @@ fn step(ui: &Ui, key: &str, n: usize, title: &str, detail: &str, done: bool, bad
         let actions = actions.into_iter().fold(row().w_full().gap(8.0).flex_wrap(), |r, a| r.child(a));
         body = body.child(actions);
     }
-    row()
-        .key(key)
-        .w_full()
-        .gap(12.0)
-        .child(mark(ui, n, done))
-        .child(body)
+    row().key(key).w_full().gap(12.0).child(mark(ui, n, done)).child(body)
 }
 
 fn open_sale(st: &mut State) {
@@ -341,7 +343,11 @@ fn starter_switch(s: &State, ui: &Ui, index: usize, bucket: &str, name: &'static
                 .grow(1.0)
                 .key(format!("starter-{index}")),
         )
-        .child(if exists { ui.badge(Tone::Info, ui.t("Already exists")) } else { el() })
+        .child(if exists {
+            ui.badge(Tone::Info, ui.t("Already exists"))
+        } else {
+            el()
+        })
 }
 
 fn mount_starter(s: &State, ui: &Ui, layer: &mut Vec<El>) {
@@ -400,7 +406,9 @@ fn mount_named(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         420.0,
         body,
         vec![
-            ui.button(Btn::Ghost, "overview-cancel-named", &ui.t("Cancel"), None, |st| st.overview.named_open = false),
+            ui.button(Btn::Ghost, "overview-cancel-named", &ui.t("Cancel"), None, |st| {
+                st.overview.named_open = false
+            }),
             ui.button(Btn::Primary, "overview-save-named", &ui.t("Save"), Some(&icons::CHECK), save_named),
         ],
         |st| st.overview.named_open = false,
@@ -421,7 +429,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let expanded = guide_expanded(s, done);
 
     let (_, to) = s.books.range();
-    let unit = if s.fmt.unit == crate::i18n::Unit::Rial { "IRR".to_string() } else { ui.t("toman") };
+    let unit = if s.fmt.unit == crate::i18n::Unit::Rial {
+        "IRR".to_string()
+    } else {
+        ui.t("toman")
+    };
     let as_of = row()
         .w_full()
         .center_y()
@@ -451,10 +463,42 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .w_full()
         .gap(16.0)
         .flex_wrap()
-        .child(figure(ui, "metric-cash", &icons::WALLET, &ui.t("Cash and bank"), ui.f.money(&s.books.position("cash")), ui.t("Available funds"), Tone::Info))
-        .child(figure(ui, "metric-rec", &icons::SALES, &ui.t("Receivables"), ui.f.money(&s.books.position("receivables")), ui.t("Open customer invoices"), Tone::Success))
-        .child(figure(ui, "metric-pay", &icons::PURCHASES, &ui.t("Payables"), ui.f.money(&s.books.position("payables")), ui.t("Due supplier bills"), Tone::Warning))
-        .child(figure(ui, "metric-profit", &icons::REPORTS, &ui.t("Profit this period"), profit, ui.t("Net profit"), Tone::Info));
+        .child(figure(
+            ui,
+            "metric-cash",
+            &icons::WALLET,
+            &ui.t("Cash and bank"),
+            ui.f.money(&s.books.position("cash")),
+            ui.t("Available funds"),
+            Tone::Info,
+        ))
+        .child(figure(
+            ui,
+            "metric-rec",
+            &icons::SALES,
+            &ui.t("Receivables"),
+            ui.f.money(&s.books.position("receivables")),
+            ui.t("Open customer invoices"),
+            Tone::Success,
+        ))
+        .child(figure(
+            ui,
+            "metric-pay",
+            &icons::PURCHASES,
+            &ui.t("Payables"),
+            ui.f.money(&s.books.position("payables")),
+            ui.t("Due supplier bills"),
+            Tone::Warning,
+        ))
+        .child(figure(
+            ui,
+            "metric-profit",
+            &icons::REPORTS,
+            &ui.t("Profit this period"),
+            profit,
+            ui.t("Net profit"),
+            Tone::Info,
+        ));
 
     let rec = &s.books.report["reconciliation"];
     let controls = if rec.is_null() {
@@ -470,33 +514,55 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .gap(8.0)
         .flex_wrap()
         .child(
-            ui.text_btn("overview-drafts", &format!("{}  {}", ui.t("Drafts"), ui.f.digits(&c.drafts.to_string())), |st| {
-                st.sales.tab_idx = 1;
-                st.nav(Page::Sales);
-            })
+            ui.text_btn(
+                "overview-drafts",
+                &format!("{}  {}", ui.t("Drafts"), ui.f.digits(&c.drafts.to_string())),
+                |st| {
+                    st.sales.tab_idx = 1;
+                    st.nav(Page::Sales);
+                },
+            )
             .grow(1.0)
             .min_w(140.0),
         )
         .child(
-            ui.text_btn("overview-journals", &format!("{}  {}", ui.t("Journals"), ui.f.digits(&c.journals.to_string())), |st| {
-                st.nav(Page::Accounting);
-            })
+            ui.text_btn(
+                "overview-journals",
+                &format!("{}  {}", ui.t("Journals"), ui.f.digits(&c.journals.to_string())),
+                |st| {
+                    st.nav(Page::Accounting);
+                },
+            )
             .grow(1.0)
             .min_w(140.0),
         )
         .child(
-            ui.text_btn("overview-controls", &format!("{}  {}", ui.t("Controls"), controls), |st| st.nav(Page::Reports))
-                .grow(1.0)
-                .min_w(140.0),
+            ui.text_btn("overview-controls", &format!("{}  {}", ui.t("Controls"), controls), |st| {
+                st.nav(Page::Reports)
+            })
+            .grow(1.0)
+            .min_w(140.0),
         );
 
     let sheet = ui.frost(
         "overview-sheet",
-        col().w_full().gap(14.0).child(as_of).child(quick).child(metrics).child(el().w_full().h(0.5).fill(ui.k.c.border_base)).child(summary),
+        col()
+            .w_full()
+            .gap(14.0)
+            .child(as_of)
+            .child(quick)
+            .child(metrics)
+            .child(el().w_full().h(0.5).fill(ui.k.c.border_base))
+            .child(summary),
     );
 
     let recent_body = if recent_journals(s).is_empty() {
-        ui.empty(&icons::REPORTS, "No recent entries yet.", "Post a sale or journal to see activity here.").key("recent-empty")
+        ui.empty(
+            &icons::REPORTS,
+            "No recent entries yet.",
+            "Post a sale or journal to see activity here.",
+        )
+        .key("recent-empty")
     } else {
         Table::new(
             |s: &State| &s.overview.table,
@@ -552,7 +618,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         recent = recent.grow(1.0).min_h(160.0);
     }
 
-    let failed = s.books.workspace["integrity"]["Failed"]["message"].as_str().unwrap_or("").to_string();
+    let failed = s.books.workspace["integrity"]["Failed"]["message"]
+        .as_str()
+        .unwrap_or("")
+        .to_string();
     let mut upper = col().key("overview-upper").w_full().gap(14.0).child(sheet);
     if guide_mounted(s, done) {
         let prefix = crate::data::s(&s.books.workspace["business_profile"]["invoice_prefix"]);
@@ -566,9 +635,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             col()
                 .w_full()
                 .gap(14.0)
-                .child(ui.muted(ui.t(
-                    "Complete these steps to get your accounting workspace, catalog, and invoicing ready.",
-                )))
+                .child(ui.muted(ui.t("Complete these steps to get your accounting workspace, catalog, and invoicing ready.")))
                 .child(step(
                     ui,
                     "setup-step-profile",
@@ -602,7 +669,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                     format!("{} · {}", ui.f.digits(&c.warehouses.to_string()), ui.f.digits(&c.units.to_string())),
                     vec![
                         ui.compact_btn(
-                            if c.warehouses == 0 && c.units == 0 { Btn::Primary } else { Btn::Glass },
+                            if c.warehouses == 0 && c.units == 0 {
+                                Btn::Primary
+                            } else {
+                                Btn::Glass
+                            },
                             "Quick-add essentials",
                             arm_starter,
                         ),
@@ -640,7 +711,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                         ),
                         ui.compact_btn(Btn::Glass, "Add supplier", |st| open_customer(st, true)),
                         ui.compact_btn(
-                            if c.parties > 0 && c.transactions == 0 { Btn::Primary } else { Btn::Glass },
+                            if c.parties > 0 && c.transactions == 0 {
+                                Btn::Primary
+                            } else {
+                                Btn::Glass
+                            },
                             "Create sales invoice",
                             open_sale,
                         ),

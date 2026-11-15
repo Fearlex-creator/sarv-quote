@@ -51,18 +51,13 @@ fn account_label(state: &AccountingState, company_id: &str, account_id: &str) ->
         .ok_or_else(|| anyhow::anyhow!("حساب تاریخی گزارش پیدا نشد؛ نام حساب قابل حدس نیست"))?;
     Ok(format!("{} • کد {}", account.name, ltr(&account.code)))
 }
-fn snapshot<'a>(
-    state: &'a AccountingState,
-    company_id: &str,
-) -> Result<(&'a OpeningRecord, OpeningPreview, Vec<Detail>)> {
+fn snapshot<'a>(state: &'a AccountingState, company_id: &str) -> Result<(&'a OpeningRecord, OpeningPreview, Vec<Detail>)> {
     let opening = state
         .core
         .openings
         .iter()
         .find(|o| o.command.company_id == company_id)
-        .ok_or_else(|| {
-            anyhow::anyhow!("افتتاحیهٔ تطبیق‌شده هنوز ثبت نشده است؛ گزارش تأییدشده قابل صدور نیست")
-        })?;
+        .ok_or_else(|| anyhow::anyhow!("افتتاحیهٔ تطبیق‌شده هنوز ثبت نشده است؛ گزارش تأییدشده قابل صدور نیست"))?;
     let c = &opening.command;
     let p = state.reconcile_opening(company_id, &c.as_of)?;
     ensure!(
@@ -73,10 +68,7 @@ fn snapshot<'a>(
     rows.push(detail(
         "policy",
         &opening.frozen_setup.id,
-        format!(
-            "سیاست و نگاشت حساب‌ها • {}",
-            opening.frozen_setup.command.policy.summary()
-        ),
+        format!("سیاست و نگاشت حساب‌ها • {}", opening.frozen_setup.command.policy.summary()),
         None,
         None,
         None,
@@ -101,16 +93,7 @@ fn snapshot<'a>(
         )?);
     }
     for x in &c.units {
-        rows.push(detail(
-            "unit",
-            &x.id,
-            x.name.clone(),
-            None,
-            None,
-            None,
-            "",
-            x,
-        )?);
+        rows.push(detail("unit", &x.id, x.name.clone(), None, None, None, "", x)?);
     }
     for x in &c.items {
         rows.push(detail(
@@ -148,16 +131,7 @@ fn snapshot<'a>(
         )?);
     }
     for x in &c.warehouses {
-        rows.push(detail(
-            "warehouse",
-            &x.id,
-            x.name.clone(),
-            None,
-            None,
-            None,
-            "",
-            x,
-        )?);
+        rows.push(detail("warehouse", &x.id, x.name.clone(), None, None, None, "", x)?);
     }
     for x in &c.balances {
         rows.push(detail(
@@ -207,11 +181,7 @@ fn snapshot<'a>(
     }
     for x in &c.open_items {
         rows.push(detail(
-            if x.side == OpenItemSide::Receivable {
-                "ar"
-            } else {
-                "ap"
-            },
+            if x.side == OpenItemSide::Receivable { "ar" } else { "ap" },
             &x.id,
             format!(
                 "طرف {} • تاریخ میلادی {} • سررسید میلادی {}",
@@ -234,11 +204,7 @@ fn snapshot<'a>(
                 "customer_advance"
             },
             &x.id,
-            format!(
-                "طرف {} • تاریخ میلادی {}",
-                ltr(&x.party_id),
-                ltr(&x.document_date)
-            ),
+            format!("طرف {} • تاریخ میلادی {}", ltr(&x.party_id), ltr(&x.document_date)),
             Some(x.remaining),
             None,
             None,
@@ -257,7 +223,11 @@ fn snapshot<'a>(
             format!(
                 "طرف {} • وضعیت {} • بانک {} • دارنده {} • صدور میلادی {} • سررسید میلادی {} • تسویهٔ تاریخی {}",
                 ltr(&x.party_id),
-                if x.state==OpeningChequeState::Held {"در دست / وصول‌نشده"} else {"صادرشده / وصول‌نشده"},
+                if x.state == OpeningChequeState::Held {
+                    "در دست / وصول‌نشده"
+                } else {
+                    "صادرشده / وصول‌نشده"
+                },
                 ltr(&x.bank_reference),
                 x.holder,
                 ltr(&x.issue_date),
@@ -289,7 +259,23 @@ fn snapshot<'a>(
         )?);
     }
     for x in &c.grni {
-        rows.push(detail("grni",&x.id,format!("طرف {} • کالا {} • انبار {} • واحد {} • دریافت میلادی {} • زیرمجموعهٔ موجودی، بدون افزایش دوباره",ltr(&x.party_id),ltr(&x.item_id),ltr(&x.warehouse_id),ltr(&x.unit_id),ltr(&x.received_date)),Some(x.value),Some(x.quantity_thousandths),Some(c.base_quantity(&x.item_id,&x.unit_id,x.quantity_thousandths)?),&x.receipt_reference,x)?);
+        rows.push(detail(
+            "grni",
+            &x.id,
+            format!(
+                "طرف {} • کالا {} • انبار {} • واحد {} • دریافت میلادی {} • زیرمجموعهٔ موجودی، بدون افزایش دوباره",
+                ltr(&x.party_id),
+                ltr(&x.item_id),
+                ltr(&x.warehouse_id),
+                ltr(&x.unit_id),
+                ltr(&x.received_date)
+            ),
+            Some(x.value),
+            Some(x.quantity_thousandths),
+            Some(c.base_quantity(&x.item_id, &x.unit_id, x.quantity_thousandths)?),
+            &x.receipt_reference,
+            x,
+        )?);
     }
     Ok((opening, p, rows))
 }
@@ -300,11 +286,7 @@ fn effect_description(effect: OpeningEffect) -> &'static str {
     }
 }
 fn unit_key(unit: MoneyUnit) -> &'static str {
-    if unit == MoneyUnit::Rial {
-        "rial"
-    } else {
-        "toman"
-    }
+    if unit == MoneyUnit::Rial { "rial" } else { "toman" }
 }
 fn shown_date(date: &str, dates: DateDisplay) -> Result<String> {
     if dates == DateDisplay::Jalali {
@@ -320,13 +302,7 @@ fn quantity(q: i64) -> String {
     format!("{}.{:03}", q / 1000, q % 1000)
 }
 
-pub fn opening_csv(
-    state: &AccountingState,
-    company_id: &str,
-    unit: MoneyUnit,
-    dates: DateDisplay,
-    path: &Path,
-) -> Result<()> {
+pub fn opening_csv(state: &AccountingState, company_id: &str, unit: MoneyUnit, dates: DateDisplay, path: &Path) -> Result<()> {
     opening_csv_with_preferences(state, company_id, unit, dates, DisplayDigits::Latin, path)
 }
 pub fn opening_csv_with_preferences(
@@ -389,9 +365,7 @@ pub fn opening_csv_with_preferences(
         },
         match o.effect {
             OpeningEffect::Journal => "posted_reconciled_opening".into(),
-            OpeningEffect::ZeroBalanceInitialization => {
-                "initialized_reconciled_zero_opening".into()
-            }
+            OpeningEffect::ZeroBalanceInitialization => "initialized_reconciled_zero_opening".into(),
         },
         "initial_opening_beginning_of_day".into(),
         o.frozen_setup.command.policy.version.clone(),
@@ -414,10 +388,7 @@ pub fn opening_csv_with_preferences(
             safe_cell(x.role.key()),
             x.role.key().into(),
             safe_cell(&x.account_id),
-            safe_cell(
-                &account_label(state, company_id, &x.account_id)?
-                    .replace(['\u{2066}', '\u{2069}'], ""),
-            ),
+            safe_cell(&account_label(state, company_id, &x.account_id)?.replace(['\u{2066}', '\u{2069}'], "")),
             String::new(),
             String::new(),
             String::new(),
@@ -440,9 +411,7 @@ pub fn opening_csv_with_preferences(
             String::new(),
             safe_cell(&x.label.replace(['\u{2066}', '\u{2069}'], "")),
             x.amount.map(|m| m.rials().to_string()).unwrap_or_default(),
-            x.amount
-                .map(|m| digits.format(m.display(unit)))
-                .unwrap_or_default(),
+            x.amount.map(|m| digits.format(m.display(unit))).unwrap_or_default(),
             x.quantity.map(|q| q.to_string()).unwrap_or_default(),
             x.base_quantity.map(|q| q.to_string()).unwrap_or_default(),
             String::new(),
@@ -455,10 +424,7 @@ pub fn opening_csv_with_preferences(
             safe_cell(&x.snapshot),
         ])?;
     }
-    for (kind, amount) in [
-        ("total_debit", p.total_debit),
-        ("total_credit", p.total_credit),
-    ] {
+    for (kind, amount) in [("total_debit", p.total_debit), ("total_credit", p.total_credit)] {
         emit(vec![
             kind.into(),
             kind.into(),
@@ -502,13 +468,7 @@ pub fn opening_csv_with_preferences(
     bytes.extend(w.into_inner()?);
     write_new(path, &bytes)
 }
-fn layout(
-    cr: &cairo::Context,
-    map: &pango::FontMap,
-    value: &str,
-    width: f64,
-    size: u32,
-) -> pango::Layout {
+fn layout(cr: &cairo::Context, map: &pango::FontMap, value: &str, width: f64, size: u32) -> pango::Layout {
     let context = map.create_context();
     pangocairo::functions::update_context(cr, &context);
     context.set_base_dir(pango::Direction::Rtl);
@@ -531,13 +491,7 @@ fn draw(cr: &cairo::Context, map: &pango::FontMap, value: &str, y: f64, size: u3
     cr.status()?;
     Ok(f64::from(l.pixel_size().1))
 }
-pub fn opening_pdf(
-    state: &AccountingState,
-    company_id: &str,
-    unit: MoneyUnit,
-    dates: DateDisplay,
-    path: &Path,
-) -> Result<()> {
+pub fn opening_pdf(state: &AccountingState, company_id: &str, unit: MoneyUnit, dates: DateDisplay, path: &Path) -> Result<()> {
     opening_pdf_with_preferences(state, company_id, unit, dates, DisplayDigits::Persian, path)
 }
 pub fn opening_pdf_with_preferences(
@@ -560,18 +514,11 @@ pub fn opening_pdf_with_preferences(
     let cr = cairo::Context::new(&surface)?;
     let map = pangocairo::FontMap::new();
     let cutoff = shown_date(&c.as_of, dates)?;
-    let jalali = shown_date(&c.as_of, DateDisplay::Jalali)
-        .unwrap_or_else(|_| "خارج از دامنهٔ نمایش شمسی؛ تاریخ میلادی معتبر است".into());
+    let jalali = shown_date(&c.as_of, DateDisplay::Jalali).unwrap_or_else(|_| "خارج از دامنهٔ نمایش شمسی؛ تاریخ میلادی معتبر است".into());
     let heading = |page: usize| -> Result<f64> {
         cr.set_source_rgb(0.08, 0.12, 0.16);
         let mut y = 32.0;
-        y += draw(
-            &cr,
-            &map,
-            &format!("تطبیق افتتاحیه • {}", company.name),
-            y,
-            15,
-        )? + 6.0;
+        y += draw(&cr, &map, &format!("تطبیق افتتاحیه • {}", company.name), y, 15)? + 6.0;
         y += draw(
             &cr,
             &map,
@@ -592,17 +539,8 @@ pub fn opening_pdf_with_preferences(
             y,
             9,
         )? + 10.0;
-        y += draw(
-            &cr,
-            &map,
-            "کنترل / ردیف / منبع • دفتر کل • جزئیات • اختلاف • مقدار و واحد",
-            y,
-            10,
-        )? + 12.0;
-        ensure!(
-            y < 620.0,
-            "سربرگ بزرگ‌تر از صفحه است؛ نام کوتاه‌تر یا CSV را انتخاب کنید"
-        );
+        y += draw(&cr, &map, "کنترل / ردیف / منبع • دفتر کل • جزئیات • اختلاف • مقدار و واحد", y, 10)? + 12.0;
+        ensure!(y < 620.0, "سربرگ بزرگ‌تر از صفحه است؛ نام کوتاه‌تر یا CSV را انتخاب کنید");
         Ok(y)
     };
     let mut blocks = vec![format!(
@@ -641,12 +579,7 @@ pub fn opening_pdf_with_preferences(
         let mut value = if x.kind == "ledger" {
             format!("دفتر کل • {}", digits.format(&x.label))
         } else {
-            format!(
-                "{} • {} • {}",
-                ltr(&x.kind),
-                ltr(&x.id),
-                digits.format(&x.label)
-            )
+            format!("{} • {} • {}", ltr(&x.kind), ltr(&x.id), digits.format(&x.label))
         };
         if let Some(m) = x.amount {
             value.push_str(&format!(
@@ -681,10 +614,7 @@ pub fn opening_pdf_with_preferences(
             page += 1;
             y = heading(page)?;
         }
-        ensure!(
-            y + h <= 778.0,
-            "ردیف در یک صفحه جا نمی‌شود؛ CSV را انتخاب کنید"
-        );
+        ensure!(y + h <= 778.0, "ردیف در یک صفحه جا نمی‌شود؛ CSV را انتخاب کنید");
         cr.set_source_rgb(0.08, 0.12, 0.16);
         draw(&cr, &map, &value, y, 9)?;
         y += h;

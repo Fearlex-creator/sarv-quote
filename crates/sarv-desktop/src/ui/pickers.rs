@@ -1,9 +1,7 @@
 //! Entity Combobox and Select helpers. Pick an existing record or create one.
 
 use rune::{El, row, text};
-use rune_kit::{
-    Combobox, ComboboxOption, ComboboxState, ControlSize, Placement, Select, SelectAppearance,
-};
+use rune_kit::{Combobox, ComboboxOption, ComboboxState, ControlSize, Placement, Select, SelectAppearance};
 
 use crate::app::State;
 use crate::ui::glass::{Btn, Ui};
@@ -31,24 +29,17 @@ pub fn with_create_option(mut options: Vec<ComboboxOption>, query: &str, add_lab
     }
     let exists = options.iter().any(|o| o.label.eq_ignore_ascii_case(q));
     if !exists {
-        options.insert(
-            0,
-            ComboboxOption::new(format!("{CREATE_PREFIX}{q}"), format!("{add_label} “{q}”")),
-        );
+        options.insert(0, ComboboxOption::new(format!("{CREATE_PREFIX}{q}"), format!("{add_label} “{q}”")));
     }
     options
 }
 
 pub fn party_options(s: &State, customers: bool, suppliers: bool) -> Vec<ComboboxOption> {
-    s.books
-        .workspace["resources"]["parties"]
+    s.books.workspace["resources"]["parties"]
         .as_array()
         .into_iter()
         .flatten()
-        .filter(|p| {
-            (customers && p["customer"].as_bool().unwrap_or(false))
-                || (suppliers && p["supplier"].as_bool().unwrap_or(false))
-        })
+        .filter(|p| (customers && p["customer"].as_bool().unwrap_or(false)) || (suppliers && p["supplier"].as_bool().unwrap_or(false)))
         .map(|p| {
             let id = crate::data::s(&p["id"]);
             let name = s.books.party_name(&id);
@@ -58,8 +49,7 @@ pub fn party_options(s: &State, customers: bool, suppliers: bool) -> Vec<Combobo
 }
 
 pub fn item_options(s: &State) -> Vec<ComboboxOption> {
-    s.books
-        .workspace["resources"]["items"]
+    s.books.workspace["resources"]["items"]
         .as_array()
         .into_iter()
         .flatten()
@@ -75,8 +65,7 @@ pub fn item_options(s: &State) -> Vec<ComboboxOption> {
 }
 
 pub fn unit_options(s: &State) -> Vec<(String, String)> {
-    s.books
-        .workspace["resources"]["units"]
+    s.books.workspace["resources"]["units"]
         .as_array()
         .into_iter()
         .flatten()
@@ -85,8 +74,7 @@ pub fn unit_options(s: &State) -> Vec<(String, String)> {
 }
 
 pub fn warehouse_options(s: &State) -> Vec<(String, String)> {
-    s.books
-        .workspace["resources"]["warehouses"]
+    s.books.workspace["resources"]["warehouses"]
         .as_array()
         .into_iter()
         .flatten()
@@ -95,8 +83,7 @@ pub fn warehouse_options(s: &State) -> Vec<(String, String)> {
 }
 
 pub fn account_options(s: &State) -> Vec<(String, String)> {
-    s.books
-        .workspace["accounts"]
+    s.books.workspace["accounts"]
         .as_array()
         .into_iter()
         .flatten()
@@ -122,8 +109,7 @@ pub fn first_unit(s: &State) -> String {
 }
 
 pub fn item_unit(s: &State, item_id: &str) -> String {
-    s.books
-        .workspace["resources"]["items"]
+    s.books.workspace["resources"]["items"]
         .as_array()
         .into_iter()
         .flatten()
@@ -134,11 +120,7 @@ pub fn item_unit(s: &State, item_id: &str) -> String {
 
 pub fn item_sale_price(s: &State, item_id: &str) -> String {
     let p = &s.books.workspace["product_profiles"][item_id]["sale_price"];
-    if p.is_null() {
-        String::new()
-    } else {
-        crate::data::s(p)
-    }
+    if p.is_null() { String::new() } else { crate::data::s(p) }
 }
 
 /// Searchable entity picker (kit Combobox). `on_choose` receives the option id (or `__create__:…`).

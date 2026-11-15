@@ -58,7 +58,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
     .column(TableColumn::new("name", ui.t("Account")).flex(2.0).min(140.0).sortable())
     .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0))
-    .column(TableColumn::new("balance", ui.t("Balance")).width(160.0).min(110.0).align(rune::Align::End))
+    .column(
+        TableColumn::new("balance", ui.t("Balance"))
+            .width(160.0)
+            .min(110.0)
+            .align(rune::Align::End),
+    )
     .cell(|s: &State, i, col| {
         let rows = bank_rows(s);
         let Some(row) = rows.get(i) else {
@@ -87,13 +92,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         Tone::Info,
     ));
 
-    let body = col()
-        .w_full()
-        .gap(16.0)
-        .grow(1.0)
-        .min_h(0.0)
-        .child(kpis)
-        .child(ui.fill_or_empty(bank_rows(s).len(), "No accounts", "Cash and bank", &icons::WALLET, table));
+    let body = col().w_full().gap(16.0).grow(1.0).min_h(0.0).child(kpis).child(ui.fill_or_empty(
+        bank_rows(s).len(),
+        "No accounts",
+        "Cash and bank",
+        &icons::WALLET,
+        table,
+    ));
 
     if s.banking.modal_open {
         mount_transfer_dialog(s, ui, layer);
@@ -118,7 +123,11 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
 
     let mut portals = Vec::new();
     let funds = funds_options(s);
-    let other = if s.banking.kind == 0 { funds.clone() } else { counterpart_options(s) };
+    let other = if s.banking.kind == 0 {
+        funds.clone()
+    } else {
+        counterpart_options(s)
+    };
     let accounts = funds;
     let targets = other;
     let from_open = s.selects.get("bank-from").copied().unwrap_or(false);
@@ -128,7 +137,11 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "bank-from",
         &accounts,
-        if s.banking.from_id.is_empty() { None } else { Some(s.banking.from_id.as_str()) },
+        if s.banking.from_id.is_empty() {
+            None
+        } else {
+            Some(s.banking.from_id.as_str())
+        },
         &ui.t("Select account"),
         pickers::ACCOUNT_PICKER_WIDTH,
         from_open,
@@ -139,7 +152,11 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "bank-to",
         &targets,
-        if s.banking.to_id.is_empty() { None } else { Some(s.banking.to_id.as_str()) },
+        if s.banking.to_id.is_empty() {
+            None
+        } else {
+            Some(s.banking.to_id.as_str())
+        },
         &ui.t("Select account"),
         pickers::ACCOUNT_PICKER_WIDTH,
         to_open,

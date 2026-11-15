@@ -36,10 +36,7 @@ pub fn post_operation(
     reason: &str,
     request_key: &str,
 ) -> Result<Value, String> {
-    let opts = st.query(
-        "operation_options",
-        json!({ "record_id": record_id, "operation": operation }),
-    )?;
+    let opts = st.query("operation_options", json!({ "record_id": record_id, "operation": operation }))?;
     let lines: Vec<Value> = opts["lines"]
         .as_array()
         .into_iter()

@@ -1,9 +1,9 @@
+use crate::contact_profile::PartyProfile;
 use anyhow::{Result, bail, ensure};
 use chrono::{DateTime, NaiveDate, Utc};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use uuid::Uuid;
-use crate::contact_profile::PartyProfile;
 
 pub const CURRENT_SCHEMA: u32 = 7;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
@@ -77,8 +77,7 @@ pub fn text(s: &str) -> Result<()> {
             && s.len() <= 1024
             && !s
                 .chars()
-                .any(|c| c.is_control()
-                    || matches!(c, '\u{202a}'..='\u{202e}'|'\u{2066}'..='\u{2069}')),
+                .any(|c| c.is_control() || matches!(c, '\u{202a}'..='\u{202e}'|'\u{2066}'..='\u{2069}')),
         "متن خالی، بسیار بلند یا دارای نویسهٔ کنترلی است"
     );
     Ok(())
@@ -87,10 +86,7 @@ fn forbidden_control(c: char) -> bool {
     c.is_control() || matches!(c, '\u{202a}'..='\u{202e}' | '\u{2066}'..='\u{2069}')
 }
 pub fn phone(s: &str) -> Result<()> {
-    ensure!(
-        s.len() <= 100 && !s.chars().any(forbidden_control),
-        "تلفن نامعتبر"
-    );
+    ensure!(s.len() <= 100 && !s.chars().any(forbidden_control), "تلفن نامعتبر");
     Ok(())
 }
 fn document_date(s: &str) -> Result<Option<NaiveDate>> {
@@ -103,11 +99,7 @@ fn document_date(s: &str) -> Result<Option<NaiveDate>> {
             && normalized
                 .bytes()
                 .enumerate()
-                .all(|(i, c)| if matches!(i, 4 | 7) {
-                    c == b'-'
-                } else {
-                    c.is_ascii_digit()
-                })
+                .all(|(i, c)| if matches!(i, 4 | 7) { c == b'-' } else { c.is_ascii_digit() })
             && !normalized.starts_with("0000"),
         "تاریخ میلادی باید به صورت YYYY-MM-DD و دارای سال مثبت باشد"
     );
@@ -120,13 +112,11 @@ fn document_date(s: &str) -> Result<Option<NaiveDate>> {
 }
 fn metadata(reference: &str, quote_date: &str, valid_until: &str, notes: &str) -> Result<()> {
     ensure!(
-        reference.chars().count() <= MAX_REFERENCE_CHARS
-            && !reference.chars().any(forbidden_control),
+        reference.chars().count() <= MAX_REFERENCE_CHARS && !reference.chars().any(forbidden_control),
         "مرجع حداکثر ۱۶۰ نویسه و بدون نویسهٔ کنترلی است"
     );
     ensure!(
-        notes.chars().count() <= MAX_NOTES_CHARS
-            && !notes.chars().any(|c| c != '\n' && forbidden_control(c)),
+        notes.chars().count() <= MAX_NOTES_CHARS && !notes.chars().any(|c| c != '\n' && forbidden_control(c)),
         "یادداشت حداکثر ۴۰۰۰ نویسه است؛ فقط شکست خط مجاز است"
     );
     let date = document_date(quote_date)?;
@@ -229,12 +219,10 @@ impl DateDisplay {
             return value.into();
         }
         let shown = match self {
-            Self::Jalali => {
-                match crate::calendar::format_date(date, crate::calendar::Calendar::Jalali) {
-                    Ok(shown) => shown,
-                    Err(_) => return format!("{value} • میلادی؛ خارج از دامنهٔ شمسی"),
-                }
-            }
+            Self::Jalali => match crate::calendar::format_date(date, crate::calendar::Calendar::Jalali) {
+                Ok(shown) => shown,
+                Err(_) => return format!("{value} • میلادی؛ خارج از دامنهٔ شمسی"),
+            },
             Self::DayMonthYear => date.format("%d/%m/%Y").to_string(),
             Self::Iso => unreachable!(),
         };
@@ -320,26 +308,13 @@ impl Settings {
             &self.default_terms,
         )?;
         ensure!(
-            self.quote_prefix.chars().count() <= 32
-                && !self.quote_prefix.chars().any(forbidden_control),
+            self.quote_prefix.chars().count() <= 32 && !self.quote_prefix.chars().any(forbidden_control),
             "پیشوند شماره نامعتبر است"
         );
-        ensure!(
-            self.next_number > 0 && self.next_number < u64::MAX,
-            "شمارهٔ بعدی خارج از محدوده است"
-        );
-        ensure!(
-            self.default_validity_days <= 3650,
-            "اعتبار حداکثر ۳۶۵۰ روز است"
-        );
-        ensure!(
-            (0..=MAX_MONEY).contains(&self.default_discount_rial),
-            "تخفیف پیش‌فرض نامعتبر است"
-        );
-        ensure!(
-            self.tax_basis_points <= 10_000,
-            "نرخ مالیات تنظیم‌شده باید بین صفر و صد درصد باشد"
-        );
+        ensure!(self.next_number > 0 && self.next_number < u64::MAX, "شمارهٔ بعدی خارج از محدوده است");
+        ensure!(self.default_validity_days <= 3650, "اعتبار حداکثر ۳۶۵۰ روز است");
+        ensure!((0..=MAX_MONEY).contains(&self.default_discount_rial), "تخفیف پیش‌فرض نامعتبر است");
+        ensure!(self.tax_basis_points <= 10_000, "نرخ مالیات تنظیم‌شده باید بین صفر و صد درصد باشد");
         ensure!(
             (1..=12).contains(&self.fiscal_year_start_month),
             "ماه شروع سال مالی باید بین ۱ و ۱۲ باشد"
@@ -351,14 +326,7 @@ impl Settings {
         Ok(())
     }
 }
-fn issuer_metadata(
-    name: &str,
-    business_phone: &str,
-    address: &str,
-    header: &str,
-    footer: &str,
-    terms: &str,
-) -> Result<()> {
+fn issuer_metadata(name: &str, business_phone: &str, address: &str, header: &str, footer: &str, terms: &str) -> Result<()> {
     ensure!(
         name.chars().count() <= 160 && !name.chars().any(forbidden_control),
         "نام کسب‌وکار نامعتبر است"
@@ -406,10 +374,7 @@ impl Unit {
         let s = digits(s);
         let parts = s.trim().split('.').collect::<Vec<_>>();
         ensure!(
-            parts.len() <= 2
-                && parts
-                    .iter()
-                    .all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit())),
+            parts.len() <= 2 && parts.iter().all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit())),
             "مبلغ باید عدد نامنفی بدون جداکننده باشد"
         );
         let fractional = parts.get(1).copied().unwrap_or("");
@@ -420,13 +385,7 @@ impl Unit {
         let n = parts[0]
             .parse::<i64>()?
             .checked_mul(if self == Self::Toman { 10 } else { 1 })
-            .and_then(|n| {
-                n.checked_add(if fractional.is_empty() {
-                    0
-                } else {
-                    fractional.parse().ok()?
-                })
-            })
+            .and_then(|n| n.checked_add(if fractional.is_empty() { 0 } else { fractional.parse().ok()? }))
             .ok_or_else(|| anyhow::anyhow!("سرریز مبلغ"))?;
         ensure!(n <= MAX_MONEY, "مبلغ خارج از محدوده است");
         Ok(n)
@@ -463,11 +422,7 @@ pub fn quantity(s: &str) -> Result<i64> {
     let s = digits(s);
     let parts = s.trim().split('.').collect::<Vec<_>>();
     ensure!(
-        parts.len() <= 2
-            && !parts[0].is_empty()
-            && parts
-                .iter()
-                .all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit())),
+        parts.len() <= 2 && !parts[0].is_empty() && parts.iter().all(|p| !p.is_empty() && p.chars().all(|c| c.is_ascii_digit())),
         "تعداد نامعتبر است"
     );
     let fractional = parts.get(1).copied().unwrap_or("");
@@ -477,16 +432,11 @@ pub fn quantity(s: &str) -> Result<i64> {
         .checked_mul(1000)
         .and_then(|n| n.checked_add(format!("{fractional:0<3}").parse::<i64>().ok()?))
         .ok_or_else(|| anyhow::anyhow!("سرریز تعداد"))?;
-    ensure!(
-        n > 0 && n <= 1_000_000_000,
-        "تعداد باید مثبت و حداکثر یک میلیون باشد"
-    );
+    ensure!(n > 0 && n <= 1_000_000_000, "تعداد باید مثبت و حداکثر یک میلیون باشد");
     Ok(n)
 }
 pub fn qty_display(q: i64) -> String {
-    fa(format!("{}.{:03}", q / 1000, q % 1000)
-        .trim_end_matches('0')
-        .trim_end_matches('.'))
+    fa(format!("{}.{:03}", q / 1000, q % 1000).trim_end_matches('0').trim_end_matches('.'))
 }
 pub fn line_total(price: i64, qty: i64) -> Result<i64> {
     ensure!(
@@ -526,23 +476,14 @@ pub struct CatalogIndex<'a> {
 impl<'a> CatalogIndex<'a> {
     pub fn match_count(&self, query: &str) -> usize {
         let key = normalize(query);
-        self.codes
-            .get(&key)
-            .or_else(|| self.aliases.get(&key))
-            .map_or(0, Vec::len)
+        self.codes.get(&key).or_else(|| self.aliases.get(&key)).map_or(0, Vec::len)
     }
     pub fn matches_limited(&self, query: &str, limit: usize) -> Vec<&'a Product> {
         let key = normalize(query);
         self.codes
             .get(&key)
             .or_else(|| self.aliases.get(&key))
-            .map(|indices| {
-                indices
-                    .iter()
-                    .take(limit)
-                    .map(|index| &self.catalog.products[*index])
-                    .collect()
-            })
+            .map(|indices| indices.iter().take(limit).map(|index| &self.catalog.products[*index]).collect())
             .unwrap_or_default()
     }
     pub fn matches(&self, query: &str) -> Vec<&'a Product> {
@@ -550,20 +491,13 @@ impl<'a> CatalogIndex<'a> {
         self.codes
             .get(&key)
             .or_else(|| self.aliases.get(&key))
-            .map(|indices| {
-                indices
-                    .iter()
-                    .map(|index| &self.catalog.products[*index])
-                    .collect()
-            })
+            .map(|indices| indices.iter().map(|index| &self.catalog.products[*index]).collect())
             .unwrap_or_default()
     }
     /// Human choices refer to the exact stored code; case/script normalization
     /// is only for request matching, never for silently changing a chosen code.
     pub fn product_by_code(&self, code: &str) -> Option<&'a Product> {
-        self.raw_codes
-            .get(code)
-            .map(|index| &self.catalog.products[*index])
+        self.raw_codes.get(code).map(|index| &self.catalog.products[*index])
     }
 }
 impl Catalog {
@@ -572,10 +506,7 @@ impl Catalog {
         let mut aliases: HashMap<String, Vec<usize>> = HashMap::new();
         let mut raw_codes = HashMap::with_capacity(self.products.len());
         for (index, product) in self.products.iter().enumerate() {
-            codes
-                .entry(normalize(&product.code))
-                .or_default()
-                .push(index);
+            codes.entry(normalize(&product.code)).or_default().push(index);
             raw_codes.entry(product.code.as_str()).or_insert(index);
             for alias in &product.aliases {
                 let candidates = aliases.entry(normalize(alias)).or_default();
@@ -594,23 +525,15 @@ impl Catalog {
         }
     }
     pub fn search_index(&self) -> SearchIndex {
-        SearchIndex::new(self.products.iter().map(|p| {
-            format!(
-                "{} {} {} {}",
-                p.code,
-                p.name,
-                p.measure,
-                p.aliases.join(" ")
-            )
-        }))
+        SearchIndex::new(
+            self.products
+                .iter()
+                .map(|p| format!("{} {} {} {}", p.code, p.name, p.measure, p.aliases.join(" "))),
+        )
     }
     pub fn matches(&self, query: &str) -> Vec<&Product> {
         let key = normalize(query);
-        let exact = self
-            .products
-            .iter()
-            .filter(|p| normalize(&p.code) == key)
-            .collect::<Vec<_>>();
+        let exact = self.products.iter().filter(|p| normalize(&p.code) == key).collect::<Vec<_>>();
         if !exact.is_empty() {
             exact
         } else {
@@ -700,10 +623,7 @@ pub fn customer_details(contact: &str, email: &str, address: &str) -> Result<()>
         "نام مخاطب حداکثر ۱۶۰ نویسه و بدون نویسهٔ کنترلی است"
     );
     ensure!(
-        email.len() <= 254
-            && !email
-                .chars()
-                .any(|c| c.is_whitespace() || forbidden_control(c)),
+        email.len() <= 254 && !email.chars().any(|c| c.is_whitespace() || forbidden_control(c)),
         "ایمیل نامعتبر است"
     );
     if !email.is_empty() {
@@ -723,8 +643,7 @@ pub fn customer_details(contact: &str, email: &str, address: &str) -> Result<()>
         );
     }
     ensure!(
-        address.chars().count() <= 2000
-            && !address.chars().any(|c| c != '\n' && forbidden_control(c)),
+        address.chars().count() <= 2000 && !address.chars().any(|c| c != '\n' && forbidden_control(c)),
         "نشانی حداکثر ۲۰۰۰ نویسه است؛ فقط شکست خط مجاز است"
     );
     Ok(())
@@ -892,7 +811,10 @@ pub struct BusinessProfile {
 impl BusinessProfile {
     pub fn validate(&self) -> Result<()> {
         for value in [&self.phone, &self.registration_id, &self.tax_id, &self.invoice_prefix] {
-            ensure!(value.chars().count() <= 160 && !value.chars().any(char::is_control), "Business identifier is too long or contains control characters");
+            ensure!(
+                value.chars().count() <= 160 && !value.chars().any(char::is_control),
+                "Business identifier is too long or contains control characters"
+            );
         }
         for value in [&self.address, &self.terms, &self.footer, &self.bank_details] {
             ensure!(value.chars().count() <= 2000, "Business text is too long");
@@ -918,17 +840,11 @@ pub struct State {
     pub draft: Draft,
     #[serde(default, skip_serializing_if = "Settings::is_default")]
     pub settings: Settings,
-    #[serde(
-        default,
-        skip_serializing_if = "crate::accounting::AccountingState::is_empty"
-    )]
+    #[serde(default, skip_serializing_if = "crate::accounting::AccountingState::is_empty")]
     pub accounting: crate::accounting::AccountingState,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub sales_drafts: Vec<crate::sales_draft::RawSalesDraft>,
-    #[serde(
-        default,
-        skip_serializing_if = "crate::cashbook::Cashbook::is_empty"
-    )]
+    #[serde(default, skip_serializing_if = "crate::cashbook::Cashbook::is_empty")]
     pub cashbook: crate::cashbook::Cashbook,
     #[serde(default, skip_serializing_if = "crate::cheques::ChequeRegister::is_empty")]
     pub cheques: crate::cheques::ChequeRegister,
@@ -958,10 +874,7 @@ pub fn stale(source: &str) -> bool {
 }
 /// Historical approvals are checked at their approval time, never at restore time.
 pub fn stale_at(source: &str, at: &str) -> bool {
-    match (
-        DateTime::parse_from_rfc3339(source),
-        DateTime::parse_from_rfc3339(at),
-    ) {
+    match (DateTime::parse_from_rfc3339(source), DateTime::parse_from_rfc3339(at)) {
         (Ok(source), Ok(at)) => at.signed_duration_since(source).num_days() >= 7,
         _ => true,
     }
@@ -977,10 +890,7 @@ impl State {
             if c.archived {
                 String::new()
             } else {
-                format!(
-                    "{} {} {} {} {}",
-                    c.name, c.phone, c.contact_name, c.email, c.address
-                )
+                format!("{} {} {} {} {}", c.name, c.phone, c.contact_name, c.email, c.address)
             }
         }))
     }
@@ -989,9 +899,7 @@ impl State {
         self.settings.validate()?;
         let date = Utc::now().date_naive();
         let expiry = date
-            .checked_add_days(chrono::Days::new(u64::from(
-                self.settings.default_validity_days,
-            )))
+            .checked_add_days(chrono::Days::new(u64::from(self.settings.default_validity_days)))
             .ok_or_else(|| anyhow::anyhow!("تاریخ اعتبار خارج از محدوده است"))?;
         self.draft = Draft {
             catalog_id: self.draft.catalog_id.clone(),
@@ -1015,21 +923,15 @@ impl State {
     pub fn save_customer(&mut self, name: &str, customer_phone: &str) -> Result<String> {
         self.save_customer_details(name, customer_phone, "", "", "")
     }
-    pub fn save_customer_details(
-        &mut self,
-        name: &str,
-        customer_phone: &str,
-        contact: &str,
-        email: &str,
-        address: &str,
-    ) -> Result<String> {
+    pub fn save_customer_details(&mut self, name: &str, customer_phone: &str, contact: &str, email: &str, address: &str) -> Result<String> {
         text(name)?;
         phone(customer_phone)?;
         customer_details(contact, email, address)?;
-        if let Some(customer) = self.customers.iter().find(|c| {
-            normalize(&c.name) == normalize(name)
-                && digits(c.phone.trim()) == digits(customer_phone.trim())
-        }) {
+        if let Some(customer) = self
+            .customers
+            .iter()
+            .find(|c| normalize(&c.name) == normalize(name) && digits(c.phone.trim()) == digits(customer_phone.trim()))
+        {
             ensure!(
                 (contact.trim().is_empty() || contact.trim() == customer.contact_name)
                     && (email.trim().is_empty() || email.trim() == customer.email)
@@ -1038,10 +940,7 @@ impl State {
             );
             return Ok(customer.id.clone());
         }
-        ensure!(
-            self.customers.len() < 100_000,
-            "تعداد مشتریان بیش از حد مجاز است"
-        );
+        ensure!(self.customers.len() < 100_000, "تعداد مشتریان بیش از حد مجاز است");
         let customer_id = id();
         self.customers.push(Customer {
             id: customer_id.clone(),
@@ -1055,27 +954,14 @@ impl State {
         });
         Ok(customer_id)
     }
-    pub fn edit_customer(
-        &mut self,
-        customer_id: &str,
-        name: &str,
-        customer_phone: &str,
-    ) -> Result<()> {
+    pub fn edit_customer(&mut self, customer_id: &str, name: &str, customer_phone: &str) -> Result<()> {
         let c = self
             .customers
             .iter()
             .find(|c| c.id == customer_id)
             .ok_or_else(|| anyhow::anyhow!("مشتری یافت نشد"))?;
-        let (contact, email, address) =
-            (c.contact_name.clone(), c.email.clone(), c.address.clone());
-        self.edit_customer_details(
-            customer_id,
-            name,
-            customer_phone,
-            &contact,
-            &email,
-            &address,
-        )
+        let (contact, email, address) = (c.contact_name.clone(), c.email.clone(), c.address.clone());
+        self.edit_customer_details(customer_id, name, customer_phone, &contact, &email, &address)
     }
     pub fn edit_customer_details(
         &mut self,
@@ -1125,10 +1011,7 @@ impl State {
             .iter()
             .find(|c| c.id == customer_id)
             .ok_or_else(|| anyhow::anyhow!("مشتری یافت نشد"))?;
-        ensure!(
-            !c.archived,
-            "مشتری بایگانی شده است؛ ابتدا از بایگانی خارج کنید"
-        );
+        ensure!(!c.archived, "مشتری بایگانی شده است؛ ابتدا از بایگانی خارج کنید");
         self.draft.customer = c.name.clone();
         self.draft.phone = c.phone.clone();
         self.draft.customer_id = c.id.clone();
@@ -1138,10 +1021,7 @@ impl State {
         Ok(())
     }
     pub fn select_catalog(&mut self, catalog_id: &str) -> Result<()> {
-        ensure!(
-            self.catalogs.iter().any(|c| c.id == catalog_id),
-            "فهرست یافت نشد"
-        );
+        ensure!(self.catalogs.iter().any(|c| c.id == catalog_id), "فهرست یافت نشد");
         if self.draft.catalog_id != catalog_id {
             self.draft.catalog_id = catalog_id.into();
             for line in &mut self.draft.lines {
@@ -1155,9 +1035,7 @@ impl State {
         self.revise(quote_id)?;
         self.draft.series = id();
         self.draft.quote_date = Utc::now().format("%Y-%m-%d").to_string();
-        if document_date(&self.draft.valid_until)?
-            .is_some_and(|expiry| expiry < Utc::now().date_naive())
-        {
+        if document_date(&self.draft.valid_until)?.is_some_and(|expiry| expiry < Utc::now().date_naive()) {
             self.draft.valid_until.clear();
         }
         self.draft.stale_ack = false;
@@ -1201,18 +1079,11 @@ impl State {
                     .ok_or_else(|| anyhow::anyhow!("کد انتخاب‌شده موجود نیست"))?
             } else {
                 let matches = index.matches(&l.query);
-                ensure!(
-                    matches.len() == 1,
-                    "ردیف «{}» نیاز به بررسی انسانی دارد",
-                    l.query
-                );
+                ensure!(matches.len() == 1, "ردیف «{}» نیاز به بررسی انسانی دارد", l.query);
                 matches[0]
             };
             timestamp(&p.source_at)?;
-            ensure!(
-                !stale(&p.source_at) || self.draft.stale_ack,
-                "قیمت قدیمی است؛ هشدار را تأیید کنید"
-            );
+            ensure!(!stale(&p.source_at) || self.draft.stale_ack, "قیمت قدیمی است؛ هشدار را تأیید کنید");
             let total = line_total(p.price_rial, l.quantity_milli)?;
             subtotal = subtotal
                 .checked_add(total)
@@ -1260,8 +1131,7 @@ impl State {
             self.customers
                 .iter()
                 .find(|c| {
-                    normalize(&c.name) == normalize(&self.draft.customer)
-                        && digits(c.phone.trim()) == digits(self.draft.phone.trim())
+                    normalize(&c.name) == normalize(&self.draft.customer) && digits(c.phone.trim()) == digits(self.draft.phone.trim())
                 })
                 .map(|c| c.id.clone())
                 .unwrap_or_default()
@@ -1302,12 +1172,7 @@ impl State {
                 .iter()
                 .find(|q| q.series == self.draft.series)
                 .map(|q| q.number.clone())
-                .unwrap_or_else(|| {
-                    format!(
-                        "{}{}",
-                        self.settings.quote_prefix, self.settings.next_number
-                    )
-                }),
+                .unwrap_or_else(|| format!("{}{}", self.settings.quote_prefix, self.settings.next_number)),
             tax_rial: tax,
         })
     }
@@ -1323,10 +1188,7 @@ impl State {
             if a == b {
                 return Ok(previous.id.clone());
             }
-            q.version = previous
-                .version
-                .checked_add(1)
-                .ok_or_else(|| anyhow::anyhow!("سرریز نسخه"))?;
+            q.version = previous.version.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخه"))?;
         } else {
             ensure!(
                 !self
@@ -1349,8 +1211,7 @@ impl State {
         let result = q.id.clone();
         if !self.customers.iter().any(|c| {
             (!q.customer_id.is_empty() && c.id == q.customer_id)
-                || (normalize(&c.name) == normalize(&q.customer)
-                    && digits(c.phone.trim()) == digits(q.phone.trim()))
+                || (normalize(&c.name) == normalize(&q.customer) && digits(c.phone.trim()) == digits(q.phone.trim()))
         }) {
             self.customers.push(Customer {
                 id: id(),
@@ -1367,10 +1228,7 @@ impl State {
             q.customer_id = self
                 .customers
                 .iter()
-                .find(|c| {
-                    normalize(&c.name) == normalize(&q.customer)
-                        && digits(c.phone.trim()) == digits(q.phone.trim())
-                })
+                .find(|c| normalize(&c.name) == normalize(&q.customer) && digits(c.phone.trim()) == digits(q.phone.trim()))
                 .map(|c| c.id.clone())
                 .unwrap_or_default();
         }
@@ -1447,12 +1305,8 @@ impl State {
             || self.sales_drafts != base.sales_drafts
             || self.cheques != base.cheques
             || self.quotes != base.quotes;
-        let quotation_changed = self.catalogs != base.catalogs
-            || self.customers != base.customers
-            || self.quotes != base.quotes;
-        let draft_changed = self.draft != base.draft
-            || self.customers != base.customers
-            || self.catalogs != base.catalogs;
+        let quotation_changed = self.catalogs != base.catalogs || self.customers != base.customers || self.quotes != base.quotes;
+        let draft_changed = self.draft != base.draft || self.customers != base.customers || self.catalogs != base.catalogs;
         if accounting_changed {
             self.validate_accounting_group()?;
         }
@@ -1467,32 +1321,50 @@ impl State {
     fn validate_accounting_group(&self) -> Result<()> {
         for (item_id, profile) in &self.product_profiles {
             profile.validate()?;
-            let resources=self.accounting.procurement_resources(&profile.company_id)?;
-            ensure!(resources.items.iter().any(|i| &i.id == item_id), "Product profile does not belong to this business");
-            ensure!(profile.preferred_supplier_id.is_empty() || resources.parties.iter().any(|p| p.id == profile.preferred_supplier_id && p.supplier), "Preferred supplier does not belong to this business");
+            let resources = self.accounting.procurement_resources(&profile.company_id)?;
+            ensure!(
+                resources.items.iter().any(|i| &i.id == item_id),
+                "Product profile does not belong to this business"
+            );
+            ensure!(
+                profile.preferred_supplier_id.is_empty()
+                    || resources
+                        .parties
+                        .iter()
+                        .any(|p| p.id == profile.preferred_supplier_id && p.supplier),
+                "Preferred supplier does not belong to this business"
+            );
         }
         for (party_id, profile) in &self.party_profiles {
             profile.validate()?;
-            ensure!(self.accounting.procurement_resources(&profile.company_id)?.parties.iter().any(|p| &p.id == party_id), "Contact profile does not belong to a registered party");
+            ensure!(
+                self.accounting
+                    .procurement_resources(&profile.company_id)?
+                    .parties
+                    .iter()
+                    .any(|p| &p.id == party_id),
+                "Contact profile does not belong to a registered party"
+            );
         }
         self.desktop.validate()?;
-        ensure!(self.desktop.active_company.is_empty() || self.accounting.companies.iter().any(|c|c.id==self.desktop.active_company), "فضای کاری فعال نامعتبر است");
+        ensure!(
+            self.desktop.active_company.is_empty() || self.accounting.companies.iter().any(|c| c.id == self.desktop.active_company),
+            "فضای کاری فعال نامعتبر است"
+        );
         self.settings.validate()?;
         for (company, profile) in &self.business_profiles {
-            ensure!(self.accounting.companies.iter().any(|c| &c.id == company), "Business profile company does not exist");
+            ensure!(
+                self.accounting.companies.iter().any(|c| &c.id == company),
+                "Business profile company does not exist"
+            );
             profile.validate()?;
         }
-        ensure!(
-            (1..=CURRENT_SCHEMA).contains(&self.schema),
-            "نسخهٔ داده پشتیبانی نمی‌شود"
-        );
+        ensure!((1..=CURRENT_SCHEMA).contains(&self.schema), "نسخهٔ داده پشتیبانی نمی‌شود");
         ensure!(
             self.schema >= 7
                 || !self.accounting.procurement.records.iter().any(|record| {
-                    matches!(
-                        record.command,
-                        crate::procurement::ProcurementCommand::Return(_)
-                    ) || matches!(record.data, crate::procurement::ProcurementData::Return(_))
+                    matches!(record.command, crate::procurement::ProcurementCommand::Return(_))
+                        || matches!(record.data, crate::procurement::ProcurementData::Return(_))
                 }),
             "برگشت خرید در نسخهٔ قدیمی داده پشتیبانی نمی‌شود"
         );
@@ -1512,10 +1384,7 @@ impl State {
             self.schema >= 3
                 || (self.settings.date_display != DateDisplay::Jalali
                     && self.draft.date_display != DateDisplay::Jalali
-                    && self
-                        .quotes
-                        .iter()
-                        .all(|q| q.date_display != DateDisplay::Jalali)),
+                    && self.quotes.iter().all(|q| q.date_display != DateDisplay::Jalali)),
             "تاریخ شمسی نیازمند نسخهٔ دادهٔ ۳ است"
         );
         ensure!(
@@ -1529,25 +1398,17 @@ impl State {
     }
     fn validate_approved_quotation_data(&self) -> Result<()> {
         ensure!(
-            self.catalogs.len() <= 1000
-                && self.customers.len() <= 100_000
-                && self.quotes.len() <= 100_000,
+            self.catalogs.len() <= 1000 && self.customers.len() <= 100_000 && self.quotes.len() <= 100_000,
             "داده بیش از حد بزرگ است"
         );
         let mut ids = HashSet::new();
         let mut fingerprints = HashSet::new();
         for c in &self.catalogs {
-            ensure!(
-                ids.insert(&c.id) && fingerprints.insert(&c.fingerprint),
-                "فهرست تکراری"
-            );
+            ensure!(ids.insert(&c.id) && fingerprints.insert(&c.fingerprint), "فهرست تکراری");
             Uuid::parse_str(&c.id)?;
             text(&c.name)?;
             timestamp(&c.imported_at)?;
-            ensure!(
-                !c.products.is_empty() && c.products.len() <= 50_000,
-                "اندازه فهرست نامعتبر"
-            );
+            ensure!(!c.products.is_empty() && c.products.len() <= 50_000, "اندازه فهرست نامعتبر");
             ensure!(
                 c.fingerprint == crate::imports::product_fingerprint(&c.products)?,
                 "اثر انگشت فهرست نامعتبر"
@@ -1558,14 +1419,9 @@ impl State {
                 text(&p.name)?;
                 text(&p.measure)?;
                 timestamp(&p.source_at)?;
+                ensure!(p.aliases.len() <= 1000, "حداکثر ۱۰۰۰ نام جایگزین برای هر کالا");
                 ensure!(
-                    p.aliases.len() <= 1000,
-                    "حداکثر ۱۰۰۰ نام جایگزین برای هر کالا"
-                );
-                ensure!(
-                    p.price_rial > 0
-                        && p.price_rial <= MAX_MONEY
-                        && codes.insert(normalize(&p.code)),
+                    p.price_rial > 0 && p.price_rial <= MAX_MONEY && codes.insert(normalize(&p.code)),
                     "کد تکراری یا مبلغ نامعتبر"
                 );
                 for a in &p.aliases {
@@ -1598,23 +1454,13 @@ impl State {
                     "مشتری مرتبط پیش‌فاکتور موجود نیست"
                 );
             }
-            issuer_metadata(
-                &q.issuer_name,
-                &q.issuer_phone,
-                &q.issuer_address,
-                &q.header,
-                &q.footer,
-                &q.terms,
-            )?;
+            issuer_metadata(&q.issuer_name, &q.issuer_phone, &q.issuer_address, &q.header, &q.footer, &q.terms)?;
             ensure!(
                 q.number.chars().count() <= 64 && !q.number.chars().any(forbidden_control),
                 "شمارهٔ پیش‌فاکتور نامعتبر است"
             );
             if let Some(previous) = series_numbers.insert(&q.series, &q.number) {
-                ensure!(
-                    previous == q.number,
-                    "شمارهٔ پیش‌فاکتور در اصلاحیه تغییر کرده است"
-                );
+                ensure!(previous == q.number, "شمارهٔ پیش‌فاکتور در اصلاحیه تغییر کرده است");
             }
             if !q.number.is_empty()
                 && let Some(previous_series) = used_numbers.insert(normalize(&q.number), &q.series)
@@ -1716,9 +1562,7 @@ impl State {
         if !self.draft.customer_id.is_empty() {
             Uuid::parse_str(&self.draft.customer_id)?;
             ensure!(
-                self.customers
-                    .iter()
-                    .any(|c| c.id == self.draft.customer_id),
+                self.customers.iter().any(|c| c.id == self.draft.customer_id),
                 "مشتری مرتبط پیش‌نویس موجود نیست"
             );
         }
@@ -1730,10 +1574,7 @@ impl State {
             &self.draft.footer,
             &self.draft.terms,
         )?;
-        ensure!(
-            self.draft.tax_basis_points <= 10_000,
-            "نرخ مالیات نامعتبر است"
-        );
+        ensure!(self.draft.tax_basis_points <= 10_000, "نرخ مالیات نامعتبر است");
         metadata(
             &self.draft.reference,
             &self.draft.quote_date,
@@ -1744,28 +1585,19 @@ impl State {
             self.catalog()?;
         }
         ensure!(
-            self.draft.customer.len() <= 1024
-                && !self.draft.customer.chars().any(forbidden_control),
+            self.draft.customer.len() <= 1024 && !self.draft.customer.chars().any(forbidden_control),
             "مشتری نامعتبر"
         );
         phone(&self.draft.phone)?;
         ensure!(
-            self.draft.lines.len() <= MAX_QUOTE_LINES
-                && self.draft.discount_rial >= 0
-                && self.draft.discount_rial <= MAX_MONEY,
+            self.draft.lines.len() <= MAX_QUOTE_LINES && self.draft.discount_rial >= 0 && self.draft.discount_rial <= MAX_MONEY,
             "پیش‌نویس نامعتبر"
         );
         for l in &self.draft.lines {
             text(&l.query)?;
-            ensure!(
-                l.quantity_milli > 0 && l.quantity_milli <= 1_000_000_000,
-                "تعداد نامعتبر"
-            );
+            ensure!(l.quantity_milli > 0 && l.quantity_milli <= 1_000_000_000, "تعداد نامعتبر");
             if let Some(code) = &l.chosen_code {
-                ensure!(
-                    self.catalog()?.products.iter().any(|p| &p.code == code),
-                    "انتخاب نامعتبر"
-                );
+                ensure!(self.catalog()?.products.iter().any(|p| &p.code == code), "انتخاب نامعتبر");
             }
         }
         Ok(())

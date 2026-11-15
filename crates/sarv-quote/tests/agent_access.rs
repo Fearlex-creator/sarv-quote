@@ -17,13 +17,7 @@ fn service(dir: &Path) -> AgentService {
 }
 fn cli(dir: &Path, action: &str, payload: Value) -> Value {
     let mut child = Command::new(env!("CARGO_BIN_EXE_sarv-agent"))
-        .args([
-            "--connection",
-            dir.join(CONNECTION).to_str().unwrap(),
-            "call",
-            action,
-            "--stdin",
-        ])
+        .args(["--connection", dir.join(CONNECTION).to_str().unwrap(), "call", action, "--stdin"])
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
         .stderr(Stdio::piped())
@@ -31,11 +25,7 @@ fn cli(dir: &Path, action: &str, payload: Value) -> Value {
         .unwrap();
     serde_json::to_writer(child.stdin.take().unwrap(), &payload).unwrap();
     let output = child.wait_with_output().unwrap();
-    assert!(
-        output.status.success(),
-        "CLI {action}: {}",
-        String::from_utf8_lossy(&output.stdout)
-    );
+    assert!(output.status.success(), "CLI {action}: {}", String::from_utf8_lossy(&output.stdout));
     serde_json::from_slice(&output.stdout).unwrap()
 }
 fn post(dir: &Path, prefix: &str, mut payload: Value) -> Value {
@@ -61,12 +51,7 @@ fn access_is_off_by_default_readonly_cannot_write_and_agents_cannot_grant_access
     let token = connection_value["token"].as_str().unwrap();
     assert!(!workspace.to_string().contains(token));
     assert!(!service.status().unwrap().to_string().contains(token));
-    assert!(
-        !agent::call(&connection, "tools", json!({}))
-            .unwrap()
-            .to_string()
-            .contains(token)
-    );
+    assert!(!agent::call(&connection, "tools", json!({})).unwrap().to_string().contains(token));
     assert!(
         agent::call(&connection, "setup_company", json!({}))
             .unwrap_err()
@@ -74,13 +59,7 @@ fn access_is_off_by_default_readonly_cannot_write_and_agents_cannot_grant_access
             .contains("Read-only")
     );
     service.configure(true, Access::Full).unwrap();
-    for action in [
-        "agent_configure",
-        "agent_status",
-        "seed_fixture",
-        "unknown",
-        "../../books",
-    ] {
+    for action in ["agent_configure", "agent_status", "seed_fixture", "unknown", "../../books"] {
         assert!(
             agent::call(&connection, action, json!({"enabled":true,"access":"full"}))
                 .unwrap_err()
@@ -88,17 +67,11 @@ fn access_is_off_by_default_readonly_cannot_write_and_agents_cannot_grant_access
                 .contains("Unsupported")
         );
     }
-    assert_eq!(
-        generation,
-        Store::open(dir.path()).unwrap().local_generation()
-    );
+    assert_eq!(generation, Store::open(dir.path()).unwrap().local_generation());
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        assert_eq!(
-            fs::metadata(&connection).unwrap().permissions().mode() & 0o777,
-            0o600
-        );
+        assert_eq!(fs::metadata(&connection).unwrap().permissions().mode() & 0o777, 0o600);
     }
 }
 #[test]
@@ -156,11 +129,7 @@ fn full_cli_goods_workflow_keeps_exact_values_original_costs_and_audit() {
     let review = cli(dir.path(), "draft_preview", json!({"draft":draft}));
     assert_eq!(review["supplied_total"], "39");
     draft["supplied_total"] = review["supplied_total"].clone();
-    let revision = cli(
-        dir.path(),
-        "draft_save",
-        json!({"draft":draft,"expected_revision":null}),
-    );
+    let revision = cli(dir.path(), "draft_save", json!({"draft":draft,"expected_revision":null}));
     let sales = cli(
         dir.path(),
         "draft_post",
@@ -188,11 +157,7 @@ fn full_cli_goods_workflow_keeps_exact_values_original_costs_and_audit() {
     transfer["unit_id"] = json!("unit");
     transfer["quantity"] = json!("1");
     post(dir.path(), "transfer", transfer);
-    let report = cli(
-        dir.path(),
-        "report",
-        json!({"company_id":c,"from":"2026-01-01","to":"2026-10-10"}),
-    );
+    let report = cli(dir.path(), "report", json!({"company_id":c,"from":"2026-01-01","to":"2026-10-10"}));
     assert_eq!(report["position"]["receivables"], "19");
     assert_eq!(report["position"]["payables"], "22");
     assert_eq!(report["profit_loss"]["profit"], "8");
@@ -206,14 +171,7 @@ fn full_cli_goods_workflow_keeps_exact_values_original_costs_and_audit() {
     assert_eq!(stock["quantity_thousandths"], "1000");
     assert_eq!(stock["value"], "11");
     let saved = Store::open(dir.path()).unwrap();
-    assert!(
-        saved
-            .state
-            .accounting
-            .journals
-            .iter()
-            .all(|j| j.actor == "local-agent")
-    );
+    assert!(saved.state.accounting.journals.iter().all(|j| j.actor == "local-agent"));
     assert!(
         cli(
             dir.path(),
@@ -236,13 +194,7 @@ fn preview_generation_period_locks_and_idempotent_retries_protect_agent_posts() 
     let c = &s.state.accounting.companies[0].id;
     let p = &s.state.accounting.periods[0].id;
     let connection = dir.path().join(CONNECTION);
-    let account = s
-        .state
-        .accounting
-        .accounts
-        .iter()
-        .find(|a| a.postable && !a.control)
-        .unwrap();
+    let account = s.state.accounting.accounts.iter().find(|a| a.postable && !a.control).unwrap();
     let second = s
         .state
         .accounting
@@ -285,13 +237,11 @@ fn preview_generation_period_locks_and_idempotent_retries_protect_agent_posts() 
     let preview = agent::call(&connection, "journal_preview", journal.clone()).unwrap();
     journal["expected_generation"] = preview["_generation"].clone();
     let id = agent::call(&connection, "journal_post", journal.clone()).unwrap();
-    assert_eq!(
-        agent::call(&connection, "journal_post", journal.clone()).unwrap(),
-        id
-    );
+    assert_eq!(agent::call(&connection, "journal_post", journal.clone()).unwrap(), id);
     journal["reason"] = json!("Changed retry");
     assert!(agent::call(&connection, "journal_post", journal).is_err());
-    let mut reverse = json!({"company_id":c,"period_id":p,"journal_id":id,"request_key":"reverse","date":"2026-10-10","reason":"Reverse test"});
+    let mut reverse =
+        json!({"company_id":c,"period_id":p,"journal_id":id,"request_key":"reverse","date":"2026-10-10","reason":"Reverse test"});
     let preview = agent::call(&connection, "journal_reverse_preview", reverse.clone()).unwrap();
     reverse["expected_generation"] = preview["_generation"].clone();
     agent::call(&connection, "journal_reverse", reverse).unwrap();
@@ -332,12 +282,7 @@ fn transport_rejects_forged_tokens_remote_endpoints_and_corrupt_policy() {
     let original = fs::read(&path).unwrap();
     let mut connection: Value = serde_json::from_slice(&original).unwrap();
     let mut stream = TcpStream::connect(connection["address"].as_str().unwrap()).unwrap();
-    writeln!(
-        stream,
-        "{}",
-        json!({"token":"forged","action":"workspace","payload":{}})
-    )
-    .unwrap();
+    writeln!(stream, "{}", json!({"token":"forged","action":"workspace","payload":{}})).unwrap();
     let mut response = String::new();
     BufReader::new(stream).read_line(&mut response).unwrap();
     assert!(response.contains("unauthorized"));
@@ -366,18 +311,9 @@ fn mcp_supports_initialization_discovery_calls_notifications_and_protocol_errors
         json!({"jsonrpc":"2.0","id":4,"method":"tools/call","params":{"name":"sarv_setup_company","arguments":{}}}),
         json!({"jsonrpc":"2.0","id":5,"method":"unsupported"}),
     ];
-    let input = messages
-        .iter()
-        .map(|v| format!("{v}\n"))
-        .collect::<String>()
-        + "{malformed\n";
+    let input = messages.iter().map(|v| format!("{v}\n")).collect::<String>() + "{malformed\n";
     let mut output = Vec::new();
-    agent::mcp(
-        &dir.path().join(CONNECTION),
-        std::io::Cursor::new(input),
-        &mut output,
-    )
-    .unwrap();
+    agent::mcp(&dir.path().join(CONNECTION), std::io::Cursor::new(input), &mut output).unwrap();
     let responses: Vec<Value> = String::from_utf8(output)
         .unwrap()
         .lines()
@@ -385,32 +321,16 @@ fn mcp_supports_initialization_discovery_calls_notifications_and_protocol_errors
         .collect();
     assert_eq!(responses.len(), 6);
     assert_eq!(responses[0]["result"]["serverInfo"]["name"], "sarv");
-    assert_eq!(
-        responses[1]["result"]["tools"].as_array().unwrap().len(),
-        44
-    );
+    assert_eq!(responses[1]["result"]["tools"].as_array().unwrap().len(), 44);
     assert_eq!(responses[2]["result"]["isError"], false);
     assert_eq!(responses[3]["result"]["isError"], true);
     assert_eq!(responses[4]["error"]["code"], -32601);
     assert_eq!(responses[5]["error"]["code"], -32700);
     let tools = agent::tools();
     let tools = tools.as_array().unwrap();
-    for action in [
-        "sarv_receive_post",
-        "sarv_sale_return_post",
-        "sarv_purchase_return_post",
-    ] {
+    for action in ["sarv_receive_post", "sarv_sale_return_post", "sarv_purchase_return_post"] {
         let schema = &tools.iter().find(|t| t["name"] == action).unwrap()["inputSchema"];
-        assert!(
-            schema["properties"]["lines"]["items"]["properties"]
-                .get("id")
-                .is_some()
-        );
-        assert!(
-            schema["required"]
-                .as_array()
-                .unwrap()
-                .contains(&json!("expected_generation"))
-        );
+        assert!(schema["properties"]["lines"]["items"]["properties"].get("id").is_some());
+        assert!(schema["required"].as_array().unwrap().contains(&json!("expected_generation")));
     }
 }

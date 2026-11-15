@@ -4,11 +4,7 @@ use sarv_quote::{
 };
 use std::sync::{Arc, Barrier};
 
-fn worker(
-    directory: std::path::PathBuf,
-    generation: i64,
-    candidate: State,
-) -> anyhow::Result<CommittedChange> {
+fn worker(directory: std::path::PathBuf, generation: i64, candidate: State) -> anyhow::Result<CommittedChange> {
     Store::commit_detached(directory, Store::prepare_candidate(generation, candidate)?)
 }
 
@@ -29,20 +25,14 @@ fn detached_save_reserves_owner_and_durably_survives_unacknowledged_restart() {
         .unwrap()
         .unwrap();
     assert!(owner.state.draft.customer.is_empty());
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        "ذخیره در کارگر"
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, "ذخیره در کارگر");
     owner.finish_detached(Ok(receipt)).unwrap();
     assert_eq!(owner.local_generation(), generation + 1);
     assert_eq!(owner.state.draft.customer, "ذخیره در کارگر");
     owner.change(|_| Ok(())).unwrap();
     let backup = dir.path().join("after.json");
     owner.backup(&backup).unwrap();
-    assert_eq!(
-        Store::restore_preview(&backup).unwrap().draft.customer,
-        "ذخیره در کارگر"
-    );
+    assert_eq!(Store::restore_preview(&backup).unwrap().draft.customer, "ذخیره در کارگر");
 }
 
 #[test]
@@ -60,10 +50,7 @@ fn detached_failures_release_reservation_without_losing_state() {
             Ok(())
         })
         .unwrap();
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        "پس از خطا"
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, "پس از خطا");
 }
 
 #[test]
@@ -85,10 +72,7 @@ fn concurrent_detached_saves_have_one_winner_and_keep_stale_owner_input() {
     let mut receipts = handles.map(|h| h.join().unwrap());
     assert_eq!(receipts.iter().filter(|(_, r)| r.is_ok()).count(), 1);
     let winner = receipts.iter_mut().find(|(_, r)| r.is_ok()).unwrap();
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        winner.0
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, winner.0);
     let receipt = std::mem::replace(&mut winner.1, Err(anyhow::anyhow!("taken"))).unwrap();
     owner.finish_detached(Ok(receipt)).unwrap();
     let mut stale = Store::open(dir.path()).unwrap();
@@ -105,10 +89,7 @@ fn concurrent_detached_saves_have_one_winner_and_keep_stale_owner_input() {
             .finish_detached(worker(dir.path().to_path_buf(), old_generation, pending))
             .is_err()
     );
-    assert_eq!(
-        Store::open(dir.path()).unwrap().state.draft.customer,
-        "جدید"
-    );
+    assert_eq!(Store::open(dir.path()).unwrap().state.draft.customer, "جدید");
 }
 
 #[test]

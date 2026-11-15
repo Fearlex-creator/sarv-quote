@@ -165,7 +165,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 .key("company"),
         );
 
-        let mut column = col().w_full().gap(24.0).child(tab_bar).child(appearance).child(features).child(business);
+        let mut column = col()
+            .w_full()
+            .gap(24.0)
+            .child(tab_bar)
+            .child(appearance)
+            .child(features)
+            .child(business);
         if !s.settings.law_notice.is_empty() {
             column = column.child(ui.muted(s.settings.law_notice.clone()).key("law-notice"));
         }
@@ -202,9 +208,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         vec![
             ui.btn(Btn::Glass, "Your business", None, open_business),
             ui.btn(Btn::Glass, "Restore backup", None, open_restore),
-            ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), |st| match st.run("backup_create", json!({}), None) {
-                Ok(v) => st.toast(Tone::Success, crate::data::s(&v["filename"])),
-                Err(e) => st.toast_err(e),
+            ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), |st| {
+                match st.run("backup_create", json!({}), None) {
+                    Ok(v) => st.toast(Tone::Success, crate::data::s(&v["filename"])),
+                    Err(e) => st.toast_err(e),
+                }
             }),
             ui.btn(Btn::Glass, "Law data", None, |st| match st.query("law_data", json!({})) {
                 Ok(v) => {
@@ -218,34 +226,35 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 Err(e) => st.toast_err(e),
             }),
             ui.btn(Btn::Primary, "Save preferences", Some(&icons::CHECK), |st| {
-            let appearance = if st.dark { "Dark" } else { "Light" };
-            let digits = if st.fmt.persian_digits { "Persian" } else { "Latin" };
-            let currency = if st.fmt.unit == Unit::Rial { "Rial" } else { "Toman" };
-            let date_display = if st.fmt.calendar == CalendarKind::Jalali { "Jalali" } else { "Iso" };
-            let mut settings = st.books.workspace["settings"].clone();
-            if settings.is_null() {
-                settings = json!({});
-            }
-            settings["appearance"] = json!(appearance);
-            settings["display_digits"] = json!(digits);
-            settings["default_currency"] = json!(currency);
-            settings["date_display"] = json!(date_display);
-            settings["text_direction"] = json!(if st.fmt.lang == Lang::En { "Ltr" } else { "Rtl" });
-            settings["show_pos"] = json!(st.show_pos);
-            for (k, d) in [
-                ("next_number", "1"),
-                ("default_validity_days", "14"),
-                ("default_discount_rial", "0"),
-                ("tax_basis_points", "0"),
-            ] {
-                if settings[k].as_str().is_none() {
-                    settings[k] = json!(settings[k].as_u64().map(|n| n.to_string()).unwrap_or_else(|| d.into()));
+                let appearance = if st.dark { "Dark" } else { "Light" };
+                let digits = if st.fmt.persian_digits { "Persian" } else { "Latin" };
+                let currency = if st.fmt.unit == Unit::Rial { "Rial" } else { "Toman" };
+                let date_display = if st.fmt.calendar == CalendarKind::Jalali { "Jalali" } else { "Iso" };
+                let mut settings = st.books.workspace["settings"].clone();
+                if settings.is_null() {
+                    settings = json!({});
                 }
-            }
-            if st.run("settings", settings, Some("Preferences saved")).is_ok() {
-                st.apply_settings();
-            }
-        })],
+                settings["appearance"] = json!(appearance);
+                settings["display_digits"] = json!(digits);
+                settings["default_currency"] = json!(currency);
+                settings["date_display"] = json!(date_display);
+                settings["text_direction"] = json!(if st.fmt.lang == Lang::En { "Ltr" } else { "Rtl" });
+                settings["show_pos"] = json!(st.show_pos);
+                for (k, d) in [
+                    ("next_number", "1"),
+                    ("default_validity_days", "14"),
+                    ("default_discount_rial", "0"),
+                    ("tax_basis_points", "0"),
+                ] {
+                    if settings[k].as_str().is_none() {
+                        settings[k] = json!(settings[k].as_u64().map(|n| n.to_string()).unwrap_or_else(|| d.into()));
+                    }
+                }
+                if st.run("settings", settings, Some("Preferences saved")).is_ok() {
+                    st.apply_settings();
+                }
+            }),
+        ],
         body.scroll(rune::ScrollSpec { stick_bottom: false }).min_h(0.0),
     )
 }
@@ -331,17 +340,15 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         let key = format!("backup-{name}");
         form = form.child(ui.button(Btn::Glass, &key, &name, None, {
             let name = name.clone();
-            move |st| {
-                match st.query("backup_restore_preview", json!({ "filename": name })) {
-                    Ok(v) => {
-                        let companies = v["backup"]["companies"].as_array().map(|a| a.len()).unwrap_or(0);
-                        let journals = crate::data::s(&v["backup"]["journals"]);
-                        st.settings.restore_name = name.clone();
-                        st.settings.restore_note = format!("{companies} · {journals}");
-                        st.settings.generation_note = crate::data::s(&v["_generation"]);
-                    }
-                    Err(e) => st.toast_err(e),
+            move |st| match st.query("backup_restore_preview", json!({ "filename": name })) {
+                Ok(v) => {
+                    let companies = v["backup"]["companies"].as_array().map(|a| a.len()).unwrap_or(0);
+                    let journals = crate::data::s(&v["backup"]["journals"]);
+                    st.settings.restore_name = name.clone();
+                    st.settings.restore_note = format!("{companies} · {journals}");
+                    st.settings.generation_note = crate::data::s(&v["_generation"]);
                 }
+                Err(e) => st.toast_err(e),
             }
         }));
     }

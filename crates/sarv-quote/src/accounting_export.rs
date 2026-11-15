@@ -15,9 +15,7 @@ fn validate(company: &str, balance: &TrialBalance) -> Result<()> {
     let mut credit = debit;
     for row in &balance.rows {
         ensure!(
-            row.debit.rials() >= 0
-                && row.credit.rials() >= 0
-                && (row.debit.rials() == 0 || row.credit.rials() == 0),
+            row.debit.rials() >= 0 && row.credit.rials() >= 0 && (row.debit.rials() == 0 || row.credit.rials() == 0),
             "ماندهٔ گزارش نامعتبر است"
         );
         debit = debit.checked_add(row.debit)?;
@@ -36,22 +34,11 @@ fn unit_name(unit: MoneyUnit) -> &'static str {
     }
 }
 
-pub fn trial_csv(
-    company: &str,
-    balance: &TrialBalance,
-    unit: MoneyUnit,
-    path: &Path,
-) -> Result<()> {
+pub fn trial_csv(company: &str, balance: &TrialBalance, unit: MoneyUnit, path: &Path) -> Result<()> {
     trial_csv_with_dates(company, balance, unit, DateDisplay::Iso, path)
 }
 
-pub fn trial_csv_with_dates(
-    company: &str,
-    balance: &TrialBalance,
-    unit: MoneyUnit,
-    dates: DateDisplay,
-    path: &Path,
-) -> Result<()> {
+pub fn trial_csv_with_dates(company: &str, balance: &TrialBalance, unit: MoneyUnit, dates: DateDisplay, path: &Path) -> Result<()> {
     validate(company, balance)?;
     let displayed_cutoff = if dates == DateDisplay::Jalali {
         crate::calendar::format_date(
@@ -88,11 +75,7 @@ pub fn trial_csv_with_dates(
             "posted_including_reversals".into(),
             "cumulative_from_initial_opening".into(),
             "IRR".into(),
-            if unit == MoneyUnit::Rial {
-                "rial".into()
-            } else {
-                "toman".into()
-            },
+            if unit == MoneyUnit::Rial { "rial".into() } else { "toman".into() },
             safe_cell(&row.account_id),
             safe_cell(&row.code),
             safe_cell(&row.name),
@@ -112,14 +95,7 @@ pub fn trial_csv_with_dates(
     write_new(path, &bytes)
 }
 
-fn draw(
-    cr: &cairo::Context,
-    map: &pango::FontMap,
-    value: &str,
-    area: (f64, f64, f64),
-    size: u32,
-    align: pango::Alignment,
-) -> Result<f64> {
+fn draw(cr: &cairo::Context, map: &pango::FontMap, value: &str, area: (f64, f64, f64), size: u32, align: pango::Alignment) -> Result<f64> {
     let (x, y, width) = area;
     let context = map.create_context();
     pangocairo::functions::update_context(cr, &context);
@@ -142,29 +118,17 @@ fn draw(
 
 /// A4 paged report with repeated company/cutoff/unit and column headings.
 /// Renders to memory before atomic, no-overwrite publication.
-pub fn trial_pdf(
-    company: &str,
-    balance: &TrialBalance,
-    unit: MoneyUnit,
-    path: &Path,
-) -> Result<()> {
+pub fn trial_pdf(company: &str, balance: &TrialBalance, unit: MoneyUnit, path: &Path) -> Result<()> {
     trial_pdf_with_dates(company, balance, unit, DateDisplay::Iso, path)
 }
 
-pub fn trial_pdf_with_dates(
-    company: &str,
-    balance: &TrialBalance,
-    unit: MoneyUnit,
-    dates: DateDisplay,
-    path: &Path,
-) -> Result<()> {
+pub fn trial_pdf_with_dates(company: &str, balance: &TrialBalance, unit: MoneyUnit, dates: DateDisplay, path: &Path) -> Result<()> {
     validate(company, balance)?;
     let surface = cairo::PdfSurface::for_stream(595.0, 842.0, Vec::<u8>::new())?;
     let cr = cairo::Context::new(&surface)?;
     let map = pangocairo::FontMap::new();
     let cutoff = if dates == DateDisplay::Jalali {
-        let date =
-            crate::calendar::parse_date(&balance.as_of, crate::calendar::Calendar::Gregorian)?;
+        let date = crate::calendar::parse_date(&balance.as_of, crate::calendar::Calendar::Gregorian)?;
         let shown = crate::calendar::format_date(date, crate::calendar::Calendar::Jalali)?;
         format!("شمسی {} • میلادی {}", ltr(&shown), ltr(&balance.as_of))
     } else {
@@ -202,10 +166,7 @@ pub fn trial_pdf_with_dates(
         ] {
             draw(&cr, &map, v, (x, y, width), 11, pango::Alignment::Right)?;
         }
-        ensure!(
-            y + 30.0 < 650.0,
-            "سربرگ در صفحه جا نمی‌شود؛ گزارش CSV را انتخاب کنید"
-        );
+        ensure!(y + 30.0 < 650.0, "سربرگ در صفحه جا نمی‌شود؛ گزارش CSV را انتخاب کنید");
         Ok(y + 30.0)
     };
     let mut page = 1;
@@ -223,14 +184,7 @@ pub fn trial_pdf_with_dates(
         ];
         let mut height: f64 = 22.0;
         for (value, _, width) in &cells {
-            height = height.max(draw(
-                &measure,
-                &map,
-                value,
-                (0.0, 0.0, *width),
-                10,
-                pango::Alignment::Right,
-            )?);
+            height = height.max(draw(&measure, &map, value, (0.0, 0.0, *width), 10, pango::Alignment::Right)?);
         }
         height += 10.0;
         if y + height > 778.0 {
@@ -238,10 +192,7 @@ pub fn trial_pdf_with_dates(
             page += 1;
             y = heading(page)?;
         }
-        ensure!(
-            y + height <= 778.0,
-            "ردیف حساب در یک صفحه جا نمی‌شود؛ گزارش CSV را انتخاب کنید"
-        );
+        ensure!(y + height <= 778.0, "ردیف حساب در یک صفحه جا نمی‌شود؛ گزارش CSV را انتخاب کنید");
         cr.set_source_rgb(0.08, 0.12, 0.16);
         for (v, x, width) in [
             (ltr(&row.credit.display(unit)), 36.0, 104.0),
@@ -266,32 +217,15 @@ pub fn trial_pdf_with_dates(
     );
     let measure_surface = cairo::RecordingSurface::create(cairo::Content::ColorAlpha, None)?;
     let measure = cairo::Context::new(&measure_surface)?;
-    let height = draw(
-        &measure,
-        &map,
-        &total,
-        (0.0, 0.0, 523.0),
-        12,
-        pango::Alignment::Right,
-    )? + 16.0;
+    let height = draw(&measure, &map, &total, (0.0, 0.0, 523.0), 12, pango::Alignment::Right)? + 16.0;
     if y + height > 778.0 {
         cr.show_page()?;
         page += 1;
         y = heading(page)?;
     }
-    ensure!(
-        y + height <= 778.0,
-        "جمع گزارش در صفحه جا نمی‌شود؛ گزارش CSV را انتخاب کنید"
-    );
+    ensure!(y + height <= 778.0, "جمع گزارش در صفحه جا نمی‌شود؛ گزارش CSV را انتخاب کنید");
     cr.set_source_rgb(0.08, 0.12, 0.16);
-    draw(
-        &cr,
-        &map,
-        &total,
-        (36.0, y + 8.0, 523.0),
-        12,
-        pango::Alignment::Right,
-    )?;
+    draw(&cr, &map, &total, (36.0, y + 8.0, 523.0), 12, pango::Alignment::Right)?;
     cr.show_page()?;
     surface.finish();
     surface.status()?;

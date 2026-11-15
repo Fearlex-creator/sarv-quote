@@ -86,18 +86,8 @@ fn fixture() -> (AccountingState, OpeningCommand) {
     })
     .collect();
     let cheques = [
-        (
-            "CR1",
-            ChequeDirection::Receivable,
-            OpeningChequeState::Held,
-            200,
-        ),
-        (
-            "CP1",
-            ChequeDirection::Payable,
-            OpeningChequeState::Issued,
-            100,
-        ),
+        ("CR1", ChequeDirection::Receivable, OpeningChequeState::Held, 200),
+        ("CP1", ChequeDirection::Payable, OpeningChequeState::Issued, 100),
     ]
     .into_iter()
     .map(|(id, direction, status, n)| OpeningCheque {
@@ -115,22 +105,19 @@ fn fixture() -> (AccountingState, OpeningCommand) {
         amount: irr(n),
     })
     .collect();
-    let stock = [
-        ("S1", "W1", "carton", 2000, 240),
-        ("S2", "W2", "piece", 6000, 60),
-    ]
-    .into_iter()
-    .map(|(id, w, u, q, v)| OpeningStock {
-        id: id.into(),
-        company_id: co.clone(),
-        item_id: "item-A".into(),
-        warehouse_id: w.into(),
-        unit_id: u.into(),
-        quantity_thousandths: q,
-        value: irr(v),
-        source_reference: id.into(),
-    })
-    .collect();
+    let stock = [("S1", "W1", "carton", 2000, 240), ("S2", "W2", "piece", 6000, 60)]
+        .into_iter()
+        .map(|(id, w, u, q, v)| OpeningStock {
+            id: id.into(),
+            company_id: co.clone(),
+            item_id: "item-A".into(),
+            warehouse_id: w.into(),
+            unit_id: u.into(),
+            quantity_thousandths: q,
+            value: irr(v),
+            source_reference: id.into(),
+        })
+        .collect();
     let c = OpeningCommand {
         company_id: co.clone(),
         period_id: setup.period_id,
@@ -198,10 +185,7 @@ fn literal_1251_opening_reconciles_and_survives_replay() {
     let (mut s, c) = fixture();
     assert!(s.reconcile_opening(&c.company_id, &c.as_of).is_err());
     let p = s.opening_preview(&c).unwrap();
-    assert_eq!(
-        (p.total_debit.rials(), p.total_credit.rials()),
-        (1251, 1251)
-    );
+    assert_eq!((p.total_debit.rials(), p.total_credit.rials()), (1251, 1251));
     assert!(p.balanced && p.reconciled);
     assert_eq!(p.controls.len(), 12);
     assert_eq!(c.base_quantity("item-A", "carton", 2000).unwrap(), 24000);
@@ -224,31 +208,14 @@ fn literal_1251_opening_reconciles_and_survives_replay() {
     ];
     for (role, expected) in literal {
         let r = report.controls.iter().find(|r| r.role == role).unwrap();
-        assert_eq!(
-            (r.ledger.rials(), r.detail.rials(), r.difference.rials()),
-            (expected, expected, 0)
-        );
+        assert_eq!((r.ledger.rials(), r.detail.rials(), r.difference.rials()), (expected, expected, 0));
     }
-    assert_eq!(
-        s.journals
-            .iter()
-            .find(|j| j.id == journal)
-            .unwrap()
-            .lines
-            .len(),
-        9
-    );
-    assert_eq!(
-        s.trial_balance(&c.company_id, &c.as_of)
-            .unwrap()
-            .total_debit,
-        irr(1251)
-    );
+    assert_eq!(s.journals.iter().find(|j| j.id == journal).unwrap().lines.len(), 9);
+    assert_eq!(s.trial_balance(&c.company_id, &c.as_of).unwrap().total_debit, irr(1251));
     assert!(s.reconcile_opening(&c.company_id, "2026-03-20").is_err());
     assert!(s.reconcile_opening(&c.company_id, "2026-03-22").is_err());
     s.validate().unwrap();
-    let restored: AccountingState =
-        serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
+    let restored: AccountingState = serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
     restored.validate().unwrap();
     assert_eq!(s, restored);
 }
@@ -262,11 +229,7 @@ fn errors_and_mismatches_leave_direct_command_state_unchanged() {
     assert!(p.balanced);
     assert!(!p.reconciled);
     assert_eq!(
-        p.controls
-            .iter()
-            .find(|r| r.role == CoreRole::Receivables)
-            .unwrap()
-            .difference,
+        p.controls.iter().find(|r| r.role == CoreRole::Receivables).unwrap().difference,
         irr(1)
     );
     assert!(s.post_opening(mismatch).is_err());
@@ -294,8 +257,7 @@ fn errors_and_mismatches_leave_direct_command_state_unchanged() {
         assert!(s.post_opening(bad).is_err(), "case {i}");
         assert_eq!(s, original, "case {i}");
     }
-    s.set_period_lock(&c.period_id, true, "owner", "period lock")
-        .unwrap();
+    s.set_period_lock(&c.period_id, true, "owner", "period lock").unwrap();
     let locked = s.clone();
     assert!(s.post_opening(c).is_err());
     assert_eq!(s, locked);
@@ -337,11 +299,7 @@ fn retries_freeze_detail_and_do_not_second_initialize() {
     tampered.core.openings[0].command.open_items[0].due_date = "2026-04-02".into();
     assert!(tampered.validate().is_err());
     let mut tampered = s.clone();
-    tampered.core.openings[0]
-        .frozen_setup
-        .command
-        .policy
-        .timezone = CompanyTimezone::Utc;
+    tampered.core.openings[0].frozen_setup.command.policy.timezone = CompanyTimezone::Utc;
     assert!(tampered.validate().is_err());
     assert!(
         s.reverse(
@@ -355,8 +313,7 @@ fn retries_freeze_detail_and_do_not_second_initialize() {
         .is_err()
     );
     assert_eq!(s, snapshot);
-    s.set_period_lock(&c.period_id, true, "owner", "lock after posted")
-        .unwrap();
+    s.set_period_lock(&c.period_id, true, "owner", "lock after posted").unwrap();
     assert_eq!(s.post_opening(c.clone()).unwrap(), j);
     s.validate().unwrap();
 }
@@ -384,18 +341,10 @@ fn nonzero_advances_reconcile_separately_for_dual_role_party() {
         },
     ];
     for b in &mut c.balances {
-        if b.account_id
-            == s.core.setups[0]
-                .account_id(CoreRole::SupplierAdvances)
-                .unwrap()
-        {
+        if b.account_id == s.core.setups[0].account_id(CoreRole::SupplierAdvances).unwrap() {
             b.debit = irr(11);
         }
-        if b.account_id
-            == s.core.setups[0]
-                .account_id(CoreRole::CustomerAdvances)
-                .unwrap()
-        {
+        if b.account_id == s.core.setups[0].account_id(CoreRole::CustomerAdvances).unwrap() {
             b.credit = irr(7);
         }
         if b.account_id == s.core.setups[0].account_id(CoreRole::OwnerCapital).unwrap() {
@@ -410,9 +359,7 @@ fn nonzero_advances_reconcile_separately_for_dual_role_party() {
 fn guided_setup_is_atomic_customizable_and_preserves_other_books() {
     let mut s = AccountingState::default();
     let other = s.add_company("existing manual books", "owner").unwrap();
-    let period = s
-        .add_period(&other, "legacy year", "2026-03-21", "2027-03-20", "owner")
-        .unwrap();
+    let period = s.add_period(&other, "legacy year", "2026-03-21", "2027-03-20", "owner").unwrap();
     let legacy_cash = s
         .add_account(
             NewAccount {
@@ -491,18 +438,11 @@ fn guided_setup_is_atomic_customizable_and_preserves_other_books() {
     assert_eq!(s.companies[0].id, other);
     assert_eq!(s.journals, prior.journals);
     assert!(s.accounts.starts_with(&prior.accounts));
-    assert_eq!(
-        s.trial_balance(&other, "2026-03-21").unwrap().total_debit,
-        irr(1251)
-    );
+    assert_eq!(s.trial_balance(&other, "2026-03-21").unwrap().total_debit, irr(1251));
     assert!(s.companies.starts_with(&prior.companies));
     assert!(s.audit.starts_with(&prior.audit));
     assert_eq!(s.accounts.iter().filter(|a| !a.postable).count(), 5);
-    assert!(
-        s.accounts
-            .iter()
-            .any(|a| a.code == "CUSTOM-CASH" && a.name == "My cashbox")
-    );
+    assert!(s.accounts.iter().any(|a| a.code == "CUSTOM-CASH" && a.name == "My cashbox"));
     s.validate().unwrap();
     let mut forbidden = s.core.setups[0].command.clone();
     forbidden.company_id = other;
@@ -558,22 +498,12 @@ fn zero_opening_initializes_without_financial_journal_and_replays_aliases() {
     assert_eq!(s.audit.len(), audit_before + 1);
     assert!(s.journals.is_empty());
     assert!(s.requests.is_empty());
-    assert_eq!(
-        s.audit.last().unwrap().operation,
-        AuditOperation::CoreOpeningInitialized
-    );
+    assert_eq!(s.audit.last().unwrap().operation, AuditOperation::CoreOpeningInitialized);
     assert_eq!(s.audit.last().unwrap().entity_id, initialization);
-    assert_eq!(
-        s.core.openings[0].effect,
-        OpeningEffect::ZeroBalanceInitialization
-    );
+    assert_eq!(s.core.openings[0].effect, OpeningEffect::ZeroBalanceInitialization);
     assert_eq!(s.core.zero_requests.len(), 1);
     assert_eq!(s.core.zero_requests[0].initialization_id, initialization);
-    assert!(
-        s.reconcile_opening(&c.company_id, &c.as_of)
-            .unwrap()
-            .reconciled
-    );
+    assert!(s.reconcile_opening(&c.company_id, &c.as_of).unwrap().reconciled);
     let once = s.clone();
     assert_eq!(s.post_opening(c.clone()).unwrap(), initialization);
     assert_eq!(s, once);
@@ -629,8 +559,7 @@ fn zero_opening_initializes_without_financial_journal_and_replays_aliases() {
     assert!(s.journals.is_empty());
     assert!(s.requests.is_empty());
     s.validate().unwrap();
-    let restored: AccountingState =
-        serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
+    let restored: AccountingState = serde_json::from_slice(&serde_json::to_vec(&s).unwrap()).unwrap();
     restored.validate().unwrap();
     assert_eq!(s, restored);
     let before = s.clone();
@@ -666,14 +595,8 @@ fn zero_opening_initializes_without_financial_journal_and_replays_aliases() {
 fn zero_and_financial_request_keys_share_one_collision_boundary() {
     let (mut s, c) = zero_fixture();
     let marker = s.post_opening(c.clone()).unwrap();
-    let fixed = s.core.setups[0]
-        .account_id(CoreRole::FixedAssets)
-        .unwrap()
-        .to_string();
-    let capital = s.core.setups[0]
-        .account_id(CoreRole::OwnerCapital)
-        .unwrap()
-        .to_string();
+    let fixed = s.core.setups[0].account_id(CoreRole::FixedAssets).unwrap().to_string();
+    let capital = s.core.setups[0].account_id(CoreRole::OwnerCapital).unwrap().to_string();
     let command = PostCommand {
         company_id: c.company_id.clone(),
         period_id: c.period_id.clone(),
@@ -745,10 +668,7 @@ fn zero_valued_stock_keeps_exact_quantity_and_provenance_without_fake_gl() {
     }
     c.grni[0].value = Money::ZERO;
     let marker = s.post_opening(c.clone()).unwrap();
-    assert_eq!(
-        s.core.openings[0].effect,
-        OpeningEffect::ZeroBalanceInitialization
-    );
+    assert_eq!(s.core.openings[0].effect, OpeningEffect::ZeroBalanceInitialization);
     assert_eq!(s.core.openings[0].journal_id, marker);
     assert!(s.journals.is_empty());
     assert!(s.requests.is_empty());
@@ -760,9 +680,7 @@ fn zero_valued_stock_keeps_exact_quantity_and_provenance_without_fake_gl() {
         24000
     );
     assert_eq!(
-        saved
-            .base_quantity("item-A", "piece", saved.stock[1].quantity_thousandths)
-            .unwrap(),
+        saved.base_quantity("item-A", "piece", saved.stock[1].quantity_thousandths).unwrap(),
         6000
     );
     assert_eq!(saved.stock[0].source_reference, "S1");

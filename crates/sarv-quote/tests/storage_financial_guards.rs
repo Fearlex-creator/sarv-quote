@@ -5,13 +5,7 @@ fn posted() -> State {
     let book = &mut state.accounting;
     let company = book.add_company("شرکت آزمون حفاظت", "آزمایشگر").unwrap();
     let period = book
-        .add_period(
-            &company,
-            "سال آزمون",
-            "2026-01-01",
-            "2026-12-31",
-            "آزمایشگر",
-        )
+        .add_period(&company, "سال آزمون", "2026-01-01", "2026-12-31", "آزمایشگر")
         .unwrap();
     let mut ids = vec![];
     for (code, classification, normal_balance) in [
@@ -81,8 +75,7 @@ fn cached_state_cannot_bypass_committed_history_in_any_save_path() {
             "prepared" => {
                 let mut candidate = store.state.clone();
                 candidate.draft.customer = "تغییر متن".into();
-                let prepared =
-                    Store::prepare_candidate(store.local_generation(), candidate).unwrap();
+                let prepared = Store::prepare_candidate(store.local_generation(), candidate).unwrap();
                 store.commit_prepared(prepared)
             }
             _ => {
@@ -113,26 +106,9 @@ fn explicit_replacement_requires_the_exact_committed_recovery_snapshot() {
     // with its verified exact-state recovery copy remains the separate path.
     let ordinary = Store::prepare_candidate(store.local_generation(), State::default()).unwrap();
     assert!(store.commit_prepared(ordinary).is_err());
-    let approved = Store::prepare_replacement(
-        store.local_generation(),
-        &original,
-        State::default(),
-        &backup,
-    )
-    .unwrap();
+    let approved = Store::prepare_replacement(store.local_generation(), &original, State::default(), &backup).unwrap();
     store.commit_prepared(approved).unwrap();
     assert!(store.state.accounting.is_empty());
-    assert_eq!(
-        Store::restore_preview(&backup).unwrap().accounting,
-        original.accounting
-    );
-    assert!(
-        Store::prepare_replacement(
-            store.local_generation(),
-            &State::default(),
-            State::default(),
-            &backup
-        )
-        .is_err()
-    );
+    assert_eq!(Store::restore_preview(&backup).unwrap().accounting, original.accounting);
+    assert!(Store::prepare_replacement(store.local_generation(), &State::default(), State::default(), &backup).is_err());
 }

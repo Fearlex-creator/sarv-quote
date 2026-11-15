@@ -60,7 +60,12 @@ pub struct Fmt {
 
 impl Default for Fmt {
     fn default() -> Self {
-        Fmt { lang: Lang::Fa, persian_digits: true, unit: Unit::Toman, calendar: CalendarKind::Jalali }
+        Fmt {
+            lang: Lang::Fa,
+            persian_digits: true,
+            unit: Unit::Toman,
+            calendar: CalendarKind::Jalali,
+        }
     }
 }
 
@@ -188,7 +193,11 @@ impl Fmt {
         let frac = format!("{:03}", a % 1000);
         let frac = frac.trim_end_matches('0');
         let sep = if self.persian_digits { '٫' } else { '.' };
-        let text = if frac.is_empty() { format!("{}", a / 1000) } else { format!("{}{sep}{frac}", a / 1000) };
+        let text = if frac.is_empty() {
+            format!("{}", a / 1000)
+        } else {
+            format!("{}{sep}{frac}", a / 1000)
+        };
         let text = self.digits(&text);
         if n < 0 { format!("−{text}") } else { text }
     }
@@ -230,7 +239,12 @@ mod tests {
 
     #[test]
     fn money_groups_and_converts_to_toman() {
-        let f = Fmt { lang: Lang::En, persian_digits: false, unit: Unit::Toman, calendar: CalendarKind::Gregorian };
+        let f = Fmt {
+            lang: Lang::En,
+            persian_digits: false,
+            unit: Unit::Toman,
+            calendar: CalendarKind::Gregorian,
+        };
         let mark = |s: &str| format!("\u{2066}{s}\u{2069}");
         assert_eq!(f.money("1234567890"), mark("123,456,789"));
         assert_eq!(f.money("-15"), mark("−1.5"));
@@ -240,7 +254,11 @@ mod tests {
 
     #[test]
     fn quantity_is_trimmed() {
-        let f = Fmt { lang: Lang::En, persian_digits: false, ..Fmt::default() };
+        let f = Fmt {
+            lang: Lang::En,
+            persian_digits: false,
+            ..Fmt::default()
+        };
         assert_eq!(f.qty("2500"), "2.5");
         assert_eq!(f.qty("3000"), "3");
     }

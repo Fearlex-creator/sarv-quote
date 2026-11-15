@@ -185,8 +185,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 st.accounting.modal_open = true;
                 st.accounting.debit_account.clear();
                 st.accounting.credit_account.clear();
-                st.accounting.post_key =
-                    format!("journal-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
+                st.accounting.post_key = format!("journal-{}", chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0));
                 st.accounting.posting = false;
                 st.forms.set("journal-amount", "");
                 st.forms.set("journal-reason", "");
@@ -212,7 +211,11 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "journal-debit",
         &accounts,
-        if s.accounting.debit_account.is_empty() { None } else { Some(s.accounting.debit_account.as_str()) },
+        if s.accounting.debit_account.is_empty() {
+            None
+        } else {
+            Some(s.accounting.debit_account.as_str())
+        },
         &ui.t("Select account"),
         pickers::ACCOUNT_PICKER_WIDTH,
         debit_open,
@@ -223,7 +226,11 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         &mut portals,
         "journal-credit",
         &accounts,
-        if s.accounting.credit_account.is_empty() { None } else { Some(s.accounting.credit_account.as_str()) },
+        if s.accounting.credit_account.is_empty() {
+            None
+        } else {
+            Some(s.accounting.credit_account.as_str())
+        },
         &ui.t("Select account"),
         pickers::ACCOUNT_PICKER_WIDTH,
         credit_open,
@@ -325,7 +332,12 @@ fn reverse_selected(st: &mut State) {
         st.toast(Tone::Info, st.fmt.t("No journals"));
         return;
     }
-    let id = st.accounting.selected.strip_prefix("journal-").unwrap_or(&st.accounting.selected).to_string();
+    let id = st
+        .accounting
+        .selected
+        .strip_prefix("journal-")
+        .unwrap_or(&st.accounting.selected)
+        .to_string();
     let Some(journal) = st.books.list("journals").into_iter().find(|j| crate::data::s(&j["id"]) == id) else {
         st.toast(Tone::Info, st.fmt.t("No journals"));
         return;
@@ -354,10 +366,13 @@ fn toggle_period(st: &mut State) {
         st.toast(Tone::Info, st.fmt.t("No fiscal periods"));
         return;
     }
-    let id = st.accounting.selected.strip_prefix("period-").unwrap_or(&st.accounting.selected).to_string();
-    let locked = st
-        .books
-        .workspace["periods"]
+    let id = st
+        .accounting
+        .selected
+        .strip_prefix("period-")
+        .unwrap_or(&st.accounting.selected)
+        .to_string();
+    let locked = st.books.workspace["periods"]
         .as_array()
         .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == id))
         .and_then(|p| p["locked"].as_bool())
@@ -378,7 +393,9 @@ fn toggle_period(st: &mut State) {
 
 fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     let rows = s.accounting.ledger["rows"].as_array().cloned().unwrap_or_default();
-    let mut body = col().gap(8.0).child(ui.muted(format!("{} {}", ui.t("Ledger"), crate::data::s(&s.accounting.ledger["count"]))));
+    let mut body = col()
+        .gap(8.0)
+        .child(ui.muted(format!("{} {}", ui.t("Ledger"), crate::data::s(&s.accounting.ledger["count"]))));
     for row in rows.iter().take(12) {
         let line = format!(
             "{}  {}  {}",

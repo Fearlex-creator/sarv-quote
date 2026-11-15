@@ -89,8 +89,7 @@ pub fn balance_sheet(books: &AccountingState, company: &str, as_of: &str) -> Res
     }
     sheet.current_earnings = earnings_credit;
     sheet.total_equity = equity_total.checked_add(earnings_credit)?;
-    sheet.balanced =
-        sheet.total_assets == sheet.total_liabilities.checked_add(sheet.total_equity)?;
+    sheet.balanced = sheet.total_assets == sheet.total_liabilities.checked_add(sheet.total_equity)?;
     Ok(sheet)
 }
 
@@ -136,14 +135,20 @@ pub fn aging(books: &AccountingState, company: &str, side: PaymentSide, as_of: &
     let as_of_date = NaiveDate::parse_from_str(as_of, "%Y-%m-%d")?;
     let items = books.payment_open_items(company, None, side, as_of)?;
     let mut by_party: BTreeMap<String, AgingRow> = BTreeMap::new();
-    let mut totals = AgingRow { party_id: "total".into(), ..AgingRow::default() };
+    let mut totals = AgingRow {
+        party_id: "total".into(),
+        ..AgingRow::default()
+    };
     for item in items.iter().filter(|i| i.remaining.rials() != 0) {
         ensure!(item.remaining.rials() > 0, "Open item with a negative remainder");
         let due = NaiveDate::parse_from_str(&item.due_date, "%Y-%m-%d")?;
         let days = (as_of_date - due).num_days();
         by_party
             .entry(item.party_id.clone())
-            .or_insert_with(|| AgingRow { party_id: item.party_id.clone(), ..AgingRow::default() })
+            .or_insert_with(|| AgingRow {
+                party_id: item.party_id.clone(),
+                ..AgingRow::default()
+            })
             .add(days, item.remaining)?;
         totals.add(days, item.remaining)?;
     }

@@ -98,7 +98,18 @@ impl Page {
     /// Sidebar groups: daily work, people, books, workspace.
     /// `(key, label, pages)` — label is an English message key.
     pub const GROUPS: [(&'static str, &'static str, &'static [Page]); 4] = [
-        ("daily", "Daily work", &[Page::Overview, Page::Sales, Page::Pos, Page::Purchases, Page::Payments, Page::Banking]),
+        (
+            "daily",
+            "Daily work",
+            &[
+                Page::Overview,
+                Page::Sales,
+                Page::Pos,
+                Page::Purchases,
+                Page::Payments,
+                Page::Banking,
+            ],
+        ),
         ("people", "Stock & people", &[Page::Inventory, Page::Contacts]),
         ("books", "Books", &[Page::Accounting, Page::Reports, Page::Sheets]),
         ("workspace", "Workspace", &[Page::Settings]),
@@ -222,7 +233,11 @@ impl State {
 
     /// Opens the books named by `SARV_DATA_DIR`; `SARV_DEMO=1` seeds a throwaway QA profile.
     pub fn open() -> Self {
-        let engine = if std::env::var_os("SARV_DEMO").is_some() { Engine::demo() } else { Engine::open() };
+        let engine = if std::env::var_os("SARV_DEMO").is_some() {
+            Engine::demo()
+        } else {
+            Engine::open()
+        };
         Self::with_engine(engine, true)
     }
 
@@ -240,7 +255,11 @@ impl State {
             self.fmt.unit = if u == "Rial" { Unit::Rial } else { Unit::Toman };
         }
         if let Some(c) = st["date_display"].as_str() {
-            self.fmt.calendar = if c == "Jalali" { CalendarKind::Jalali } else { CalendarKind::Gregorian };
+            self.fmt.calendar = if c == "Jalali" {
+                CalendarKind::Jalali
+            } else {
+                CalendarKind::Gregorian
+            };
         }
         match st["appearance"].as_str() {
             Some("Light") => self.dark = false,
@@ -294,7 +313,11 @@ impl State {
     pub fn toast(&mut self, tone: Tone, message: impl Into<String>) {
         let id = self.next_toast;
         self.next_toast += 1;
-        self.toasts.push(Toast { id, tone, message: message.into() });
+        self.toasts.push(Toast {
+            id,
+            tone,
+            message: message.into(),
+        });
         if self.toasts.len() > 4 {
             self.toasts.remove(0);
         }

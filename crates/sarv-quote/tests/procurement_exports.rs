@@ -50,10 +50,8 @@ fn fixture() -> Fixture {
             actor: "آزمایشگر".into(),
         })
         .unwrap();
-    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv")
-        .replace("F2-core-v1", &c.company_id);
-    let opening =
-        core_import::opening_csv(&state, &c.company_id, &input, "آزمایشگر", "opening").unwrap();
+    let input = include_str!("../../../docs/assets/accounting-m3/opening.csv").replace("F2-core-v1", &c.company_id);
+    let opening = core_import::opening_csv(&state, &c.company_id, &input, "آزمایشگر", "opening").unwrap();
     state.post_opening(opening).unwrap();
     let mut f = Fixture {
         state,
@@ -226,26 +224,16 @@ fn literal_end_of_day_controls_and_partial_sources_remain_exact_and_read_only() 
                 .filter(|r| cell(&h, r, "row_kind") == "control")
                 .all(|r| cell(&h, r, "difference_irr") == "0")
         );
-        let total = rows
-            .iter()
-            .find(|r| cell(&h, r, "row_kind") == "trial_total_debit")
-            .unwrap();
+        let total = rows.iter().find(|r| cell(&h, r, "row_kind") == "trial_total_debit").unwrap();
         assert_eq!(cell(&h, total, "amount_irr"), tb.to_string());
         if date == "2026-03-21" {
             assert_eq!(cell(&h, total, "display_amount"), "125.1");
         }
         if date == "2026-03-24" {
-            for (id, qty, value) in [
-                ("R-A-LINE", "3000", "45"),
-                ("R-B-LINE", "7000", "105"),
-                ("R1", "5000", "50"),
-            ] {
+            for (id, qty, value) in [("R-A-LINE", "3000", "45"), ("R-B-LINE", "7000", "105"), ("R1", "5000", "50")] {
                 let row = rows
                     .iter()
-                    .find(|r| {
-                        cell(&h, r, "row_kind") == "receipt_remaining"
-                            && cell(&h, r, "row_id") == id
-                    })
+                    .find(|r| cell(&h, r, "row_kind") == "receipt_remaining" && cell(&h, r, "row_id") == id)
                     .unwrap();
                 assert_eq!(cell(&h, row, "remaining_quantity_thousandths"), qty);
                 assert_eq!(cell(&h, row, "amount_irr"), value);
@@ -256,9 +244,7 @@ fn literal_end_of_day_controls_and_partial_sources_remain_exact_and_read_only() 
             for (wh, qty, value) in [("W1", "30000", "350"), ("W2", "12000", "130")] {
                 let row = rows
                     .iter()
-                    .find(|r| {
-                        cell(&h, r, "row_kind") == "stock_pool" && cell(&h, r, "warehouse_id") == wh
-                    })
+                    .find(|r| cell(&h, r, "row_kind") == "stock_pool" && cell(&h, r, "warehouse_id") == wh)
                     .unwrap();
                 assert_eq!(cell(&h, row, "base_quantity_thousandths"), qty);
                 assert_eq!(cell(&h, row, "amount_irr"), value);
@@ -272,14 +258,7 @@ fn frozen_documents_full_source_reconstruction_formula_guards_and_no_overwrite()
     let f = fixture();
     let before = f.state.clone();
     let dir = tempfile::tempdir().unwrap();
-    for id in [
-        &f.order,
-        &f.receipt_a,
-        &f.receipt_b,
-        &f.bill_a,
-        &f.bill_b,
-        &f.transfer,
-    ] {
+    for id in [&f.order, &f.receipt_a, &f.receipt_b, &f.bill_a, &f.bill_b, &f.transfer] {
         let p = dir.path().join(format!("{id}.csv"));
         document_csv(
             &f.state,
@@ -292,12 +271,8 @@ fn frozen_documents_full_source_reconstruction_formula_guards_and_no_overwrite()
         )
         .unwrap();
         let (h, rows) = read_csv(&p);
-        let snapshot = rows
-            .iter()
-            .find(|r| cell(&h, r, "row_kind") == "complete_snapshot")
-            .unwrap();
-        let raw: serde_json::Value =
-            serde_json::from_str(cell(&h, snapshot, "snapshot_json")).unwrap();
+        let snapshot = rows.iter().find(|r| cell(&h, r, "row_kind") == "complete_snapshot").unwrap();
+        let raw: serde_json::Value = serde_json::from_str(cell(&h, snapshot, "snapshot_json")).unwrap();
         let record: ProcurementRecord = serde_json::from_value(raw["document"].clone()).unwrap();
         assert_eq!(&record, f.state.procurement_document(id).unwrap());
         for row in &rows {
@@ -323,16 +298,10 @@ fn frozen_documents_full_source_reconstruction_formula_guards_and_no_overwrite()
         );
         assert_eq!(fs::read(&p).unwrap(), bytes);
         if id == &f.transfer {
-            assert_eq!(
-                cell(&h, &rows[0], "included_states"),
-                "recorded_nonfinancial_event"
-            );
+            assert_eq!(cell(&h, &rows[0], "included_states"), "recorded_nonfinancial_event");
             assert_eq!(cell(&h, &rows[0], "financial_effect_kind"), "nonfinancial");
             assert!(record.journal_id.is_none());
-            let line = rows
-                .iter()
-                .find(|r| cell(&h, r, "row_kind") == "transfer_summary")
-                .unwrap();
+            let line = rows.iter().find(|r| cell(&h, r, "row_kind") == "transfer_summary").unwrap();
             assert_eq!(cell(&h, line, "amount_irr"), "70");
             assert_eq!(cell(&h, line, "base_quantity_thousandths"), "6000");
         }
@@ -378,13 +347,7 @@ fn frozen_documents_full_source_reconstruction_formula_guards_and_no_overwrite()
     )
     .unwrap();
     assert_eq!(fs::read(old).unwrap(), fs::read(after).unwrap());
-    let ProcurementCommand::Order(mut free_order) = f
-        .state
-        .procurement_document(&f.order)
-        .unwrap()
-        .command
-        .clone()
-    else {
+    let ProcurementCommand::Order(mut free_order) = f.state.procurement_document(&f.order).unwrap().command.clone() else {
         panic!("fixture PO");
     };
     free_order.context = context(&f, "FREE-PO", "2026-03-27");
@@ -430,14 +393,8 @@ fn frozen_documents_full_source_reconstruction_formula_guards_and_no_overwrite()
     .unwrap();
     let (h, rows) = read_csv(&free_csv);
     assert_eq!(cell(&h, &rows[0], "financial_effect_kind"), "nonfinancial");
-    assert_eq!(
-        cell(&h, &rows[0], "included_states"),
-        "recorded_nonfinancial_event"
-    );
-    let line = rows
-        .iter()
-        .find(|r| cell(&h, r, "row_kind") == "receipt_line")
-        .unwrap();
+    assert_eq!(cell(&h, &rows[0], "included_states"), "recorded_nonfinancial_event");
+    let line = rows.iter().find(|r| cell(&h, r, "row_kind") == "receipt_line").unwrap();
     assert_eq!(cell(&h, line, "base_quantity_thousandths"), "1000");
     assert_eq!(cell(&h, line, "amount_irr"), "0");
     let free_pdf = dir.path().join("zero-value-receipt.pdf");
@@ -515,26 +472,14 @@ fn actual_persian_pdf_canonical_dates_codes_units_source_markers_and_repeated_he
         &transfer,
     )
     .unwrap();
-    let out = Command::new("pdftotext")
-        .arg(&transfer)
-        .arg("-")
-        .output()
-        .unwrap();
+    let out = Command::new("pdftotext").arg(&transfer).arg("-").output().unwrap();
     let transfer_text = String::from_utf8(out.stdout).unwrap();
-    assert!(
-        transfer_text.contains("6.000")
-            && transfer_text.contains("70")
-            && transfer_text.contains("2026-03-26")
-    );
+    assert!(transfer_text.contains("6.000") && transfer_text.contains("70") && transfer_text.contains("2026-03-26"));
     if let Ok(destination) = std::env::var("SARV_PROCUREMENT_EXPORT_ARTIFACT_DIR") {
         let destination = Path::new(&destination);
         fs::create_dir_all(destination).unwrap();
         fs::copy(&p, destination.join("procurement-reconciliation.pdf")).unwrap();
-        fs::write(
-            destination.join("procurement-reconciliation-text.txt"),
-            text,
-        )
-        .unwrap();
+        fs::write(destination.join("procurement-reconciliation-text.txt"), text).unwrap();
         fs::copy(&transfer, destination.join("warehouse-transfer.pdf")).unwrap();
         reconciliation_csv(
             &f.state,

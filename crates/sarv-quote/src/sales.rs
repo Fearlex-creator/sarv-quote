@@ -1,15 +1,8 @@
 //! Linked goods orders, same-date delivery/invoice, and original-allocation restock credits.
-use crate::accounting::{
-    AccountingState, AuditOperation, BalanceSide, JournalKind, JournalLineInput, Money, PostCommand,
-};
-use crate::core::{
-    CoreItem, CoreParty, CoreRole, CoreSetup, MAX_SOURCE_QUANTITY, OpenItemSide, civil_date,
-    positive_half_up,
-};
+use crate::accounting::{AccountingState, AuditOperation, BalanceSide, JournalKind, JournalLineInput, Money, PostCommand};
+use crate::core::{CoreItem, CoreParty, CoreRole, CoreSetup, MAX_SOURCE_QUANTITY, OpenItemSide, civil_date, positive_half_up};
 use crate::domain::{MAX_MONEY, id, normalize, text};
-use crate::procurement::{
-    ProcurementContext, ProcurementReconciliation, StockDirection, StockMovement, StockPool,
-};
+use crate::procurement::{ProcurementContext, ProcurementReconciliation, StockDirection, StockMovement, StockPool};
 use anyhow::{Result, ensure};
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
@@ -39,13 +32,9 @@ impl SalesState {
         Ok(())
     }
     pub fn uses_nonfinancial_key(&self, key: &str) -> bool {
-        self.requests.iter().any(|r| {
-            r.request_key == key
-                && self
-                    .records
-                    .iter()
-                    .any(|p| p.id == r.record_id && p.journal_id.is_none())
-        })
+        self.requests
+            .iter()
+            .any(|r| r.request_key == key && self.records.iter().any(|p| p.id == r.record_id && p.journal_id.is_none()))
     }
 }
 record!(QuotationLink{quote_id:String,quote_series:String,quote_revision:u32,quote_number:String,quote_sha256:String,source_line_indices:Vec<usize>});
@@ -200,10 +189,7 @@ fn result(r: &SalesRecord) -> SalesResult {
     }
 }
 fn money(v: Money) -> Result<()> {
-    ensure!(
-        (0..=MAX_MONEY).contains(&v.rials()),
-        "مبلغ فروش خارج از محدوده یا منفی است"
-    );
+    ensure!((0..=MAX_MONEY).contains(&v.rials()), "مبلغ فروش خارج از محدوده یا منفی است");
     Ok(())
 }
 fn sum<I: IntoIterator<Item = Money>>(v: I) -> Result<Money> {
@@ -216,17 +202,11 @@ fn doc_date(d: &str, f: &str) -> Result<()> {
 }
 fn claim(v: &str, ids: &mut HashSet<String>) -> Result<()> {
     text(v)?;
-    ensure!(
-        ids.insert(v.into()),
-        "شناسهٔ سند یا ردیف تکراری یا متعلق به سابقه است"
-    );
+    ensure!(ids.insert(v.into()), "شناسهٔ سند یا ردیف تکراری یا متعلق به سابقه است");
     Ok(())
 }
 fn base(i: &CoreItem, u: &str, q: i64) -> Result<i64> {
-    ensure!(
-        (1..=MAX_SOURCE_QUANTITY).contains(&q),
-        "مقدار باید مثبت و در محدوده باشد"
-    );
+    ensure!((1..=MAX_SOURCE_QUANTITY).contains(&q), "مقدار باید مثبت و در محدوده باشد");
     let (n, d) = if u == i.base_unit_id {
         (1, 1)
     } else {
@@ -241,10 +221,7 @@ fn base(i: &CoreItem, u: &str, q: i64) -> Result<i64> {
     let v = i128::from(q) * i128::from(n);
     ensure!(v % i128::from(d) == 0, "تبدیل در هزارم واحد پایه دقیق نیست");
     let v = i64::try_from(v / i128::from(d))?;
-    ensure!(
-        v > 0 && (!i.indivisible || v % 1000 == 0),
-        "مقدار واحد پایه غیرقابل‌تقسیم است"
-    );
+    ensure!(v > 0 && (!i.indivisible || v % 1000 == 0), "مقدار واحد پایه غیرقابل‌تقسیم است");
     Ok(v)
 }
 pub(crate) fn allocation(v: Money, q: i64, priorq: i64, priorv: Money, nextq: i64) -> Result<Money> {
@@ -252,17 +229,12 @@ pub(crate) fn allocation(v: Money, q: i64, priorq: i64, priorv: Money, nextq: i6
         q > 0 && priorq >= 0 && nextq > 0 && v.rials() >= 0 && priorv.rials() >= 0,
         "مقدار تخصیص نامعتبر است"
     );
-    let cumulative = priorq
-        .checked_add(nextq)
-        .ok_or_else(|| anyhow::anyhow!("سرریز مقدار تخصیص"))?;
+    let cumulative = priorq.checked_add(nextq).ok_or_else(|| anyhow::anyhow!("سرریز مقدار تخصیص"))?;
     ensure!(cumulative <= q, "مقدار از ماندهٔ منبع بیشتر است");
     let target = if cumulative == q {
         v
     } else {
-        Money::from_rials(positive_half_up(
-            i128::from(v.rials()) * i128::from(cumulative),
-            i128::from(q),
-        )?)
+        Money::from_rials(positive_half_up(i128::from(v.rials()) * i128::from(cumulative), i128::from(q))?)
     };
     let out = target.checked_sub(priorv)?;
     ensure!(out.rials() >= 0, "بهای تخصیص نامعتبر است");
@@ -271,10 +243,7 @@ pub(crate) fn allocation(v: Money, q: i64, priorq: i64, priorv: Money, nextq: i6
 fn discounts(lines: &[SalesOrderLine], weights: &[Money], d: Money) -> Result<Vec<Money>> {
     money(d)?;
     let total = sum(weights.iter().copied())?;
-    ensure!(
-        d.rials() <= total.rials(),
-        "تخفیف سند از مبلغ کالا بیشتر است"
-    );
+    ensure!(d.rials() <= total.rials(), "تخفیف سند از مبلغ کالا بیشتر است");
     if total == Money::ZERO {
         return Ok(vec![Money::ZERO; weights.len()]);
     }
@@ -285,17 +254,12 @@ fn discounts(lines: &[SalesOrderLine], weights: &[Money], d: Money) -> Result<Ve
         let p = i128::from(w.rials()) * i128::from(d.rials());
         let div = i128::from(total.rials());
         let v = i64::try_from(p / div)?;
-        assigned = assigned
-            .checked_add(v)
-            .ok_or_else(|| anyhow::anyhow!("سرریز تخفیف"))?;
+        assigned = assigned.checked_add(v).ok_or_else(|| anyhow::anyhow!("سرریز تخفیف"))?;
         out.push(Money::from_rials(v));
         remainder.push((p % div, lines[i].id.as_str(), i));
     }
     remainder.sort_by(|a, b| b.0.cmp(&a.0).then(a.1.cmp(b.1)));
-    for (_, _, i) in remainder
-        .into_iter()
-        .take(usize::try_from(d.rials() - assigned)?)
-    {
+    for (_, _, i) in remainder.into_iter().take(usize::try_from(d.rials() - assigned)?) {
         out[i] = out[i].checked_add(Money::from_rials(1))?;
     }
     Ok(out)
@@ -308,14 +272,7 @@ fn empty_pool(i: &str, w: &str) -> StockPool {
         value: Money::ZERO,
     }
 }
-fn movement(
-    c: &SalesContext,
-    l: &str,
-    p: &mut StockPool,
-    d: StockDirection,
-    q: i64,
-    v: Money,
-) -> Result<StockMovement> {
+fn movement(c: &SalesContext, l: &str, p: &mut StockPool, d: StockDirection, q: i64, v: Money) -> Result<StockMovement> {
     ensure!(q > 0 && v.rials() >= 0, "مقدار/بهای حرکت نامعتبر است");
     let before = p.clone();
     match d {
@@ -335,16 +292,11 @@ fn movement(
         }
     }
     ensure!(
-        p.quantity_thousandths >= 0
-            && p.value.rials() >= 0
-            && (p.quantity_thousandths != 0 || p.value == Money::ZERO),
+        p.quantity_thousandths >= 0 && p.value.rials() >= 0 && (p.quantity_thousandths != 0 || p.value == Money::ZERO),
         "موجودی منفی یا بهای بدون مقدار ممنوع است"
     );
     Ok(StockMovement {
-        id: format!(
-            "sales-stock:{}",
-            hash(&(c.company_id.as_str(), c.source_id.as_str(), l, d))?
-        ),
+        id: format!("sales-stock:{}", hash(&(c.company_id.as_str(), c.source_id.as_str(), l, d))?),
         item_id: p.item_id.clone(),
         warehouse_id: p.warehouse_id.clone(),
         direction: d,
@@ -355,13 +307,7 @@ fn movement(
         after: p.clone(),
     })
 }
-fn pair(
-    s: &CoreSetup,
-    d: CoreRole,
-    c: CoreRole,
-    v: Money,
-    r: &str,
-) -> Result<Vec<JournalLineInput>> {
+fn pair(s: &CoreSetup, d: CoreRole, c: CoreRole, v: Money, r: &str) -> Result<Vec<JournalLineInput>> {
     if v == Money::ZERO {
         return Ok(Vec::new());
     }
@@ -512,13 +458,7 @@ impl AccountingState {
         let mut out = Vec::new();
         for l in &f.lines {
             let mut q = 0i64;
-            let (mut gross, mut ld, mut dd, mut net, mut cost) = (
-                Money::ZERO,
-                Money::ZERO,
-                Money::ZERO,
-                Money::ZERO,
-                Money::ZERO,
-            );
+            let (mut gross, mut ld, mut dd, mut net, mut cost) = (Money::ZERO, Money::ZERO, Money::ZERO, Money::ZERO, Money::ZERO);
             for r in &self.sales.records {
                 if let SalesData::Return(v) = &r.data
                     && v.fulfillment_id == id
@@ -564,10 +504,7 @@ impl AccountingState {
             .iter()
             .find(|o| o.command.company_id == company)
             .ok_or_else(|| anyhow::anyhow!("افتتاحیه پیدا نشد"))?;
-        ensure!(
-            asof >= o.command.as_of.as_str(),
-            "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود"
-        );
+        ensure!(asof >= o.command.as_of.as_str(), "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود");
         let settled = self.payment_allocation_map(company, asof)?;
         let mut out: Vec<_> = o
             .command
@@ -583,16 +520,17 @@ impl AccountingState {
                     document_date: x.document_date.clone(),
                     due_date: x.due_date.clone(),
                     original: x.remaining,
-                    remaining: x.remaining.checked_add(
-                        settled.get(&x.id).copied().unwrap_or(Money::ZERO),
-                    )?,
+                    remaining: x.remaining.checked_add(settled.get(&x.id).copied().unwrap_or(Money::ZERO))?,
                     credit_ids: Vec::new(),
                 })
             })
             .collect::<Result<Vec<_>>>()?;
-        for r in self.sales.records.iter().filter(|r| {
-            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
-        }) {
+        for r in self
+            .sales
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company && r.command.context().date.as_str() <= asof)
+        {
             if let (SalesCommand::Fulfill(c), SalesData::Fulfill(f)) = (&r.command, &r.data) {
                 let mut remaining = f.total;
                 let mut credit_ids = Vec::new();
@@ -609,12 +547,7 @@ impl AccountingState {
                         credit_ids.push(ret.credit_id.clone());
                     }
                 }
-                remaining = remaining.checked_add(
-                    settled
-                        .get(f.invoice_id.as_str())
-                        .copied()
-                        .unwrap_or(Money::ZERO),
-                )?;
+                remaining = remaining.checked_add(settled.get(f.invoice_id.as_str()).copied().unwrap_or(Money::ZERO))?;
                 ensure!(remaining.rials() >= 0, "اعتبار از دریافتنی بیشتر است");
                 out.push(ReceivableRemainder {
                     id: f.invoice_id.clone(),
@@ -633,14 +566,15 @@ impl AccountingState {
     }
     fn typed_sales_detail(&self, role: CoreRole, company: &str, asof: &str) -> Result<Money> {
         let mut total = Money::ZERO;
-        for r in self.sales.records.iter().filter(|r| {
-            r.command.context().company_id == company && r.command.context().date.as_str() <= asof
-        }) {
+        for r in self
+            .sales
+            .records
+            .iter()
+            .filter(|r| r.command.context().company_id == company && r.command.context().date.as_str() <= asof)
+        {
             match (&r.data, role) {
                 (SalesData::Fulfill(f), CoreRole::Sales) => total = total.checked_add(f.total)?,
-                (SalesData::Return(f), CoreRole::SalesReturns) => {
-                    total = total.checked_add(f.total)?
-                }
+                (SalesData::Return(f), CoreRole::SalesReturns) => total = total.checked_add(f.total)?,
                 (SalesData::Fulfill(f), CoreRole::Cogs) => total = total.checked_add(f.cost)?,
                 (SalesData::Return(f), CoreRole::Cogs) => total = total.checked_sub(f.cost)?,
                 _ => {}
@@ -649,11 +583,7 @@ impl AccountingState {
         Ok(total)
     }
     /// Ordinary journals retain their own provenance; they never become invoices.
-    pub fn sales_ledger_adjustments(
-        &self,
-        company: &str,
-        asof: &str,
-    ) -> Result<Vec<SalesLedgerAdjustment>> {
+    pub fn sales_ledger_adjustments(&self, company: &str, asof: &str) -> Result<Vec<SalesLedgerAdjustment>> {
         civil_date(asof)?;
         let opening = self
             .core
@@ -661,16 +591,13 @@ impl AccountingState {
             .iter()
             .find(|o| o.command.company_id == company)
             .ok_or_else(|| anyhow::anyhow!("افتتاحیه پیدا نشد"))?;
-        ensure!(
-            asof >= opening.command.as_of.as_str(),
-            "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود"
-        );
+        ensure!(asof >= opening.command.as_of.as_str(), "گزارش پیش از افتتاحیه پشتیبانی نمی‌شود");
         let mut out = Vec::new();
-        for journal in self.journals.iter().filter(|j| {
-            j.company_id == company
-                && j.date.as_str() <= asof
-                && !self.has_typed_journal_source(&j.id)
-        }) {
+        for journal in self
+            .journals
+            .iter()
+            .filter(|j| j.company_id == company && j.date.as_str() <= asof && !self.has_typed_journal_source(&j.id))
+        {
             for role in [CoreRole::Sales, CoreRole::SalesReturns, CoreRole::Cogs] {
                 let account = opening.frozen_setup.account_id(role)?;
                 let amount = journal
@@ -700,16 +627,10 @@ impl AccountingState {
     pub fn sales_control_detail(&self, role: CoreRole, company: &str, asof: &str) -> Result<Money> {
         civil_date(asof)?;
         if role == CoreRole::Receivables {
-            return sum(self
-                .sales_receivables(company, asof)?
-                .iter()
-                .map(|r| r.remaining));
+            return sum(self.sales_receivables(company, asof)?.iter().map(|r| r.remaining));
         }
         ensure!(
-            matches!(
-                role,
-                CoreRole::Sales | CoreRole::SalesReturns | CoreRole::Cogs
-            ),
+            matches!(role, CoreRole::Sales | CoreRole::SalesReturns | CoreRole::Cogs),
             "نقش جزئیات فروش پشتیبانی نمی‌شود"
         );
         let typed = self.typed_sales_detail(role, company, asof)?;
@@ -798,10 +719,7 @@ impl AccountingState {
         let resources = self.procurement_resources(&c.company_id)?;
         let mut ids = self.operational_known_ids();
         let warehouse = |v: &str| -> Result<()> {
-            ensure!(
-                resources.warehouses.iter().any(|w| w.id == v),
-                "انبار معتبر نیست"
-            );
+            ensure!(resources.warehouses.iter().any(|w| w.id == v), "انبار معتبر نیست");
             Ok(())
         };
         let mut movements = Vec::new();
@@ -811,10 +729,7 @@ impl AccountingState {
                 text(&x.reference)?;
                 doc_date(&x.document_date, &c.date)?;
                 money(x.supplied_total)?;
-                ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف سفارش نامعتبر است"
-                );
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف سفارش نامعتبر است");
                 let customer = resources
                     .parties
                     .iter()
@@ -827,15 +742,12 @@ impl AccountingState {
                         text(v)?;
                     }
                     ensure!(
-                        q.quote_revision > 0
-                            && q.quote_sha256.len() == 64
-                            && q.quote_sha256.bytes().all(|b| b.is_ascii_hexdigit()),
+                        q.quote_revision > 0 && q.quote_sha256.len() == 64 && q.quote_sha256.bytes().all(|b| b.is_ascii_hexdigit()),
                         "هویت تصویر پیش‌فاکتور نامعتبر است"
                     );
                     let mut ix = HashSet::new();
                     ensure!(
-                        q.source_line_indices.len() == x.lines.len()
-                            && q.source_line_indices.iter().all(|i| ix.insert(*i)),
+                        q.source_line_indices.len() == x.lines.len() && q.source_line_indices.iter().all(|i| ix.insert(*i)),
                         "ردیف‌های پیوند پیش‌فاکتور نامعتبر است"
                     );
                     ensure!(!self.sales.records.iter().any(|r|matches!(&r.command,SalesCommand::Order(p)if p.context.company_id==c.company_id&&p.quotation.as_ref().is_some_and(|old|old.quote_id==q.quote_id))),"این پیش‌فاکتور قبلاً به سفارش تبدیل شده است");
@@ -863,10 +775,7 @@ impl AccountingState {
                         1000,
                     )?);
                     money(gross)?;
-                    ensure!(
-                        l.line_discount.rials() <= gross.rials(),
-                        "تخفیف ردیف از مبلغ بیشتر است"
-                    );
+                    ensure!(l.line_discount.rials() <= gross.rials(), "تخفیف ردیف از مبلغ بیشتر است");
                     let net = gross.checked_sub(l.line_discount)?;
                     weights.push(net);
                     frozen.push(FrozenSalesOrderLine {
@@ -878,11 +787,7 @@ impl AccountingState {
                         net,
                     });
                 }
-                for (l, d) in
-                    frozen
-                        .iter_mut()
-                        .zip(discounts(&x.lines, &weights, x.document_discount)?)
-                {
+                for (l, d) in frozen.iter_mut().zip(discounts(&x.lines, &weights, x.document_discount)?) {
                     l.document_discount = d;
                     l.net = l.net.checked_sub(d)?;
                 }
@@ -906,23 +811,16 @@ impl AccountingState {
                 claim(&x.invoice_id, &mut ids)?;
                 doc_date(&x.document_date, &c.date)?;
                 civil_date(&x.due_date)?;
-                ensure!(
-                    x.due_date >= x.document_date,
-                    "سررسید پیش از تاریخ فاکتور است"
-                );
+                ensure!(x.due_date >= x.document_date, "سررسید پیش از تاریخ فاکتور است");
                 money(x.supplied_total)?;
-                ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف تحویل نامعتبر است"
-                );
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف تحویل نامعتبر است");
                 ensure!(
                     c.date.as_str() >= self.operational_stock_date(&c.company_id)?,
                     "ثبت موجودی پیش از آخرین تاریخ موجودی شرکت ممنوع است"
                 );
                 let record = self.sales_document(&x.order_id)?;
                 ensure!(
-                    record.command.context().company_id == c.company_id
-                        && c.date >= record.command.context().date,
+                    record.command.context().company_id == c.company_id && c.date >= record.command.context().date,
                     "شرکت یا تاریخ تحویل با سفارش سازگار نیست"
                 );
                 let SalesData::Order(order) = &record.data else {
@@ -949,10 +847,7 @@ impl AccountingState {
                 for l in &x.lines {
                     claim(&l.id, &mut ids)?;
                     warehouse(&l.warehouse_id)?;
-                    ensure!(
-                        source_ids.insert(&l.order_line_id),
-                        "ردیف سفارش در تحویل تکراری است"
-                    );
+                    ensure!(source_ids.insert(&l.order_line_id), "ردیف سفارش در تحویل تکراری است");
                     let orig = order
                         .lines
                         .iter()
@@ -966,11 +861,7 @@ impl AccountingState {
                         if let SalesData::Fulfill(f) = &record.data
                             && f.order_id == x.order_id
                         {
-                            for line in f
-                                .lines
-                                .iter()
-                                .filter(|line| line.order_line_id == l.order_line_id)
-                            {
+                            for line in f.lines.iter().filter(|line| line.order_line_id == l.order_line_id) {
                                 priorld = priorld.checked_add(line.line_discount)?;
                                 priordd = priordd.checked_add(line.document_discount)?;
                             }
@@ -983,20 +874,8 @@ impl AccountingState {
                         orig.net.checked_sub(r.remaining_net)?,
                         q,
                     )?;
-                    let ld = allocation(
-                        orig.input.line_discount,
-                        orig.base_quantity_thousandths,
-                        priorq,
-                        priorld,
-                        q,
-                    )?;
-                    let dd = allocation(
-                        orig.document_discount,
-                        orig.base_quantity_thousandths,
-                        priorq,
-                        priordd,
-                        q,
-                    )?;
+                    let ld = allocation(orig.input.line_discount, orig.base_quantity_thousandths, priorq, priorld, q)?;
+                    let dd = allocation(orig.document_discount, orig.base_quantity_thousandths, priorq, priordd, q)?;
                     let gross = net.checked_add(ld)?.checked_add(dd)?;
                     let p = pools
                         .entry((orig.item.id.clone(), l.warehouse_id.clone()))
@@ -1026,24 +905,9 @@ impl AccountingState {
                 }
                 let total = sum(lines.iter().map(|l| l.net))?;
                 let cost = sum(lines.iter().map(|l| l.cost))?;
-                ensure!(
-                    total == x.supplied_total,
-                    "جمع مستقل فاکتور با تخصیص سفارش برابر نیست"
-                );
-                journal_lines.extend(pair(
-                    setup,
-                    CoreRole::Receivables,
-                    CoreRole::Sales,
-                    total,
-                    &x.invoice_reference,
-                )?);
-                journal_lines.extend(pair(
-                    setup,
-                    CoreRole::Cogs,
-                    CoreRole::Inventory,
-                    cost,
-                    &x.delivery_reference,
-                )?);
+                ensure!(total == x.supplied_total, "جمع مستقل فاکتور با تخصیص سفارش برابر نیست");
+                journal_lines.extend(pair(setup, CoreRole::Receivables, CoreRole::Sales, total, &x.invoice_reference)?);
+                journal_lines.extend(pair(setup, CoreRole::Cogs, CoreRole::Inventory, cost, &x.delivery_reference)?);
                 (
                     SalesData::Fulfill(PostedFulfillment {
                         order_id: x.order_id.clone(),
@@ -1069,18 +933,14 @@ impl AccountingState {
                 doc_date(&x.document_date, &c.date)?;
                 money(x.supplied_credit)?;
                 money(x.supplied_cost)?;
-                ensure!(
-                    (1..=10_000).contains(&x.lines.len()),
-                    "تعداد ردیف برگشت نامعتبر است"
-                );
+                ensure!((1..=10_000).contains(&x.lines.len()), "تعداد ردیف برگشت نامعتبر است");
                 ensure!(
                     c.date.as_str() >= self.operational_stock_date(&c.company_id)?,
                     "ثبت موجودی پیش از آخرین تاریخ موجودی شرکت ممنوع است"
                 );
                 let record = self.sales_document(&x.fulfillment_id)?;
                 ensure!(
-                    record.command.context().company_id == c.company_id
-                        && c.date >= record.command.context().date,
+                    record.command.context().company_id == c.company_id && c.date >= record.command.context().date,
                     "شرکت یا تاریخ برگشت با تحویل سازگار نیست"
                 );
                 let SalesData::Fulfill(f) = &record.data else {
@@ -1093,10 +953,7 @@ impl AccountingState {
                 let mut lines = Vec::new();
                 for l in &x.lines {
                     claim(&l.id, &mut ids)?;
-                    ensure!(
-                        source_ids.insert(&l.fulfillment_line_id),
-                        "ردیف تحویل در برگشت تکراری است"
-                    );
+                    ensure!(source_ids.insert(&l.fulfillment_line_id), "ردیف تحویل در برگشت تکراری است");
                     money(l.supplied_credit)?;
                     money(l.supplied_cost)?;
                     let orig = f
@@ -1110,19 +967,10 @@ impl AccountingState {
                             && (!orig.item.indivisible || l.quantity_thousandths % 1000 == 0),
                         "مقدار برگشت واحد پایه نامعتبر است"
                     );
-                    let r = remaining
-                        .iter()
-                        .find(|r| r.id == l.fulfillment_line_id)
-                        .unwrap();
+                    let r = remaining.iter().find(|r| r.id == l.fulfillment_line_id).unwrap();
                     let q = l.quantity_thousandths;
                     let priorq = r.returned_quantity_thousandths;
-                    let net = allocation(
-                        orig.net,
-                        orig.quantity_thousandths,
-                        priorq,
-                        orig.net.checked_sub(r.net)?,
-                        q,
-                    )?;
+                    let net = allocation(orig.net, orig.quantity_thousandths, priorq, orig.net.checked_sub(r.net)?, q)?;
                     let ld = allocation(
                         orig.line_discount,
                         orig.quantity_thousandths,
@@ -1137,13 +985,7 @@ impl AccountingState {
                         orig.document_discount.checked_sub(r.document_discount)?,
                         q,
                     )?;
-                    let cost = allocation(
-                        orig.cost,
-                        orig.quantity_thousandths,
-                        priorq,
-                        orig.cost.checked_sub(r.cost)?,
-                        q,
-                    )?;
+                    let cost = allocation(orig.cost, orig.quantity_thousandths, priorq, orig.cost.checked_sub(r.cost)?, q)?;
                     ensure!(
                         net == l.supplied_credit && cost == l.supplied_cost,
                         "اعتبار یا بهای مستقل ردیف برگشت با تخصیص اصلی برابر نیست"
@@ -1179,13 +1021,7 @@ impl AccountingState {
                     total,
                     &x.credit_reference,
                 )?);
-                journal_lines.extend(pair(
-                    setup,
-                    CoreRole::Inventory,
-                    CoreRole::Cogs,
-                    cost,
-                    &x.return_reference,
-                )?);
+                journal_lines.extend(pair(setup, CoreRole::Inventory, CoreRole::Cogs, cost, &x.return_reference)?);
                 (
                     SalesData::Return(PostedSalesReturn {
                         fulfillment_id: x.fulfillment_id.clone(),
@@ -1229,24 +1065,11 @@ impl AccountingState {
         text(&c.request_key)?;
         let business = business_hash(&command)?;
         ensure!(
-            !self
-                .core
-                .zero_requests
-                .iter()
-                .any(|r| r.request_key == c.request_key)
-                && !self
-                    .procurement
-                    .requests
-                    .iter()
-                    .any(|r| r.request_key == c.request_key),
+            !self.core.zero_requests.iter().any(|r| r.request_key == c.request_key)
+                && !self.procurement.requests.iter().any(|r| r.request_key == c.request_key),
             "کلید درخواست قبلاً برای شروع دفتر یا خرید استفاده شده است"
         );
-        if let Some(alias) = self
-            .sales
-            .requests
-            .iter()
-            .find(|r| r.request_key == c.request_key)
-        {
+        if let Some(alias) = self.sales.requests.iter().find(|r| r.request_key == c.request_key) {
             ensure!(
                 alias.company_id == c.company_id && alias.business_sha256 == business,
                 "کلید درخواست با محتوای متفاوت استفاده شده است"
@@ -1279,16 +1102,12 @@ impl AccountingState {
             );
             if let Some(journal) = &prior.journal_id {
                 ensure!(
-                    self.post_sales(financial_command(&command, record_journal_lines(&prior)?))?
-                        == *journal,
+                    self.post_sales(financial_command(&command, record_journal_lines(&prior)?))? == *journal,
                     "درخواست به سند دیگری اشاره می‌کند"
                 );
             } else {
                 ensure!(
-                    !self
-                        .requests
-                        .iter()
-                        .any(|r| r.command.request_key == c.request_key),
+                    !self.requests.iter().any(|r| r.command.request_key == c.request_key),
                     "کلید درخواست قبلاً برای عملیات مالی استفاده شده است"
                 );
             }
@@ -1301,29 +1120,18 @@ impl AccountingState {
             return Ok(result(&prior));
         }
         ensure!(
-            !self
-                .requests
-                .iter()
-                .any(|r| r.command.request_key == c.request_key),
+            !self.requests.iter().any(|r| r.command.request_key == c.request_key),
             "کلید درخواست قبلاً برای عملیات مالی دیگری استفاده شده است"
         );
         ensure!(
             !self
                 .requests
                 .iter()
-                .any(|r| r.command.company_id == c.company_id
-                    && r.command.source_id == c.source_id
-                    && r.command.event == command.event()),
+                .any(|r| r.command.company_id == c.company_id && r.command.source_id == c.source_id && r.command.event == command.event()),
             "هویت رویداد قبلاً برای سند مالی دیگری استفاده شده است"
         );
         let preview = self.preview_sales(&command)?;
-        let setup = self
-            .core
-            .setups
-            .iter()
-            .find(|s| s.id == c.setup_id)
-            .unwrap()
-            .clone();
+        let setup = self.core.setups.iter().find(|s| s.id == c.setup_id).unwrap().clone();
         let record_id = id();
         ensure!(
             !self.operational_known_ids().contains(&record_id)
@@ -1334,13 +1142,7 @@ impl AccountingState {
         let sequence = self.operational_sequence(&c.company_id)?;
         let command_sha256 = hash(&command)?;
         let journal_id = if preview.nonfinancial {
-            self.activity(
-                &c.company_id,
-                &record_id,
-                AuditOperation::SalesRecorded,
-                &c.actor,
-                &c.reason,
-            );
+            self.activity(&c.company_id, &record_id, AuditOperation::SalesRecorded, &c.actor, &c.reason);
             None
         } else {
             Some(self.post_sales(financial_command(&command, preview.journal_lines))?)
@@ -1364,8 +1166,7 @@ impl AccountingState {
             business_sha256: business,
         });
         ensure!(
-            self.sales_reconcile(&c.company_id, "9999-12-31")?
-                .reconciled,
+            self.sales_reconcile(&c.company_id, "9999-12-31")?.reconciled,
             "ثبت فروش باعث اختلاف حساب کنترلی می‌شود"
         );
         Ok(out)
@@ -1380,10 +1181,7 @@ impl AccountingState {
         );
         let before = self.sales.records.len();
         let out = self.post_sales_command(record.command.clone())?;
-        ensure!(
-            self.sales.records.len() == before + 1,
-            "سوابق تغییرات رویداد فروش تکراری است"
-        );
+        ensure!(self.sales.records.len() == before + 1, "سوابق تغییرات رویداد فروش تکراری است");
         let created = self.sales.records.last_mut().unwrap();
         created.id = record.id.clone();
         self.sales.requests.last_mut().unwrap().record_id = record.id.clone();
@@ -1401,8 +1199,7 @@ impl AccountingState {
     pub(crate) fn replay_sales_request(&mut self, request: &SalesRequest) -> Result<SalesResult> {
         let prior = self.sales_document(&request.record_id)?;
         ensure!(
-            request.company_id == prior.command.context().company_id
-                && request.business_sha256 == business_hash(&prior.command)?,
+            request.company_id == prior.command.context().company_id && request.business_sha256 == business_hash(&prior.command)?,
             "هویت یا هش درخواست فروش نامعتبر است"
         );
         let mut c = prior.command.clone();

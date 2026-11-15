@@ -170,15 +170,24 @@ mod tests {
         assert!(rt.find("setup-step-contacts").is_some());
         let (_, sale_y) = rt.find("btn-New sales invoice").unwrap();
         let (_, pay_y) = rt.find("btn-Record a payment").unwrap();
-        assert!((sale_y - pay_y).abs() < 12.0, "actions should share one row at 1180: {sale_y} {pay_y}");
+        assert!(
+            (sale_y - pay_y).abs() < 12.0,
+            "actions should share one row at 1180: {sale_y} {pay_y}"
+        );
         let (_, cash_y) = rt.find("metric-cash").unwrap();
         let (_, profit_y) = rt.find("metric-profit").unwrap();
-        assert!((cash_y - profit_y).abs() < 12.0, "figures should share one row at 1180: {cash_y} {profit_y}");
+        assert!(
+            (cash_y - profit_y).abs() < 12.0,
+            "figures should share one row at 1180: {cash_y} {profit_y}"
+        );
     }
 
     #[test]
     fn test_overview_actions_wrap_in_a_narrow_window() {
-        let env = Env { system_dark: true, scale: 2.0 };
+        let env = Env {
+            system_dark: true,
+            scale: 2.0,
+        };
         let mut rt = Runtime::new(State::with_engine(data::Engine::demo(), true), ui::root_view, (720.0, 780.0), env);
         rt.frame(0.0);
         let (_, sale_y) = rt.find("btn-New sales invoice").unwrap();
@@ -225,8 +234,7 @@ mod tests {
             .map(|a| a.is_empty())
             .unwrap_or(true)
         {
-            rt.state.books.workspace["resources"]["parties"] =
-                json!([{ "id": "p1", "name": "Ada", "customer": true, "supplier": false }]);
+            rt.state.books.workspace["resources"]["parties"] = json!([{ "id": "p1", "name": "Ada", "customer": true, "supplier": false }]);
         }
         rt.state.books.workspace["sales_count"] = json!(1);
         rt.state.overview.guide = GuideMode::Auto;
@@ -410,7 +418,10 @@ mod tests {
         rt.state.forms.set("item-notes", "Green tea");
         click(&mut rt, "btn-Save");
         assert!(!rt.state.inventory.modal_open, "dialog closes after save");
-        let items = rt.state.books.workspace["resources"]["items"].as_array().cloned().unwrap_or_default();
+        let items = rt.state.books.workspace["resources"]["items"]
+            .as_array()
+            .cloned()
+            .unwrap_or_default();
         assert!(
             items.iter().any(|i| i["name"] == "Test Tea" || i["sku"] == "TEA-1"),
             "product persisted in resources.items"
@@ -433,8 +444,14 @@ mod tests {
         }
         let (fx, fy) = rt.find("sale-customer-trigger").unwrap();
         let (mx, my) = rt.find("sale-customer-content").expect("customer menu");
-        assert!((fx - mx).abs() < 48.0, "customer menu should share the field's column: field {fx} menu {mx}");
-        assert!((fy - my).abs() > 12.0 && (fy - my).abs() < 280.0, "customer menu should sit on the field: field {fy} menu {my}");
+        assert!(
+            (fx - mx).abs() < 48.0,
+            "customer menu should share the field's column: field {fx} menu {mx}"
+        );
+        assert!(
+            (fy - my).abs() > 12.0 && (fy - my).abs() < 280.0,
+            "customer menu should sit on the field: field {fy} menu {my}"
+        );
         click(&mut rt, "sale-customer-trigger");
         // 10,000 toman must be stored as 100,000 rials, then delivered and settled.
         rt.state.fmt.unit = crate::i18n::Unit::Toman;
@@ -487,7 +504,10 @@ mod tests {
         let (fx, fy) = rt.find("journal-debit-trigger").unwrap();
         let (mx, my) = rt.find("journal-debit-content").expect("account menu");
         assert!((fx - mx).abs() < 160.0, "account menu should cover the field: field {fx} menu {mx}");
-        assert!((fy - my).abs() > 12.0 && (fy - my).abs() < 280.0, "account menu should sit on the field: field {fy} menu {my}");
+        assert!(
+            (fy - my).abs() > 12.0 && (fy - my).abs() < 280.0,
+            "account menu should sit on the field: field {fy} menu {my}"
+        );
         rt.state.accounting.modal_open = false;
         rt.frame(1.0 / 60.0);
     }
@@ -523,10 +543,8 @@ mod tests {
     #[test]
     fn test_fiscal_period_follows_the_jalali_year() {
         use chrono::NaiveDate;
-        let (year, start, end) = crate::ui::views::setup::fiscal_period(
-            crate::i18n::CalendarKind::Jalali,
-            NaiveDate::from_ymd_opt(2026, 11, 11).unwrap(),
-        );
+        let (year, start, end) =
+            crate::ui::views::setup::fiscal_period(crate::i18n::CalendarKind::Jalali, NaiveDate::from_ymd_opt(2026, 11, 11).unwrap());
         assert_eq!(year, "1405");
         assert_eq!(start, "2026-03-21");
         assert_eq!(end, "2027-03-20");
@@ -554,17 +572,18 @@ mod tests {
     #[test]
     fn test_contacts_search_filters_the_table() {
         let mut rt = make_test_runtime();
-        let party = rt
-            .state
-            .books
-            .workspace["resources"]["parties"]
+        let party = rt.state.books.workspace["resources"]["parties"]
             .as_array()
             .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == "CU-A"))
             .cloned()
             .expect("demo customer CU-A");
         assert!(crate::ui::views::contacts::party_matches(&rt.state, &party, ""));
         assert!(crate::ui::views::contacts::party_matches(&rt.state, &party, "CU-A"));
-        assert!(!crate::ui::views::contacts::party_matches(&rt.state, &party, "___no-such-contact___"));
+        assert!(!crate::ui::views::contacts::party_matches(
+            &rt.state,
+            &party,
+            "___no-such-contact___"
+        ));
         click(&mut rt, Page::Contacts.key());
         assert!(rt.find("field-contact-search").is_some());
         assert!(rt.find("contact-CU-A").is_some());
@@ -662,9 +681,17 @@ mod tests {
         click(&mut rt, Page::Reports.key());
         click(&mut rt, "btn-Export CSV");
         let exports = rt.state.engine.dir.join("exports");
-        let mut names = std::fs::read_dir(&exports).unwrap().map(|e| e.unwrap().file_name()).collect::<Vec<_>>();
+        let mut names = std::fs::read_dir(&exports)
+            .unwrap()
+            .map(|e| e.unwrap().file_name())
+            .collect::<Vec<_>>();
         names.sort();
-        assert!(names.iter().any(|n| n.to_string_lossy().contains("csv") || n.to_string_lossy().ends_with(".csv")), "{names:?}");
+        assert!(
+            names
+                .iter()
+                .any(|n| n.to_string_lossy().contains("csv") || n.to_string_lossy().ends_with(".csv")),
+            "{names:?}"
+        );
         let body = std::fs::read_to_string(exports.join(names[0].clone())).unwrap();
         assert!(body.contains(',') || body.starts_with('\u{feff}'), "csv content");
 
@@ -709,7 +736,10 @@ mod tests {
         assert!(rt.state.contacts.open_id.is_empty(), "{}", blow(&rt, "contact save"));
         let detail = rt
             .state
-            .query("contact_detail", serde_json::json!({ "party_id": "CU-A", "as_of": crate::data::today() }))
+            .query(
+                "contact_detail",
+                serde_json::json!({ "party_id": "CU-A", "as_of": crate::data::today() }),
+            )
             .unwrap_or_else(|e| panic!("{e}"));
         assert_eq!(crate::data::s(&detail["profile"]["phone"]), "09120001122");
 
@@ -737,10 +767,7 @@ mod tests {
         rt.state.forms.set("sale-price-0", "150000");
         click(&mut rt, "btn-Issue quotation");
         assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "quotation"));
-        let draft_id = rt
-            .state
-            .books
-            .workspace["drafts"]
+        let draft_id = rt.state.books.workspace["drafts"]
             .as_array()
             .and_then(|rows| rows.iter().rev().find(|d| !d["quote_issue"].is_null()))
             .map(|d| crate::data::s(&d["id"]))
@@ -778,13 +805,15 @@ mod tests {
         let invoice_bytes = std::fs::read(&invoice_pdf).unwrap_or_else(|e| panic!("{e}; {}", blow(&rt, "invoice pdf")));
         assert!(invoice_bytes.starts_with(b"%PDF"), "invoice pdf");
         click(&mut rt, "btn-Return");
-        let returned = rt.state.books.list("sales").into_iter().any(|r| r["command"].get("Return").is_some());
-        assert!(returned, "{}", blow(&rt, "sale return"));
-
-        let supplier = rt
+        let returned = rt
             .state
             .books
-            .workspace["resources"]["parties"]
+            .list("sales")
+            .into_iter()
+            .any(|r| r["command"].get("Return").is_some());
+        assert!(returned, "{}", blow(&rt, "sale return"));
+
+        let supplier = rt.state.books.workspace["resources"]["parties"]
             .as_array()
             .and_then(|rows| rows.iter().find(|p| p["supplier"] == true))
             .map(|p| crate::data::s(&p["id"]))
@@ -802,8 +831,14 @@ mod tests {
             click(&mut rt, "btn-Save");
             assert!(!rt.state.purchases.modal_open, "{}", blow(&rt, "purchase"));
             let purchases = rt.state.books.list("purchases");
-            let bill = purchases.iter().find(|r| r["command"].get("Bill").is_some()).map(|r| crate::data::s(&r["id"]));
-            let receipt = purchases.iter().find(|r| r["command"].get("Receive").is_some()).map(|r| crate::data::s(&r["id"]));
+            let bill = purchases
+                .iter()
+                .find(|r| r["command"].get("Bill").is_some())
+                .map(|r| crate::data::s(&r["id"]));
+            let receipt = purchases
+                .iter()
+                .find(|r| r["command"].get("Receive").is_some())
+                .map(|r| crate::data::s(&r["id"]));
             let (return_id, tab) = bill
                 .filter(|id| !id.is_empty())
                 .map(|id| (id, 2))
@@ -815,7 +850,12 @@ mod tests {
             }
             click(&mut rt, &format!("purchase-{return_id}"));
             click(&mut rt, "btn-Return");
-            let sent_back = rt.state.books.list("purchases").into_iter().any(|r| r["command"].get("Return").is_some());
+            let sent_back = rt
+                .state
+                .books
+                .list("purchases")
+                .into_iter()
+                .any(|r| r["command"].get("Return").is_some());
             assert!(sent_back, "{}", blow(&rt, "purchase return"));
         }
 
@@ -839,9 +879,12 @@ mod tests {
             .unwrap_or_else(|| panic!("{}", blow(&rt, "journal id")));
         click(&mut rt, &format!("journal-{journal_id}"));
         click(&mut rt, "btn-Reverse");
-        let reversed = rt.state.books.list("journals").into_iter().any(|j| {
-            j["kind"].get("Reversal").is_some() || crate::data::s(&j["event"]) == "reversal"
-        });
+        let reversed = rt
+            .state
+            .books
+            .list("journals")
+            .into_iter()
+            .any(|j| j["kind"].get("Reversal").is_some() || crate::data::s(&j["event"]) == "reversal");
         assert!(reversed, "{}", blow(&rt, "reversal"));
 
         click(&mut rt, "segment1");
@@ -862,20 +905,14 @@ mod tests {
         let period = rt.state.books.period_id.clone();
         click(&mut rt, &format!("period-{period}"));
         click(&mut rt, "btn-Lock fiscal period");
-        let locked = rt
-            .state
-            .books
-            .workspace["periods"]
+        let locked = rt.state.books.workspace["periods"]
             .as_array()
             .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == period))
             .and_then(|p| p["locked"].as_bool())
             .unwrap_or(false);
         if locked {
             click(&mut rt, "btn-Lock fiscal period");
-            let open_again = rt
-                .state
-                .books
-                .workspace["periods"]
+            let open_again = rt.state.books.workspace["periods"]
                 .as_array()
                 .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == period))
                 .and_then(|p| p["locked"].as_bool())
@@ -893,14 +930,14 @@ mod tests {
         rt.state.forms.set("biz-phone", "02100000000");
         click(&mut rt, "btn-Save");
         assert!(!rt.state.settings.business_open, "{}", blow(&rt, "business save"));
-        assert_eq!(crate::data::s(&rt.state.books.workspace["business_profile"]["invoice_prefix"]), "SARV");
+        assert_eq!(
+            crate::data::s(&rt.state.books.workspace["business_profile"]["invoice_prefix"]),
+            "SARV"
+        );
 
         click(&mut rt, "btn-Backup");
         click(&mut rt, "btn-Restore backup");
-        let filename = rt
-            .state
-            .settings
-            .backups["backups"]
+        let filename = rt.state.settings.backups["backups"]
             .as_array()
             .and_then(|rows| rows.first())
             .map(|row| crate::data::s(&row["filename"]))
@@ -918,7 +955,10 @@ mod tests {
         let dir = std::env::temp_dir().join(format!("sarv-fresh-{}", std::process::id()));
         let _ = std::fs::remove_dir_all(&dir);
         std::fs::create_dir_all(&dir).unwrap();
-        let env = Env { system_dark: true, scale: 2.0 };
+        let env = Env {
+            system_dark: true,
+            scale: 2.0,
+        };
         let mut rt = Runtime::new(
             State::with_engine(data::Engine::with_dir(&dir), true),
             ui::root_view,
@@ -970,11 +1010,23 @@ mod tests {
         click(&mut rt, "btn-Save sheet");
         assert!(!rt.state.sheets.dirty, "successful save must clear the dirty flag");
 
-        let loaded = rt.state.engine.call("sheet_load", serde_json::json!({ "company_id": rt.state.books.company_id })).unwrap();
+        let loaded = rt
+            .state
+            .engine
+            .call("sheet_load", serde_json::json!({ "company_id": rt.state.books.company_id }))
+            .unwrap();
         assert_eq!(loaded["workbook"]["sheets"][0]["cells"]["C3"], "=C1+C2");
         assert_eq!(loaded["workbook"]["sheets"][0]["cells"]["B1"], "=BOOKS(\"cash\")");
-        assert_eq!(sarv_quote::store::Store::open(&rt.state.engine.dir).unwrap().local_generation(), generation);
-        assert!(rt.state.toasts.iter().any(|t| t.message.contains("برگه") || t.message.contains("Sheet")));
+        assert_eq!(
+            sarv_quote::store::Store::open(&rt.state.engine.dir).unwrap().local_generation(),
+            generation
+        );
+        assert!(
+            rt.state
+                .toasts
+                .iter()
+                .any(|t| t.message.contains("برگه") || t.message.contains("Sheet"))
+        );
     }
 
     #[test]
@@ -1011,9 +1063,27 @@ mod tests {
             "POS opens with catalog search focused for barcode entry"
         );
         assert!(rt.find("field-pos-search").is_some());
-        assert!(crate::ui::views::pos::product_matches("کالای الف", "SKU-A", "ITEM-A", "6260001", "sku-a"));
-        assert!(crate::ui::views::pos::product_matches("کالای الف", "SKU-A", "ITEM-A", "6260001", "۶۲۶"));
-        assert!(!crate::ui::views::pos::product_matches("کالای الف", "SKU-A", "ITEM-A", "6260001", "no-such-sku"));
+        assert!(crate::ui::views::pos::product_matches(
+            "کالای الف",
+            "SKU-A",
+            "ITEM-A",
+            "6260001",
+            "sku-a"
+        ));
+        assert!(crate::ui::views::pos::product_matches(
+            "کالای الف",
+            "SKU-A",
+            "ITEM-A",
+            "6260001",
+            "۶۲۶"
+        ));
+        assert!(!crate::ui::views::pos::product_matches(
+            "کالای الف",
+            "SKU-A",
+            "ITEM-A",
+            "6260001",
+            "no-such-sku"
+        ));
 
         click(&mut rt, "pos-item-ITEM-A");
         click(&mut rt, "btn-pos-account");
@@ -1035,5 +1105,4 @@ mod tests {
         assert!(dumped.contains("50000"), "catalog price posted once: {dumped}");
         assert!(rt.state.toasts.iter().any(|t| t.tone == Tone::Success));
     }
-
 }

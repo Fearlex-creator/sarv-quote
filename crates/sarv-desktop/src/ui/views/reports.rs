@@ -98,7 +98,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             .name(ui.t("Customers & Suppliers"))
             .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
             .column(TableColumn::new("role", ui.t("Role")).width(120.0).min(88.0))
-            .column(TableColumn::new("balance", ui.t("Balance")).width(160.0).min(110.0).align(Align::End).sortable())
+            .column(
+                TableColumn::new("balance", ui.t("Balance"))
+                    .width(160.0)
+                    .min(110.0)
+                    .align(Align::End)
+                    .sortable(),
+            )
             .cell(|s: &State, i, col| {
                 let (key, amount) = &party_keys(s)[i];
                 let (role, id) = key.split_once(':').unwrap_or(("contact", key.as_str()));
@@ -139,9 +145,30 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             let metrics = row()
                 .w_full()
                 .gap(12.0)
-                .child(ui.metric("pl-rev", &icons::SALES, &ui.t("Revenue"), ui.f.money(&revenue), ui.t("Posted entries"), Tone::Success))
-                .child(ui.metric("pl-exp", &icons::PURCHASES, &ui.t("Expenses"), ui.f.money(&expenses), ui.t("Posted entries"), Tone::Warning))
-                .child(ui.metric("pl-net", &icons::REPORTS, &ui.t("Net profit"), ui.f.money(&profit), ui.t("Profit this period"), Tone::Info));
+                .child(ui.metric(
+                    "pl-rev",
+                    &icons::SALES,
+                    &ui.t("Revenue"),
+                    ui.f.money(&revenue),
+                    ui.t("Posted entries"),
+                    Tone::Success,
+                ))
+                .child(ui.metric(
+                    "pl-exp",
+                    &icons::PURCHASES,
+                    &ui.t("Expenses"),
+                    ui.f.money(&expenses),
+                    ui.t("Posted entries"),
+                    Tone::Warning,
+                ))
+                .child(ui.metric(
+                    "pl-net",
+                    &icons::REPORTS,
+                    &ui.t("Net profit"),
+                    ui.f.money(&profit),
+                    ui.t("Profit this period"),
+                    Tone::Info,
+                ));
 
             let table = Table::new(
                 |s: &State| &s.reports.table,
@@ -153,7 +180,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
             .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
             .column(TableColumn::new("class", ui.t("Classification")).width(120.0).min(96.0))
-            .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(100.0).align(Align::End).sortable())
+            .column(
+                TableColumn::new("amount", ui.t("Amount"))
+                    .width(160.0)
+                    .min(100.0)
+                    .align(Align::End)
+                    .sortable(),
+            )
             .cell(|s: &State, i, col| {
                 let r = &pl_rows(s)[i];
                 match col {
@@ -205,13 +238,10 @@ fn sheet_rows(s: &State) -> Vec<(String, serde_json::Value)> {
 fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     let rows = sheet_rows(s);
     if rows.is_empty() {
-        return col()
-            .w_full()
-            .gap(14.0)
-            .grow(1.0)
-            .min_h(0.0)
-            .child(tab_bar)
-            .child(ui.empty(&icons::REPORTS, "No balances through this date", "Balance sheet").grow(1.0));
+        return col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(
+            ui.empty(&icons::REPORTS, "No balances through this date", "Balance sheet")
+                .grow(1.0),
+        );
     }
     let table = Table::new(
         |s: &State| &s.reports.table,
@@ -273,13 +303,10 @@ fn aging_rows(s: &State) -> Vec<serde_json::Value> {
 
 fn aging_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     if aging_rows(s).is_empty() {
-        return col()
-            .w_full()
-            .gap(14.0)
-            .grow(1.0)
-            .min_h(0.0)
-            .child(tab_bar)
-            .child(ui.empty(&icons::REPORTS, "No outstanding balances — everything is settled.", "Aging").grow(1.0));
+        return col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(
+            ui.empty(&icons::REPORTS, "No outstanding balances — everything is settled.", "Aging")
+                .grow(1.0),
+        );
     }
     let table = Table::new(
         |s: &State| &s.reports.table,
