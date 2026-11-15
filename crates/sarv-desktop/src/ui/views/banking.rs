@@ -189,10 +189,10 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.toast(Tone::Danger, st.fmt.t("Select account"));
                     return;
                 }
-                let amt = match st.parse_money_input(&st.forms.get("bank-amount")) {
-                    Ok(v) if v > 0 => v,
-                    _ => {
-                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                let amt = match st.parse_positive_money(&st.forms.get("bank-amount")) {
+                    Ok(v) => v,
+                    Err(key) => {
+                        st.toast(Tone::Danger, st.fmt.t(key));
                         return;
                     }
                 };
@@ -201,7 +201,7 @@ fn mount_transfer_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 };
                 let reason = {
                     let r = st.forms.get("bank-reason");
-                    if r.trim().is_empty() { "Transfer".into() } else { r }
+                    if r.trim().is_empty() { st.fmt.t("Transfer") } else { r }
                 };
                 let kind = match st.banking.kind {
                     1 => "deposit",

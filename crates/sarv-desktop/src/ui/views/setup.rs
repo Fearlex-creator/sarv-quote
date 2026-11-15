@@ -68,7 +68,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     let create = ui.btn(Btn::Primary, "Create a company and fiscal period", Some(&icons::CHECK), |st| {
         let name = st.forms.get("setup-name").trim().to_string();
         if name.is_empty() {
-            st.toast(Tone::Warning, st.fmt.t("Name"));
+            st.toast(Tone::Warning, st.fmt.t("Enter the business name."));
             return;
         }
         let defaults = fiscal_period(st.fmt.calendar, chrono::Local::now().date_naive());
@@ -113,6 +113,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         if let Ok(v) = res {
             if let Some(id) = v["company_id"].as_str() {
                 st.select_company(id);
+                let _ = st.save_preferences();
             }
         }
     });
@@ -173,9 +174,11 @@ fn language_row(s: &State, ui: &Ui) -> El {
         if idx == 0 {
             st.set_lang(Lang::Fa);
             st.fmt.calendar = CalendarKind::Jalali;
+            st.fmt.persian_digits = true;
         } else {
             st.set_lang(Lang::En);
             st.fmt.calendar = CalendarKind::Gregorian;
+            st.fmt.persian_digits = false;
         }
     });
     row()
@@ -303,8 +306,11 @@ fn csv_row(fields: &[(&str, &str)]) -> String {
         .join(",")
 }
 
-fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64) -> String {
+fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64, fmt: crate::i18n::Fmt) -> String {
     let p: String = company_id.chars().take(8).collect();
+    let opening_name = fmt.t("Opening balances");
+    let cash_name = fmt.t("Main Cash");
+    let bank_name = fmt.t("Main Bank");
     let ledger = |role: &str, debit: i64, credit: i64| {
         csv_row(&[
             ("version", "sarv-opening-v1"),
@@ -325,7 +331,7 @@ fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64) -> String {
             ("kind", "opening"),
             ("id", &format!("{p}-OPEN")),
             ("company_id", company_id),
-            ("name", "Opening balances"),
+            ("name", &opening_name),
             ("as_of", as_of),
         ]),
     ];
@@ -354,7 +360,7 @@ fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64) -> String {
             ("kind", "cash"),
             ("id", &format!("{p}-C1")),
             ("company_id", company_id),
-            ("name", "Main Cash"),
+            ("name", &cash_name),
             ("amount", &cash_s),
             ("unit", "IRR"),
             ("reference", &format!("{p}-CASH-1")),
@@ -366,7 +372,7 @@ fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64) -> String {
             ("kind", "bank"),
             ("id", &format!("{p}-B1")),
             ("company_id", company_id),
-            ("name", "Main Bank"),
+            ("name", &bank_name),
             ("amount", &bank_s),
             ("unit", "IRR"),
             ("reference", &format!("{p}-BANK-1")),
@@ -379,7 +385,7 @@ fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64) -> String {
 
 fn post_opening(st: &mut State, cash: i64, bank: i64, source: &str) -> Result<serde_json::Value, String> {
     let as_of = st.books.range().0;
-    let csv = opening_csv(&st.books.company_id, &as_of, cash, bank);
+    let csv = opening_csv(&st.books.company_id, &as_of, cash, bank, st.fmt);
     let review = st.query(
         "opening_csv_preview",
         json!({ "company_id": st.books.company_id, "csv": csv, "request_key": source }),

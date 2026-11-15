@@ -80,6 +80,18 @@ impl Ui {
     }
 
     pub fn button(&self, kind: Btn, id: &str, label: &str, glyph: Option<&'static Icon>, on_press: impl Fn(&mut State) + 'static) -> El {
+        self.button_enabled(kind, id, label, glyph, true, on_press)
+    }
+
+    fn button_enabled(
+        &self,
+        kind: Btn,
+        id: &str,
+        label: &str,
+        glyph: Option<&'static Icon>,
+        enabled: bool,
+        on_press: impl Fn(&mut State) + 'static,
+    ) -> El {
         let variant = match kind {
             Btn::Primary => ButtonVariant::Submit,
             Btn::Danger => ButtonVariant::Danger,
@@ -89,6 +101,7 @@ impl Ui {
         let mut b = Button::new(label.to_string())
             .variant(variant)
             .control_size(ControlSize::Large)
+            .disabled(!enabled)
             .on_press(on_press);
         if let Some(g) = glyph {
             b = b.icon(g);
@@ -158,8 +171,19 @@ impl Ui {
     }
 
     pub fn btn(&self, kind: Btn, key: &str, glyph: Option<&'static Icon>, on_press: impl Fn(&mut State) + 'static) -> El {
+        self.btn_enabled(kind, key, glyph, true, on_press)
+    }
+
+    pub fn btn_enabled(
+        &self,
+        kind: Btn,
+        key: &str,
+        glyph: Option<&'static Icon>,
+        enabled: bool,
+        on_press: impl Fn(&mut State) + 'static,
+    ) -> El {
         let label = self.t(key);
-        self.button(kind, key, &label, glyph, on_press)
+        self.button_enabled(kind, key, &label, glyph, enabled, on_press)
     }
 
     pub fn field(&self, s: &State, key: &str, placeholder: &str) -> El {

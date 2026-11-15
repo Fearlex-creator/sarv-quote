@@ -270,6 +270,8 @@ impl State {
         }
         if let Some(d) = st["display_digits"].as_str() {
             self.fmt.persian_digits = d == "Persian";
+        } else {
+            self.fmt.persian_digits = self.fmt.lang == Lang::Fa;
         }
         if let Some(u) = st["default_currency"].as_str() {
             self.fmt.unit = if u == "Rial" { Unit::Rial } else { Unit::Toman };
@@ -298,7 +300,51 @@ impl State {
 
     pub fn set_lang(&mut self, lang: Lang) {
         self.fmt.lang = lang;
-        self.fmt.persian_digits = lang == Lang::Fa;
+    }
+
+    /// Persist appearance, language, digits, unit, calendar, and feature toggles to the books.
+    pub fn save_preferences(&mut self) -> bool {
+        if !self.books.has_company() {
+            return true;
+        }
+        let appearance = if self.dark { "Dark" } else { "Light" };
+        let digits = if self.fmt.persian_digits { "Persian" } else { "Latin" };
+        let currency = if self.fmt.unit == Unit::Rial { "Rial" } else { "Toman" };
+        let date_display = if self.fmt.calendar == CalendarKind::Jalali {
+            "Jalali"
+        } else {
+            "Iso"
+        };
+        let mut settings = self.books.workspace["settings"].clone();
+        if settings.is_null() {
+            settings = serde_json::json!({});
+        }
+        settings["appearance"] = serde_json::json!(appearance);
+        settings["display_digits"] = serde_json::json!(digits);
+        settings["default_currency"] = serde_json::json!(currency);
+        settings["date_display"] = serde_json::json!(date_display);
+        settings["text_direction"] = serde_json::json!(if self.fmt.lang == Lang::En { "Ltr" } else { "Rtl" });
+        settings["show_pos"] = serde_json::json!(self.show_pos);
+        for (k, d) in [
+            ("next_number", "1"),
+            ("default_validity_days", "14"),
+            ("default_discount_rial", "0"),
+            ("tax_basis_points", "0"),
+        ] {
+            if settings[k].as_str().is_none() {
+                settings[k] = serde_json::json!(settings[k].as_u64().map(|n| n.to_string()).unwrap_or_else(|| d.into()));
+            }
+        }
+        match self.engine.call("settings", settings) {
+            Ok(_) => {
+                self.refresh();
+                true
+            }
+            Err(e) => {
+                self.toast_err(e);
+                false
+            }
+        }
     }
 
     pub fn nav(&mut self, page: Page) {
@@ -521,7 +567,7 @@ impl State {
             payload["date"] = Value::String(crate::data::today());
         }
         if blank(&payload["reason"]) {
-            payload["reason"] = Value::String("Desktop".into());
+            payload["reason"] = Value::String(self.fmt.t("Recorded in Sarv"));
         }
         if blank(&payload["source_id"]) || blank(&payload["request_key"]) {
             let key = format!(

@@ -446,4 +446,147 @@ mod tests {
             }
         }
     }
+
+    #[test]
+    fn every_ui_key_has_a_persian_entry() {
+        use std::collections::HashSet;
+        use std::path::Path;
+
+        const ALLOW: &[&str] = &["English", "POS", "Sarv", "IRR"];
+        let fa_keys: HashSet<&str> = FA.iter().map(|(k, _)| *k).collect();
+        let allow: HashSet<&str> = ALLOW.iter().copied().collect();
+
+        fn read_string_lit(s: &str) -> Option<(String, usize)> {
+            let s = s.trim_start();
+            if !s.starts_with('"') {
+                return None;
+            }
+            let mut out = String::new();
+            let mut chars = s[1..].char_indices();
+            while let Some((i, c)) = chars.next() {
+                match c {
+                    '"' => return Some((out, i + 2)),
+                    '\\' => {
+                        let (_, esc) = chars.next()?;
+                        match esc {
+                            'n' => out.push('\n'),
+                            'r' => out.push('\r'),
+                            't' => out.push('\t'),
+                            '\\' => out.push('\\'),
+                            '"' => out.push('"'),
+                            '\'' => out.push('\''),
+                            other => out.push(other),
+                        }
+                    }
+                    _ => out.push(c),
+                }
+            }
+            None
+        }
+
+        fn skip_first_arg(s: &str) -> Option<&str> {
+            let mut depth = 0usize;
+            let mut in_str = false;
+            let mut esc = false;
+            for (i, c) in s.char_indices() {
+                if in_str {
+                    if esc {
+                        esc = false;
+                    } else if c == '\\' {
+                        esc = true;
+                    } else if c == '"' {
+                        in_str = false;
+                    }
+                    continue;
+                }
+                match c {
+                    '"' => in_str = true,
+                    '(' | '[' | '{' => depth += 1,
+                    ')' | ']' | '}' => {
+                        if depth == 0 {
+                            return None;
+                        }
+                        depth -= 1;
+                    }
+                    ',' if depth == 0 => return Some(&s[i + 1..]),
+                    _ => {}
+                }
+            }
+            None
+        }
+
+        fn collect_rs_files(dir: &Path, out: &mut Vec<std::path::PathBuf>) {
+            for entry in std::fs::read_dir(dir).unwrap() {
+                let path = entry.unwrap().path();
+                if path.is_dir() {
+                    if path.file_name().and_then(|n| n.to_str()) == Some("tests") {
+                        continue;
+                    }
+                    collect_rs_files(&path, out);
+                } else if path.extension().and_then(|e| e.to_str()) == Some("rs") {
+                    out.push(path);
+                }
+            }
+        }
+
+        let mut files = Vec::new();
+        collect_rs_files(Path::new(concat!(env!("CARGO_MANIFEST_DIR"), "/src")), &mut files);
+        files.sort();
+
+        let mut missing = Vec::new();
+        let mut check_key = |file: &Path, key: &str| {
+            if !key.is_empty() && !allow.contains(key) && !fa_keys.contains(key) {
+                missing.push(format!("{}: {key:?}", file.display()));
+            }
+        };
+
+        for page in crate::app::Page::ALL {
+            check_key(Path::new("app.rs"), page.label());
+        }
+
+        for file in &files {
+            let src = std::fs::read_to_string(file).unwrap();
+            for pat in [".t(\"", "ui.labeled(\""] {
+                let mut rest = src.as_str();
+                while let Some(idx) = rest.find(pat) {
+                    let after = &rest[idx + pat.len() - 1..];
+                    if let Some((lit, used)) = read_string_lit(after) {
+                        check_key(file, &lit);
+                        rest = &after[used..];
+                    } else {
+                        rest = &rest[idx + pat.len()..];
+                    }
+                }
+            }
+            for pat in ["ui.btn(", "ui.btn_enabled(", "ui.wrap_btn(", "ui.compact_btn("] {
+                let mut rest = src.as_str();
+                while let Some(idx) = rest.find(pat) {
+                    let after_paren = &rest[idx + pat.len()..];
+                    if let Some(arg2) = skip_first_arg(after_paren) {
+                        if let Some((lit, _)) = read_string_lit(arg2) {
+                            check_key(file, &lit);
+                        }
+                    }
+                    rest = after_paren;
+                }
+            }
+            let mut rest = src.as_str();
+            while let Some(idx) = rest.find("ui.empty(") {
+                let after_paren = &rest[idx + "ui.empty(".len()..];
+                if let Some(arg2) = skip_first_arg(after_paren) {
+                    if let Some((lit, _)) = read_string_lit(arg2) {
+                        check_key(file, &lit);
+                    }
+                    if let Some(arg3) = skip_first_arg(arg2) {
+                        if let Some((lit, _)) = read_string_lit(arg3) {
+                            check_key(file, &lit);
+                        }
+                    }
+                }
+                rest = after_paren;
+            }
+        }
+
+        assert!(missing.is_empty(), "UI keys missing from FA:\n{}", missing.join("\n"));
+    }
 }

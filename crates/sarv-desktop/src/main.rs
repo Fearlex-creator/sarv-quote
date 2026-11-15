@@ -42,11 +42,13 @@ fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
     }
     if ev.is_command('d') {
         s.dark = !s.dark;
+        let _ = s.save_preferences();
         return true;
     }
     if ev.is_command('l') {
         let next = s.lang().other();
         s.set_lang(next);
+        let _ = s.save_preferences();
         return true;
     }
     false

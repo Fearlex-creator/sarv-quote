@@ -80,7 +80,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         let theme = Switch::new(s.dark)
             .label(ui.t("Theme"))
             .hide_label()
-            .on_toggle(|st: &mut State| st.dark = !st.dark)
+            .on_toggle(|st: &mut State| {
+                st.dark = !st.dark;
+                let _ = st.save_preferences();
+            })
             .build(&ui.k)
             .key("settings-theme-switch");
 
@@ -88,12 +91,16 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         let lang_items = [(lang_fa.as_str(), s.lang() == Lang::Fa), ("English", s.lang() == Lang::En)];
         let lang_ctrl = ui.tabs("settings-lang", &lang_items, |st, idx| {
             st.set_lang(if idx == 0 { Lang::Fa } else { Lang::En });
+            let _ = st.save_preferences();
         });
 
         let digits = Switch::new(s.fmt.persian_digits)
             .label(ui.t("Display digits"))
             .hide_label()
-            .on_toggle(|st: &mut State| st.fmt.persian_digits = !st.fmt.persian_digits)
+            .on_toggle(|st: &mut State| {
+                st.fmt.persian_digits = !st.fmt.persian_digits;
+                let _ = st.save_preferences();
+            })
             .build(&ui.k)
             .key("settings-digits-switch");
 
@@ -105,6 +112,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         ];
         let unit_ctrl = ui.tabs("settings-unit", &unit_items, |st, idx| {
             st.fmt.unit = if idx == 0 { Unit::Toman } else { Unit::Rial };
+            let _ = st.save_preferences();
         });
 
         let cal_jalali = ui.t("Jalali");
@@ -115,6 +123,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         ];
         let cal_ctrl = ui.tabs("settings-cal", &cal_items, |st, idx| {
             st.fmt.calendar = if idx == 0 { CalendarKind::Jalali } else { CalendarKind::Gregorian };
+            let _ = st.save_preferences();
         });
 
         let appearance = ui.section(
@@ -135,7 +144,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         let pos_switch = Switch::new(s.show_pos)
             .label(ui.t("Point of sale"))
             .hide_label()
-            .on_toggle(|st: &mut State| st.show_pos = !st.show_pos)
+            .on_toggle(|st: &mut State| {
+                st.show_pos = !st.show_pos;
+                let _ = st.save_preferences();
+            })
             .build(&ui.k)
             .key("settings-pos-switch");
         let features = ui.section(
@@ -235,32 +247,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 Err(e) => st.toast_err(e),
             }),
             ui.btn(Btn::Primary, "Save preferences", Some(&icons::CHECK), |st| {
-                let appearance = if st.dark { "Dark" } else { "Light" };
-                let digits = if st.fmt.persian_digits { "Persian" } else { "Latin" };
-                let currency = if st.fmt.unit == Unit::Rial { "Rial" } else { "Toman" };
-                let date_display = if st.fmt.calendar == CalendarKind::Jalali { "Jalali" } else { "Iso" };
-                let mut settings = st.books.workspace["settings"].clone();
-                if settings.is_null() {
-                    settings = json!({});
-                }
-                settings["appearance"] = json!(appearance);
-                settings["display_digits"] = json!(digits);
-                settings["default_currency"] = json!(currency);
-                settings["date_display"] = json!(date_display);
-                settings["text_direction"] = json!(if st.fmt.lang == Lang::En { "Ltr" } else { "Rtl" });
-                settings["show_pos"] = json!(st.show_pos);
-                for (k, d) in [
-                    ("next_number", "1"),
-                    ("default_validity_days", "14"),
-                    ("default_discount_rial", "0"),
-                    ("tax_basis_points", "0"),
-                ] {
-                    if settings[k].as_str().is_none() {
-                        settings[k] = json!(settings[k].as_u64().map(|n| n.to_string()).unwrap_or_else(|| d.into()));
-                    }
-                }
-                if st.run("settings", settings, Some("Preferences saved")).is_ok() {
-                    st.apply_settings();
+                if st.save_preferences() {
+                    st.toast(Tone::Success, st.fmt.t("Preferences saved"));
                 }
             }),
         ],

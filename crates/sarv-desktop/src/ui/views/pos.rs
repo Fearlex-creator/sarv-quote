@@ -176,7 +176,7 @@ fn charge(st: &mut State, method: usize) {
         customer_id: st.pos.customer_id.clone(),
         lines,
         pay_method: method,
-        note: "Goods sales order".into(),
+        note: st.fmt.t("Goods sales order"),
         received: String::new(),
         date: crate::data::today(),
     };

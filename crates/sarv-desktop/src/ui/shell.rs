@@ -105,6 +105,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
                 .on_select(|st: &mut State, _| {
                     let next = st.lang().other();
                     st.set_lang(next);
+                    let _ = st.save_preferences();
                 })
                 .build(k)
                 .key("lang-toggle"),
@@ -113,7 +114,10 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
             SidebarRow::new(theme_label)
                 .icon(theme_icon)
                 .height(32.0)
-                .on_select(|st: &mut State, _| st.dark = !st.dark)
+                .on_select(|st: &mut State, _| {
+                    st.dark = !st.dark;
+                    let _ = st.save_preferences();
+                })
                 .build(k)
                 .key("theme-toggle"),
         )

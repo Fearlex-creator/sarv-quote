@@ -361,7 +361,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Orders, receipts, and bills"),
         vec![
             ui.btn(Btn::Primary, "New purchase order", Some(&icons::PLUS), open_purchase),
-            ui.btn(Btn::Glass, "Return", None, return_selected),
+            ui.btn_enabled(Btn::Glass, "Return", None, !s.purchases.selected.is_empty(), return_selected),
         ],
         body,
     )
@@ -563,12 +563,12 @@ fn return_selected(st: &mut State) {
         .into_iter()
         .find(|r| crate::data::s(&r["id"]) == st.purchases.selected)
     else {
-        st.toast(Tone::Info, st.fmt.t("No records"));
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     };
     let returnable = record["command"].get("Receive").is_some() || record["command"].get("Bill").is_some();
     if !returnable {
-        st.toast(Tone::Info, st.fmt.t("Goods that have arrived."));
+        st.toast(Tone::Info, st.fmt.t("Only received goods can be returned."));
         return;
     }
     let id = st.purchases.selected.clone();

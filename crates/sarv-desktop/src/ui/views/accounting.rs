@@ -244,9 +244,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Ledger and accounting"),
         vec![
             ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), open_journal),
-            ui.btn(Btn::Glass, "Ledger", None, open_ledger),
-            ui.btn(Btn::Glass, "Reverse", None, reverse_selected),
-            ui.btn(Btn::Glass, period_btn_label, None, toggle_period),
+            ui.btn_enabled(Btn::Glass, "Ledger", None, s.accounting.selected.starts_with("acc-"), open_ledger),
+            ui.btn_enabled(
+                Btn::Glass,
+                "Reverse",
+                None,
+                s.accounting.selected.starts_with("journal-"),
+                reverse_selected,
+            ),
+            ui.btn_enabled(
+                Btn::Glass,
+                period_btn_label,
+                None,
+                s.accounting.selected.starts_with("period-"),
+                toggle_period,
+            ),
         ],
         body,
     )
@@ -320,10 +332,10 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.accounting.posting = false;
                     return;
                 }
-                let amt = match st.parse_money_input(&st.forms.get("journal-amount")) {
-                    Ok(v) if v > 0 => v,
-                    _ => {
-                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                let amt = match st.parse_positive_money(&st.forms.get("journal-amount")) {
+                    Ok(v) => v,
+                    Err(key) => {
+                        st.toast(Tone::Danger, st.fmt.t(key));
                         st.accounting.posting = false;
                         return;
                     }
@@ -334,7 +346,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 };
                 let reason = {
                     let r = st.forms.get("journal-reason");
-                    if r.trim().is_empty() { "Manual journal".into() } else { r }
+                    if r.trim().is_empty() { st.fmt.t("Manual journal") } else { r }
                 };
                 if st.accounting.post_key.is_empty() {
                     st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
@@ -379,7 +391,7 @@ fn mount_journal_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
 
 fn open_ledger(st: &mut State) {
     if !st.accounting.selected.starts_with("acc-") {
-        st.toast(Tone::Info, st.fmt.t("Select account"));
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     }
     let id = st.accounting.selected.strip_prefix("acc-").unwrap_or(&st.accounting.selected);
@@ -395,7 +407,7 @@ fn open_ledger(st: &mut State) {
 
 fn reverse_selected(st: &mut State) {
     if !st.accounting.selected.starts_with("journal-") {
-        st.toast(Tone::Info, st.fmt.t("No journals"));
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     }
     let id = st
@@ -416,7 +428,7 @@ fn reverse_selected(st: &mut State) {
         "date": date_raw,
         "request_key": key,
         "source_id": key,
-        "reason": "Reverse entry"
+        "reason": st.fmt.t("Reverse entry")
     });
     match st.query("journal_reverse_preview", payload.clone()) {
         Ok(pr) => payload["expected_generation"] = pr["_generation"].clone(),
@@ -445,7 +457,7 @@ fn reverse_selected(st: &mut State) {
 
 fn toggle_period(st: &mut State) {
     if !st.accounting.selected.starts_with("period-") {
-        st.toast(Tone::Info, st.fmt.t("No fiscal periods"));
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     }
     let id = st

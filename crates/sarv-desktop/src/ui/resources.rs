@@ -114,7 +114,7 @@ impl State {
             "id": id,
             "name": name,
             "sku": sku,
-            "default_unit_name": "Piece",
+            "default_unit_name": self.fmt.t("Piece"),
             "reason": "Register item",
             "product_profile": {
                 "sale_price": sale_price_rial,
@@ -157,6 +157,14 @@ impl State {
 
     pub fn parse_money_input(&self, raw: &str) -> Result<i64, crate::i18n::MoneyError> {
         crate::i18n::parse_money(raw, self.fmt.unit)
+    }
+
+    pub fn parse_positive_money(&self, raw: &str) -> Result<i64, &'static str> {
+        match self.parse_money_input(raw) {
+            Ok(v) if v > 0 => Ok(v),
+            Ok(_) | Err(crate::i18n::MoneyError::Empty) => Err("Enter an amount greater than zero."),
+            Err(_) => Err("Enter a valid amount."),
+        }
     }
 
     pub fn ensure_walk_in_customer(&mut self) -> Result<String, String> {

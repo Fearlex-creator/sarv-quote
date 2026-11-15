@@ -309,7 +309,7 @@ fn contact_form_fields(s: &State, ui: &Ui, prefix: &str) -> El {
                 col()
                     .gap(12.0)
                     .child(ui.form_grid(
-                        ui.labeled("Phone", ui.field(s, &phone, "۰۲۱-۸۸۸۸۸۸۸۸")),
+                        ui.labeled("Phone", ui.field(s, &phone, &s.fmt.digits("021-88888888"))),
                         ui.labeled("Mobile", ui.field(s, &mobile, "")),
                     ))
                     .child(ui.form_grid(

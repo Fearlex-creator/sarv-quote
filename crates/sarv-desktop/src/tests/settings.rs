@@ -133,3 +133,48 @@ fn test_recovery_screen_restores_a_backup() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_theme_toggle_persists_across_restart() {
+    let mut rt = make_test_runtime();
+    let initial_dark = rt.state.dark;
+    let initial_lang = rt.state.lang();
+
+    click(&mut rt, "theme-toggle");
+    click(&mut rt, "lang-toggle");
+    assert_eq!(rt.state.dark, !initial_dark);
+    assert_eq!(rt.state.lang(), initial_lang.other());
+    assert_no_danger(&rt);
+
+    let dir = rt.state.engine.dir.clone();
+    let again = State::with_engine(data::Engine::with_dir(&dir), true);
+    assert_eq!(again.dark, !initial_dark, "theme toggle must persist across restart");
+    assert_eq!(again.lang(), initial_lang.other(), "language toggle must persist across restart");
+}
+
+#[test]
+fn test_language_switch_keeps_digit_choice() {
+    let mut rt = make_test_runtime();
+    assert_eq!(rt.state.lang(), crate::i18n::Lang::Fa);
+    assert!(rt.state.fmt.persian_digits);
+
+    // Navigate to Settings first, then switch language to English via sidebar toggle; Persian digits must stay on.
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "lang-toggle");
+    assert_eq!(rt.state.lang(), crate::i18n::Lang::En);
+    assert!(rt.state.fmt.persian_digits, "switching language must not overwrite persian_digits");
+
+    // Turn off Persian digits in Settings, then switch back to Persian; Latin digits must stay.
+    click(&mut rt, "settings-digits-switch");
+    assert!(!rt.state.fmt.persian_digits);
+
+    click(&mut rt, "lang-toggle");
+    assert_eq!(rt.state.lang(), crate::i18n::Lang::Fa);
+    assert!(!rt.state.fmt.persian_digits, "switching back to Persian must keep Latin digits");
+    assert_no_danger(&rt);
+
+    let dir = rt.state.engine.dir.clone();
+    let again = State::with_engine(data::Engine::with_dir(&dir), true);
+    assert_eq!(again.lang(), crate::i18n::Lang::Fa);
+    assert!(!again.fmt.persian_digits);
+}

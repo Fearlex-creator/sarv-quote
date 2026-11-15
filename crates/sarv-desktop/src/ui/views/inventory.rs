@@ -128,7 +128,7 @@ fn unit_name(s: &State, unit_id: &str) -> String {
         .as_array()
         .and_then(|units| units.iter().find(|u| u["id"].as_str() == Some(unit_id)))
         .map(|u| crate::data::s(&u["name"]))
-        .unwrap_or_else(|| "Unit".into())
+        .unwrap_or_else(|| s.fmt.t("Unit"))
 }
 
 fn catalog_values(s: &State, field: &str) -> Vec<String> {
@@ -568,12 +568,12 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
                 st.inventory.transfer_posting = true;
                 if st.inventory.transfer_item.is_empty() || st.inventory.transfer_from.is_empty() || st.inventory.transfer_to.is_empty() {
-                    st.toast(Tone::Danger, st.fmt.t("Select product"));
+                    st.toast(Tone::Danger, st.fmt.t("Choose the product and both warehouses."));
                     st.inventory.transfer_posting = false;
                     return;
                 }
                 if st.inventory.transfer_from == st.inventory.transfer_to {
-                    st.toast(Tone::Danger, st.fmt.t("Select warehouse"));
+                    st.toast(Tone::Danger, st.fmt.t("Choose two different warehouses."));
                     st.inventory.transfer_posting = false;
                     return;
                 }

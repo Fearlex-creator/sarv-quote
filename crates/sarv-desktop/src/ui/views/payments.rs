@@ -280,10 +280,10 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     st.payments.posting = false;
                     return;
                 }
-                let amount = match st.parse_money_input(&st.forms.get("pay-amount")) {
-                    Ok(v) if v > 0 => v,
-                    _ => {
-                        st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                let amount = match st.parse_positive_money(&st.forms.get("pay-amount")) {
+                    Ok(v) => v,
+                    Err(key) => {
+                        st.toast(Tone::Danger, st.fmt.t(key));
                         st.payments.posting = false;
                         return;
                     }
@@ -333,7 +333,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 let advance = left.to_string();
                 let reason = {
                     let r = st.forms.get("pay-reason");
-                    if r.trim().is_empty() { "Payment".into() } else { r }
+                    if r.trim().is_empty() { st.fmt.t("Payment") } else { r }
                 };
                 if st.payments.post_key.is_empty() {
                     st.toast(Tone::Danger, st.fmt.t("Reopen this form and try again."));
@@ -361,8 +361,14 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     let sayad = crate::i18n::latin_digits(&st.forms.get("pay-sayad"));
                     let number = st.forms.get("pay-cheque-no");
                     let bank = st.forms.get("pay-bank");
-                    if sayad.trim().is_empty() || number.trim().is_empty() {
-                        st.toast(Tone::Danger, st.fmt.t("Cheque"));
+                    if sayad.trim().is_empty() || number.trim().is_empty() || st.forms.get("pay-due").trim().is_empty() {
+                        st.toast(Tone::Danger, st.fmt.t("Enter the cheque's Sayad ID, number and due date."));
+                        st.payments.posting = false;
+                        return;
+                    }
+                    let sayad_trimmed = sayad.trim();
+                    if sayad_trimmed.len() != 16 || !sayad_trimmed.chars().all(|c| c.is_ascii_digit()) {
+                        st.toast(Tone::Danger, st.fmt.t("A Sayad ID has exactly 16 digits."));
                         st.payments.posting = false;
                         return;
                     }
@@ -371,7 +377,7 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         return;
                     };
                     payload["cheque"] = json!({
-                        "sayad_id": sayad.trim(),
+                        "sayad_id": sayad_trimmed,
                         "number": number.trim(),
                         "bank": bank.trim(),
                         "branch": "",

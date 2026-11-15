@@ -225,7 +225,7 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
     let invoice = next_invoice_ref(st, &post_key);
     let mut note = ticket.note.trim().to_string();
     if note.is_empty() {
-        note = "Goods sales order".into();
+        note = st.fmt.t("Goods sales order");
     }
     let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &ticket.date);
     let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
@@ -274,17 +274,8 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket) -> bool {
         return false;
     }
     let fulfill_key = format!("{post_key}-fulfill");
-    if crate::ui::ops::post_operation(
-        st,
-        &record_id,
-        "fulfill",
-        &invoice,
-        "Deliver goods and issue invoice",
-        &fulfill_key,
-        &ticket.date,
-    )
-    .is_err()
-    {
+    let fulfill_note = st.fmt.t("Deliver goods and issue invoice");
+    if crate::ui::ops::post_operation(st, &record_id, "fulfill", &invoice, &fulfill_note, &fulfill_key, &ticket.date).is_err() {
         return false;
     }
     if ticket.pay_method < 2 {
@@ -317,7 +308,7 @@ fn complete_sale(st: &mut State) {
         pay_method: st.sales.pay_method,
         note: {
             let note = st.forms.get("sale-note").trim().to_string();
-            if note.is_empty() { "Goods sales order".into() } else { note }
+            if note.is_empty() { st.fmt.t("Goods sales order") } else { note }
         },
         received: st.forms.get("sale-received"),
         date,
@@ -572,8 +563,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         &ui.t("Sales that are delivered and billed."),
         vec![
             add_btn,
-            ui.btn(Btn::Glass, "Print / save PDF", Some(&icons::DOWNLOAD), print_selected),
-            ui.btn(Btn::Glass, "Return", None, return_selected),
+            ui.btn_enabled(
+                Btn::Glass,
+                "Print / save PDF",
+                Some(&icons::DOWNLOAD),
+                !s.sales.selected.is_empty(),
+                print_selected,
+            ),
+            ui.btn_enabled(Btn::Glass, "Return", None, !s.sales.selected.is_empty(), return_selected),
         ],
         col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.fill_or_empty(
             if s.sales.tab_idx == 0 {
@@ -931,7 +928,7 @@ fn is_invoice(record: &serde_json::Value) -> bool {
 
 fn print_selected(st: &mut State) {
     if st.sales.selected.is_empty() {
-        st.toast(Tone::Info, st.fmt.t("Select contact"));
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     }
     let result = if st.sales.tab_idx == 0 {
@@ -952,7 +949,7 @@ fn return_selected(st: &mut State) {
         .into_iter()
         .find(|r| crate::data::s(&r["id"]) == st.sales.selected)
     else {
-        st.toast(Tone::Info, st.fmt.t("No invoices"));
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     };
     if !is_invoice(&record) {
@@ -962,15 +959,8 @@ fn return_selected(st: &mut State) {
     let id = st.sales.selected.clone();
     let reference = format!("RET-{}", &id[..id.len().min(6)]);
     let key = st.mint_key("return");
-    let Ok(review) = crate::ui::ops::review_operation(
-        st,
-        &id,
-        "sale_return",
-        &reference,
-        "Restock customer return and issue credit",
-        &key,
-        &crate::data::today(),
-    ) else {
+    let return_note = st.fmt.t("Restock customer return and issue credit");
+    let Ok(review) = crate::ui::ops::review_operation(st, &id, "sale_return", &reference, &return_note, &key, &crate::data::today()) else {
         return;
     };
     let mut lines = review.lines;

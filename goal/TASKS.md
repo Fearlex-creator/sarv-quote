@@ -97,7 +97,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 016: Copy, validation, and settings persistence
-- [ ] **P16-T01**: Replace label-as-error toasts with real validation sentences, add `Ui::btn_enabled` and disable header actions without selection, localize default strings written to books, add `every_ui_key_has_a_persian_entry` test in `i18n.rs`, implement immediate `State::save_preferences` without overwriting digit preference on `set_lang`, add 2 tests, update `plans/README.md`.
+- [x] **P16-T01**: Replace label-as-error toasts with real validation sentences, add `Ui::btn_enabled` and disable header actions without selection, localize default strings written to books, add `every_ui_key_has_a_persian_entry` test in `i18n.rs`, implement immediate `State::save_preferences` without overwriting digit preference on `set_lang`, add 2 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/i18n.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/main.rs`, `crates/sarv-desktop/src/ui/{glass.rs,shell.rs,resources.rs}`, `crates/sarv-desktop/src/ui/views/*.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
