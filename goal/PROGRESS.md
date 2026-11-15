@@ -179,3 +179,17 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
   - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`130 passed; 0 failed`)
   - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
   - `cargo clippy --quiet -p sarv-quote --features pdf-export --all-targets -- -D warnings` -> exit 0
+
+## P23-T01: Persian affordances (Plan 023)
+- **Changed**:
+  - `crates/sarv-quote/src/iran/words.rs` & `mod.rs`: Implemented `persian_words` and `amount_in_words` with table-driven unit tests (`persian_words_table` 24 cases, `amount_in_words_units_and_signs` 8 cases).
+  - `crates/sarv-quote/src/sales_print.rs` & `tests/sales_exports.rs`: Added Persian `"به حروف: ..."` line under totals on RTL sales/quotation PDFs and asserted `"حروف"` in PDF text output.
+  - `crates/sarv-desktop/src/ui/views/{sales,pos,payments}.rs`: Rendered amount in words in Persian under Sale total, POS total, and Payment amount field.
+  - `crates/sarv-desktop/src/ui/glass.rs`, `contacts.rs`, `settings.rs`: Added `Ui::hinted`, advisory national ID / postal code / Sheba hints (never blocking Save), and `"Law data"` table dialog (`760px`) with review badges and reference-only footer.
+  - `crates/sarv-desktop/src/fa_messages.rs` & `tests/{sales,settings}.rs`: Added Persian strings, updated `test_backup_and_law_notice`, and added `test_sale_total_shows_amount_in_words_in_persian`, `test_invalid_national_id_shows_hint_but_saves`, and `test_law_data_lists_entries_as_not_reviewed`.
+  - `plans/README.md`: Marked Plan `023` as `DONE`.
+- **Checks**:
+  - `cargo test -p sarv-quote iran::words` -> exit 0 (`2 passed; 0 failed`)
+  - `cargo test -p sarv-quote --features pdf-export` -> exit 0 (all test binaries passed)
+  - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`133 passed; 0 failed`)
+  - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0

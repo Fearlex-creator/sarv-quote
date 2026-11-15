@@ -253,6 +253,19 @@ impl Ui {
         Field::new().label(self.t(label_key)).control(control).build(&self.k)
     }
 
+    pub fn hinted(&self, label_key: &str, control: El, hint: Option<(Tone, String)>) -> El {
+        let mut body = col().gap(4.0).child(control);
+        if let Some((tone, msg)) = hint {
+            body = body.child(
+                text(msg)
+                    .key(format!("hint-{label_key}"))
+                    .font(self.k.ty.caption())
+                    .color(self.tone_fg(tone)),
+            );
+        }
+        self.labeled(label_key, body)
+    }
+
     pub fn badge(&self, tone: Tone, s: impl Into<String>) -> El {
         let label = s.into();
         let sc = match tone {

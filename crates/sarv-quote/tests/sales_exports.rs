@@ -1118,6 +1118,9 @@ fn printable_sales_invoice_is_a4_exact_and_embeds_persian_fonts() {
         let text = String::from_utf8_lossy(&text.stdout);
         assert!(text.contains("REG-2026"), "{text}");
         assert!(text.contains("021-12345678"), "{text}");
+        if language.starts_with("fa") {
+            assert!(text.contains("حروف"), "{text}");
+        }
         assert!(!text.contains("source_line_id"));
         assert!(printable_document_pdf(&state, "foreign-company", id, "en", &out.join("foreign.pdf")).is_err());
     }

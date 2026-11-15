@@ -281,6 +281,14 @@ pub fn printable_document_pdf(state: &State, company_id: &str, document_id: &str
             money(Money::from_rials(discount))
         ),
         format!("{}: {} {unit}", label(rtl, "مبلغ نهایی", "Total"), money(total)),
+        if rtl {
+            format!(
+                "به حروف: {}",
+                crate::iran::words::amount_in_words(i128::from(total.rials()), prefs.unit == MoneyUnit::Toman)
+            )
+        } else {
+            String::new()
+        },
         label(
             rtl,
             "امضای فروشنده: __________________    امضای خریدار: __________________",
@@ -296,6 +304,9 @@ pub fn printable_document_pdf(state: &State, company_id: &str, document_id: &str
         y = page_header(page)? + 12.0;
     }
     for (index, line) in summary.iter().enumerate() {
+        if line.is_empty() {
+            continue;
+        }
         if y + 42.0 > 772.0 {
             footer(page)?;
             cr.show_page()?;
@@ -576,6 +587,14 @@ pub fn printable_quotation_pdf(state: &State, company_id: &str, draft_id: &str, 
             String::new()
         },
         format!("{}: {} {unit}", label(rtl, "مبلغ نهایی", "Total"), money(total)),
+        if rtl {
+            format!(
+                "به حروف: {}",
+                crate::iran::words::amount_in_words(i128::from(total.rials()), prefs.unit == MoneyUnit::Toman)
+            )
+        } else {
+            String::new()
+        },
         label(
             rtl,
             "این پیش‌فاکتور سند مالی نیست و پس از تأیید به سفارش فروش تبدیل می‌شود.",

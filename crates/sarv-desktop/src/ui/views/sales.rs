@@ -947,11 +947,20 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 .color(ui.k.c.text_base),
         );
 
+    let mut total_col = col().w_full().gap(4.0).child(total_row);
+    if s.lang() == crate::i18n::Lang::Fa {
+        let words = sarv_quote::iran::words::amount_in_words(
+            i128::from(total),
+            s.fmt.unit == crate::i18n::Unit::Toman,
+        );
+        total_col = total_col.child(row().key("sale-total-words").w_full().px(4.0).child(ui.muted(words)));
+    }
+
     let form = col()
         .gap(16.0)
         .child(ui.labeled("Customer", pickers::picker_row(customer_picker, add_customer)))
         .child(ui.section("sale-lines-sec", &ui.t("Products"), lines_col))
-        .child(total_row)
+        .child(total_col)
         .child(
             ui.form_grid(
                 col()

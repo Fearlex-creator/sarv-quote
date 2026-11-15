@@ -181,6 +181,11 @@ fn test_backup_and_law_notice() {
     assert!(backups, "backup file written");
     click(&mut rt, "btn-Law data");
     assert!(!rt.state.settings.law_notice.is_empty(), "law notice is shown, not posted");
+    assert!(rt.state.settings.law_open, "law data dialog opens");
+    assert!(rt.find("law-dialog-notice").is_some(), "law dialog notice exists");
+    assert!(rt.find("law-footer").is_some(), "law footer note exists");
+    click(&mut rt, "btn-Close");
+    assert!(!rt.state.settings.law_open, "law data dialog closes");
 }
 
 #[test]
@@ -372,5 +377,46 @@ fn test_cancel_adding_company_returns_to_books() {
     assert!(!rt.state.setup.adding_company);
     assert_eq!(rt.state.books.company_id, first_id);
     assert!(rt.find("sidebar-search").is_some(), "sidebar must return on cancel");
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_law_data_lists_entries_as_not_reviewed() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "btn-Law data");
+    assert!(rt.state.settings.law_open);
+    let entries = rt.state.settings.law_data["entries"]
+        .as_array()
+        .expect("law_data entries array");
+    assert!(!entries.is_empty(), "law_data must list entries");
+    for (idx, entry) in entries.iter().enumerate() {
+        assert!(rt.find(&format!("law-entry-{idx}")).is_some(), "missing row for law-entry-{idx}");
+        assert_eq!(entry["reviewed"].as_bool(), Some(false), "entries must be unreviewed");
+    }
+    assert!(rt.find("law-footer").is_some());
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_invalid_national_id_shows_hint_but_saves() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Contacts.key());
+    let before = rt.state.contacts.rows.len();
+    click(&mut rt, "btn-New customer");
+    assert!(rt.state.contacts.modal_open);
+
+    type_into(&mut rt, "contact-name", "Advisory Check Customer");
+    type_into(&mut rt, "contact-national", "1234567890");
+    let ui = crate::ui::glass::Ui::new(&rt.state);
+    let hint = crate::ui::views::contacts::national_id_hint(&ui, &rt.state.forms.get("contact-national"));
+    assert!(
+        matches!(hint, Some((crate::app::Tone::Warning, _))),
+        "invalid national ID check digit should produce an advisory warning hint: {hint:?}"
+    );
+
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.contacts.modal_open, "{}", blow(&rt, "save contact with invalid national id"));
+    assert_eq!(rt.state.contacts.rows.len(), before + 1);
     assert_no_danger(&rt);
 }

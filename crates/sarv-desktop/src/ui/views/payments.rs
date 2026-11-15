@@ -501,12 +501,29 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         (cheque.as_str(), s.payments.funds == 2),
     ];
     let funds_bar = ui.tabs("pay-funds", &funds, |st, i| st.payments.funds = i);
+    let amount_field = {
+        let f = ui.labeled("Amount", ui.money_field(s, "pay-amount"));
+        let raw = s.forms.get("pay-amount");
+        if s.lang() == crate::i18n::Lang::Fa && !raw.trim().is_empty() {
+            if let Ok(rials) = s.parse_money_input(&raw) {
+                let words = sarv_quote::iran::words::amount_in_words(
+                    i128::from(rials),
+                    s.fmt.unit == crate::i18n::Unit::Toman,
+                );
+                col().gap(4.0).child(f).child(ui.muted(words).key("pay-amount-words"))
+            } else {
+                f
+            }
+        } else {
+            f
+        }
+    };
     let mut form = col()
         .gap(14.0)
         .child(ui.labeled(if customers { "Customer" } else { "Vendor" }, party))
         .child(ui.section("pay-funds-sec", &ui.t("Cash and bank"), funds_bar))
         .child(ui.form_grid(
-            ui.labeled("Amount", ui.money_field(s, "pay-amount")),
+            amount_field,
             ui.date_field(s, "pay-date", "Date"),
         ))
         .child(ui.form_grid(

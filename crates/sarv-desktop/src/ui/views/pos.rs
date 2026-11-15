@@ -320,6 +320,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .child(ui.muted(ui.t("Total")).grow(1.0))
             .child(text(ui.f.money(&total.to_string())).font(total_style).color(ui.k.c.text_base)),
     );
+    if s.lang() == crate::i18n::Lang::Fa {
+        let words = sarv_quote::iran::words::amount_in_words(
+            i128::from(total),
+            s.fmt.unit == crate::i18n::Unit::Toman,
+        );
+        summary = summary.child(ui.muted(words).key("pos-total-words"));
+    }
     if tendered > total && total > 0 {
         summary = summary.child(
             row()

@@ -345,6 +345,51 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     )
 }
 
+pub(crate) fn national_id_hint(ui: &Ui, raw: &str) -> Option<(Tone, String)> {
+    use sarv_quote::iran::ids::{IdError, legal_id, national_id, normalize_digits};
+    let norm = normalize_digits(raw.trim());
+    if norm.is_empty() {
+        return None;
+    }
+    let res = match norm.chars().count() {
+        10 => national_id(&norm),
+        11 => legal_id(&norm),
+        _ => return Some((Tone::Warning, ui.t("A national ID has 10 digits; a legal ID has 11."))),
+    };
+    match res {
+        Ok(()) => None,
+        Err(IdError::Checksum | IdError::Repeated) => {
+            Some((Tone::Warning, ui.t("This national ID does not pass its check digit.")))
+        }
+        Err(IdError::NotDigits | IdError::Length) => {
+            Some((Tone::Warning, ui.t("A national ID has 10 digits; a legal ID has 11.")))
+        }
+    }
+}
+
+pub(crate) fn postal_code_hint(ui: &Ui, raw: &str) -> Option<(Tone, String)> {
+    use sarv_quote::iran::ids::{normalize_digits, postal_code};
+    let norm = normalize_digits(raw.trim());
+    if norm.is_empty() {
+        return None;
+    }
+    postal_code(&norm)
+        .err()
+        .map(|_| (Tone::Warning, ui.t("A postal code has 10 digits.")))
+}
+
+pub(crate) fn sheba_hint(ui: &Ui, raw: &str) -> Option<(Tone, String)> {
+    use sarv_quote::iran::sheba::{bank_name, canonical, validate};
+    let canon = canonical(raw.trim());
+    if !canon.starts_with("IR") {
+        return None;
+    }
+    match validate(&canon) {
+        Ok(()) => bank_name(&canon).map(|name| (Tone::Info, name.to_string())),
+        Err(_) => Some((Tone::Warning, ui.t("This Sheba number is not valid."))),
+    }
+}
+
 fn contact_form_fields(s: &State, ui: &Ui, prefix: &str) -> El {
     let name = format!("{prefix}-name");
     let first = format!("{prefix}-first");
@@ -402,7 +447,11 @@ fn contact_form_fields(s: &State, ui: &Ui, prefix: &str) -> El {
                     .child(ui.labeled("Address", ui.field(s, &address, "")))
                     .child(ui.form_grid(
                         ui.labeled("City", ui.field(s, &city, "")),
-                        ui.labeled("Postal code", ui.field(s, &postal, "")),
+                        ui.hinted(
+                            "Postal code",
+                            ui.field(s, &postal, ""),
+                            postal_code_hint(ui, &s.forms.get(&postal)),
+                        ),
                     )),
             ),
         )
@@ -413,7 +462,11 @@ fn contact_form_fields(s: &State, ui: &Ui, prefix: &str) -> El {
                 col()
                     .gap(12.0)
                     .child(ui.form_grid(
-                        ui.labeled("National / registration ID", ui.field(s, &national, "")),
+                        ui.hinted(
+                            "National / registration ID",
+                            ui.field(s, &national, ""),
+                            national_id_hint(ui, &s.forms.get(&national)),
+                        ),
                         ui.labeled("Tax / economic ID", ui.field(s, &tax, "")),
                     ))
                     .child(ui.labeled("Contact notes", ui.field(s, &notes, &ui.t("Note (optional)")))),

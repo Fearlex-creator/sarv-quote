@@ -6,3 +6,4 @@ pub mod ids;
 pub mod law;
 pub mod sheba;
 pub mod tax_id;
+pub mod words;

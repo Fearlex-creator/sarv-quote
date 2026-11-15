@@ -8,6 +8,8 @@ pub static FA: &[(&str, &str)] = &[
     ("31–60 days", "۳۱ تا ۶۰ روز"),
     ("61–90 days", "۶۱ تا ۹۰ روز"),
     ("A Sayad ID has exactly 16 digits.", "شناسه صیاد دقیقاً ۱۶ رقم است."),
+    ("A national ID has 10 digits; a legal ID has 11.", "کد ملی ۱۰ رقم و شناسه ملی ۱۱ رقم است."),
+    ("A postal code has 10 digits.", "کد پستی ۱۰ رقم است."),
     (
         "A backup captures the complete books with a checksum. Restoring replaces everything and keeps an automatic safety copy of the current books first.",
         "پشتیبان، کل دفاتر را با اثر انگشت دیجیتال ذخیره می‌کند. بازیابی همه‌چیز را جایگزین می‌کند و پیش از آن یک نسخهٔ ایمنی از دفاتر فعلی نوشته می‌شود.",
@@ -461,6 +463,15 @@ pub static FA: &[(&str, &str)] = &[
         "هر کسب‌وکار دفترها و دوره‌های مالی جداگانه دارد.",
     ),
     ("Edit", "ویرایش"),
+    ("Effective from", "تاریخ اجرا"),
+    ("Reviewed", "بازبینی‌شده"),
+    (
+        "Shown for reference. Sarv does not use these values in any calculation.",
+        "برای اطلاع نمایش داده می‌شود. سرو از این مقادیر در هیچ محاسبه‌ای استفاده نمی‌کند.",
+    ),
+    ("This national ID does not pass its check digit.", "رقم کنترلی این کد یا شناسه ملی معتبر نیست."),
+    ("This Sheba number is not valid.", "این شماره شبا معتبر نیست."),
+    ("Value", "مقدار"),
     ("Edit business profile", "ویرایش مشخصات کسب‌وکار"),
     ("Editable draft", "پیش‌نویس قابل ویرایش"),
     (

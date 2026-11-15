@@ -13,6 +13,8 @@ use crate::ui::icons;
 pub struct SettingsState {
     pub tab_idx: usize,
     pub law_notice: String,
+    pub law_open: bool,
+    pub law_data: serde_json::Value,
     pub business_open: bool,
     pub restore_open: bool,
     pub backups: serde_json::Value,
@@ -260,6 +262,9 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     if s.settings.restore_open {
         mount_restore(s, ui, layer);
     }
+    if s.settings.law_open {
+        mount_law_data(s, ui, layer);
+    }
 
     ui.page(
         "settings-screen",
@@ -290,6 +295,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                         (crate::data::s(&v["notice_en"]), crate::data::s(&v["notice_fa"]))
                     };
                     st.settings.law_notice = if primary.is_empty() { fallback } else { primary };
+                    st.settings.law_data = v;
+                    st.settings.law_open = true;
                 }
                 Err(e) => st.toast_err(e),
             }),
@@ -336,7 +343,11 @@ fn mount_business(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         .child(ui.labeled("Invoice prefix", ui.field(s, "biz-prefix", "INV")))
         .child(ui.labeled("Address", ui.field(s, "biz-address", "")))
         .child(ui.labeled("Footer", ui.field(s, "biz-footer", "")))
-        .child(ui.labeled("Bank details", ui.field(s, "biz-bank", "")));
+        .child(ui.hinted(
+            "Bank details",
+            ui.field(s, "biz-bank", ""),
+            crate::ui::views::contacts::sheba_hint(ui, &s.forms.get("biz-bank")),
+        ));
     let mut portals = Vec::new();
     ui.form_dialog(
         layer,
@@ -474,5 +485,104 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             }),
         ],
         |st| st.settings.restore_open = false,
+    );
+}
+
+fn format_law_from_date(ui: &Ui, from_year: i64) -> String {
+    let Ok(year) = i32::try_from(from_year) else {
+        return String::new();
+    };
+    if let Ok(jd) = sarv_quote::calendar::JalaliDate::new(year, 1, 1) {
+        let iso = sarv_quote::calendar::to_gregorian(jd).format("%Y-%m-%d").to_string();
+        return ui.f.date(&iso);
+    }
+    ui.f.digits(&from_year.to_string())
+}
+
+fn mount_law_data(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    let v = &s.settings.law_data;
+    let notice = {
+        let (primary, fallback) = if s.lang() == Lang::Fa {
+            (crate::data::s(&v["notice_fa"]), crate::data::s(&v["notice_en"]))
+        } else {
+            (crate::data::s(&v["notice_en"]), crate::data::s(&v["notice_fa"]))
+        };
+        if primary.is_empty() { fallback } else { primary }
+    };
+    let entries = v["entries"].as_array().cloned().unwrap_or_default();
+    let header = row()
+        .w_full()
+        .gap(12.0)
+        .px(12.0)
+        .py(8.0)
+        .child(ui.muted(ui.t("Name")).grow(1.2).min_w(0.0))
+        .child(ui.muted(ui.t("Value")).grow(1.4).min_w(0.0))
+        .child(ui.muted(ui.t("Effective from")).w(110.0))
+        .child(ui.muted(ui.t("Status")).w(110.0));
+    let mut rows_col = col().w_full().gap(4.0).child(header);
+    let rows: Vec<El> = entries
+        .iter()
+        .enumerate()
+        .map(|(idx, entry)| {
+            let title = if s.lang() == Lang::Fa {
+                let fa = crate::data::s(&entry["title_fa"]);
+                if fa.is_empty() { crate::data::s(&entry["title_en"]) } else { fa }
+            } else {
+                crate::data::s(&entry["title_en"])
+            };
+            let key = crate::data::s(&entry["key"]);
+            let val = ui.f.digits(&crate::data::s(&entry["value"]));
+            let from_date = entry["from_year"]
+                .as_i64()
+                .map(|y| format_law_from_date(ui, y))
+                .unwrap_or_default();
+            let reviewed = entry["reviewed"].as_bool() == Some(true);
+            let verify = entry["verify"].as_bool() == Some(true);
+            let badge = if reviewed && !verify {
+                ui.badge(Tone::Success, ui.t("Reviewed"))
+            } else {
+                ui.badge(Tone::Warning, ui.t("Not reviewed"))
+            };
+            row()
+                .key(format!("law-entry-{idx}"))
+                .w_full()
+                .gap(12.0)
+                .px(12.0)
+                .py(8.0)
+                .center_y()
+                .child(
+                    col()
+                        .gap(2.0)
+                        .grow(1.2)
+                        .min_w(0.0)
+                        .child(ui.body(title))
+                        .child(ui.muted(key)),
+                )
+                .child(ui.body(val).grow(1.4).min_w(0.0))
+                .child(ui.muted(from_date).w(110.0))
+                .child(row().w(110.0).child(badge))
+        })
+        .collect();
+    if !rows.is_empty() {
+        rows_col = rows_col.child(ui.panel_rows("law-entries", rows));
+    }
+    let body = col()
+        .w_full()
+        .gap(12.0)
+        .child(ui.body(notice).key("law-dialog-notice"))
+        .child(rows_col.scroll(rune::ScrollSpec { stick_bottom: false }).max_h(320.0))
+        .child(
+            ui.muted(ui.t("Shown for reference. Sarv does not use these values in any calculation."))
+                .key("law-footer"),
+        );
+    ui.dialog(
+        layer,
+        "law-data-dialog",
+        &ui.t("Law data"),
+        true,
+        760.0,
+        body,
+        vec![ui.btn(Btn::Primary, "Close", None, |st| st.settings.law_open = false)],
+        |st| st.settings.law_open = false,
     );
 }

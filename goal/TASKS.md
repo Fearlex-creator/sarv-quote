@@ -162,7 +162,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-quote --features pdf-export && cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 023: Persian affordances
-- [ ] **P23-T01**: Add `crates/sarv-quote/src/iran/words.rs` (`persian_words`, `amount_in_words` + ≥20 unit tests), show amount in words in Persian on sale/POS/payment (and sales PDF if ≤20 lines), add `Ui::hinted` + advisory ID hints on contact/business forms, replace law notice with Law-data table dialog, add/update 3 tests, update `plans/README.md`.
+- [x] **P23-T01**: Add `crates/sarv-quote/src/iran/words.rs` (`persian_words`, `amount_in_words` + ≥20 unit tests), show amount in words in Persian on sale/POS/payment (and sales PDF if ≤20 lines), add `Ui::hinted` + advisory ID hints on contact/business forms, replace law notice with Law-data table dialog, add/update 3 tests, update `plans/README.md`.
   - Files: `crates/sarv-quote/src/iran/{mod.rs,words.rs}`, `crates/sarv-quote/src/sales_print.rs`, `crates/sarv-desktop/src/ui/glass.rs`, `crates/sarv-desktop/src/ui/views/{contacts,settings,sales,pos,payments}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --features pdf-export && cargo test -p sarv-desktop --bin sarv-desktop`
 

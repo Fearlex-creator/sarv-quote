@@ -539,3 +539,34 @@ fn test_draft_delete_removes_it() {
     );
     assert_no_danger(&rt);
 }
+
+#[test]
+fn test_sale_total_shows_amount_in_words_in_persian() {
+    let mut rt = make_test_runtime();
+    assert_eq!(rt.state.lang(), crate::i18n::Lang::Fa);
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    assert!(rt.state.sales.modal_open);
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "1000");
+    assert!(
+        rt.find("sale-total-words").is_some(),
+        "Persian UI must render amount in words under sale total"
+    );
+
+    let mut rt_en = make_test_runtime();
+    click(&mut rt_en, "lang-toggle");
+    assert_eq!(rt_en.state.lang(), crate::i18n::Lang::En);
+    click(&mut rt_en, Page::Sales.key());
+    click(&mut rt_en, "btn-New sales invoice");
+    rt_en.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt_en, "sale-qty-0", "1");
+    type_into(&mut rt_en, "sale-price-0", "1000");
+    assert!(
+        rt_en.find("sale-total-words").is_none(),
+        "English UI must not render Persian amount in words"
+    );
+    assert_no_danger(&rt_en);
+    assert_no_danger(&rt);
+}
