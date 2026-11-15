@@ -200,7 +200,7 @@ fn open_payment(st: &mut State) {
     st.nav(Page::Payments);
 }
 
-fn open_named(st: &mut State, kind: NamedKind) {
+pub(crate) fn open_named(st: &mut State, kind: NamedKind) {
     st.overview.starter_open = false;
     st.overview.named_kind = kind;
     st.overview.named_open = true;

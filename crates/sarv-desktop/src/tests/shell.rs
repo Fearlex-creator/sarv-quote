@@ -368,3 +368,126 @@ fn test_contacts_table_sorts_by_name_and_keeps_search() {
         "CU-A should still be visible after sort + search"
     );
 }
+
+#[test]
+fn test_create_shortcut_opens_the_sale_dialog() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('n'),
+        mods: rune::Mods {
+            cmd: true,
+            alt: true,
+            ..Default::default()
+        },
+    });
+    rt.frame(1.0 / 60.0);
+    assert_eq!(rt.state.page, Page::Sales);
+    assert!(rt.state.sales.modal_open);
+}
+
+#[test]
+fn test_create_shortcut_is_ignored_while_typing() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    rt.state.forms.edit("contact-search").focused = true;
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('n'),
+        mods: rune::Mods {
+            cmd: true,
+            alt: true,
+            ..Default::default()
+        },
+    });
+    rt.frame(1.0 / 60.0);
+    assert_eq!(rt.state.page, Page::Overview);
+    assert!(!rt.state.sales.modal_open);
+}
+
+#[test]
+fn test_palette_arrow_and_enter_run_the_selection() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    rt.key(rune::KeyEvent::from(rune::Key::Command('k')));
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.palette_open);
+    assert_eq!(rt.state.palette_cursor, 0);
+
+    rt.key(rune::KeyEvent::from(rune::Key::Down));
+    rt.frame(1.0 / 60.0);
+    assert_eq!(rt.state.palette_cursor, 1);
+
+    rt.key(rune::KeyEvent::from(rune::Key::Enter));
+    rt.frame(1.0 / 60.0);
+    assert!(!rt.state.palette_open);
+    assert_eq!(rt.state.page, Page::Sales);
+}
+
+#[test]
+fn test_palette_opens_the_contact_profile() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    rt.key(rune::KeyEvent::from(rune::Key::Command('k')));
+    rt.frame(1.0 / 60.0);
+    rt.state.forms.set("palette-query", "CU-A");
+    rt.frame(1.0 / 60.0);
+
+    rt.key(rune::KeyEvent::from(rune::Key::Enter));
+    rt.frame(1.0 / 60.0);
+    assert!(!rt.state.palette_open);
+    assert_eq!(rt.state.page, Page::Contacts);
+    assert_eq!(rt.state.contacts.open_id, "CU-A");
+}
+
+#[test]
+fn test_search_folds_arabic_yeh_and_kaf() {
+    let mut rt = make_test_runtime();
+    sarv_quote::desktop::dispatch(
+        &rt.state.engine.dir,
+        "resource",
+        serde_json::json!({
+            "company_id": rt.state.books.company_id,
+            "period_id": rt.state.books.period_id,
+            "date": data::today(),
+            "source_id": "fold-1",
+            "request_key": "fold-1",
+            "kind": "customer",
+            "id": "CU-KIMIA",
+            "name": "کیمیا",
+            "profile": { "display_name": "کیمیا" },
+            "reason": "Arabic fold test"
+        }),
+    )
+    .expect("create Persian contact");
+    rt.state.refresh();
+
+    click(&mut rt, Page::Contacts.key());
+    assert!(rt.find("contact-CU-KIMIA").is_some());
+    rt.state.forms.set("contact-search", "كيميا");
+    rt.frame(1.0 / 60.0);
+    assert!(
+        rt.find("contact-CU-KIMIA").is_some(),
+        "Arabic kaf/yeh query should match Persian contact"
+    );
+}
+
+#[test]
+fn test_escape_closes_the_open_dialog() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('n'),
+        mods: rune::Mods {
+            cmd: true,
+            alt: true,
+            ..Default::default()
+        },
+    });
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.sales.modal_open);
+
+    rt.key(rune::KeyEvent::from(rune::Key::Escape));
+    rt.frame(1.0 / 60.0);
+    assert!(!rt.state.sales.modal_open);
+    assert!(!rt.state.request_close_top_dialog());
+}

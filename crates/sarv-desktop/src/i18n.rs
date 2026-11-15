@@ -120,6 +120,25 @@ pub fn latin_digits(s: &str) -> String {
         .collect()
 }
 
+/// Normalize Persian/Arabic text for case-, script-, diacritic-, and digit-insensitive matching.
+pub fn fold(s: &str) -> String {
+    let mut out = String::with_capacity(s.len());
+    for c in latin_digits(s).chars() {
+        let mapped = match c {
+            'ي' | 'ى' => 'ی',
+            'ك' => 'ک',
+            'ة' => 'ه',
+            'أ' | 'إ' | 'آ' => 'ا',
+            '\u{200c}' | '\u{640}' | '\u{64b}'..='\u{652}' => continue,
+            other => other,
+        };
+        for lc in mapped.to_lowercase() {
+            out.push(lc);
+        }
+    }
+    out
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum MoneyError {
     Empty,
@@ -588,5 +607,17 @@ mod tests {
         }
 
         assert!(missing.is_empty(), "UI keys missing from FA:\n{}", missing.join("\n"));
+    }
+
+    #[test]
+    fn fold_normalizes_arabic_persian_diacritics_zwnj_and_digits() {
+        assert_eq!(fold("ياس"), fold("یاس"));
+        assert_eq!(fold("ىاس"), fold("یاس"));
+        assert_eq!(fold("كفش"), fold("کفش"));
+        assert_eq!(fold("مدرسة"), fold("مدرسه"));
+        assert_eq!(fold("أحمد إسلام آب"), fold("احمد اسلام اب"));
+        assert_eq!(fold("می‌خواهم"), fold("میخواهم"));
+        assert_eq!(fold("مُحَمَّدـی"), fold("محمدی"));
+        assert_eq!(fold("۱۲۳۴AbC"), "1234abc");
     }
 }

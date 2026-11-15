@@ -43,7 +43,7 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 | [014](014-jalali-date-field.md) | Jalali-aware date field in every posting dialog | P1 | M | 004 | DONE |
 | [016](016-copy-validation-and-settings.md) | Real validation messages; Persian defaults; settings persist | P2 | M | 004, 005 | DONE |
 | [012](012-table-sorting-and-row-models.md) | Sortable tables; rows computed once per refresh | P2 | M–L | 004, 006 | DONE |
-| [015](015-shortcuts-and-command-palette.md) | README shortcuts; keyboard-driven palette; Persian-aware search | P2 | M | 004 | TODO |
+| [015](015-shortcuts-and-command-palette.md) | README shortcuts; keyboard-driven palette; Persian-aware search | P2 | M | 004 | DONE |
 
 ### Phase 3 — Features that make the books usable for a full year
 

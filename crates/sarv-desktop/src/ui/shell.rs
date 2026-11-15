@@ -1,5 +1,6 @@
 //! App chrome matching rune-kit's shell example: full close, peek, framed panel, icon rail.
 
+use std::rc::Rc;
 use std::time::Duration;
 
 use rune::{Cx, El, Spring, col, icon, row};
@@ -240,105 +241,89 @@ pub fn app_shell(s: &State, ui: &Ui, cx: &mut Cx<State>, content: El) -> El {
         .build(&ui.k)
 }
 
-fn palette_item(
-    ui: &Ui,
-    key: &str,
-    glyph: &'static rune::Icon,
-    title: String,
-    hint: String,
-    on_press: impl Fn(&mut State) + 'static,
-) -> El {
-    let k = &ui.k;
-    k.interactive(
-        row()
-            .key(key.to_string())
-            .role("option")
-            .label(title.clone())
-            .hit()
-            .w_full()
-            .h(36.0)
-            .px(8.0)
-            .gap(10.0)
-            .center_y()
-            .radius(k.radius.md)
-            .child(
-                row()
-                    .size(22.0, 22.0)
-                    .center()
-                    .radius(k.radius.sm)
-                    .fill(k.c.layer_02)
-                    .child(icon(glyph, 13.0).color(k.c.icon_base)),
-            )
-            .child(ui.body(title).grow(1.0).min_w(0.0))
-            .child(ui.muted(hint))
-            .on_press(on_press),
-    )
+pub struct PaletteEntry {
+    pub key: String,
+    pub group: Option<&'static str>,
+    pub icon: &'static rune::Icon,
+    pub title: String,
+    pub hint: String,
+    pub run: Rc<dyn Fn(&mut State)>,
 }
 
-pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
-    if !s.palette_open {
-        return;
+fn shortcut_icon(id: &str) -> &'static rune::Icon {
+    match id {
+        "sc-s" => &icons::SETTINGS,
+        _ => &icons::PLUS,
     }
-    let query = s.forms.get("palette-query").to_lowercase();
-    let query_latin = crate::i18n::latin_digits(&query).to_lowercase();
+}
 
-    let mut items = col()
-        .key("palette-results")
-        .w_full()
-        .gap(2.0)
-        .max_h(340.0)
-        .scroll(rune::ScrollSpec { stick_bottom: false });
-    let mut count = 0usize;
+pub fn palette_entries(s: &State) -> Vec<PaletteEntry> {
+    let q_raw = s.forms.get("palette-query");
+    let q = crate::i18n::fold(q_raw.trim());
+    let mut entries = Vec::new();
 
-    for (id, title, pages) in Page::GROUPS {
-        let mut group = Vec::new();
+    for (_, title, pages) in Page::GROUPS {
         for page in pages.iter().copied().filter(|page| page.nav_pages(s.show_pos)) {
-            let label = ui.t(page.label());
-            let hay = format!("{} {}", page.label(), label).to_lowercase();
-            if query.is_empty() || hay.contains(&query) || hay.contains(&query_latin) {
-                group.push(palette_item(
-                    ui,
-                    &format!("palette-{}", page.key()),
-                    page.icon(),
-                    label,
-                    ui.t("Go"),
-                    move |st| st.nav(page),
-                ));
+            let label = s.fmt.t(page.label());
+            let hay = crate::i18n::fold(&format!("{} {label}", page.label()));
+            if q.is_empty() || hay.contains(&q) {
+                entries.push(PaletteEntry {
+                    key: format!("palette-{}", page.key()),
+                    group: Some(title),
+                    icon: page.icon(),
+                    title: label,
+                    hint: s.fmt.t("Go"),
+                    run: Rc::new(move |st| st.nav(page)),
+                });
             }
         }
-        if group.is_empty() {
-            continue;
-        }
-        count += group.len();
-        items = items.child(ui.muted(ui.t(title)).key(format!("palette-group-{id}")).ml(8.0).mt(8.0));
-        for row in group {
-            items = items.child(row);
+    }
+
+    for (_, sc) in crate::shortcuts::CREATE {
+        let translated = s.fmt.t(sc.label);
+        let hay = crate::i18n::fold(&format!("{} {translated}", sc.label));
+        if q.is_empty() || hay.contains(&q) {
+            let run = sc.run;
+            entries.push(PaletteEntry {
+                key: format!("action-{}", sc.id),
+                group: None,
+                icon: shortcut_icon(sc.id),
+                title: translated,
+                hint: "↵".into(),
+                run: Rc::new(run),
+            });
         }
     }
 
-    type PaletteAction = (&'static str, &'static str, &'static rune::Icon, fn(&mut State));
-    let actions: [PaletteAction; 4] = [
-        ("action-new-order", "New sales invoice", &icons::PLUS, |st| {
-            crate::ui::views::sales::open_sale(st);
-            st.nav(Page::Sales);
+    type GlobalAction = (&'static str, &'static str, &'static rune::Icon, fn(&mut State));
+    let globals: [GlobalAction; 3] = [
+        ("action-theme", "Toggle theme", &icons::SUN, |st| {
+            st.dark = !st.dark;
+            let _ = st.save_preferences();
         }),
-        ("action-theme", "Toggle theme", &icons::SUN, |st| st.dark = !st.dark),
         ("action-sidebar", "Collapse sidebar", &icons::SIDEBAR, |st| st.toggle_sidebar()),
         ("action-lang", "Language", &icons::GLOBE, |st| {
             let next = st.lang().other();
             st.set_lang(next);
+            let _ = st.save_preferences();
         }),
     ];
-    for (key, label, glyph, action) in actions {
-        let translated = ui.t(label);
-        let hay = format!("{label} {translated}").to_lowercase();
-        if query.is_empty() || hay.contains(&query) || hay.contains(&query_latin) {
-            items = items.child(palette_item(ui, key, glyph, translated, "↵".into(), action));
-            count += 1;
+    for (key, label, glyph, action) in globals {
+        let translated = s.fmt.t(label);
+        let hay = crate::i18n::fold(&format!("{label} {translated}"));
+        if q.is_empty() || hay.contains(&q) {
+            entries.push(PaletteEntry {
+                key: key.to_string(),
+                group: None,
+                icon: glyph,
+                title: translated,
+                hint: "↵".into(),
+                run: Rc::new(action),
+            });
         }
     }
 
-    if !query.is_empty() {
+    if !q.is_empty() {
         let mut hits = 0usize;
         if let Some(parties) = s.books.workspace["resources"]["parties"].as_array() {
             for party in parties {
@@ -346,21 +331,22 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     break;
                 }
                 let name = crate::data::s(&party["name"]);
-                if name.to_lowercase().contains(&query) {
-                    let id = crate::data::s(&party["id"]);
-                    items = items.child(palette_item(
-                        ui,
-                        &format!("palette-party-{id}"),
-                        &icons::CONTACTS,
-                        name,
-                        ui.t("Contacts"),
-                        move |st| {
+                let id = crate::data::s(&party["id"]);
+                let hay = crate::i18n::fold(&format!("{name} {id}"));
+                if hay.contains(&q) {
+                    let party_id = id.clone();
+                    entries.push(PaletteEntry {
+                        key: format!("palette-party-{id}"),
+                        group: None,
+                        icon: &icons::CONTACTS,
+                        title: name,
+                        hint: s.fmt.t("Contacts"),
+                        run: Rc::new(move |st| {
                             st.nav(Page::Contacts);
-                            st.palette_open = false;
-                        },
-                    ));
+                            crate::ui::views::contacts::open_contact(st, &party_id);
+                        }),
+                    });
                     hits += 1;
-                    count += 1;
                 }
             }
         }
@@ -370,27 +356,95 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     break;
                 }
                 let name = crate::data::s(&item["name"]);
-                if name.to_lowercase().contains(&query) {
-                    let id = crate::data::s(&item["id"]);
-                    items = items.child(palette_item(
-                        ui,
-                        &format!("palette-item-{id}"),
-                        &icons::INVENTORY,
-                        name,
-                        ui.t("Inventory"),
-                        move |st| {
+                let id = crate::data::s(&item["id"]);
+                let hay = crate::i18n::fold(&format!("{name} {id}"));
+                if hay.contains(&q) {
+                    let item_id = id.clone();
+                    entries.push(PaletteEntry {
+                        key: format!("palette-item-{id}"),
+                        group: None,
+                        icon: &icons::INVENTORY,
+                        title: name,
+                        hint: s.fmt.t("Inventory"),
+                        run: Rc::new(move |st| {
                             st.nav(Page::Inventory);
-                            st.palette_open = false;
-                        },
-                    ));
+                            crate::ui::views::inventory::open_product(st, &item_id);
+                        }),
+                    });
                     hits += 1;
-                    count += 1;
                 }
             }
         }
     }
 
-    if count == 0 {
+    entries
+}
+
+fn palette_item(ui: &Ui, entry: &PaletteEntry, selected: bool) -> El {
+    let k = &ui.k;
+    let run = Rc::clone(&entry.run);
+    let mut r = row()
+        .key(entry.key.clone())
+        .role("option")
+        .label(entry.title.clone())
+        .hit()
+        .w_full()
+        .h(36.0)
+        .px(8.0)
+        .gap(10.0)
+        .center_y()
+        .radius(k.radius.md)
+        .child(
+            row()
+                .size(22.0, 22.0)
+                .center()
+                .radius(k.radius.sm)
+                .fill(k.c.layer_02)
+                .child(icon(entry.icon, 13.0).color(k.c.icon_base)),
+        )
+        .child(ui.body(entry.title.clone()).grow(1.0).min_w(0.0))
+        .child(ui.muted(entry.hint.clone()))
+        .on_press(move |st| {
+            run(st);
+            st.palette_open = false;
+        });
+    if selected {
+        r = r.fill(k.c.hover);
+    }
+    k.interactive(r)
+}
+
+pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    if !s.palette_open {
+        return;
+    }
+    let entries = palette_entries(s);
+    let q = s.forms.get("palette-query");
+    let cursor = if entries.is_empty() || q != s.palette_last_query {
+        0
+    } else {
+        s.palette_cursor.min(entries.len() - 1)
+    };
+
+    let mut items = col()
+        .key("palette-results")
+        .w_full()
+        .gap(2.0)
+        .max_h(340.0)
+        .scroll(rune::ScrollSpec { stick_bottom: false });
+
+    let mut last_group: Option<&'static str> = None;
+    for (idx, entry) in entries.iter().enumerate() {
+        if let Some(group) = entry.group
+            && last_group != Some(group)
+        {
+            items = items.child(ui.muted(ui.t(group)).key(format!("palette-group-{group}")).ml(8.0).mt(8.0));
+            last_group = Some(group);
+        }
+        items = items.child(palette_item(ui, entry, idx == cursor));
+    }
+
+    if entries.is_empty() {
         items = items.child(ui.empty(&icons::SEARCH, "No records yet.", ""));
     }
 

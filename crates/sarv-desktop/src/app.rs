@@ -164,6 +164,9 @@ impl Forms {
     pub fn any_with_prefix(&self, prefix: &str) -> bool {
         self.map.iter().any(|(k, v)| k.starts_with(prefix) && !v.text.trim().is_empty())
     }
+    pub fn any_focused(&self) -> bool {
+        self.map.values().any(|e| e.focused)
+    }
     pub fn snapshot_prefix(&self, prefix: &str) -> String {
         let mut entries: Vec<_> = self
             .map
@@ -187,6 +190,8 @@ pub struct State {
     next_toast: u64,
     key_counter: u64,
     pub palette_open: bool,
+    pub palette_cursor: usize,
+    pub palette_last_query: String,
     pub confirm: Option<crate::ui::confirm::Confirm>,
     pub sidebar: PaneState,
     pub guide_open: bool,
@@ -227,6 +232,8 @@ impl State {
             next_toast: 1,
             key_counter: 0,
             palette_open: false,
+            palette_cursor: 0,
+            palette_last_query: String::new(),
             confirm: None,
             // Match rune-kit shell example: full close to 0, resize 136…640.
             sidebar: PaneState::new(276.0).range(136.0, 640.0),
@@ -386,6 +393,28 @@ impl State {
         }
     }
 
+    pub fn any_dialog_open(&self) -> bool {
+        self.confirm.is_some()
+            || self.palette_open
+            || self.sales.creating_item_for_line.is_some()
+            || self.purchases.creating_item_for_line.is_some()
+            || self.accounting.ledger_open
+            || self.settings.restore_open
+            || self.overview.starter_open
+            || self.overview.named_open
+            || self.sales.modal_open
+            || self.purchases.modal_open
+            || self.payments.modal_open
+            || self.accounting.modal_open
+            || self.banking.modal_open
+            || self.contacts.modal_open
+            || !self.contacts.open_id.is_empty()
+            || self.inventory.modal_open
+            || self.inventory.profile_open
+            || self.inventory.transfer_open
+            || self.settings.business_open
+    }
+
     /// Close the topmost open overlay/dialog, running dirty checks for form dialogs.
     pub fn request_close_top_dialog(&mut self) -> bool {
         if self.confirm.is_some() {
@@ -479,6 +508,8 @@ impl State {
 
     pub fn open_palette(&mut self) {
         self.forms.set("palette-query", "");
+        self.palette_cursor = 0;
+        self.palette_last_query.clear();
         self.palette_open = true;
     }
 

@@ -245,12 +245,11 @@ pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
 
 fn visible_indices(s: &State) -> std::cell::Ref<'_, Vec<usize>> {
     let q = s.forms.get("inventory-search");
-    let latin = fold_text(&crate::i18n::latin_digits(&q));
     s.inventory
         .filter_cache
         .visible(&s.inventory.rows, s.inventory.rows_gen, &q, |row, q_folded| {
             let blob = s.inventory.search_blobs.get(&row.id).map(String::as_str).unwrap_or("");
-            blob.contains(q_folded) || (!latin.is_empty() && blob.contains(&latin))
+            blob.contains(q_folded)
         })
 }
 
@@ -683,7 +682,7 @@ fn mount_transfer(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     );
 }
 
-fn open_product(st: &mut State, item_id: &str) {
+pub(crate) fn open_product(st: &mut State, item_id: &str) {
     match st.query("product_detail", json!({ "item_id": item_id, "as_of": crate::data::today() })) {
         Ok(v) => {
             let profile = &v["profile"];

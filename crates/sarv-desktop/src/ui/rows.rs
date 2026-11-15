@@ -64,19 +64,9 @@ impl SortKey {
     }
 }
 
-/// Fold Arabic `ي`/`ك` to Persian `ی`/`ک` and lowercase for consistent sorting.
+/// Fold Arabic/Persian variants, diacritics, ZWNJ, digits and case for consistent sorting and filtering.
 pub fn fold_text(s: &str) -> String {
-    s.trim()
-        .chars()
-        .flat_map(|c| {
-            let c = match c {
-                'ي' => 'ی',
-                'ك' => 'ک',
-                other => other,
-            };
-            c.to_lowercase()
-        })
-        .collect()
+    crate::i18n::fold(s.trim())
 }
 
 fn cmp_key(a: &SortKey, b: &SortKey) -> Ordering {

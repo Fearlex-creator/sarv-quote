@@ -51,11 +51,10 @@ fn profile<'a>(s: &'a State, id: &str) -> &'a Value {
 }
 
 pub fn party_matches(s: &State, party: &serde_json::Value, query: &str) -> bool {
-    let q = query.trim().to_lowercase();
+    let q = crate::i18n::fold(query.trim());
     if q.is_empty() {
         return true;
     }
-    let latin = crate::i18n::latin_digits(&q).to_lowercase();
     let id = crate::data::s(&party["id"]);
     let name = s.books.party_name(&id);
     let p = profile(s, &id);
@@ -74,10 +73,7 @@ pub fn party_matches(s: &State, party: &serde_json::Value, query: &str) -> bool 
         id.as_str(),
     ]
     .iter()
-    .any(|field| {
-        let field = field.to_lowercase();
-        field.contains(&q) || (!latin.is_empty() && field.contains(&latin))
-    })
+    .any(|field| crate::i18n::fold(field).contains(&q))
 }
 
 fn balance_for(s: &State, id: &str) -> String {
@@ -215,12 +211,11 @@ pub fn apply_sort(st: &mut State, col: &str, dir: SortDir) {
 
 fn visible_indices(s: &State) -> std::cell::Ref<'_, Vec<usize>> {
     let q = s.forms.get("contact-search");
-    let latin = fold_text(&crate::i18n::latin_digits(&q));
     s.contacts
         .filter_cache
         .visible(&s.contacts.rows, s.contacts.rows_gen, &q, |row, q_folded| {
             let blob = s.contacts.search_blobs.get(&row.id).map(String::as_str).unwrap_or("");
-            blob.contains(q_folded) || (!latin.is_empty() && blob.contains(&latin))
+            blob.contains(q_folded)
         })
 }
 
@@ -503,7 +498,7 @@ fn mount_create(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     );
 }
 
-fn open_contact(st: &mut State, row_id: &str) {
+pub(crate) fn open_contact(st: &mut State, row_id: &str) {
     let party_id = row_id.strip_prefix("contact-").unwrap_or(row_id).to_string();
     match st.query("contact_detail", json!({ "party_id": party_id, "as_of": crate::data::today() })) {
         Ok(v) => {

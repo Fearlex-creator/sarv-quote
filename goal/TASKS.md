@@ -107,7 +107,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 015: Shortcuts and command palette
-- [ ] **P15-T01**: Create `src/shortcuts.rs`, wire `mod+alt+<key>` / `F1` / `F9` / `Esc` in `main.rs` `handle_key` (skipping when focused/dialog open), generate Settings shortcuts list, add keyboard navigation (`Up`/`Down`/`Enter`) and deep links to contacts/products in `shell.rs` palette, add `i18n::fold` for Persian search, update `README.md`, add 6 tests, update `plans/README.md`.
+- [x] **P15-T01**: Create `src/shortcuts.rs`, wire `mod+alt+<key>` / `F1` / `F9` / `Esc` in `main.rs` `handle_key` (skipping when focused/dialog open), generate Settings shortcuts list, add keyboard navigation (`Up`/`Down`/`Enter`) and deep links to contacts/products in `shell.rs` palette, add `i18n::fold` for Persian search, update `README.md`, add 6 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/{main.rs,app.rs,shortcuts.rs,i18n.rs,fa_messages.rs}`, `crates/sarv-desktop/src/ui/shell.rs`, `crates/sarv-desktop/src/ui/views/{settings,contacts,inventory,purchases}.rs`, `crates/sarv-desktop/src/tests/*.rs`, `README.md`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

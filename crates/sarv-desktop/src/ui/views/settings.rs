@@ -63,18 +63,27 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let tab_bar = ui.tabs("settings-tabs", &tabs, |st, idx| st.settings.tab_idx = idx);
 
     let body = if s.settings.tab_idx == 1 {
+        let global: &[(&str, &str, &[&str])] = &[
+            ("sc-k", "Search", &[mod_key(), "K"]),
+            ("sc-b", "Collapse sidebar", &[mod_key(), "B"]),
+            ("sc-l", "Toggle language", &[mod_key(), "L"]),
+            ("sc-d", "Toggle theme", &[mod_key(), "D"]),
+            ("sc-f1", "Keyboard shortcuts", &["F1"]),
+            ("sc-f9", "Toggle sidebar", &["F9"]),
+        ];
+        let mut rows: Vec<El> = global
+            .iter()
+            .map(|(id, label, keys)| shortcut_row(ui, id, &ui.t(label), keys))
+            .collect();
+        for (_, sc) in crate::shortcuts::CREATE {
+            let mut keys = vec![mod_key()];
+            keys.extend_from_slice(sc.keys);
+            rows.push(shortcut_row(ui, sc.id, &ui.t(sc.label), &keys));
+        }
         col().w_full().gap(16.0).child(tab_bar).child(ui.section(
             "shortcuts",
             &ui.t("Keyboard shortcuts"),
-            ui.panel_rows(
-                "shortcuts-card",
-                vec![
-                    shortcut_row(ui, "sc-k", &ui.t("Search"), &[mod_key(), "K"]),
-                    shortcut_row(ui, "sc-b", &ui.t("Collapse sidebar"), &[mod_key(), "B"]),
-                    shortcut_row(ui, "sc-l", &ui.t("Toggle language"), &[mod_key(), "L"]),
-                    shortcut_row(ui, "sc-d", &ui.t("Toggle theme"), &[mod_key(), "D"]),
-                ],
-            ),
+            ui.panel_rows("shortcuts-card", rows),
         ))
     } else {
         let theme = Switch::new(s.dark)
