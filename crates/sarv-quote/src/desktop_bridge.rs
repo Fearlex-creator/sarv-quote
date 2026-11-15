@@ -2240,7 +2240,7 @@ fn csv_safe(v: &str) -> String {
 pub fn seed_fixture(directory: &Path) -> Result<()> {
     let mut store = Store::open(directory)?;
     ensure!(store.state.accounting.is_empty(), "Fixture requires an empty profile");
-    let envelope: Value = serde_json::from_str(include_str!("../../../docs/assets/accounting-m3/restore/core-v4.json"))?;
+    let envelope: Value = serde_json::from_str(include_str!("../fixtures/demo-books.json"))?;
     let mut state: State = serde_json::from_value(envelope["state"].clone())?;
     state.schema = crate::domain::CURRENT_SCHEMA;
     store.change(|s| {

@@ -1,6 +1,6 @@
 # Product design and reference evidence
 
-Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
 
 Reviewed on 2026-10-07 for the native Rust/GTK4/libadwaita product improvement. This report supersedes the component descriptions in earlier design reports; those screenshots remain historical evidence.
 
@@ -28,7 +28,7 @@ These are adaptations of public patterns, not claims of feature parity. No refer
 
 ## Font choice
 
-The requested Iran Bakh family was not available with verified redistribution permission. Sarv bundles unmodified **Vazirmatn v33.003** Regular, Medium, SemiBold and Bold under SIL OFL 1.1. See [font provenance, checksums and license](../assets/fonts/README.md). It is a Persian-focused, readable alternative, not a claim to be Iran Bakh.
+The requested Iran Bakh family was not available with verified redistribution permission. Sarv bundles unmodified **Vazirmatn v33.003** Regular, Medium, SemiBold and Bold under SIL OFL 1.1. See [font provenance, checksums and license](../../assets/fonts/README.md). It is a Persian-focused, readable alternative, not a claim to be Iran Bakh.
 
 Font bytes are embedded and registered with Fontconfig for this process only before GTK/Pango initialization. No system font installation or runtime download occurs. The same family is requested by the UI and PDF renderer; actual Fontconfig matching and a four-row A4 PDF regression were checked. Noto Sans Arabic remains a fallback. Font registration failure is reported rather than silently presented as success.
 

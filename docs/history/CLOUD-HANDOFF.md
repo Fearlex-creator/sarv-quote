@@ -11,4 +11,4 @@ cargo test -p sarv-quote --features pdf-export
 
 `SARV_DATA_DIR` selects the books. `SARV_DEMO=1` opens a throwaway fixture. Agents are configured from the CLI. Law data is a read-only notice.
 
-See [README](../README.md) and [AGENTS.md](../AGENTS.md).
+See [README](../../README.md) and [AGENTS.md](../../AGENTS.md).

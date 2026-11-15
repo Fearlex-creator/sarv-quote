@@ -13,7 +13,6 @@ csv.workspace = true
 cairo-rs = { workspace = true, optional = true }
 pangocairo = { workspace = true, optional = true }
 rusqlite.workspace = true
-rust_decimal.workspace = true
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
@@ -32,3 +31,7 @@ tempfile.workspace = true
 [[bin]]
 name = "sarv-agent"
 path = "src/bin/sarv-agent.rs"
+
+[[example]]
+name = "scale_probe"
+required-features = ["pdf-export"]

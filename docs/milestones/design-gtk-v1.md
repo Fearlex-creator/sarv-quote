@@ -1,11 +1,11 @@
 # Native quotation design
 
-Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
-This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md).
+Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](../history/PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](../history/PRODUCT-ACCEPTANCE.md).
 
-Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
+Current continuation verification and before/after native captures: [CONTINUATION.md](../history/CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
 
-The native screenshots and 39-check GUI acceptance below describe the preceding local v1 build. The current snapshot includes subsequent software-risk fixes; see [SOFTWARE-RISKS.md](SOFTWARE-RISKS.md) for current checks and remaining native verification.
+The native screenshots and 39-check GUI acceptance below describe the preceding local v1 build. The current snapshot includes subsequent software-risk fixes; see [SOFTWARE-RISKS.md](../history/SOFTWARE-RISKS.md) for current checks and remaining native verification.
 The intended working surface is a Persian quotation document: customer, dates and reference, product rows, notes, totals and one approval action. The product table carries the work. Navigation and decoration should help users finish an accurate offer without distracting from source prices or unresolved requests.
 
 ## Reference rationale
@@ -26,9 +26,9 @@ These decisions are our interpretation of the references. The quotation hierarch
 
 Source inspection confirms `AdwApplication`/`AdwApplicationWindow`, `ToolbarView`, `HeaderBar`/`WindowTitle`, `NavigationSplitView`, native toggle navigation, `AdwDialog` for catalog/restore/print surfaces and `StatusPage` empty states. A 1050 px breakpoint collapses the navigation split to preserve content space; the Persian **فهرست** header control switches between content and navigation. The explicit text avoids relying on a sidebar icon absent in this desktop theme.
 
-The stable Rust binding is `libadwaita` 0.9.2 with `v1_9`, compatible gtk-rs 0.11/GLib 0.22; native libraries installed here are libadwaita 1.9.3 and GTK 4.22.4. Use the [stable 1.9 reference](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.9/), whose generated patch documentation can be newer than the installed patch. No 1.11 alpha API is selected. Native libadwaita remains a dynamic LGPL-2.1-or-later system dependency; its Rust bindings are MIT. [README](../README.md) records build requirements and the license boundary.
+The stable Rust binding is `libadwaita` 0.9.2 with `v1_9`, compatible gtk-rs 0.11/GLib 0.22; native libraries installed here are libadwaita 1.9.3 and GTK 4.22.4. Use the [stable 1.9 reference](https://gnome.pages.gitlab.gnome.org/libadwaita/doc/1.9/), whose generated patch documentation can be newer than the installed patch. No 1.11 alpha API is selected. Native libadwaita remains a dynamic LGPL-2.1-or-later system dependency; its Rust bindings are MIT. [README](../../README.md) records build requirements and the license boundary.
 
-The current `src/style.css` is 32 lines limited to quotation layout/geometry and semantic native theme variables; the compact setting supplies additional scoped geometry rules. Libadwaita supplies typography, colors, control states, focus treatment and contrast; application CSS does not hardcode RGB values or globally restyle controls. Native preferences and customer/catalog/quote managers are functional. The final quotation, settings, manager and approved-dialog captures below were inspected; behavioral checks are recorded separately in [VERIFICATION.md](VERIFICATION.md).
+The current `src/style.css` is 32 lines limited to quotation layout/geometry and semantic native theme variables; the compact setting supplies additional scoped geometry rules. Libadwaita supplies typography, colors, control states, focus treatment and contrast; application CSS does not hardcode RGB values or globally restyle controls. Native preferences and customer/catalog/quote managers are functional. The final quotation, settings, manager and approved-dialog captures below were inspected; behavioral checks are recorded separately in [VERIFICATION.md](../history/VERIFICATION.md).
 
 ## Supplied baseline review
 
@@ -73,7 +73,7 @@ The earlier GTK/Wayland workflow report in redesign-final/native-verification.js
 
 ## Current libadwaita release review
 
-Final release captures from `artifacts/delivery-complete/` were opened and inspected. Separate native reports pass **22 quotation**, **14 settings** and **3 approved-preview** named checks, including no-loss behavior, source review, numbering/addition/issuer snapshots and backup validation. Aggregate Rust and actual injected-key/process-restart evidence is tracked in [VERIFICATION.md](VERIFICATION.md).
+Final release captures from `artifacts/delivery-complete/` were opened and inspected. Separate native reports pass **22 quotation**, **14 settings** and **3 approved-preview** named checks, including no-loss behavior, source review, numbering/addition/issuer snapshots and backup validation. Aggregate Rust and actual injected-key/process-restart evidence is tracked in [VERIFICATION.md](../history/VERIFICATION.md).
 
 ![Current libadwaita quotation](assets/delivery-complete-native-after-quotation.png)
 

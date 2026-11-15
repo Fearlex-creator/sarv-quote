@@ -18,6 +18,10 @@ The UI must not invent ledger rules. It sends the engine's existing actions (`dr
 
 See [AGENTS.md](AGENTS.md). Screen notes are in [the desktop guide](docs/FRONTEND-UI-GUIDE.md).
 
+## Getting help
+
+Settings → About → Logs folder → send `sarv.log` and the newest `crash-*.txt`.
+
 ## Install
 
 ### Download
@@ -50,15 +54,15 @@ cargo test -p sarv-quote --features pdf-export
 
 The desktop enables PDF export for printable sales documents. Normal engine and agent CLI builds exclude the PDF renderer. Linux PDF rendering needs cairo and pango. The `pdf-export` tests also need the Poppler command-line tools (`poppler-utils`).
 
-Create additional businesses in **Settings → Add company**. First-run setup collects business contact details, registration and tax IDs, invoice reference prefix, terms and footer; these details are saved separately for each business. The selected calendar applies throughout date entry, reports and sales PDFs. Open a sales record and choose **Save printable PDF** to export an A4 document with embedded Persian fonts, totals and signature lines.
+Create additional businesses in **Settings → Add company**. First-run setup collects business contact details, registration and tax IDs, invoice reference prefix, terms and footer; these details are saved separately for each business. The selected calendar applies throughout date entry, reports and sales PDFs. Open a sales record and choose **Print / save PDF** to export an A4 document with embedded Persian fonts, totals and signature lines.
 
-Quotations are issued from the sales editor with **Save as quotation**: the number comes from your invoice reference prefix settings and stays stable across edits, the document prints as an A4 PDF with validity and terms, and converting to an order keeps the exact line prices. Add customers from **Customers → New customer**, and products directly from **Inventory → New product**. Sales and purchase forms also offer manual creation without leaving the editor. A blank product code generates a unique code; a first product can create the Piece unit automatically. Unfinished businesses are guided through explicit opening-balance confirmation before creation resumes.
+Quotations are issued from the sales editor with **Issue quotation**: the number comes from your invoice reference prefix settings and stays stable across edits, the document prints as an A4 PDF with validity and terms, and **Convert to sale** keeps the exact line prices. Add customers from **Contacts → New customer**, and products directly from **Inventory → New product**. Sales and purchase forms also offer manual creation without leaving the editor. A blank product code generates a unique code; a first product can create the Piece unit automatically. Unfinished businesses are guided through explicit opening-balance confirmation before creation resumes.
 
-Customer records include first/last name, organization, phone/mobile, email, address, city, postal code, national/tax IDs, website and notes. Click a customer name to edit their profile, browse linked orders/invoices/returns, and review outstanding amounts, monthly net sales, invoiced products and gross profit through the selected date. Profile details are scoped to the business and included in backups; editing them preserves posted document snapshots.
+Customer records include first/last name, organization, phone/mobile, email, address, city, postal code, national/tax IDs, website and notes. Click a customer name to edit their profile and review outstanding balance, overdue amounts, and net sales. Profile details are scoped to the business and included in backups; editing them preserves posted document snapshots.
 
-Products have editable purchase/selling price defaults in rials per base unit, barcode, category, brand, preferred supplier, minimum stock and notes. Click a product in Inventory or a posted document to review stock by warehouse, carried cost, recent received/invoiced prices, monthly sales/cost/gross profit, customers/suppliers and linked documents. Pricing estimates show profit per unit, gross margin and markup; actual gross profit uses posted invoice revenue and frozen stock costs with returns. Changing a price default never revalues inventory. New sales/purchase lines use the saved price when you select a product.
+Products have editable purchase/selling price defaults in rials per base unit, barcode, category, brand, preferred supplier, minimum stock and notes. Click a product in Inventory to edit its profile and review remaining stock, carried cost, and net sales. Changing a price default never revalues inventory. New sales/purchase lines use the saved price when you select a product.
 
-**Banking** shows the existing cash/bank ledger accounts, opening/closing balances and dated movement history. Money in, money out and cash/bank transfers require a balanced posting review. These movements support funding and operating income/expenses; they do not allocate customer or supplier invoice payments or connect to external banks. Use the linked journal to review or reverse a posted banking movement. Each account also offers a statement reconciliation dialog: enter the closing statement balance, see the exact difference, and mark the entries you found on the statement.
+**Banking** shows the existing cash/bank ledger accounts, opening/closing balances and dated movement history. Money in, money out and cash/bank transfers require a balanced posting review. These movements support funding and operating income/expenses; they do not allocate customer or supplier invoice payments or connect to external banks. Use the linked journal to review or reverse a posted banking movement.
 
 **Payments** settles customer invoices and supplier bills with exact integer amounts. Choose cash or bank, allocate across open documents (partial payments accumulate), and any surplus becomes an explicit customer or supplier advance. Every payment posts a balanced journal through the same immutable kernel, keeps control accounts reconciled, supports idempotent retries and a typed mirrored reversal. Payment history links to its journal for review.
 
@@ -80,6 +84,8 @@ The original store persists a validated versioned snapshot in SQLite, with a 64 
 4. Add multi-currency accounting with explicit exchange-rate postings. Rial/Toman comes first.
 
 Later phases add screens and services on top of the same ledger; they must preserve earlier books and history. Payroll, live bank feeds and payment processing remain outside the current scope.
+
+Engineering plans live in `plans/`.
 
 ## Licence
 

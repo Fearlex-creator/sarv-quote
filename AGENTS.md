@@ -4,7 +4,7 @@
 
 The UI calls `sarv_quote::desktop::dispatch`. It does not invent journal lines, tax, or document ids. Preview an action before posting it, and pass `expected_generation` when the preview returns one. A blank `request_key` is filled in by the desktop; a dialog that can be clicked twice must reuse the key it minted when it opened.
 
-`SARV_DATA_DIR` selects the books. `SARV_DEMO=1` opens a throwaway fixture. Headless checks:
+`SARV_DATA_DIR` selects the books. `SARV_DEMO=1` opens a throwaway fixture. `SARV_TODAY` overrides the current date (YYYY-MM-DD) for deterministic tests. Headless checks:
 
 ```bash
 cargo test -p sarv-desktop --bin sarv-desktop
@@ -18,3 +18,5 @@ Law data is a read-only notice. It is not an input to a journal. Agents are conf
 First run is a welcome, then the company and fiscal year, then opening balances. The sidebar stays hidden until the books are open.
 
 The three `#[ignore]`d engine compatibility tests (`SARV_M3_COMPAT_BINARY`, `SARV_M4_COMPAT_BINARY`, `SARV_M5_COMPAT_BINARY`) require retained immutable M3/M4/M5 binaries (owner to supply) and run with `cargo test -p sarv-quote -- --ignored`.
+
+Plans for agents are in `plans/`; follow a plan's STOP conditions. Design rules: `docs/DESIGN.md`. Documents under `docs/history/` and the stack/build-prompt sections of `docs/ACCOUNTING-SPEC.md` describe removed applications — do not act on them.

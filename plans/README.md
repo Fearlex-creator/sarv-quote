@@ -65,7 +65,7 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 |------|-------|----------|--------|------------|--------|
 | [030](030-crash-log-and-version.md) | Local log file, crash record, visible version | P1 | S–M | (008) | DONE |
 | [031](031-release-packaging.md) | Tested releases for Windows and Linux, with checksums | P1 | M | 001, (008), (030) | DONE |
-| [032](032-docs-and-dead-code.md) | Docs match the product; dead code and stray fixtures removed | P2 | M | best after 015, 020–022 | TODO |
+| [032](032-docs-and-dead-code.md) | Docs match the product; dead code and stray fixtures removed | P2 | M | best after 015, 020–022 | DONE |
 
 ### Phase 5 — Design spikes (each produces an ADR for the owner to approve; no product code)
 

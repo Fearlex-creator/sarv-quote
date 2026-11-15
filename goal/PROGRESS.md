@@ -220,3 +220,16 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
   - `cargo test -p sarv-quote --features pdf-export` -> exit 0 (all test binaries passed)
   - `python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" .github/workflows/*.yml` -> exit 0
   - `bash -n scripts/install-desktop.sh scripts/package-linux.sh` + temp `HOME` `install-desktop.sh` / `--uninstall` / `package-linux.sh` -> exit 0
+
+## P32-T01: Docs and dead code (Plan 032)
+- **Changed**:
+  - `README.md`: Truth-passed feature claims and button labels against `crates/sarv-desktop/src`, removed unbuilt reconciliation dialog claim, added `## Getting help` (`Logs folder`) and `plans/` pointer.
+  - `docs/history/`, `docs/{ROADMAP,ACCOUNTING-SPEC,SPEC-COVERAGE}.md`, `decisions.md`, `CONTEXT.md`, `migrations.md`, `AGENTS.md`: Moved historical docs + `AGENT_PLAN.md` to `docs/history/`, rewrote `ROADMAP.md`, added superseded banners to `ACCOUNTING-SPEC.md`, annotated `decisions.md` DEC-05, expanded `CONTEXT.md` accounting vocabulary, updated `migrations.md` and `AGENTS.md`.
+  - `docs/adr/0012-rune-desktop.md` & `docs/adr/README.md`: Created ADR-0012 (accepted) and updated ADR index (including 0005 and 0007 summaries).
+  - `crates/sarv-quote`: Removed unused `phase_views.rs`, `money.rs`, `service.rs`, and `rust_decimal` dependency; moved `examples/scale_probe.rs` into `crates/sarv-quote/examples/` (`required-features = ["pdf-export"]`); documented `desktop_qa.rs`; copied `demo-books.json` into `crates/sarv-quote/fixtures/` and updated `seed_fixture` `include_str!`.
+  - `plans/README.md`: Marked Plan `032` as `DONE`.
+- **Checks**:
+  - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
+  - `cargo build --workspace --all-targets` -> exit 0
+  - `cargo test -p sarv-quote --features pdf-export` -> exit 0
+  - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`138 passed; 0 failed`)

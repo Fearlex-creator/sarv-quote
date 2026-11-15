@@ -181,7 +181,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `test ! -e crates/sarv-quote/assets && cargo test -p sarv-quote --features pdf-export && python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" .github/workflows/*.yml`
 
 ### Plan 032: Docs and dead code
-- [ ] **P32-T01**: Truth-pass `README.md`, move historical docs to `docs/history/`, update `docs/{ROADMAP.md,ACCOUNTING-SPEC.md,SPEC-COVERAGE.md,adr/README.md}`, `decisions.md`, `CONTEXT.md`, `migrations.md`, `AGENTS.md`, create `docs/adr/0012-rune-desktop.md`, remove dead code (`phase_views.rs`, `money.rs`, `service.rs`, `rust_decimal`, move `scale_probe.rs` & `AGENT_PLAN.md`), copy demo fixture to `crates/sarv-quote/fixtures/demo-books.json`, update `plans/README.md`.
+- [x] **P32-T01**: Truth-pass `README.md`, move historical docs to `docs/history/`, update `docs/{ROADMAP.md,ACCOUNTING-SPEC.md,SPEC-COVERAGE.md,adr/README.md}`, `decisions.md`, `CONTEXT.md`, `migrations.md`, `AGENTS.md`, create `docs/adr/0012-rune-desktop.md`, remove dead code (`phase_views.rs`, `money.rs`, `service.rs`, `rust_decimal`, move `scale_probe.rs` & `AGENT_PLAN.md`), copy demo fixture to `crates/sarv-quote/fixtures/demo-books.json`, update `plans/README.md`.
   - Files: `README.md`, `AGENTS.md`, `CONTEXT.md`, `decisions.md`, `migrations.md`, `Cargo.toml`, `crates/sarv-quote/Cargo.toml`, `crates/sarv-quote/src/{lib.rs,desktop_bridge.rs,phase_views.rs,money.rs,service.rs}`, `crates/sarv-quote/fixtures/*`, `docs/**`, `examples/scale_probe.rs`, `AGENT_PLAN.md`, `plans/README.md`
   - Done when: `cargo build --workspace --all-targets && cargo test -p sarv-quote && cargo test -p sarv-quote --features pdf-export && cargo test -p sarv-desktop --bin sarv-desktop`
 

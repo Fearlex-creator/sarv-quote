@@ -1,6 +1,6 @@
 # Independent QA review
 
-Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
 This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md).
 
 Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
@@ -12,13 +12,13 @@ Scope: quotation preparation v1, native Rust/GTK4/libadwaita. Synthetic records 
 
 Opened the actual Wayland captures in `../artifacts/delivery-complete/`: quotation, human review, catalog confirmation, products, customers, settings, quote archive, and approved print preview. At 1400×940 the four-line quotation displays every quantity, price, amount, review selector and delete action without horizontal scrolling. Both dark and light captures show joined Persian text, persistent captions and visible native focus. Ambiguous/unmatched rows withhold totals until human resolution. Source timestamps, stale-price acknowledgement and explicit toman units remain visible. The products page wraps each amount/unit caption into several short lines; it stays readable. The settings capture covers the upper business/document fields, not all settings below the scroll. `native-quotes.png` is the archive evidence; the file named `native-archive.png` captures the quotation page.
 
-![Final native quotation](assets/delivery-complete-native-after-quotation.png)
-![Final native human review](assets/delivery-complete-native-human-review.png)
-![Final native approved preview](assets/delivery-complete-native-approved-preview.png)
+![Final native quotation](../assets/delivery-complete-native-after-quotation.png)
+![Final native human review](../assets/delivery-complete-native-human-review.png)
+![Final native approved preview](../assets/delivery-complete-native-approved-preview.png)
 
 The final 900×940 capture `native-narrow.png` was also opened. The collapsed sidebar is reachable through the visible native Persian button `فهرست`, replacing an unavailable theme icon. All four rows and numeric columns remain legible; the table has horizontal scrolling available at this size. This capture proves the button is visible; source inspection confirms it switches the collapsed split view to its navigation pane. This reviewer did not click the running window.
 
-![Final narrow native quotation](assets/delivery-complete-native-narrow.png)
+![Final narrow native quotation](../assets/delivery-complete-native-narrow.png)
 
 Read the final native reports and corresponding harness source: **22 workflow + 14 settings + 3 saved-preview checks passed**. These use actual GTK/libadwaita controls and Wayland rendering. The approved-preview title identifies the saved approved version, numeric price/total columns are distinct, and the harness verifies 125%, 75% and restored 100% zoom geometry. The settings run verifies Gregorian date-format snapshots, exact configured 5% arithmetic, and number `DEMO-42`: subtotal 5,255,000 rial less 1,000 rial discount, plus 262,700 rial configured charge, equals 5,516,700 rial (551,670 toman).
 
@@ -38,9 +38,9 @@ Application source, existing workflow tests, and independent `tests/qa_invariant
 | 2. Resolved item review | `../artifacts/final-native/native-review.png` | Customer, requested rows, explicit units and source timestamps are visible. Editable order is CSV text, requiring users to understand its syntax. |
 | 3. Human review | `../artifacts/final-native/native-human-review.png` | Ambiguous and unmatched rows show distinct textual warnings and explicit selectors. Dense customer/order details occupy a separate panel while useful item data requires scrolling. |
 
-![Baseline quote draft](assets/final-native-native-baseline-order.png)
-![Baseline resolved review](assets/final-native-native-review.png)
-![Baseline human review](assets/final-native-native-human-review.png)
+![Baseline quote draft](../assets/final-native-native-baseline-order.png)
+![Baseline resolved review](../assets/final-native-native-review.png)
+![Baseline human review](../assets/final-native-native-human-review.png)
 
 ## Findings communicated to integration owner
 
@@ -64,9 +64,9 @@ The actual native capture `../artifacts/final-native/native-redesign-first.png` 
 | 6. Populated quotation and review | `../artifacts/redesign-final/native-review.png`, `native-human-review.png` | Four requested rows compare in one table; exact matches, ambiguity and unmatched choices are distinguishable. Persian/Latin codes and input focus are legible. Review and delete columns require horizontal scrolling in the tiled approximately 941 px window. |
 | 7. Saved quotation and preview | `../artifacts/redesign-final/native-after-quotation.png`, `native-print-preview.png` | Resolved rows show original/human matches and stale source warning. Final total is 524,500 toman = 5,245,000 rial. Native preview clearly states it is an unapproved preview and does not imply dispatch/accounting posting. |
 
-![First native redesign capture](assets/final-native-native-redesign-first.png)
-![Populated native quote](assets/redesign-final-native-after-quotation.png)
-![Native print preview](assets/redesign-final-native-print-preview.png)
+![First native redesign capture](../assets/final-native-native-redesign-first.png)
+![Populated native quote](../assets/redesign-final-native-after-quotation.png)
+![Native print preview](../assets/redesign-final-native-print-preview.png)
 
 Additional integration defects were reported directly to the owner:
 

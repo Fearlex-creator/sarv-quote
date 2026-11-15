@@ -1,3 +1,4 @@
+//! Historical loopback HTTP adapter kept as a reference for hosting `AgentService`.
 //! Opt-in loopback-only adapter for browser QA of the real Rust kernel.
 //! Not a product backend. Requires a separate profile and explicit token.
 use serde_json::{Value, json};

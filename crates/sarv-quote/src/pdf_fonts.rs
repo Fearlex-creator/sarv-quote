@@ -49,7 +49,10 @@ pub fn private(map: &pango::FontMap, scope: &str) -> Result<PrivateFonts> {
     builder.create(&dir)?;
     let guard = PrivateFonts(dir);
     let fonts: &[(&str, &[u8])] = &[
-        ("Vazirmatn-Regular.ttf", include_bytes!("../../../assets/fonts/Vazirmatn-Regular.ttf")),
+        (
+            "Vazirmatn-Regular.ttf",
+            include_bytes!("../../../assets/fonts/Vazirmatn-Regular.ttf"),
+        ),
         ("Vazirmatn-Bold.ttf", include_bytes!("../../../assets/fonts/Vazirmatn-Bold.ttf")),
     ];
     for &(name, bytes) in fonts {

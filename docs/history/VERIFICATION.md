@@ -1,6 +1,6 @@
 # Verification evidence
 
-Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
+Historical milestone record. The GTK, React, and Tauri applications have been removed. Current commands are in [the README](../../README.md). Archived source copies are available in Git history; financial migration fixtures remain in this repository.
 This is historical verification/design evidence. The current native product delivery, requirements and remaining limits are in [PRODUCT-DELIVERY.md](PRODUCT-DELIVERY.md) and [PRODUCT-ACCEPTANCE.md](PRODUCT-ACCEPTANCE.md).
 
 Current continuation verification and before/after native captures: [CONTINUATION.md](CONTINUATION.md). The results below are retained historical evidence; the continuation report supersedes their outstanding native checks where explicitly tested.
@@ -22,21 +22,21 @@ The settings workflow additionally asserts that a draft with customer/notes and 
 
 The ordinary quotation run saved two immutable revisions totaling **3,995,000** and **5,245,000 rials**. The configured synthetic offer **DEMO-42** totals **5,516,700 rials**, including **262,700 rials** of the explicit user-set 5% addition. Number consumption remained stable on repeated approval; three quote snapshots existed after the settings flow.
 
-Outputs: [ordinary PDF](assets/delivery-complete-sample-quote.pdf), [ordinary CSV](assets/delivery-complete-sample-quote.csv), [configured PDF](assets/delivery-complete-business-quote.pdf), [configured CSV](assets/delivery-complete-business-quote.csv), ordinary backup (local-only evidence), settings backup (local-only evidence).
+Outputs: [ordinary PDF](../assets/delivery-complete-sample-quote.pdf), [ordinary CSV](../assets/delivery-complete-sample-quote.csv), [configured PDF](../assets/delivery-complete-business-quote.pdf), [configured CSV](../assets/delivery-complete-business-quote.csv), ordinary backup (local-only evidence), settings backup (local-only evidence).
 
 ## Native captures inspected
 
 The following supplied final captures were opened as local images and inspected. The reviews establish what is visibly rendered; workflow assertions establish the exercised behavior.
 
-1. [Quotation](assets/delivery-complete-native-after-quotation.png): four dense editable rows, native selected navigation, persistent Persian captions, explicit toman units, stable discount/addition/total and read-only catalog prices.
-2. [Products](assets/delivery-complete-native-products.png): approved catalog expansion, aliases, source timestamps, stale-price indication and explicit units.
-3. [Customers](assets/delivery-complete-native-customers.png): searchable stored customers, New/Edit/Use controls.
-4. [Settings](assets/delivery-complete-native-settings.png): native preference groups and business/document content. Further settings continue below the visible scroll area; their behavior is covered by the settings workflow.
-5. [Quote archive](assets/delivery-complete-native-quotes.png): latest-revision filter, saved numbers/versions and preview/export/revise/copy actions; no sent/paid status.
-6. [Approved preview](assets/delivery-complete-native-approved-preview.png): explicit approved version, number DEMO-42, issuer/address/header, Gregorian DD/MM/YYYY dates, Latin document digits, joined Persian text and distinct quantity/price/total columns. The document scrolls beyond the visible viewport.
-7. [Narrow quotation](assets/delivery-complete-native-narrow.png): 900×940 px capture with collapsed sidebar, readable Persian **فهرست** navigation control, all four rows and all quotation columns visible. Horizontal scrolling remains available. This does not establish usability in a short 508 px-high tile; use a tall/maximized window for the main controls.
+1. [Quotation](../assets/delivery-complete-native-after-quotation.png): four dense editable rows, native selected navigation, persistent Persian captions, explicit toman units, stable discount/addition/total and read-only catalog prices.
+2. [Products](../assets/delivery-complete-native-products.png): approved catalog expansion, aliases, source timestamps, stale-price indication and explicit units.
+3. [Customers](../assets/delivery-complete-native-customers.png): searchable stored customers, New/Edit/Use controls.
+4. [Settings](../assets/delivery-complete-native-settings.png): native preference groups and business/document content. Further settings continue below the visible scroll area; their behavior is covered by the settings workflow.
+5. [Quote archive](../assets/delivery-complete-native-quotes.png): latest-revision filter, saved numbers/versions and preview/export/revise/copy actions; no sent/paid status.
+6. [Approved preview](../assets/delivery-complete-native-approved-preview.png): explicit approved version, number DEMO-42, issuer/address/header, Gregorian DD/MM/YYYY dates, Latin document digits, joined Persian text and distinct quantity/price/total columns. The document scrolls beyond the visible viewport.
+7. [Narrow quotation](../assets/delivery-complete-native-narrow.png): 900×940 px capture with collapsed sidebar, readable Persian **فهرست** navigation control, all four rows and all quotation columns visible. Horizontal scrolling remains available. This does not establish usability in a short 508 px-high tile; use a tall/maximized window for the main controls.
 
-[Import preview](assets/delivery-complete-native-catalog-preview.png), [review](assets/delivery-complete-native-review.png), [human review](assets/delivery-complete-native-human-review.png) and [draft print preview](assets/delivery-complete-native-print-preview.png) are also recorded by the native harness. [DESIGN.md](DESIGN.md) contains before/after rationale. [QA-REVIEW.md](QA-REVIEW.md) records independent findings and regressions.
+[Import preview](../assets/delivery-complete-native-catalog-preview.png), [review](../assets/delivery-complete-native-review.png), [human review](../assets/delivery-complete-native-human-review.png) and [draft print preview](../assets/delivery-complete-native-print-preview.png) are also recorded by the native harness. [DESIGN.md](../DESIGN.md) contains before/after rationale. [QA-REVIEW.md](QA-REVIEW.md) records independent findings and regressions.
 
 ## Rust and independent regression checks
 
@@ -65,7 +65,7 @@ The installed launcher report (local-only evidence) confirms the demo desktop la
 
 The Library result (local-only evidence) records unavailable screenshot upload support in this executor. No Library file IDs were returned; all screenshots are retained locally.
 
-Installed native libraries are GTK **4.22.4** and libadwaita **1.9.3**, confirmed using `pkg-config --modversion gtk4 libadwaita-1`. The stable locked Rust libadwaita binding is **0.9.2/v1_9**. Installed libadwaita requires GTK ≥4.21.1. See [README](../README.md) for clean-machine prerequisites and license boundaries.
+Installed native libraries are GTK **4.22.4** and libadwaita **1.9.3**, confirmed using `pkg-config --modversion gtk4 libadwaita-1`. The stable locked Rust libadwaita binding is **0.9.2/v1_9**. Installed libadwaita requires GTK ≥4.21.1. See [README](../../README.md) for clean-machine prerequisites and license boundaries.
 
 ```bash
 cargo fmt --all --check

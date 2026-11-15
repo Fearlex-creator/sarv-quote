@@ -31,13 +31,7 @@ fn memory() -> (u64, u64) {
     let field = |name: &str| {
         status
             .lines()
-            .find_map(|line| {
-                line.strip_prefix(name)?
-                    .split_whitespace()
-                    .next()?
-                    .parse::<u64>()
-                    .ok()
-            })
+            .find_map(|line| line.strip_prefix(name)?.split_whitespace().next()?.parse::<u64>().ok())
             .unwrap_or(0)
     };
     (field("VmRSS:"), field("VmHWM:"))
@@ -61,10 +55,7 @@ fn measure<T>(log: &Path, phase: &str, work: impl FnOnce() -> Result<T>) -> Resu
         while !worker_finished.load(Ordering::Acquire) {
             let (rss, hwm) = memory();
             worker_peak.fetch_max(rss, Ordering::Relaxed);
-            if start.elapsed() > Duration::from_secs(LIMIT_SECONDS)
-                || hwm > LIMIT_RSS_KIB
-                || rss > LIMIT_RSS_KIB
-            {
+            if start.elapsed() > Duration::from_secs(LIMIT_SECONDS) || hwm > LIMIT_RSS_KIB || rss > LIMIT_RSS_KIB {
                 let failure = Measurement {
                     phase: watchdog_phase,
                     outcome: "bounded_stop",
@@ -72,9 +63,7 @@ fn measure<T>(log: &Path, phase: &str, work: impl FnOnce() -> Result<T>) -> Resu
                     sampled_phase_peak_rss_kib: worker_peak.load(Ordering::Relaxed),
                     kernel_process_peak_rss_kib: hwm,
                     ending_rss_kib: rss,
-                    error: Some(
-                        "phase exceeded 60 seconds or process peak RSS exceeded 512 MiB".into(),
-                    ),
+                    error: Some("phase exceeded 60 seconds or process peak RSS exceeded 512 MiB".into()),
                 };
                 let _ = append(&watchdog_log, &failure);
                 eprintln!("bounded_stop: {}", failure.phase);
@@ -88,9 +77,7 @@ fn measure<T>(log: &Path, phase: &str, work: impl FnOnce() -> Result<T>) -> Resu
     let (rss, hwm) = memory();
     sampled_peak.fetch_max(rss, Ordering::Relaxed);
     finished.store(true, Ordering::Release);
-    monitor
-        .join()
-        .map_err(|_| anyhow::anyhow!("RSS monitor panicked"))?;
+    monitor.join().map_err(|_| anyhow::anyhow!("RSS monitor panicked"))?;
     let measurement = Measurement {
         phase: phase.into(),
         outcome: if result.is_ok() { "passed" } else { "failed" },
@@ -113,15 +100,7 @@ fn measure<T>(log: &Path, phase: &str, work: impl FnOnce() -> Result<T>) -> Resu
 }
 fn fixture(products: usize, source: &str) -> Result<String> {
     let mut csv = csv::Writer::from_writer(Vec::new());
-    csv.write_record([
-        "code",
-        "name",
-        "measure",
-        "price",
-        "currency",
-        "source_at",
-        "aliases",
-    ])?;
+    csv.write_record(["code", "name", "measure", "price", "currency", "source_at", "aliases"])?;
     for index in 0..products {
         let long = if index < 1000 {
             "محصول آزمایشی با شرح طولانی برای بررسی خوانایی جدول و صفحه‌بندی چاپ، بدون هیچ دادهٔ واقعی مشتری؛ کالا و قیمت فقط برای آزمون عملکرد هستند. "
@@ -149,9 +128,7 @@ fn order(count: usize) -> Result<String> {
     Ok(String::from_utf8(csv.into_inner()?)?)
 }
 fn expected_total(count: usize) -> i64 {
-    (0..count)
-        .map(|index| ((100_000 + index as i64) * 5 + 2) / 4)
-        .sum()
+    (0..count).map(|index| ((100_000 + index as i64) * 5 + 2) / 4).sum()
 }
 fn run(products: usize, directory: &Path) -> Result<()> {
     ensure!(!cfg!(debug_assertions), "run this probe with --release");
@@ -159,10 +136,7 @@ fn run(products: usize, directory: &Path) -> Result<()> {
         [1000, 10_000, 50_000].contains(&products),
         "supported product tiers: 1000, 10000, 50000"
     );
-    ensure!(
-        !directory.exists(),
-        "output directory already exists; use a fresh path"
-    );
+    ensure!(!directory.exists(), "output directory already exists; use a fresh path");
     fs::create_dir_all(directory)?;
     let log = directory.join("measurements.jsonl");
     let environment = serde_json::json!({
@@ -176,18 +150,10 @@ fn run(products: usize, directory: &Path) -> Result<()> {
         "process_peak_rss_limit_kib": LIMIT_RSS_KIB,
         "peak_rss_note": "VmHWM is the actual kernel process-lifetime high-water RSS, cumulative across phases; per-phase RSS is sampled and may miss short peaks. Page-cache coldness is not controlled."
     });
-    fs::write(
-        directory.join("environment.json"),
-        serde_json::to_vec_pretty(&environment)?,
-    )?;
+    fs::write(directory.join("environment.json"), serde_json::to_vec_pretty(&environment)?)?;
     let source = (chrono::Utc::now() - chrono::Duration::hours(1)).to_rfc3339();
-    let input = measure(&log, "generate_synthetic_catalog_csv", || {
-        fixture(products, &source)
-    })?;
-    ensure!(
-        input.len() <= imports::MAX_IMPORT,
-        "synthetic CSV exceeds application import limit"
-    );
+    let input = measure(&log, "generate_synthetic_catalog_csv", || fixture(products, &source))?;
+    ensure!(input.len() <= imports::MAX_IMPORT, "synthetic CSV exceeds application import limit");
     fs::write(directory.join("catalog.csv"), &input)?;
     let catalog = measure(&log, "catalog_csv_parse_and_fingerprint", || {
         imports::catalog_csv(&input, "فهرست مصنوعی سنجش عملکرد")
@@ -197,10 +163,7 @@ fn run(products: usize, directory: &Path) -> Result<()> {
     let catalog_id = measure(&log, "catalog_accept_import_and_validate", || {
         imports::accept_catalog(&mut state, catalog.clone())
     })?;
-    ensure!(
-        state.draft.catalog_id == catalog_id,
-        "catalog not selected after import"
-    );
+    ensure!(state.draft.catalog_id == catalog_id, "catalog not selected after import");
     measure(&log, "catalog_state_validate", || state.validate())?;
     measure(&log, "duplicate_catalog_rejection", || {
         let before = state.catalogs.len();
@@ -208,15 +171,10 @@ fn run(products: usize, directory: &Path) -> Result<()> {
             imports::accept_catalog(&mut state, catalog.clone()).is_err(),
             "duplicate was accepted"
         );
-        ensure!(
-            state.catalogs.len() == before,
-            "duplicate import mutated state"
-        );
+        ensure!(state.catalogs.len() == before, "duplicate import mutated state");
         Ok(())
     })?;
-    let lookup = measure(&log, "compile_borrowed_catalog_index", || {
-        Ok(catalog.index())
-    })?;
+    let lookup = measure(&log, "compile_borrowed_catalog_index", || Ok(catalog.index()))?;
     measure(&log, "indexed_exact_code_matches_100", || {
         for index in 0..100 {
             let index = index * (products / 100);
@@ -280,10 +238,7 @@ fn run(products: usize, directory: &Path) -> Result<()> {
                         || normalize(&product.name).contains(&needle)
                         || normalize(&product.measure).contains(&needle)
                         || normalize(&product.source_at).contains(&needle)
-                        || product
-                            .aliases
-                            .iter()
-                            .any(|alias| normalize(alias).contains(&needle))
+                        || product.aliases.iter().any(|alias| normalize(alias).contains(&needle))
                 })
                 .count();
             if query == "محصول" || query == "آزمايشي" {
@@ -310,49 +265,31 @@ fn run(products: usize, directory: &Path) -> Result<()> {
     for lines in [100, 1000] {
         let text = order(lines)?;
         fs::write(directory.join(format!("order-{lines}.csv")), &text)?;
-        let parsed = measure(&log, &format!("order_csv_parse_{lines}"), || {
-            imports::order_csv(&text)
-        })?;
+        let parsed = measure(&log, &format!("order_csv_parse_{lines}"), || imports::order_csv(&text))?;
         state.new_draft()?;
         state.draft.customer = format!("مشتری مصنوعی سنجش {lines} ردیف");
         state.draft.lines = parsed;
-        let preview = measure(
-            &log,
-            &format!("quote_preview_exact_match_and_money_{lines}"),
-            || state.preview(),
-        )?;
+        let preview = measure(&log, &format!("quote_preview_exact_match_and_money_{lines}"), || state.preview())?;
         ensure!(
             preview.total_rial == expected_total(lines),
             "quote total differs from independent quarter-rial expectation"
         );
-        let quote_id = measure(&log, &format!("quote_domain_approval_{lines}"), || {
-            state.approve()
+        let quote_id = measure(&log, &format!("quote_domain_approval_{lines}"), || state.approve())?;
+        measure(&log, &format!("repeated_approval_idempotence_{lines}"), || {
+            let count = state.quotes.len();
+            ensure!(
+                state.approve()? == quote_id && state.quotes.len() == count,
+                "repeated approval was not idempotent"
+            );
+            Ok(())
         })?;
-        measure(
-            &log,
-            &format!("repeated_approval_idempotence_{lines}"),
-            || {
-                let count = state.quotes.len();
-                ensure!(
-                    state.approve()? == quote_id && state.quotes.len() == count,
-                    "repeated approval was not idempotent"
-                );
+        measure(&log, &format!("approved_state_validate_{lines}"), || state.validate())?;
+        measure(&log, &format!("store_persist_approved_quote_{lines}"), || {
+            store.change(|current| {
+                *current = state.clone();
                 Ok(())
-            },
-        )?;
-        measure(&log, &format!("approved_state_validate_{lines}"), || {
-            state.validate()
+            })
         })?;
-        measure(
-            &log,
-            &format!("store_persist_approved_quote_{lines}"),
-            || {
-                store.change(|current| {
-                    *current = state.clone();
-                    Ok(())
-                })
-            },
-        )?;
         let quote = state
             .quotes
             .iter()
@@ -366,69 +303,56 @@ fn run(products: usize, directory: &Path) -> Result<()> {
         })?;
         approved.push(quote_id);
     }
-    measure(
-        &log,
-        "saved_customer_quote_search_equivalent_filters_10",
-        || {
-            for query in [
-                "مشتری",
-                "مصنوعي",
-                "SYN-000",
-                "syn-۰۱۲",
-                "Q-1",
-                "پیشنهاد",
-                "synthetic-missing",
-                "آزمایشی",
-                "ردیف",
-                "فهرست",
-            ] {
-                let needle = normalize(query);
-                let customers = state
-                    .customers
+    measure(&log, "saved_customer_quote_search_equivalent_filters_10", || {
+        for query in [
+            "مشتری",
+            "مصنوعي",
+            "SYN-000",
+            "syn-۰۱۲",
+            "Q-1",
+            "پیشنهاد",
+            "synthetic-missing",
+            "آزمایشی",
+            "ردیف",
+            "فهرست",
+        ] {
+            let needle = normalize(query);
+            let customers = state
+                .customers
+                .iter()
+                .filter(|customer| normalize(&customer.name).contains(&needle) || normalize(&customer.phone).contains(&needle))
+                .count();
+            let quotes = state
+                .quotes
+                .iter()
+                .filter(|quote| {
+                    [
+                        &quote.customer,
+                        &quote.phone,
+                        &quote.id,
+                        &quote.reference,
+                        &quote.number,
+                        &quote.catalog_name,
+                        &quote.approved_at,
+                    ]
                     .iter()
-                    .filter(|customer| {
-                        normalize(&customer.name).contains(&needle)
-                            || normalize(&customer.phone).contains(&needle)
-                    })
-                    .count();
-                let quotes = state
-                    .quotes
-                    .iter()
-                    .filter(|quote| {
-                        [
-                            &quote.customer,
-                            &quote.phone,
-                            &quote.id,
-                            &quote.reference,
-                            &quote.number,
-                            &quote.catalog_name,
-                            &quote.approved_at,
-                        ]
-                        .iter()
-                        .any(|value| normalize(value).contains(&needle))
-                            || quote.lines.iter().any(|line| {
-                                normalize(&line.code).contains(&needle)
-                                    || normalize(&line.name).contains(&needle)
-                            })
-                    })
-                    .count();
-                if query == "مشتری" {
-                    ensure!(
-                        customers == 2 && quotes == 2,
-                        "saved-document name search failed"
-                    );
-                }
-                if query == "synthetic-missing" {
-                    ensure!(
-                        customers == 0 && quotes == 0,
-                        "saved-document missing search matched"
-                    );
-                }
-                std::hint::black_box((customers, quotes));
+                    .any(|value| normalize(value).contains(&needle))
+                        || quote
+                            .lines
+                            .iter()
+                            .any(|line| normalize(&line.code).contains(&needle) || normalize(&line.name).contains(&needle))
+                })
+                .count();
+            if query == "مشتری" {
+                ensure!(customers == 2 && quotes == 2, "saved-document name search failed");
             }
-            Ok(())
-        },
-    )?;
+            if query == "synthetic-missing" {
+                ensure!(customers == 0 && quotes == 0, "saved-document missing search matched");
+            }
+            std::hint::black_box((customers, quotes));
+        }
+        Ok(())
+    })?;
     // Leave a usable native-UI profile with 100 editable order rows, preserving both archived exports.
     state.new_draft()?;
     state.draft.customer = "مشتری مصنوعی پروندهٔ بررسی رابط".into();
@@ -448,26 +372,15 @@ fn run(products: usize, directory: &Path) -> Result<()> {
         restored.catalogs[0].products.len() == products && restored.draft.lines.len() == 100,
         "backup differs from fixture"
     );
-    measure(&log, "safe_restore_with_safety_backup", || {
-        store.restore(restored).map(|_| ())
-    })?;
+    measure(&log, "safe_restore_with_safety_backup", || store.restore(restored).map(|_| ()))?;
     drop(store);
-    let reopened = measure(&log, "store_reopen_parse_and_validate", || {
-        Store::open(&profile)
-    })?;
+    let reopened = measure(&log, "store_reopen_parse_and_validate", || Store::open(&profile))?;
     ensure!(
-        reopened
-            .state
-            .quotes
-            .iter()
-            .map(|quote| quote.id.clone())
-            .collect::<Vec<_>>()
-            == approved,
+        reopened.state.quotes.iter().map(|quote| quote.id.clone()).collect::<Vec<_>>() == approved,
         "reopen lost approved quotes"
     );
     ensure!(
-        reopened.state.draft.lines.len() == 100
-            && reopened.state.catalogs[0].products.len() == products,
+        reopened.state.draft.lines.len() == 100 && reopened.state.catalogs[0].products.len() == products,
         "reopen differs from fixture"
     );
     let summary = serde_json::json!({
@@ -478,10 +391,7 @@ fn run(products: usize, directory: &Path) -> Result<()> {
         "native_gui": "unavailable_in_this_probe; root owns native UI measurement",
         "scope": "one fresh-process synthetic run per tier; warm filesystem/font caches and concurrent machine load may affect results; no SLA established"
     });
-    fs::write(
-        directory.join("summary.json"),
-        serde_json::to_vec_pretty(&summary)?,
-    )?;
+    fs::write(directory.join("summary.json"), serde_json::to_vec_pretty(&summary)?)?;
     Ok(())
 }
 fn main() -> Result<()> {
