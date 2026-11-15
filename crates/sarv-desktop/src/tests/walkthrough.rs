@@ -84,6 +84,7 @@ fn test_owner_walks_profiles_documents_and_books() {
     let invoice_bytes = std::fs::read(&invoice_pdf).unwrap_or_else(|e| panic!("{e}; {}", blow(&rt, "invoice pdf")));
     assert!(invoice_bytes.starts_with(b"%PDF"), "invoice pdf");
     click(&mut rt, "btn-Return");
+    click(&mut rt, "btn-Post return");
     let returned = rt
         .state
         .books
@@ -129,6 +130,7 @@ fn test_owner_walks_profiles_documents_and_books() {
         }
         click(&mut rt, &format!("purchase-{return_id}"));
         click(&mut rt, "btn-Return");
+        click(&mut rt, "btn-Post return");
         let sent_back = rt
             .state
             .books
@@ -158,6 +160,7 @@ fn test_owner_walks_profiles_documents_and_books() {
         .unwrap_or_else(|| panic!("{}", blow(&rt, "journal id")));
     click(&mut rt, &format!("journal-{journal_id}"));
     click(&mut rt, "btn-Reverse");
+    click(&mut rt, "btn-Reverse entry");
     let reversed = rt
         .state
         .books
@@ -184,6 +187,7 @@ fn test_owner_walks_profiles_documents_and_books() {
     let period = rt.state.books.period_id.clone();
     click(&mut rt, &format!("period-{period}"));
     click(&mut rt, "btn-Lock fiscal period");
+    click(&mut rt, "btn-Lock period");
     let locked = rt.state.books.workspace["periods"]
         .as_array()
         .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == period))
@@ -191,6 +195,7 @@ fn test_owner_walks_profiles_documents_and_books() {
         .unwrap_or(false);
     if locked {
         click(&mut rt, "btn-Reopen fiscal period");
+        click(&mut rt, "btn-Reopen period");
         let open_again = rt.state.books.workspace["periods"]
             .as_array()
             .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == period))

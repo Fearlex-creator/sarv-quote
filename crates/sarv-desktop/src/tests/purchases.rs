@@ -134,6 +134,7 @@ fn purchase_return_reduces_stock_and_payables() {
     }
     click(&mut rt, &format!("purchase-{return_id}"));
     click(&mut rt, "btn-Return");
+    click(&mut rt, "btn-Post return");
 
     assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before, "stock reduced back");
     assert_eq!(

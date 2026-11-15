@@ -388,11 +388,12 @@ fn reverse_selected(st: &mut State) {
         st.toast(Tone::Info, st.fmt.t("No journals"));
         return;
     };
-    let key = format!("rev-{id}");
+    let key = st.mint_key("rev");
+    let date_raw = crate::data::s(&journal["date"]);
     let mut payload = serde_json::json!({
         "journal_id": id,
         "period_id": crate::data::s(&journal["period_id"]),
-        "date": crate::data::s(&journal["date"]),
+        "date": date_raw,
         "request_key": key,
         "source_id": key,
         "reason": "Reverse entry"
@@ -404,7 +405,22 @@ fn reverse_selected(st: &mut State) {
             return;
         }
     }
-    let _ = st.run("journal_reverse", payload, Some("Posted"));
+    let lines = vec![
+        (st.fmt.t("Reference"), format!("#{}", id.chars().take(8).collect::<String>())),
+        (st.fmt.t("Date"), st.fmt.date(&date_raw)),
+        (st.fmt.t("Amount"), st.fmt.money(&crate::data::s(&journal["total_debit"]))),
+    ];
+    st.confirm = Some(crate::ui::confirm::Confirm::one(
+        st.fmt.t("Reverse entry"),
+        st.fmt.t("Creates an offsetting journal and preserves the original."),
+        lines,
+        "Reverse entry",
+        st.fmt.t("Reverse entry"),
+        true,
+        move |st| {
+            let _ = st.run("journal_reverse", payload.clone(), Some("Posted"));
+        },
+    ));
 }
 
 fn toggle_period(st: &mut State) {
@@ -418,23 +434,46 @@ fn toggle_period(st: &mut State) {
         .strip_prefix("period-")
         .unwrap_or(&st.accounting.selected)
         .to_string();
-    let locked = st.books.workspace["periods"]
+    let period = st.books.workspace["periods"]
         .as_array()
         .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == id))
-        .and_then(|p| p["locked"].as_bool())
-        .unwrap_or(false);
-    let key = format!("lock-{id}-{}", !locked);
-    let _ = st.run(
-        "period_lock",
-        serde_json::json!({
-            "period_id": id,
-            "locked": !locked,
-            "reason": if locked { "Reopen fiscal period" } else { "Lock fiscal period" },
-            "request_key": key,
-            "source_id": key
-        }),
-        Some("Posted"),
-    );
+        .cloned();
+    let locked = period.as_ref().and_then(|p| p["locked"].as_bool()).unwrap_or(false);
+    let period_name = period
+        .as_ref()
+        .map(|p| crate::data::s(&p["name"]))
+        .filter(|n| !n.is_empty())
+        .unwrap_or_else(|| id.clone());
+    let key = st.mint_key("lock");
+    let action_key = if locked { "Reopen fiscal period" } else { "Lock fiscal period" };
+    let message_key = if locked {
+        "Entries can be posted again in this fiscal year once it is reopened."
+    } else {
+        "No entries can be posted in this fiscal year until it is reopened."
+    };
+    let confirm_key = if locked { "Reopen period" } else { "Lock period" };
+    let lines = vec![(st.fmt.t("Fiscal period"), period_name)];
+    st.confirm = Some(crate::ui::confirm::Confirm::one(
+        st.fmt.t(action_key),
+        st.fmt.t(message_key),
+        lines,
+        confirm_key,
+        st.fmt.t(action_key),
+        locked,
+        move |st| {
+            let _ = st.run(
+                "period_lock",
+                serde_json::json!({
+                    "period_id": id,
+                    "locked": !locked,
+                    "reason": action_key,
+                    "request_key": key,
+                    "source_id": key
+                }),
+                Some("Posted"),
+            );
+        },
+    ));
 }
 
 fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {

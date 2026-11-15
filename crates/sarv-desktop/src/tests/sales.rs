@@ -142,6 +142,7 @@ fn sale_return_restocks_and_credits_the_customer() {
 
     click(&mut rt, &format!("sale-{invoice_id}"));
     click(&mut rt, "btn-Return");
+    click(&mut rt, "btn-Post return");
 
     assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before, "stock restored on return");
     assert_eq!(customer_open_total(&mut rt, &party), 0, "receivable credited on return");

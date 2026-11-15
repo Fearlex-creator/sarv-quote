@@ -111,6 +111,7 @@ fn locked_period_refuses_a_journal() {
     let period = rt.state.books.period_id.clone();
     click(&mut rt, &format!("period-{period}"));
     click(&mut rt, "btn-Lock fiscal period");
+    click(&mut rt, "btn-Lock period");
     assert!(period_is_locked(&rt, &period), "{}", blow(&rt, "lock period"));
 
     click(&mut rt, "segment0");
@@ -143,6 +144,7 @@ fn locked_period_refuses_a_journal() {
     }
     click(&mut rt, &format!("period-{period}"));
     click(&mut rt, "btn-Reopen fiscal period");
+    click(&mut rt, "btn-Reopen period");
     assert!(!period_is_locked(&rt, &period), "{}", blow(&rt, "reopen period"));
 
     rt.update(|s, _| s.toasts.clear());
@@ -196,6 +198,7 @@ fn reverse_creates_a_mirror_journal() {
 
     click(&mut rt, &format!("journal-{journal_id}"));
     click(&mut rt, "btn-Reverse");
+    click(&mut rt, "btn-Reverse entry");
 
     assert_eq!(count(&rt, "journal_count"), after_post_count + 1);
     assert_eq!(account_net_balance(&rt, &debit), debit_before);

@@ -1,5 +1,6 @@
 //! Root view: rune-kit `SplitView` shell, active screen, dialog/toast overlays.
 
+pub mod confirm;
 pub mod documents;
 pub mod glass;
 pub mod icons;
@@ -41,6 +42,7 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
         }
     };
 
+    confirm::mount(s, &ui, &mut layer);
     shell::mount_palette(s, &ui, &mut layer);
     shell::mount_toasts(s, &ui, &mut layer);
 

@@ -29,6 +29,7 @@ pub static FA: &[(&str, &str)] = &[
     ("AI insights", "بینش هوش مصنوعی"),
     ("Access", "سطح دسترسی"),
     ("Account", "حساب"),
+    ("Action", "عملیات"),
     ("Account or card number (optional)", "شمارهٔ حساب یا کارت (اختیاری)"),
     ("Accounting", "حسابداری"),
     ("AccountsPayable", "حساب‌های پرداختنی"),
@@ -82,6 +83,10 @@ pub static FA: &[(&str, &str)] = &[
     ("All contacts", "همه مخاطبان"),
     ("All controls agree", "حساب‌های کنترلی منطبق‌اند"),
     ("All pages", "همهٔ صفحه‌ها"),
+    (
+        "All remaining quantities on this document will be returned.",
+        "تمام مقادیر باقی‌مانده در این سند برگشت داده می‌شود.",
+    ),
     (
         "Allocate the exact amount to open documents; any surplus becomes an advance.",
         "مبلغ دقیق را به اسناد باز تخصیص دهید؛ مازاد به‌عنوان پیش‌دریافت ثبت می‌شود.",
@@ -277,6 +282,7 @@ pub static FA: &[(&str, &str)] = &[
         "برای دیدن ترازنامه ابتدا مانده‌های افتتاحیه را تأیید کنید.",
     ),
     ("Confirm reversal", "تأیید سند معکوس"),
+    ("Confirm this cheque action.", "این عملیات چک را تأیید کنید."),
     (
         "Confirm starting balances to settle invoices and bills.",
         "برای تسویهٔ فاکتورها و صورتحساب‌ها ابتدا مانده‌های افتتاحیه را تأیید کنید.",
@@ -336,6 +342,10 @@ pub static FA: &[(&str, &str)] = &[
     ("Create sales invoice", "صدور فاکتور فروش"),
     ("Create selected essentials", "ایجاد موارد انتخاب‌شده"),
     ("Creates a posted journal.", "یک سند ثبت‌شده ایجاد می‌شود."),
+    (
+        "Creates an offsetting journal and preserves the original.",
+        "یک سند معکوس ثبت می‌کند و سند اصلی را نگه می‌دارد.",
+    ),
     ("Creating…", "در حال ایجاد…"),
     ("Credit", "بستانکار"),
     ("Credit · IRR", "بستانکار · IRR"),
@@ -450,6 +460,10 @@ pub static FA: &[(&str, &str)] = &[
     ("Enter a price on every line.", "برای هر ردیف قیمت وارد کنید."),
     ("Enter a product name.", "نام کالا را وارد کنید."),
     ("Enter a valid amount.", "مبلغ معتبر وارد کنید."),
+    (
+        "Entries can be posted again in this fiscal year once it is reopened.",
+        "پس از بازگشایی، ثبت سند در این سال مالی دوباره ممکن می‌شود.",
+    ),
     (
         "Enter sale details, then continue to delivery and invoice review.",
         "اطلاعات فروش را وارد کنید؛ سپس تحویل کالا و صدور فاکتور را بررسی کنید.",
@@ -756,6 +770,10 @@ pub static FA: &[(&str, &str)] = &[
     ("No drafts", "پیش‌نویسی وجود ندارد"),
     ("No entries", "سندی وجود ندارد"),
     ("No entries in this period", "در این دوره سندی وجود ندارد"),
+    (
+        "No entries can be posted in this fiscal year until it is reopened.",
+        "تا زمان بازگشایی، امکان ثبت سند در این سال مالی وجود ندارد.",
+    ),
     ("No fiscal periods", "دورهٔ مالی وجود ندارد"),
     ("No invoices", "فاکتوری وجود ندارد"),
     ("No journals", "سندی وجود ندارد"),
@@ -943,6 +961,7 @@ pub static FA: &[(&str, &str)] = &[
         "Post journal “{value1}” dated {value2}. Creates an immutable journal entry.",
         "سند «{value1}» به تاریخ {value2} ثبت شود؟ این کار یک سند غیرقابل‌تغییر ایجاد می‌کند.",
     ),
+    ("Post return", "ثبت برگشت"),
     ("Postal code", "کد پستی"),
     ("Posted", "ثبت‌شده"),
     (
@@ -1139,6 +1158,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Retail & Shop", "فروشگاه و خرده‌فروشی"),
     ("Return", "برگشت"),
     ("Return and credit", "برگشت و بستانکاری"),
+    ("Return goods", "برگشت کالا"),
     (
         "Return billed goods and issue supplier credit",
         "برگشت کالای صورتحساب‌شده و صدور بستانکاری تأمین‌کننده",
@@ -1153,6 +1173,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Reversal", "سند معکوس"),
     ("Reversal date", "تاریخ سند معکوس"),
     ("Reverse", "برگشت"),
+    ("Reverse entry", "برگشت سند"),
     (
         "Reverse Journal #{reference}. Creates an offsetting journal and preserves the original.",
         "سند #{reference} معکوس شود؟ یک سند خنثی‌کننده ایجاد می‌شود و سند اصلی حفظ می‌شود.",

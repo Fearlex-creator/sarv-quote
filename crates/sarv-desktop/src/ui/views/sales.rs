@@ -927,8 +927,25 @@ fn return_selected(st: &mut State) {
     }
     let id = st.sales.selected.clone();
     let reference = format!("RET-{}", &id[..id.len().min(6)]);
-    let key = format!("return-{id}");
-    if crate::ui::ops::post_operation(st, &id, "sale_return", &reference, "Restock customer return and issue credit", &key).is_ok() {
-        st.toast(Tone::Success, st.fmt.t("Goods operation posted"));
-    }
+    let key = st.mint_key("return");
+    let Ok(review) = crate::ui::ops::review_operation(st, &id, "sale_return", &reference, "Restock customer return and issue credit", &key)
+    else {
+        return;
+    };
+    let mut lines = review.lines;
+    lines.push((st.fmt.t("Total"), review.total));
+    let payload = review.payload;
+    st.confirm = Some(crate::ui::confirm::Confirm::one(
+        st.fmt.t("Return goods"),
+        st.fmt.t("All remaining quantities on this document will be returned."),
+        lines,
+        "Post return",
+        st.fmt.t("Post return"),
+        true,
+        move |st| {
+            if crate::ui::ops::post_reviewed(st, "sale_return", payload.clone()).is_ok() {
+                st.toast(Tone::Success, st.fmt.t("Goods operation posted"));
+            }
+        },
+    ));
 }
