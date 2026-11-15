@@ -15,3 +15,9 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - Documented `poppler-utils` in `README.md` and marked Plan 001 `DONE` in `plans/README.md`.
 - Verified: `cargo fmt --all -- --check` (exit 0), `cargo clippy --workspace --all-targets -- -D warnings` (exit 0), `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed).
 
+## P02-T01 — Deterministic test clock
+- Updated `today()` in `crates/sarv-desktop/src/data.rs` to honour `SARV_TODAY` when valid `YYYY-MM-DD`.
+- Pinned `SARV_TODAY=2026-10-08` via `std::sync::Once` in `Engine::demo()`.
+- Added `test_demo_clock_is_inside_the_fixture_year` in `crates/sarv-desktop/src/main.rs` and marked Plan 002 `DONE`.
+- Verified: `SARV_TODAY=2026-10-08 cargo test -p sarv-desktop --bin sarv-desktop test_demo_clock` (1 passed); `cargo test -p sarv-desktop --bin sarv-desktop` (35 passed); fmt + clippy clean.
+

@@ -27,7 +27,15 @@ impl Engine {
 
     /// A throwaway profile seeded with the QA fixture, for screenshots and tests.
     pub fn demo() -> Self {
+        use std::sync::Once;
         use std::sync::atomic::{AtomicU64, Ordering};
+        static PIN_CLOCK: Once = Once::new();
+        PIN_CLOCK.call_once(|| {
+            if std::env::var_os("SARV_TODAY").is_none() {
+                // Runs once on first demo/test engine init before worker threads read SARV_TODAY.
+                unsafe { std::env::set_var("SARV_TODAY", "2026-10-08") };
+            }
+        });
         static COUNTER: AtomicU64 = AtomicU64::new(1);
         let count = COUNTER.fetch_add(1, Ordering::SeqCst);
         let dir = std::env::temp_dir().join(format!("sarv-demo-{}-{}", std::process::id(), count));
@@ -60,7 +68,13 @@ pub struct Books {
     pub loaded: bool,
 }
 
+/// Today's date as ISO `YYYY-MM-DD`. `SARV_TODAY` overrides the clock (tests, demos).
 pub fn today() -> String {
+    if let Ok(v) = std::env::var("SARV_TODAY")
+        && chrono::NaiveDate::parse_from_str(v.trim(), "%Y-%m-%d").is_ok()
+    {
+        return v.trim().to_string();
+    }
     chrono::Local::now().format("%Y-%m-%d").to_string()
 }
 

@@ -1105,4 +1105,12 @@ mod tests {
         assert!(dumped.contains("50000"), "catalog price posted once: {dumped}");
         assert!(rt.state.toasts.iter().any(|t| t.tone == Tone::Success));
     }
+
+    #[test]
+    fn test_demo_clock_is_inside_the_fixture_year() {
+        let rt = make_test_runtime();
+        let (from, to) = rt.state.books.range();
+        let today = data::today();
+        assert!(from <= today && today <= to, "today={today} outside [{from}, {to}]");
+    }
 }

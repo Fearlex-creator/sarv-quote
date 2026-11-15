@@ -15,7 +15,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo clippy --workspace --all-targets -- -D warnings && python3 -c "import yaml,sys; yaml.safe_load(open('.github/workflows/ci.yml'))"`
 
 ### Plan 002: Deterministic test clock
-- [ ] **P02-T01**: Make `data::today()` overridable via `SARV_TODAY`, pin `Engine::demo()` to `2026-10-08` via `std::sync::Once`, add `test_demo_clock_is_inside_the_fixture_year`, update `plans/README.md`.
+- [x] **P02-T01**: Make `data::today()` overridable via `SARV_TODAY`, pin `Engine::demo()` to `2026-10-08` via `std::sync::Once`, add `test_demo_clock_is_inside_the_fixture_year`, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/data.rs`, `crates/sarv-desktop/src/main.rs`, `plans/README.md`
   - Done when: `SARV_TODAY=2026-10-08 cargo test -p sarv-desktop --bin sarv-desktop test_demo_clock`
 
