@@ -1,4 +1,5 @@
 mod accounting;
+mod banking;
 mod harness;
 mod inventory;
 mod payments;

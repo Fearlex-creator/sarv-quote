@@ -32,3 +32,10 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - Added harness helpers `type_into`, `danger_toasts`, `assert_no_danger`, `count`, `trial_balance_is_balanced`, `books_validate`.
 - Verified: `cargo fmt --all -- --check`, `cargo clippy --quiet --workspace --all-targets -- -D warnings`, `cargo test -p sarv-desktop --bin sarv-desktop` (37 passed).
 
+## P33-T02 — Characterization tests & engine gap tests
+- Added 15 desktop characterization tests across `crates/sarv-desktop/src/tests/` (creating `banking.rs` and updating `mod.rs`, `inventory.rs`, `payments.rs`, `sales.rs`, `purchases.rs`, `accounting.rs`, `settings.rs`, `shell.rs`, `walkthrough.rs`).
+  - 5 marked `#[ignore]` for known/new issues: `product_profile_save_round_trips_every_field` (Plan 006), `opening_the_sale_dialog_twice_starts_clean` & `double_click_on_save_posts_once` (Plan 004), `received_cheque_goes_through_deposit_and_clear` & `bounced_cheque_reopens_the_receivable` (new finding: `cheque_strip` action buttons at `ui/views/payments.rs:481` don't trigger `on_press` on headless click; Plan 021 replaces `cheque_strip`).
+- Added `crates/sarv-quote/tests/sheets_bridge.rs` (3 tests) and `crates/sarv-quote/tests/contact_profile.rs` (2 tests).
+- Documented `SARV_M{3,4,5}_COMPAT_BINARY` ignored migration tests in `AGENTS.md` and marked Plan 033 `DONE` in `plans/README.md`.
+- Verified: `sarv-desktop` 47 passed (5 ignored), `sheets_bridge` 3 passed, `contact_profile` 2 passed, fmt + clippy clean.
+

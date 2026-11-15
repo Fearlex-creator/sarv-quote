@@ -1,5 +1,8 @@
-use super::harness::{blow, click, make_test_runtime};
+use super::harness::{
+    assert_no_danger, blow, books_validate, click, count, danger_toasts, make_test_runtime, trial_balance_is_balanced, type_into,
+};
 use crate::app::Page;
+use crate::data;
 
 #[test]
 fn test_accounting_tabs_and_tables_headlessly() {
@@ -69,4 +72,135 @@ fn test_accounting_and_banking_copy_helpers() {
     assert_eq!(crate::ui::views::banking::move_dialog_title(0), "Transfer");
     assert_eq!(crate::ui::views::banking::move_dialog_title(1), "Money in");
     assert_eq!(crate::ui::views::banking::move_dialog_title(2), "Money out");
+}
+
+fn period_is_locked(rt: &rune::Runtime<crate::app::State>, period: &str) -> bool {
+    rt.state.books.workspace["periods"]
+        .as_array()
+        .and_then(|rows| rows.iter().find(|p| data::s(&p["id"]) == period))
+        .and_then(|p| p["locked"].as_bool())
+        .unwrap_or(false)
+}
+
+fn account_net_balance(rt: &rune::Runtime<crate::app::State>, account_id: &str) -> i64 {
+    rt.state.books.report["trial"]["rows"]
+        .as_array()
+        .and_then(|rows| rows.iter().find(|r| data::s(&r["account_id"]) == account_id))
+        .map(|r| {
+            let d = data::s(&r["debit"]).parse::<i64>().unwrap_or(0);
+            let c = data::s(&r["credit"]).parse::<i64>().unwrap_or(0);
+            d - c
+        })
+        .unwrap_or(0)
+}
+
+#[test]
+fn locked_period_refuses_a_journal() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let debit = accounts[0].0.clone();
+    let credit = accounts[1].0.clone();
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "segment2");
+    for _ in 0..8 {
+        rt.frame(1.0 / 60.0);
+    }
+    let period = rt.state.books.period_id.clone();
+    click(&mut rt, &format!("period-{period}"));
+    click(&mut rt, "btn-Lock fiscal period");
+    assert!(period_is_locked(&rt, &period), "{}", blow(&rt, "lock period"));
+
+    click(&mut rt, "segment0");
+    for _ in 0..8 {
+        rt.frame(1.0 / 60.0);
+    }
+    let before_count = count(&rt, "journal_count");
+    rt.update(|s, _| s.toasts.clear());
+    rt.frame(1.0 / 60.0);
+
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = debit.clone();
+    rt.state.accounting.credit_account = credit.clone();
+    type_into(&mut rt, "journal-amount", "15000");
+    type_into(&mut rt, "journal-reason", "Blocked in locked period");
+    click(&mut rt, "btn-Save");
+
+    assert_eq!(
+        danger_toasts(&rt).len(),
+        1,
+        "expected exactly one danger toast: {:?}",
+        rt.state.toasts
+    );
+    assert_eq!(count(&rt, "journal_count"), before_count, "locked period must refuse journal");
+    click(&mut rt, "btn-Cancel");
+
+    click(&mut rt, "segment2");
+    for _ in 0..8 {
+        rt.frame(1.0 / 60.0);
+    }
+    click(&mut rt, &format!("period-{period}"));
+    click(&mut rt, "btn-Lock fiscal period");
+    assert!(!period_is_locked(&rt, &period), "{}", blow(&rt, "reopen period"));
+
+    rt.update(|s, _| s.toasts.clear());
+    click(&mut rt, "segment0");
+    for _ in 0..8 {
+        rt.frame(1.0 / 60.0);
+    }
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = debit;
+    rt.state.accounting.credit_account = credit;
+    type_into(&mut rt, "journal-amount", "15000");
+    type_into(&mut rt, "journal-reason", "Allowed after reopen");
+    click(&mut rt, "btn-Save");
+
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "post after reopen"));
+    assert_eq!(count(&rt, "journal_count"), before_count + 1);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn reverse_creates_a_mirror_journal() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let debit = accounts[0].0.clone();
+    let credit = accounts[1].0.clone();
+
+    let debit_before = account_net_balance(&rt, &debit);
+    let credit_before = account_net_balance(&rt, &credit);
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = debit.clone();
+    rt.state.accounting.credit_account = credit.clone();
+    type_into(&mut rt, "journal-amount", "25000");
+    type_into(&mut rt, "journal-reason", "Mirror test");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "journal post"));
+
+    let after_post_count = count(&rt, "journal_count");
+    let journal_id = rt
+        .state
+        .books
+        .list("journals")
+        .into_iter()
+        .find(|j| data::s(&j["reason"]) == "Mirror test")
+        .map(|j| data::s(&j["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "journal id")));
+
+    click(&mut rt, &format!("journal-{journal_id}"));
+    click(&mut rt, "btn-Reverse");
+
+    assert_eq!(count(&rt, "journal_count"), after_post_count + 1);
+    assert_eq!(account_net_balance(&rt, &debit), debit_before);
+    assert_eq!(account_net_balance(&rt, &credit), credit_before);
+    assert!(trial_balance_is_balanced(&rt));
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }

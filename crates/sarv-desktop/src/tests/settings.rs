@@ -1,4 +1,4 @@
-use super::harness::{click, make_test_runtime};
+use super::harness::{assert_no_danger, blow, books_validate, click, count, make_test_runtime, type_into};
 use crate::app::{Page, State};
 use crate::data;
 
@@ -52,4 +52,42 @@ fn test_backup_and_law_notice() {
     assert!(backups, "backup file written");
     click(&mut rt, "btn-Law data");
     assert!(!rt.state.settings.law_notice.is_empty(), "law notice is shown, not posted");
+}
+
+#[test]
+fn backup_then_restore_returns_the_books_to_the_snapshot() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let pre_count = count(&rt, "journal_count");
+
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "btn-Backup");
+
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "12000");
+    type_into(&mut rt, "journal-reason", "Before restore");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "post journal"));
+    assert_eq!(count(&rt, "journal_count"), pre_count + 1);
+
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "btn-Restore backup");
+    let filename = rt.state.settings.backups["backups"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .map(|row| data::s(&row["filename"]))
+        .filter(|name| !name.is_empty())
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "backup list")));
+    click(&mut rt, &format!("btn-backup-{filename}"));
+    click(&mut rt, "btn-restore-confirm");
+    assert!(!rt.state.settings.restore_open, "{}", blow(&rt, "restore"));
+
+    assert_eq!(count(&rt, "journal_count"), pre_count, "restore must return books to snapshot");
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }

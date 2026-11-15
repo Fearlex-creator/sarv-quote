@@ -1,5 +1,6 @@
-use super::harness::{click, make_test_runtime};
+use super::harness::{assert_no_danger, blow, books_validate, click, make_test_runtime, type_into};
 use crate::app::{Page, Tone};
+use crate::data;
 
 #[test]
 fn test_sale_facture_pickers_headlessly() {
@@ -81,4 +82,98 @@ fn test_rial_sale_is_not_scaled() {
     }
     let dumped = serde_json::to_string(&rt.state.books.list("sales")[0]).unwrap_or_default();
     assert!(dumped.contains("100000"), "rial amount stored once: {dumped}");
+}
+
+fn item_stock_total(rt: &mut rune::Runtime<crate::app::State>, item_id: &str) -> i64 {
+    let detail = rt
+        .state
+        .query("product_detail", serde_json::json!({ "item_id": item_id, "as_of": data::today() }))
+        .unwrap_or_else(|e| panic!("{e}"));
+    data::s(&detail["stats"]["stock_quantity"]).parse::<i64>().unwrap_or(0)
+}
+
+fn customer_open_total(rt: &mut rune::Runtime<crate::app::State>, party: &str) -> i64 {
+    let open = rt
+        .state
+        .query("payment_options", serde_json::json!({ "side": "receive", "party_id": party }))
+        .unwrap_or_else(|e| panic!("{e}"));
+    open["items"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|i| data::s(&i["remaining"]).parse::<i64>().unwrap_or(0))
+        .sum()
+}
+
+#[test]
+fn sale_return_restocks_and_credits_the_customer() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Return Buyer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    let stock_before = item_stock_total(&mut rt, "ITEM-A");
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    // Combo/select pickers: set customer, item, and payment method directly.
+    rt.state.sales.customer_id = party.clone();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "150000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "150000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "credit sale"));
+
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before - 1000);
+    assert_eq!(customer_open_total(&mut rt, &party), 150000);
+
+    let invoice_id = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .find(|r| r["command"].get("Fulfill").is_some())
+        .map(|r| data::s(&r["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "invoice id")));
+
+    click(&mut rt, &format!("sale-{invoice_id}"));
+    click(&mut rt, "btn-Return");
+
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before, "stock restored on return");
+    assert_eq!(customer_open_total(&mut rt, &party), 0, "receivable credited on return");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+#[ignore = "fixed by plans/004-dialog-open-and-request-keys.md"]
+fn opening_the_sale_dialog_twice_starts_clean() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    let first_key = rt.state.sales.post_key.clone();
+    assert!(!first_key.is_empty());
+
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-qty-0", "3");
+    type_into(&mut rt, "sale-price-0", "50000");
+    click(&mut rt, "btn-Cancel");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "cancel sale dialog"));
+
+    click(&mut rt, "btn-New sales invoice");
+    assert!(rt.state.sales.modal_open);
+    assert_ne!(rt.state.sales.post_key, first_key, "new dialog must mint a fresh post_key");
+    assert!(rt.state.sales.customer_id.is_empty(), "customer_id must be cleared");
+    assert!(rt.state.sales.lines[0].item_id.is_empty(), "line item_id must be cleared");
+    assert_ne!(rt.state.forms.get("sale-qty-0"), "3", "leftover sale-qty-0 must be cleared");
+    assert!(
+        rt.state.forms.get("sale-price-0").is_empty(),
+        "leftover sale-price-0 must be cleared"
+    );
+    assert_no_danger(&rt);
 }

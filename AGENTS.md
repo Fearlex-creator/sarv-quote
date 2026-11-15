@@ -16,3 +16,5 @@ cargo test -p sarv-desktop --test png_scenes
 Law data is a read-only notice. It is not an input to a journal. Agents are configured from the CLI, not from a desktop post.
 
 First run is a welcome, then the company and fiscal year, then opening balances. The sidebar stays hidden until the books are open.
+
+The three `#[ignore]`d engine compatibility tests (`SARV_M3_COMPAT_BINARY`, `SARV_M4_COMPAT_BINARY`, `SARV_M5_COMPAT_BINARY`) require retained immutable M3/M4/M5 binaries (owner to supply) and run with `cargo test -p sarv-quote -- --ignored`.

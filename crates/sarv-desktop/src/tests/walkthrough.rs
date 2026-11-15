@@ -1,4 +1,4 @@
-use super::harness::{blow, click, make_test_runtime};
+use super::harness::{assert_no_danger, blow, books_validate, click, count, make_test_runtime, type_into};
 use crate::app::Page;
 
 #[test]
@@ -227,4 +227,66 @@ fn test_owner_walks_profiles_documents_and_books() {
     click(&mut rt, "btn-restore-confirm");
     assert!(!rt.state.settings.restore_open, "{}", blow(&rt, "restore"));
     assert!(!rt.state.books.company_name().is_empty(), "books still open after restore");
+}
+
+fn double_click(rt: &mut rune::Runtime<crate::app::State>, key: &str) {
+    let target = key.to_string();
+    rt.update(|_, tx| tx.scroll_into_view(target));
+    rt.frame(1.0 / 60.0);
+    let (x, y) = rt.find(key).unwrap_or_else(|| panic!("missing element `{key}`"));
+    rt.pointer_down(x, y);
+    rt.pointer_up(x, y);
+    rt.pointer_down(x, y);
+    rt.pointer_up(x, y);
+    rt.frame(1.0 / 60.0);
+}
+
+#[test]
+#[ignore = "fixed by plans/004-dialog-open-and-request-keys.md"]
+fn double_click_on_save_posts_once() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+
+    // 1. Journal
+    let accounts = crate::ui::pickers::account_options(&rt.state);
+    assert!(accounts.len() >= 2);
+    let journals_before = count(&rt, "journal_count");
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "btn-New journal");
+    rt.state.accounting.debit_account = accounts[0].0.clone();
+    rt.state.accounting.credit_account = accounts[1].0.clone();
+    type_into(&mut rt, "journal-amount", "10000");
+    type_into(&mut rt, "journal-reason", "Double click journal");
+    double_click(&mut rt, "btn-Save");
+    assert!(!rt.state.accounting.modal_open, "{}", blow(&rt, "double click journal"));
+    assert_eq!(count(&rt, "journal_count"), journals_before + 1, "journal must post once");
+
+    // 2. Payment
+    let payments_before = rt.state.books.list("payments").len();
+    click(&mut rt, Page::Payments.key());
+    click(&mut rt, "btn-Receive money");
+    rt.state.payments.party_id = "CU-A".into();
+    rt.state.payments.funds = 0;
+    type_into(&mut rt, "pay-amount", "10000");
+    double_click(&mut rt, "btn-Save");
+    assert!(!rt.state.payments.modal_open, "{}", blow(&rt, "double click payment"));
+    assert_eq!(rt.state.books.list("payments").len(), payments_before + 1, "payment must post once");
+
+    // 3. Sale
+    let sales_before = rt.state.books.list("sales").len();
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "20000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "20000");
+    double_click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "double click sale"));
+    assert_eq!(rt.state.books.list("sales").len(), sales_before + 1, "sale must post once");
+
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }

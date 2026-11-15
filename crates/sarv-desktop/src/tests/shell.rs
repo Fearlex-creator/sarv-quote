@@ -1,4 +1,4 @@
-use super::harness::{click, make_test_runtime};
+use super::harness::{assert_no_danger, books_validate, click, make_test_runtime};
 use crate::app::{Page, State};
 use crate::{data, handle_key, i18n, ui};
 use rune::{Env, Runtime};
@@ -285,4 +285,40 @@ fn test_integrity_status_survives_between_calls() {
     let a = rt.state.query("integrity", serde_json::json!({})).expect("first integrity query");
     let b = rt.state.query("integrity", serde_json::json!({})).expect("second integrity query");
     assert_eq!(a["status"], b["status"]);
+}
+
+#[test]
+fn refresh_after_external_write_shows_the_new_data() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Contacts.key());
+    assert!(rt.find("contact-EXT-CUST").is_none());
+
+    sarv_quote::desktop::dispatch(
+        &rt.state.engine.dir,
+        "resource",
+        serde_json::json!({
+            "company_id": rt.state.books.company_id,
+            "period_id": rt.state.books.period_id,
+            "date": data::today(),
+            "source_id": "ext-1",
+            "request_key": "ext-1",
+            "kind": "customer",
+            "id": "EXT-CUST",
+            "name": "External Buyer",
+            "profile": {
+                "phone": "09120009999",
+                "display_name": "External Buyer"
+            },
+            "reason": "External write"
+        }),
+    )
+    .expect("external resource write");
+
+    click(&mut rt, "refresh-books");
+    assert!(
+        rt.find("contact-EXT-CUST").is_some(),
+        "UI should display contact written externally after refresh"
+    );
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }
