@@ -553,34 +553,87 @@ fn aging_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(table)
 }
 
-fn export_csv(st: &mut State) {
-    let dir = st.engine.dir.join("exports");
-    if let Err(e) = std::fs::create_dir_all(&dir) {
-        st.toast(Tone::Danger, e.to_string());
-        return;
-    }
-    let (from, to) = st.books.range();
-    let mut written = Vec::new();
-    for action in ["report_csv", "profit_csv"] {
-        match st.query(action, serde_json::json!({ "from": from, "to": to })) {
-            Ok(v) => {
-                let name = crate::data::s(&v["filename"]);
-                let content = v["content"].as_str().unwrap_or("").to_string();
-                if name.is_empty() || content.is_empty() {
-                    st.toast(Tone::Danger, st.fmt.t("Report unavailable"));
-                    return;
-                }
-                if let Err(e) = std::fs::write(dir.join(&name), content.as_bytes()) {
-                    st.toast(Tone::Danger, e.to_string());
-                    return;
-                }
-                written.push(name);
+fn export_action_csv(st: &mut State, action: &str, from: &str, to: &str) -> bool {
+    match st.query(action, serde_json::json!({ "from": from, "to": to })) {
+        Ok(v) => {
+            let name = crate::data::s(&v["filename"]);
+            let content = v["content"].as_str().unwrap_or("");
+            if name.is_empty() || content.is_empty() {
+                st.toast(Tone::Danger, st.fmt.t("Report unavailable"));
+                return false;
             }
-            Err(e) => {
-                st.toast_err(e);
-                return;
+            match crate::ui::documents::save_text_export(st, &name, content) {
+                Ok(path) => {
+                    st.toast_file(path);
+                    true
+                }
+                Err(e) => {
+                    st.toast(Tone::Danger, e);
+                    false
+                }
             }
         }
+        Err(e) => {
+            st.toast_err(e);
+            false
+        }
     }
-    st.toast(Tone::Success, format!("{} {}", st.fmt.t("Report exported"), written.join(", ")));
+}
+
+fn csv_cell_safe(raw: &str) -> String {
+    let safe = if raw
+        .trim_start_matches(|c: char| c.is_whitespace() || c.is_control() || c == '\u{feff}')
+        .starts_with(['=', '+', '-', '@'])
+    {
+        format!("'{raw}")
+    } else {
+        raw.to_string()
+    };
+    if safe.contains([',', '"', '\n', '\r']) {
+        format!("\"{}\"", safe.replace('"', "\"\""))
+    } else {
+        safe
+    }
+}
+
+fn export_csv(st: &mut State) {
+    let (from, to) = st.books.range();
+    match st.reports.tab_idx {
+        0 => {
+            export_action_csv(st, "profit_csv", &from, &to);
+        }
+        1 => {
+            if export_action_csv(st, "report_csv", &from, &to) {
+                match crate::ui::documents::write_trial_balance_pdf(st, &from, &to) {
+                    Ok(path) => st.toast_file(path),
+                    Err(e) => st.toast(Tone::Danger, e),
+                }
+            }
+        }
+        2 => {
+            let mut out = String::from("\u{feff}Party,Role,Balance IRR\n");
+            for (key, amount) in party_keys(st) {
+                let (role, id) = key.split_once(':').unwrap_or(("contact", key.as_str()));
+                let name = st.books.party_name(id);
+                let label = if name.is_empty() { id.to_string() } else { name };
+                out.push_str(&format!(
+                    "{},{},{}\n",
+                    csv_cell_safe(&label),
+                    csv_cell_safe(role),
+                    csv_cell_safe(&amount)
+                ));
+            }
+            match crate::ui::documents::save_text_export(st, &format!("parties-{to}.csv"), &out) {
+                Ok(path) => st.toast_file(path),
+                Err(e) => st.toast(Tone::Danger, e),
+            }
+        }
+        3 => {
+            export_action_csv(st, "balance_sheet_csv", &from, &to);
+        }
+        4 => {
+            export_action_csv(st, "aging_csv", &from, &to);
+        }
+        _ => st.toast(Tone::Danger, st.fmt.t("Report unavailable")),
+    }
 }

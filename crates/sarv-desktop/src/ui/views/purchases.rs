@@ -438,6 +438,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             }),
             ui.btn_enabled(
                 Btn::Glass,
+                "Print",
+                Some(&icons::DOWNLOAD),
+                !s.purchases.selected.is_empty(),
+                print_selected,
+            ),
+            ui.btn_enabled(
+                Btn::Glass,
                 "Receive goods",
                 None,
                 !s.purchases.selected.is_empty(),
@@ -660,6 +667,17 @@ fn selected_record(st: &mut State) -> Option<(String, serde_json::Value, String)
     let ref_ = first_nonempty(crate::data::s(&inner["reference"]), crate::data::s(&inner["return_reference"]));
     let ref_ = if ref_.is_empty() { id[..id.len().min(6)].to_string() } else { ref_ };
     Some((id, record, ref_))
+}
+
+fn print_selected(st: &mut State) {
+    if st.purchases.selected.is_empty() {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return;
+    }
+    match crate::ui::documents::write_purchase_pdf(st, &st.purchases.selected) {
+        Ok(path) => st.toast_file(path),
+        Err(e) => st.toast_err(e),
+    }
 }
 
 fn receive_selected(st: &mut State) {

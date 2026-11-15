@@ -1,6 +1,7 @@
 //! Application state: navigation, language/appearance, the books, shared form fields, toasts.
 
 use std::collections::HashMap;
+use std::path::PathBuf;
 
 use rune::TextEdit;
 use rune_kit::PaneState;
@@ -137,6 +138,7 @@ pub struct Toast {
     pub id: u64,
     pub tone: Tone,
     pub message: String,
+    pub open_path: Option<PathBuf>,
 }
 
 /// Text fields of every screen, by key. A missing key is an empty field.
@@ -555,17 +557,28 @@ impl State {
         self.palette_open = true;
     }
 
-    pub fn toast(&mut self, tone: Tone, message: impl Into<String>) {
+    fn push_toast(&mut self, tone: Tone, message: impl Into<String>, open_path: Option<PathBuf>) {
         let id = self.next_toast;
         self.next_toast += 1;
         self.toasts.push(Toast {
             id,
             tone,
             message: message.into(),
+            open_path,
         });
         if self.toasts.len() > 4 {
             self.toasts.remove(0);
         }
+    }
+
+    pub fn toast(&mut self, tone: Tone, message: impl Into<String>) {
+        self.push_toast(tone, message, None);
+    }
+
+    pub fn toast_file(&mut self, path: PathBuf) {
+        let name = path.file_name().and_then(|n| n.to_str()).unwrap_or("file");
+        let msg = format!("{} {}", self.fmt.t("Saved"), crate::i18n::isolate(name));
+        self.push_toast(Tone::Success, msg, Some(path));
     }
 
     /// Parse a form date field in the active calendar. Empty defaults to today; invalid toasts an error.

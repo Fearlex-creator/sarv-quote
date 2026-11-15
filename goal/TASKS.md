@@ -157,7 +157,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 025: Exports and printing
-- [ ] **P25-T01**: Add `balance_sheet_csv`, `aging_csv`, `ledger_csv` in `desktop_bridge.rs` + tests in `crates/sarv-quote/tests/desktop_bridge.rs`, add `Toast.open_path` + `toast_file` + `reveal()` + unique timestamped export names in `documents.rs`/`app.rs`/`shell.rs`, add purchase/trial-balance PDFs & per-tab report/ledger exports, add 4 desktop tests, update `plans/README.md`.
+- [x] **P25-T01**: Add `balance_sheet_csv`, `aging_csv`, `ledger_csv` in `desktop_bridge.rs` + tests in `crates/sarv-quote/tests/desktop_bridge.rs`, add `Toast.open_path` + `toast_file` + `reveal()` + unique timestamped export names in `documents.rs`/`app.rs`/`shell.rs`, add purchase/trial-balance PDFs & per-tab report/ledger exports, add 4 desktop tests, update `plans/README.md`.
   - Files: `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/desktop_bridge.rs`, `crates/sarv-desktop/src/ui/{documents.rs,shell.rs}`, `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/views/{reports,purchases,sales,accounting,settings}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-quote --features pdf-export && cargo test -p sarv-desktop --bin sarv-desktop`
 

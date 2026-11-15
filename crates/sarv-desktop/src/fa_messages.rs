@@ -521,6 +521,11 @@ pub static FA: &[(&str, &str)] = &[
     ),
     ("Export CSV", "خروجی CSV"),
     ("Export backup to file…", "ذخیرهٔ پشتیبان در فایل…"),
+    (
+        "Exports are saved here and are not included in backups.",
+        "خروجی‌ها اینجا ذخیره می‌شوند و در پشتیبان‌ها نیستند.",
+    ),
+    ("Exports folder", "پوشهٔ خروجی‌ها"),
     ("Features", "قابلیت‌ها"),
     ("Financial / document date", "تاریخ مالی / سند تجاری"),
     ("Financial date", "تاریخ ثبت مالی"),
@@ -1026,6 +1031,7 @@ pub static FA: &[(&str, &str)] = &[
         "قیمت‌ها بر حسب ریال برای هر واحد پایه هستند. قیمت پیش‌فرض در فروش و خرید جدید وارد می‌شود؛ بهای واقعی موجودی از رسیدهای ثبت‌شده محاسبه می‌شود.",
     ),
     ("Pricing", "قیمت‌گذاری"),
+    ("Print", "چاپ"),
     ("Print / save PDF", "چاپ / ذخیرهٔ PDF"),
     ("Print again", "چاپ دوباره"),
     ("Print quotation PDF", "چاپ PDF پیش‌فاکتور"),
@@ -1330,6 +1336,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Settle invoices and bills", "تسویه فاکتورها و صورتحساب‌ها"),
     ("Setup guide", "راهنمای راه‌اندازی"),
     ("Setup progress", "مراحل راه‌اندازی"),
+    ("Show in folder", "نمایش در پوشه"),
     (
         "Show the counter in the sidebar for walk-in sales.",
         "پیشخوان را در نوار کناری برای فروش حضوری نشان بده.",

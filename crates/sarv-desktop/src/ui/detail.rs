@@ -354,7 +354,7 @@ pub fn mount(s_state: &State, ui: &Ui, layer: &mut Vec<El>) {
             "Print / save PDF",
             Some(&icons::DOWNLOAD),
             move |st| match crate::ui::documents::write_sales_pdf(st, &doc_id) {
-                Ok(path) => st.toast(Tone::Success, path.display().to_string()),
+                Ok(path) => st.toast_file(path),
                 Err(e) => st.toast_err(e),
             },
         ));
@@ -365,7 +365,18 @@ pub fn mount(s_state: &State, ui: &Ui, layer: &mut Vec<El>) {
             "Print / save PDF",
             Some(&icons::DOWNLOAD),
             move |st| match crate::ui::documents::write_quotation_pdf(st, &draft_id) {
-                Ok(path) => st.toast(Tone::Success, path.display().to_string()),
+                Ok(path) => st.toast_file(path),
+                Err(e) => st.toast_err(e),
+            },
+        ));
+    } else if s_state.detail.kind == DetailKind::Purchase {
+        let doc_id = s(&s_state.detail.record["id"]);
+        footer.push(ui.btn(
+            Btn::Glass,
+            "Print",
+            Some(&icons::DOWNLOAD),
+            move |st| match crate::ui::documents::write_purchase_pdf(st, &doc_id) {
+                Ok(path) => st.toast_file(path),
                 Err(e) => st.toast_err(e),
             },
         ));

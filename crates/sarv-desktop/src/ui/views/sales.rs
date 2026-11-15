@@ -1147,7 +1147,7 @@ fn print_selected(st: &mut State) {
         crate::ui::documents::write_quotation_pdf(st, &st.sales.selected)
     };
     match result {
-        Ok(path) => st.toast(Tone::Success, path.display().to_string()),
+        Ok(path) => st.toast_file(path),
         Err(e) => st.toast_err(e),
     }
 }

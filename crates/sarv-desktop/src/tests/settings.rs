@@ -41,6 +41,135 @@ fn test_export_writes_csv_and_language_persists() {
 }
 
 #[test]
+fn test_export_balance_sheet_and_aging_csv() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Reports.key());
+
+    rt.state.reports.tab_idx = 3;
+    click(&mut rt, "btn-Export CSV");
+    assert_no_danger(&rt);
+
+    rt.state.reports.tab_idx = 4;
+    click(&mut rt, "btn-Export CSV");
+    assert_no_danger(&rt);
+
+    let exports = rt.state.engine.dir.join("exports");
+    let files: Vec<_> = std::fs::read_dir(&exports)
+        .unwrap()
+        .map(|e| e.unwrap().path())
+        .collect();
+    let bs = files
+        .iter()
+        .find(|p| p.file_name().unwrap().to_string_lossy().starts_with("balance-sheet-"))
+        .expect("balance-sheet csv written");
+    let aging = files
+        .iter()
+        .find(|p| p.file_name().unwrap().to_string_lossy().starts_with("aging-"))
+        .expect("aging csv written");
+    assert!(!std::fs::read_to_string(bs).unwrap().is_empty());
+    assert!(!std::fs::read_to_string(aging).unwrap().is_empty());
+}
+
+#[test]
+fn test_exporting_the_same_invoice_twice_succeeds() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.fmt.unit = crate::i18n::Unit::Toman;
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.pay_method = 0;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.forms.set("sale-qty-0", "1");
+    rt.state.forms.set("sale-price-0", "10000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "complete sale"));
+
+    let sale_id = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .find(|r| r["command"].get("Fulfill").is_some() || r["data"].get("Fulfill").is_some())
+        .map(|r| data::s(&r["id"]))
+        .expect("completed sale should produce a fulfilled invoice");
+    rt.state.sales.selected = sale_id;
+    rt.frame(1.0 / 60.0);
+
+    click(&mut rt, "btn-Print / save PDF");
+    assert_no_danger(&rt);
+    click(&mut rt, "btn-Print / save PDF");
+    assert_no_danger(&rt);
+
+    let exports = rt.state.engine.dir.join("exports");
+    let pdfs: Vec<_> = std::fs::read_dir(&exports)
+        .unwrap()
+        .map(|e| e.unwrap().file_name().to_string_lossy().into_owned())
+        .filter(|n| n.starts_with("invoice-") && n.ends_with(".pdf"))
+        .collect();
+    assert_eq!(pdfs.len(), 2, "expected two distinct invoice PDFs: {pdfs:?}");
+    assert_ne!(pdfs[0], pdfs[1]);
+}
+
+#[test]
+fn test_purchase_pdf_is_written() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let supplier = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Vendor, "PDF Supplier", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    click(&mut rt, Page::Purchases.key());
+    click(&mut rt, "btn-New purchase order");
+    rt.state.purchases.supplier_id = supplier;
+    rt.state.purchases.receive_and_bill = true;
+    rt.state.purchases.lines[0].item_id = "ITEM-A".into();
+    rt.state.purchases.lines[0].qty = "2".into();
+    rt.state.purchases.lines[0].price = "80000".into();
+    type_into(&mut rt, "buy-qty-0", "2");
+    type_into(&mut rt, "buy-price-0", "80000");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.purchases.modal_open, "{}", blow(&rt, "purchase save"));
+
+    let purchase_id = rt
+        .state
+        .books
+        .list("purchases")
+        .into_iter()
+        .map(|r| data::s(&r["id"]))
+        .next()
+        .expect("saved purchase should appear in purchases list");
+    rt.state.purchases.selected = purchase_id;
+    rt.frame(1.0 / 60.0);
+
+    click(&mut rt, "btn-Print");
+    assert_no_danger(&rt);
+
+    let exports = rt.state.engine.dir.join("exports");
+    let pdf = std::fs::read_dir(&exports)
+        .unwrap()
+        .map(|e| e.unwrap().path())
+        .find(|p| {
+            let name = p.file_name().unwrap().to_string_lossy();
+            name.starts_with("purchase-") && name.ends_with(".pdf")
+        })
+        .expect("purchase pdf written");
+    assert!(std::fs::metadata(pdf).unwrap().len() > 0);
+}
+
+#[test]
+fn test_export_toast_carries_the_path() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Reports.key());
+    click(&mut rt, "btn-Export CSV");
+    assert_no_danger(&rt);
+
+    let toast = rt.state.toasts.last().expect("export toast");
+    let path = toast.open_path.as_ref().expect("toast carries open_path");
+    assert!(path.exists(), "exported file exists at {}", path.display());
+}
+
+#[test]
 fn test_backup_and_law_notice() {
     let mut rt = make_test_runtime();
     click(&mut rt, Page::Settings.key());

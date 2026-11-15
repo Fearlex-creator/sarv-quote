@@ -1042,6 +1042,34 @@ pub(crate) fn mount_ledger(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         DIALOG_LG,
         body,
         vec![
+            ui.btn_enabled(
+                Btn::Glass,
+                "Export CSV",
+                Some(&icons::DOWNLOAD),
+                !s.accounting.ledger_account_id.is_empty(),
+                |st| {
+                    let (from, to) = st.books.range();
+                    let aid = st.accounting.ledger_account_id.clone();
+                    match st.query(
+                        "ledger_csv",
+                        serde_json::json!({ "account_id": aid, "from": from, "to": to }),
+                    ) {
+                        Ok(v) => {
+                            let name = crate::data::s(&v["filename"]);
+                            let content = v["content"].as_str().unwrap_or("");
+                            if name.is_empty() || content.is_empty() {
+                                st.toast(Tone::Danger, st.fmt.t("Report unavailable"));
+                                return;
+                            }
+                            match crate::ui::documents::save_text_export(st, &name, content) {
+                                Ok(path) => st.toast_file(path),
+                                Err(e) => st.toast(Tone::Danger, e),
+                            }
+                        }
+                        Err(e) => st.toast_err(e),
+                    }
+                },
+            ),
             ui.btn_enabled(Btn::Glass, "Open", None, !s.accounting.ledger_selected.is_empty(), |st| {
                 let jid = st.accounting.ledger_selected.clone();
                 crate::ui::detail::open(st, &jid);

@@ -192,6 +192,31 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                         .child(ui.body(ui.t("Books folder")))
                         .child(ui.muted(crate::i18n::isolate(&s.engine.dir.display().to_string()))),
                 )
+                .child({
+                    let exports = s.engine.dir.join("exports");
+                    let exports_btn = exports.clone();
+                    row()
+                        .w_full()
+                        .gap(12.0)
+                        .center_y()
+                        .justify_between()
+                        .child(
+                            col()
+                                .gap(2.0)
+                                .child(ui.body(ui.t("Exports folder")))
+                                .child(ui.muted(crate::i18n::isolate(&exports.display().to_string())))
+                                .child(ui.muted(ui.t("Exports are saved here and are not included in backups."))),
+                        )
+                        .child(ui.btn(Btn::Glass, "Show in folder", None, move |st| {
+                            if let Err(e) = std::fs::create_dir_all(&exports_btn) {
+                                st.toast(Tone::Danger, e.to_string());
+                                return;
+                            }
+                            if let Err(e) = crate::ui::documents::reveal(&exports_btn, false) {
+                                st.toast_err(e);
+                            }
+                        }))
+                })
                 .build(&ui.k)
                 .key("company"),
         );
@@ -251,7 +276,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ui.btn(Btn::Glass, "Restore backup", None, open_restore),
             ui.btn(Btn::Glass, "Backup", Some(&icons::DOWNLOAD), |st| {
                 if let Ok(v) = st.run("backup_create", json!({}), None) {
-                    st.toast(Tone::Success, crate::data::s(&v["filename"]));
+                    let name = crate::data::s(&v["filename"]);
+                    if !name.is_empty() {
+                        st.toast_file(st.engine.dir.join(name));
+                    }
                 }
             }),
             ui.btn(Btn::Glass, "Law data", None, |st| match st.query("law_data", json!({})) {

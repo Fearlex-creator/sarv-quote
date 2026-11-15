@@ -2032,60 +2032,34 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             }
         }
         "ledger" => {
-            let c = company(&store.state, &p)?;
-            let aid = string(&p, "account_id")?;
-            let from = string(&p, "from")?;
-            let to = string(&p, "to")?;
-            civil_date(from)?;
-            civil_date(to)?;
-            ensure!(from <= to, "Invalid date range");
-            let offset = usize_opt(&p, "offset", 0)?;
-            let mut opening_balance: i128 = 0;
-            let mut in_range = Vec::new();
-            for j in store.state.accounting.journals.iter().filter(|j| j.company_id == c.id) {
-                let d = j.date.as_str();
-                if d < from {
-                    for l in j.lines.iter().filter(|l| l.account.id == aid) {
-                        opening_balance = opening_balance
-                            .checked_add(i128::from(l.debit.rials()))
-                            .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
-                            .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
-                    }
-                } else if d <= to {
-                    for l in j.lines.iter().filter(|l| l.account.id == aid) {
-                        in_range.push((j, l));
-                    }
-                }
-            }
-            let count = in_range.len();
-            let mut iter = in_range.into_iter();
-            for (_, l) in iter.by_ref().take(offset) {
-                opening_balance = opening_balance
-                    .checked_add(i128::from(l.debit.rials()))
-                    .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
-                    .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
-            }
-            let mut running = opening_balance;
-            let mut rows = Vec::new();
-            for (j, l) in iter.take(100) {
-                running = running
-                    .checked_add(i128::from(l.debit.rials()))
-                    .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
-                    .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
-                rows.push(json!({
-                    "journal_id": j.id,
-                    "date": j.date,
-                    "reference": j.source_id,
-                    "description": l.description,
-                    "debit": l.debit,
-                    "credit": l.credit,
-                    "balance": running.to_string(),
-                }));
-            }
+            let (_, _, _, opening_balance, count, rows) = ledger_rows(&store.state, &p, Some(100))?;
             json!({
                 "count": count,
                 "opening_balance": opening_balance.to_string(),
                 "rows": rows,
+            })
+        }
+        "ledger_csv" => {
+            let (aid, _, to, _, _, rows) = ledger_rows(&store.state, &p, None)?;
+            let mut writer = csv::Writer::from_writer(vec![]);
+            writer.write_record(["Date", "Reference", "Description", "Debit IRR", "Credit IRR", "Balance IRR"])?;
+            for row in &rows {
+                writer.write_record([
+                    csv_safe(row["date"].as_str().unwrap_or("")),
+                    csv_safe(row["reference"].as_str().unwrap_or("")),
+                    csv_safe(row["description"].as_str().unwrap_or("")),
+                    row["debit"].to_string(),
+                    row["credit"].to_string(),
+                    row["balance"].as_str().unwrap_or("0").into(),
+                ])?;
+            }
+            let safe_aid: String = aid
+                .chars()
+                .map(|c| if c.is_ascii_alphanumeric() || c == '-' { c } else { '-' })
+                .collect();
+            json!({
+                "filename": format!("ledger-{safe_aid}-{to}.csv"),
+                "content": format!("\u{feff}{}", String::from_utf8(writer.into_inner()?)?)
             })
         }
         "report_csv" => {
@@ -2117,6 +2091,82 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             writer.write_record(["", "Net profit", "", &r["profit_loss"]["profit"].to_string()])?;
             json!({"filename":format!("profit-loss-{}.csv",string(&p,"to")?),"content":format!("\u{feff}{}",String::from_utf8(writer.into_inner()?)?)})
         }
+        "balance_sheet_csv" => {
+            let r = report(&store.state, &p)?;
+            let bs = r["balance_sheet"]
+                .as_object()
+                .ok_or_else(|| anyhow!("Balance sheet unavailable"))?;
+            let mut writer = csv::Writer::from_writer(vec![]);
+            writer.write_record(["Section", "Account code", "Account name", "Amount IRR"])?;
+            for (section, key) in [("Asset", "assets"), ("Liability", "liabilities"), ("Equity", "equity")] {
+                let rows = bs.get(key).and_then(|v| v.as_array()).ok_or_else(|| anyhow!("Invalid report"))?;
+                for row in rows {
+                    writer.write_record([
+                        section.to_string(),
+                        csv_safe(row["code"].as_str().unwrap_or("")),
+                        csv_safe(row["name"].as_str().unwrap_or("")),
+                        row["amount"].to_string(),
+                    ])?;
+                }
+            }
+            json!({
+                "filename": format!("balance-sheet-{}.csv", string(&p, "to")?),
+                "content": format!("\u{feff}{}", String::from_utf8(writer.into_inner()?)?)
+            })
+        }
+        "aging_csv" => {
+            let c = company(&store.state, &p)?;
+            let r = report(&store.state, &p)?;
+            let aging = r["aging"].as_object().ok_or_else(|| anyhow!("Aging unavailable"))?;
+            let resources = store.state.accounting.procurement_resources(&c.id).ok();
+            let party_name = |pid: &str| -> String {
+                if let Some(profile) = store.state.party_profiles.get(pid)
+                    && !profile.display_name.trim().is_empty()
+                {
+                    return profile.display_name.clone();
+                }
+                if let Some(ref res) = resources
+                    && let Some(party) = res.parties.iter().find(|party| party.id == pid)
+                {
+                    return party.name.clone();
+                }
+                pid.to_string()
+            };
+            let mut writer = csv::Writer::from_writer(vec![]);
+            writer.write_record([
+                "Side",
+                "Party",
+                "Not due IRR",
+                "1-30 days IRR",
+                "31-60 days IRR",
+                "61-90 days IRR",
+                "Over 90 days IRR",
+                "Total IRR",
+            ])?;
+            for (label, key) in [("Receivable", "receivable"), ("Payable", "payable")] {
+                let rows = aging
+                    .get(key)
+                    .and_then(|v| v["rows"].as_array())
+                    .ok_or_else(|| anyhow!("Invalid report"))?;
+                for row in rows {
+                    let pid = row["party_id"].as_str().unwrap_or("");
+                    writer.write_record([
+                        label.to_string(),
+                        csv_safe(&party_name(pid)),
+                        row["not_due"].to_string(),
+                        row["days_1_30"].to_string(),
+                        row["days_31_60"].to_string(),
+                        row["days_61_90"].to_string(),
+                        row["days_over_90"].to_string(),
+                        row["total"].to_string(),
+                    ])?;
+                }
+            }
+            json!({
+                "filename": format!("aging-{}.csv", string(&p, "to")?),
+                "content": format!("\u{feff}{}", String::from_utf8(writer.into_inner()?)?)
+            })
+        }
         _ => return Err(anyhow!("Unsupported command: {action}")),
     };
     if let Value::Object(ref mut object) = out {
@@ -2124,6 +2174,64 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
     }
     journal_totals(&mut out)?;
     Ok(wire(out))
+}
+fn ledger_rows(
+    s: &State,
+    p: &Value,
+    limit: Option<usize>,
+) -> Result<(String, String, String, i128, usize, Vec<Value>)> {
+    let c = company(s, p)?;
+    let aid = string(p, "account_id")?;
+    let from = string(p, "from")?;
+    let to = string(p, "to")?;
+    civil_date(from)?;
+    civil_date(to)?;
+    ensure!(from <= to, "Invalid date range");
+    let offset = usize_opt(p, "offset", 0)?;
+    let mut opening_balance: i128 = 0;
+    let mut in_range = Vec::new();
+    for j in s.accounting.journals.iter().filter(|j| j.company_id == c.id) {
+        let d = j.date.as_str();
+        if d < from {
+            for l in j.lines.iter().filter(|l| l.account.id == aid) {
+                opening_balance = opening_balance
+                    .checked_add(i128::from(l.debit.rials()))
+                    .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+                    .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+            }
+        } else if d <= to {
+            for l in j.lines.iter().filter(|l| l.account.id == aid) {
+                in_range.push((j, l));
+            }
+        }
+    }
+    let count = in_range.len();
+    let mut iter = in_range.into_iter();
+    for (_, l) in iter.by_ref().take(offset) {
+        opening_balance = opening_balance
+            .checked_add(i128::from(l.debit.rials()))
+            .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+            .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+    }
+    let mut running = opening_balance;
+    let mut rows = Vec::new();
+    let take_n = limit.unwrap_or(usize::MAX);
+    for (j, l) in iter.take(take_n) {
+        running = running
+            .checked_add(i128::from(l.debit.rials()))
+            .and_then(|v| v.checked_sub(i128::from(l.credit.rials())))
+            .ok_or_else(|| anyhow!("Ledger balance overflow"))?;
+        rows.push(json!({
+            "journal_id": j.id,
+            "date": j.date,
+            "reference": j.source_id,
+            "description": l.description,
+            "debit": l.debit,
+            "credit": l.credit,
+            "balance": running.to_string(),
+        }));
+    }
+    Ok((aid.to_string(), from.to_string(), to.to_string(), opening_balance, count, rows))
 }
 fn csv_safe(v: &str) -> String {
     if v.trim_start_matches(|c: char| c.is_whitespace() || c.is_control() || c == '\u{feff}')

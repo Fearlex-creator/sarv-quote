@@ -489,11 +489,25 @@ pub fn mount_toasts(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             Tone::Warning | Tone::Danger => &icons::WARNING,
             Tone::Info => &icons::INFO,
         };
-        let toast = Toast::new(format!("toast-{id}"), t.message.clone())
+        let mut toast = Toast::new(format!("toast-{id}"), t.message.clone())
             .lead(icon(glyph, 16.0).color(ui.tone_accent(t.tone)))
-            .on_close(move |st: &mut State| st.toasts.retain(|x| x.id != id))
-            .build(&ui.k);
-        region = region.toast(toast);
+            .on_close(move |st: &mut State| st.toasts.retain(|x| x.id != id));
+        if let Some(path) = &t.open_path {
+            let p_open = path.clone();
+            let p_folder = path.clone();
+            toast = toast
+                .action(&ui.k, &ui.t("Open"), true, move |st: &mut State, _tx| {
+                    if let Err(e) = crate::ui::documents::reveal(&p_open, false) {
+                        st.toast_err(e);
+                    }
+                })
+                .action(&ui.k, &ui.t("Show in folder"), false, move |st: &mut State, _tx| {
+                    if let Err(e) = crate::ui::documents::reveal(&p_folder, true) {
+                        st.toast_err(e);
+                    }
+                });
+        }
+        region = region.toast(toast.build(&ui.k));
     }
     layer.push(region.build(&ui.k));
 }

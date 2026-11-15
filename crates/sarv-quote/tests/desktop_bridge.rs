@@ -1267,4 +1267,146 @@ fn ledger_computes_opening_balance_and_running_balance_across_pages() {
     }
     let last2: i128 = rows2.last().unwrap()["balance"].as_str().unwrap().parse().unwrap();
     assert_eq!(last2, expected2);
+
+    let csv_res = call(
+        d.path(),
+        "ledger_csv",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-10-05", "to": "2026-10-31"}),
+    );
+    let content = csv_res["content"].as_str().unwrap();
+    assert!(content.starts_with('\u{feff}'));
+    let mut reader = csv::Reader::from_reader(content.trim_start_matches('\u{feff}').as_bytes());
+    assert_eq!(
+        reader.headers().unwrap().iter().collect::<Vec<_>>(),
+        vec!["Date", "Reference", "Description", "Debit IRR", "Credit IRR", "Balance IRR"]
+    );
+    let records: Vec<_> = reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(records.len(), rows1.len() + rows2.len());
+    assert!(records.len() > 100);
+    assert_eq!(&records.last().unwrap()[5], &last2.to_string());
+}
+
+#[test]
+fn balance_sheet_aging_and_ledger_csv_export_rows_and_neutralize_formulas() {
+    let (d, c, p) = fixture();
+
+    let mut party = ctx(&c, &p, "inj-party");
+    party["id"] = json!("SUP-INJ");
+    party["kind"] = json!("vendor");
+    party["name"] = json!("=HYPERLINK(\"x\")");
+    call(d.path(), "resource", party);
+
+    let mut order = ctx(&c, &p, "inj-po");
+    order["supplier_id"] = json!("SUP-INJ");
+    order["lines"] = json!([{"id":"po-line","item_id":"ITEM-A","warehouse_id":"W1","unit_id":"PIECE","quantity":"1","unit_price":"50","line_discount":"0"}]);
+    let po = call(d.path(), "purchase_post", order);
+    let mut receipt = ctx(&c, &p, "inj-rec");
+    receipt["order_id"] = po["record_id"].clone();
+    let rec = call(d.path(), "receive_post", receipt);
+    let mut bill = ctx(&c, &p, "inj-bill");
+    bill["receipt_id"] = rec["record_id"].clone();
+    call(d.path(), "bill_post", bill);
+
+    let w = call(d.path(), "workspace", json!({"company_id": c}));
+    let cash_id = w["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| a["control"] == false && a["postable"] == true && a["classification"] == "Asset")
+        .unwrap()["id"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let equity_id = w["accounts"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|a| a["control"] == false && a["postable"] == true && a["classification"] == "Equity")
+        .unwrap()["id"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    let mut j = ctx(&c, &p, "inj-journal");
+    j["lines"] = json!([
+        {"account_id": cash_id, "debit": "10", "credit": "0", "description": "=HYPERLINK(\"x\")"},
+        {"account_id": equity_id, "debit": "0", "credit": "10", "description": "offset"}
+    ]);
+    call(d.path(), "journal_post", j);
+
+    let rep = call(
+        d.path(),
+        "report",
+        json!({"company_id": c, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let bs_expected = rep["balance_sheet"]["assets"].as_array().unwrap().len()
+        + rep["balance_sheet"]["liabilities"].as_array().unwrap().len()
+        + rep["balance_sheet"]["equity"].as_array().unwrap().len();
+    let bs_csv = call(
+        d.path(),
+        "balance_sheet_csv",
+        json!({"company_id": c, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let bs_content = bs_csv["content"].as_str().unwrap();
+    assert!(!bs_content.is_empty());
+    assert!(bs_content.starts_with('\u{feff}'));
+    let mut bs_reader = csv::Reader::from_reader(bs_content.trim_start_matches('\u{feff}').as_bytes());
+    assert_eq!(
+        bs_reader.headers().unwrap().iter().collect::<Vec<_>>(),
+        vec!["Section", "Account code", "Account name", "Amount IRR"]
+    );
+    let bs_rows: Vec<_> = bs_reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(bs_rows.len(), bs_expected);
+
+    let aging_expected = rep["aging"]["receivable"]["rows"].as_array().unwrap().len()
+        + rep["aging"]["payable"]["rows"].as_array().unwrap().len();
+    let aging_csv = call(
+        d.path(),
+        "aging_csv",
+        json!({"company_id": c, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let aging_content = aging_csv["content"].as_str().unwrap();
+    assert!(!aging_content.is_empty());
+    assert!(aging_content.starts_with('\u{feff}'));
+    let mut aging_reader = csv::Reader::from_reader(aging_content.trim_start_matches('\u{feff}').as_bytes());
+    assert_eq!(
+        aging_reader.headers().unwrap().iter().collect::<Vec<_>>(),
+        vec![
+            "Side",
+            "Party",
+            "Not due IRR",
+            "1-30 days IRR",
+            "31-60 days IRR",
+            "61-90 days IRR",
+            "Over 90 days IRR",
+            "Total IRR"
+        ]
+    );
+    let aging_rows: Vec<_> = aging_reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(aging_rows.len(), aging_expected);
+    assert!(
+        aging_rows.iter().any(|r| &r[1] == "'=HYPERLINK(\"x\")"),
+        "expected neutralized formula in aging_csv: {aging_rows:?}"
+    );
+
+    let ledger_page = call(
+        d.path(),
+        "ledger",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-03-21", "to": "2026-10-08", "offset": "0"}),
+    );
+    let ledger_csv = call(
+        d.path(),
+        "ledger_csv",
+        json!({"company_id": c, "account_id": cash_id, "from": "2026-03-21", "to": "2026-10-08"}),
+    );
+    let ledger_content = ledger_csv["content"].as_str().unwrap();
+    let mut ledger_reader = csv::Reader::from_reader(ledger_content.trim_start_matches('\u{feff}').as_bytes());
+    let ledger_rows: Vec<_> = ledger_reader.records().map(|r| r.unwrap()).collect();
+    assert_eq!(
+        ledger_rows.len(),
+        ledger_page["count"].as_str().unwrap().parse::<usize>().unwrap()
+    );
+    assert!(
+        ledger_rows.iter().any(|r| &r[2] == "'=HYPERLINK(\"x\")"),
+        "expected neutralized formula in ledger_csv: {ledger_rows:?}"
+    );
 }

@@ -166,3 +166,16 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - **Checks**:
   - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
   - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`126 passed; 0 failed; 0 ignored`)
+
+## P25-T01: Exports and printing (Plan 025)
+- **Changed**:
+  - `crates/sarv-quote/src/desktop_bridge.rs` & `crates/sarv-quote/tests/desktop_bridge.rs`: Added `balance_sheet_csv`, `aging_csv`, and `ledger_csv` (uncapped, with running balance) using `csv::Writer` and `csv_safe`, plus tests verifying row counts, headers, and formula-injection neutralization.
+  - `crates/sarv-desktop/src/app.rs`, `ui/shell.rs`, `ui/documents.rs`: Added `Toast.open_path` + `State::toast_file`, `"Open"` / `"Show in folder"` toast actions in `mount_toasts`, `reveal(path, folder)`, unique export filenames (`unique_path`), `save_text_export`, `write_purchase_pdf`, `write_trial_balance_pdf`, `write_sales_document_csv`, and `write_purchase_document_csv`.
+  - `crates/sarv-desktop/src/ui/{detail.rs,views/{purchases,sales,reports,accounting,settings}.rs}` & `fa_messages.rs`: Replaced `path.display().to_string()` toasts with `toast_file`, wired `"Print"` on Purchases & detail sheets, per-tab exports on Reports, `"Export CSV"` on Accounting ledger dialog, `"Exports folder"` + `"Show in folder"` + backup-exclusion note on Settings, and added Persian translations.
+  - `crates/sarv-desktop/src/tests/settings.rs`: Added `test_export_balance_sheet_and_aging_csv`, `test_exporting_the_same_invoice_twice_succeeds`, `test_purchase_pdf_is_written`, and `test_export_toast_carries_the_path`.
+  - `plans/README.md`: Marked Plan `025` as `DONE`.
+- **Checks**:
+  - `cargo test -p sarv-quote --features pdf-export` -> exit 0 (all test binaries passed)
+  - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`130 passed; 0 failed`)
+  - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
+  - `cargo clippy --quiet -p sarv-quote --features pdf-export --all-targets -- -D warnings` -> exit 0
