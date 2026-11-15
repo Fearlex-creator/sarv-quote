@@ -1650,6 +1650,37 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             })?;
             json!(true)
         }
+        "period_add" => {
+            let expected: i64 = string(&p, "expected_generation")?.parse()?;
+            ensure!(
+                expected == store.local_generation(),
+                "Books changed since review. Refresh and review the financial effect again."
+            );
+            let company_id = company(&store.state, &p)?.id.clone();
+            let name = string(&p, "name")?;
+            let start_date = string(&p, "start_date")?;
+            let end_date = string(&p, "end_date")?;
+            let start = civil_date(start_date)?;
+            let _end = civil_date(end_date)?;
+            if let Some(latest_end) = store
+                .state
+                .accounting
+                .periods
+                .iter()
+                .filter(|x| x.company_id == company_id)
+                .filter_map(|x| civil_date(&x.end_date).ok())
+                .max()
+            {
+                let expected_start = latest_end.succ_opt().ok_or_else(|| anyhow!("Invalid fiscal year end date"))?;
+                ensure!(
+                    start == expected_start,
+                    "The new fiscal year must start the day after the previous one ends."
+                );
+            }
+            let actor = actor(&p).to_string();
+            let id = store.change(|s| s.accounting.add_period(&company_id, name, start_date, end_date, &actor))?;
+            json!({"period_id": id})
+        }
         "journal_reverse" | "journal_reverse_preview" => {
             company(&store.state, &p)?;
             ensure!(

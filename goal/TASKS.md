@@ -116,7 +116,7 @@ Ordered by Phase and dependency from `plans/README.md`.
 ## Phase 3 — Full-Year Features
 
 ### Plan 017: Fiscal years
-- [ ] **P17-T01**: Verify multi-period books in `crates/sarv-quote/tests/fiscal_years.rs`, add `"period_add"` action in `desktop_bridge.rs` (gapless check, `expected_generation`), test happy/overlap/gap/stale paths.
+- [x] **P17-T01**: Verify multi-period books in `crates/sarv-quote/tests/fiscal_years.rs`, add `"period_add"` action in `desktop_bridge.rs` (gapless check, `expected_generation`), test happy/overlap/gap/stale paths.
   - Files: `crates/sarv-quote/src/desktop_bridge.rs`, `crates/sarv-quote/tests/fiscal_years.rs`
   - Done when: `cargo test -p sarv-quote --test fiscal_years && cargo test -p sarv-quote`
 - [ ] **P17-T02**: Add fiscal-year switcher + past-year badge in `shell.rs`, update `data.rs::pick_period`, add "New fiscal year" dialog in `accounting.rs` + proactive notice in `overview.rs`, add 2 desktop tests, update `plans/README.md`.

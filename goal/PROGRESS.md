@@ -114,3 +114,8 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - **Changes**: Created `crates/sarv-desktop/src/shortcuts.rs` (`CREATE` table); wired `mod+alt+<key>`, `F1`, `F9`, and palette `Up`/`Down`/`Enter` in `main.rs`; added `Forms::any_focused`, `State::any_dialog_open`, `palette_cursor`, and `palette_last_query` in `app.rs`; updated `shell.rs` palette with cursor highlight, deep links to contact/product profiles, and all `CREATE` actions; generated Settings shortcuts list from the table; added `i18n::fold` (+ unit test) and wired Persian search folding across palette/Contacts/Inventory/rows; updated `README.md`; added 6 tests in `crates/sarv-desktop/src/tests/shell.rs`; marked Plan 015 `DONE` in `plans/README.md`.
 - **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet --workspace --all-targets -- -D warnings && cargo test -p sarv-desktop --bin sarv-desktop`
 - **Result**: PASS (`sarv-desktop`: 96 passed, 2 ignored).
+
+## 2026-11-15 — P17-T01 (Plan 017 Steps 1–2: Multi-period books & `period_add`)
+- **Changes**: Added `"period_add"` action in `crates/sarv-quote/src/desktop_bridge.rs` (requires `expected_generation`, enforces contiguous start date after previous period's end, not exposed in `agent.rs`); created `crates/sarv-quote/tests/fiscal_years.rs` verifying multi-period P&L isolation, cumulative balance-sheet/position carry-over, and `period_add` happy/overlap/gap/stale-generation paths.
+- **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet -p sarv-quote --all-targets -- -D warnings && cargo test -p sarv-quote --test fiscal_years && cargo test -p sarv-quote`
+- **Result**: PASS (`fiscal_years`: 2 tests covering all 5 scenarios; all `sarv-quote` non-ignored tests pass).
