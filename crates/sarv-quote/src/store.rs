@@ -477,6 +477,33 @@ impl Store {
         self.commit_prepared(prepared)?;
         Ok(safety)
     }
+    /// Replace books that fail to load with a verified backup. The unreadable row is
+    /// first copied to `unreadable-{id}.json` (raw payload, not a backup envelope) so
+    /// nothing is destroyed. Never call this when `Store::open` succeeds.
+    pub fn recover_from_backup(directory: &Path, backup: &Path) -> Result<PathBuf> {
+        ensure!(Store::open(directory).is_err(), "Books load normally; use Restore backup");
+        let candidate = Self::restore_preview(backup)?;
+        let mut conn = Connection::open_with_flags(directory.join("sarv.sqlite3"), rusqlite::OpenFlags::SQLITE_OPEN_READ_WRITE)?;
+        conn.busy_timeout(Duration::from_secs(3))?;
+        conn.execute_batch("PRAGMA synchronous=FULL;")?;
+        let tx = conn.transaction_with_behavior(rusqlite::TransactionBehavior::Immediate)?;
+        let (generation, payload): (i64, String) = tx.query_row("SELECT generation,payload FROM state WHERE id=1", [], |r| {
+            Ok((r.get(0)?, r.get(1)?))
+        })?;
+        let preserved = directory.join(format!("unreadable-{}.json", crate::domain::id()));
+        write_new(&preserved, payload.as_bytes())?;
+        let next = generation.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
+        let replaced = serde_json::to_string(&candidate)?;
+        let changed = tx.execute(
+            "UPDATE state SET generation=?1,payload=?2 WHERE id=1 AND generation=?3",
+            params![next, replaced, generation],
+        )?;
+        ensure!(changed == 1, "داده هنگام بازیابی تغییر کرده است؛ دوباره تلاش کنید");
+        tx.commit()?;
+        drop(conn);
+        Store::open(directory)?;
+        Ok(preserved)
+    }
 }
 pub fn backup_state(state: &State, path: &Path) -> Result<()> {
     state.validate()?;

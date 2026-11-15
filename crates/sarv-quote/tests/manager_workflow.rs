@@ -1,4 +1,6 @@
-use sarv_quote::{domain::*, export, imports::*, store::Store};
+#[cfg(feature = "pdf-export")]
+use sarv_quote::export;
+use sarv_quote::{domain::*, imports::*, store::Store};
 
 fn catalog(name: &str, price: i64) -> Catalog {
     catalog_csv(

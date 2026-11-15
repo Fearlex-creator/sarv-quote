@@ -39,3 +39,8 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
 - Documented `SARV_M{3,4,5}_COMPAT_BINARY` ignored migration tests in `AGENTS.md` and marked Plan 033 `DONE` in `plans/README.md`.
 - Verified: `sarv-desktop` 47 passed (5 ignored), `sheets_bridge` 3 passed, `contact_profile` 2 passed, fmt + clippy clean.
 
+
+## 2026-11-15 — P07-T01 (Plan 007 Steps 1–3: Engine backup recovery & retention)
+- **Changes**: Added `Store::recover_from_backup` in `crates/sarv-quote/src/store.rs` (preserves unreadable row to `unreadable-{id}.json` before replacing SQLite row); updated `desktop_bridge.rs` to serve `backup_list`, `backup_restore_preview`, and `recover_from_backup` when `Store::open` fails, refuse `recover_from_backup` when books load normally, validate `backup_file_kind` (`manual`, `before-restore`, `before-upgrade`), preview only the newest 20 backups, and prune safety backups to 5 per kind; added 4 tests in `crates/sarv-quote/tests/recovery.rs`; gated `export` import in `crates/sarv-quote/tests/manager_workflow.rs` behind `#[cfg(feature = "pdf-export")]` for clean `-D warnings` clippy without `pdf-export`.
+- **Checks**: `cargo fmt --all -- --check && cargo clippy --quiet -p sarv-quote --all-targets -- -D warnings && cargo clippy --quiet -p sarv-quote --features pdf-export --all-targets -- -D warnings && cargo test -p sarv-quote --test recovery`
+- **Result**: PASS (`recovery`: 4 passed; all `sarv-quote` non-ignored tests pass).

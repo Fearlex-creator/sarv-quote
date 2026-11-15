@@ -10,9 +10,9 @@ use crate::{
     sales_draft::RawSalesDraft,
     store::{IntegrityStatus, Store},
 };
-use anyhow::{Result, anyhow, ensure};
+use anyhow::{Result, anyhow, bail, ensure};
 use serde_json::{Value, json};
-use std::path::Path;
+use std::path::{Path, PathBuf};
 #[path = "desktop_contacts_banking.rs"]
 mod contacts_banking;
 #[path = "desktop_products.rs"]
@@ -936,9 +936,134 @@ fn cheque_rows(s: &State, company_id: &str) -> Result<Value> {
     Ok(json!(rows))
 }
 
+fn backup_file_kind(name: &str) -> Option<&'static str> {
+    if name.contains('/') || name.contains('\\') || name.contains("..") || !name.ends_with(".json") {
+        return None;
+    }
+    if name.starts_with("sarv-backup-") {
+        Some("manual")
+    } else if name.starts_with("before-restore-") {
+        Some("before-restore")
+    } else if let Some(rest) = name.strip_prefix("before-schema") {
+        rest.contains('-').then_some("before-upgrade")
+    } else {
+        None
+    }
+}
+
+fn validated_backup_path(directory: &Path, name: &str) -> Result<PathBuf> {
+    ensure!(backup_file_kind(name).is_some(), "Invalid backup filename");
+    Ok(directory.join(name))
+}
+
+fn backup_summary(s: &State) -> Value {
+    json!({
+        "companies": s.accounting.companies.iter().map(|c| c.name.clone()).collect::<Vec<_>>(),
+        "journals": s.accounting.journals.len(),
+        "sales": s.accounting.sales.records.len(),
+        "purchases": s.accounting.procurement.records.len(),
+        "payments": s.accounting.payments.records.len(),
+        "quotes": s.quotes.len(),
+        "drafts": s.sales_drafts.len(),
+    })
+}
+
+fn list_backups(directory: &Path) -> Result<Value> {
+    let mut entries = vec![];
+    for entry in std::fs::read_dir(directory)? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let Some(kind) = backup_file_kind(&name) else {
+            continue;
+        };
+        let meta = entry.metadata()?;
+        let modified = meta
+            .modified()
+            .map(|t| t.duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0))
+            .unwrap_or(0);
+        entries.push((modified, name, entry.path(), meta.len(), kind));
+    }
+    entries.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.1.cmp(&a.1)));
+    let mut rows = Vec::with_capacity(entries.len());
+    for (idx, (modified, name, path, bytes, kind)) in entries.into_iter().enumerate() {
+        let (companies, journals, valid) = if idx < 20 {
+            let state = Store::restore_preview(&path).ok();
+            (
+                state.as_ref().map(|s| s.accounting.companies.len()).unwrap_or(0),
+                state.as_ref().map(|s| s.accounting.journals.len()).unwrap_or(0),
+                json!(state.is_some()),
+            )
+        } else {
+            (0, 0, Value::Null)
+        };
+        rows.push(json!({
+            "filename": name,
+            "kind": kind,
+            "bytes": bytes,
+            "modified": modified,
+            "companies": companies,
+            "journals": journals,
+            "valid": valid,
+        }));
+    }
+    Ok(json!({"backups": rows}))
+}
+
+fn prune_safety_backups(directory: &Path) -> Result<()> {
+    let mut before_restore = vec![];
+    let mut before_upgrade = vec![];
+    for entry in std::fs::read_dir(directory)? {
+        let entry = entry?;
+        let name = entry.file_name().to_string_lossy().into_owned();
+        let Some(kind) = backup_file_kind(&name) else {
+            continue;
+        };
+        if kind != "before-restore" && kind != "before-upgrade" {
+            continue;
+        }
+        let modified = entry
+            .metadata()?
+            .modified()
+            .map(|t| t.duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0))
+            .unwrap_or(0);
+        let item = (modified, name, entry.path());
+        if kind == "before-restore" {
+            before_restore.push(item);
+        } else {
+            before_upgrade.push(item);
+        }
+    }
+    for list in [&mut before_restore, &mut before_upgrade] {
+        list.sort_by(|a, b| b.0.cmp(&a.0).then_with(|| b.1.cmp(&a.1)));
+        for (_, _, path) in list.iter().skip(5) {
+            let _ = std::fs::remove_file(path);
+        }
+    }
+    Ok(())
+}
+
 pub fn dispatch(directory: &Path, action: &str, p: Value) -> Result<Value> {
-    let mut store = Store::open(directory)?;
-    dispatch_in(&mut store, action, p)
+    match Store::open(directory) {
+        Ok(mut store) => dispatch_in(&mut store, action, p),
+        Err(open_err) => match action {
+            "backup_list" => list_backups(directory),
+            "backup_restore_preview" => {
+                let path = validated_backup_path(directory, string(&p, "filename")?)?;
+                let candidate = Store::restore_preview(&path)?;
+                Ok(json!({"backup": backup_summary(&candidate), "current": Value::Null}))
+            }
+            "recover_from_backup" => {
+                ensure!(p["confirmed"] == true, "Restoring requires explicit confirmation");
+                let path = validated_backup_path(directory, string(&p, "filename")?)?;
+                let preserved = Store::recover_from_backup(directory, &path)?;
+                Ok(json!({
+                    "recovered": true,
+                    "unreadable_backup": preserved.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default(),
+                }))
+            }
+            _ => Err(open_err),
+        },
+    }
 }
 
 /// Dispatch against a store the caller keeps open across commands. The owner
@@ -967,54 +1092,16 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
             let name = format!("sarv-backup-{}.json", crate::domain::now().replace(':', "").replace('+', "-"));
             let path = store.directory.join(&name);
             store.backup(&path)?;
+            prune_safety_backups(&store.directory)?;
             json!({"filename": name, "bytes": std::fs::metadata(&path)?.len()})
         }
-        "backup_list" => {
-            let mut rows = vec![];
-            for entry in std::fs::read_dir(&store.directory)? {
-                let entry = entry?;
-                let name = entry.file_name().to_string_lossy().into_owned();
-                if name.starts_with("sarv-backup-") && name.ends_with(".json") {
-                    let meta = entry.metadata()?;
-                    let state = Store::restore_preview(&entry.path()).ok();
-                    rows.push(json!({
-                        "filename": name,
-                        "bytes": meta.len(),
-                        "modified": meta.modified().map(|t| t.duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0)).unwrap_or(0),
-                        "companies": state.as_ref().map(|s| s.accounting.companies.len()).unwrap_or(0),
-                        "journals": state.as_ref().map(|s| s.accounting.journals.len()).unwrap_or(0),
-                        "valid": state.is_some(),
-                    }));
-                }
-            }
-            rows.sort_by(|a, b| b["modified"].as_u64().cmp(&a["modified"].as_u64()));
-            json!({"backups": rows})
-        }
+        "backup_list" => list_backups(&store.directory)?,
         "backup_restore_preview" | "backup_restore" => {
             let name = string(&p, "filename")?;
-            ensure!(
-                !name.contains('/')
-                    && !name.contains('\\')
-                    && !name.contains("..")
-                    && name.starts_with("sarv-backup-")
-                    && name.ends_with(".json"),
-                "Invalid backup filename"
-            );
-            let path = store.directory.join(name);
+            let path = validated_backup_path(&store.directory, name)?;
             let candidate = Store::restore_preview(&path)?;
-            let summary = |s: &State| {
-                json!({
-                    "companies": s.accounting.companies.iter().map(|c| c.name.clone()).collect::<Vec<_>>(),
-                    "journals": s.accounting.journals.len(),
-                    "sales": s.accounting.sales.records.len(),
-                    "purchases": s.accounting.procurement.records.len(),
-                    "payments": s.accounting.payments.records.len(),
-                    "quotes": s.quotes.len(),
-                    "drafts": s.sales_drafts.len(),
-                })
-            };
             if action.ends_with("preview") {
-                json!({"backup": summary(&candidate), "current": summary(&store.state)})
+                json!({"backup": backup_summary(&candidate), "current": backup_summary(&store.state)})
             } else {
                 ensure!(p["confirmed"] == true, "Restoring requires explicit confirmation");
                 if let Some(expected) = p["expected_generation"].as_str() {
@@ -1027,6 +1114,7 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 json!({"restored": true, "safety_backup": safety.file_name().map(|f| f.to_string_lossy().into_owned()).unwrap_or_default()})
             }
         }
+        "recover_from_backup" => bail!("Books load normally; use Restore backup"),
         "sheet_load" => {
             let company = string(&p, "company_id")?;
             match store.load_workbook(company)? {
