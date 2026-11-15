@@ -178,6 +178,20 @@ fn opening_the_sale_dialog_twice_starts_clean() {
 }
 
 #[test]
+fn test_walk_in_customer_is_reused_across_languages() {
+    let mut rt = make_test_runtime();
+    rt.state.set_lang(crate::i18n::Lang::Fa);
+    let fa_id = rt.state.ensure_walk_in_customer().expect("walk-in in Fa");
+
+    rt.state.set_lang(crate::i18n::Lang::En);
+    let en_id = rt.state.ensure_walk_in_customer().expect("walk-in in En");
+
+    assert_eq!(fa_id, en_id, "walk-in customer should be reused across languages");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
 fn test_new_sale_does_not_inherit_line_fields() {
     let mut rt = make_test_runtime();
     rt.state.forms.set("sale-qty-0", "7");

@@ -161,12 +161,21 @@ fn build_toolbar(s: &State, ui: &Ui) -> Toolbar {
         .label(ui.t("Refresh"))
         .on_press(|st: &mut State| {
             st.refresh();
-            st.toast(Tone::Success, st.fmt.t("Books refreshed"));
+            if !st.books.error.is_empty() {
+                let err = st.books.error.clone();
+                st.toast(Tone::Danger, err);
+            } else {
+                st.toast(Tone::Success, st.fmt.t("Books refreshed"));
+            }
         })
         .build(k)
         .key("refresh-books");
 
-    let synced = Badge::new(ui.t("Saved on this device")).variant(BadgeVariant::Subtle).build(k);
+    let synced = if !s.books.error.is_empty() {
+        Badge::new(ui.t("Books could not be loaded")).variant(BadgeVariant::Subtle).build(k)
+    } else {
+        Badge::new(ui.t("Saved on this device")).variant(BadgeVariant::Subtle).build(k)
+    };
 
     let mut bar = Toolbar::new().title(page_label);
     for rail in page_rail(s, ui) {

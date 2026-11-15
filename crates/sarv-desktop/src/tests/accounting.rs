@@ -142,7 +142,7 @@ fn locked_period_refuses_a_journal() {
         rt.frame(1.0 / 60.0);
     }
     click(&mut rt, &format!("period-{period}"));
-    click(&mut rt, "btn-Lock fiscal period");
+    click(&mut rt, "btn-Reopen fiscal period");
     assert!(!period_is_locked(&rt, &period), "{}", blow(&rt, "reopen period"));
 
     rt.update(|s, _| s.toasts.clear());

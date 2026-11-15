@@ -215,12 +215,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             }),
             ui.btn(Btn::Glass, "Law data", None, |st| match st.query("law_data", json!({})) {
                 Ok(v) => {
-                    let notice = crate::data::s(&v["notice_en"]);
-                    st.settings.law_notice = if notice.is_empty() {
-                        crate::data::s(&v["notice_fa"])
+                    let (primary, fallback) = if st.lang() == Lang::Fa {
+                        (crate::data::s(&v["notice_fa"]), crate::data::s(&v["notice_en"]))
                     } else {
-                        notice
+                        (crate::data::s(&v["notice_en"]), crate::data::s(&v["notice_fa"]))
                     };
+                    st.settings.law_notice = if primary.is_empty() { fallback } else { primary };
                 }
                 Err(e) => st.toast_err(e),
             }),
@@ -377,6 +377,13 @@ fn mount_restore(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 });
                 if st.run("backup_restore", payload, Some("Saved")).is_ok() {
                     st.settings.restore_open = false;
+                    st.sheets.loaded = false;
+                    st.pos = Default::default();
+                    st.sales.selected.clear();
+                    st.purchases.selected.clear();
+                    st.accounting.selected.clear();
+                    st.books.period_id.clear();
+                    st.refresh();
                 }
             }),
         ],

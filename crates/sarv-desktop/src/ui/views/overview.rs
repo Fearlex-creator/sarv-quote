@@ -560,7 +560,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 return Cell::text("");
             };
             let id = crate::data::s(&j["id"]);
-            let short = if id.len() > 8 { &id[..8] } else { id.as_str() };
+            let short: String = id.chars().take(8).collect();
             match col {
                 "date" => Cell::text(s.fmt.date(&crate::data::s(&j["date"]))).muted(),
                 "ref" => Cell::text(format!("#{short}")),

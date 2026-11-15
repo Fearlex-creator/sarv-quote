@@ -322,3 +322,20 @@ fn refresh_after_external_write_shows_the_new_data() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_refresh_reports_engine_failure() {
+    let mut rt = make_test_runtime();
+    let db_path = rt.state.engine.dir.join("sarv.sqlite3");
+    std::fs::write(&db_path, b"not a sqlite database").expect("corrupt sqlite file");
+
+    rt.state.refresh();
+    assert!(!rt.state.books.error.is_empty(), "refresh should record engine error");
+
+    click(&mut rt, "refresh-books");
+    assert!(
+        rt.state.toasts.iter().any(|t| matches!(t.tone, crate::app::Tone::Danger)),
+        "refresh button should surface a danger toast when books fail to load: {:?}",
+        rt.state.toasts
+    );
+}

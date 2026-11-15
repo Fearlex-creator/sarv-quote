@@ -190,7 +190,7 @@ fn test_owner_walks_profiles_documents_and_books() {
         .and_then(|p| p["locked"].as_bool())
         .unwrap_or(false);
     if locked {
-        click(&mut rt, "btn-Lock fiscal period");
+        click(&mut rt, "btn-Reopen fiscal period");
         let open_again = rt.state.books.workspace["periods"]
             .as_array()
             .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == period))

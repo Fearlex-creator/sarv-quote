@@ -449,7 +449,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             |s: &State| &s.sales.table,
             |s: &mut State| &mut s.sales.table,
             |s: &State| sales_records(s).len(),
-            |s: &State, i| Cow::Owned(format!("sale-{}", crate::data::s(&sales_records(s)[i]["id"]))),
+            |s: &State, i| {
+                Cow::Owned(
+                    sales_records(s)
+                        .get(i)
+                        .map(|r| format!("sale-{}", crate::data::s(&r["id"])))
+                        .unwrap_or_default(),
+                )
+            },
         )
         .name(ui.t("Invoices"))
         .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
@@ -464,7 +471,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         )
         .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
         .cell(|s: &State, i, col| {
-            let record = &sales_records(s)[i];
+            let records = sales_records(s);
+            let Some(record) = records.get(i) else {
+                return Cell::text("");
+            };
             match col {
                 "ref" => Cell::text(sales_ref(record)),
                 "customer" => Cell::text(s.books.party_name(&sales_party(record))),
@@ -484,7 +494,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             |s: &State| &s.sales.table,
             |s: &mut State| &mut s.sales.table,
             |s: &State| drafts(s).len(),
-            |s: &State, i| Cow::Owned(format!("draft-{}", crate::data::s(&drafts(s)[i]["id"]))),
+            |s: &State, i| {
+                Cow::Owned(
+                    drafts(s)
+                        .get(i)
+                        .map(|d| format!("draft-{}", crate::data::s(&d["id"])))
+                        .unwrap_or_default(),
+                )
+            },
         )
         .name(ui.t("Drafts"))
         .column(TableColumn::new("ref", ui.t("Reference")).width(140.0).min(96.0))
@@ -493,7 +510,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(100.0).align(Align::End))
         .column(TableColumn::new("status", ui.t("Status")).width(110.0).min(80.0))
         .cell(|s: &State, i, col| {
-            let draft = &drafts(s)[i];
+            let list = drafts(s);
+            let Some(draft) = list.get(i) else {
+                return Cell::text("");
+            };
             let note = crate::data::s(&draft["reason"]);
             match col {
                 "ref" => Cell::text(crate::data::s(&draft["reference"])),

@@ -150,6 +150,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Bills", "صورتحساب‌ها"),
     ("Book balance", "ماندهٔ دفتری"),
     ("Books", "دفاتر"),
+    ("Books could not be loaded", "دفاتر بارگذاری نشد"),
     (
         "Books look healthy — keep the momentum",
         "دفاتر سالم به نظر می‌رسند — همین روند را ادامه دهید",
@@ -857,7 +858,7 @@ pub static FA: &[(&str, &str)] = &[
         "Organize products by brand and category",
         "کالاها را بر اساس برند و دسته‌بندی منظم کنید",
     ),
-    ("Out of balance", "نامتوازن"),
+    ("Out of balance", "تراز نیست"),
     ("Out of stock", "ناموجود"),
     ("Out of stock — will be backordered", "ناموجود — پیش‌سفارش می‌شود"),
     ("Outstanding", "تسویه‌نشده"),

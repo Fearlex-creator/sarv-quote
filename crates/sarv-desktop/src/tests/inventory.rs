@@ -95,7 +95,6 @@ fn stock_transfer_moves_quantity_between_warehouses() {
 }
 
 #[test]
-#[ignore = "fixed by plans/006-desktop-correctness-fixes.md"]
 fn product_profile_save_round_trips_every_field() {
     let mut rt = make_test_runtime();
     rt.state.fmt.unit = crate::i18n::Unit::Rial;
@@ -211,6 +210,43 @@ fn test_product_profile_roundtrip_keeps_price() {
         .query("product_detail", serde_json::json!({ "item_id": "ITEM-A", "as_of": data::today() }))
         .expect("product_detail");
     assert_eq!(data::s(&detail["profile"]["sale_price"]), "12345");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_product_profile_keeps_minimum_stock() {
+    let mut rt = make_test_runtime();
+    rt.state
+        .run(
+            "product_profile",
+            serde_json::json!({
+                "item_id": "ITEM-A",
+                "profile": {
+                    "barcode": "",
+                    "category": "",
+                    "notes": "",
+                    "minimum_stock": "5"
+                }
+            }),
+            None,
+        )
+        .expect("seed minimum_stock");
+
+    click(&mut rt, Page::Inventory.key());
+    click(&mut rt, "item-ITEM-A");
+    click(&mut rt, "btn-Product details");
+    assert!(rt.state.inventory.profile_open, "{}", blow(&rt, "open profile"));
+    assert_eq!(rt.state.forms.get("prod-min-stock"), "5");
+
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.inventory.profile_open, "{}", blow(&rt, "save profile"));
+
+    let detail = rt
+        .state
+        .query("product_detail", serde_json::json!({ "item_id": "ITEM-A", "as_of": data::today() }))
+        .expect("product_detail");
+    assert_eq!(data::s(&detail["profile"]["minimum_stock_thousandths"]), "5000");
     assert_no_danger(&rt);
     books_validate(&rt);
 }

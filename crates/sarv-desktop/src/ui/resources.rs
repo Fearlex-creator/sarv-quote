@@ -160,16 +160,23 @@ impl State {
     }
 
     pub fn ensure_walk_in_customer(&mut self) -> Result<String, String> {
-        let label = self.fmt.t("Walk-in customer");
+        let fa = crate::i18n::tr(crate::i18n::Lang::Fa, "Walk-in customer");
+        let en = crate::i18n::tr(crate::i18n::Lang::En, "Walk-in customer");
         if let Some(id) = self.books.workspace["resources"]["parties"]
             .as_array()
             .into_iter()
             .flatten()
-            .find(|p| p["customer"].as_bool().unwrap_or(false) && data::s(&p["name"]) == label)
+            .find(|p| {
+                p["customer"].as_bool().unwrap_or(false) && {
+                    let name = data::s(&p["name"]);
+                    name == fa || name == en
+                }
+            })
             .map(|p| data::s(&p["id"]))
         {
             return Ok(id);
         }
+        let label = self.fmt.t("Walk-in customer");
         self.create_party(ResourceKind::Customer, &label, "", "", "")
     }
 

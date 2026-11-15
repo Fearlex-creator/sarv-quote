@@ -76,14 +76,24 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             |s: &State| &s.accounting.table,
             |s: &mut State| &mut s.accounting.table,
             |s: &State| accounts(s).len(),
-            |s: &State, i| Cow::Owned(format!("acc-{}", crate::data::s(&accounts(s)[i]["id"]))),
+            |s: &State, i| {
+                Cow::Owned(
+                    accounts(s)
+                        .get(i)
+                        .map(|a| format!("acc-{}", crate::data::s(&a["id"])))
+                        .unwrap_or_default(),
+                )
+            },
         )
         .name(ui.t("Chart of accounts"))
         .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
         .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
         .column(TableColumn::new("class", ui.t("Classification")).width(140.0).min(100.0))
         .cell(|s: &State, i, col| {
-            let acc = &accounts(s)[i];
+            let list = accounts(s);
+            let Some(acc) = list.get(i) else {
+                return Cell::text("");
+            };
             match col {
                 "code" => Cell::text(crate::data::s(&acc["code"])),
                 "name" => Cell::text(crate::data::s(&acc["name"])),
@@ -100,14 +110,24 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             |s: &State| &s.accounting.table,
             |s: &mut State| &mut s.accounting.table,
             |s: &State| periods(s).len(),
-            |s: &State, i| Cow::Owned(format!("period-{}", crate::data::s(&periods(s)[i]["id"]))),
+            |s: &State, i| {
+                Cow::Owned(
+                    periods(s)
+                        .get(i)
+                        .map(|p| format!("period-{}", crate::data::s(&p["id"])))
+                        .unwrap_or_default(),
+                )
+            },
         )
         .name(ui.t("Fiscal periods"))
         .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
         .column(TableColumn::new("date", ui.t("Date")).width(120.0).min(96.0))
         .column(TableColumn::new("status", ui.t("Status")).width(120.0).min(88.0))
         .cell(|s: &State, i, col| {
-            let period = &periods(s)[i];
+            let list = periods(s);
+            let Some(period) = list.get(i) else {
+                return Cell::text("");
+            };
             match col {
                 "name" => Cell::text(crate::data::s(&period["name"])),
                 "date" => Cell::text(s.fmt.date(&crate::data::s(&period["start_date"]))).muted(),
@@ -128,8 +148,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             |s: &mut State| &mut s.accounting.table,
             |s: &State| journals(s).len(),
             |s: &State, i| {
-                let id = crate::data::s(&journals(s)[i]["id"]);
-                Cow::Owned(format!("journal-{id}"))
+                Cow::Owned(
+                    journals(s)
+                        .get(i)
+                        .map(|j| format!("journal-{}", crate::data::s(&j["id"])))
+                        .unwrap_or_default(),
+                )
             },
         )
         .name(ui.t("Journals"))
@@ -146,7 +170,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             };
             let id = crate::data::s(&j["id"]);
             match col {
-                "ref" => Cell::text(format!("#{}", &id[..id.len().min(8)])),
+                "ref" => Cell::text(format!("#{}", id.chars().take(8).collect::<String>())),
                 "date" => Cell::text(s.fmt.date(&crate::data::s(&j["date"]))).muted(),
                 "desc" => Cell::text(crate::data::s(&j["reason"])),
                 "debit" => Cell::text(s.fmt.money(&crate::data::s(&j["total_debit"]))).mono(),
@@ -185,6 +209,23 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_ledger(s, ui, layer);
     }
 
+    let period_locked = s
+        .accounting
+        .selected
+        .strip_prefix("period-")
+        .and_then(|id| {
+            s.books.workspace["periods"]
+                .as_array()
+                .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == id))
+        })
+        .and_then(|p| p["locked"].as_bool())
+        .unwrap_or(false);
+    let period_btn_label = if period_locked {
+        "Reopen fiscal period"
+    } else {
+        "Lock fiscal period"
+    };
+
     ui.page(
         "accounting-screen",
         &ui.t("Accounting"),
@@ -193,7 +234,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), open_journal),
             ui.btn(Btn::Glass, "Ledger", None, open_ledger),
             ui.btn(Btn::Glass, "Reverse", None, reverse_selected),
-            ui.btn(Btn::Glass, "Lock fiscal period", None, toggle_period),
+            ui.btn(Btn::Glass, period_btn_label, None, toggle_period),
         ],
         body,
     )

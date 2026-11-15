@@ -299,7 +299,7 @@ fn csv_row(fields: &[(&str, &str)]) -> String {
 }
 
 fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64) -> String {
-    let p = if company_id.len() >= 8 { &company_id[..8] } else { company_id };
+    let p: String = company_id.chars().take(8).collect();
     let ledger = |role: &str, debit: i64, credit: i64| {
         csv_row(&[
             ("version", "sarv-opening-v1"),

@@ -47,7 +47,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 006: Six small confirmed desktop bugs
-- [ ] **P06-T01**: Fix product profile `minimum_stock_thousandths` string parse, balance sheet "Out of balance" state, `Books.error` refresh/badge surfacing, walk-in customer cross-language lookup + law notice language, period lock/reopen label, restore state reset & safe indexing/slicing/aging keys, add tests, update `plans/README.md`.
+- [x] **P06-T01**: Fix product profile `minimum_stock_thousandths` string parse, balance sheet "Out of balance" state, `Books.error` refresh/badge surfacing, walk-in customer cross-language lookup + law notice language, period lock/reopen label, restore state reset & safe indexing/slicing/aging keys, add tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/ui/views/{inventory,reports,settings,accounting,payments,sales}.rs`, `crates/sarv-desktop/src/ui/shell.rs`, `crates/sarv-desktop/src/ui/resources.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 

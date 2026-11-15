@@ -569,9 +569,8 @@ fn open_product(st: &mut State, item_id: &str) {
                 .set("prod-price", &money_field_from_rial(st, &crate::data::s(&profile["sale_price"])));
             st.forms
                 .set("prod-cost", &money_field_from_rial(st, &crate::data::s(&profile["purchase_price"])));
-            let min_th = profile["minimum_stock_thousandths"].as_i64().unwrap_or(0);
-            st.forms
-                .set("prod-min-stock", &crate::ui::ops::qty_from_thousandths(&min_th.to_string()));
+            let min_th = crate::data::s(&profile["minimum_stock_thousandths"]);
+            st.forms.set("prod-min-stock", &crate::ui::ops::qty_from_thousandths(&min_th));
             st.inventory.supplier_id = crate::data::s(&profile["preferred_supplier_id"]);
             let stock = crate::data::s(&v["stats"]["stock_quantity"]);
             st.inventory.stock_label = crate::ui::ops::qty_from_thousandths(&stock);

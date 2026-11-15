@@ -57,7 +57,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
                 |s: &State| trial_rows(s).len(),
-                |s: &State, i| Cow::Owned(format!("tb-{}", crate::data::s(&trial_rows(s)[i]["account_id"]))),
+                |s: &State, i| {
+                    Cow::Owned(
+                        trial_rows(s)
+                            .get(i)
+                            .map(|r| format!("tb-{}", crate::data::s(&r["account_id"])))
+                            .unwrap_or_default(),
+                    )
+                },
             )
             .name(ui.t("Trial balance"))
             .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
@@ -65,7 +72,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             .column(TableColumn::new("debit", ui.t("Debit")).width(140.0).min(96.0).align(Align::End))
             .column(TableColumn::new("credit", ui.t("Credit")).width(140.0).min(96.0).align(Align::End))
             .cell(|s: &State, i, col| {
-                let r = &trial_rows(s)[i];
+                let rows = trial_rows(s);
+                let Some(r) = rows.get(i) else {
+                    return Cell::text("");
+                };
                 match col {
                     "code" => Cell::text(crate::data::s(&r["code"])),
                     "name" => Cell::text(crate::data::s(&r["name"])),
@@ -93,7 +103,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
                 |s: &State| party_keys(s).len(),
-                |s: &State, i| Cow::Owned(format!("party-bal-{}", party_keys(s)[i].0)),
+                |s: &State, i| Cow::Owned(party_keys(s).get(i).map(|(k, _)| format!("party-bal-{k}")).unwrap_or_default()),
             )
             .name(ui.t("Customers & Suppliers"))
             .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0).sortable())
@@ -106,7 +116,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                     .sortable(),
             )
             .cell(|s: &State, i, col| {
-                let (key, amount) = &party_keys(s)[i];
+                let keys = party_keys(s);
+                let Some((key, amount)) = keys.get(i) else {
+                    return Cell::text("");
+                };
                 let (role, id) = key.split_once(':').unwrap_or(("contact", key.as_str()));
                 let name = s.books.party_name(id);
                 match col {
@@ -174,7 +187,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
                 |s: &State| pl_rows(s).len(),
-                |s: &State, i| Cow::Owned(format!("pl-{}", crate::data::s(&pl_rows(s)[i]["account_id"]))),
+                |s: &State, i| {
+                    Cow::Owned(
+                        pl_rows(s)
+                            .get(i)
+                            .map(|r| format!("pl-{}", crate::data::s(&r["account_id"])))
+                            .unwrap_or_default(),
+                    )
+                },
             )
             .name(ui.t("Profit & Loss"))
             .column(TableColumn::new("code", ui.t("Code")).width(100.0).min(72.0).sortable())
@@ -188,7 +208,10 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                     .sortable(),
             )
             .cell(|s: &State, i, col| {
-                let r = &pl_rows(s)[i];
+                let rows = pl_rows(s);
+                let Some(r) = rows.get(i) else {
+                    return Cell::text("");
+                };
                 match col {
                     "code" => Cell::text(crate::data::s(&r["code"])),
                     "name" => Cell::text(crate::data::s(&r["name"])),
@@ -247,7 +270,14 @@ fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
         |s: &State| &s.reports.table,
         |s: &mut State| &mut s.reports.table,
         |s: &State| sheet_rows(s).len(),
-        |s: &State, i| Cow::Owned(format!("bs-{}", crate::data::s(&sheet_rows(s)[i].1["account_id"]))),
+        |s: &State, i| {
+            Cow::Owned(
+                sheet_rows(s)
+                    .get(i)
+                    .map(|(_, r)| format!("bs-{}", crate::data::s(&r["account_id"])))
+                    .unwrap_or_default(),
+            )
+        },
     )
     .name(ui.t("Balance sheet"))
     .column(TableColumn::new("class", ui.t("Classification")).width(120.0).min(88.0))
@@ -255,7 +285,10 @@ fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0))
     .column(TableColumn::new("amount", ui.t("Amount")).width(160.0).min(110.0).align(Align::End))
     .cell(|s: &State, i, col| {
-        let (class, row) = &sheet_rows(s)[i];
+        let rows = sheet_rows(s);
+        let Some((class, row)) = rows.get(i) else {
+            return Cell::text("");
+        };
         match col {
             "class" => {
                 let key = match class.as_str() {
@@ -277,13 +310,18 @@ fn sheet_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
     .grow(1.0)
     .min_h(0.0);
     let balanced = s.books.report["balance_sheet"]["balanced"].as_bool().unwrap_or(false);
+    let status = if balanced {
+        ui.muted(ui.t("Balanced"))
+    } else {
+        ui.badge(Tone::Danger, ui.t("Out of balance"))
+    };
     col()
         .w_full()
         .gap(14.0)
         .grow(1.0)
         .min_h(0.0)
         .child(tab_bar)
-        .child(ui.muted(ui.t(if balanced { "Balanced" } else { "No balances through this date" })))
+        .child(status)
         .child(table)
 }
 
@@ -312,14 +350,24 @@ fn aging_tab(s: &State, ui: &Ui, tab_bar: El) -> El {
         |s: &State| &s.reports.table,
         |s: &mut State| &mut s.reports.table,
         |s: &State| aging_rows(s).len(),
-        |s: &State, i| Cow::Owned(format!("age-{}", crate::data::s(&aging_rows(s)[i]["party_id"]))),
+        |s: &State, i| {
+            Cow::Owned(
+                aging_rows(s)
+                    .get(i)
+                    .map(|r| format!("age-{}-{}", crate::data::s(&r["side"]), crate::data::s(&r["party_id"])))
+                    .unwrap_or_default(),
+            )
+        },
     )
     .name(ui.t("Aging"))
     .column(TableColumn::new("name", ui.t("Name")).flex(2.0).min(140.0))
     .column(TableColumn::new("side", ui.t("Role")).width(120.0).min(88.0))
     .column(TableColumn::new("total", ui.t("Balance")).width(160.0).min(110.0).align(Align::End))
     .cell(|s: &State, i, col| {
-        let row = &aging_rows(s)[i];
+        let rows = aging_rows(s);
+        let Some(row) = rows.get(i) else {
+            return Cell::text("");
+        };
         let id = crate::data::s(&row["party_id"]);
         match col {
             "name" => Cell::text(s.books.party_name(&id)),
