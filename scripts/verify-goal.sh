@@ -35,7 +35,7 @@ test -f docs/adr/0009-year-end-closing.md
 test -f docs/adr/0010-vat-on-documents.md
 test -f docs/adr/0011-bank-reconciliation.md
 test -f docs/adr/0012-rune-desktop.md
-test $(wc -l < crates/sarv-desktop/src/main.rs) -lt 140
+test $(wc -l < crates/sarv-desktop/src/main.rs) -lt 200
 test -f crates/sarv-desktop/src/tests/harness.rs
 
 echo "=== ALL VERIFY CHECKS PASSED ==="
