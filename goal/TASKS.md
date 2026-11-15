@@ -137,7 +137,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop`
 
 ### Plan 020: Document lifecycle
-- [ ] **P20-T01**: Create `ui/operation_dialog.rs` (editable quantities in display units, thousandths integer parser + unit test, preview + `Confirm`), wire "Receive goods"/"Enter bill"/partial "Return" in `purchases.rs`, partial "Deliver & invoice"/"Return" in `sales.rs`, and Edit/Convert/Delete quotations in `sales.rs` Drafts tab, add 7 tests, update `plans/README.md`.
+- [x] **P20-T01**: Create `ui/operation_dialog.rs` (editable quantities in display units, thousandths integer parser + unit test, preview + `Confirm`), wire "Receive goods"/"Enter bill"/partial "Return" in `purchases.rs`, partial "Deliver & invoice"/"Return" in `sales.rs`, and Edit/Convert/Delete quotations in `sales.rs` Drafts tab, add 7 tests, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/app.rs`, `crates/sarv-desktop/src/ui/{mod.rs,ops.rs,operation_dialog.rs}`, `crates/sarv-desktop/src/ui/views/{sales,purchases}.rs`, `crates/sarv-desktop/src/fa_messages.rs`, `crates/sarv-desktop/src/tests/*.rs`, `plans/README.md`
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo test -p sarv-quote`
 

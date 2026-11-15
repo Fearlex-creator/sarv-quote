@@ -84,6 +84,7 @@ fn test_owner_walks_profiles_documents_and_books() {
     let invoice_bytes = std::fs::read(&invoice_pdf).unwrap_or_else(|e| panic!("{e}; {}", blow(&rt, "invoice pdf")));
     assert!(invoice_bytes.starts_with(b"%PDF"), "invoice pdf");
     click(&mut rt, "btn-Return");
+    click(&mut rt, "btn-Review");
     click(&mut rt, "btn-Post return");
     let returned = rt
         .state
@@ -130,6 +131,7 @@ fn test_owner_walks_profiles_documents_and_books() {
         }
         click(&mut rt, &format!("purchase-{return_id}"));
         click(&mut rt, "btn-Return");
+        click(&mut rt, "btn-Review");
         click(&mut rt, "btn-Post return");
         let sent_back = rt
             .state

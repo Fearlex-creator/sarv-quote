@@ -332,6 +332,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Control", "حساب کنترلی"),
     ("Control reconciliation", "تطبیق حساب‌های کنترلی"),
     ("Controls", "حساب‌های کنترلی"),
+    ("Convert to sale", "تبدیل به فروش"),
     ("Copied", "کپی شد"),
     ("Copy CLI", "کپی فرمان CLI"),
     ("Copy MCP", "کپی تنظیمات MCP"),
@@ -402,6 +403,10 @@ pub static FA: &[(&str, &str)] = &[
         "Define where stock is held and how items are counted (e.g., Piece, Box, Kg).",
         "محل نگهداری موجودی و واحد شمارش کالاها (مانند عدد، بسته، کیلوگرم) را مشخص کنید.",
     ),
+    ("Delete", "حذف"),
+    ("Delete this quotation?", "این پیش‌فاکتور حذف شود؟"),
+    ("Deleted", "حذف شد"),
+    ("Deliver & invoice", "تحویل و صدور فاکتور"),
     ("Deliver goods and issue invoice", "تحویل کالا و صدور فاکتور"),
     (
         "Delivery remarks, serial numbers, or invoice note…",
@@ -475,6 +480,9 @@ pub static FA: &[(&str, &str)] = &[
     ("Enter a product name.", "نام کالا را وارد کنید."),
     ("Enter a valid amount.", "مبلغ معتبر وارد کنید."),
     ("Enter a valid date.", "تاریخ معتبر وارد کنید."),
+    ("Enter a valid quantity.", "مقدار معتبر وارد کنید."),
+    ("Enter at least one quantity.", "دست‌کم یک مقدار وارد کنید."),
+    ("Enter bill", "ثبت صورت‌حساب خرید"),
     (
         "Entries can be posted again in this fiscal year once it is reopened.",
         "پس از بازگشایی، ثبت سند در این سال مالی دوباره ممکن می‌شود.",
@@ -834,6 +842,10 @@ pub static FA: &[(&str, &str)] = &[
     ("Note (optional)", "یادداشت (اختیاری)"),
     ("Notes", "یادداشت‌ها"),
     ("Nothing is open", "مورد بازی وجود ندارد"),
+    (
+        "Nothing left to process on this document.",
+        "چیزی برای ثبت روی این سند باقی نمانده است.",
+    ),
     ("Nothing needs attention right now", "در حال حاضر چیزی نیاز به توجه ندارد"),
     ("Nothing to show", "موردی برای نمایش نیست"),
     ("Notifications", "اعلان‌ها"),
@@ -970,6 +982,7 @@ pub static FA: &[(&str, &str)] = &[
         "Positive amounts are owed to you by customers; negative are owed to suppliers.",
         "مبالغ مثبت طلب شما از مشتریان و مبالغ منفی بدهی شما به تأمین‌کنندگان است.",
     ),
+    ("Post", "ثبت"),
     ("Post a balanced debit and credit.", "یک بدهکار و بستانکار متوازن ثبت کنید."),
     (
         "Post a sale or journal to see activity here.",
@@ -1048,6 +1061,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Purchases", "خریدها"),
     ("Qty", "مقدار"),
     ("Quantity", "مقدار"),
+    ("Quantity exceeds remaining.", "مقدار از ماندهٔ مجاز بیشتر است."),
     (
         "Quantity exceeds the remaining source quantity",
         "مقدار از باقی‌ماندهٔ ردیف منبع بیشتر است",
@@ -1086,6 +1100,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Receive", "دریافت کالا"),
     ("Receive & Bill", "دریافت و صورتحساب"),
     ("Receive & Bill settlement", "تسویه دریافت و صورتحساب"),
+    ("Receive goods", "دریافت کالا"),
     ("Receive money", "دریافت وجه"),
     ("Received", "دریافتی"),
     ("Recent entries", "اسناد اخیر"),
@@ -1177,6 +1192,7 @@ pub static FA: &[(&str, &str)] = &[
     ("Return", "برگشت"),
     ("Return and credit", "برگشت و بستانکاری"),
     ("Return goods", "برگشت کالا"),
+    ("Return goods to supplier", "برگشت کالا به تأمین‌کننده"),
     (
         "Return billed goods and issue supplier credit",
         "برگشت کالای صورتحساب‌شده و صدور بستانکاری تأمین‌کننده",

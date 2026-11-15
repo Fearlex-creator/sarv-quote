@@ -52,7 +52,7 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 | [017](017-fiscal-years.md) | Open the next fiscal year; switch years | P1 | M | 002, (014) | DONE |
 | [018](018-chart-of-accounts.md) | Add and archive accounts | P1 | M | — | DONE |
 | [019](019-history-paging-and-record-detail.md) | Reach records beyond the latest 100; record detail; full ledger | P1 | M–L | (012), (003) | DONE |
-| [020](020-document-lifecycle.md) | Continue documents: receive, bill, deliver, return in part; edit/convert/delete quotations | P1 | L | 004, 013, 014 | TODO |
+| [020](020-document-lifecycle.md) | Continue documents: receive, bill, deliver, return in part; edit/convert/delete quotations | P1 | L | 004, 013, 014 | DONE |
 | [021](021-payments-and-cheques.md) | Reverse payments; endorse cheques; cheque register with due dates | P2 | M | 004, 010, 013, 014 | TODO |
 | [022](022-add-company-and-switcher.md) | Add a second business; switch from the sidebar | P2 | S–M | (004), (013) | TODO |
 | [024](024-multi-line-journal.md) | Journals with any number of lines | P2 | M | 004, 005, 014 | TODO |

@@ -41,7 +41,7 @@ pub struct OperationReview {
     pub total: String,
 }
 
-fn item_name(st: &State, item_id: &str) -> String {
+pub(crate) fn item_name(st: &State, item_id: &str) -> String {
     st.books.workspace["resources"]["items"]
         .as_array()
         .and_then(|arr| arr.iter().find(|it| crate::data::s(&it["id"]) == item_id))

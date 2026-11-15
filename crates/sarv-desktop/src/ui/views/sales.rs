@@ -49,6 +49,7 @@ pub struct SalesState {
     /// Stable across a double-click of Complete sale. A new dialog mints a new key.
     pub post_key: String,
     pub draft_id: String,
+    pub editing_revision: Option<String>,
     pub posting: bool,
     pub selected: String,
     pub rows: Vec<Row>,
@@ -69,6 +70,36 @@ impl SalesState {
         let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
         self.post_key = format!("sale-{stamp}");
         self.draft_id = format!("draft-{stamp}");
+        self.editing_revision = None;
+        self.posting = false;
+    }
+
+    pub fn start_edit(&mut self, draft: &serde_json::Value) {
+        self.modal_open = true;
+        self.customer_id = crate::data::s(&draft["customer_id"]);
+        self.customer_combo = ComboboxState::default();
+        let mut lines: Vec<SaleLine> = draft["lines"]
+            .as_array()
+            .into_iter()
+            .flatten()
+            .map(|l| SaleLine {
+                id: crate::data::s(&l["id"]),
+                item_id: crate::data::s(&l["item_id"]),
+                qty: crate::data::s(&l["quantity"]),
+                price: crate::data::s(&l["unit_price"]),
+                discount: crate::data::s(&l["line_discount"]),
+            })
+            .collect();
+        if lines.is_empty() || lines.last().is_some_and(|l| !l.item_id.is_empty()) {
+            lines.push(SaleLine::blank());
+        }
+        self.lines = lines;
+        self.line_combos = vec![ComboboxState::default(); self.lines.len()];
+        self.pay_method = 2;
+        self.creating_item_for_line = None;
+        self.new_item_name.clear();
+        self.draft_id = crate::data::s(&draft["id"]);
+        self.editing_revision = Some(crate::data::s(&draft["revision"]));
         self.posting = false;
     }
 
@@ -321,6 +352,7 @@ fn complete_sale(st: &mut State) {
         st.sales.modal_open = false;
         st.sales.post_key.clear();
         st.sales.draft_id.clear();
+        st.sales.editing_revision = None;
         st.sales.tab_idx = 0;
         st.toast(Tone::Success, st.fmt.t("Posted"));
     }
@@ -425,13 +457,25 @@ fn issue_quotation(st: &mut State) {
         finish_posting(st);
         return;
     };
-    let reference = next_order_ref(st, &st.sales.post_key);
+    let draft_id = st.sales.draft_id.clone();
+    let existing = st
+        .sales
+        .editing_revision
+        .as_ref()
+        .and_then(|_| st.books.list("drafts").into_iter().find(|d| crate::data::s(&d["id"]) == draft_id));
+    let reference = existing
+        .as_ref()
+        .map(|d| crate::data::s(&d["reference"]))
+        .filter(|r| !r.is_empty())
+        .unwrap_or_else(|| next_order_ref(st, &st.sales.post_key));
     let note = {
         let note = st.forms.get("sale-note").trim().to_string();
         if note.is_empty() { "Quotation".into() } else { note }
     };
-    let draft_id = st.sales.draft_id.clone();
     let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &date);
+    if let Some(rev) = &st.sales.editing_revision {
+        draft["revision"] = json!(rev);
+    }
     let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
         Ok(v) => v,
         Err(e) => {
@@ -441,15 +485,19 @@ fn issue_quotation(st: &mut State) {
         }
     };
     draft["supplied_total"] = preview["supplied_total"].clone();
-    match st.run(
-        "draft_save",
-        json!({ "draft": draft, "expected_revision": null, "issue_quotation": true }),
-        Some("Saved"),
-    ) {
+    let expected_revision = st.sales.editing_revision.clone();
+    let already_issued = existing.is_some_and(|d| !d["quote_issue"].is_null());
+    let save_payload = if already_issued {
+        json!({ "draft": draft, "expected_revision": expected_revision })
+    } else {
+        json!({ "draft": draft, "expected_revision": expected_revision, "issue_quotation": true })
+    };
+    match st.run("draft_save", save_payload, Some("Saved")) {
         Ok(_) => {
             st.sales.modal_open = false;
             st.sales.post_key.clear();
             st.sales.draft_id.clear();
+            st.sales.editing_revision = None;
             st.sales.tab_idx = 1;
             finish_posting(st);
         }
@@ -563,6 +611,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let tabs = [(t_inv.as_str(), s.sales.tab_idx == 0), (t_draft.as_str(), s.sales.tab_idx == 1)];
     let tab_bar = ui.tabs("sales-tabs", &tabs, |st, idx| {
         st.sales.tab_idx = idx;
+        st.sales.selected.clear();
         st.sales.table = TableState::new();
         st.sales.rows_stamp = 0;
         ensure(st);
@@ -685,25 +734,46 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         body = body.child(f);
     }
 
+    let mut actions = vec![
+        add_btn,
+        ui.btn_enabled(Btn::Glass, "Open", None, !s.sales.selected.is_empty(), |st| {
+            let id = st.sales.selected.clone();
+            crate::ui::detail::open(st, &id);
+        }),
+        ui.btn_enabled(
+            Btn::Glass,
+            "Print / save PDF",
+            Some(&icons::DOWNLOAD),
+            !s.sales.selected.is_empty(),
+            print_selected,
+        ),
+    ];
+    if s.sales.tab_idx == 0 {
+        actions.push(ui.btn_enabled(
+            Btn::Glass,
+            "Deliver & invoice",
+            None,
+            !s.sales.selected.is_empty(),
+            fulfill_selected,
+        ));
+        actions.push(ui.btn_enabled(Btn::Glass, "Return", None, !s.sales.selected.is_empty(), return_selected));
+    } else {
+        actions.push(ui.btn_enabled(Btn::Glass, "Edit", None, !s.sales.selected.is_empty(), edit_selected_draft));
+        actions.push(ui.btn_enabled(
+            Btn::Glass,
+            "Convert to sale",
+            None,
+            !s.sales.selected.is_empty(),
+            convert_selected_draft,
+        ));
+        actions.push(ui.btn_enabled(Btn::Danger, "Delete", None, !s.sales.selected.is_empty(), delete_selected_draft));
+    }
+
     ui.page(
         "sales-screen",
         &ui.t("Sales"),
         &ui.t("Sales that are delivered and billed."),
-        vec![
-            add_btn,
-            ui.btn_enabled(Btn::Glass, "Open", None, !s.sales.selected.is_empty(), |st| {
-                let id = st.sales.selected.clone();
-                crate::ui::detail::open(st, &id);
-            }),
-            ui.btn_enabled(
-                Btn::Glass,
-                "Print / save PDF",
-                Some(&icons::DOWNLOAD),
-                !s.sales.selected.is_empty(),
-                print_selected,
-            ),
-            ui.btn_enabled(Btn::Glass, "Return", None, !s.sales.selected.is_empty(), return_selected),
-        ],
+        actions,
         body,
     )
 }
@@ -1082,6 +1152,24 @@ fn print_selected(st: &mut State) {
     }
 }
 
+fn fulfill_selected(st: &mut State) {
+    if st.sales.selected.is_empty() {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return;
+    }
+    let id = st.sales.selected.clone();
+    let key = st.mint_key("fulfill");
+    let reference = next_invoice_ref(st, &key);
+    crate::ui::operation_dialog::open(
+        st,
+        &id,
+        "fulfill",
+        "Deliver & invoice",
+        reference,
+        "Deliver goods and issue invoice",
+    );
+}
+
 fn return_selected(st: &mut State) {
     let Some(record) = st
         .books
@@ -1097,25 +1185,102 @@ fn return_selected(st: &mut State) {
         return;
     }
     let id = st.sales.selected.clone();
-    let reference = format!("RET-{}", &id[..id.len().min(6)]);
-    let key = st.mint_key("return");
-    let return_note = st.fmt.t("Restock customer return and issue credit");
-    let Ok(review) = crate::ui::ops::review_operation(st, &id, "sale_return", &reference, &return_note, &key, &crate::data::today()) else {
+    let ref_ = sales_ref(&record);
+    crate::ui::operation_dialog::open(
+        st,
+        &id,
+        "sale_return",
+        "Return goods",
+        format!("RET-{ref_}"),
+        "Restock customer return and issue credit",
+    );
+}
+
+fn edit_selected_draft(st: &mut State) {
+    let Some(draft) = st
+        .books
+        .list("drafts")
+        .into_iter()
+        .find(|d| crate::data::s(&d["id"]) == st.sales.selected)
+    else {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
         return;
     };
-    let mut lines = review.lines;
-    lines.push((st.fmt.t("Total"), review.total));
-    let payload = review.payload;
+    st.forms.clear_prefix("sale-");
+    st.sales.start_edit(&draft);
+    st.sales.post_key = st.mint_key("sale");
+    for (i, line) in st.sales.lines.iter().enumerate() {
+        if !line.item_id.is_empty() {
+            st.forms.set(&format!("sale-qty-{i}"), &line.qty);
+            st.forms.set(&format!("sale-price-{i}"), &line.price);
+        }
+    }
+    st.forms.set("sale-note", &crate::data::s(&draft["reason"]));
+    let doc_date = crate::data::s(&draft["document_date"]);
+    if !doc_date.is_empty() {
+        st.forms.set("sale-date", &st.fmt.date_input(&doc_date));
+    }
+}
+
+fn convert_selected_draft(st: &mut State) {
+    let Some(draft) = st
+        .books
+        .list("drafts")
+        .into_iter()
+        .find(|d| crate::data::s(&d["id"]) == st.sales.selected)
+    else {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return;
+    };
+    let id = crate::data::s(&draft["id"]);
+    let rev = crate::data::s(&draft["revision"]);
+    let key = st.mint_key("convert");
+    let Ok(posted) = st.run("draft_post", json!({ "id": id, "revision": rev, "request_key": key }), None) else {
+        return;
+    };
+    let record_id = crate::data::s(&posted["record_id"]);
+    if record_id.is_empty() {
+        st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
+        return;
+    }
+    let reference = next_invoice_ref(st, &key);
+    st.sales.tab_idx = 0;
+    st.sales.selected = record_id.clone();
+    crate::ui::operation_dialog::open(
+        st,
+        &record_id,
+        "fulfill",
+        "Deliver & invoice",
+        reference,
+        "Deliver goods and issue invoice",
+    );
+}
+
+fn delete_selected_draft(st: &mut State) {
+    let Some(draft) = st
+        .books
+        .list("drafts")
+        .into_iter()
+        .find(|d| crate::data::s(&d["id"]) == st.sales.selected)
+    else {
+        st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return;
+    };
+    let id = crate::data::s(&draft["id"]);
+    let rev = crate::data::s(&draft["revision"]);
     st.confirm = Some(crate::ui::confirm::Confirm::one(
-        st.fmt.t("Return goods"),
-        st.fmt.t("All remaining quantities on this document will be returned."),
-        lines,
-        "Post return",
-        st.fmt.t("Post return"),
+        st.fmt.t("Delete this quotation?"),
+        String::new(),
+        Vec::new(),
+        "Confirm delete",
+        st.fmt.t("Delete"),
         true,
         move |st| {
-            if crate::ui::ops::post_reviewed(st, "sale_return", payload.clone()).is_ok() {
-                st.toast(Tone::Success, st.fmt.t("Goods operation posted"));
+            if st
+                .run("draft_delete", json!({ "id": id, "revision": rev }), Some("Deleted"))
+                .is_ok()
+            {
+                st.sales.selected.clear();
             }
         },
     ));

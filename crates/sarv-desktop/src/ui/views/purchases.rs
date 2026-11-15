@@ -436,6 +436,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                 let id = st.purchases.selected.clone();
                 crate::ui::detail::open(st, &id);
             }),
+            ui.btn_enabled(
+                Btn::Glass,
+                "Receive goods",
+                None,
+                !s.purchases.selected.is_empty(),
+                receive_selected,
+            ),
+            ui.btn_enabled(Btn::Glass, "Enter bill", None, !s.purchases.selected.is_empty(), bill_selected),
             ui.btn_enabled(Btn::Glass, "Return", None, !s.purchases.selected.is_empty(), return_selected),
         ],
         body,
@@ -631,14 +639,45 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     }
 }
 
-fn return_selected(st: &mut State) {
-    let Some(record) = st
+fn selected_record(st: &mut State) -> Option<(String, serde_json::Value, String)> {
+    let record = st
         .books
         .list("purchases")
         .into_iter()
-        .find(|r| crate::data::s(&r["id"]) == st.purchases.selected)
-    else {
+        .find(|r| crate::data::s(&r["id"]) == st.purchases.selected);
+    let Some(record) = record else {
         st.toast(Tone::Info, st.fmt.t("Select a row first."));
+        return None;
+    };
+    let id = st.purchases.selected.clone();
+    let cmd = &record["command"];
+    let inner = cmd
+        .get("Order")
+        .or_else(|| cmd.get("Receive"))
+        .or_else(|| cmd.get("Bill"))
+        .or_else(|| cmd.get("Return"))
+        .unwrap_or(cmd);
+    let ref_ = first_nonempty(crate::data::s(&inner["reference"]), crate::data::s(&inner["return_reference"]));
+    let ref_ = if ref_.is_empty() { id[..id.len().min(6)].to_string() } else { ref_ };
+    Some((id, record, ref_))
+}
+
+fn receive_selected(st: &mut State) {
+    let Some((id, _, ref_)) = selected_record(st) else {
+        return;
+    };
+    crate::ui::operation_dialog::open(st, &id, "receive", "Receive goods", format!("R-{ref_}"), "Receive goods");
+}
+
+fn bill_selected(st: &mut State) {
+    let Some((id, _, ref_)) = selected_record(st) else {
+        return;
+    };
+    crate::ui::operation_dialog::open(st, &id, "bill", "Enter bill", format!("B-{ref_}"), "Bill received goods");
+}
+
+fn return_selected(st: &mut State) {
+    let Some((id, record, ref_)) = selected_record(st) else {
         return;
     };
     let returnable = record["command"].get("Receive").is_some() || record["command"].get("Bill").is_some();
@@ -646,34 +685,12 @@ fn return_selected(st: &mut State) {
         st.toast(Tone::Info, st.fmt.t("Only received goods can be returned."));
         return;
     }
-    let id = st.purchases.selected.clone();
-    let reference = format!("PRET-{}", &id[..id.len().min(6)]);
-    let key = st.mint_key("return");
-    let Ok(review) = crate::ui::ops::review_operation(
+    crate::ui::operation_dialog::open(
         st,
         &id,
         "purchase_return",
-        &reference,
-        "Return goods to the supplier",
-        &key,
-        &crate::data::today(),
-    ) else {
-        return;
-    };
-    let mut lines = review.lines;
-    lines.push((st.fmt.t("Total"), review.total));
-    let payload = review.payload;
-    st.confirm = Some(crate::ui::confirm::Confirm::one(
-        st.fmt.t("Return goods"),
-        st.fmt.t("All remaining quantities on this document will be returned."),
-        lines,
-        "Post return",
-        st.fmt.t("Post return"),
-        true,
-        move |st| {
-            if crate::ui::ops::post_reviewed(st, "purchase_return", payload.clone()).is_ok() {
-                st.toast(Tone::Success, st.fmt.t("Goods operation posted"));
-            }
-        },
-    ));
+        "Return goods",
+        format!("PRET-{ref_}"),
+        "Return goods to supplier",
+    );
 }

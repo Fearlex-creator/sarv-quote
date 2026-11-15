@@ -134,6 +134,8 @@ fn purchase_return_reduces_stock_and_payables() {
     }
     click(&mut rt, &format!("purchase-{return_id}"));
     click(&mut rt, "btn-Return");
+    assert!(rt.state.operation.open, "{}", blow(&rt, "open return dialog"));
+    click(&mut rt, "btn-Review");
     click(&mut rt, "btn-Post return");
 
     assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before, "stock reduced back");
@@ -145,4 +147,148 @@ fn purchase_return_reduces_stock_and_payables() {
     assert_eq!(supplier_open_total(&mut rt, &supplier), 0);
     assert_no_danger(&rt);
     books_validate(&rt);
+}
+
+#[test]
+fn test_open_purchase_order_can_be_received_later() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let supplier = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Vendor, "Later Supplier", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    let stock_before = item_stock_total(&mut rt, "ITEM-A");
+
+    click(&mut rt, Page::Purchases.key());
+    click(&mut rt, "btn-New purchase order");
+    rt.state.purchases.supplier_id = supplier;
+    rt.state.purchases.receive_and_bill = false;
+    rt.state.purchases.lines[0].item_id = "ITEM-A".into();
+    rt.state.purchases.lines[0].qty = "2".into();
+    rt.state.purchases.lines[0].price = "80000".into();
+    type_into(&mut rt, "buy-qty-0", "2");
+    type_into(&mut rt, "buy-price-0", "80000");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.purchases.modal_open, "{}", blow(&rt, "open PO save"));
+    assert_eq!(
+        item_stock_total(&mut rt, "ITEM-A"),
+        stock_before,
+        "open PO must not change stock yet"
+    );
+
+    let order_id = rt
+        .state
+        .books
+        .list("purchases")
+        .into_iter()
+        .find(|r| r["command"].get("Order").is_some())
+        .map(|r| data::s(&r["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "order id")));
+
+    click(&mut rt, &format!("purchase-{order_id}"));
+    click(&mut rt, "btn-Receive goods");
+    assert!(rt.state.operation.open, "{}", blow(&rt, "receive dialog"));
+    click(&mut rt, "btn-Review");
+    assert!(rt.state.confirm.is_some(), "{}", blow(&rt, "receive confirm"));
+    click(&mut rt, "btn-Post");
+    assert!(!rt.state.operation.open, "{}", blow(&rt, "receive post"));
+
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before + 2000);
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_partial_receive_leaves_a_remainder() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let supplier = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Vendor, "Partial Supplier", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    let stock_before = item_stock_total(&mut rt, "ITEM-A");
+
+    click(&mut rt, Page::Purchases.key());
+    click(&mut rt, "btn-New purchase order");
+    rt.state.purchases.supplier_id = supplier;
+    rt.state.purchases.receive_and_bill = false;
+    rt.state.purchases.lines[0].item_id = "ITEM-A".into();
+    rt.state.purchases.lines[0].qty = "3".into();
+    rt.state.purchases.lines[0].price = "80000".into();
+    type_into(&mut rt, "buy-qty-0", "3");
+    type_into(&mut rt, "buy-price-0", "80000");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.purchases.modal_open, "{}", blow(&rt, "partial PO save"));
+
+    let order_id = rt
+        .state
+        .books
+        .list("purchases")
+        .into_iter()
+        .find(|r| r["command"].get("Order").is_some())
+        .map(|r| data::s(&r["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "order id")));
+
+    click(&mut rt, &format!("purchase-{order_id}"));
+    click(&mut rt, "btn-Receive goods");
+    assert!(rt.state.operation.open);
+    assert_eq!(rt.state.forms.get("op-qty-0"), "3");
+    type_into(&mut rt, "op-qty-0", "1");
+    click(&mut rt, "btn-Review");
+    click(&mut rt, "btn-Post");
+    assert!(!rt.state.operation.open, "{}", blow(&rt, "partial receive post"));
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before + 1000);
+
+    click(&mut rt, "btn-Receive goods");
+    assert!(rt.state.operation.open, "{}", blow(&rt, "reopen receive"));
+    assert_eq!(rt.state.forms.get("op-qty-0"), "2");
+    assert_eq!(rt.state.operation.lines[0].remaining_thousandths, "2000");
+    rt.state.operation.open = false;
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_quantity_above_remaining_is_rejected_before_preview() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let supplier = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Vendor, "Over Supplier", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    click(&mut rt, Page::Purchases.key());
+    click(&mut rt, "btn-New purchase order");
+    rt.state.purchases.supplier_id = supplier;
+    rt.state.purchases.receive_and_bill = false;
+    rt.state.purchases.lines[0].item_id = "ITEM-A".into();
+    rt.state.purchases.lines[0].qty = "2".into();
+    rt.state.purchases.lines[0].price = "80000".into();
+    type_into(&mut rt, "buy-qty-0", "2");
+    type_into(&mut rt, "buy-price-0", "80000");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.purchases.modal_open);
+
+    let order_id = rt
+        .state
+        .books
+        .list("purchases")
+        .into_iter()
+        .find(|r| r["command"].get("Order").is_some())
+        .map(|r| data::s(&r["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "order id")));
+
+    click(&mut rt, &format!("purchase-{order_id}"));
+    click(&mut rt, "btn-Receive goods");
+    assert!(rt.state.operation.open);
+    type_into(&mut rt, "op-qty-0", "5");
+    click(&mut rt, "btn-Review");
+    assert!(rt.state.confirm.is_none(), "over-remaining quantity must not open confirm");
+    assert!(
+        rt.state.toasts.iter().any(|t| t.tone == crate::app::Tone::Danger),
+        "expected danger toast for quantity exceeding remaining"
+    );
+    rt.state.operation.open = false;
 }

@@ -195,6 +195,7 @@ pub struct State {
     pub period_switch_open: bool,
     pub confirm: Option<crate::ui::confirm::Confirm>,
     pub detail: crate::ui::detail::DetailState,
+    pub operation: crate::ui::operation_dialog::OperationState,
     pub sidebar: PaneState,
     pub guide_open: bool,
     pub overview: views::overview::OverviewState,
@@ -239,6 +240,7 @@ impl State {
             period_switch_open: false,
             confirm: None,
             detail: Default::default(),
+            operation: Default::default(),
             // Match rune-kit shell example: full close to 0, resize 136…640.
             sidebar: PaneState::new(276.0).range(136.0, 640.0),
             guide_open: true,
@@ -400,6 +402,7 @@ impl State {
     pub fn any_dialog_open(&self) -> bool {
         self.confirm.is_some()
             || self.detail.open
+            || self.operation.open
             || self.palette_open
             || self.sales.creating_item_for_line.is_some()
             || self.purchases.creating_item_for_line.is_some()
@@ -428,6 +431,10 @@ impl State {
         }
         if self.detail.open {
             self.detail.open = false;
+            return true;
+        }
+        if self.operation.open {
+            self.operation.open = false;
             return true;
         }
         if self.palette_open {

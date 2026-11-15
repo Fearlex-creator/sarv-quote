@@ -142,6 +142,8 @@ fn sale_return_restocks_and_credits_the_customer() {
 
     click(&mut rt, &format!("sale-{invoice_id}"));
     click(&mut rt, "btn-Return");
+    assert!(rt.state.operation.open, "{}", blow(&rt, "open sale return dialog"));
+    click(&mut rt, "btn-Review");
     click(&mut rt, "btn-Post return");
 
     assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before, "stock restored on return");
@@ -234,7 +236,9 @@ fn test_return_requires_confirmation() {
 
     click(&mut rt, &format!("sale-{invoice_id}"));
     click(&mut rt, "btn-Return");
-    assert!(rt.state.confirm.is_some(), "return must open confirmation dialog");
+    assert!(rt.state.operation.open, "return must open operation dialog");
+    click(&mut rt, "btn-Review");
+    assert!(rt.state.confirm.is_some(), "return review must open confirmation dialog");
     assert_eq!(rt.state.books.list("sales").len(), sales_before, "no return posted before confirm");
 
     click(&mut rt, "btn-Post return");
@@ -370,4 +374,168 @@ fn test_sales_table_sorts_by_amount() {
         })
         .collect();
     assert!(amounts.windows(2).all(|w| w[0] <= w[1]), "expected ascending amounts: {amounts:?}");
+}
+
+#[test]
+fn test_partial_sale_return_restocks_only_that_quantity() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let party = rt
+        .state
+        .create_party(crate::ui::resources::ResourceKind::Customer, "Partial Return Buyer", "", "", "")
+        .unwrap_or_else(|e| panic!("{e}"));
+
+    let stock_before = item_stock_total(&mut rt, "ITEM-A");
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = party.clone();
+    rt.state.sales.pay_method = 2;
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "3".into();
+    rt.state.sales.lines[0].price = "100000".into();
+    type_into(&mut rt, "sale-qty-0", "3");
+    type_into(&mut rt, "sale-price-0", "100000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "sale 3 units"));
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before - 3000);
+
+    let invoice_id = rt
+        .state
+        .books
+        .list("sales")
+        .into_iter()
+        .find(|r| r["command"].get("Fulfill").is_some())
+        .map(|r| data::s(&r["id"]))
+        .unwrap_or_else(|| panic!("{}", blow(&rt, "invoice id")));
+
+    click(&mut rt, &format!("sale-{invoice_id}"));
+    click(&mut rt, "btn-Return");
+    assert!(rt.state.operation.open);
+    type_into(&mut rt, "op-qty-0", "1");
+    click(&mut rt, "btn-Review");
+    click(&mut rt, "btn-Post return");
+    assert!(!rt.state.operation.open, "{}", blow(&rt, "partial return post"));
+
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before - 2000, "only 1 unit restocked");
+    assert_eq!(customer_open_total(&mut rt, &party), 200000, "only 1 unit credited");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_quotation_edit_keeps_its_number() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "2".into();
+    rt.state.sales.lines[0].price = "50000".into();
+    type_into(&mut rt, "sale-qty-0", "2");
+    type_into(&mut rt, "sale-price-0", "50000");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "issue quotation"));
+    assert_eq!(rt.state.sales.tab_idx, 1);
+
+    let draft = rt.state.books.list("drafts").into_iter().next().expect("saved draft");
+    let draft_id = data::s(&draft["id"]);
+    let quote_num = data::s(&draft["quote_issue"]["number"]);
+    let rev1: u64 = data::s(&draft["revision"]).parse().unwrap();
+    assert!(!quote_num.is_empty(), "quotation number must be assigned");
+
+    for _ in 0..4 {
+        rt.frame(1.0 / 60.0);
+    }
+    click(&mut rt, &format!("draft-{draft_id}"));
+    click(&mut rt, "btn-Edit");
+    assert!(rt.state.sales.modal_open, "{}", blow(&rt, "edit quotation"));
+    type_into(&mut rt, "sale-qty-0", "4");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "save edited quotation"));
+
+    let updated = rt
+        .state
+        .books
+        .list("drafts")
+        .into_iter()
+        .find(|d| data::s(&d["id"]) == draft_id)
+        .expect("updated draft");
+    assert_eq!(
+        data::s(&updated["quote_issue"]["number"]),
+        quote_num,
+        "quotation number must stay unchanged"
+    );
+    let rev2: u64 = data::s(&updated["revision"]).parse().unwrap();
+    assert!(rev2 > rev1, "revision must increment on edit ({rev1} -> {rev2})");
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_quotation_converts_with_the_same_prices() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    let stock_before = item_stock_total(&mut rt, "ITEM-A");
+
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "2".into();
+    rt.state.sales.lines[0].price = "77000".into();
+    type_into(&mut rt, "sale-qty-0", "2");
+    type_into(&mut rt, "sale-price-0", "77000");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "issue quotation"));
+
+    let draft_id = data::s(&rt.state.books.list("drafts")[0]["id"]);
+    for _ in 0..4 {
+        rt.frame(1.0 / 60.0);
+    }
+    click(&mut rt, &format!("draft-{draft_id}"));
+    click(&mut rt, "btn-Convert to sale");
+    assert!(rt.state.operation.open, "{}", blow(&rt, "convert opens fulfill dialog"));
+    click(&mut rt, "btn-Review");
+    assert!(rt.state.confirm.is_some(), "{}", blow(&rt, "convert review"));
+    click(&mut rt, "btn-Post");
+    assert!(!rt.state.operation.open, "{}", blow(&rt, "convert post"));
+
+    assert_eq!(item_stock_total(&mut rt, "ITEM-A"), stock_before - 2000);
+    let dumped = serde_json::to_string(&rt.state.books.list("sales")).unwrap_or_default();
+    assert!(dumped.contains("77000"), "converted sale must keep quotation price 77000: {dumped}");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_draft_delete_removes_it() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "1".into();
+    rt.state.sales.lines[0].price = "50000".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "50000");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open);
+
+    let count_before = rt.state.books.list("drafts").len();
+    let draft_id = data::s(&rt.state.books.list("drafts")[0]["id"]);
+    for _ in 0..4 {
+        rt.frame(1.0 / 60.0);
+    }
+    click(&mut rt, &format!("draft-{draft_id}"));
+    click(&mut rt, "btn-Delete");
+    assert!(rt.state.confirm.is_some(), "delete must ask confirmation");
+    click(&mut rt, "btn-Confirm delete");
+    assert!(rt.state.confirm.is_none());
+    assert_eq!(rt.state.books.list("drafts").len(), count_before - 1);
+    assert!(
+        rt.state.books.list("drafts").iter().all(|d| data::s(&d["id"]) != draft_id),
+        "deleted draft must be gone"
+    );
+    assert_no_danger(&rt);
 }

@@ -6,6 +6,7 @@ pub mod documents;
 pub mod glass;
 pub mod icons;
 pub mod kit;
+pub mod operation_dialog;
 pub mod ops;
 pub mod pickers;
 pub mod resources;
@@ -44,6 +45,7 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
         }
     };
 
+    operation_dialog::mount(s, &ui, &mut layer);
     confirm::mount(s, &ui, &mut layer);
     detail::mount(s, &ui, &mut layer);
     views::accounting::mount_ledger(s, &ui, &mut layer);
