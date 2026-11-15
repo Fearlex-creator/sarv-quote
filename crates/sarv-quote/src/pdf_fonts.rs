@@ -49,13 +49,13 @@ pub fn private(map: &pango::FontMap, scope: &str) -> Result<PrivateFonts> {
     builder.create(&dir)?;
     let guard = PrivateFonts(dir);
     let fonts: &[(&str, &[u8])] = &[
-        ("Vazirmatn-Regular.ttf", include_bytes!("../assets/fonts/Vazirmatn-Regular.ttf")),
-        ("Vazirmatn-Bold.ttf", include_bytes!("../assets/fonts/Vazirmatn-Bold.ttf")),
+        ("Vazirmatn-Regular.ttf", include_bytes!("../../../assets/fonts/Vazirmatn-Regular.ttf")),
+        ("Vazirmatn-Bold.ttf", include_bytes!("../../../assets/fonts/Vazirmatn-Bold.ttf")),
     ];
     for &(name, bytes) in fonts {
         write_new(&guard.0.join(name), bytes)?;
     }
-    write_new(&guard.0.join("OFL.txt"), include_bytes!("../assets/fonts/OFL.txt"))?;
+    write_new(&guard.0.join("OFL.txt"), include_bytes!("../../../assets/fonts/OFL.txt"))?;
     // Fontconfig owns the config; Pango takes its own reference when assigned.
     let config = unsafe { FcConfigCreate() };
     ensure!(!config.is_null(), "پیکربندی قلم PDF در دسترس نیست");

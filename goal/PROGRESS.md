@@ -206,3 +206,17 @@ Baseline: `cargo test -p sarv-desktop --bin sarv-desktop` (34 passed), `cargo te
   - `cargo clippy --quiet --workspace --all-targets -- -D warnings` -> exit 0
   - `cargo run -p sarv-desktop -- --version` -> `sarv-desktop 0.2.0 (d446086a)` (exit 0)
   - `cargo test -p sarv-desktop --bin sarv-desktop` -> exit 0 (`138 passed; 0 failed; 0 ignored`)
+
+## P31-T01: Release packaging (Plan 031)
+- **Changed**:
+  - `crates/sarv-desktop/src/main.rs`, `build.rs`, `Cargo.toml`, `Cargo.lock`, `assets/brand/sarv.ico`: Added `#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]`, generated `sarv.ico` (16/32/48/256; upscaled from 128x128 `sarv.png`), added Windows-only `winresource` icon embedding.
+  - `crates/sarv-quote/src/pdf_fonts.rs`, `crates/sarv-quote/assets`: Replaced symlink with direct `../../../assets/fonts/...` `include_bytes!` paths and removed symlink.
+  - `.github/workflows/release.yml` (replaced `release-windows.yml`): Added `verify` (reusing `ci.yml`), `version-check`, `windows` (with `windres`), `linux` (`ubuntu-22.04` + `package-linux.sh`), and `publish` (`SHA256SUMS.txt` + GitHub pre-release). Not run on GitHub yet.
+  - `scripts/package-linux.sh`, `scripts/install-desktop.sh`: Added Linux tarball packager and `--uninstall` support preserving `ir.sarv.accounting/` books dir, `TryExec`, Persian desktop entry metadata, and `file`-detected icon size.
+  - `docs/RELEASING.md`, `README.md`, `plans/README.md`: Created releasing guide (with commented-out Rune mirror `.cargo/config.toml` snippet), updated Install section, marked Plan `031` as `DONE`.
+- **Checks**:
+  - `test ! -e crates/sarv-quote/assets` -> exit 0
+  - `cargo build -p sarv-desktop` -> exit 0
+  - `cargo test -p sarv-quote --features pdf-export` -> exit 0 (all test binaries passed)
+  - `python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" .github/workflows/*.yml` -> exit 0
+  - `bash -n scripts/install-desktop.sh scripts/package-linux.sh` + temp `HOME` `install-desktop.sh` / `--uninstall` / `package-linux.sh` -> exit 0

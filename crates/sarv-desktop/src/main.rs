@@ -1,3 +1,5 @@
+#![cfg_attr(all(windows, not(debug_assertions)), windows_subsystem = "windows")]
+
 //! Sarv Desktop — native Rune + rune-kit UI for Sarv accounting.
 
 pub mod app;

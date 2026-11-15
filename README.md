@@ -20,12 +20,27 @@ See [AGENTS.md](AGENTS.md). Screen notes are in [the desktop guide](docs/FRONTEN
 
 ## Install
 
+### Download
+
+Pre-built bundles for Windows (`x64`) and Linux (`x64`) are published on the GitHub Releases page alongside `SHA256SUMS.txt`.
+
+Verify your download before extracting:
+
 ```bash
-cargo build --release -p sarv-desktop -p sarv-quote --bin sarv-agent
+sha256sum -c SHA256SUMS.txt --ignore-missing
+```
+
+- **Windows**: unzip `Sarv-<version>-windows-x64.zip` and run `Sarv.exe`.
+- **Linux**: extract `Sarv-<version>-linux-x64.tar.gz` and run `bash install.sh` to install for the current user (or `bash uninstall.sh` to remove the app while keeping your books). See `README.txt` inside the archive for the runtime cairo/pango/fontconfig packages.
+
+### Build from source
+
+```bash
+cargo build --release -p sarv-desktop
 bash scripts/install-desktop.sh
 ```
 
-Open **Sarv** from your application launcher. The script copies the desktop binary, the agent, and the icon into your user application directory. Run it again after rebuilding to update the installed app.
+Open **Sarv** from your application launcher. The script copies the desktop binary (and `sarv-agent`, if built) and the icon into your user application directory. Run it again after rebuilding to update the installed app, or run `bash scripts/install-desktop.sh --uninstall` to remove the launcher and binaries without touching your books.
 
 ```bash
 cargo test -p sarv-quote

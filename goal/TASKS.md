@@ -176,7 +176,7 @@ Ordered by Phase and dependency from `plans/README.md`.
   - Done when: `cargo test -p sarv-desktop --bin sarv-desktop && cargo run -p sarv-desktop -- --version`
 
 ### Plan 031: Release packaging
-- [ ] **P31-T01**: Add `windows_subsystem` attribute in `main.rs`, generate `assets/brand/sarv.ico`, add Windows `winresource` in `build.rs`/`Cargo.toml`, remove `crates/sarv-quote/assets` symlink & update `pdf_fonts.rs`, replace `release-windows.yml` with `release.yml`, create `scripts/package-linux.sh` & update `scripts/install-desktop.sh` (`--uninstall`), create `docs/RELEASING.md` & update `README.md`, update `plans/README.md`.
+- [x] **P31-T01**: Add `windows_subsystem` attribute in `main.rs`, generate `assets/brand/sarv.ico`, add Windows `winresource` in `build.rs`/`Cargo.toml`, remove `crates/sarv-quote/assets` symlink & update `pdf_fonts.rs`, replace `release-windows.yml` with `release.yml`, create `scripts/package-linux.sh` & update `scripts/install-desktop.sh` (`--uninstall`), create `docs/RELEASING.md` & update `README.md`, update `plans/README.md`.
   - Files: `crates/sarv-desktop/src/main.rs`, `crates/sarv-desktop/build.rs`, `crates/sarv-desktop/Cargo.toml`, `assets/brand/sarv.ico`, `crates/sarv-quote/src/pdf_fonts.rs`, `crates/sarv-quote/assets` (remove), `.github/workflows/release.yml`, `scripts/{package-linux.sh,install-desktop.sh}`, `docs/RELEASING.md`, `README.md`, `plans/README.md`
   - Done when: `test ! -e crates/sarv-quote/assets && cargo test -p sarv-quote --features pdf-export && python3 -c "import yaml,sys; [yaml.safe_load(open(f)) for f in sys.argv[1:]]" .github/workflows/*.yml`
 

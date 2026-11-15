@@ -19,6 +19,9 @@ serde_json.workspace = true
 sarv-quote = { path = "../sarv-quote", features = ["test-support"] }
 tempfile.workspace = true
 
+[target.'cfg(windows)'.build-dependencies]
+winresource = "0.1"
+
 [[bin]]
 name = "sarv-desktop"
 path = "src/main.rs"
