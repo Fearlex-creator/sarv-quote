@@ -181,14 +181,9 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                             ui.secret_field(s, "setup-confirm-pass", &ui.t("Repeat password"), revealed),
                         )),
                 )
-                .child(
-                    row()
-                        .w_full()
-                        .justify_end()
-                        .child(ui.btn(Btn::Ghost, toggle_label, None, |st| {
-                            st.setup.password_revealed = !st.setup.password_revealed;
-                        })),
-                );
+                .child(row().w_full().justify_end().child(ui.btn(Btn::Ghost, toggle_label, None, |st| {
+                    st.setup.password_revealed = !st.setup.password_revealed;
+                })));
         }
     }
     let form = form_card.build(&ui.k);

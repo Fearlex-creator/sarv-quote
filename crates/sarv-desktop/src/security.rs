@@ -170,11 +170,7 @@ pub fn verify_and_record(dir: &Path, password: &str, now: i64) -> Result<VerifyO
 
     rec.failed_attempts = rec.failed_attempts.saturating_add(1);
     let lockout_secs = lockout_duration_secs(rec.failed_attempts);
-    rec.locked_until_unix = if lockout_secs > 0 {
-        now.saturating_add(lockout_secs)
-    } else {
-        0
-    };
+    rec.locked_until_unix = if lockout_secs > 0 { now.saturating_add(lockout_secs) } else { 0 };
     save_record(dir, &rec)?;
 
     Ok(VerifyOutcome::WrongPassword {
@@ -490,7 +486,7 @@ fn encode_hex(bytes: &[u8]) -> String {
 }
 
 fn decode_hex(hex: &str) -> Result<Vec<u8>, String> {
-    if !hex.len().is_multiple_of(2) {
+    if hex.len() % 2 != 0 {
         return Err("Corrupt hex in lock file".to_string());
     }
     let mut out = Vec::with_capacity(hex.len() / 2);
@@ -519,10 +515,7 @@ mod tests {
     #[test]
     fn pbkdf2_hmac_sha256_matches_rfc_6070_vectors() {
         let dk = pbkdf2_hmac_sha256(b"password", b"salt", 2);
-        assert_eq!(
-            encode_hex(&dk),
-            "ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43"
-        );
+        assert_eq!(encode_hex(&dk), "ae4d0c95af6b46d32d0adff928f06dd02a303f8ef3c251dfd6e2d85a95474c43");
     }
 
     #[test]
@@ -659,10 +652,7 @@ mod tests {
             change_password(dir.path(), "pass1", "pass2", t, 1000).unwrap(),
             VerifyOutcome::Unlocked(dek)
         );
-        assert_eq!(
-            verify_and_record(dir.path(), "pass2", t).unwrap(),
-            VerifyOutcome::Unlocked(dek)
-        );
+        assert_eq!(verify_and_record(dir.path(), "pass2", t).unwrap(), VerifyOutcome::Unlocked(dek));
 
         assert_eq!(disable(dir.path(), "pass2", t).unwrap(), VerifyOutcome::Unlocked(dek));
         assert!(!is_enabled(dir.path()));

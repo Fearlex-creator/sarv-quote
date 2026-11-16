@@ -47,7 +47,8 @@ pub fn format_outcome_error(s: &State, outcome: VerifyOutcome) -> String {
                 s.fmt.tf("Too many failed attempts. Locked for {time}.", &[("time", &dur)])
             } else {
                 let rem = s.fmt.number(attempts_until_lock as i64);
-                s.fmt.tf("Incorrect password. {n} attempts remaining before temporary lock.", &[("n", &rem)])
+                s.fmt
+                    .tf("Incorrect password. {n} attempts remaining before temporary lock.", &[("n", &rem)])
             }
         }
     }
@@ -107,18 +108,12 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui) -> El {
         .child(ui.title(ui.t("Unlock Sarv")))
         .child(ui.muted(ui.t("Your books and documents are encrypted on this device.")));
 
-    let pass_field = ui.secret_field_submit(
-        s,
-        "lock-password",
-        &ui.t("Password"),
-        s.lock_state.revealed,
-        |st, tx| {
-            attempt_unlock(st);
-            if security::remaining_lockout_secs(&st.engine.dir, security::now_unix()) > 0 {
-                tx.wake_after(std::time::Duration::from_secs(1));
-            }
-        },
-    );
+    let pass_field = ui.secret_field_submit(s, "lock-password", &ui.t("Password"), s.lock_state.revealed, |st, tx| {
+        attempt_unlock(st);
+        if security::remaining_lockout_secs(&st.engine.dir, security::now_unix()) > 0 {
+            tx.wake_after(std::time::Duration::from_secs(1));
+        }
+    });
 
     let toggle_label = if s.lock_state.revealed { "Hide" } else { "Show" };
     let input_row = row()
@@ -135,11 +130,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui) -> El {
     if fails > 0 && remaining == 0 && fails < MAX_ATTEMPTS_BEFORE_LOCK {
         let mut dots = row().gap(6.0).center_y();
         for i in 0..MAX_ATTEMPTS_BEFORE_LOCK {
-            let color = if i < fails {
-                ui.k.c.danger.icon
-            } else {
-                ui.k.c.border_muted
-            };
+            let color = if i < fails { ui.k.c.danger.icon } else { ui.k.c.border_muted };
             dots = dots.child(el().size(8.0, 8.0).radius(4.0).fill(color));
         }
         let used = s.fmt.number(fails as i64);
@@ -179,9 +170,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui) -> El {
         );
     }
 
-    let unlock_btn = ui
-        .btn(Btn::Primary, "Unlock", Some(&icons::CHECK), attempt_unlock)
-        .w_full();
+    let unlock_btn = ui.btn(Btn::Primary, "Unlock", Some(&icons::CHECK), attempt_unlock).w_full();
 
     card_body = card_body.child(unlock_btn);
 

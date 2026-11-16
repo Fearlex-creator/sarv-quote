@@ -1743,7 +1743,10 @@ pub static FA: &[(&str, &str)] = &[
     ("Disable", "غیرفعال کردن"),
     ("Unlock Sarv", "باز کردن قفل سرو"),
     ("Unlock", "باز کردن قفل"),
-    ("Enter your password to open your books.", "برای باز کردن دفاتر، رمز عبور خود را وارد کنید."),
+    (
+        "Enter your password to open your books.",
+        "برای باز کردن دفاتر، رمز عبور خود را وارد کنید.",
+    ),
     ("Enter your password.", "رمز عبور خود را وارد کنید."),
     ("Password", "رمز عبور"),
     ("Current password", "رمز عبور فعلی"),
@@ -1753,9 +1756,18 @@ pub static FA: &[(&str, &str)] = &[
     ("Repeat password", "رمز عبور را دوباره وارد کنید"),
     ("Password must be at least 4 characters.", "رمز عبور باید حداقل ۴ نویسه باشد."),
     ("Passwords do not match.", "رمزهای عبور یکسان نیستند."),
-    ("Set a password to protect your books when Sarv opens.", "برای محافظت از دفاتر هنگام باز شدن سرو، رمز عبور تعیین کنید."),
-    ("Enter your current password and choose a new one.", "رمز عبور فعلی را وارد کنید و رمز جدیدی برگزینید."),
-    ("Enter your current password to remove the app lock.", "برای حذف قفل برنامه، رمز عبور فعلی را وارد کنید."),
+    (
+        "Set a password to protect your books when Sarv opens.",
+        "برای محافظت از دفاتر هنگام باز شدن سرو، رمز عبور تعیین کنید.",
+    ),
+    (
+        "Enter your current password and choose a new one.",
+        "رمز عبور فعلی را وارد کنید و رمز جدیدی برگزینید.",
+    ),
+    (
+        "Enter your current password to remove the app lock.",
+        "برای حذف قفل برنامه، رمز عبور فعلی را وارد کنید.",
+    ),
     ("App lock enabled", "قفل برنامه فعال شد"),
     ("Password updated", "رمز عبور به‌روزرسانی شد"),
     ("App lock disabled", "قفل برنامه غیرفعال شد"),
@@ -1764,8 +1776,14 @@ pub static FA: &[(&str, &str)] = &[
     ("{n} seconds", "{n} ثانیه"),
     ("{n} minutes", "{n} دقیقه"),
     ("{m} minutes and {s} seconds", "{m} دقیقه و {s} ثانیه"),
-    ("Too many failed attempts. Try again in {time}.", "تلاش‌های ناموفق بیش از حد مجاز است. {time} دیگر دوباره تلاش کنید."),
-    ("Too many failed attempts. Locked for {time}.", "تلاش‌های ناموفق بیش از حد مجاز است. برنامه برای {time} قفل شد."),
+    (
+        "Too many failed attempts. Try again in {time}.",
+        "تلاش‌های ناموفق بیش از حد مجاز است. {time} دیگر دوباره تلاش کنید.",
+    ),
+    (
+        "Too many failed attempts. Locked for {time}.",
+        "تلاش‌های ناموفق بیش از حد مجاز است. برنامه برای {time} قفل شد.",
+    ),
     (
         "Incorrect password. {n} attempts remaining before temporary lock.",
         "رمز عبور نادرست است. {n} تلاش تا قفل موقت باقی مانده است.",

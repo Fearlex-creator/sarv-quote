@@ -203,13 +203,14 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
                     open_lock_dialog(st, LockDialogMode::Disable);
                 }))
         } else {
-            row()
-                .gap(8.0)
-                .center_y()
-                .child(ui.badge(Tone::Info, ui.t("Off")))
-                .child(ui.btn(Btn::Primary, "Enable app lock", Some(&icons::LOCK), |st| {
+            row().gap(8.0).center_y().child(ui.badge(Tone::Info, ui.t("Off"))).child(ui.btn(
+                Btn::Primary,
+                "Enable app lock",
+                Some(&icons::LOCK),
+                |st| {
                     open_lock_dialog(st, LockDialogMode::Enable);
-                }))
+                },
+            ))
         };
         let security = ui.section(
             "security",
@@ -740,21 +741,9 @@ fn submit_lock_dialog(st: &mut State, mode: LockDialogMode) {
 
 fn mount_lock_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>, mode: LockDialogMode) {
     let (title_key, desc_key, action_key) = match mode {
-        LockDialogMode::Enable => (
-            "Enable app lock",
-            "Set a password to protect your books when Sarv opens.",
-            "Enable",
-        ),
-        LockDialogMode::Change => (
-            "Change password",
-            "Enter your current password and choose a new one.",
-            "Save",
-        ),
-        LockDialogMode::Disable => (
-            "Disable app lock",
-            "Enter your current password to remove the app lock.",
-            "Disable",
-        ),
+        LockDialogMode::Enable => ("Enable app lock", "Set a password to protect your books when Sarv opens.", "Enable"),
+        LockDialogMode::Change => ("Change password", "Enter your current password and choose a new one.", "Save"),
+        LockDialogMode::Disable => ("Disable app lock", "Enter your current password to remove the app lock.", "Disable"),
     };
 
     let revealed = s.settings.lock_revealed;
@@ -777,14 +766,9 @@ fn mount_lock_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>, mode: LockDialogMo
             ));
     }
     let toggle_label = if revealed { "Hide" } else { "Show" };
-    form = form.child(
-        row()
-            .w_full()
-            .justify_end()
-            .child(ui.btn(Btn::Ghost, toggle_label, None, |st| {
-                st.settings.lock_revealed = !st.settings.lock_revealed;
-            })),
-    );
+    form = form.child(row().w_full().justify_end().child(ui.btn(Btn::Ghost, toggle_label, None, |st| {
+        st.settings.lock_revealed = !st.settings.lock_revealed;
+    })));
 
     if !s.settings.lock_error.is_empty() {
         let sc = &ui.k.c.danger;

@@ -102,17 +102,10 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
                     ));
                 }
                 "people" => {
-                    rows.push(custom_nav_row(
-                        ui,
-                        "nav-crm",
-                        "Customer relations",
-                        &icons::CONTACTS,
-                        false,
-                        |st| {
-                            crate::ui::views::contacts::ensure(st);
-                            st.nav(Page::Contacts);
-                        },
-                    ));
+                    rows.push(custom_nav_row(ui, "nav-crm", "Customer relations", &icons::CONTACTS, false, |st| {
+                        crate::ui::views::contacts::ensure(st);
+                        st.nav(Page::Contacts);
+                    }));
                 }
                 "books" => {
                     rows.push(custom_nav_row(
@@ -734,10 +727,7 @@ fn cheque_bucket(s: &State, status_match: &str) -> (i128, usize) {
     let mut count = 0usize;
     for entry in entries {
         if crate::data::s(&entry["status"]) == status_match {
-            let amt = crate::data::s(&entry["cheque"]["amount"])
-                .trim()
-                .parse::<i128>()
-                .unwrap_or(0);
+            let amt = crate::data::s(&entry["cheque"]["amount"]).trim().parse::<i128>().unwrap_or(0);
             sum = sum.saturating_add(amt);
             count += 1;
         }
@@ -745,15 +735,7 @@ fn cheque_bucket(s: &State, status_match: &str) -> (i128, usize) {
     (sum, count)
 }
 
-fn summary_tile(
-    ui: &Ui,
-    key: &str,
-    title_key: &str,
-    subtitle: String,
-    amount_rials: &str,
-    glyph: &'static rune::Icon,
-    tone: Tone,
-) -> El {
+fn summary_tile(ui: &Ui, key: &str, title_key: &str, subtitle: String, amount_rials: &str, glyph: &'static rune::Icon, tone: Tone) -> El {
     let sc_color = ui.tone_accent(tone);
     let icon_badge = row()
         .size(34.0, 34.0)
@@ -762,19 +744,14 @@ fn summary_tile(
         .fill(ui.k.c.layer_02)
         .child(icon(glyph, 17.0).color(sc_color));
 
-    let header = row()
-        .w_full()
-        .gap(10.0)
-        .center_y()
-        .child(icon_badge)
-        .child(
-            col()
-                .gap(2.0)
-                .grow(1.0)
-                .min_w(0.0)
-                .child(ui.body(ui.t(title_key)))
-                .child(ui.muted(subtitle)),
-        );
+    let header = row().w_full().gap(10.0).center_y().child(icon_badge).child(
+        col()
+            .gap(2.0)
+            .grow(1.0)
+            .min_w(0.0)
+            .child(ui.body(ui.t(title_key)))
+            .child(ui.muted(subtitle)),
+    );
 
     let value = rune::text(ui.f.money(amount_rials))
         .font(ui.k.ty.body_medium)
