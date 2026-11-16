@@ -453,3 +453,51 @@ fn test_settings_shows_the_version() {
     assert!(rt.find("about-version").is_some(), "Settings must show about-version");
     assert_no_danger(&rt);
 }
+
+#[test]
+fn test_app_lock_ui_flow() {
+    let mut rt = make_test_runtime();
+    assert!(!rt.state.locked);
+    click(&mut rt, Page::Settings.key());
+    assert!(rt.find("settings-app-lock").is_some());
+
+    // Open Enable dialog, test mismatch validation, then enable
+    click(&mut rt, "btn-Enable app lock");
+    type_into(&mut rt, "sec-new-pass", "my-secret");
+    type_into(&mut rt, "sec-confirm-pass", "different");
+    click(&mut rt, "btn-Enable");
+    assert!(rt.find("settings-lock-error").is_some(), "mismatch must show error");
+    assert!(!rt.state.app_lock_enabled());
+
+    type_into(&mut rt, "sec-confirm-pass", "my-secret");
+    click(&mut rt, "btn-Enable");
+    assert!(rt.state.app_lock_enabled());
+
+    // Lock now: sidebar and books disappear, lock screen appears, and sqlite/data is sealed on disk
+    click(&mut rt, "btn-Lock now");
+    assert!(rt.state.locked);
+    assert!(rt.find("lock-screen").is_some());
+    assert!(rt.find(Page::Overview.key()).is_none());
+    let dir = rt.state.engine.dir.clone();
+    assert!(!dir.join("sarv.sqlite3").exists(), "plaintext sqlite must be sealed when locked");
+    assert!(dir.join("sarv.sqlite3.sarvlock").is_file(), "sealed sqlite must exist when locked");
+
+    // Reopening the same books dir starts locked without loading books
+    let reopened = State::with_engine(data::Engine::with_dir(&dir), true);
+    assert!(reopened.locked, "reopened app must start locked");
+    assert!(!reopened.books.loaded, "books must not be loaded while locked");
+
+    // 3 wrong attempts trigger temporary lockout
+    for attempt in ["bad1", "bad2", "bad3"] {
+        type_into(&mut rt, "lock-password", attempt);
+        click(&mut rt, "btn-Unlock");
+        assert!(rt.state.locked);
+        assert!(rt.find("lock-error").is_some());
+    }
+
+    // Even the right password is rejected while locked out
+    type_into(&mut rt, "lock-password", "my-secret");
+    click(&mut rt, "btn-Unlock");
+    assert!(rt.state.locked, "must stay locked during temporary lockout");
+    assert!(rt.find("lock-error").is_some());
+}

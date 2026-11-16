@@ -2,10 +2,12 @@
 
 use chrono::Datelike;
 use rune::{Cx, El, col, row};
+use rune_kit::Switch;
 use serde_json::json;
 
 use crate::app::{Page, State, Tone};
 use crate::i18n::{CalendarKind, Lang};
+use crate::security;
 use crate::ui::glass::{Btn, Ui};
 use crate::ui::icons;
 
@@ -81,6 +83,8 @@ pub struct SetupState {
     pub step: usize,
     pub adding_company: bool,
     pub previous_company_id: String,
+    pub protect_with_password: bool,
+    pub password_revealed: bool,
 }
 
 /// Enter setup in "add another company" mode, skipping the welcome step.
@@ -92,6 +96,7 @@ pub fn start_add_company(st: &mut State) {
         step: 1,
         adding_company: true,
         previous_company_id,
+        ..Default::default()
     };
     st.company_switch_open = false;
 }
@@ -116,7 +121,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     }
 
     let fiscal = fiscal_period(s.fmt.calendar, chrono::Local::now().date_naive());
-    let form = ui
+    let mut form_card = ui
         .kit_card()
         .title(ui.t("Set up company"), Some(&icons::BUILDING))
         .description(ui.t("Give your business a home in Sarv."))
@@ -130,8 +135,63 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .child(ui.labeled("End date", ui.field(s, "setup-end", &s.fmt.date(&fiscal.2)))),
         )
         .child(language_row(s, ui))
-        .child(theme_row(s, ui))
-        .build(&ui.k);
+        .child(theme_row(s, ui));
+
+    if !s.setup.adding_company && !s.app_lock_enabled() {
+        let lock_switch = Switch::new(s.setup.protect_with_password)
+            .label(ui.t("Protect with a password"))
+            .hide_label()
+            .on_toggle(|st: &mut State| {
+                st.setup.protect_with_password = !st.setup.protect_with_password;
+                if !st.setup.protect_with_password {
+                    st.forms.clear(&["setup-pass", "setup-confirm-pass"]);
+                }
+            })
+            .build(&ui.k)
+            .key("setup-lock-switch");
+        form_card = form_card.child(
+            row()
+                .w_full()
+                .gap(16.0)
+                .center_y()
+                .child(
+                    col()
+                        .gap(2.0)
+                        .grow(1.0)
+                        .min_w(0.0)
+                        .child(ui.body(ui.t("Protect with a password")))
+                        .child(ui.muted(ui.t("Encrypt your books and documents on this device"))),
+                )
+                .child(lock_switch),
+        );
+        if s.setup.protect_with_password {
+            let revealed = s.setup.password_revealed;
+            let toggle_label = if revealed { "Hide" } else { "Show" };
+            form_card = form_card
+                .child(
+                    row()
+                        .w_full()
+                        .gap(12.0)
+                        .child(ui.labeled(
+                            "New password",
+                            ui.secret_field(s, "setup-pass", &ui.t("At least 4 characters"), revealed),
+                        ))
+                        .child(ui.labeled(
+                            "Confirm password",
+                            ui.secret_field(s, "setup-confirm-pass", &ui.t("Repeat password"), revealed),
+                        )),
+                )
+                .child(
+                    row()
+                        .w_full()
+                        .justify_end()
+                        .child(ui.btn(Btn::Ghost, toggle_label, None, |st| {
+                            st.setup.password_revealed = !st.setup.password_revealed;
+                        })),
+                );
+        }
+    }
+    let form = form_card.build(&ui.k);
 
     let create = ui.btn(Btn::Primary, "Create a company and fiscal period", Some(&icons::CHECK), |st| {
         let name = st.forms.get("setup-name").trim().to_string();
@@ -139,6 +199,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             st.toast(Tone::Warning, st.fmt.t("Enter the business name."));
             return;
         }
+        let setup_pass = if st.setup.protect_with_password && !st.setup.adding_company && !st.app_lock_enabled() {
+            let pass = st.forms.get("setup-pass");
+            let confirm = st.forms.get("setup-confirm-pass");
+            if let Err(e) = security::validate_password(&pass) {
+                st.toast(Tone::Warning, st.fmt.t(&e));
+                return;
+            }
+            if pass != confirm {
+                st.toast(Tone::Warning, st.fmt.t("Passwords do not match."));
+                return;
+            }
+            Some(pass)
+        } else {
+            None
+        };
         let defaults = fiscal_period(st.fmt.calendar, chrono::Local::now().date_naive());
         let fiscal = {
             let f = st.forms.get("setup-fiscal").trim().to_string();
@@ -179,6 +254,16 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             Some("Create a company and fiscal period"),
         );
         if let Ok(v) = res {
+            if let Some(pass) = setup_pass {
+                match security::set_password(&st.engine.dir, &pass, security::DEFAULT_ITERATIONS) {
+                    Ok(dek) => {
+                        st.active_dek = Some(dek);
+                        st.forms.clear(&["setup-pass", "setup-confirm-pass"]);
+                        st.setup.protect_with_password = false;
+                    }
+                    Err(e) => st.toast(Tone::Danger, e),
+                }
+            }
             if let Some(id) = v["company_id"].as_str() {
                 st.select_company(id);
                 let _ = st.save_preferences();
@@ -217,6 +302,10 @@ fn welcome(s: &State, ui: &Ui) -> El {
         ("Company", "Give your business a home in Sarv."),
         ("Fiscal period", "Choose the dates that fit your financial year."),
         ("Opening balances", "Start fresh or bring in your existing balances."),
+        (
+            "Security (optional)",
+            "Lock the app and encrypt your books and documents with a password.",
+        ),
     ];
     let mut list = col().gap(14.0);
     for (title, detail) in steps {

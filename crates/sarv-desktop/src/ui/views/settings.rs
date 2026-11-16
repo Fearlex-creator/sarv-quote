@@ -1,13 +1,21 @@
 //! Settings — rune-kit Switch, SegmentedControl, Field, Card rows (cursed-settings idiom).
 
-use rune::{Cx, El, col, row, text};
+use rune::{Cx, El, col, icon, row, text};
 use rune_kit::{Keybind, Switch};
 use serde_json::json;
 
 use crate::app::{State, Tone};
 use crate::i18n::{CalendarKind, Lang, Unit};
+use crate::security::{self, VerifyOutcome};
 use crate::ui::glass::{Btn, DIALOG_MD, DIALOG_SM, Ui};
 use crate::ui::icons;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum LockDialogMode {
+    Enable,
+    Change,
+    Disable,
+}
 
 #[derive(Default)]
 pub struct SettingsState {
@@ -22,6 +30,9 @@ pub struct SettingsState {
     pub restore_note: String,
     pub generation_note: String,
     pub business_snapshot: String,
+    pub lock_dialog: Option<LockDialogMode>,
+    pub lock_error: String,
+    pub lock_revealed: bool,
 }
 
 fn setting_row(ui: &Ui, key: &str, label: &str, detail: &str, control: El) -> El {
@@ -176,6 +187,45 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             ),
         );
 
+        let lock_enabled = s.app_lock_enabled();
+        let lock_controls = if lock_enabled {
+            row()
+                .gap(8.0)
+                .center_y()
+                .child(ui.badge(Tone::Success, ui.t("Enabled")))
+                .child(ui.btn(Btn::Glass, "Lock now", Some(&icons::LOCK), |st| {
+                    st.lock_app();
+                }))
+                .child(ui.btn(Btn::Glass, "Change password", None, |st| {
+                    open_lock_dialog(st, LockDialogMode::Change);
+                }))
+                .child(ui.btn(Btn::Ghost, "Disable", None, |st| {
+                    open_lock_dialog(st, LockDialogMode::Disable);
+                }))
+        } else {
+            row()
+                .gap(8.0)
+                .center_y()
+                .child(ui.badge(Tone::Info, ui.t("Off")))
+                .child(ui.btn(Btn::Primary, "Enable app lock", Some(&icons::LOCK), |st| {
+                    open_lock_dialog(st, LockDialogMode::Enable);
+                }))
+        };
+        let security = ui.section(
+            "security",
+            &ui.t("Security"),
+            ui.panel_rows(
+                "security-card",
+                vec![setting_row(
+                    ui,
+                    "settings-app-lock",
+                    &ui.t("App lock"),
+                    &ui.t("Require a password and encrypt your books and documents on disk"),
+                    lock_controls,
+                )],
+            ),
+        );
+
         let company = s.books.company_name();
         let company_label = if company.is_empty() { ui.t("Your business") } else { company };
         let business = ui.section(
@@ -259,6 +309,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .child(tab_bar)
             .child(appearance)
             .child(features)
+            .child(security)
             .child(business)
             .child(about);
         if !s.settings.law_notice.is_empty() {
@@ -295,6 +346,9 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     }
     if s.settings.law_open {
         mount_law_data(s, ui, layer);
+    }
+    if let Some(mode) = s.settings.lock_dialog {
+        mount_lock_dialog(s, ui, layer, mode);
     }
 
     ui.page(
@@ -605,5 +659,178 @@ fn mount_law_data(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         body,
         vec![ui.btn(Btn::Primary, "Close", None, |st| st.settings.law_open = false)],
         |st| st.settings.law_open = false,
+    );
+}
+
+fn open_lock_dialog(st: &mut State, mode: LockDialogMode) {
+    st.settings.lock_dialog = Some(mode);
+    st.settings.lock_error.clear();
+    st.settings.lock_revealed = false;
+    st.forms.clear(&["sec-cur-pass", "sec-new-pass", "sec-confirm-pass"]);
+}
+
+fn close_lock_dialog(st: &mut State) {
+    st.settings.lock_dialog = None;
+    st.settings.lock_error.clear();
+    st.settings.lock_revealed = false;
+    st.forms.clear(&["sec-cur-pass", "sec-new-pass", "sec-confirm-pass"]);
+}
+
+fn submit_lock_dialog(st: &mut State, mode: LockDialogMode) {
+    let cur = st.forms.get("sec-cur-pass");
+    let new = st.forms.get("sec-new-pass");
+    let confirm = st.forms.get("sec-confirm-pass");
+    let now = security::now_unix();
+
+    match mode {
+        LockDialogMode::Enable => {
+            if let Err(e) = security::validate_password(&new) {
+                st.settings.lock_error = st.fmt.t(&e);
+                return;
+            }
+            if new != confirm {
+                st.settings.lock_error = st.fmt.t("Passwords do not match.");
+                return;
+            }
+            match security::set_password(&st.engine.dir, &new, security::DEFAULT_ITERATIONS) {
+                Ok(dek) => {
+                    st.active_dek = Some(dek);
+                    close_lock_dialog(st);
+                    st.toast(Tone::Success, st.fmt.t("App lock enabled"));
+                }
+                Err(e) => st.settings.lock_error = e,
+            }
+        }
+        LockDialogMode::Change => {
+            if let Err(e) = security::validate_password(&new) {
+                st.settings.lock_error = st.fmt.t(&e);
+                return;
+            }
+            if new != confirm {
+                st.settings.lock_error = st.fmt.t("Passwords do not match.");
+                return;
+            }
+            match security::change_password(&st.engine.dir, &cur, &new, now, security::DEFAULT_ITERATIONS) {
+                Ok(VerifyOutcome::Unlocked(dek)) => {
+                    st.active_dek = Some(dek);
+                    close_lock_dialog(st);
+                    st.toast(Tone::Success, st.fmt.t("Password updated"));
+                }
+                Ok(outcome) => {
+                    st.forms.clear(&["sec-cur-pass"]);
+                    st.settings.lock_error = crate::ui::views::lock::format_outcome_error(st, outcome);
+                }
+                Err(e) => st.settings.lock_error = e,
+            }
+        }
+        LockDialogMode::Disable => match security::disable(&st.engine.dir, &cur, now) {
+            Ok(VerifyOutcome::Unlocked(_)) => {
+                st.active_dek = None;
+                close_lock_dialog(st);
+                st.toast(Tone::Success, st.fmt.t("App lock disabled"));
+            }
+            Ok(outcome) => {
+                st.forms.clear(&["sec-cur-pass"]);
+                st.settings.lock_error = crate::ui::views::lock::format_outcome_error(st, outcome);
+            }
+            Err(e) => st.settings.lock_error = e,
+        },
+    }
+}
+
+fn mount_lock_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>, mode: LockDialogMode) {
+    let (title_key, desc_key, action_key) = match mode {
+        LockDialogMode::Enable => (
+            "Enable app lock",
+            "Set a password to protect your books when Sarv opens.",
+            "Enable",
+        ),
+        LockDialogMode::Change => (
+            "Change password",
+            "Enter your current password and choose a new one.",
+            "Save",
+        ),
+        LockDialogMode::Disable => (
+            "Disable app lock",
+            "Enter your current password to remove the app lock.",
+            "Disable",
+        ),
+    };
+
+    let revealed = s.settings.lock_revealed;
+    let mut form = col().w_full().gap(12.0);
+    if matches!(mode, LockDialogMode::Change | LockDialogMode::Disable) {
+        form = form.child(ui.labeled(
+            "Current password",
+            ui.secret_field(s, "sec-cur-pass", &ui.t("Current password"), revealed),
+        ));
+    }
+    if matches!(mode, LockDialogMode::Enable | LockDialogMode::Change) {
+        form = form
+            .child(ui.labeled(
+                "New password",
+                ui.secret_field(s, "sec-new-pass", &ui.t("At least 4 characters"), revealed),
+            ))
+            .child(ui.labeled(
+                "Confirm password",
+                ui.secret_field(s, "sec-confirm-pass", &ui.t("Repeat password"), revealed),
+            ));
+    }
+    let toggle_label = if revealed { "Hide" } else { "Show" };
+    form = form.child(
+        row()
+            .w_full()
+            .justify_end()
+            .child(ui.btn(Btn::Ghost, toggle_label, None, |st| {
+                st.settings.lock_revealed = !st.settings.lock_revealed;
+            })),
+    );
+
+    if !s.settings.lock_error.is_empty() {
+        let sc = &ui.k.c.danger;
+        form = form.child(
+            row()
+                .key("settings-lock-error")
+                .w_full()
+                .gap(8.0)
+                .px(12.0)
+                .py(10.0)
+                .center_y()
+                .radius(ui.k.radius.md)
+                .fill(sc.bg)
+                .border(1.0, sc.border)
+                .child(icon(&icons::WARNING, 16.0).color(sc.icon))
+                .child(
+                    text(s.settings.lock_error.clone())
+                        .font(ui.k.ty.caption())
+                        .color(sc.fg)
+                        .grow(1.0)
+                        .min_w(0.0),
+                ),
+        );
+    }
+
+    let action_kind = if mode == LockDialogMode::Disable {
+        Btn::Danger
+    } else {
+        Btn::Primary
+    };
+    let mut portals = Vec::new();
+    ui.form_dialog(
+        layer,
+        &mut portals,
+        "app-lock-dialog",
+        &ui.t(title_key),
+        &ui.t(desc_key),
+        true,
+        DIALOG_SM,
+        form,
+        vec![
+            ui.btn(Btn::Ghost, "Cancel", None, close_lock_dialog),
+            ui.btn(action_kind, action_key, Some(&icons::CHECK), move |st| {
+                submit_lock_dialog(st, mode);
+            }),
+        ],
+        close_lock_dialog,
     );
 }

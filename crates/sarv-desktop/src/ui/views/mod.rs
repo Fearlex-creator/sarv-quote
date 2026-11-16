@@ -2,6 +2,7 @@ pub mod accounting;
 pub mod banking;
 pub mod contacts;
 pub mod inventory;
+pub mod lock;
 pub mod overview;
 pub mod payments;
 pub mod pos;

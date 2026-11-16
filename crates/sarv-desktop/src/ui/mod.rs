@@ -22,6 +22,10 @@ use crate::ui::glass::Ui;
 pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     let ui = Ui::new(s);
     let dir = if s.lang().is_rtl() { Direction::Rtl } else { Direction::Ltr };
+    if s.locked {
+        let window = views::lock::view(s, cx, &ui);
+        return rune_kit::root(window, Vec::new()).key("root").dir(dir).fill(ui.k.c.page);
+    }
     let mut layer = Vec::new();
 
     let content = if s.books.load_failed() {
@@ -52,6 +56,7 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     views::accounting::mount_period_add_dialog(s, &ui, &mut layer);
     shell::mount_period_switcher(s, &ui, &mut layer);
     shell::mount_company_switcher(s, &ui, &mut layer);
+    shell::mount_startup_summary(s, &ui, &mut layer);
     shell::mount_palette(s, &ui, &mut layer);
     shell::mount_toasts(s, &ui, &mut layer);
 

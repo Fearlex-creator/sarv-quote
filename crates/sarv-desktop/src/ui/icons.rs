@@ -60,4 +60,5 @@ icons! {
     FILTER = r#"<path d="M4 6h16M7 12h10M10 18h4"/>"#;
     INFO = r#"<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8v.1"/>"#;
     WARNING = r#"<path d="M12 4 21 19.5H3z"/><path d="M12 10v4.5M12 17.2v.1"/>"#;
+    LOCK = r#"<rect x="4.5" y="10.5" width="15" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1"/>"#;
 }

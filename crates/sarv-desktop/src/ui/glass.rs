@@ -215,6 +215,40 @@ impl Ui {
             .w_full()
     }
 
+    pub fn secret_field(&self, s: &State, key: &str, placeholder: &str, revealed: bool) -> El {
+        let k = key.to_string();
+        let edit = s.forms.view(key);
+        TextInput::new(&edit)
+            .secure()
+            .revealed(revealed)
+            .placeholder(placeholder.to_string())
+            .on_edit(move |st: &mut State| st.forms.edit(&k))
+            .build(&self.k)
+            .key(format!("field-{key}"))
+            .w_full()
+    }
+
+    pub fn secret_field_submit(
+        &self,
+        s: &State,
+        key: &str,
+        placeholder: &str,
+        revealed: bool,
+        on_submit: impl Fn(&mut State, &mut rune::Tx) + 'static,
+    ) -> El {
+        let k = key.to_string();
+        let edit = s.forms.view(key);
+        TextInput::new(&edit)
+            .secure()
+            .revealed(revealed)
+            .placeholder(placeholder.to_string())
+            .on_edit(move |st: &mut State| st.forms.edit(&k))
+            .on_submit(on_submit)
+            .build(&self.k)
+            .key(format!("field-{key}"))
+            .w_full()
+    }
+
     pub fn money_field(&self, s: &State, key: &str) -> El {
         row()
             .w_full()

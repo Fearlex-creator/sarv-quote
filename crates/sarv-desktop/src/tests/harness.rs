@@ -10,6 +10,7 @@ pub fn make_test_runtime() -> Runtime<State> {
         scale: 2.0,
     };
     let mut rt = Runtime::new(State::with_engine(data::Engine::demo(), true), ui::root_view, (1180.0, 780.0), env);
+    rt.state.startup_summary_open = false;
     rt.frame(0.0);
     rt
 }

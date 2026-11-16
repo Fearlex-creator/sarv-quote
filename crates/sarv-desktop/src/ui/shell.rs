@@ -20,13 +20,30 @@ fn ms(n: u64) -> Duration {
 }
 
 fn nav_row(ui: &Ui, page: Page, selected: bool) -> El {
-    SidebarRow::new(ui.t(page.label()))
+    SidebarRow::new(ui.t(page.sidebar_label()))
         .icon(page.icon())
         .height(32.0)
         .selected(selected)
         .on_select(move |st: &mut State, _| st.nav(page))
         .build(&ui.k)
         .key(page.key())
+}
+
+fn custom_nav_row(
+    ui: &Ui,
+    key: &str,
+    label_key: &str,
+    glyph: &'static rune::Icon,
+    selected: bool,
+    on_select: impl Fn(&mut State) + 'static,
+) -> El {
+    SidebarRow::new(ui.t(label_key))
+        .icon(glyph)
+        .height(32.0)
+        .selected(selected)
+        .on_select(move |st: &mut State, _| on_select(st))
+        .build(&ui.k)
+        .key(key.to_string())
 }
 
 fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
@@ -63,12 +80,93 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
             );
 
         for (id, title, pages) in Page::GROUPS {
-            let rows: Vec<_> = pages
+            let mut rows: Vec<_> = pages
                 .iter()
                 .copied()
                 .filter(|page| page.nav_pages(s.show_pos))
                 .map(|page| nav_row(ui, page, s.page == page))
                 .collect();
+            match id {
+                "daily" => {
+                    rows.push(custom_nav_row(
+                        ui,
+                        "nav-cheque-search",
+                        "Cheque search",
+                        &icons::CHEQUE,
+                        s.page == Page::Payments && s.payments.tab_idx == 1,
+                        |st| {
+                            st.payments.tab_idx = 1;
+                            crate::ui::views::payments::ensure(st);
+                            st.nav(Page::Payments);
+                        },
+                    ));
+                }
+                "people" => {
+                    rows.push(custom_nav_row(
+                        ui,
+                        "nav-crm",
+                        "Customer relations",
+                        &icons::CONTACTS,
+                        false,
+                        |st| {
+                            crate::ui::views::contacts::ensure(st);
+                            st.nav(Page::Contacts);
+                        },
+                    ));
+                }
+                "books" => {
+                    rows.push(custom_nav_row(
+                        ui,
+                        "nav-account-card",
+                        "Account card",
+                        &icons::ACCOUNTING,
+                        s.page == Page::Accounting && s.accounting.tab_idx == 1,
+                        |st| {
+                            st.accounting.tab_idx = 1;
+                            crate::ui::views::accounting::ensure(st);
+                            st.nav(Page::Accounting);
+                        },
+                    ));
+                    rows.push(custom_nav_row(
+                        ui,
+                        "nav-account-statement",
+                        "Account statement",
+                        &icons::REPORTS,
+                        false,
+                        |st| {
+                            st.reports.tab_idx = 1;
+                            crate::ui::views::reports::ensure(st);
+                            st.nav(Page::Reports);
+                        },
+                    ));
+                    rows.push(custom_nav_row(
+                        ui,
+                        "nav-trial-balance",
+                        "General trial balance",
+                        &icons::REPORTS,
+                        s.page == Page::Reports && s.reports.tab_idx == 1,
+                        |st| {
+                            st.reports.tab_idx = 1;
+                            crate::ui::views::reports::ensure(st);
+                            st.nav(Page::Reports);
+                        },
+                    ));
+                }
+                "workspace" => {
+                    rows.push(custom_nav_row(
+                        ui,
+                        "nav-security",
+                        "Information security",
+                        &icons::SHIELD,
+                        false,
+                        |st| {
+                            st.settings.tab_idx = 0;
+                            st.nav(Page::Settings);
+                        },
+                    ));
+                }
+                _ => {}
+            }
             if rows.is_empty() {
                 continue;
             }
@@ -186,7 +284,17 @@ fn build_toolbar(s: &State, ui: &Ui) -> Toolbar {
     for rail in page_rail(s, ui) {
         bar = bar.leading(rail);
     }
-    bar = bar.trailing(search).trailing(refresh).trailing(synced);
+    bar = bar.trailing(search).trailing(refresh);
+    if s.app_lock_enabled() {
+        let lock_btn = IconButton::new(&icons::LOCK)
+            .variant(IconButtonVariant::GhostMuted)
+            .label(ui.t("Lock app"))
+            .on_press(|st: &mut State| st.lock_app())
+            .build(k)
+            .key("toolbar-lock-app");
+        bar = bar.trailing(lock_btn);
+    }
+    bar = bar.trailing(synced);
     let period = s.books.period_name();
     if !period.is_empty() {
         let (start, end) = s.books.range();
@@ -618,4 +726,171 @@ pub fn segmented(
         .on_pick(move |st: &mut State, i, _| on_pick(st, i))
         .build(&ui.k)
         .key(id.to_string())
+}
+
+fn cheque_bucket(s: &State, status_match: &str) -> (i128, usize) {
+    let entries = s.books.workspace["cheques"].as_array().cloned().unwrap_or_default();
+    let mut sum = 0i128;
+    let mut count = 0usize;
+    for entry in entries {
+        if crate::data::s(&entry["status"]) == status_match {
+            let amt = crate::data::s(&entry["cheque"]["amount"])
+                .trim()
+                .parse::<i128>()
+                .unwrap_or(0);
+            sum = sum.saturating_add(amt);
+            count += 1;
+        }
+    }
+    (sum, count)
+}
+
+fn summary_tile(
+    ui: &Ui,
+    key: &str,
+    title_key: &str,
+    subtitle: String,
+    amount_rials: &str,
+    glyph: &'static rune::Icon,
+    tone: Tone,
+) -> El {
+    let sc_color = ui.tone_accent(tone);
+    let icon_badge = row()
+        .size(34.0, 34.0)
+        .center()
+        .radius(ui.k.radius.md)
+        .fill(ui.k.c.layer_02)
+        .child(icon(glyph, 17.0).color(sc_color));
+
+    let header = row()
+        .w_full()
+        .gap(10.0)
+        .center_y()
+        .child(icon_badge)
+        .child(
+            col()
+                .gap(2.0)
+                .grow(1.0)
+                .min_w(0.0)
+                .child(ui.body(ui.t(title_key)))
+                .child(ui.muted(subtitle)),
+        );
+
+    let value = rune::text(ui.f.money(amount_rials))
+        .font(ui.k.ty.body_medium)
+        .color(ui.k.c.text_base);
+
+    ui.k.elevate(
+        col()
+            .key(key.to_string())
+            .grow(1.0)
+            .min_w(0.0)
+            .padding(14.0)
+            .gap(10.0)
+            .radius(ui.k.radius.md)
+            .fill(ui.k.c.layer_01)
+            .border(1.0, ui.k.c.border_muted)
+            .child(header)
+            .child(value),
+        &ui.k.elevation.raised,
+    )
+}
+
+pub fn mount_startup_summary(s: &State, ui: &Ui, layer: &mut Vec<El>) {
+    if !s.startup_summary_open
+        || s.locked
+        || s.books.load_failed()
+        || !s.books.has_company()
+        || !s.books.initialized()
+        || s.setup.adding_company
+    {
+        return;
+    }
+
+    let cash_raw = s.books.position("cash");
+    let (in_hand_sum, in_hand_cnt) = cheque_bucket(s, "in_hand");
+    let (in_col_sum, in_col_cnt) = cheque_bucket(s, "in_collection");
+    let (payable_sum, payable_cnt) = cheque_bucket(s, "issued");
+
+    let count_text = |n: usize| -> String {
+        if n == 0 {
+            ui.t("No cheques")
+        } else {
+            let num = s.fmt.number(n as i64);
+            s.fmt.tf("{n} cheques", &[("n", &num)])
+        }
+    };
+
+    let row1 = row()
+        .w_full()
+        .gap(12.0)
+        .child(summary_tile(
+            ui,
+            "summary-cash",
+            "Cash balance",
+            ui.t("Cash on hand"),
+            &cash_raw,
+            &icons::WALLET,
+            Tone::Success,
+        ))
+        .child(summary_tile(
+            ui,
+            "summary-cheques-in-hand",
+            "Receivable cheques (on hand)",
+            count_text(in_hand_cnt),
+            &in_hand_sum.to_string(),
+            &icons::CHEQUE,
+            Tone::Info,
+        ));
+
+    let row2 = row()
+        .w_full()
+        .gap(12.0)
+        .child(summary_tile(
+            ui,
+            "summary-cheques-in-collection",
+            "Cheques in collection",
+            count_text(in_col_cnt),
+            &in_col_sum.to_string(),
+            &icons::BANKING,
+            Tone::Warning,
+        ))
+        .child(summary_tile(
+            ui,
+            "summary-cheques-payable",
+            "Payable cheques",
+            count_text(payable_cnt),
+            &payable_sum.to_string(),
+            &icons::PAYMENTS,
+            Tone::Danger,
+        ));
+
+    let company = s.books.company_name();
+    let company_label = if company.is_empty() { ui.t("Your business") } else { company };
+    let subtitle = format!("{company_label} · {}", s.fmt.date(&crate::data::today()));
+
+    let body = col().w_full().gap(12.0).child(row1).child(row2);
+    let mut portals = Vec::new();
+    ui.dialog_described(
+        layer,
+        &mut portals,
+        "startup-summary",
+        &ui.t("Daily cash & cheques"),
+        &subtitle,
+        true,
+        crate::ui::glass::DIALOG_MD,
+        body,
+        vec![
+            ui.btn(Btn::Glass, "Cheque search", Some(&icons::CHEQUE), |st| {
+                st.startup_summary_open = false;
+                st.payments.tab_idx = 1;
+                crate::ui::views::payments::ensure(st);
+                st.nav(Page::Payments);
+            }),
+            ui.btn(Btn::Primary, "Enter app", Some(&icons::CHECK), |st| {
+                st.startup_summary_open = false;
+            }),
+        ],
+        |st| st.startup_summary_open = false,
+    );
 }

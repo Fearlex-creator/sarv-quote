@@ -3104,11 +3104,13 @@ name = "sarv-desktop"
 version = "0.2.0"
 dependencies = [
  "chrono",
+ "getrandom 0.3.4",
  "rune",
  "rune-kit",
  "sarv-quote",
  "serde",
  "serde_json",
+ "sha2",
  "tempfile",
  "winresource",
 ]

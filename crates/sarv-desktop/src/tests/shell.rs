@@ -543,3 +543,46 @@ fn test_overview_counts_cheques_due_within_a_week() {
     assert_eq!(rt.state.page, Page::Payments);
     assert_eq!(rt.state.payments.tab_idx, 1);
 }
+
+#[test]
+fn test_startup_summary_dialog_and_sidebar_shortcuts() {
+    let env = rune::Env {
+        system_dark: true,
+        scale: 2.0,
+    };
+    let mut rt = rune::Runtime::new(
+        State::with_engine(crate::data::Engine::demo(), true),
+        crate::ui::root_view,
+        (1180.0, 780.0),
+        env,
+    );
+    rt.frame(0.0);
+
+    assert!(rt.state.startup_summary_open);
+    assert!(rt.find("summary-cash").is_some());
+    assert!(rt.find("summary-cheques-in-hand").is_some());
+    assert!(rt.find("summary-cheques-in-collection").is_some());
+    assert!(rt.find("summary-cheques-payable").is_some());
+
+    click(&mut rt, "btn-Enter app");
+    assert!(!rt.state.startup_summary_open);
+    assert!(rt.find("summary-cash").is_none());
+
+    click(&mut rt, "nav-cheque-search");
+    assert_eq!(rt.state.page, Page::Payments);
+    assert_eq!(rt.state.payments.tab_idx, 1);
+
+    click(&mut rt, "nav-account-card");
+    assert_eq!(rt.state.page, Page::Accounting);
+    assert_eq!(rt.state.accounting.tab_idx, 1);
+
+    click(&mut rt, "nav-trial-balance");
+    assert_eq!(rt.state.page, Page::Reports);
+    assert_eq!(rt.state.reports.tab_idx, 1);
+
+    click(&mut rt, "nav-crm");
+    assert_eq!(rt.state.page, Page::Contacts);
+
+    click(&mut rt, "nav-security");
+    assert_eq!(rt.state.page, Page::Settings);
+}

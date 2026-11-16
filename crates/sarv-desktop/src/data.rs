@@ -122,6 +122,13 @@ impl Engine {
         }
     }
 
+    /// Drop the held SQLite store so the database file can be sealed cleanly.
+    pub fn close_store(&self) {
+        if let Ok(mut slot) = self.store.lock() {
+            *slot = None;
+        }
+    }
+
     /// Read the current validated state from the held store.
     pub fn with_state<T>(&self, f: impl FnOnce(&sarv_quote::domain::State) -> Result<T, String>) -> Result<T, String> {
         let mut slot = self.store.lock().map_err(|_| "Books are busy".to_string())?;

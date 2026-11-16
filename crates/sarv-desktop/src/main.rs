@@ -7,6 +7,7 @@ pub mod data;
 pub mod fa_messages;
 pub mod i18n;
 pub mod logfile;
+pub mod security;
 pub mod shortcuts;
 pub mod ui;
 
@@ -21,6 +22,9 @@ const VAZIRMATN_BOLD: &[u8] = include_bytes!("../../../assets/fonts/Vazirmatn-Bo
 
 fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
     use rune::Key;
+    if s.locked {
+        return false;
+    }
     if matches!(ev.key, Key::Escape) {
         if s.request_close_top_dialog() {
             return true;
@@ -92,6 +96,10 @@ fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
     if !ev.mods.alt && ev.is_command('d') {
         s.dark = !s.dark;
         let _ = s.save_preferences();
+        return true;
+    }
+    if !ev.mods.alt && ev.mods.shift && ev.is_command('l') && s.app_lock_enabled() {
+        s.lock_app();
         return true;
     }
     if !ev.mods.alt && ev.is_command('l') {

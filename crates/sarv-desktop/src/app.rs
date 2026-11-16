@@ -62,6 +62,19 @@ impl Page {
         }
     }
 
+    /// Sidebar navigation label key (translated through [`Fmt::t`]).
+    pub fn sidebar_label(self) -> &'static str {
+        match self {
+            Page::Sales => "Sales invoice",
+            Page::Purchases => "Purchase invoice",
+            Page::Accounting => "Accounting voucher",
+            Page::Payments => "Receipts & payments",
+            Page::Contacts => "Phonebook",
+            Page::Inventory => "Inventory cardex",
+            _ => self.label(),
+        }
+    }
+
     pub fn key(self) -> &'static str {
         match self {
             Page::Overview => "nav-overview",
@@ -163,6 +176,11 @@ impl Forms {
     pub fn clear_prefix(&mut self, prefix: &str) {
         self.map.retain(|k, _| !k.starts_with(prefix));
     }
+    pub fn clear(&mut self, keys: &[&str]) {
+        for k in keys {
+            self.map.remove(*k);
+        }
+    }
     pub fn any_with_prefix(&self, prefix: &str) -> bool {
         self.map.iter().any(|(k, v)| k.starts_with(prefix) && !v.text.trim().is_empty())
     }
@@ -215,12 +233,27 @@ pub struct State {
     pub settings: views::settings::SettingsState,
     pub setup: views::setup::SetupState,
     pub recovery: views::recovery::RecoveryState,
+    pub lock_state: views::lock::LockState,
+    pub locked: bool,
+    pub active_dek: Option<[u8; 32]>,
+    pub startup_summary_open: bool,
     /// Open state for kit `Select` fields, keyed by select id.
     pub selects: HashMap<String, bool>,
     /// Counter page. Loaded from settings; off until the owner turns it on.
     pub show_pos: bool,
     /// Monotonic counter bumped whenever books, language, or formatting change.
     pub stamp: u64,
+}
+
+impl Drop for State {
+    fn drop(&mut self) {
+        if !self.locked
+            && let Some(dek) = self.active_dek.take()
+        {
+            self.engine.close_store();
+            let _ = crate::security::seal_workspace_data(&self.engine.dir, &dek);
+        }
+    }
 }
 
 impl State {
@@ -236,8 +269,12 @@ impl State {
                 engine.dir.display()
             ),
         );
+        let locked = crate::security::is_enabled(&engine.dir);
         let mut books = Books::default();
-        books.refresh(&engine);
+        if !locked {
+            books.refresh(&engine);
+        }
+        let startup_summary_open = !locked && books.has_company() && books.initialized();
         let mut s = State {
             engine,
             books,
@@ -273,12 +310,20 @@ impl State {
             settings: Default::default(),
             setup: Default::default(),
             recovery: Default::default(),
+            lock_state: Default::default(),
+            locked,
+            active_dek: None,
+            startup_summary_open,
             selects: HashMap::new(),
             show_pos: false,
             stamp: 0,
         };
-        s.apply_settings();
-        s.refresh_recovery_if_failed();
+        if locked {
+            s.forms.edit("lock-password").focused = true;
+        } else {
+            s.apply_settings();
+            s.refresh_recovery_if_failed();
+        }
         if let Some(crash_path) = crate::logfile::take_unseen_crash() {
             let msg = s.fmt.t("Sarv closed unexpectedly last time. A report was saved on this device.");
             s.push_toast(Tone::Info, msg, Some(crash_path));
@@ -406,6 +451,33 @@ impl State {
         self.apply_nav(page);
     }
 
+    pub fn app_lock_enabled(&self) -> bool {
+        crate::security::is_enabled(&self.engine.dir)
+    }
+
+    pub fn lock_app(&mut self) {
+        if !self.app_lock_enabled() {
+            return;
+        }
+        self.locked = true;
+        self.lock_state = Default::default();
+        self.forms.clear(&["lock-password"]);
+        self.forms.edit("lock-password").focused = true;
+        self.palette_open = false;
+        self.period_switch_open = false;
+        self.company_switch_open = false;
+        self.confirm = None;
+        self.detail.open = false;
+        self.operation.open = false;
+        self.books = Books::default();
+        self.engine.close_store();
+        if let Some(dek) = self.active_dek.take()
+            && let Err(e) = crate::security::seal_workspace_data(&self.engine.dir, &dek)
+        {
+            crate::logfile::line("ERROR", &format!("seal_workspace_data failed: {e}"));
+        }
+    }
+
     fn apply_nav(&mut self, page: Page) {
         self.page = page;
         self.palette_open = false;
@@ -427,6 +499,8 @@ impl State {
             || self.purchases.creating_item_for_line.is_some()
             || self.accounting.ledger_open
             || self.settings.restore_open
+            || self.settings.lock_dialog.is_some()
+            || self.startup_summary_open
             || self.overview.starter_open
             || self.overview.named_open
             || self.sales.modal_open
@@ -446,6 +520,10 @@ impl State {
     pub fn request_close_top_dialog(&mut self) -> bool {
         if self.confirm.is_some() {
             self.confirm = None;
+            return true;
+        }
+        if self.startup_summary_open {
+            self.startup_summary_open = false;
             return true;
         }
         if self.detail.open {
@@ -470,6 +548,12 @@ impl State {
         }
         if self.accounting.period_add_open {
             self.accounting.period_add_open = false;
+            return true;
+        }
+        if self.settings.lock_dialog.is_some() {
+            self.settings.lock_dialog = None;
+            self.settings.lock_error.clear();
+            self.forms.clear(&["sec-cur-pass", "sec-new-pass", "sec-confirm-pass"]);
             return true;
         }
         if self.accounting.acct_archive_open {
@@ -630,7 +714,7 @@ impl State {
         self.refresh_recovery_if_failed();
     }
 
-    fn refresh_recovery_if_failed(&mut self) {
+    pub(crate) fn refresh_recovery_if_failed(&mut self) {
         if self.books.load_failed() {
             self.recovery.backups = self.query("backup_list", serde_json::json!({})).unwrap_or_default();
         } else {
