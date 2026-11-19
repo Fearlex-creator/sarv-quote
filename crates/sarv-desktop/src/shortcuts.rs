@@ -11,6 +11,9 @@ pub struct Shortcut {
     pub run: fn(&mut State),
 }
 
+/// Creation and quick-navigation chords invoked with `Cmd/Ctrl + Alt + <key>`.
+/// Note: `keys` lists only the suffix (`["Alt", "<key>"]`); Settings prepends `mod_key()`
+/// (`⌘` on macOS, `Ctrl` elsewhere) when rendering the shortcut table.
 pub const CREATE: &[(char, Shortcut)] = &[
     (
         'n',
@@ -18,10 +21,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-n",
             label: "New sales invoice",
             keys: &["Alt", "N"],
-            run: |st| {
-                sales::open_sale(st);
-                st.nav(Page::Sales);
-            },
+            run: |st| st.nav_then(Page::Sales, sales::open_sale),
         },
     ),
     (
@@ -30,10 +30,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-c",
             label: "New customer",
             keys: &["Alt", "C"],
-            run: |st| {
-                contacts::open_new_contact(st, false);
-                st.nav(Page::Contacts);
-            },
+            run: |st| st.nav_then(Page::Contacts, |st| contacts::open_new_contact(st, false)),
         },
     ),
     (
@@ -42,10 +39,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-v",
             label: "New supplier",
             keys: &["Alt", "V"],
-            run: |st| {
-                contacts::open_new_contact(st, true);
-                st.nav(Page::Contacts);
-            },
+            run: |st| st.nav_then(Page::Contacts, |st| contacts::open_new_contact(st, true)),
         },
     ),
     (
@@ -54,10 +48,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-p",
             label: "New product",
             keys: &["Alt", "P"],
-            run: |st| {
-                inventory::open_new_product(st);
-                st.nav(Page::Inventory);
-            },
+            run: |st| st.nav_then(Page::Inventory, inventory::open_new_product),
         },
     ),
     (
@@ -66,10 +57,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-buy",
             label: "New purchase order",
             keys: &["Alt", "B"],
-            run: |st| {
-                purchases::open_purchase(st);
-                st.nav(Page::Purchases);
-            },
+            run: |st| st.nav_then(Page::Purchases, purchases::open_purchase),
         },
     ),
     (
@@ -78,10 +66,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-j",
             label: "New journal",
             keys: &["Alt", "J"],
-            run: |st| {
-                accounting::open_journal(st);
-                st.nav(Page::Accounting);
-            },
+            run: |st| st.nav_then(Page::Accounting, accounting::open_journal),
         },
     ),
     (
@@ -90,10 +75,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-t",
             label: "Transfer stock",
             keys: &["Alt", "T"],
-            run: |st| {
-                inventory::open_transfer(st);
-                st.nav(Page::Inventory);
-            },
+            run: |st| st.nav_then(Page::Inventory, inventory::open_transfer),
         },
     ),
     (
@@ -102,10 +84,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-w",
             label: "New warehouse",
             keys: &["Alt", "W"],
-            run: |st| {
-                overview::open_named(st, NamedKind::Warehouse);
-                st.nav(Page::Overview);
-            },
+            run: |st| st.nav_then(Page::Overview, |st| overview::open_named(st, NamedKind::Warehouse)),
         },
     ),
     (
@@ -114,10 +93,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-u",
             label: "New unit",
             keys: &["Alt", "U"],
-            run: |st| {
-                overview::open_named(st, NamedKind::Unit);
-                st.nav(Page::Overview);
-            },
+            run: |st| st.nav_then(Page::Overview, |st| overview::open_named(st, NamedKind::Unit)),
         },
     ),
     (
@@ -126,10 +102,7 @@ pub const CREATE: &[(char, Shortcut)] = &[
             id: "sc-r",
             label: "Receive money",
             keys: &["Alt", "R"],
-            run: |st| {
-                payments::open_payment(st, true);
-                st.nav(Page::Payments);
-            },
+            run: |st| st.nav_then(Page::Payments, |st| payments::open_payment(st, true)),
         },
     ),
     (

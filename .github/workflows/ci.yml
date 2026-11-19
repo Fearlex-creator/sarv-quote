@@ -41,3 +41,49 @@ jobs:
 
       - name: Desktop headless tests
         run: cargo test -p sarv-desktop --bin sarv-desktop
+
+  windows-check:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - uses: actions/checkout@v4
+
+      # cairo/pango/fontconfig come from MSYS2's MINGW64 environment (msvcrt, the
+      # same C runtime as Rust's x86_64-pc-windows-gnu target).
+      - uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          path-type: inherit
+          install: >-
+            mingw-w64-x86_64-binutils
+            mingw-w64-x86_64-gcc
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-cairo
+            mingw-w64-x86_64-pango
+            mingw-w64-x86_64-fontconfig
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-harfbuzz
+
+      - name: Rust (GNU toolchain)
+        run: |
+          set -euo pipefail
+          channel="$(sed -n 's/^channel = "\(.*\)"/\1/p' rust-toolchain.toml)"
+          rustup toolchain install "${channel}-x86_64-pc-windows-gnu" --profile minimal
+          rustup default "${channel}-x86_64-pc-windows-gnu"
+          rustc --version
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: windows-gnu-check-${{ hashFiles('Cargo.lock') }}
+
+      - name: Check Windows binaries
+        run: |
+          cargo check -p sarv-desktop --bin sarv-desktop
+          cargo check -p sarv-quote --bin sarv-agent

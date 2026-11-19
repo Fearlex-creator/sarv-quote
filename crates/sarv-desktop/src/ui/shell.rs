@@ -11,7 +11,6 @@ use rune_kit::{
 };
 
 use crate::app::{Page, State, Tone};
-use crate::i18n::Lang;
 use crate::ui::glass::{Btn, DIALOG_SM, Ui};
 use crate::ui::icons;
 
@@ -22,28 +21,11 @@ fn ms(n: u64) -> Duration {
 fn nav_row(ui: &Ui, page: Page, selected: bool) -> El {
     SidebarRow::new(ui.t(page.sidebar_label()))
         .icon(page.icon())
-        .height(32.0)
+        .height(36.0)
         .selected(selected)
         .on_select(move |st: &mut State, _| st.nav(page))
         .build(&ui.k)
         .key(page.key())
-}
-
-fn custom_nav_row(
-    ui: &Ui,
-    key: &str,
-    label_key: &str,
-    glyph: &'static rune::Icon,
-    selected: bool,
-    on_select: impl Fn(&mut State) + 'static,
-) -> El {
-    SidebarRow::new(ui.t(label_key))
-        .icon(glyph)
-        .height(32.0)
-        .selected(selected)
-        .on_select(move |st: &mut State, _| on_select(st))
-        .build(&ui.k)
-        .key(key.to_string())
 }
 
 fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
@@ -53,7 +35,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
         .inset(0.0)
         .header_gap(4.0)
         .header_padding(0.0, 12.0)
-        .row_gap(2.0);
+        .row_gap(4.0);
 
     if ready {
         // Search and a new sale first — not the brand tagline or company name.
@@ -62,7 +44,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
                 SidebarRow::new(ui.t("Search anything…"))
                     .icon(&icons::SEARCH)
                     .detail(if cfg!(target_os = "macos") { "⌘K" } else { "Ctrl+K" })
-                    .height(32.0)
+                    .height(36.0)
                     .on_select(|st: &mut State, _| st.open_palette())
                     .build(k)
                     .key("sidebar-search"),
@@ -70,96 +52,21 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
             .header(
                 SidebarRow::new(ui.t("New sales invoice"))
                     .icon(&icons::PLUS)
-                    .height(32.0)
+                    .height(36.0)
                     .on_select(|st: &mut State, _| {
-                        crate::ui::views::sales::open_sale(st);
-                        st.nav(Page::Sales);
+                        st.nav_then(Page::Sales, crate::ui::views::sales::open_sale);
                     })
                     .build(k)
                     .key("btn-New order"),
             );
 
         for (id, title, pages) in Page::GROUPS {
-            let mut rows: Vec<_> = pages
+            let rows: Vec<_> = pages
                 .iter()
                 .copied()
                 .filter(|page| page.nav_pages(s.show_pos))
                 .map(|page| nav_row(ui, page, s.page == page))
                 .collect();
-            match id {
-                "daily" => {
-                    rows.push(custom_nav_row(
-                        ui,
-                        "nav-cheque-search",
-                        "Cheque search",
-                        &icons::CHEQUE,
-                        s.page == Page::Payments && s.payments.tab_idx == 1,
-                        |st| {
-                            st.payments.tab_idx = 1;
-                            crate::ui::views::payments::ensure(st);
-                            st.nav(Page::Payments);
-                        },
-                    ));
-                }
-                "people" => {
-                    rows.push(custom_nav_row(ui, "nav-crm", "Customer relations", &icons::CONTACTS, false, |st| {
-                        crate::ui::views::contacts::ensure(st);
-                        st.nav(Page::Contacts);
-                    }));
-                }
-                "books" => {
-                    rows.push(custom_nav_row(
-                        ui,
-                        "nav-account-card",
-                        "Account card",
-                        &icons::ACCOUNTING,
-                        s.page == Page::Accounting && s.accounting.tab_idx == 1,
-                        |st| {
-                            st.accounting.tab_idx = 1;
-                            crate::ui::views::accounting::ensure(st);
-                            st.nav(Page::Accounting);
-                        },
-                    ));
-                    rows.push(custom_nav_row(
-                        ui,
-                        "nav-account-statement",
-                        "Account statement",
-                        &icons::REPORTS,
-                        false,
-                        |st| {
-                            st.reports.tab_idx = 1;
-                            crate::ui::views::reports::ensure(st);
-                            st.nav(Page::Reports);
-                        },
-                    ));
-                    rows.push(custom_nav_row(
-                        ui,
-                        "nav-trial-balance",
-                        "General trial balance",
-                        &icons::REPORTS,
-                        s.page == Page::Reports && s.reports.tab_idx == 1,
-                        |st| {
-                            st.reports.tab_idx = 1;
-                            crate::ui::views::reports::ensure(st);
-                            st.nav(Page::Reports);
-                        },
-                    ));
-                }
-                "workspace" => {
-                    rows.push(custom_nav_row(
-                        ui,
-                        "nav-security",
-                        "Information security",
-                        &icons::SHIELD,
-                        false,
-                        |st| {
-                            st.settings.tab_idx = 0;
-                            st.nav(Page::Settings);
-                        },
-                    ));
-                }
-                _ => {}
-            }
             if rows.is_empty() {
                 continue;
             }
@@ -174,7 +81,7 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
         let sub = if period.is_empty() { String::new() } else { s.fmt.digits(&period) };
         let mut company = SidebarRow::new(title)
             .icon(&icons::BUILDING)
-            .height(40.0)
+            .height(44.0)
             .on_select(|st: &mut State, _| st.company_switch_open = true);
         if !sub.is_empty() {
             company = company.subtitle(sub);
@@ -182,36 +89,15 @@ fn build_sidebar(s: &State, ui: &Ui, ready: bool) -> El {
         sidebar = sidebar.footer(company.build(k).key("org-selector"));
     }
 
-    let lang_label = match s.lang() {
-        Lang::Fa => "English",
-        Lang::En => "فارسی",
-    };
-    let theme_label = if s.dark { ui.t("Light") } else { ui.t("Dark") };
-    let theme_icon = if s.dark { &icons::SUN } else { &icons::MOON };
-
     sidebar
         .footer(
-            SidebarRow::new(lang_label)
-                .icon(&icons::GLOBE)
-                .height(32.0)
-                .on_select(|st: &mut State, _| {
-                    let next = st.lang().other();
-                    st.set_lang(next);
-                    let _ = st.save_preferences();
-                })
+            SidebarRow::new(ui.t(Page::Settings.sidebar_label()))
+                .icon(Page::Settings.icon())
+                .height(36.0)
+                .selected(s.page == Page::Settings)
+                .on_select(|st: &mut State, _| st.nav(Page::Settings))
                 .build(k)
-                .key("lang-toggle"),
-        )
-        .footer(
-            SidebarRow::new(theme_label)
-                .icon(theme_icon)
-                .height(32.0)
-                .on_select(|st: &mut State, _| {
-                    st.dark = !st.dark;
-                    let _ = st.save_preferences();
-                })
-                .build(k)
-                .key("theme-toggle"),
+                .key(Page::Settings.key()),
         )
         .build(k)
 }
@@ -267,12 +153,6 @@ fn build_toolbar(s: &State, ui: &Ui) -> Toolbar {
         .build(k)
         .key("refresh-books");
 
-    let synced = if !s.books.error.is_empty() {
-        Badge::new(ui.t("Books could not be loaded")).variant(BadgeVariant::Subtle).build(k)
-    } else {
-        Badge::new(ui.t("Saved on this device")).variant(BadgeVariant::Subtle).build(k)
-    };
-
     let mut bar = Toolbar::new().title(page_label);
     for rail in page_rail(s, ui) {
         bar = bar.leading(rail);
@@ -287,7 +167,9 @@ fn build_toolbar(s: &State, ui: &Ui) -> Toolbar {
             .key("toolbar-lock-app");
         bar = bar.trailing(lock_btn);
     }
-    bar = bar.trailing(synced);
+    if !s.books.error.is_empty() {
+        bar = bar.trailing(Badge::new(ui.t("Books could not be loaded")).variant(BadgeVariant::Subtle).build(k));
+    }
     let period = s.books.period_name();
     if !period.is_empty() {
         let (start, end) = s.books.range();
@@ -455,8 +337,10 @@ pub fn palette_entries(s: &State) -> Vec<PaletteEntry> {
                         title: name,
                         hint: s.fmt.t("Contacts"),
                         run: Rc::new(move |st| {
-                            st.nav(Page::Contacts);
-                            crate::ui::views::contacts::open_contact(st, &party_id);
+                            let party_id = party_id.clone();
+                            st.nav_then(Page::Contacts, move |st| {
+                                crate::ui::views::contacts::open_contact(st, &party_id);
+                            });
                         }),
                     });
                     hits += 1;
@@ -480,8 +364,10 @@ pub fn palette_entries(s: &State) -> Vec<PaletteEntry> {
                         title: name,
                         hint: s.fmt.t("Inventory"),
                         run: Rc::new(move |st| {
-                            st.nav(Page::Inventory);
-                            crate::ui::views::inventory::open_product(st, &item_id);
+                            let item_id = item_id.clone();
+                            st.nav_then(Page::Inventory, move |st| {
+                                crate::ui::views::inventory::open_product(st, &item_id);
+                            });
                         }),
                     });
                     hits += 1;
@@ -527,6 +413,39 @@ fn palette_item(ui: &Ui, entry: &PaletteEntry, selected: bool) -> El {
     k.interactive(r)
 }
 
+pub fn handle_palette_key(s: &mut State, ev: &rune::KeyEvent) -> bool {
+    use rune::Key;
+    if matches!(ev.key, Key::Escape) {
+        return s.request_close_top_dialog();
+    }
+    if !s.palette_open || s.confirm.is_some() {
+        return false;
+    }
+    let q = s.forms.get("palette-query");
+    if q != s.palette_last_query {
+        s.palette_cursor = 0;
+        s.palette_last_query = q;
+    }
+    if matches!(ev.key, Key::Down | Key::Up | Key::Enter) {
+        let entries = palette_entries(s);
+        if !entries.is_empty() {
+            let cur = s.palette_cursor.min(entries.len() - 1);
+            match ev.key {
+                Key::Down => s.palette_cursor = (cur + 1) % entries.len(),
+                Key::Up => s.palette_cursor = (cur + entries.len() - 1) % entries.len(),
+                Key::Enter => {
+                    let run = Rc::clone(&entries[cur].run);
+                    run(s);
+                    s.palette_open = false;
+                }
+                _ => {}
+            }
+        }
+        return true;
+    }
+    false
+}
+
 pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     if !s.palette_open {
         return;
@@ -561,10 +480,15 @@ pub fn mount_palette(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         items = items.child(ui.empty(&icons::SEARCH, "No records yet.", ""));
     }
 
-    let body = col()
-        .gap(12.0)
-        .child(ui.field(s, "palette-query", &ui.t("Type a command…")))
-        .child(items);
+    let query_edit = s.forms.view("palette-query");
+    let query_field = rune_kit::TextInput::new(&query_edit)
+        .placeholder(ui.t("Type a command…"))
+        .on_edit(|st: &mut State| st.forms.edit("palette-query"))
+        .on_key(|st: &mut State, ev, _tx| handle_palette_key(st, ev))
+        .build(&ui.k)
+        .key("field-palette-query")
+        .w_full();
+    let body = col().gap(12.0).child(query_field).child(items);
 
     ui.dialog(
         layer,
@@ -721,18 +645,28 @@ pub fn segmented(
         .key(id.to_string())
 }
 
-fn cheque_bucket(s: &State, status_match: &str) -> (i128, usize) {
-    let entries = s.books.workspace["cheques"].as_array().cloned().unwrap_or_default();
-    let mut sum = 0i128;
-    let mut count = 0usize;
-    for entry in entries {
-        if crate::data::s(&entry["status"]) == status_match {
-            let amt = crate::data::s(&entry["cheque"]["amount"]).trim().parse::<i128>().unwrap_or(0);
-            sum = sum.saturating_add(amt);
-            count += 1;
+fn cheque_buckets(s: &State) -> ((i128, usize), (i128, usize), (i128, usize)) {
+    let mut in_hand = (0i128, 0usize);
+    let mut in_col = (0i128, 0usize);
+    let mut payable = (0i128, 0usize);
+    if let Some(entries) = s.books.workspace["cheques"].as_array() {
+        for entry in entries {
+            let bucket = match entry["status"].as_str() {
+                Some("in_hand") => &mut in_hand,
+                Some("in_collection") => &mut in_col,
+                Some("issued") => &mut payable,
+                _ => continue,
+            };
+            let amt = entry["cheque"]["amount"]
+                .as_str()
+                .and_then(|v| v.trim().parse::<i128>().ok())
+                .or_else(|| entry["cheque"]["amount"].as_i64().map(i128::from))
+                .unwrap_or(0);
+            bucket.0 = bucket.0.saturating_add(amt);
+            bucket.1 += 1;
         }
     }
-    (sum, count)
+    (in_hand, in_col, payable)
 }
 
 fn summary_tile(ui: &Ui, key: &str, title_key: &str, subtitle: String, amount_rials: &str, glyph: &'static rune::Icon, tone: Tone) -> El {
@@ -785,9 +719,7 @@ pub fn mount_startup_summary(s: &State, ui: &Ui, layer: &mut Vec<El>) {
     }
 
     let cash_raw = s.books.position("cash");
-    let (in_hand_sum, in_hand_cnt) = cheque_bucket(s, "in_hand");
-    let (in_col_sum, in_col_cnt) = cheque_bucket(s, "in_collection");
-    let (payable_sum, payable_cnt) = cheque_bucket(s, "issued");
+    let ((in_hand_sum, in_hand_cnt), (in_col_sum, in_col_cnt), (payable_sum, payable_cnt)) = cheque_buckets(s);
 
     let count_text = |n: usize| -> String {
         if n == 0 {
@@ -860,9 +792,10 @@ pub fn mount_startup_summary(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         vec![
             ui.btn(Btn::Glass, "Cheque search", Some(&icons::CHEQUE), |st| {
                 st.startup_summary_open = false;
-                st.payments.tab_idx = 1;
-                crate::ui::views::payments::ensure(st);
-                st.nav(Page::Payments);
+                st.nav_then(Page::Payments, |st| {
+                    st.payments.tab_idx = 1;
+                    crate::ui::views::payments::ensure(st);
+                });
             }),
             ui.btn(Btn::Primary, "Enter app", Some(&icons::CHECK), |st| {
                 st.startup_summary_open = false;

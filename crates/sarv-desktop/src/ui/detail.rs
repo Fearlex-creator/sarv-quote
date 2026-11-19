@@ -175,12 +175,12 @@ fn item_name(s_state: &State, item_id: &str) -> String {
     if item_id.is_empty() {
         return String::new();
     }
-    if let Some(items) = s_state.books.workspace["resources"]["items"].as_array() {
-        if let Some(found) = items.iter().find(|it| s(&it["id"]) == item_id) {
-            let name = s(&found["name"]);
-            if !name.is_empty() {
-                return name;
-            }
+    if let Some(items) = s_state.books.workspace["resources"]["items"].as_array()
+        && let Some(found) = items.iter().find(|it| s(&it["id"]) == item_id)
+    {
+        let name = s(&found["name"]);
+        if !name.is_empty() {
+            return name;
         }
     }
     item_id.to_string()

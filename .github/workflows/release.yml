@@ -84,7 +84,9 @@ jobs:
           key: windows-gnu-${{ hashFiles('Cargo.lock') }}
 
       - name: Build agent and desktop app
-        run: cargo build --release -p sarv-desktop -p sarv-quote --bin sarv-agent
+        run: |
+          cargo build --release -p sarv-desktop --bin sarv-desktop
+          cargo build --release -p sarv-quote --bin sarv-agent
 
       - name: Collect portable folder
         run: |

@@ -59,7 +59,10 @@ fn test_sale_facture_pickers_headlessly() {
 fn test_display_quantity_is_not_thousandths() {
     assert_eq!(crate::ui::ops::qty_from_thousandths("1000"), "1");
     assert_eq!(crate::ui::ops::qty_from_thousandths("1500"), "1.5");
-    assert_eq!(crate::ui::ops::typed_display_amount("۱۰٬۰۰۰"), "10000");
+    assert_eq!(
+        crate::ui::ops::typed_display_amount("۱۰٬۰۰۰", crate::i18n::Unit::Toman),
+        Ok("10000".into())
+    );
 }
 
 #[test]
@@ -556,7 +559,8 @@ fn test_sale_total_shows_amount_in_words_in_persian() {
     );
 
     let mut rt_en = make_test_runtime();
-    click(&mut rt_en, "lang-toggle");
+    rt_en.state.set_lang(crate::i18n::Lang::En);
+    rt_en.frame(1.0 / 60.0);
     assert_eq!(rt_en.state.lang(), crate::i18n::Lang::En);
     click(&mut rt_en, Page::Sales.key());
     click(&mut rt_en, "btn-New sales invoice");
@@ -700,4 +704,131 @@ fn test_sale_reference_is_stable_across_attempts() {
         "posted fulfill must use initial invoice_ref {initial_invoice_ref}"
     );
     books_validate(&rt);
+}
+
+#[test]
+fn test_toman_draft_displays_exact_amount() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Toman;
+    rt.state.fmt.persian_digits = false;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "10000");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "toman quotation"));
+
+    let row = rt.state.sales.draft_rows.first().expect("saved draft should appear in draft_rows");
+    assert!(
+        row.cells[3].contains("10,000"),
+        "toman draft must display 10,000 (not 1/10th), got: {}",
+        row.cells[3]
+    );
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_editing_toman_draft_in_rial_preserves_economic_value() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Toman;
+    rt.state.fmt.persian_digits = false;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "10000");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "issue toman draft"));
+
+    let draft_id = rt
+        .state
+        .books
+        .list("drafts")
+        .into_iter()
+        .map(|d| data::s(&d["id"]))
+        .next()
+        .expect("draft id");
+
+    // Switch display unit to Rial before editing the Toman draft.
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    rt.state.sales.selected = draft_id;
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "btn-Edit");
+    assert!(rt.state.sales.modal_open, "{}", blow(&rt, "edit draft"));
+    assert_eq!(rt.state.sales.lines[0].price, "100000");
+    assert_eq!(rt.state.forms.get("sale-price-0"), "100000");
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_editing_existing_quotation_and_completing_sale_succeeds() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "50000");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "issue quotation"));
+
+    let draft_id = rt
+        .state
+        .books
+        .list("drafts")
+        .into_iter()
+        .map(|d| data::s(&d["id"]))
+        .next()
+        .expect("draft id");
+    let before = rt.state.books.list("sales").len();
+
+    rt.state.sales.selected = draft_id;
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "btn-Edit");
+    assert!(rt.state.sales.modal_open, "{}", blow(&rt, "edit quotation"));
+    assert!(rt.state.sales.editing_revision.is_some());
+
+    type_into(&mut rt, "sale-price-0", "60000");
+    click(&mut rt, "btn-Complete sale");
+    assert!(!rt.state.sales.modal_open, "{}", blow(&rt, "complete edited quotation"));
+    assert!(rt.state.books.list("sales").len() > before, "edited quotation must post as sale");
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_estimate_total_handles_fractional_qty_and_discount() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    rt.state.sales.lines[0].qty = "2.5".into();
+    rt.state.sales.lines[0].price = "1000".into();
+    rt.state.sales.lines[0].discount = "250".into();
+    rt.state.forms.set("sale-qty-0", "2.5");
+    rt.state.forms.set("sale-price-0", "1000");
+    assert_eq!(crate::ui::views::sales::estimate_total(&rt.state), 2250);
+}
+
+#[test]
+fn test_quotation_rejects_invalid_price() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+    click(&mut rt, Page::Sales.key());
+    click(&mut rt, "btn-New sales invoice");
+    rt.state.sales.customer_id = "CU-A".into();
+    rt.state.sales.lines[0].item_id = "ITEM-A".into();
+    type_into(&mut rt, "sale-qty-0", "1");
+    type_into(&mut rt, "sale-price-0", "not-a-price");
+    click(&mut rt, "btn-Issue quotation");
+    assert!(rt.state.sales.modal_open, "invalid price must block quotation");
+    assert!(
+        rt.state.toasts.iter().any(|t| t.tone == Tone::Danger),
+        "expected danger toast for invalid quotation price"
+    );
 }

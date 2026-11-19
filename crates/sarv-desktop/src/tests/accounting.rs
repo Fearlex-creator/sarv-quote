@@ -850,3 +850,38 @@ fn test_two_line_journal_mirrors_the_amount() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_year_end_closing_moves_profit_to_retained_earnings() {
+    let mut rt = make_test_runtime();
+    let before_profit = data::s(&rt.state.books.report["profit_loss"]["profit"]);
+    let period_id = rt.state.books.period_id.clone();
+    assert!(!period_id.is_empty());
+
+    click(&mut rt, Page::Accounting.key());
+    click(&mut rt, "segment2"); // Fiscal years tab
+    rt.state.accounting.selected = format!("period-{period_id}");
+    rt.frame(1.0 / 60.0);
+
+    click(&mut rt, "btn-Close fiscal year");
+    assert!(rt.state.confirm.is_some(), "{}", blow(&rt, "close fiscal year confirm"));
+    click(&mut rt, "btn-Confirm close");
+    assert!(rt.state.confirm.is_none(), "{}", blow(&rt, "close fiscal year posted"));
+    assert_no_danger(&rt);
+
+    // Period must now be locked
+    let locked = rt.state.books.workspace["periods"]
+        .as_array()
+        .and_then(|arr| arr.iter().find(|p| data::s(&p["id"]) == period_id))
+        .and_then(|p| p["locked"].as_bool())
+        .unwrap_or(false);
+    assert!(locked, "fiscal period must be locked after closing");
+
+    // Historical P&L for the closed period must still preserve its original profit (ADR-0009 §5)
+    assert_eq!(
+        data::s(&rt.state.books.report["profit_loss"]["profit"]),
+        before_profit,
+        "closed year P&L must exclude the closing journal"
+    );
+    books_validate(&rt);
+}

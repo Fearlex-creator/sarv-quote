@@ -60,6 +60,11 @@ From ADR-0001 (`docs/adr/0001-keep-sarv-identity.md`):
 - `Ui::metric`: `Card` with `tone_accent(tone)` left rule, icon, title, subtitle, and `body_medium` value.
 - `Ui::empty`: `Card` with icon, translated title, and description.
 - `Ui::dialog` / `Ui::dialog_described`: `SHEET_RADIUS`, `layer_01`, `0.5` `border_base`, `elevation.overlay`, `max_h(420.0)` scrolled body, dismiss button (`{key}-close`), and trailing `portals` so `Combobox`/`Select` menus paint above the sheet.
+- `Ui::form_dialog`: same chrome as `Ui::dialog_described` with backdrop click-outside disabled so dirty forms are closed only via Cancel, `{key}-close`, or Escape (routing through `on_close`).
+- `Ui::secret_field` / `Ui::secret_field_submit`: masked `TextInput::secure()` with toggleable `revealed` state and key `field-{key}`.
+- `Ui::money_field`: `Ui::field` paired with the active unit suffix (`toman` / `Rial`) and digit-formatted zero placeholder.
+- `Ui::date_field`: `Ui::field` with today's formatted date as placeholder, live parsed-date preview, fiscal-year range warning (`Tone::Warning`), and parse error caption (`Tone::Danger`), wrapped in `Ui::labeled`.
+- `Ui::hinted`: wraps a control in `Ui::labeled` with an optional tone-coloured advisory caption (`hint-{label_key}`).
 - `Ui::tabs`: `SegmentedControl` with `.fit()`.
 - Toasts (`shell::mount_toasts`): `ToastRegion` with tone-matched lead icon (`CHECK` for `Success`, `WARNING` for `Warning`/`Danger`, `INFO` for `Info`) coloured with `ui.tone_accent(t.tone)`.
 
@@ -76,7 +81,8 @@ Deterministic element keys used by desktop tests:
 
 - Buttons: `btn-{English label key}`
 - Form fields: `field-{form key}`
-- Sidebar navigation: `nav-{page}`
+- Sidebar navigation: `nav-{page}` (3 sections: `nav-group-daily`, `nav-group-people`, `nav-group-books`)
+- Sidebar footer: `org-selector` (company & fiscal year switcher) and `nav-settings`
 - Dialogs: `{dialog}-dialog` and `{dialog}-close`
 
 ## 8. Dialog contract

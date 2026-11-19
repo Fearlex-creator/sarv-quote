@@ -50,7 +50,6 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     };
 
     operation_dialog::mount(s, &ui, &mut layer);
-    confirm::mount(s, &ui, &mut layer);
     detail::mount(s, &ui, &mut layer);
     views::accounting::mount_ledger(s, &ui, &mut layer);
     views::accounting::mount_period_add_dialog(s, &ui, &mut layer);
@@ -58,9 +57,10 @@ pub fn root_view(s: &State, cx: &mut Cx<State>) -> El {
     shell::mount_company_switcher(s, &ui, &mut layer);
     shell::mount_startup_summary(s, &ui, &mut layer);
     shell::mount_palette(s, &ui, &mut layer);
+    confirm::mount(s, &ui, &mut layer);
     shell::mount_toasts(s, &ui, &mut layer);
 
-    let ready = !s.books.load_failed() && s.books.has_company() && s.books.initialized() && !s.setup.adding_company;
+    let ready = s.books_ready();
     let window = if ready {
         shell::app_shell(s, &ui, cx, content)
     } else {

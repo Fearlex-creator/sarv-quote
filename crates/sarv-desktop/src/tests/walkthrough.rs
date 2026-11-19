@@ -211,6 +211,8 @@ fn test_owner_walks_profiles_documents_and_books() {
     }
 
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 1;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Your business");
     assert!(rt.find("business-profile-dialog").is_some(), "{}", blow(&rt, "business dialog"));
     rt.state.forms.set("biz-prefix", "SARV");

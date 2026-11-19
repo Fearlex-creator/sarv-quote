@@ -61,7 +61,30 @@ record!(BillLine {
     quantity_thousandths: i64,
     supplied_value: Money
 });
-record!(MatchBill{context:ProcurementContext,supplier_id:String,reference:String,document_date:String,due_date:String,lines:Vec<BillLine>,supplied_total:Money});
+fn is_zero_u32(v: &u32) -> bool {
+    *v == 0
+}
+fn default_true() -> bool {
+    true
+}
+fn is_true(v: &bool) -> bool {
+    *v
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct MatchBill {
+    pub context: ProcurementContext,
+    pub supplier_id: String,
+    pub reference: String,
+    pub document_date: String,
+    pub due_date: String,
+    pub lines: Vec<BillLine>,
+    pub supplied_total: Money,
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    pub vat_basis_points: u32,
+    #[serde(default = "default_true", skip_serializing_if = "is_true")]
+    pub vat_deductible: bool,
+}
 record!(PurchaseReturnLine { id:String, receipt_line_id:String, bill_line_id:Option<String>, quantity_thousandths:i64, supplied_value:Money });
 record!(ReturnPurchase { context:ProcurementContext, supplier_id:String, return_id:String, return_reference:String, credit_id:Option<String>, credit_reference:Option<String>, document_date:String, lines:Vec<PurchaseReturnLine>, supplied_total:Money });
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -121,14 +144,18 @@ impl ProcurementCommand {
         }
     }
 }
-record!(FrozenOrderLine {
-    input: OrderLine,
-    item: CoreItem,
-    base_quantity_thousandths: i64,
-    gross: Money,
-    document_discount: Money,
-    net: Money
-});
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct FrozenOrderLine {
+    pub input: OrderLine,
+    pub item: CoreItem,
+    pub base_quantity_thousandths: i64,
+    pub gross: Money,
+    pub document_discount: Money,
+    pub net: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+}
 record!(PostedOrder{supplier:CoreParty,lines:Vec<FrozenOrderLine>,total:Money});
 record!(PostedReceiptLine {
     id: String,
@@ -139,15 +166,57 @@ record!(PostedReceiptLine {
     value: Money
 });
 record!(PostedReceipt{order_id:String,supplier_id:String,lines:Vec<PostedReceiptLine>,total:Money});
-record!(PostedBillLine {
-    id: String,
-    receipt_line_id: String,
-    quantity_thousandths: i64,
-    value: Money
-});
-record!(PostedBill{supplier_id:String,lines:Vec<PostedBillLine>,total:Money});
-record!(PostedPurchaseReturnLine { id:String, receipt_line_id:String, bill_line_id:Option<String>, item_id:String, warehouse_id:String, quantity_thousandths:i64, value:Money });
-record!(PostedPurchaseReturn { supplier_id:String, return_id:String, return_state:PurchaseReturnState, credit_id:Option<String>, credit_state:Option<SupplierCreditState>, receipt_id:Option<String>, bill_id:Option<String>, lines:Vec<PostedPurchaseReturnLine>, total:Money });
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedBillLine {
+    pub id: String,
+    pub receipt_line_id: String,
+    pub quantity_thousandths: i64,
+    pub value: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedBill {
+    pub supplier_id: String,
+    pub lines: Vec<PostedBillLine>,
+    pub total: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+    #[serde(default = "default_true", skip_serializing_if = "is_true")]
+    pub vat_deductible: bool,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedPurchaseReturnLine {
+    pub id: String,
+    pub receipt_line_id: String,
+    pub bill_line_id: Option<String>,
+    pub item_id: String,
+    pub warehouse_id: String,
+    pub quantity_thousandths: i64,
+    pub value: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedPurchaseReturn {
+    pub supplier_id: String,
+    pub return_id: String,
+    pub return_state: PurchaseReturnState,
+    pub credit_id: Option<String>,
+    pub credit_state: Option<SupplierCreditState>,
+    pub receipt_id: Option<String>,
+    pub bill_id: Option<String>,
+    pub lines: Vec<PostedPurchaseReturnLine>,
+    pub total: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+    #[serde(default = "default_true", skip_serializing_if = "is_true")]
+    pub vat_deductible: bool,
+}
 record!(PurchaseReturnableLine { receipt_line_id:String, bill_line_id:Option<String>, bill_id:Option<String>, supplier_id:String, item_id:String, warehouse_id:String, original_quantity_thousandths:i64, original_value:Money, remaining_quantity_thousandths:i64, remaining_value:Money, date:String, reference:String });
 record!(StockPool {
     item_id: String,
@@ -1010,6 +1079,7 @@ impl AccountingState {
                         gross,
                         document_discount: Money::ZERO,
                         net: weight,
+                        tax: Money::ZERO,
                     });
                 }
                 for (l, d) in frozen.iter_mut().zip(discount_alloc(&x.lines, &weights, x.document_discount)?) {
@@ -1185,23 +1255,63 @@ impl AccountingState {
                         value.rials(),
                         l.supplied_value.rials()
                     );
+                    let (_, line_tax_rial, _) = crate::vat::compute_vat_on_subtotal(
+                        value.rials(),
+                        crate::vat::TaxCategory::Taxable,
+                        x.vat_basis_points,
+                        crate::vat::PricingMode::Exclusive,
+                    )?;
+                    let line_tax = Money::from_rials(line_tax_rial);
                     lines.push(PostedBillLine {
                         id: l.id.clone(),
                         receipt_line_id: l.receipt_line_id.clone(),
                         quantity_thousandths: l.quantity_thousandths,
                         value,
+                        tax: line_tax,
                     });
                 }
-                let total = sum(lines.iter().map(|l| l.value))?;
+                let net_total = sum(lines.iter().map(|l| l.value))?;
+                let tax_total = sum(lines.iter().map(|l| l.tax))?;
+                let total = net_total.checked_add(tax_total)?;
                 ensure!(total == x.supplied_total, "جمع مستقل فاکتور برابر نیست");
                 if total.rials() > 0 {
-                    journal_lines = pair(setup, CoreRole::Grni, CoreRole::Payables, total, &x.reference)?;
+                    if tax_total == Money::ZERO {
+                        journal_lines = pair(setup, CoreRole::Grni, CoreRole::Payables, total, &x.reference)?;
+                    } else {
+                        let vat_role = if x.vat_deductible {
+                            CoreRole::VatReceivable
+                        } else {
+                            CoreRole::OperatingExpense
+                        };
+                        journal_lines = vec![
+                            JournalLineInput {
+                                account_id: setup.account_id(CoreRole::Grni)?.to_string(),
+                                debit: net_total,
+                                credit: Money::ZERO,
+                                description: x.reference.clone(),
+                            },
+                            JournalLineInput {
+                                account_id: setup.account_id(vat_role)?.to_string(),
+                                debit: tax_total,
+                                credit: Money::ZERO,
+                                description: x.reference.clone(),
+                            },
+                            JournalLineInput {
+                                account_id: setup.account_id(CoreRole::Payables)?.to_string(),
+                                debit: Money::ZERO,
+                                credit: total,
+                                description: x.reference.clone(),
+                            },
+                        ];
+                    }
                 }
                 (
                     ProcurementData::Bill(PostedBill {
                         supplier_id: x.supplier_id.clone(),
                         lines,
                         total,
+                        tax: tax_total,
+                        vat_deductible: x.vat_deductible,
                     }),
                     total,
                 )
@@ -1317,6 +1427,35 @@ impl AccountingState {
                         after: after.clone(),
                     });
                     *pool = after;
+                    let line_tax = if let Some(bl_id) = &l.bill_line_id {
+                        let orig_bill_line = self.procurement.records.iter().find_map(|r| match &r.data {
+                            ProcurementData::Bill(b) => b.lines.iter().find(|bl| &bl.id == bl_id),
+                            _ => None,
+                        });
+                        if let Some(bl) = orig_bill_line
+                            && bl.tax != Money::ZERO
+                        {
+                            let mut prior_tax = Money::ZERO;
+                            for rec in &self.procurement.records {
+                                if let ProcurementData::Return(ret) = &rec.data {
+                                    for rl in ret.lines.iter().filter(|rl| rl.bill_line_id.as_deref() == Some(bl_id.as_str())) {
+                                        prior_tax = prior_tax.checked_add(rl.tax)?;
+                                    }
+                                }
+                            }
+                            allocation(
+                                bl.tax,
+                                eligible.original_quantity_thousandths,
+                                eligible.original_quantity_thousandths - eligible.remaining_quantity_thousandths,
+                                prior_tax,
+                                l.quantity_thousandths,
+                            )?
+                        } else {
+                            Money::ZERO
+                        }
+                    } else {
+                        Money::ZERO
+                    };
                     lines.push(PostedPurchaseReturnLine {
                         id: l.id.clone(),
                         receipt_line_id: l.receipt_line_id.clone(),
@@ -1325,11 +1464,23 @@ impl AccountingState {
                         warehouse_id: eligible.warehouse_id,
                         quantity_thousandths: l.quantity_thousandths,
                         value,
+                        tax: line_tax,
                     });
                 }
-                let total = sum(lines.iter().map(|l| l.value))?;
+                let net_total = sum(lines.iter().map(|l| l.value))?;
+                let tax_total = sum(lines.iter().map(|l| l.tax))?;
+                let total = net_total.checked_add(tax_total)?;
                 money(total)?;
                 ensure!(total == x.supplied_total, "جمع مستقل برگشت برابر نیست");
+                let vat_deductible = bill_id
+                    .as_deref()
+                    .and_then(|bid| {
+                        self.procurement.records.iter().find_map(|r| match &r.data {
+                            ProcurementData::Bill(b) if r.id == bid => Some(b.vat_deductible),
+                            _ => None,
+                        })
+                    })
+                    .unwrap_or(true);
                 if let Some(bill) = &bill_id
                     && total != Money::ZERO
                 {
@@ -1344,13 +1495,41 @@ impl AccountingState {
                     );
                 }
                 if total != Money::ZERO {
-                    journal_lines = pair(
-                        setup,
-                        if billed { CoreRole::Payables } else { CoreRole::Grni },
-                        CoreRole::Inventory,
-                        total,
-                        &x.return_reference,
-                    )?;
+                    if billed && tax_total != Money::ZERO {
+                        let vat_role = if vat_deductible {
+                            CoreRole::VatReceivable
+                        } else {
+                            CoreRole::OperatingExpense
+                        };
+                        journal_lines = vec![
+                            JournalLineInput {
+                                account_id: setup.account_id(CoreRole::Payables)?.to_string(),
+                                debit: total,
+                                credit: Money::ZERO,
+                                description: x.return_reference.clone(),
+                            },
+                            JournalLineInput {
+                                account_id: setup.account_id(CoreRole::Inventory)?.to_string(),
+                                debit: Money::ZERO,
+                                credit: net_total,
+                                description: x.return_reference.clone(),
+                            },
+                            JournalLineInput {
+                                account_id: setup.account_id(vat_role)?.to_string(),
+                                debit: Money::ZERO,
+                                credit: tax_total,
+                                description: x.return_reference.clone(),
+                            },
+                        ];
+                    } else {
+                        journal_lines = pair(
+                            setup,
+                            if billed { CoreRole::Payables } else { CoreRole::Grni },
+                            CoreRole::Inventory,
+                            total,
+                            &x.return_reference,
+                        )?;
+                    }
                 }
                 (
                     ProcurementData::Return(PostedPurchaseReturn {
@@ -1363,6 +1542,8 @@ impl AccountingState {
                         bill_id,
                         lines,
                         total,
+                        tax: tax_total,
+                        vat_deductible,
                     }),
                     total,
                 )
@@ -1671,15 +1852,73 @@ fn record_journal_lines(record: &ProcurementRecord) -> Result<Vec<JournalLineInp
             pair(&record.frozen_setup, CoreRole::Inventory, CoreRole::Grni, r.total, &c.reference)
         }
         (ProcurementCommand::Bill(c), ProcurementData::Bill(b)) => {
-            pair(&record.frozen_setup, CoreRole::Grni, CoreRole::Payables, b.total, &c.reference)
+            if b.tax == Money::ZERO {
+                pair(&record.frozen_setup, CoreRole::Grni, CoreRole::Payables, b.total, &c.reference)
+            } else {
+                let vat_role = if b.vat_deductible {
+                    CoreRole::VatReceivable
+                } else {
+                    CoreRole::OperatingExpense
+                };
+                Ok(vec![
+                    JournalLineInput {
+                        account_id: record.frozen_setup.account_id(CoreRole::Grni)?.to_string(),
+                        debit: b.total.checked_sub(b.tax)?,
+                        credit: Money::ZERO,
+                        description: c.reference.clone(),
+                    },
+                    JournalLineInput {
+                        account_id: record.frozen_setup.account_id(vat_role)?.to_string(),
+                        debit: b.tax,
+                        credit: Money::ZERO,
+                        description: c.reference.clone(),
+                    },
+                    JournalLineInput {
+                        account_id: record.frozen_setup.account_id(CoreRole::Payables)?.to_string(),
+                        debit: Money::ZERO,
+                        credit: b.total,
+                        description: c.reference.clone(),
+                    },
+                ])
+            }
         }
-        (ProcurementCommand::Return(c), ProcurementData::Return(r)) => pair(
-            &record.frozen_setup,
-            if r.bill_id.is_some() { CoreRole::Payables } else { CoreRole::Grni },
-            CoreRole::Inventory,
-            r.total,
-            &c.return_reference,
-        ),
+        (ProcurementCommand::Return(c), ProcurementData::Return(r)) => {
+            if r.bill_id.is_some() && r.tax != Money::ZERO {
+                let vat_role = if r.vat_deductible {
+                    CoreRole::VatReceivable
+                } else {
+                    CoreRole::OperatingExpense
+                };
+                Ok(vec![
+                    JournalLineInput {
+                        account_id: record.frozen_setup.account_id(CoreRole::Payables)?.to_string(),
+                        debit: r.total,
+                        credit: Money::ZERO,
+                        description: c.return_reference.clone(),
+                    },
+                    JournalLineInput {
+                        account_id: record.frozen_setup.account_id(CoreRole::Inventory)?.to_string(),
+                        debit: Money::ZERO,
+                        credit: r.total.checked_sub(r.tax)?,
+                        description: c.return_reference.clone(),
+                    },
+                    JournalLineInput {
+                        account_id: record.frozen_setup.account_id(vat_role)?.to_string(),
+                        debit: Money::ZERO,
+                        credit: r.tax,
+                        description: c.return_reference.clone(),
+                    },
+                ])
+            } else {
+                pair(
+                    &record.frozen_setup,
+                    if r.bill_id.is_some() { CoreRole::Payables } else { CoreRole::Grni },
+                    CoreRole::Inventory,
+                    r.total,
+                    &c.return_reference,
+                )
+            }
+        }
         _ => anyhow::bail!("رویداد خرید فاقد سند مالی است"),
     }
 }

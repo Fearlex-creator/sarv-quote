@@ -151,6 +151,8 @@ fn fixture() -> Fixture {
             due_date: "2026-04-01".into(),
             lines,
             supplied_total: money(total),
+            vat_basis_points: 0,
+            vat_deductible: true,
         });
         let result = f.state.post_procurement_command(cmd).unwrap();
         if total == 30 {

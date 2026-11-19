@@ -2,6 +2,11 @@ use std::process::Command;
 
 fn main() {
     println!("cargo:rerun-if-changed=../../.git/HEAD");
+    if let Ok(head) = std::fs::read_to_string("../../.git/HEAD")
+        && let Some(ref_path) = head.trim().strip_prefix("ref: ")
+    {
+        println!("cargo:rerun-if-changed=../../.git/{ref_path}");
+    }
     let sha = Command::new("git")
         .args(["rev-parse", "--short", "HEAD"])
         .output()

@@ -86,3 +86,103 @@ fn transfer_between_cash_and_bank_moves_the_amount() {
     assert_no_danger(&rt);
     books_validate(&rt);
 }
+
+#[test]
+fn test_banking_open_move_reuses_post_key_on_retry_and_clears_on_success() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+
+    let accounts = rt.state.books.banking["accounts"].as_array().cloned().unwrap_or_default();
+    let bank_id = accounts
+        .iter()
+        .find(|r| data::s(&r["role"]).contains("bank") || data::s(&r["account"]["code"]).starts_with("112"))
+        .or_else(|| accounts.first())
+        .map(|r| data::s(&r["account"]["id"]))
+        .expect("bank account");
+    let counterpart_id = rt.state.books.banking["counterparts"]
+        .as_array()
+        .and_then(|rows| rows.first())
+        .map(|r| data::s(&r["id"]))
+        .expect("counterpart account");
+
+    click(&mut rt, Page::Banking.key());
+    click(&mut rt, "btn-Money in");
+    let initial_key = rt.state.banking.post_key.clone();
+    assert!(!initial_key.is_empty(), "open_move must mint a post_key");
+
+    // Failed attempt (missing accounts/amount) must reuse the same post_key and clear posting flag.
+    click(&mut rt, "btn-Save");
+    assert!(rt.state.banking.modal_open);
+    assert_eq!(rt.state.banking.post_key, initial_key);
+    assert!(!rt.state.banking.posting);
+
+    // Fix inputs and retry: succeeds and clears post_key.
+    rt.state.banking.from_id = bank_id;
+    rt.state.banking.to_id = counterpart_id;
+    type_into(&mut rt, "bank-amount", "25000");
+    type_into(&mut rt, "bank-reason", "Retry deposit");
+    click(&mut rt, "btn-Save");
+    assert!(!rt.state.banking.modal_open, "{}", blow(&rt, "retry money in"));
+    assert!(rt.state.banking.post_key.is_empty(), "post_key must clear on success");
+    assert!(!rt.state.banking.posting);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_bank_reconciliation_full_flow() {
+    let mut rt = make_test_runtime();
+    rt.state.fmt.unit = crate::i18n::Unit::Rial;
+
+    let accounts = rt.state.books.banking["accounts"].as_array().cloned().unwrap_or_default();
+    let bank_id = accounts
+        .iter()
+        .find(|r| data::s(&r["role"]).contains("bank") || data::s(&r["account"]["code"]).starts_with("112"))
+        .or_else(|| accounts.first())
+        .map(|r| data::s(&r["account"]["id"]))
+        .expect("bank account");
+    let book_bal = account_balance(&rt, &bank_id);
+
+    click(&mut rt, Page::Banking.key());
+    rt.state.banking.selected = bank_id.clone();
+    click(&mut rt, "btn-Reconcile");
+    assert!(rt.state.banking.rec_open, "{}", blow(&rt, "open reconcile dialog"));
+
+    // Start reconciliation matching the current book balance
+    type_into(&mut rt, "rec-balance", &book_bal.to_string());
+    click(&mut rt, "btn-Start reconciliation");
+    assert!(
+        !rt.state.banking.rec_data["open_session"].is_null(),
+        "expected open reconciliation session: {}",
+        rt.state.banking.rec_data
+    );
+
+    // Match all unreconciled lines so difference reaches 0
+    let lines: Vec<(String, u64)> = rt.state.banking.rec_data["lines"]
+        .as_array()
+        .into_iter()
+        .flatten()
+        .map(|l| {
+            let idx = l["line_index"]
+                .as_u64()
+                .or_else(|| data::s(&l["line_index"]).parse().ok())
+                .unwrap_or(0);
+            (data::s(&l["journal_id"]), idx)
+        })
+        .collect();
+    assert!(!lines.is_empty(), "demo bank account should have ledger lines to match");
+    for (jid, idx) in lines {
+        click(&mut rt, &format!("rec-line-{jid}-{idx}"));
+    }
+    assert_eq!(data::s(&rt.state.banking.rec_data["difference"]), "0");
+
+    // Complete reconciliation
+    click(&mut rt, "btn-Complete reconciliation");
+    assert!(
+        rt.state.banking.rec_data["open_session"].is_null(),
+        "session should be closed after completion: {}",
+        rt.state.banking.rec_data
+    );
+    assert_eq!(rt.state.banking.rec_data["completed"].as_array().map(|a| a.len()), Some(1));
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}

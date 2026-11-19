@@ -120,6 +120,7 @@ fn review(st: &mut State) {
     if !st.operation.open || st.operation.posting {
         return;
     }
+    st.operation.posting = true;
     let mut req_lines = Vec::new();
     let mut confirm_lines = Vec::new();
     for (i, line) in st.operation.lines.iter().enumerate() {
@@ -128,12 +129,14 @@ fn review(st: &mut State) {
             Ok(v) => v,
             Err(msg) => {
                 st.toast(Tone::Danger, st.fmt.t(&msg));
+                st.operation.posting = false;
                 return;
             }
         };
         let rem: i64 = line.remaining_thousandths.parse().unwrap_or(0);
         if parsed > rem {
             st.toast(Tone::Danger, st.fmt.t("Quantity exceeds remaining."));
+            st.operation.posting = false;
             return;
         }
         if parsed == 0 {
@@ -148,9 +151,11 @@ fn review(st: &mut State) {
     }
     if req_lines.is_empty() {
         st.toast(Tone::Danger, st.fmt.t("Enter at least one quantity."));
+        st.operation.posting = false;
         return;
     }
     let Ok(date) = st.form_date("op-date") else {
+        st.operation.posting = false;
         return;
     };
 
@@ -172,6 +177,7 @@ fn review(st: &mut State) {
         Ok(v) => v,
         Err(e) => {
             st.toast_err(e);
+            st.operation.posting = false;
             return;
         }
     };
@@ -182,6 +188,7 @@ fn review(st: &mut State) {
     let title = st.operation.title.clone();
     let danger = op == "sale_return" || op == "purchase_return";
     let verb_key = if danger { "Post return" } else { "Post" };
+    st.operation.posting = false;
     st.confirm = Some(Confirm::one(
         title,
         String::new(),
@@ -190,10 +197,15 @@ fn review(st: &mut State) {
         st.fmt.t(verb_key),
         danger,
         move |st| {
+            if st.operation.posting || !st.operation.open {
+                return;
+            }
+            st.operation.posting = true;
             if st.run(&format!("{op}_post"), payload.clone(), Some("Posted")).is_ok() {
                 st.operation.open = false;
                 st.operation.key.clear();
             }
+            st.operation.posting = false;
         },
     ));
 }

@@ -300,6 +300,7 @@ fn journal_ledger_rows(acc: &AccountingState) -> Vec<LedgerRow> {
                     JournalKind::Opening => "افتتاحیه".into(),
                     JournalKind::Manual => "دستی".into(),
                     JournalKind::Reversal { .. } => "برگشت".into(),
+                    JournalKind::Closing { .. } => "بستن حساب‌های موقت".into(),
                 },
                 actor: j.actor.clone(),
                 payee: j.actor.clone(),

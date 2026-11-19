@@ -164,6 +164,8 @@ fn fixture() -> Fixture {
             due_date: "2026-04-01".into(),
             lines,
             supplied_total: money(total),
+            vat_basis_points: 0,
+            vat_deductible: true,
         });
         let result = f.state.post_procurement_command(cmd).unwrap();
         if total == 30 {
@@ -201,6 +203,8 @@ fn fixture() -> Fixture {
         document_discount: money(1),
         supplied_total: money(199),
         quotation: None,
+        vat_basis_points: 0,
+        pricing_mode: Default::default(),
     });
     f.sale_order = f.state.post_sales_command(sale).unwrap().record_id;
     f.fulfillment = f
@@ -799,6 +803,8 @@ fn zero_price_and_zero_cost_keep_operational_quantity_without_invented_financial
             document_discount: Money::ZERO,
             supplied_total: Money::ZERO,
             quotation: None,
+            vat_basis_points: 0,
+            pricing_mode: Default::default(),
         }))
         .unwrap();
     let journal_count = f.state.journals.len();
@@ -987,6 +993,8 @@ fn divisible_partial_allocations_disclose_derived_gross_and_original_price() {
             document_discount: money(1),
             supplied_total: money(1),
             quotation: None,
+            vat_basis_points: 0,
+            pricing_mode: Default::default(),
         }))
         .unwrap();
     let SalesData::Order(original) = &f.state.sales_document(&order.record_id).unwrap().data else {

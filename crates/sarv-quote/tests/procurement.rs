@@ -139,6 +139,8 @@ fn bill(s: &AccountingState, source: &str, date: &str, lines: &[(&str, i64, i64)
             })
             .collect(),
         supplied_total: irr(lines.iter().map(|x| x.2).sum()),
+        vat_basis_points: 0,
+        vat_deductible: true,
     })
 }
 fn transfer(s: &AccountingState, source: &str, date: &str, q: i64) -> ProcurementCommand {

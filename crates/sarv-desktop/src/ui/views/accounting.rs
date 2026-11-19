@@ -415,14 +415,90 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         row().w_full().child(ui.muted(ui.t(hint)))
     };
 
-    let mut body = col()
+    let period_locked = s
+        .accounting
+        .selected
+        .strip_prefix("period-")
+        .and_then(|id| {
+            s.books.workspace["periods"]
+                .as_array()
+                .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == id))
+        })
+        .and_then(|p| p["locked"].as_bool())
+        .unwrap_or(false);
+    let period_btn_label = if period_locked {
+        "Reopen fiscal period"
+    } else {
+        "Lock fiscal period"
+    };
+
+    let mut row_actions = Vec::new();
+    if s.accounting.selected.starts_with("journal-") {
+        row_actions.push(ui.btn(Btn::Glass, "Open", None, |st| {
+            let id = st
+                .accounting
+                .selected
+                .strip_prefix("journal-")
+                .unwrap_or(&st.accounting.selected)
+                .to_string();
+            crate::ui::detail::open(st, &id);
+        }));
+        row_actions.push(ui.btn(Btn::Glass, "Reverse", None, reverse_selected));
+    } else if s.accounting.selected.starts_with("acc-") {
+        row_actions.push(ui.btn(Btn::Glass, "Ledger", None, open_ledger));
+        if s.accounting.tab_idx == 1 {
+            row_actions.push(ui.btn(Btn::Glass, "Archive account", None, open_archive_account));
+        }
+    } else if s.accounting.selected.starts_with("period-") {
+        if !period_locked {
+            row_actions.push(ui.btn(Btn::Primary, "Close fiscal year", Some(&icons::CHECK), close_period_with_entry));
+        }
+        row_actions.push(ui.btn(Btn::Glass, period_btn_label, None, toggle_period));
+    }
+
+    let acct_count = s.books.workspace["accounts"].as_array().map(|a| a.len()).unwrap_or(0);
+    let journal_count = s.books.count("journal_count").max(s.books.list("journals").len());
+    let period_name = s.books.period_name();
+    let acct_kpis = row()
         .w_full()
-        .gap(14.0)
-        .grow(1.0)
-        .min_h(0.0)
-        .child(tab_bar)
-        .child(hint_bar)
-        .child(ui.fill_or_empty(empty_count, empty_title, hint, &icons::REPORTS, table));
+        .gap(12.0)
+        .child(ui.metric(
+            "acct-kpi-journals",
+            &icons::ACCOUNTING,
+            &ui.t("Journals"),
+            ui.f.digits(&journal_count.to_string()),
+            ui.t("Posted entries"),
+            Tone::Info,
+        ))
+        .child(ui.metric(
+            "acct-kpi-accounts",
+            &icons::REPORTS,
+            &ui.t("Accounts"),
+            ui.f.digits(&acct_count.to_string()),
+            ui.t("Ledger and accounting"),
+            Tone::Success,
+        ))
+        .child(ui.metric(
+            "acct-kpi-period",
+            &icons::CALENDAR,
+            &ui.t("Fiscal year"),
+            if period_name.is_empty() {
+                "—".to_string()
+            } else {
+                ui.f.digits(&period_name)
+            },
+            ui.t("Saved on this device"),
+            Tone::Info,
+        ));
+    let mut body = col().w_full().gap(12.0).grow(1.0).min_h(0.0).child(acct_kpis).child(ui.tab_toolbar(
+        tab_bar,
+        "accounting-selection-bar",
+        row_actions,
+    ));
+    if s.accounting.tab_idx == 1 {
+        body = body.child(hint_bar);
+    }
+    body = body.child(ui.fill_or_empty(empty_count, empty_title, hint, &icons::REPORTS, table));
     if s.accounting.tab_idx == 0
         && let Some(footer) = ui.load_more_footer(
             "journals-load-more",
@@ -444,61 +520,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_archive_dialog(s, ui, layer);
     }
 
-    let period_locked = s
-        .accounting
-        .selected
-        .strip_prefix("period-")
-        .and_then(|id| {
-            s.books.workspace["periods"]
-                .as_array()
-                .and_then(|rows| rows.iter().find(|p| crate::data::s(&p["id"]) == id))
-        })
-        .and_then(|p| p["locked"].as_bool())
-        .unwrap_or(false);
-    let period_btn_label = if period_locked {
-        "Reopen fiscal period"
-    } else {
-        "Lock fiscal period"
-    };
-
     let mut actions = vec![ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), open_journal)];
     if s.accounting.tab_idx == 1 {
         actions.push(ui.btn(Btn::Glass, "New account", Some(&icons::PLUS), open_account));
-        actions.push(ui.btn_enabled(
-            Btn::Glass,
-            "Archive account",
-            None,
-            s.accounting.selected.starts_with("acc-"),
-            open_archive_account,
-        ));
     }
-    actions.extend([
-        ui.btn_enabled(Btn::Glass, "Open", None, s.accounting.selected.starts_with("journal-"), |st| {
-            let id = st
-                .accounting
-                .selected
-                .strip_prefix("journal-")
-                .unwrap_or(&st.accounting.selected)
-                .to_string();
-            crate::ui::detail::open(st, &id);
-        }),
-        ui.btn_enabled(Btn::Glass, "Ledger", None, s.accounting.selected.starts_with("acc-"), open_ledger),
-        ui.btn_enabled(
-            Btn::Glass,
-            "Reverse",
-            None,
-            s.accounting.selected.starts_with("journal-"),
-            reverse_selected,
-        ),
-        ui.btn_enabled(
-            Btn::Glass,
-            period_btn_label,
-            None,
-            s.accounting.selected.starts_with("period-"),
-            toggle_period,
-        ),
-        ui.btn(Btn::Glass, "New fiscal year", Some(&icons::PLUS), open_new_period),
-    ]);
+    actions.push(ui.btn(Btn::Glass, "New fiscal year", Some(&icons::PLUS), open_new_period));
 
     ui.page(
         "accounting-screen",
@@ -936,17 +962,66 @@ fn toggle_period(st: &mut State) {
         st.fmt.t(action_key),
         locked,
         move |st| {
-            let _ = st.run(
-                "period_lock",
-                serde_json::json!({
-                    "period_id": id,
-                    "locked": !locked,
-                    "reason": action_key,
-                    "request_key": key,
-                    "source_id": key
-                }),
-                Some("Posted"),
-            );
+            let mut payload = serde_json::json!({
+                "period_id": id,
+                "locked": !locked,
+                "reason": action_key,
+                "request_key": key,
+                "source_id": key
+            });
+            let generation = crate::data::s(&st.books.workspace["_generation"]);
+            if !generation.is_empty() {
+                payload["expected_generation"] = serde_json::json!(generation);
+            }
+            let _ = st.run("period_lock", payload, Some("Posted"));
+        },
+    ));
+}
+
+fn close_period_with_entry(st: &mut State) {
+    let Some(pid) = st.accounting.selected.strip_prefix("period-").map(str::to_string) else {
+        return;
+    };
+    let preview = match st.query("period_close_preview", serde_json::json!({ "period_id": pid })) {
+        Ok(v) => v,
+        Err(e) => {
+            st.toast_err(e);
+            return;
+        }
+    };
+    let period_name = crate::data::s(&preview["period_name"]);
+    let closing_date = crate::data::s(&preview["closing_date"]);
+    let net_profit = crate::data::s(&preview["net_profit"]);
+    let retained_name = crate::data::s(&preview["retained_earnings_account"]);
+    let generation = crate::data::s(&preview["_generation"]);
+    let mut facts = vec![
+        (st.fmt.t("Fiscal year"), st.fmt.digits(&period_name)),
+        (st.fmt.t("Date"), st.fmt.date(&closing_date)),
+        (st.fmt.t("Net profit"), st.fmt.money(&net_profit)),
+        (st.fmt.t("Account"), retained_name),
+    ];
+    let lines_count = preview["lines"].as_array().map(|a| a.len()).unwrap_or(0);
+    facts.push((st.fmt.t("Lines"), st.fmt.digits(&lines_count.to_string())));
+
+    let key = st.mint_key("period-close");
+    st.confirm = Some(crate::ui::confirm::Confirm::one(
+        st.fmt.t("Close fiscal year"),
+        st.fmt
+            .t("Transfer temporary revenue and expense balances to retained earnings and lock this fiscal year."),
+        facts,
+        "Confirm close",
+        st.fmt.t("Close fiscal year"),
+        true,
+        move |st| {
+            let mut payload = serde_json::json!({
+                "period_id": pid,
+                "request_key": key,
+                "reason": format!("Close fiscal year {period_name}"),
+            });
+            if !generation.is_empty() {
+                payload["expected_generation"] = serde_json::json!(generation);
+            }
+            let _ = st.run("period_close_post", payload, Some("Fiscal year closed"));
         },
     ));
 }

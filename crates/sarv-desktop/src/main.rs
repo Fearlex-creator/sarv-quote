@@ -35,41 +35,28 @@ fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
         }
         return false;
     }
-    if s.palette_open && s.confirm.is_none() {
-        let q = s.forms.get("palette-query");
-        if q != s.palette_last_query {
-            s.palette_cursor = 0;
-            s.palette_last_query = q;
-        }
-        if matches!(ev.key, Key::Down | Key::Up | Key::Enter) {
-            let entries = ui::shell::palette_entries(s);
-            if !entries.is_empty() {
-                let cur = s.palette_cursor.min(entries.len() - 1);
-                match ev.key {
-                    Key::Down => s.palette_cursor = (cur + 1) % entries.len(),
-                    Key::Up => s.palette_cursor = (cur + entries.len() - 1) % entries.len(),
-                    Key::Enter => {
-                        let run = std::rc::Rc::clone(&entries[cur].run);
-                        run(s);
-                        s.palette_open = false;
-                    }
-                    _ => {}
-                }
-            }
-            return true;
-        }
+    if ui::shell::handle_palette_key(s, ev) {
+        return true;
     }
     if matches!(ev.key, Key::Function(1)) {
-        s.nav(Page::Settings);
-        s.settings.tab_idx = 1;
+        if !s.books_ready() || s.any_dialog_open() {
+            return false;
+        }
+        s.nav_then(Page::Settings, |st| {
+            st.settings.tab_idx = 3;
+        });
         return true;
     }
     if matches!(ev.key, Key::Function(9)) {
+        if !s.books_ready() {
+            return false;
+        }
         s.toggle_sidebar();
         return true;
     }
     if ev.mods.cmd
         && ev.mods.alt
+        && s.books_ready()
         && !s.forms.any_focused()
         && !s.any_dialog_open()
         && let Key::Command(c) = ev.key
@@ -82,14 +69,23 @@ fn handle_key(s: &mut State, ev: &rune::KeyEvent, _tx: &mut rune::Tx) -> bool {
     }
     if !ev.mods.alt && ev.is_command('k') {
         if s.palette_open {
-            s.palette_open = false;
-        } else {
-            s.open_palette();
+            if s.confirm.is_none() {
+                s.palette_open = false;
+                return true;
+            }
+            return false;
         }
+        if !s.books_ready() || s.any_dialog_open() {
+            return false;
+        }
+        s.open_palette();
         return true;
     }
     // Sarv: ⌘B. rune-kit shell also accepts ⇧⌘B / ⌃⌘S.
     if (!ev.mods.alt && ev.is_command('b')) || is_sidebar_toggle(ev) {
+        if !s.books_ready() {
+            return false;
+        }
         s.toggle_sidebar();
         return true;
     }

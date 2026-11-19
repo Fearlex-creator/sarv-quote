@@ -117,9 +117,11 @@ pub enum CoreRole {
     OperatingExpense,
     BankFees,
     InventoryLoss,
+    VatReceivable,
+    VatPayable,
 }
 impl CoreRole {
-    pub const ALL: [Self; 21] = [
+    pub const ALL: [Self; 23] = [
         Self::Cash,
         Self::Bank,
         Self::Receivables,
@@ -141,6 +143,8 @@ impl CoreRole {
         Self::OperatingExpense,
         Self::BankFees,
         Self::InventoryLoss,
+        Self::VatReceivable,
+        Self::VatPayable,
     ];
     pub fn key(self) -> &'static str {
         match self {
@@ -165,6 +169,8 @@ impl CoreRole {
             Self::OperatingExpense => "operating_expense",
             Self::BankFees => "bank_fees",
             Self::InventoryLoss => "inventory_loss",
+            Self::VatReceivable => "vat_receivable",
+            Self::VatPayable => "vat_payable",
         }
     }
     pub fn label(self) -> &'static str {
@@ -190,6 +196,8 @@ impl CoreRole {
             Self::OperatingExpense => "هزینه‌های عملیاتی",
             Self::BankFees => "کارمزد بانکی",
             Self::InventoryLoss => "ضایعات و کسری موجودی",
+            Self::VatReceivable => "مالیات بر ارزش افزوده دریافتنی",
+            Self::VatPayable => "مالیات بر ارزش افزوده پرداختنی",
         }
     }
     pub fn classification(self) -> AccountClass {
@@ -200,8 +208,11 @@ impl CoreRole {
             | Self::ChequesReceivable
             | Self::Inventory
             | Self::SupplierAdvances
-            | Self::FixedAssets => AccountClass::Asset,
-            Self::Payables | Self::ChequesPayable | Self::Grni | Self::CustomerAdvances | Self::Loans => AccountClass::Liability,
+            | Self::FixedAssets
+            | Self::VatReceivable => AccountClass::Asset,
+            Self::Payables | Self::ChequesPayable | Self::Grni | Self::CustomerAdvances | Self::Loans | Self::VatPayable => {
+                AccountClass::Liability
+            }
             Self::OwnerCapital | Self::OwnerDrawings | Self::RetainedEarnings => AccountClass::Equity,
             Self::Sales | Self::SalesReturns => AccountClass::Revenue,
             _ => AccountClass::Expense,
@@ -248,7 +259,7 @@ pub struct ChartLeaf {
 pub fn default_chart() -> Vec<ChartLeaf> {
     let codes = [
         "1101", "1102", "1201", "1202", "1301", "1401", "1501", "2101", "2102", "2201", "2301", "2401", "3101", "3102", "3201", "4101",
-        "4102", "5101", "5201", "5202", "5301",
+        "4102", "5101", "5201", "5202", "5301", "1402", "2501",
     ];
     CoreRole::ALL
         .into_iter()
@@ -655,7 +666,6 @@ impl AccountingState {
         self.validate_role_mappings(command, true)
     }
     fn validate_role_mappings(&self, command: &ConfigureCore, active: bool) -> Result<()> {
-        ensure!(command.mappings.len() == CoreRole::ALL.len(), "نگاشت تمام نقش‌های هسته لازم است");
         let mut roles = HashSet::new();
         let mut accounts = HashSet::new();
         for m in &command.mappings {
@@ -691,6 +701,121 @@ impl AccountingState {
                     && (!active || !parent.archived),
                 "گروه والد نگاشت نامعتبر است"
             );
+        }
+        let all_non_vat = CoreRole::ALL
+            .into_iter()
+            .filter(|r| !matches!(r, CoreRole::VatReceivable | CoreRole::VatPayable))
+            .all(|r| roles.contains(&r));
+        if active {
+            ensure!(command.mappings.len() == CoreRole::ALL.len(), "نگاشت تمام نقش‌های هسته لازم است");
+        } else {
+            ensure!(
+                command.mappings.len() == CoreRole::ALL.len() || (all_non_vat && command.mappings.len() == CoreRole::ALL.len() - 2),
+                "نگاشت تمام نقش‌های هسته لازم است"
+            );
+        }
+        Ok(())
+    }
+
+    /// Schema 7 -> 8 additive migration: ensure every configured company has
+    /// `VatReceivable` (`1402`) and `VatPayable` (`2501`) chart accounts and role mappings.
+    pub fn ensure_vat_roles(&mut self) -> Result<()> {
+        let setup_indices: Vec<usize> = (0..self.core.setups.len()).collect();
+        for idx in setup_indices {
+            let company_id = self.core.setups[idx].command.company_id.clone();
+            let mut added = false;
+            for (role, preferred_code) in [(CoreRole::VatReceivable, "1402"), (CoreRole::VatPayable, "2501")] {
+                if self.core.setups[idx].command.mappings.iter().any(|m| m.role == role) {
+                    continue;
+                }
+                let parent_id = self
+                    .accounts
+                    .iter()
+                    .find(|a| {
+                        a.company_id == company_id
+                            && a.classification == role.classification()
+                            && !a.postable
+                            && !a.control
+                            && a.parent_id.is_none()
+                    })
+                    .map(|a| a.id.clone());
+                let Some(parent_id) = parent_id else {
+                    continue;
+                };
+                let used: HashSet<String> = self
+                    .accounts
+                    .iter()
+                    .filter(|a| a.company_id == company_id)
+                    .map(|a| normalize(&a.code))
+                    .collect();
+                let mut code = preferred_code.to_string();
+                let mut suffix = 1u32;
+                while used.contains(&normalize(&code)) {
+                    code = format!("{preferred_code}-{suffix}");
+                    suffix += 1;
+                }
+                let account_id = self.add_account(
+                    NewAccount {
+                        company_id: company_id.clone(),
+                        parent_id: Some(parent_id),
+                        code,
+                        name: role.label().into(),
+                        classification: role.classification(),
+                        normal_balance: role.normal_balance(),
+                        postable: true,
+                        control: false,
+                    },
+                    "migration-v8",
+                )?;
+                // Place the AccountCreated audit event and Account entry immediately before
+                // CoreConfigured so chronological replay matches `self` identically.
+                let setup_id = self.core.setups[idx].id.clone();
+                if let Some(ev) = self.audit.pop() {
+                    if let Some(pos) = self
+                        .audit
+                        .iter()
+                        .position(|e| e.entity_id == setup_id && e.operation == AuditOperation::CoreConfigured)
+                    {
+                        let acct_pos = self.audit[..pos]
+                            .iter()
+                            .filter(|e| e.operation == AuditOperation::AccountCreated)
+                            .count();
+                        if let Some(acct) = self.accounts.pop() {
+                            let target = acct_pos.min(self.accounts.len());
+                            self.accounts.insert(target, acct);
+                        }
+                        self.audit.insert(pos, ev);
+                    } else {
+                        self.audit.push(ev);
+                    }
+                }
+                self.core.setups[idx].command.mappings.push(RoleMapping { role, account_id });
+                added = true;
+            }
+            if added {
+                self.core.setups[idx].command_sha256 = command_hash(&self.core.setups[idx].command)?;
+                let updated = self.core.setups[idx].clone();
+                for o in &mut self.core.openings {
+                    if o.frozen_setup.id == updated.id {
+                        o.frozen_setup = updated.clone();
+                    }
+                }
+                for r in &mut self.procurement.records {
+                    if r.frozen_setup.id == updated.id {
+                        r.frozen_setup = updated.clone();
+                    }
+                }
+                for r in &mut self.sales.records {
+                    if r.frozen_setup.id == updated.id {
+                        r.frozen_setup = updated.clone();
+                    }
+                }
+                for r in &mut self.payments.records {
+                    if r.frozen_setup.id == updated.id {
+                        r.frozen_setup = updated.clone();
+                    }
+                }
+            }
         }
         Ok(())
     }

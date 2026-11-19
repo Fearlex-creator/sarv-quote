@@ -97,7 +97,7 @@ pub fn isolate(value: &str) -> String {
     format!("\u{2068}{value}\u{2069}")
 }
 
-/// Latin digits to Persian digits (also `.` to the decimal separator and `,` to the thousands one).
+/// Convert ASCII digits `'0'..='9'` to Persian digits `'۰'..='۹'`, leaving all other characters unchanged.
 pub fn persian_digits(s: &str) -> String {
     s.chars()
         .map(|c| match c {
@@ -211,7 +211,7 @@ impl Fmt {
         let chars: Vec<char> = whole.chars().collect();
         let mut out = String::new();
         for (i, c) in chars.iter().enumerate() {
-            if i > 0 && (chars.len() - i) % 3 == 0 {
+            if i > 0 && (chars.len() - i).is_multiple_of(3) {
                 out.push(sep);
             }
             out.push(*c);
@@ -294,7 +294,16 @@ impl Fmt {
             format!("{}{sep}{frac}", a / 1000)
         };
         let text = self.digits(&text);
-        if n < 0 { format!("−{text}") } else { text }
+        if n < 0 { format!("\u{2066}−{text}\u{2069}") } else { text }
+    }
+
+    /// Format a signed integer with locale thousands grouping, Unicode minus, and LTR bidi isolation.
+    pub fn grouped_i64(&self, n: i64) -> String {
+        let neg = n < 0;
+        let grouped = self.group(&n.unsigned_abs().to_string());
+        let body = self.digits(&grouped);
+        let shown = if neg { format!("−{body}") } else { body };
+        format!("\u{2066}{shown}\u{2069}")
     }
 
     pub fn number(&self, n: impl std::fmt::Display) -> String {
@@ -374,6 +383,26 @@ mod tests {
         };
         assert_eq!(f.qty("2500"), "2.5");
         assert_eq!(f.qty("3000"), "3");
+        assert_eq!(f.qty("-2500"), "\u{2066}−2.5\u{2069}");
+
+        let fa = Fmt::default();
+        assert_eq!(fa.qty("-1500"), "\u{2066}−۱٫۵\u{2069}");
+    }
+
+    #[test]
+    fn grouped_i64_uses_locale_separator_and_bidi_isolation() {
+        let en = Fmt {
+            lang: Lang::En,
+            persian_digits: false,
+            ..Fmt::default()
+        };
+        assert_eq!(en.grouped_i64(0), "\u{2066}0\u{2069}");
+        assert_eq!(en.grouped_i64(1234567), "\u{2066}1,234,567\u{2069}");
+        assert_eq!(en.grouped_i64(-98765), "\u{2066}−98,765\u{2069}");
+
+        let fa = Fmt::default();
+        assert_eq!(fa.grouped_i64(1234567), "\u{2066}۱٬۲۳۴٬۵۶۷\u{2069}");
+        assert_eq!(fa.grouped_i64(-98765), "\u{2066}−۹۸٬۷۶۵\u{2069}");
     }
 
     #[test]
@@ -565,7 +594,7 @@ mod tests {
 
         for file in &files {
             let src = std::fs::read_to_string(file).unwrap();
-            for pat in [".t(\"", "ui.labeled(\""] {
+            for pat in [".t(\"", ".tf(\"", "ui.labeled(\"", "ui.hinted(\""] {
                 let mut rest = src.as_str();
                 while let Some(idx) = rest.find(pat) {
                     let after = &rest[idx + pat.len() - 1..];
@@ -581,10 +610,10 @@ mod tests {
                 let mut rest = src.as_str();
                 while let Some(idx) = rest.find(pat) {
                     let after_paren = &rest[idx + pat.len()..];
-                    if let Some(arg2) = skip_first_arg(after_paren) {
-                        if let Some((lit, _)) = read_string_lit(arg2) {
-                            check_key(file, &lit);
-                        }
+                    if let Some(arg2) = skip_first_arg(after_paren)
+                        && let Some((lit, _)) = read_string_lit(arg2)
+                    {
+                        check_key(file, &lit);
                     }
                     rest = after_paren;
                 }
@@ -596,10 +625,10 @@ mod tests {
                     if let Some((lit, _)) = read_string_lit(arg2) {
                         check_key(file, &lit);
                     }
-                    if let Some(arg3) = skip_first_arg(arg2) {
-                        if let Some((lit, _)) = read_string_lit(arg3) {
-                            check_key(file, &lit);
-                        }
+                    if let Some(arg3) = skip_first_arg(arg2)
+                        && let Some((lit, _)) = read_string_lit(arg3)
+                    {
+                        check_key(file, &lit);
                     }
                 }
                 rest = after_paren;

@@ -76,12 +76,25 @@ pub fn party_matches(s: &State, party: &serde_json::Value, query: &str) -> bool 
     .any(|field| crate::i18n::fold(field).contains(&q))
 }
 
-fn balance_for(s: &State, id: &str) -> String {
-    let party_balances = s.books.report["party_balances"].as_object();
-    party_balances
-        .and_then(|m| m.get(&format!("customer:{id}")).or_else(|| m.get(&format!("vendor:{id}"))))
-        .map(crate::data::s)
-        .unwrap_or_else(|| "0".into())
+fn balance_for(s: &State, id: &str, filter: ContactFilter) -> String {
+    let Some(party_balances) = s.books.report["party_balances"].as_object() else {
+        return "0".into();
+    };
+    let get = |key: String| party_balances.get(&key).map(crate::data::s);
+    match filter {
+        ContactFilter::Customers => get(format!("customer:{id}")).unwrap_or_else(|| "0".into()),
+        ContactFilter::Suppliers => get(format!("vendor:{id}")).unwrap_or_else(|| "0".into()),
+        ContactFilter::All => match (get(format!("customer:{id}")), get(format!("vendor:{id}"))) {
+            (Some(c), Some(v)) => {
+                let c_num: i128 = c.parse().unwrap_or(0);
+                let v_num: i128 = v.parse().unwrap_or(0);
+                c_num.saturating_sub(v_num).to_string()
+            }
+            (Some(c), None) => c,
+            (None, Some(v)) => v,
+            (None, None) => "0".into(),
+        },
+    }
 }
 
 pub fn open_new_contact(st: &mut State, supplier: bool) {
@@ -158,9 +171,14 @@ fn build_rows(s: &State) -> (Vec<Row>, HashMap<String, String>) {
         } else {
             "—".into()
         };
+        let phone_display = if phone == "—" {
+            phone.clone()
+        } else {
+            crate::i18n::isolate(&phone)
+        };
         let city_raw = crate::data::s(&p["city"]);
         let city = if city_raw.is_empty() { "—".into() } else { city_raw.clone() };
-        let bal_raw = balance_for(s, &id);
+        let bal_raw = balance_for(s, &id, s.contacts.filter);
         let email_raw = crate::data::s(&p["email"]);
         let blob = fold_text(&format!(
             "{name}\n{phone_raw}\n{mobile_raw}\n{email_raw}\n{org_raw}\n{city_raw}\n{id}"
@@ -172,7 +190,7 @@ fn build_rows(s: &State) -> (Vec<Row>, HashMap<String, String>) {
                 name.clone(),
                 org.clone(),
                 role.clone(),
-                phone.clone(),
+                phone_display,
                 city.clone(),
                 s.fmt.money(&bal_raw),
             ],
@@ -299,24 +317,49 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_create(s, ui, layer);
     }
 
-    let empty_title = if all_parties(s).is_empty() {
-        "No contacts"
-    } else {
-        "Nothing to show"
-    };
+    let parties = all_parties(s);
+    let cust_count = parties.iter().filter(|p| p["customer"].as_bool() == Some(true)).count();
+    let supp_count = parties.iter().filter(|p| p["supplier"].as_bool() == Some(true)).count();
+    let contact_kpis = row()
+        .w_full()
+        .gap(12.0)
+        .child(ui.metric(
+            "contacts-kpi-customers",
+            &icons::CONTACTS,
+            &ui.t("Customers"),
+            ui.f.digits(&cust_count.to_string()),
+            ui.f.money(&s.books.position("receivables")),
+            Tone::Success,
+        ))
+        .child(ui.metric(
+            "contacts-kpi-suppliers",
+            &icons::PURCHASES,
+            &ui.t("Suppliers"),
+            ui.f.digits(&supp_count.to_string()),
+            ui.f.money(&s.books.position("payables")),
+            Tone::Warning,
+        ));
+
+    let empty_title = if parties.is_empty() { "No contacts" } else { "Nothing to show" };
+    let mut filter_row = row()
+        .w_full()
+        .gap(12.0)
+        .center_y()
+        .child(filter_bar)
+        .child(ui.field(s, "contact-search", &ui.t("Search")).grow(1.0).min_w(0.0));
+    if !s.contacts.selected.is_empty() {
+        filter_row = filter_row.child(ui.btn(Btn::Glass, "Contact details", None, |st| {
+            let id = st.contacts.selected.clone();
+            open_contact(st, &id);
+        }));
+    }
     let body = col()
         .w_full()
         .gap(14.0)
         .grow(1.0)
         .min_h(0.0)
-        .child(
-            row()
-                .w_full()
-                .gap(12.0)
-                .center_y()
-                .child(filter_bar)
-                .child(ui.field(s, "contact-search", &ui.t("Search")).grow(1.0).min_w(0.0)),
-        )
+        .child(contact_kpis)
+        .child(filter_row)
         .child(ui.fill_or_empty(
             visible_count,
             empty_title,
@@ -329,18 +372,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         "contacts-screen",
         &ui.t("Contacts"),
         &ui.t("People and companies you sell to or buy from"),
-        vec![
-            add_supp_btn,
-            add_btn,
-            ui.btn(Btn::Glass, "Contact details", None, |st| {
-                if st.contacts.selected.is_empty() {
-                    st.toast(Tone::Info, st.fmt.t("Select contact"));
-                    return;
-                }
-                let id = st.contacts.selected.clone();
-                open_contact(st, &id);
-            }),
-        ],
+        vec![add_supp_btn, add_btn],
         body,
     )
 }

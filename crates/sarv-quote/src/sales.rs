@@ -37,8 +37,26 @@ impl SalesState {
             .any(|r| r.request_key == key && self.records.iter().any(|p| p.id == r.record_id && p.journal_id.is_none()))
     }
 }
+fn is_zero_u32(v: &u32) -> bool {
+    *v == 0
+}
 record!(QuotationLink{quote_id:String,quote_series:String,quote_revision:u32,quote_number:String,quote_sha256:String,source_line_indices:Vec<usize>});
-record!(SalesOrder{context:SalesContext,customer_id:String,reference:String,document_date:String,lines:Vec<SalesOrderLine>,document_discount:Money,supplied_total:Money,quotation:Option<QuotationLink>});
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SalesOrder {
+    pub context: SalesContext,
+    pub customer_id: String,
+    pub reference: String,
+    pub document_date: String,
+    pub lines: Vec<SalesOrderLine>,
+    pub document_discount: Money,
+    pub supplied_total: Money,
+    pub quotation: Option<QuotationLink>,
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    pub vat_basis_points: u32,
+    #[serde(default, skip_serializing_if = "crate::vat::PricingMode::is_default")]
+    pub pricing_mode: crate::vat::PricingMode,
+}
 record!(FulfillLine {
     id: String,
     order_line_id: String,
@@ -84,7 +102,15 @@ impl SalesCommand {
         }
     }
 }
-record!(PostedSalesOrder{customer:CoreParty,lines:Vec<FrozenSalesOrderLine>,total:Money});
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedSalesOrder {
+    pub customer: CoreParty,
+    pub lines: Vec<FrozenSalesOrderLine>,
+    pub total: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+}
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DeliveryState {
     Delivered,
@@ -101,32 +127,68 @@ pub enum ReturnState {
 pub enum CreditState {
     Posted,
 }
-record!(PostedFulfillmentLine {
-    id: String,
-    order_line_id: String,
-    item: CoreItem,
-    warehouse_id: String,
-    quantity_thousandths: i64,
-    gross: Money,
-    line_discount: Money,
-    document_discount: Money,
-    net: Money,
-    cost: Money
-});
-record!(PostedFulfillment{order_id:String,customer:CoreParty,delivery_id:String,invoice_id:String,delivery_state:DeliveryState,invoice_state:InvoiceState,lines:Vec<PostedFulfillmentLine>,total:Money,cost:Money});
-record!(PostedSalesReturnLine {
-    id: String,
-    fulfillment_line_id: String,
-    item_id: String,
-    warehouse_id: String,
-    quantity_thousandths: i64,
-    gross: Money,
-    line_discount: Money,
-    document_discount: Money,
-    net: Money,
-    cost: Money
-});
-record!(PostedSalesReturn{fulfillment_id:String,customer_id:String,return_id:String,credit_id:String,return_state:ReturnState,credit_state:CreditState,lines:Vec<PostedSalesReturnLine>,total:Money,cost:Money});
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedFulfillmentLine {
+    pub id: String,
+    pub order_line_id: String,
+    pub item: CoreItem,
+    pub warehouse_id: String,
+    pub quantity_thousandths: i64,
+    pub gross: Money,
+    pub line_discount: Money,
+    pub document_discount: Money,
+    pub net: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+    pub cost: Money,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedFulfillment {
+    pub order_id: String,
+    pub customer: CoreParty,
+    pub delivery_id: String,
+    pub invoice_id: String,
+    pub delivery_state: DeliveryState,
+    pub invoice_state: InvoiceState,
+    pub lines: Vec<PostedFulfillmentLine>,
+    pub total: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+    pub cost: Money,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedSalesReturnLine {
+    pub id: String,
+    pub fulfillment_line_id: String,
+    pub item_id: String,
+    pub warehouse_id: String,
+    pub quantity_thousandths: i64,
+    pub gross: Money,
+    pub line_discount: Money,
+    pub document_discount: Money,
+    pub net: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+    pub cost: Money,
+}
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct PostedSalesReturn {
+    pub fulfillment_id: String,
+    pub customer_id: String,
+    pub return_id: String,
+    pub credit_id: String,
+    pub return_state: ReturnState,
+    pub credit_state: CreditState,
+    pub lines: Vec<PostedSalesReturnLine>,
+    pub total: Money,
+    #[serde(default, skip_serializing_if = "Money::is_zero")]
+    pub tax: Money,
+    pub cost: Money,
+}
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub enum SalesData {
     Order(PostedSalesOrder),
@@ -346,13 +408,34 @@ fn record_journal_lines(r: &SalesRecord) -> Result<Vec<JournalLineInput>> {
     let mut out = Vec::new();
     match (&r.command, &r.data) {
         (SalesCommand::Fulfill(c), SalesData::Fulfill(v)) => {
-            out.extend(pair(
-                &r.frozen_setup,
-                CoreRole::Receivables,
-                CoreRole::Sales,
-                v.total,
-                &c.invoice_reference,
-            )?);
+            if v.tax == Money::ZERO {
+                out.extend(pair(
+                    &r.frozen_setup,
+                    CoreRole::Receivables,
+                    CoreRole::Sales,
+                    v.total,
+                    &c.invoice_reference,
+                )?);
+            } else {
+                out.push(JournalLineInput {
+                    account_id: r.frozen_setup.account_id(CoreRole::Receivables)?.to_string(),
+                    debit: v.total,
+                    credit: Money::ZERO,
+                    description: c.invoice_reference.clone(),
+                });
+                out.push(JournalLineInput {
+                    account_id: r.frozen_setup.account_id(CoreRole::Sales)?.to_string(),
+                    debit: Money::ZERO,
+                    credit: v.total.checked_sub(v.tax)?,
+                    description: c.invoice_reference.clone(),
+                });
+                out.push(JournalLineInput {
+                    account_id: r.frozen_setup.account_id(CoreRole::VatPayable)?.to_string(),
+                    debit: Money::ZERO,
+                    credit: v.tax,
+                    description: c.invoice_reference.clone(),
+                });
+            }
             out.extend(pair(
                 &r.frozen_setup,
                 CoreRole::Cogs,
@@ -362,13 +445,34 @@ fn record_journal_lines(r: &SalesRecord) -> Result<Vec<JournalLineInput>> {
             )?);
         }
         (SalesCommand::Return(c), SalesData::Return(v)) => {
-            out.extend(pair(
-                &r.frozen_setup,
-                CoreRole::SalesReturns,
-                CoreRole::Receivables,
-                v.total,
-                &c.credit_reference,
-            )?);
+            if v.tax == Money::ZERO {
+                out.extend(pair(
+                    &r.frozen_setup,
+                    CoreRole::SalesReturns,
+                    CoreRole::Receivables,
+                    v.total,
+                    &c.credit_reference,
+                )?);
+            } else {
+                out.push(JournalLineInput {
+                    account_id: r.frozen_setup.account_id(CoreRole::SalesReturns)?.to_string(),
+                    debit: v.total.checked_sub(v.tax)?,
+                    credit: Money::ZERO,
+                    description: c.credit_reference.clone(),
+                });
+                out.push(JournalLineInput {
+                    account_id: r.frozen_setup.account_id(CoreRole::VatPayable)?.to_string(),
+                    debit: v.tax,
+                    credit: Money::ZERO,
+                    description: c.credit_reference.clone(),
+                });
+                out.push(JournalLineInput {
+                    account_id: r.frozen_setup.account_id(CoreRole::Receivables)?.to_string(),
+                    debit: Money::ZERO,
+                    credit: v.total,
+                    description: c.credit_reference.clone(),
+                });
+            }
             out.extend(pair(
                 &r.frozen_setup,
                 CoreRole::Inventory,
@@ -573,8 +677,8 @@ impl AccountingState {
             .filter(|r| r.command.context().company_id == company && r.command.context().date.as_str() <= asof)
         {
             match (&r.data, role) {
-                (SalesData::Fulfill(f), CoreRole::Sales) => total = total.checked_add(f.total)?,
-                (SalesData::Return(f), CoreRole::SalesReturns) => total = total.checked_add(f.total)?,
+                (SalesData::Fulfill(f), CoreRole::Sales) => total = total.checked_add(f.total.checked_sub(f.tax)?)?,
+                (SalesData::Return(f), CoreRole::SalesReturns) => total = total.checked_add(f.total.checked_sub(f.tax)?)?,
                 (SalesData::Fulfill(f), CoreRole::Cogs) => total = total.checked_add(f.cost)?,
                 (SalesData::Return(f), CoreRole::Cogs) => total = total.checked_sub(f.cost)?,
                 _ => {}
@@ -785,19 +889,31 @@ impl AccountingState {
                         gross,
                         document_discount: Money::ZERO,
                         net,
+                        tax: Money::ZERO,
                     });
                 }
                 for (l, d) in frozen.iter_mut().zip(discounts(&x.lines, &weights, x.document_discount)?) {
                     l.document_discount = d;
-                    l.net = l.net.checked_sub(d)?;
+                    let subtotal = l.net.checked_sub(d)?;
+                    let (net_r, tax_r, _) = crate::vat::compute_vat_on_subtotal(
+                        subtotal.rials(),
+                        crate::vat::TaxCategory::Taxable,
+                        x.vat_basis_points,
+                        x.pricing_mode,
+                    )?;
+                    l.net = Money::from_rials(net_r);
+                    l.tax = Money::from_rials(tax_r);
                 }
-                let total = sum(frozen.iter().map(|l| l.net))?;
+                let net_total = sum(frozen.iter().map(|l| l.net))?;
+                let tax_total = sum(frozen.iter().map(|l| l.tax))?;
+                let total = net_total.checked_add(tax_total)?;
                 ensure!(total == x.supplied_total, "جمع مستقل سفارش برابر نیست");
                 (
                     SalesData::Order(PostedSalesOrder {
                         customer,
                         lines: frozen,
                         total,
+                        tax: tax_total,
                     }),
                     total,
                     Money::ZERO,
@@ -856,7 +972,7 @@ impl AccountingState {
                     let r = remaining.iter().find(|r| r.id == l.order_line_id).unwrap();
                     let q = base(&orig.item, &l.unit_id, l.quantity_thousandths)?;
                     let priorq = r.fulfilled_quantity_thousandths;
-                    let (mut priorld, mut priordd) = (Money::ZERO, Money::ZERO);
+                    let (mut priorld, mut priordd, mut priortax) = (Money::ZERO, Money::ZERO, Money::ZERO);
                     for record in &self.sales.records {
                         if let SalesData::Fulfill(f) = &record.data
                             && f.order_id == x.order_id
@@ -864,6 +980,7 @@ impl AccountingState {
                             for line in f.lines.iter().filter(|line| line.order_line_id == l.order_line_id) {
                                 priorld = priorld.checked_add(line.line_discount)?;
                                 priordd = priordd.checked_add(line.document_discount)?;
+                                priortax = priortax.checked_add(line.tax)?;
                             }
                         }
                     }
@@ -874,6 +991,7 @@ impl AccountingState {
                         orig.net.checked_sub(r.remaining_net)?,
                         q,
                     )?;
+                    let tax = allocation(orig.tax, orig.base_quantity_thousandths, priorq, priortax, q)?;
                     let ld = allocation(orig.input.line_discount, orig.base_quantity_thousandths, priorq, priorld, q)?;
                     let dd = allocation(orig.document_discount, orig.base_quantity_thousandths, priorq, priordd, q)?;
                     let gross = net.checked_add(ld)?.checked_add(dd)?;
@@ -900,13 +1018,37 @@ impl AccountingState {
                         line_discount: ld,
                         document_discount: dd,
                         net,
+                        tax,
                         cost,
                     });
                 }
-                let total = sum(lines.iter().map(|l| l.net))?;
+                let net_total = sum(lines.iter().map(|l| l.net))?;
+                let tax_total = sum(lines.iter().map(|l| l.tax))?;
+                let total = net_total.checked_add(tax_total)?;
                 let cost = sum(lines.iter().map(|l| l.cost))?;
                 ensure!(total == x.supplied_total, "جمع مستقل فاکتور با تخصیص سفارش برابر نیست");
-                journal_lines.extend(pair(setup, CoreRole::Receivables, CoreRole::Sales, total, &x.invoice_reference)?);
+                if tax_total == Money::ZERO {
+                    journal_lines.extend(pair(setup, CoreRole::Receivables, CoreRole::Sales, total, &x.invoice_reference)?);
+                } else {
+                    journal_lines.push(JournalLineInput {
+                        account_id: setup.account_id(CoreRole::Receivables)?.to_string(),
+                        debit: total,
+                        credit: Money::ZERO,
+                        description: x.invoice_reference.clone(),
+                    });
+                    journal_lines.push(JournalLineInput {
+                        account_id: setup.account_id(CoreRole::Sales)?.to_string(),
+                        debit: Money::ZERO,
+                        credit: net_total,
+                        description: x.invoice_reference.clone(),
+                    });
+                    journal_lines.push(JournalLineInput {
+                        account_id: setup.account_id(CoreRole::VatPayable)?.to_string(),
+                        debit: Money::ZERO,
+                        credit: tax_total,
+                        description: x.invoice_reference.clone(),
+                    });
+                }
                 journal_lines.extend(pair(setup, CoreRole::Cogs, CoreRole::Inventory, cost, &x.delivery_reference)?);
                 (
                     SalesData::Fulfill(PostedFulfillment {
@@ -918,6 +1060,7 @@ impl AccountingState {
                         invoice_state: InvoiceState::Posted,
                         lines,
                         total,
+                        tax: tax_total,
                         cost,
                     }),
                     total,
@@ -985,9 +1128,21 @@ impl AccountingState {
                         orig.document_discount.checked_sub(r.document_discount)?,
                         q,
                     )?;
+                    let mut prior_tax = Money::ZERO;
+                    for rec in &self.sales.records {
+                        if let SalesData::Return(ret) = &rec.data
+                            && ret.fulfillment_id == x.fulfillment_id
+                        {
+                            for rl in ret.lines.iter().filter(|rl| rl.fulfillment_line_id == l.fulfillment_line_id) {
+                                prior_tax = prior_tax.checked_add(rl.tax)?;
+                            }
+                        }
+                    }
+                    let tax = allocation(orig.tax, orig.quantity_thousandths, priorq, prior_tax, q)?;
                     let cost = allocation(orig.cost, orig.quantity_thousandths, priorq, orig.cost.checked_sub(r.cost)?, q)?;
+                    let credit_with_tax = net.checked_add(tax)?;
                     ensure!(
-                        net == l.supplied_credit && cost == l.supplied_cost,
+                        credit_with_tax == l.supplied_credit && cost == l.supplied_cost,
                         "اعتبار یا بهای مستقل ردیف برگشت با تخصیص اصلی برابر نیست"
                     );
                     let gross = net.checked_add(ld)?.checked_add(dd)?;
@@ -1005,22 +1160,46 @@ impl AccountingState {
                         line_discount: ld,
                         document_discount: dd,
                         net,
+                        tax,
                         cost,
                     });
                 }
-                let total = sum(lines.iter().map(|l| l.net))?;
+                let net_total = sum(lines.iter().map(|l| l.net))?;
+                let tax_total = sum(lines.iter().map(|l| l.tax))?;
+                let total = net_total.checked_add(tax_total)?;
                 let cost = sum(lines.iter().map(|l| l.cost))?;
                 ensure!(
                     total == x.supplied_credit && cost == x.supplied_cost,
                     "جمع مستقل برگشت با تخصیص اصلی برابر نیست"
                 );
-                journal_lines.extend(pair(
-                    setup,
-                    CoreRole::SalesReturns,
-                    CoreRole::Receivables,
-                    total,
-                    &x.credit_reference,
-                )?);
+                if tax_total == Money::ZERO {
+                    journal_lines.extend(pair(
+                        setup,
+                        CoreRole::SalesReturns,
+                        CoreRole::Receivables,
+                        total,
+                        &x.credit_reference,
+                    )?);
+                } else {
+                    journal_lines.push(JournalLineInput {
+                        account_id: setup.account_id(CoreRole::SalesReturns)?.to_string(),
+                        debit: net_total,
+                        credit: Money::ZERO,
+                        description: x.credit_reference.clone(),
+                    });
+                    journal_lines.push(JournalLineInput {
+                        account_id: setup.account_id(CoreRole::VatPayable)?.to_string(),
+                        debit: tax_total,
+                        credit: Money::ZERO,
+                        description: x.credit_reference.clone(),
+                    });
+                    journal_lines.push(JournalLineInput {
+                        account_id: setup.account_id(CoreRole::Receivables)?.to_string(),
+                        debit: Money::ZERO,
+                        credit: total,
+                        description: x.credit_reference.clone(),
+                    });
+                }
                 journal_lines.extend(pair(setup, CoreRole::Inventory, CoreRole::Cogs, cost, &x.return_reference)?);
                 (
                     SalesData::Return(PostedSalesReturn {
@@ -1032,6 +1211,7 @@ impl AccountingState {
                         credit_state: CreditState::Posted,
                         lines,
                         total,
+                        tax: tax_total,
                         cost,
                     }),
                     total,

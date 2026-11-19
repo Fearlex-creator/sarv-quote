@@ -1,6 +1,7 @@
 //! Purchases — list + order editor with supplier/product Combobox (pick or create).
 
 use std::borrow::Cow;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use rune::{Align, Cx, El, col, row};
 use rune_kit::{Cell, ComboboxState, SortDir, Switch, Table, TableColumn, TableState};
@@ -21,10 +22,13 @@ pub struct PurchaseLine {
     pub price: String,
 }
 
+static PURCHASE_LINE_SEQ: AtomicU64 = AtomicU64::new(1);
+
 impl PurchaseLine {
     fn blank() -> Self {
+        let seq = PURCHASE_LINE_SEQ.fetch_add(1, Ordering::Relaxed);
         Self {
-            id: format!("pline-{}", chrono::Utc::now().timestamp_millis()),
+            id: format!("pline-{seq}"),
             item_id: String::new(),
             qty: "1".into(),
             price: String::new(),
@@ -44,6 +48,8 @@ pub struct PurchasesState {
     pub creating_item_for_line: Option<usize>,
     pub post_key: String,
     pub posting: bool,
+    pub posted_order_id: Option<String>,
+    pub received_record_id: Option<String>,
     /// When set, the order is received and billed in the same step.
     pub receive_and_bill: bool,
     pub selected: String,
@@ -62,6 +68,8 @@ impl PurchasesState {
         let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
         self.post_key = format!("po-{stamp}");
         self.posting = false;
+        self.posted_order_id = None;
+        self.received_record_id = None;
         self.receive_and_bill = true;
     }
 
@@ -133,12 +141,8 @@ fn post_purchase(st: &mut State) {
     for (i, line) in st.purchases.lines.iter_mut().enumerate() {
         let q = st.forms.get(&format!("buy-qty-{i}"));
         let p = st.forms.get(&format!("buy-price-{i}"));
-        if !q.trim().is_empty() {
-            line.qty = q;
-        }
-        if !p.trim().is_empty() {
-            line.price = p;
-        }
+        line.qty = q;
+        line.price = p;
     }
     let filled: Vec<_> = st.purchases.lines.iter().filter(|l| !l.item_id.is_empty()).cloned().collect();
     if filled.is_empty() {
@@ -183,59 +187,73 @@ fn post_purchase(st: &mut State) {
     }
     let key = st.purchases.post_key.clone();
     let reference = format!("PO-{}", &key[key.len().saturating_sub(6)..]);
-    let mut payload = json!({
-        "supplier_id": st.purchases.supplier_id,
-        "reference": reference,
-        "date": date,
-        "discount": "0",
-        "reason": "Purchase order",
-        "source_id": key,
-        "request_key": key,
-        "lines": lines
-    });
-    let review = match st.query("purchase_preview", payload.clone()) {
-        Ok(v) => v,
-        Err(e) => {
-            st.toast_err(e);
-            st.purchases.posting = false;
-            return;
+    let order_id = if let Some(existing) = st.purchases.posted_order_id.clone() {
+        existing
+    } else {
+        let mut payload = json!({
+            "supplier_id": st.purchases.supplier_id,
+            "reference": reference,
+            "date": date,
+            "discount": "0",
+            "reason": "Purchase order",
+            "source_id": key,
+            "request_key": key,
+            "lines": lines
+        });
+        let review = match st.query("purchase_preview", payload.clone()) {
+            Ok(v) => v,
+            Err(e) => {
+                st.toast_err(e);
+                st.purchases.posting = false;
+                return;
+            }
+        };
+        if !review["_generation"].is_null() {
+            payload["expected_generation"] = review["_generation"].clone();
         }
-    };
-    if !review["_generation"].is_null() {
-        payload["expected_generation"] = review["_generation"].clone();
-    }
-    let posted = match st.run("purchase_post", payload, None) {
-        Ok(v) => v,
-        Err(_) => {
-            // `run` already toasted the engine error.
-            st.purchases.posting = false;
-            return;
+        let posted = match st.run("purchase_post", payload, None) {
+            Ok(v) => v,
+            Err(_) => {
+                // `run` already toasted the engine error.
+                st.purchases.posting = false;
+                return;
+            }
+        };
+        let order_id = crate::data::s(&posted["record_id"]);
+        if !order_id.is_empty() {
+            st.purchases.posted_order_id = Some(order_id.clone());
         }
+        order_id
     };
     if st.purchases.receive_and_bill {
-        let order_id = crate::data::s(&posted["record_id"]);
         if order_id.is_empty() {
             st.toast(Tone::Danger, st.fmt.t("No received purchases"));
             st.purchases.posting = false;
             return;
         }
-        let receipt = match crate::ui::ops::post_operation(
-            st,
-            &order_id,
-            "receive",
-            &format!("R-{reference}"),
-            "Receive goods",
-            &format!("{key}-recv"),
-            &date,
-        ) {
-            Ok(v) => v,
-            Err(_) => {
-                st.purchases.posting = false;
-                return;
-            }
+        let bill_against = if let Some(existing) = st.purchases.received_record_id.clone() {
+            existing
+        } else {
+            let receipt = match crate::ui::ops::post_operation(
+                st,
+                &order_id,
+                "receive",
+                &format!("R-{reference}"),
+                "Receive goods",
+                &format!("{key}-recv"),
+                &date,
+            ) {
+                Ok(v) => v,
+                Err(_) => {
+                    st.purchases.posting = false;
+                    return;
+                }
+            };
+            let receipt_id = crate::data::s(&receipt["record_id"]);
+            let bill_against = if receipt_id.is_empty() { order_id } else { receipt_id };
+            st.purchases.received_record_id = Some(bill_against.clone());
+            bill_against
         };
-        let receipt_id = crate::data::s(&receipt["record_id"]);
-        let bill_against = if receipt_id.is_empty() { order_id } else { receipt_id };
         if crate::ui::ops::post_operation(
             st,
             &bill_against,
@@ -254,6 +272,8 @@ fn post_purchase(st: &mut State) {
     st.purchases.modal_open = false;
     st.purchases.posting = false;
     st.purchases.post_key.clear();
+    st.purchases.posted_order_id = None;
+    st.purchases.received_record_id = None;
     st.toast(Tone::Success, st.fmt.t("Posted"));
 }
 
@@ -352,6 +372,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         .collect();
     let tab_bar = ui.tabs("purchases-tabs", &tabs, |st, idx| {
         st.purchases.tab_idx = idx;
+        st.purchases.selected.clear();
         st.purchases.table = TableState::new();
         st.purchases.rows_stamp = 0;
         ensure(st);
@@ -409,14 +430,48 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_purchase_dialog(s, ui, layer);
     }
 
-    let mut body = col()
+    let mut row_actions = Vec::new();
+    if !s.purchases.selected.is_empty() {
+        row_actions.push(ui.btn(Btn::Glass, "Open", None, |st| {
+            let id = st.purchases.selected.clone();
+            crate::ui::detail::open(st, &id);
+        }));
+        row_actions.push(ui.btn(Btn::Glass, "Print", Some(&icons::DOWNLOAD), print_selected));
+        if kind == "Order" {
+            row_actions.push(ui.btn(Btn::Glass, "Receive goods", None, receive_selected));
+            row_actions.push(ui.btn(Btn::Glass, "Enter bill", None, bill_selected));
+        } else if kind == "Receive" {
+            row_actions.push(ui.btn(Btn::Glass, "Enter bill", None, bill_selected));
+        }
+        if kind != "Return" {
+            row_actions.push(ui.btn(Btn::Glass, "Return", None, return_selected));
+        }
+    }
+    let buy_kpis = row()
         .w_full()
-        .gap(14.0)
-        .grow(1.0)
-        .min_h(0.0)
-        .child(tab_bar)
-        .child(ui.muted(ui.t(hint)))
-        .child(ui.fill_or_empty(s.purchases.rows.len(), "No records", hint, &icons::PURCHASES, table));
+        .gap(12.0)
+        .child(ui.metric(
+            "buy-kpi-pay",
+            &icons::PURCHASES,
+            &ui.t("Payables"),
+            ui.f.money(&s.books.position("payables")),
+            ui.t("Due supplier bills"),
+            Tone::Warning,
+        ))
+        .child(ui.metric(
+            "buy-kpi-count",
+            &icons::REPORTS,
+            &ui.t("Purchases"),
+            ui.f.digits(&s.books.count("purchase_count").max(s.purchases.rows.len()).to_string()),
+            ui.t("Orders, receipts, and bills"),
+            Tone::Info,
+        ));
+    let mut body = col().w_full().gap(12.0).grow(1.0).min_h(0.0).child(buy_kpis).child(ui.tab_toolbar(
+        tab_bar,
+        "purchases-selection-bar",
+        row_actions,
+    ));
+    body = body.child(ui.fill_or_empty(s.purchases.rows.len(), "No records", hint, &icons::PURCHASES, table));
     if let Some(footer) = ui.load_more_footer(
         "purchases-load-more",
         s.books.list("purchases").len(),
@@ -430,29 +485,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         "purchases-screen",
         &ui.t("Purchases"),
         &ui.t("Orders, receipts, and bills"),
-        vec![
-            ui.btn(Btn::Primary, "New purchase order", Some(&icons::PLUS), open_purchase),
-            ui.btn_enabled(Btn::Glass, "Open", None, !s.purchases.selected.is_empty(), |st| {
-                let id = st.purchases.selected.clone();
-                crate::ui::detail::open(st, &id);
-            }),
-            ui.btn_enabled(
-                Btn::Glass,
-                "Print",
-                Some(&icons::DOWNLOAD),
-                !s.purchases.selected.is_empty(),
-                print_selected,
-            ),
-            ui.btn_enabled(
-                Btn::Glass,
-                "Receive goods",
-                None,
-                !s.purchases.selected.is_empty(),
-                receive_selected,
-            ),
-            ui.btn_enabled(Btn::Glass, "Enter bill", None, !s.purchases.selected.is_empty(), bill_selected),
-            ui.btn_enabled(Btn::Glass, "Return", None, !s.purchases.selected.is_empty(), return_selected),
-        ],
+        vec![ui.btn(Btn::Primary, "New purchase order", Some(&icons::PLUS), open_purchase)],
         body,
     )
 }
@@ -538,6 +571,9 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
                 if let Some(l) = st.purchases.lines.iter_mut().find(|l| l.id == line_id) {
                     l.item_id = id.to_string();
+                    if st.forms.get(&format!("buy-qty-{i}")).trim().is_empty() {
+                        st.forms.set(&format!("buy-qty-{i}"), &l.qty);
+                    }
                 }
                 if st.purchases.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
                     st.purchases.lines.push(PurchaseLine::blank());
@@ -629,10 +665,15 @@ fn mount_purchase_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         }
                     };
                     if let Ok(id) = st.create_item(&name, "", "", &sale, Some(&cost), "", "", "", "", "", "0", false) {
+                        let price = st.forms.get("quick-item-cost");
                         if let Some(l) = st.purchases.lines.get_mut(idx) {
                             l.item_id = id;
-                            l.price = st.forms.get("quick-item-cost");
+                            l.price = price.clone();
+                            if st.forms.get(&format!("buy-qty-{idx}")).trim().is_empty() {
+                                st.forms.set(&format!("buy-qty-{idx}"), &l.qty);
+                            }
                         }
+                        st.forms.set(&format!("buy-price-{idx}"), &price);
                         st.purchases.creating_item_for_line = None;
                         if st.purchases.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
                             st.purchases.lines.push(PurchaseLine::blank());

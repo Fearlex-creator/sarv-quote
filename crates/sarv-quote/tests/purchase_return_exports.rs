@@ -169,6 +169,8 @@ fn fixture_with_sku(sku: &str) -> Fixture {
             due_date: "2026-04-01".into(),
             lines,
             supplied_total: money(total),
+            vat_basis_points: 0,
+            vat_deductible: true,
         });
         let result = f.state.post_procurement_command(cmd).unwrap();
         if total == 30 {
@@ -206,6 +208,8 @@ fn fixture_with_sku(sku: &str) -> Fixture {
         document_discount: money(1),
         supplied_total: money(199),
         quotation: None,
+        vat_basis_points: 0,
+        pricing_mode: Default::default(),
     });
     f.sale_order = f.state.post_sales_command(sale).unwrap().record_id;
     f.fulfillment = f
@@ -610,6 +614,8 @@ fn bill(f: &mut Fixture, id: &str, receipt: &str, quantity: i64, value: i64, dat
                 supplied_value: money(value),
             }],
             supplied_total: money(value),
+            vat_basis_points: 0,
+            vat_deductible: true,
         }))
         .unwrap();
 }

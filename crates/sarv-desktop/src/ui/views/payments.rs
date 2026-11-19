@@ -351,7 +351,25 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         |st, i| st.payments.tab_idx = i,
     );
 
-    let mut body = col().w_full().gap(16.0).grow(1.0).min_h(0.0).child(metrics).child(tabs);
+    let mut pay_actions = Vec::new();
+    if s.payments.tab_idx == 0 && !s.payments.selected.is_empty() {
+        pay_actions.push(ui.btn(Btn::Glass, "Open", None, |st| {
+            let id = st.payments.selected.clone();
+            crate::ui::detail::open(st, &id);
+        }));
+        pay_actions.push(ui.btn(Btn::Glass, "Reverse payment", None, |st| {
+            let id = st.payments.selected.clone();
+            open_payment_reverse_confirm(st, &id);
+        }));
+    }
+    let mut body =
+        col()
+            .w_full()
+            .gap(14.0)
+            .grow(1.0)
+            .min_h(0.0)
+            .child(metrics)
+            .child(ui.tab_toolbar(tabs, "payments-selection-bar", pay_actions));
     if s.payments.tab_idx == 0 {
         body = body.child(ui.fill_or_empty(
             s.payments.rows.len(),
@@ -434,7 +452,6 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_spend_dialog(s, ui, layer);
     }
 
-    let pay_selected = s.payments.tab_idx == 0 && !s.payments.selected.is_empty();
     ui.page(
         "payments-screen",
         &ui.t("Payments"),
@@ -442,14 +459,6 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         vec![
             ui.btn(Btn::Primary, "Receive money", Some(&icons::ARROW), |st| open_payment(st, true)),
             ui.btn(Btn::Glass, "Pay bill", Some(&icons::PURCHASES), |st| open_payment(st, false)),
-            ui.btn_enabled(Btn::Glass, "Open", None, pay_selected, |st| {
-                let id = st.payments.selected.clone();
-                crate::ui::detail::open(st, &id);
-            }),
-            ui.btn_enabled(Btn::Glass, "Reverse payment", None, pay_selected, |st| {
-                let id = st.payments.selected.clone();
-                open_payment_reverse_confirm(st, &id);
-            }),
         ],
         body,
     )
@@ -597,7 +606,14 @@ fn mount_payment_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                         }
                     }
                 };
-                let (allocations, advance) = build_allocations(st, side, &st.payments.party_id, amount);
+                let (allocations, advance) = match build_allocations(st, side, &st.payments.party_id, amount) {
+                    Ok(v) => v,
+                    Err(e) => {
+                        st.toast_err(e);
+                        st.payments.posting = false;
+                        return;
+                    }
+                };
                 let reason = {
                     let r = st.forms.get("pay-reason");
                     if r.trim().is_empty() { st.fmt.t("Payment") } else { r }
@@ -715,34 +731,32 @@ pub fn cheque_action_label(act: &str) -> Option<&'static str> {
     }
 }
 
-fn build_allocations(st: &State, side: &str, party_id: &str, amount: i64) -> (Vec<serde_json::Value>, String) {
+fn build_allocations(st: &State, side: &str, party_id: &str, amount: i64) -> Result<(Vec<serde_json::Value>, String), String> {
     let opts = st.query(
         "payment_options",
         json!({
             "side": side,
             "party_id": party_id
         }),
-    );
+    )?;
     let mut allocations = Vec::new();
     let mut left = amount;
-    if let Ok(o) = opts {
-        if let Some(items) = o["items"].as_array() {
-            for item in items {
-                if left <= 0 {
-                    break;
-                }
-                let rem: i64 = crate::data::s(&item["remaining"]).parse().unwrap_or(0);
-                let open_id = crate::data::s(&item["id"]);
-                if rem <= 0 || open_id.is_empty() {
-                    continue;
-                }
-                let applied = left.min(rem);
-                allocations.push(json!({ "open_item_id": open_id, "amount": applied.to_string() }));
-                left -= applied;
+    if let Some(items) = opts["items"].as_array() {
+        for item in items {
+            if left <= 0 {
+                break;
             }
+            let rem: i64 = crate::data::s(&item["remaining"]).parse().unwrap_or(0);
+            let open_id = crate::data::s(&item["id"]);
+            if rem <= 0 || open_id.is_empty() {
+                continue;
+            }
+            let applied = left.min(rem);
+            allocations.push(json!({ "open_item_id": open_id, "amount": applied.to_string() }));
+            left -= applied;
         }
     }
-    (allocations, left.to_string())
+    Ok((allocations, left.to_string()))
 }
 
 fn account_name(s: &State, account_id: &str) -> String {
@@ -914,7 +928,14 @@ fn mount_spend_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                     return;
                 }
                 let key = st.payments.spend_key.clone();
-                let (allocations, advance) = build_allocations(st, "make", &st.payments.spend_party_id, amount);
+                let (allocations, advance) = match build_allocations(st, "make", &st.payments.spend_party_id, amount) {
+                    Ok(v) => v,
+                    Err(e) => {
+                        st.toast_err(e);
+                        st.payments.spend_posting = false;
+                        return;
+                    }
+                };
                 let reference = {
                     let r = st.forms.get("spend-ref");
                     if r.trim().is_empty() { key.clone() } else { r }

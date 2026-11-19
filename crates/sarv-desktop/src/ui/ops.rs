@@ -23,16 +23,13 @@ pub fn qty_from_thousandths(raw: &str) -> String {
 
 /// Validated display-unit amount normalized to Latin digits without grouping.
 /// Preserves a single decimal separator (e.g. `"۱۲۳۴٫۵"` -> `"1234.5"`). Do not convert toman to rial here.
-pub fn typed_display_amount(raw: &str) -> String {
+pub fn typed_display_amount(raw: &str, unit: crate::i18n::Unit) -> Result<String, crate::i18n::MoneyError> {
     let norm = crate::i18n::latin_digits(raw.trim()).replace([',', ' '], "");
     if norm.is_empty() {
-        return "0".into();
+        return Ok("0".into());
     }
-    if crate::i18n::parse_money(raw, crate::i18n::Unit::Toman).is_ok() || crate::i18n::parse_money(raw, crate::i18n::Unit::Rial).is_ok() {
-        norm
-    } else {
-        "0".into()
-    }
+    crate::i18n::parse_money(raw, unit)?;
+    Ok(norm)
 }
 
 pub struct OperationReview {
@@ -72,7 +69,8 @@ pub fn review_operation(
     let mut display_lines = Vec::new();
     for l in opts["lines"].as_array().into_iter().flatten() {
         let rem = crate::data::s(&l["remaining_quantity"]);
-        if rem != "0" && !rem.is_empty() {
+        let rem_th: i64 = rem.parse().unwrap_or(0);
+        if rem_th > 0 {
             lines.push(json!({ "id": l["id"], "quantity": qty_from_thousandths(&rem) }));
             display_lines.push((item_name(st, &crate::data::s(&l["item_id"])), st.fmt.qty(&rem)));
         }

@@ -152,18 +152,24 @@ fn test_sidebar_collapse_headlessly() {
 fn test_theme_toggle_headlessly() {
     let mut rt = make_test_runtime();
     assert!(rt.state.dark);
-    click(&mut rt, "theme-toggle");
+    click(&mut rt, Page::Settings.key());
+    click(&mut rt, "settings-theme-switch");
     assert!(!rt.state.dark, "Switched to light mode");
-    click(&mut rt, "theme-toggle");
+    click(&mut rt, "settings-theme-switch");
     assert!(rt.state.dark, "Switched back to dark mode");
 }
 
 #[test]
 fn test_rtl_language_toggle() {
     let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
     assert_eq!(rt.state.lang(), i18n::Lang::Fa);
     assert!(rt.state.fmt.persian_digits);
-    click(&mut rt, "lang-toggle");
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('l'),
+        mods: rune::Mods::default(),
+    });
+    rt.frame(1.0 / 60.0);
     assert_eq!(rt.state.lang(), i18n::Lang::En);
 }
 
@@ -568,21 +574,338 @@ fn test_startup_summary_dialog_and_sidebar_shortcuts() {
     assert!(!rt.state.startup_summary_open);
     assert!(rt.find("summary-cash").is_none());
 
-    click(&mut rt, "nav-cheque-search");
-    assert_eq!(rt.state.page, Page::Payments);
-    assert_eq!(rt.state.payments.tab_idx, 1);
+    for removed in [
+        "nav-cheque-search",
+        "nav-crm",
+        "nav-account-card",
+        "nav-account-statement",
+        "nav-trial-balance",
+        "nav-security",
+        "lang-toggle",
+        "theme-toggle",
+    ] {
+        assert!(rt.find(removed).is_none(), "removed sidebar key `{removed}` must be absent");
+    }
 
-    click(&mut rt, "nav-account-card");
-    assert_eq!(rt.state.page, Page::Accounting);
-    assert_eq!(rt.state.accounting.tab_idx, 1);
-
-    click(&mut rt, "nav-trial-balance");
-    assert_eq!(rt.state.page, Page::Reports);
-    assert_eq!(rt.state.reports.tab_idx, 1);
-
-    click(&mut rt, "nav-crm");
-    assert_eq!(rt.state.page, Page::Contacts);
-
-    click(&mut rt, "nav-security");
+    assert!(rt.find("org-selector").is_some(), "company selector must remain in footer");
+    click(&mut rt, Page::Settings.key());
     assert_eq!(rt.state.page, Page::Settings);
+}
+
+#[test]
+fn test_handle_key_returns_false_and_mutates_nothing_when_locked() {
+    let mut rt = make_test_runtime();
+    rt.state.locked = true;
+    rt.state.palette_open = true;
+    let initial_page = rt.state.page;
+    let initial_sidebar = rt.state.sidebar_open();
+    let initial_dark = rt.state.dark;
+    let initial_lang = rt.state.lang();
+
+    let cmd_alt = rune::Mods {
+        cmd: true,
+        alt: true,
+        ..Default::default()
+    };
+    let cmd_shift = rune::Mods {
+        cmd: true,
+        shift: true,
+        ..Default::default()
+    };
+    let events = [
+        rune::KeyEvent::from(rune::Key::Escape),
+        rune::KeyEvent::from(rune::Key::Function(1)),
+        rune::KeyEvent::from(rune::Key::Function(9)),
+        rune::KeyEvent::from(rune::Key::Command('k')),
+        rune::KeyEvent::from(rune::Key::Command('b')),
+        rune::KeyEvent::from(rune::Key::Command('d')),
+        rune::KeyEvent::from(rune::Key::Command('l')),
+        rune::KeyEvent {
+            key: rune::Key::Command('l'),
+            mods: cmd_shift,
+        },
+        rune::KeyEvent {
+            key: rune::Key::Command('n'),
+            mods: cmd_alt,
+        },
+    ];
+    for ev in &events {
+        let handled = handle_key(&mut rt.state, ev, &mut rune::Tx::default());
+        assert!(!handled, "locked state must not handle {ev:?}");
+    }
+    assert!(rt.state.locked);
+    assert!(rt.state.palette_open);
+    assert_eq!(rt.state.page, initial_page);
+    assert_eq!(rt.state.sidebar_open(), initial_sidebar);
+    assert_eq!(rt.state.dark, initial_dark);
+    assert_eq!(rt.state.lang(), initial_lang);
+    assert!(!rt.state.sales.modal_open);
+}
+
+#[test]
+fn test_shortcuts_work_when_ready_and_respect_dialog_and_readiness_guards() {
+    let mut rt = make_test_runtime();
+    let mut tx = rune::Tx::default();
+    let cmd_alt = rune::Mods {
+        cmd: true,
+        alt: true,
+        ..Default::default()
+    };
+
+    // F1 opens Settings -> Shortcuts & About tab when ready and no dialog is open.
+    assert!(rt.state.books_ready());
+    assert!(!rt.state.any_dialog_open());
+    assert!(handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Function(1)), &mut tx));
+    assert_eq!(rt.state.page, Page::Settings);
+    assert_eq!(rt.state.settings.tab_idx, 3);
+
+    // F9 toggles sidebar when ready.
+    let was_open = rt.state.sidebar_open();
+    assert!(handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Function(9)), &mut tx));
+    assert_eq!(rt.state.sidebar_open(), !was_open);
+    assert!(handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Function(9)), &mut tx));
+    assert_eq!(rt.state.sidebar_open(), was_open);
+
+    // Cmd+L toggles language.
+    let was_lang = rt.state.lang();
+    assert!(handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Command('l')), &mut tx));
+    assert_eq!(rt.state.lang(), was_lang.other());
+
+    // All 6 previously-missing dialog flags are reflected in any_dialog_open()
+    // and block F1, Cmd+K (open), and Cmd+Alt+<key>.
+    type DialogToggle = (&'static str, fn(&mut State, bool));
+    let toggle_flags: [DialogToggle; 6] = [
+        ("period_switch_open", |s, v| s.period_switch_open = v),
+        ("company_switch_open", |s, v| s.company_switch_open = v),
+        ("accounting.period_add_open", |s, v| s.accounting.period_add_open = v),
+        ("accounting.acct_archive_open", |s, v| s.accounting.acct_archive_open = v),
+        ("accounting.acct_open", |s, v| s.accounting.acct_open = v),
+        ("payments.spend_open", |s, v| s.payments.spend_open = v),
+    ];
+    rt.state.nav(Page::Overview);
+    rt.state.settings.tab_idx = 0;
+    for (name, set_flag) in toggle_flags {
+        set_flag(&mut rt.state, true);
+        assert!(rt.state.any_dialog_open(), "{name} must make any_dialog_open() true");
+        assert!(
+            !handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Function(1)), &mut tx),
+            "F1 must be blocked when {name} is open"
+        );
+        assert!(
+            !handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Command('k')), &mut tx),
+            "Cmd+K must be blocked when {name} is open"
+        );
+        assert!(
+            !handle_key(
+                &mut rt.state,
+                &rune::KeyEvent {
+                    key: rune::Key::Command('n'),
+                    mods: cmd_alt,
+                },
+                &mut tx
+            ),
+            "Cmd+Alt+N must be blocked when {name} is open"
+        );
+        assert_eq!(rt.state.page, Page::Overview);
+        assert!(!rt.state.palette_open);
+        assert!(!rt.state.sales.modal_open);
+        set_flag(&mut rt.state, false);
+        assert!(!rt.state.any_dialog_open(), "clearing {name} should leave no dialog open");
+    }
+
+    // When books are not ready (e.g. adding company), F1, F9, Cmd+B, Cmd+K, and CREATE chords are blocked.
+    rt.state.setup.adding_company = true;
+    assert!(!rt.state.books_ready());
+    let sidebar_before = rt.state.sidebar_open();
+    assert!(!handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Function(1)), &mut tx));
+    assert!(!handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Function(9)), &mut tx));
+    assert!(!handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Command('b')), &mut tx));
+    assert!(!handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Command('k')), &mut tx));
+    for (ch, _) in crate::shortcuts::CREATE {
+        assert!(
+            !handle_key(
+                &mut rt.state,
+                &rune::KeyEvent {
+                    key: rune::Key::Command(*ch),
+                    mods: cmd_alt,
+                },
+                &mut tx
+            ),
+            "Cmd+Alt+{ch} must be blocked when books are not ready"
+        );
+    }
+    assert_eq!(rt.state.page, Page::Overview);
+    assert_eq!(rt.state.sidebar_open(), sidebar_before);
+    assert!(!rt.state.palette_open);
+    rt.state.setup.adding_company = false;
+    assert!(rt.state.books_ready());
+
+    // Every shortcuts::CREATE chord works when ready and is blocked when a dialog is open.
+    for (ch, _) in crate::shortcuts::CREATE {
+        rt.state.nav(Page::Overview);
+        while rt.state.request_close_top_dialog() {}
+        assert!(!rt.state.any_dialog_open());
+
+        let ev = rune::KeyEvent {
+            key: rune::Key::Command(*ch),
+            mods: cmd_alt,
+        };
+        assert!(handle_key(&mut rt.state, &ev, &mut tx), "Cmd+Alt+{ch} should succeed when ready");
+        match *ch {
+            'n' => {
+                assert_eq!(rt.state.page, Page::Sales);
+                assert!(rt.state.sales.modal_open);
+            }
+            'c' | 'v' => {
+                assert_eq!(rt.state.page, Page::Contacts);
+                assert!(rt.state.contacts.modal_open);
+            }
+            'p' => {
+                assert_eq!(rt.state.page, Page::Inventory);
+                assert!(rt.state.inventory.modal_open);
+            }
+            'b' => {
+                assert_eq!(rt.state.page, Page::Purchases);
+                assert!(rt.state.purchases.modal_open);
+            }
+            'j' => {
+                assert_eq!(rt.state.page, Page::Accounting);
+                assert!(rt.state.accounting.modal_open);
+            }
+            't' => {
+                assert_eq!(rt.state.page, Page::Inventory);
+                assert!(rt.state.inventory.transfer_open);
+            }
+            'w' | 'u' => {
+                assert_eq!(rt.state.page, Page::Overview);
+                assert!(rt.state.overview.named_open);
+            }
+            'r' => {
+                assert_eq!(rt.state.page, Page::Payments);
+                assert!(rt.state.payments.modal_open);
+            }
+            's' => {
+                assert_eq!(rt.state.page, Page::Settings);
+            }
+            other => panic!("unexpected CREATE chord: {other}"),
+        }
+
+        // Clean up any open modal, then verify blocked while a dialog is open.
+        while rt.state.request_close_top_dialog() {}
+        rt.state.period_switch_open = true;
+        assert!(
+            !handle_key(&mut rt.state, &ev, &mut tx),
+            "Cmd+Alt+{ch} must be blocked when a dialog is open"
+        );
+        rt.state.period_switch_open = false;
+    }
+
+    // Cmd+Shift+L locks the app when app lock is enabled.
+    let dek = crate::security::set_password(&rt.state.engine.dir, "secret123", 1).expect("enable app lock");
+    rt.state.active_dek = Some(zeroize::Zeroizing::new(dek));
+    rt.state.refresh_lock_status();
+    assert!(rt.state.app_lock_enabled());
+    assert!(handle_key(
+        &mut rt.state,
+        &rune::KeyEvent {
+            key: rune::Key::Command('l'),
+            mods: rune::Mods {
+                cmd: true,
+                shift: true,
+                ..Default::default()
+            },
+        },
+        &mut tx
+    ));
+    assert!(rt.state.locked);
+}
+
+#[test]
+fn test_open_palette_focuses_query_field() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    assert!(!rt.state.forms.view("palette-query").focused);
+
+    rt.key(rune::KeyEvent::from(rune::Key::Command('k')));
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.palette_open);
+    assert!(
+        rt.state.forms.view("palette-query").focused,
+        "open_palette() must focus palette-query"
+    );
+}
+
+#[test]
+fn test_create_shortcut_from_dirty_sheets_defers_mutation_until_confirmed() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    click(&mut rt, Page::Sheets.key());
+    assert_eq!(rt.state.page, Page::Sheets);
+    rt.state.sheets.dirty = true;
+
+    let ev = rune::KeyEvent {
+        key: rune::Key::Command('n'),
+        mods: rune::Mods {
+            cmd: true,
+            alt: true,
+            ..Default::default()
+        },
+    };
+    rt.key(ev.clone());
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.confirm.is_some(), "dirty Sheets must prompt before navigating");
+    assert_eq!(rt.state.page, Page::Sheets);
+    assert!(!rt.state.sales.modal_open, "target modal must not open before confirm");
+
+    // Cancelling confirm leaves Sheets intact with no dialog and no target modal open.
+    click(&mut rt, "btn-Cancel");
+    assert!(!rt.state.any_dialog_open());
+    assert_eq!(rt.state.page, Page::Sheets);
+    assert!(!rt.state.sales.modal_open);
+
+    // Confirming Leave navigates to Sales and opens the sale modal.
+    rt.key(ev);
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.confirm.is_some());
+    click(&mut rt, "btn-Leave");
+    assert!(rt.state.confirm.is_none());
+    assert_eq!(rt.state.page, Page::Sales);
+    assert!(rt.state.sales.modal_open);
+}
+
+#[test]
+fn test_escape_closes_confirm_before_palette_and_keeps_palette_intact() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(handle_key);
+    rt.key(rune::KeyEvent::from(rune::Key::Command('k')));
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.palette_open);
+
+    rt.state.confirm = Some(crate::ui::confirm::Confirm::one(
+        "Confirm",
+        "Proceed?",
+        Vec::new(),
+        "Confirm",
+        "Confirm",
+        false,
+        |_| {},
+    ));
+    rt.frame(1.0 / 60.0);
+
+    // Cmd+K must not close palette while confirm is above it.
+    let mut tx = rune::Tx::default();
+    assert!(!handle_key(&mut rt.state, &rune::KeyEvent::from(rune::Key::Command('k')), &mut tx));
+    assert!(rt.state.palette_open);
+    assert!(rt.state.confirm.is_some());
+
+    // First Escape closes confirm and keeps palette open.
+    rt.key(rune::KeyEvent::from(rune::Key::Escape));
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.confirm.is_none(), "first Escape must close confirm");
+    assert!(rt.state.palette_open, "palette must remain open after closing confirm");
+
+    // Second Escape closes palette.
+    rt.key(rune::KeyEvent::from(rune::Key::Escape));
+    rt.frame(1.0 / 60.0);
+    assert!(!rt.state.palette_open, "second Escape must close palette");
 }

@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, HashMap, HashSet};
 use uuid::Uuid;
 
-pub const CURRENT_SCHEMA: u32 = 7;
+pub const CURRENT_SCHEMA: u32 = 8;
 pub const MAX_MONEY: i64 = 9_000_000_000_000_000;
 pub const MAX_QUOTE_LINES: usize = 10_000;
 const MAX_REFERENCE_CHARS: usize = 160;
@@ -62,7 +62,13 @@ pub fn grouped(n: i64) -> String {
     let len = s.len();
     fa(s.chars()
         .enumerate()
-        .flat_map(|(i, c)| if i > 0 && (len - i) % 3 == 0 { vec!['٬', c] } else { vec![c] })
+        .flat_map(|(i, c)| {
+            if i > 0 && (len - i).is_multiple_of(3) {
+                vec!['٬', c]
+            } else {
+                vec![c]
+            }
+        })
         .collect::<String>())
 }
 pub fn text(s: &str) -> Result<()> {
@@ -244,6 +250,8 @@ pub struct Settings {
     pub default_validity_days: u32,
     pub default_discount_rial: i64,
     pub tax_basis_points: u32,
+    #[serde(default, skip_serializing_if = "std::ops::Not::not")]
+    pub vat_registered: bool,
     pub appearance: Appearance,
     pub density: Density,
     pub display_digits: DisplayDigits,
@@ -276,6 +284,7 @@ impl Default for Settings {
             default_validity_days: 7,
             default_discount_rial: 0,
             tax_basis_points: 0,
+            vat_registered: false,
             appearance: Appearance::System,
             density: Density::Comfortable,
             display_digits: DisplayDigits::Persian,
@@ -842,6 +851,8 @@ pub struct State {
     pub cashbook: crate::cashbook::Cashbook,
     #[serde(default, skip_serializing_if = "crate::cheques::ChequeRegister::is_empty")]
     pub cheques: crate::cheques::ChequeRegister,
+    #[serde(default, skip_serializing_if = "crate::reconciliation::ReconciliationRegister::is_empty")]
+    pub reconciliations: crate::reconciliation::ReconciliationRegister,
 }
 impl Default for State {
     fn default() -> Self {
@@ -860,6 +871,7 @@ impl Default for State {
             sales_drafts: vec![],
             cashbook: crate::cashbook::Cashbook::default(),
             cheques: crate::cheques::ChequeRegister::default(),
+            reconciliations: crate::reconciliation::ReconciliationRegister::default(),
         }
     }
 }
@@ -1298,6 +1310,7 @@ impl State {
             || self.settings != base.settings
             || self.sales_drafts != base.sales_drafts
             || self.cheques != base.cheques
+            || self.reconciliations != base.reconciliations
             || self.quotes != base.quotes;
         let quotation_changed = self.catalogs != base.catalogs || self.customers != base.customers || self.quotes != base.quotes;
         let draft_changed = self.draft != base.draft || self.customers != base.customers || self.catalogs != base.catalogs;
@@ -1388,6 +1401,7 @@ impl State {
         self.validate_sales_drafts_and_links()?;
         self.accounting.validate()?;
         self.validate_cheques()?;
+        self.reconciliations.validate(&self.accounting)?;
         Ok(())
     }
     fn validate_approved_quotation_data(&self) -> Result<()> {

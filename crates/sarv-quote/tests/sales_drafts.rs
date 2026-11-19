@@ -33,6 +33,8 @@ fn draft(s: &State) -> RawSalesDraft {
         reason: "synthetic durable editor test".into(),
         quotation: None,
         quote_issue: None,
+        vat_basis_points: 0,
+        pricing_mode: Default::default(),
         lines: vec![RawSalesLine {
             id: "raw-sales-line-test".into(),
             item_id: "ITEM-A".into(),

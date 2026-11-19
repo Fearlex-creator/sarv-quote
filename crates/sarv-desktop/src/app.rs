@@ -2,6 +2,13 @@
 
 use std::collections::HashMap;
 use std::path::PathBuf;
+use std::sync::atomic::{AtomicU64, Ordering};
+
+static KEY_COUNTER: AtomicU64 = AtomicU64::new(0);
+
+fn next_key_seq() -> u64 {
+    KEY_COUNTER.fetch_add(1, Ordering::Relaxed) + 1
+}
 
 use rune::TextEdit;
 use rune_kit::PaneState;
@@ -64,15 +71,7 @@ impl Page {
 
     /// Sidebar navigation label key (translated through [`Fmt::t`]).
     pub fn sidebar_label(self) -> &'static str {
-        match self {
-            Page::Sales => "Sales invoice",
-            Page::Purchases => "Purchase invoice",
-            Page::Accounting => "Accounting voucher",
-            Page::Payments => "Receipts & payments",
-            Page::Contacts => "Phonebook",
-            Page::Inventory => "Inventory cardex",
-            _ => self.label(),
-        }
+        self.label()
     }
 
     pub fn key(self) -> &'static str {
@@ -109,9 +108,9 @@ impl Page {
         }
     }
 
-    /// Sidebar groups: daily work, people, books, workspace.
+    /// Sidebar groups: daily work, products & people, books.
     /// `(key, label, pages)` — label is an English message key.
-    pub const GROUPS: [(&'static str, &'static str, &'static [Page]); 4] = [
+    pub const GROUPS: [(&'static str, &'static str, &'static [Page]); 3] = [
         (
             "daily",
             "Daily work",
@@ -124,9 +123,8 @@ impl Page {
                 Page::Banking,
             ],
         ),
-        ("people", "Stock & people", &[Page::Inventory, Page::Contacts]),
-        ("books", "Books", &[Page::Accounting, Page::Reports, Page::Sheets]),
-        ("workspace", "Workspace", &[Page::Settings]),
+        ("people", "Products & people", &[Page::Inventory, Page::Contacts]),
+        ("books", "Books", &[Page::Reports, Page::Accounting, Page::Sheets]),
     ];
 
     /// Whether this page belongs in the sidebar for the current feature flags.
@@ -208,7 +206,6 @@ pub struct State {
     pub forms: Forms,
     pub toasts: Vec<Toast>,
     next_toast: u64,
-    key_counter: u64,
     pub palette_open: bool,
     pub palette_cursor: usize,
     pub palette_last_query: String,
@@ -235,7 +232,8 @@ pub struct State {
     pub recovery: views::recovery::RecoveryState,
     pub lock_state: views::lock::LockState,
     pub locked: bool,
-    pub active_dek: Option<[u8; 32]>,
+    pub app_lock_cached: bool,
+    pub active_dek: Option<zeroize::Zeroizing<[u8; 32]>>,
     pub startup_summary_open: bool,
     /// Open state for kit `Select` fields, keyed by select id.
     pub selects: HashMap<String, bool>,
@@ -249,8 +247,8 @@ impl Drop for State {
     fn drop(&mut self) {
         if !self.locked
             && let Some(dek) = self.active_dek.take()
+            && self.engine.close_store().is_ok()
         {
-            self.engine.close_store();
             let _ = crate::security::seal_workspace_data(&self.engine.dir, &dek);
         }
     }
@@ -284,7 +282,6 @@ impl State {
             forms: Forms::default(),
             toasts: Vec::new(),
             next_toast: 1,
-            key_counter: 0,
             palette_open: false,
             palette_cursor: 0,
             palette_last_query: String::new(),
@@ -293,8 +290,7 @@ impl State {
             confirm: None,
             detail: Default::default(),
             operation: Default::default(),
-            // Match rune-kit shell example: full close to 0, resize 136…640.
-            sidebar: PaneState::new(276.0).range(136.0, 640.0),
+            sidebar: PaneState::new(260.0).range(220.0, 360.0),
             guide_open: true,
             overview: Default::default(),
             sales: Default::default(),
@@ -312,6 +308,7 @@ impl State {
             recovery: Default::default(),
             lock_state: Default::default(),
             locked,
+            app_lock_cached: locked,
             active_dek: None,
             startup_summary_open,
             selects: HashMap::new(),
@@ -319,6 +316,7 @@ impl State {
             stamp: 0,
         };
         if locked {
+            s.lock_state.sync_from_disk(&s.engine.dir);
             s.forms.edit("lock-password").focused = true;
         } else {
             s.apply_settings();
@@ -341,8 +339,7 @@ impl State {
         Self::with_engine(engine, true)
     }
 
-    /// Digits, unit, calendar and appearance follow the saved settings.
-    pub fn apply_settings(&mut self) {
+    fn apply_settings_fields(&mut self) {
         let st = &self.books.workspace["settings"];
         match st["text_direction"].as_str() {
             Some("Ltr") => self.fmt.lang = Lang::En,
@@ -372,8 +369,13 @@ impl State {
         if self.page == Page::Pos && !self.show_pos {
             self.page = Page::Overview;
         }
+    }
+
+    /// Digits, unit, calendar and appearance follow the saved settings.
+    pub fn apply_settings(&mut self) {
+        self.apply_settings_fields();
         self.stamp += 1;
-        views::ensure_rows(self);
+        views::ensure_page(self, self.page);
     }
 
     pub fn lang(&self) -> Lang {
@@ -383,7 +385,7 @@ impl State {
     pub fn set_lang(&mut self, lang: Lang) {
         self.fmt.lang = lang;
         self.stamp += 1;
-        views::ensure_rows(self);
+        views::ensure_page(self, self.page);
     }
 
     /// Persist appearance, language, digits, unit, calendar, and feature toggles to the books.
@@ -419,9 +421,11 @@ impl State {
                 settings[k] = serde_json::json!(settings[k].as_u64().map(|n| n.to_string()).unwrap_or_else(|| d.into()));
             }
         }
-        match self.engine.call("settings", settings) {
+        match self.engine.call("settings", settings.clone()) {
             Ok(_) => {
-                self.refresh();
+                self.books.workspace["settings"] = settings;
+                self.stamp += 1;
+                views::ensure_page(self, self.page);
                 true
             }
             Err(e) => {
@@ -432,6 +436,10 @@ impl State {
     }
 
     pub fn nav(&mut self, page: Page) {
+        self.nav_then(page, |_| {});
+    }
+
+    pub fn nav_then(&mut self, page: Page, after: impl Fn(&mut State) + 'static) {
         if page == Page::Pos && !self.show_pos {
             self.toast(Tone::Info, self.fmt.t("Turn on Point of sale in Settings."));
             return;
@@ -444,50 +452,84 @@ impl State {
                 "Leave",
                 self.fmt.t("Leave"),
                 true,
-                move |st| st.apply_nav(page),
+                move |st| {
+                    st.apply_nav(page);
+                    after(st);
+                },
             ));
             return;
         }
         self.apply_nav(page);
+        after(self);
+    }
+
+    pub fn refresh_lock_status(&mut self) {
+        self.app_lock_cached = crate::security::is_enabled(&self.engine.dir);
     }
 
     pub fn app_lock_enabled(&self) -> bool {
-        crate::security::is_enabled(&self.engine.dir)
+        self.app_lock_cached
     }
 
     pub fn lock_app(&mut self) {
+        self.refresh_lock_status();
         if !self.app_lock_enabled() {
             return;
         }
+        if let Err(e) = self.engine.close_store() {
+            crate::logfile::line("ERROR", &format!("close_store failed during lock: {e}"));
+            self.toast(Tone::Danger, e);
+            return;
+        }
+        if let Some(dek) = self.active_dek.as_ref()
+            && let Err(e) = crate::security::seal_workspace_data(&self.engine.dir, dek)
+        {
+            crate::logfile::line("ERROR", &format!("seal_workspace_data failed: {e}"));
+            self.toast(Tone::Danger, e);
+            return;
+        }
+        self.active_dek = None;
         self.locked = true;
         self.lock_state = Default::default();
-        self.forms.clear(&["lock-password"]);
-        self.forms.edit("lock-password").focused = true;
+        self.lock_state.sync_from_disk(&self.engine.dir);
+        self.books = Books::default();
+        self.forms = Forms::default();
+        self.toasts.clear();
+        self.detail = Default::default();
+        self.operation = Default::default();
+        self.confirm = None;
         self.palette_open = false;
         self.period_switch_open = false;
         self.company_switch_open = false;
-        self.confirm = None;
-        self.detail.open = false;
-        self.operation.open = false;
-        self.books = Books::default();
-        self.engine.close_store();
-        if let Some(dek) = self.active_dek.take()
-            && let Err(e) = crate::security::seal_workspace_data(&self.engine.dir, &dek)
-        {
-            crate::logfile::line("ERROR", &format!("seal_workspace_data failed: {e}"));
-        }
+        self.startup_summary_open = false;
+        self.selects.clear();
+        self.sales = Default::default();
+        self.purchases = Default::default();
+        self.payments = Default::default();
+        self.banking = Default::default();
+        self.contacts = Default::default();
+        self.inventory = Default::default();
+        self.accounting = Default::default();
+        self.reports = Default::default();
+        self.sheets = Default::default();
+        self.settings = Default::default();
+        self.overview = Default::default();
+        self.pos = Default::default();
+        self.forms.edit("lock-password").focused = true;
     }
 
     fn apply_nav(&mut self, page: Page) {
         self.page = page;
         self.palette_open = false;
-        if page == Page::Sheets {
-            views::sheets::ensure(self);
-        }
+        views::ensure_page(self, page);
         if page == Page::Pos {
             // Barcode scans land in the catalog search as soon as POS opens.
             self.forms.edit("pos-search").focused = true;
         }
+    }
+
+    pub fn books_ready(&self) -> bool {
+        !self.books.load_failed() && self.books.has_company() && self.books.initialized() && !self.setup.adding_company
     }
 
     pub fn any_dialog_open(&self) -> bool {
@@ -495,19 +537,27 @@ impl State {
             || self.detail.open
             || self.operation.open
             || self.palette_open
+            || self.period_switch_open
+            || self.company_switch_open
             || self.sales.creating_item_for_line.is_some()
             || self.purchases.creating_item_for_line.is_some()
             || self.accounting.ledger_open
+            || self.accounting.period_add_open
+            || self.accounting.acct_archive_open
+            || self.accounting.acct_open
             || self.settings.restore_open
+            || self.settings.sql_import_open
             || self.settings.lock_dialog.is_some()
             || self.startup_summary_open
             || self.overview.starter_open
             || self.overview.named_open
             || self.sales.modal_open
             || self.purchases.modal_open
+            || self.payments.spend_open
             || self.payments.modal_open
             || self.accounting.modal_open
             || self.banking.modal_open
+            || self.banking.rec_open
             || self.contacts.modal_open
             || !self.contacts.open_id.is_empty()
             || self.inventory.modal_open
@@ -522,8 +572,28 @@ impl State {
             self.confirm = None;
             return true;
         }
+        if self.palette_open {
+            self.palette_open = false;
+            return true;
+        }
         if self.startup_summary_open {
             self.startup_summary_open = false;
+            return true;
+        }
+        if self.company_switch_open {
+            self.company_switch_open = false;
+            return true;
+        }
+        if self.period_switch_open {
+            self.period_switch_open = false;
+            return true;
+        }
+        if self.accounting.period_add_open {
+            self.accounting.period_add_open = false;
+            return true;
+        }
+        if self.accounting.ledger_open {
+            self.accounting.ledger_open = false;
             return true;
         }
         if self.detail.open {
@@ -532,22 +602,6 @@ impl State {
         }
         if self.operation.open {
             self.operation.open = false;
-            return true;
-        }
-        if self.palette_open {
-            self.palette_open = false;
-            return true;
-        }
-        if self.period_switch_open {
-            self.period_switch_open = false;
-            return true;
-        }
-        if self.company_switch_open {
-            self.company_switch_open = false;
-            return true;
-        }
-        if self.accounting.period_add_open {
-            self.accounting.period_add_open = false;
             return true;
         }
         if self.settings.lock_dialog.is_some() {
@@ -572,12 +626,13 @@ impl State {
             self.purchases.creating_item_for_line = None;
             return true;
         }
-        if self.accounting.ledger_open {
-            self.accounting.ledger_open = false;
-            return true;
-        }
         if self.settings.restore_open {
             self.settings.restore_open = false;
+            return true;
+        }
+        if self.settings.sql_import_open {
+            self.settings.sql_import_open = false;
+            self.settings.sql_import_preview = None;
             return true;
         }
         if self.overview.starter_open {
@@ -608,6 +663,10 @@ impl State {
         }
         if self.accounting.modal_open {
             views::accounting::close_or_confirm(self);
+            return true;
+        }
+        if self.banking.rec_open {
+            self.banking.rec_open = false;
             return true;
         }
         if self.banking.modal_open {
@@ -651,6 +710,7 @@ impl State {
 
     pub fn open_palette(&mut self) {
         self.forms.set("palette-query", "");
+        self.forms.edit("palette-query").focused = true;
         self.palette_cursor = 0;
         self.palette_last_query.clear();
         self.palette_open = true;
@@ -698,19 +758,26 @@ impl State {
 
     /// A request key unique within and across runs: prefix, process id, nanoseconds, counter.
     pub fn mint_key(&mut self, prefix: &str) -> String {
-        self.key_counter += 1;
         format!(
             "{prefix}-{}-{}-{}",
             std::process::id(),
             chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0),
-            self.key_counter
+            next_key_seq()
         )
     }
 
     pub fn refresh(&mut self) {
         self.books.refresh(&self.engine);
         self.stamp += 1;
-        views::ensure_rows(self);
+        views::ensure_page(self, self.page);
+        self.refresh_recovery_if_failed();
+    }
+
+    pub fn refresh_and_apply_settings(&mut self) {
+        self.books.refresh(&self.engine);
+        self.apply_settings_fields();
+        self.stamp += 1;
+        views::ensure_page(self, self.page);
         self.refresh_recovery_if_failed();
     }
 
@@ -745,8 +812,7 @@ impl State {
         self.sheets.loaded = false;
         self.sheets.dirty = false;
         self.pos = views::pos::PosState::default();
-        self.refresh();
-        self.apply_settings();
+        self.refresh_and_apply_settings();
     }
 
     /// Fill company/period and the usual procurement context fields when a screen omits them.
@@ -766,9 +832,10 @@ impl State {
         }
         if blank(&payload["source_id"]) || blank(&payload["request_key"]) {
             let key = format!(
-                "ui-{}-{}",
+                "ui-{}-{}-{}",
                 std::process::id(),
-                chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0)
+                chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0),
+                next_key_seq()
             );
             if blank(&payload["source_id"]) {
                 payload["source_id"] = Value::String(key.clone());

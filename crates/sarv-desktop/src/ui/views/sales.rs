@@ -1,6 +1,7 @@
 //! Sales — list + Quick Sale facture (creatable customer/product Combobox, lines, pay).
 
 use std::borrow::Cow;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 use rune::{Align, Cx, El, col, row, text};
 use rune_kit::{Cell, ComboboxState, SortDir, Table, TableColumn, TableState};
@@ -22,10 +23,13 @@ pub struct SaleLine {
     pub discount: String,
 }
 
+static SALE_LINE_SEQ: AtomicU64 = AtomicU64::new(1);
+
 impl SaleLine {
     fn blank() -> Self {
+        let seq = SALE_LINE_SEQ.fetch_add(1, Ordering::Relaxed);
         Self {
-            id: format!("line-{}", chrono::Utc::now().timestamp_millis()),
+            id: format!("line-{seq}"),
             item_id: String::new(),
             qty: "1".into(),
             price: String::new(),
@@ -84,10 +88,17 @@ impl SalesState {
         self.posting = false;
     }
 
-    pub fn start_edit(&mut self, draft: &serde_json::Value) {
+    pub fn start_edit(&mut self, draft: &serde_json::Value, fmt: &crate::i18n::Fmt) {
         self.modal_open = true;
         self.customer_id = crate::data::s(&draft["customer_id"]);
         self.customer_combo = ComboboxState::default();
+        let unit = draft_unit(draft);
+        let convert = |raw: String| -> String {
+            match crate::i18n::parse_money(&raw, unit) {
+                Ok(rials) => fmt.money_input(rials),
+                Err(_) => raw,
+            }
+        };
         let mut lines: Vec<SaleLine> = draft["lines"]
             .as_array()
             .into_iter()
@@ -96,8 +107,8 @@ impl SalesState {
                 id: crate::data::s(&l["id"]),
                 item_id: crate::data::s(&l["item_id"]),
                 qty: crate::data::s(&l["quantity"]),
-                price: crate::data::s(&l["unit_price"]),
-                discount: crate::data::s(&l["line_discount"]),
+                price: convert(crate::data::s(&l["unit_price"])),
+                discount: convert(crate::data::s(&l["line_discount"])),
             })
             .collect();
         if lines.is_empty() || lines.last().is_some_and(|l| !l.item_id.is_empty()) {
@@ -155,6 +166,40 @@ fn drafts(s: &State) -> Vec<serde_json::Value> {
     s.books.list("drafts")
 }
 
+fn draft_unit(draft: &serde_json::Value) -> crate::i18n::Unit {
+    if crate::data::s(&draft["display_unit"]) == "Rial" {
+        crate::i18n::Unit::Rial
+    } else {
+        crate::i18n::Unit::Toman
+    }
+}
+
+fn validate_lines(st: &mut State, lines: &[SaleLine]) -> Option<Vec<SaleLine>> {
+    let filled: Vec<_> = lines.iter().filter(|l| !l.item_id.is_empty()).cloned().collect();
+    if filled.is_empty() {
+        st.toast(Tone::Danger, st.fmt.t("Add at least one product."));
+        return None;
+    }
+    for l in &filled {
+        if crate::i18n::latin_digits(&l.qty).trim().is_empty() || l.price.trim().is_empty() {
+            st.toast(Tone::Danger, st.fmt.t("Check the quantity on every line."));
+            return None;
+        }
+        match st.parse_money_input(&l.price) {
+            Ok(v) if v >= 0 => {}
+            _ => {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                return None;
+            }
+        }
+        if !l.discount.trim().is_empty() && st.parse_money_input(&l.discount).is_err() {
+            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+            return None;
+        }
+    }
+    Some(filled)
+}
+
 fn build_draft_json(
     s: &State,
     draft_id: &str,
@@ -163,30 +208,29 @@ fn build_draft_json(
     lines: &[SaleLine],
     note: &str,
     date: &str,
-) -> serde_json::Value {
+) -> Result<serde_json::Value, crate::i18n::MoneyError> {
     let wh = pickers::first_warehouse(s);
     let display_unit = if s.fmt.unit == crate::i18n::Unit::Toman { "Toman" } else { "Rial" };
     // Machine dates are always ISO; Jalali is a display preference only.
     let date_display = "Iso";
-    let draft_lines: Vec<_> = lines
-        .iter()
-        .filter(|l| !l.item_id.is_empty())
-        .map(|l| {
-            json!({
-                "id": l.id,
-                "item_id": l.item_id,
-                "warehouse_id": wh,
-                "unit_id": pickers::item_unit(s, &l.item_id),
-                "quantity": crate::i18n::latin_digits(&l.qty).replace(',', ""),
-                "unit_price": crate::ui::ops::typed_display_amount(&l.price),
-                "line_discount": crate::ui::ops::typed_display_amount(&l.discount),
-                "price_reference": "Manual price",
-                "price_date": date,
-                "override_reason": ""
-            })
-        })
-        .collect();
-    json!({
+    let mut draft_lines = Vec::new();
+    for l in lines.iter().filter(|l| !l.item_id.is_empty()) {
+        let unit_price = crate::ui::ops::typed_display_amount(&l.price, s.fmt.unit)?;
+        let line_discount = crate::ui::ops::typed_display_amount(&l.discount, s.fmt.unit)?;
+        draft_lines.push(json!({
+            "id": l.id,
+            "item_id": l.item_id,
+            "warehouse_id": wh,
+            "unit_id": pickers::item_unit(s, &l.item_id),
+            "quantity": crate::i18n::latin_digits(&l.qty).replace(',', ""),
+            "unit_price": unit_price,
+            "line_discount": line_discount,
+            "price_reference": "Manual price",
+            "price_date": date,
+            "override_reason": ""
+        }));
+    }
+    Ok(json!({
         "id": if draft_id.is_empty() { s.uid() } else { draft_id.to_string() },
         "revision": "0",
         "company_id": s.books.company_id,
@@ -203,7 +247,7 @@ fn build_draft_json(
         "reason": note.trim(),
         "quotation": null,
         "lines": draft_lines
-    })
+    }))
 }
 
 fn ref_tail(post_key: &str) -> String {
@@ -232,6 +276,7 @@ pub struct SaleProgress {
 /// One counter sale: preview, save, deliver, invoice, and optionally take the money.
 pub struct Ticket {
     pub draft_id: String,
+    pub editing_revision: Option<String>,
     pub post_key: String,
     pub customer_id: String,
     pub lines: Vec<SaleLine>,
@@ -243,28 +288,9 @@ pub struct Ticket {
 }
 
 pub fn post_ticket(st: &mut State, ticket: &Ticket, progress: &mut SaleProgress) -> bool {
-    let filled: Vec<_> = ticket.lines.iter().filter(|l| !l.item_id.is_empty()).cloned().collect();
-    if filled.is_empty() {
-        st.toast(Tone::Danger, st.fmt.t("Add at least one product."));
+    let Some(filled) = validate_lines(st, &ticket.lines) else {
         return false;
-    }
-    for l in &filled {
-        if crate::i18n::latin_digits(&l.qty).trim().is_empty() || l.price.trim().is_empty() {
-            st.toast(Tone::Danger, st.fmt.t("Check the quantity on every line."));
-            return false;
-        }
-        match st.parse_money_input(&l.price) {
-            Ok(v) if v >= 0 => {}
-            _ => {
-                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
-                return false;
-            }
-        }
-        if !l.discount.trim().is_empty() && st.parse_money_input(&l.discount).is_err() {
-            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
-            return false;
-        }
-    }
+    };
     if ticket.pay_method < 2 && !ticket.received.trim().is_empty() && st.parse_money_input(&ticket.received).is_err() {
         st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
         return false;
@@ -298,7 +324,16 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket, progress: &mut SaleProgress)
     let record_id = if let Some(ref existing) = progress.posted_record_id {
         existing.clone()
     } else {
-        let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &ticket.date);
+        let mut draft = match build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &ticket.date) {
+            Ok(d) => d,
+            Err(_) => {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                return false;
+            }
+        };
+        if let Some(ref rev) = ticket.editing_revision {
+            draft["revision"] = json!(rev);
+        }
         let preview = match st.query("draft_preview", json!({ "draft": draft.clone() })) {
             Ok(v) => v,
             Err(e) => {
@@ -307,30 +342,22 @@ pub fn post_ticket(st: &mut State, ticket: &Ticket, progress: &mut SaleProgress)
             }
         };
         draft["supplied_total"] = preview["supplied_total"].clone();
-        if st
-            .run("draft_save", json!({ "draft": draft.clone(), "expected_revision": null }), None)
-            .is_err()
-        {
-            return false; // `run` already toasted
-        }
-        let saved = st
-            .books
-            .list("drafts")
-            .into_iter()
-            .find(|d| d["id"] == draft["id"])
-            .or_else(|| st.books.list("drafts").into_iter().find(|d| d["reference"] == reference));
-        let Some(saved) = saved else {
+        let saved_rev = match st.run(
+            "draft_save",
+            json!({ "draft": draft.clone(), "expected_revision": ticket.editing_revision }),
+            None,
+        ) {
+            Ok(v) => v,
+            Err(_) => return false, // `run` already toasted
+        };
+        let Some(revision) = saved_rev.as_u64().or_else(|| saved_rev.as_str().and_then(|s| s.parse().ok())) else {
             st.toast(Tone::Danger, st.fmt.t("Draft could not be saved."));
             return false;
         };
-        let revision = saved["revision"]
-            .as_u64()
-            .or_else(|| saved["revision"].as_str().and_then(|s| s.parse().ok()))
-            .unwrap_or(1);
         let posted = match st.run(
             "draft_post",
             json!({
-                "id": saved["id"],
+                "id": draft["id"],
                 "revision": revision.to_string(),
                 "request_key": post_key
             }),
@@ -392,6 +419,7 @@ fn complete_sale(st: &mut State) {
     };
     let ticket = Ticket {
         draft_id: st.sales.draft_id.clone(),
+        editing_revision: st.sales.editing_revision.clone(),
         post_key: st.sales.post_key.clone(),
         customer_id: st.sales.customer_id.clone(),
         lines: st.sales.lines.clone(),
@@ -504,12 +532,11 @@ fn issue_quotation(st: &mut State) {
         return;
     }
     st.sales.posting = true;
-    let filled: Vec<_> = st.sales.lines.iter().filter(|l| !l.item_id.is_empty()).cloned().collect();
-    if filled.is_empty() {
-        st.toast(Tone::Danger, st.fmt.t("Add at least one product."));
+    let lines = st.sales.lines.clone();
+    let Some(filled) = validate_lines(st, &lines) else {
         finish_posting(st);
         return;
-    }
+    };
     let customer = if st.sales.customer_id.is_empty() {
         match st.ensure_walk_in_customer() {
             Ok(id) => id,
@@ -545,7 +572,14 @@ fn issue_quotation(st: &mut State) {
         let note = st.forms.get("sale-note").trim().to_string();
         if note.is_empty() { "Quotation".into() } else { note }
     };
-    let mut draft = build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &date);
+    let mut draft = match build_draft_json(st, &draft_id, &customer, &reference, &filled, &note, &date) {
+        Ok(d) => d,
+        Err(_) => {
+            st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+            finish_posting(st);
+            return;
+        }
+    };
     if let Some(rev) = &st.sales.editing_revision {
         draft["revision"] = json!(rev);
     }
@@ -630,6 +664,9 @@ fn build_draft_rows(s: &State) -> Vec<Row> {
             let customer = s.books.party_name(&crate::data::s(&draft["customer_id"]));
             let date_raw = crate::data::s(&draft["document_date"]);
             let amount_raw = crate::data::s(&draft["supplied_total"]);
+            let amount_rials = crate::i18n::parse_money(&amount_raw, draft_unit(draft))
+                .map(|r| r.to_string())
+                .unwrap_or(amount_raw);
             let note = crate::data::s(&draft["reason"]);
             let status = if note.is_empty() { fallback_status.clone() } else { note };
             Row {
@@ -638,14 +675,14 @@ fn build_draft_rows(s: &State) -> Vec<Row> {
                     ref_text.clone(),
                     customer.clone(),
                     s.fmt.date(&date_raw),
-                    s.fmt.money(&amount_raw),
+                    s.fmt.money(&amount_rials),
                     status.clone(),
                 ],
                 keys: vec![
                     SortKey::text(&ref_text),
                     SortKey::text(&customer),
                     SortKey::text(&date_raw),
-                    SortKey::num_str(&amount_raw),
+                    SortKey::num_str(&amount_rials),
                     SortKey::text(&status),
                 ],
             }
@@ -776,7 +813,49 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_sale_dialog(s, ui, layer);
     }
 
-    let mut body = col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(tab_bar).child(ui.fill_or_empty(
+    let mut row_actions = Vec::new();
+    if !s.sales.selected.is_empty() {
+        row_actions.push(ui.btn(Btn::Glass, "Open", None, |st| {
+            let id = st.sales.selected.clone();
+            crate::ui::detail::open(st, &id);
+        }));
+        row_actions.push(ui.btn(Btn::Glass, "Print / save PDF", Some(&icons::DOWNLOAD), print_selected));
+        if s.sales.tab_idx == 0 {
+            row_actions.push(ui.btn(Btn::Glass, "Deliver & invoice", None, fulfill_selected));
+            row_actions.push(ui.btn(Btn::Glass, "Return", None, return_selected));
+        } else {
+            row_actions.push(ui.btn(Btn::Glass, "Edit", None, edit_selected_draft));
+            row_actions.push(ui.btn(Btn::Glass, "Convert to sale", None, convert_selected_draft));
+            row_actions.push(ui.btn(Btn::Danger, "Delete", None, delete_selected_draft));
+        }
+    }
+    let sales_kpis = row()
+        .w_full()
+        .gap(12.0)
+        .child(ui.metric(
+            "sales-kpi-rec",
+            &icons::SALES,
+            &ui.t("Receivables"),
+            ui.f.money(&s.books.position("receivables")),
+            ui.t("Open customer invoices"),
+            Tone::Success,
+        ))
+        .child(ui.metric(
+            "sales-kpi-count",
+            &icons::REPORTS,
+            &ui.t("Invoices"),
+            ui.f.digits(&s.books.count("sales_count").max(s.sales.rows.len()).to_string()),
+            format!("{} {}", ui.f.digits(&s.sales.draft_rows.len().to_string()), ui.t("Drafts")),
+            Tone::Info,
+        ));
+    let mut body = col()
+        .w_full()
+        .gap(12.0)
+        .grow(1.0)
+        .min_h(0.0)
+        .child(sales_kpis)
+        .child(ui.tab_toolbar(tab_bar, "sales-selection-bar", row_actions));
+    body = body.child(ui.fill_or_empty(
         if s.sales.tab_idx == 0 {
             s.sales.rows.len()
         } else {
@@ -807,46 +886,11 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         body = body.child(f);
     }
 
-    let mut actions = vec![
-        add_btn,
-        ui.btn_enabled(Btn::Glass, "Open", None, !s.sales.selected.is_empty(), |st| {
-            let id = st.sales.selected.clone();
-            crate::ui::detail::open(st, &id);
-        }),
-        ui.btn_enabled(
-            Btn::Glass,
-            "Print / save PDF",
-            Some(&icons::DOWNLOAD),
-            !s.sales.selected.is_empty(),
-            print_selected,
-        ),
-    ];
-    if s.sales.tab_idx == 0 {
-        actions.push(ui.btn_enabled(
-            Btn::Glass,
-            "Deliver & invoice",
-            None,
-            !s.sales.selected.is_empty(),
-            fulfill_selected,
-        ));
-        actions.push(ui.btn_enabled(Btn::Glass, "Return", None, !s.sales.selected.is_empty(), return_selected));
-    } else {
-        actions.push(ui.btn_enabled(Btn::Glass, "Edit", None, !s.sales.selected.is_empty(), edit_selected_draft));
-        actions.push(ui.btn_enabled(
-            Btn::Glass,
-            "Convert to sale",
-            None,
-            !s.sales.selected.is_empty(),
-            convert_selected_draft,
-        ));
-        actions.push(ui.btn_enabled(Btn::Danger, "Delete", None, !s.sales.selected.is_empty(), delete_selected_draft));
-    }
-
     ui.page(
         "sales-screen",
         &ui.t("Sales"),
         &ui.t("Sales that are delivered and billed."),
-        actions,
+        vec![add_btn],
         body,
     )
 }
@@ -869,7 +913,7 @@ fn load_more_drafts(st: &mut State) {
     ensure(st);
 }
 
-fn estimate_total(s: &State) -> i64 {
+pub(crate) fn estimate_total(s: &State) -> i64 {
     s.sales
         .lines
         .iter()
@@ -884,11 +928,16 @@ fn estimate_total(s: &State) -> i64 {
                 let f = s.forms.get(&format!("sale-price-{i}"));
                 if f.trim().is_empty() { l.price.clone() } else { f }
             };
-            let qty: i64 = crate::i18n::latin_digits(&qty_raw).replace(',', "").parse().unwrap_or(1).max(1);
+            let qty_th = crate::ui::operation_dialog::parse_thousandths(&qty_raw)
+                .ok()
+                .filter(|&q| q > 0)
+                .unwrap_or(1000);
             let price = s.parse_money_input(&price_raw).unwrap_or(0);
-            price * qty
+            let discount = s.parse_money_input(&l.discount).unwrap_or(0);
+            let gross = ((i128::from(price) * i128::from(qty_th) + 500) / 1000) as i64;
+            gross.saturating_sub(discount)
         })
-        .sum()
+        .fold(0i64, i64::saturating_add)
 }
 
 fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
@@ -971,6 +1020,14 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
             &ui.t("Select product"),
             pickers::PICKER_WIDTH,
             move |st, id| {
+                if st.sales.posted_record_id.is_some() {
+                    st.toast(
+                        Tone::Info,
+                        st.fmt
+                            .t("The order was recorded but the invoice could not be finished. Open it from Sales to continue."),
+                    );
+                    return;
+                }
                 st.sales.ensure_line_combos();
                 if let Some(name) = pickers::create_text(id) {
                     st.sales.creating_item_for_line = Some(i);
@@ -983,6 +1040,9 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 let price = pickers::item_sale_price(st, id);
                 if let Some(l) = st.sales.lines.iter_mut().find(|l| l.id == line_id) {
                     l.item_id = id.to_string();
+                    if st.forms.get(&format!("sale-qty-{i}")).trim().is_empty() {
+                        st.forms.set(&format!("sale-qty-{i}"), &l.qty);
+                    }
                     if l.price.is_empty() {
                         let rials: i64 = price.parse().unwrap_or(0);
                         l.price = st.fmt.money_input(rials);
@@ -1048,13 +1108,11 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         );
 
     let save_btn = ui.btn(Btn::Primary, "Complete sale", Some(&icons::CHECK), |st| {
-        for (i, line) in st.sales.lines.iter_mut().enumerate() {
-            let q = st.forms.get(&format!("sale-qty-{i}"));
-            let p = st.forms.get(&format!("sale-price-{i}"));
-            if !q.trim().is_empty() {
+        if st.sales.posted_record_id.is_none() {
+            for (i, line) in st.sales.lines.iter_mut().enumerate() {
+                let q = st.forms.get(&format!("sale-qty-{i}"));
+                let p = st.forms.get(&format!("sale-price-{i}"));
                 line.qty = q;
-            }
-            if !p.trim().is_empty() {
                 line.price = p;
             }
         }
@@ -1073,15 +1131,19 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
         vec![
             ui.btn(Btn::Ghost, "Cancel", None, close_or_confirm),
             ui.btn(Btn::Glass, "Issue quotation", None, |st| {
+                if st.sales.posted_record_id.is_some() {
+                    st.toast(
+                        Tone::Info,
+                        st.fmt
+                            .t("The order was recorded but the invoice could not be finished. Open it from Sales to continue."),
+                    );
+                    return;
+                }
                 for (i, line) in st.sales.lines.iter_mut().enumerate() {
                     let q = st.forms.get(&format!("sale-qty-{i}"));
                     let p = st.forms.get(&format!("sale-price-{i}"));
-                    if !q.trim().is_empty() {
-                        line.qty = q;
-                    }
-                    if !p.trim().is_empty() {
-                        line.price = p;
-                    }
+                    line.qty = q;
+                    line.price = p;
                 }
                 issue_quotation(st);
             }),
@@ -1099,6 +1161,15 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 ui.labeled("Unit price", ui.money_field(s, "quick-item-price")),
             ));
         let add = ui.btn(Btn::Primary, "Add product", Some(&icons::CHECK), |st| {
+            if st.sales.posted_record_id.is_some() {
+                st.toast(
+                    Tone::Info,
+                    st.fmt
+                        .t("The order was recorded but the invoice could not be finished. Open it from Sales to continue."),
+                );
+                st.sales.creating_item_for_line = None;
+                return;
+            }
             let Some(idx) = st.sales.creating_item_for_line else { return };
             let name = st.forms.get("quick-item-name").trim().to_string();
             if name.is_empty() {
@@ -1126,10 +1197,15 @@ fn mount_sale_dialog(s: &State, ui: &Ui, layer: &mut Vec<El>) {
                 }
             };
             if let Ok(id) = st.create_item(&name, "", "", &sale, cost.as_deref(), "", "", "", "", "", "0", false) {
+                let price = st.forms.get("quick-item-price");
                 if let Some(l) = st.sales.lines.get_mut(idx) {
                     l.item_id = id;
-                    l.price = st.forms.get("quick-item-price");
+                    l.price = price.clone();
+                    if st.forms.get(&format!("sale-qty-{idx}")).trim().is_empty() {
+                        st.forms.set(&format!("sale-qty-{idx}"), &l.qty);
+                    }
                 }
+                st.forms.set(&format!("sale-price-{idx}"), &price);
                 st.sales.creating_item_for_line = None;
                 if st.sales.lines.last().map(|l| !l.item_id.is_empty()).unwrap_or(false) {
                     st.sales.lines.push(SaleLine::blank());
@@ -1286,7 +1362,8 @@ fn edit_selected_draft(st: &mut State) {
         return;
     };
     st.forms.clear_prefix("sale-");
-    st.sales.start_edit(&draft);
+    let fmt = st.fmt;
+    st.sales.start_edit(&draft, &fmt);
     st.sales.post_key = st.mint_key("sale");
     st.sales.order_ref = next_order_ref(st, &st.sales.post_key);
     st.sales.invoice_ref = next_invoice_ref(st, &st.sales.post_key);

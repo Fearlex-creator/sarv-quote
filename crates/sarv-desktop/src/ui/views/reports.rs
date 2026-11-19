@@ -217,6 +217,50 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
     let body = match s.reports.tab_idx {
         1 => {
             let hint = "Every account's balance — debits equal credits.";
+            let mut total_debit: i64 = 0;
+            let mut total_credit: i64 = 0;
+            if let Some(arr) = report["trial_balance"].as_array() {
+                for r in arr {
+                    total_debit += crate::data::s(&r["debit"]).parse::<i64>().unwrap_or(0);
+                    total_credit += crate::data::s(&r["credit"]).parse::<i64>().unwrap_or(0);
+                }
+            }
+            let balanced = total_debit == total_credit;
+            let tb_metrics = row()
+                .w_full()
+                .gap(12.0)
+                .child(ui.metric(
+                    "tb-debit",
+                    &icons::ACCOUNTING,
+                    &ui.t("Debit"),
+                    ui.f.money(&total_debit.to_string()),
+                    ui.t("Trial balance"),
+                    Tone::Info,
+                ))
+                .child(ui.metric(
+                    "tb-credit",
+                    &icons::ACCOUNTING,
+                    &ui.t("Credit"),
+                    ui.f.money(&total_credit.to_string()),
+                    ui.t("Trial balance"),
+                    Tone::Info,
+                ))
+                .child(ui.metric(
+                    "tb-status",
+                    &icons::CHECK,
+                    &ui.t("Controls"),
+                    ui.t(if balanced { "Balanced" } else { "Difference" }),
+                    format!("{} {}", ui.f.digits(&s.reports.rows.len().to_string()), ui.t("Accounts")),
+                    if balanced { Tone::Success } else { Tone::Danger },
+                ));
+            let tb_actions = if !s.reports.selected_account_id.is_empty() {
+                vec![ui.btn(Btn::Glass, "Ledger", None, |st| {
+                    let aid = st.reports.selected_account_id.clone();
+                    crate::ui::views::accounting::open_ledger_for(st, &aid);
+                })]
+            } else {
+                Vec::new()
+            };
             let table = Table::new(
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
@@ -270,12 +314,31 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .gap(14.0)
                 .grow(1.0)
                 .min_h(0.0)
-                .child(tab_bar)
-                .child(ui.muted(ui.t(hint)))
+                .child(ui.tab_toolbar(tab_bar, "reports-selection-bar", tb_actions))
+                .child(tb_metrics)
                 .child(ui.fill_or_empty(s.reports.rows.len(), "Nothing to show", hint, &icons::REPORTS, table))
         }
         2 => {
             let hint = "Who owes you and who you owe.";
+            let party_metrics = row()
+                .w_full()
+                .gap(12.0)
+                .child(ui.metric(
+                    "rep-rec",
+                    &icons::SALES,
+                    &ui.t("Receivables"),
+                    ui.f.money(&s.books.position("receivables")),
+                    ui.t("Open customer invoices"),
+                    Tone::Success,
+                ))
+                .child(ui.metric(
+                    "rep-pay",
+                    &icons::PURCHASES,
+                    &ui.t("Payables"),
+                    ui.f.money(&s.books.position("payables")),
+                    ui.t("Due supplier bills"),
+                    Tone::Warning,
+                ));
             let table = Table::new(
                 |s: &State| &s.reports.table,
                 |s: &mut State| &mut s.reports.table,
@@ -314,7 +377,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .grow(1.0)
                 .min_h(0.0)
                 .child(tab_bar)
-                .child(ui.muted(ui.t(hint)))
+                .child(party_metrics)
                 .child(ui.fill_or_empty(s.reports.rows.len(), "Nothing to show", hint, &icons::REPORTS, table))
         }
         3 => sheet_tab(s, ui, tab_bar),
@@ -394,29 +457,27 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
                 .grow(1.0)
                 .min_h(0.0)
                 .child(tab_bar)
-                .child(ui.muted(ui.t(hint)))
                 .child(metrics)
                 .child(ui.fill_or_empty(s.reports.rows.len(), "Nothing to show", hint, &icons::REPORTS, table))
         }
     };
 
+    let mut page_actions = vec![ui.btn(Btn::Glass, "Export CSV", Some(&icons::DOWNLOAD), export_csv)];
+    if s.reports.tab_idx == 3 && !s.reports.selected_account_id.is_empty() {
+        page_actions.insert(
+            0,
+            ui.btn(Btn::Glass, "Ledger", None, |st| {
+                let aid = st.reports.selected_account_id.clone();
+                crate::ui::views::accounting::open_ledger_for(st, &aid);
+            }),
+        );
+    }
+
     ui.page(
         "reports-screen",
         &ui.t("Reports"),
         &ui.t("Reports for this fiscal period"),
-        vec![
-            ui.btn_enabled(
-                Btn::Glass,
-                "Ledger",
-                None,
-                !s.reports.selected_account_id.is_empty() && matches!(s.reports.tab_idx, 1 | 3),
-                |st| {
-                    let aid = st.reports.selected_account_id.clone();
-                    crate::ui::views::accounting::open_ledger_for(st, &aid);
-                },
-            ),
-            ui.btn(Btn::Glass, "Export CSV", Some(&icons::DOWNLOAD), export_csv),
-        ],
+        page_actions,
         body,
     )
 }

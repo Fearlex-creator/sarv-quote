@@ -96,6 +96,8 @@ fn bill(s: &AccountingState, source: &str, date: &str, lines: &[(&str, i64, i64)
             })
             .collect(),
         supplied_total: irr(lines.iter().map(|x| x.2).sum()),
+        vat_basis_points: 0,
+        vat_deductible: true,
     })
 }
 fn transfer(s: &AccountingState, source: &str, date: &str, q: i64) -> ProcurementCommand {
@@ -374,6 +376,8 @@ fn sales_order(s: &AccountingState) -> SalesCommand {
         document_discount: irr(1),
         supplied_total: irr(199),
         quotation: None,
+        vat_basis_points: 0,
+        pricing_mode: Default::default(),
     })
 }
 fn sales_fulfill(s: &AccountingState, oid: &str, source: &str, date: &str, q: i64, v: i64) -> SalesCommand {

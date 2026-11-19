@@ -35,7 +35,8 @@ fn backup_view<'a>(state: &'a State, payload: &[u8]) -> BackupView<'a> {
             4 => "sarv-accounting-backup-v4",
             5 => "sarv-accounting-backup-v5",
             6 => "sarv-accounting-backup-v6",
-            _ => "sarv-accounting-backup-v7",
+            7 => "sarv-accounting-backup-v7",
+            _ => "sarv-accounting-backup-v8",
         },
         checksum: hash(payload),
         state,
@@ -111,6 +112,20 @@ impl Store {
     /// The owner's last acknowledged generation, without querying SQLite.
     pub fn local_generation(&self) -> i64 {
         self.generation
+    }
+
+    /// Flush and truncate the SQLite WAL so `sarv.sqlite3` is self-contained before sealing.
+    pub fn checkpoint_wal(&self) -> std::result::Result<(), String> {
+        let (busy, log, checkpointed): (i64, i64, i64) = self
+            .conn
+            .query_row("PRAGMA wal_checkpoint(TRUNCATE)", [], |r| Ok((r.get(0)?, r.get(1)?, r.get(2)?)))
+            .map_err(|e| format!("WAL checkpoint failed: {e}"))?;
+        if busy != 0 || log != checkpointed {
+            return Err(format!(
+                "WAL checkpoint incomplete (busy={busy}, log={log}, checkpointed={checkpointed})"
+            ));
+        }
+        Ok(())
     }
 
     /// The company's spreadsheet, stored beside the ledger. It does not change the books.
@@ -221,6 +236,7 @@ impl Store {
                 serde_json::to_vec(&verified)? == serde_json::to_vec(&state)?,
                 "نسخهٔ بازیابی تطبیق ندارد"
             );
+            state.accounting.ensure_vat_roles()?;
             state.schema = CURRENT_SCHEMA;
             state.validate()?;
             let next = generation.checked_add(1).ok_or_else(|| anyhow::anyhow!("سرریز نسخهٔ ذخیره‌سازی"))?;
@@ -289,6 +305,7 @@ impl Store {
         persisted.desktop.validate_transition(&candidate.desktop)?;
         persisted.accounting.validate_transition(&candidate.accounting)?;
         persisted.cheques.validate_transition(&candidate.cheques)?;
+        persisted.reconciliations.validate_transition(&candidate.reconciliations)?;
         let changed = tx.execute(
             "UPDATE state SET generation=generation+1,payload=?1 WHERE id=1 AND generation=?2",
             params![payload, self.generation],
@@ -337,6 +354,7 @@ impl Store {
             current.desktop.validate_transition(&prepared.candidate.desktop)?;
             current.accounting.validate_transition(&prepared.candidate.accounting)?;
             current.cheques.validate_transition(&prepared.candidate.cheques)?;
+            current.reconciliations.validate_transition(&prepared.candidate.reconciliations)?;
         }
         Ok(())
     }
@@ -460,6 +478,7 @@ impl Store {
     }
     pub fn restore_preview(path: &Path) -> Result<State> {
         let mut state = Self::restore_preview_legacy(path)?;
+        state.accounting.ensure_vat_roles()?;
         state.schema = CURRENT_SCHEMA;
         state.validate()?;
         Ok(state)
@@ -478,7 +497,8 @@ impl Store {
                 || (b.format == "sarv-accounting-backup-v4" && b.state.schema == 4)
                 || (b.format == "sarv-accounting-backup-v5" && b.state.schema == 5)
                 || (b.format == "sarv-accounting-backup-v6" && b.state.schema == 6)
-                || (b.format == "sarv-accounting-backup-v7" && b.state.schema == CURRENT_SCHEMA),
+                || (b.format == "sarv-accounting-backup-v7" && b.state.schema == 7)
+                || (b.format == "sarv-accounting-backup-v8" && b.state.schema == CURRENT_SCHEMA),
             "قالب پشتیبان ناشناخته"
         );
         ensure!(b.checksum == hash(&serde_json::to_vec(&b.state)?), "اثر انگشت پشتیبان تطبیق ندارد");

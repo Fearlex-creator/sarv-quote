@@ -11,18 +11,22 @@ use crate::security;
 use crate::ui::glass::{Btn, Ui};
 use crate::ui::icons;
 
+/// Today's date respecting `SARV_TODAY`, falling back to the local clock.
+pub(crate) fn today_naive() -> chrono::NaiveDate {
+    chrono::NaiveDate::parse_from_str(&crate::data::today(), "%Y-%m-%d").unwrap_or_else(|_| chrono::Local::now().date_naive())
+}
+
 /// Inclusive fiscal period for `today`, stored as ISO. Jalali years use the civil Nowruz range.
 pub fn fiscal_period(calendar: CalendarKind, today: chrono::NaiveDate) -> (String, String, String) {
-    if calendar == CalendarKind::Jalali {
-        if let Ok(j) = sarv_quote::calendar::from_gregorian(today) {
-            if let Ok((start, end)) = sarv_quote::calendar::jalali_fiscal_year(j.year()) {
-                return (
-                    j.year().to_string(),
-                    start.format("%Y-%m-%d").to_string(),
-                    end.format("%Y-%m-%d").to_string(),
-                );
-            }
-        }
+    if calendar == CalendarKind::Jalali
+        && let Ok(j) = sarv_quote::calendar::from_gregorian(today)
+        && let Ok((start, end)) = sarv_quote::calendar::jalali_fiscal_year(j.year())
+    {
+        return (
+            j.year().to_string(),
+            start.format("%Y-%m-%d").to_string(),
+            end.format("%Y-%m-%d").to_string(),
+        );
     }
     let y = today.year();
     (y.to_string(), format!("{y}-01-01"), format!("{y}-12-31"))
@@ -38,23 +42,22 @@ pub(crate) fn next_fiscal_period(
         return fiscal_period(calendar, today);
     };
     let start_date = end_date.succ_opt().unwrap_or(today);
-    if calendar == CalendarKind::Jalali {
-        if let Ok(j) = sarv_quote::calendar::from_gregorian(start_date) {
-            if let Ok((_, fy_end)) = sarv_quote::calendar::jalali_fiscal_year(j.year()) {
-                let end = if fy_end >= start_date {
-                    fy_end
-                } else {
-                    sarv_quote::calendar::jalali_fiscal_year(j.year() + 1)
-                        .map(|(_, e)| e)
-                        .unwrap_or(start_date)
-                };
-                return (
-                    j.year().to_string(),
-                    start_date.format("%Y-%m-%d").to_string(),
-                    end.format("%Y-%m-%d").to_string(),
-                );
-            }
-        }
+    if calendar == CalendarKind::Jalali
+        && let Ok(j) = sarv_quote::calendar::from_gregorian(start_date)
+        && let Ok((_, fy_end)) = sarv_quote::calendar::jalali_fiscal_year(j.year())
+    {
+        let end = if fy_end >= start_date {
+            fy_end
+        } else {
+            sarv_quote::calendar::jalali_fiscal_year(j.year() + 1)
+                .map(|(_, e)| e)
+                .unwrap_or(start_date)
+        };
+        return (
+            j.year().to_string(),
+            start_date.format("%Y-%m-%d").to_string(),
+            end.format("%Y-%m-%d").to_string(),
+        );
     }
     let y = start_date.year();
     let end = chrono::NaiveDate::from_ymd_opt(y, 12, 31).unwrap_or(start_date);
@@ -85,6 +88,8 @@ pub struct SetupState {
     pub previous_company_id: String,
     pub protect_with_password: bool,
     pub password_revealed: bool,
+    pub opening_key: String,
+    pub opening_posting: bool,
 }
 
 /// Enter setup in "add another company" mode, skipping the welcome step.
@@ -105,6 +110,8 @@ fn cancel_adding(st: &mut State) {
     let prev = std::mem::take(&mut st.setup.previous_company_id);
     st.setup.adding_company = false;
     st.setup.step = 0;
+    st.setup.opening_key.clear();
+    st.setup.opening_posting = false;
     st.forms.clear_prefix("setup-");
     st.forms.clear_prefix("opening-");
     if !prev.is_empty() && prev != st.books.company_id {
@@ -120,13 +127,13 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         return welcome(s, ui);
     }
 
-    let fiscal = fiscal_period(s.fmt.calendar, chrono::Local::now().date_naive());
+    let fiscal = fiscal_period(s.fmt.calendar, today_naive());
     let mut form_card = ui
         .kit_card()
         .title(ui.t("Set up company"), Some(&icons::BUILDING))
         .description(ui.t("Give your business a home in Sarv."))
         .child(ui.labeled("Name", ui.field(s, "setup-name", &ui.t("Your business"))))
-        .child(ui.labeled("Fiscal year", ui.field(s, "setup-fiscal", &fiscal.0)))
+        .child(ui.labeled("Fiscal year", ui.field(s, "setup-fiscal", &s.fmt.digits(&fiscal.0))))
         .child(
             row()
                 .w_full()
@@ -209,7 +216,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
         } else {
             None
         };
-        let defaults = fiscal_period(st.fmt.calendar, chrono::Local::now().date_naive());
+        let defaults = fiscal_period(st.fmt.calendar, today_naive());
         let fiscal = {
             let f = st.forms.get("setup-fiscal").trim().to_string();
             if f.is_empty() {
@@ -252,7 +259,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             if let Some(pass) = setup_pass {
                 match security::set_password(&st.engine.dir, &pass, security::DEFAULT_ITERATIONS) {
                     Ok(dek) => {
-                        st.active_dek = Some(dek);
+                        st.active_dek = Some(zeroize::Zeroizing::new(dek));
+                        st.refresh_lock_status();
                         st.forms.clear(&["setup-pass", "setup-confirm-pass"]);
                         st.setup.protect_with_password = false;
                     }
@@ -261,6 +269,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, _layer: &mut Vec<El>) -> El
             }
             if let Some(id) = v["company_id"].as_str() {
                 st.select_company(id);
+                st.setup.opening_key = st.mint_key("open");
+                st.setup.opening_posting = false;
                 let _ = st.save_preferences();
             }
         }
@@ -378,13 +388,16 @@ fn opening_step(s: &State, ui: &Ui) -> El {
             ui.labeled("Bank", ui.money_field(s, "opening-bank")),
         ))
         .action(ui.btn(Btn::Primary, "Start fresh", Some(&icons::CHECK), |st| {
-            let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
-            let source = format!("open-{stamp}");
+            if st.setup.opening_posting {
+                return;
+            }
+            st.setup.opening_posting = true;
             let cash = match st.parse_money_input(&st.forms.get("opening-cash")) {
                 Ok(v) => v,
                 Err(crate::i18n::MoneyError::Empty) => 0,
                 Err(_) => {
                     st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                    st.setup.opening_posting = false;
                     return;
                 }
             };
@@ -393,23 +406,35 @@ fn opening_step(s: &State, ui: &Ui) -> El {
                 Err(crate::i18n::MoneyError::Empty) => 0,
                 Err(_) => {
                     st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                    st.setup.opening_posting = false;
                     return;
                 }
             };
+            if cash.checked_add(bank).is_none() {
+                st.toast(Tone::Danger, st.fmt.t("Enter a valid amount."));
+                st.setup.opening_posting = false;
+                return;
+            }
+            if st.setup.opening_key.is_empty() {
+                st.setup.opening_key = st.mint_key("open");
+            }
+            let source = st.setup.opening_key.clone();
             let res = if cash == 0 && bank == 0 {
                 st.run(
                     "initialize_zero",
                     json!({
                         "confirmed": true,
                         "source_id": source,
-                        "request_key": format!("req-{stamp}"),
+                        "request_key": source,
                     }),
                     Some("Start with zero balances"),
                 )
             } else {
                 post_opening(st, cash, bank, &source)
             };
+            st.setup.opening_posting = false;
             if res.is_ok() {
+                st.setup.opening_key.clear();
                 st.setup.adding_company = false;
                 st.setup.previous_company_id.clear();
                 st.setup.step = 0;
@@ -482,7 +507,8 @@ fn csv_row(fields: &[(&str, &str)]) -> String {
         .join(",")
 }
 
-fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64, fmt: crate::i18n::Fmt) -> String {
+fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64, fmt: crate::i18n::Fmt) -> Result<String, String> {
+    let capital = cash.checked_add(bank).ok_or_else(|| fmt.t("Enter a valid amount."))?;
     let p: String = company_id.chars().take(8).collect();
     let opening_name = fmt.t("Opening balances");
     let cash_name = fmt.t("Main Cash");
@@ -529,7 +555,7 @@ fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64, fmt: crate::
     ] {
         rows.push(ledger(role, 0, 0));
     }
-    rows.push(ledger("owner_capital", 0, cash + bank));
+    rows.push(ledger("owner_capital", 0, capital));
     if cash > 0 {
         rows.push(csv_row(&[
             ("version", "sarv-opening-v1"),
@@ -556,12 +582,18 @@ fn opening_csv(company_id: &str, as_of: &str, cash: i64, bank: i64, fmt: crate::
             ("statement_amount", &bank_s),
         ]));
     }
-    rows.join("\n")
+    Ok(rows.join("\n"))
 }
 
 fn post_opening(st: &mut State, cash: i64, bank: i64, source: &str) -> Result<serde_json::Value, String> {
     let as_of = st.books.range().0;
-    let csv = opening_csv(&st.books.company_id, &as_of, cash, bank, st.fmt);
+    let csv = match opening_csv(&st.books.company_id, &as_of, cash, bank, st.fmt) {
+        Ok(v) => v,
+        Err(msg) => {
+            st.toast(Tone::Danger, msg.clone());
+            return Err(msg);
+        }
+    };
     let review = st.query(
         "opening_csv_preview",
         json!({ "company_id": st.books.company_id, "csv": csv, "request_key": source }),

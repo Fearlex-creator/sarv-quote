@@ -18,6 +18,9 @@ pub enum MoneyUnit {
 }
 impl Money {
     pub const ZERO: Self = Self(0);
+    pub fn is_zero(&self) -> bool {
+        self.0 == 0
+    }
     pub fn from_rials(value: i64) -> Self {
         Self(value)
     }
@@ -152,6 +155,7 @@ pub enum JournalKind {
     Opening,
     Manual,
     Reversal { journal_id: String },
+    Closing { period_id: String },
 }
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -581,6 +585,8 @@ impl AccountingState {
                     } else if let Some(record) = banking {
                         ensure!(record.command == request.command, "Banking source and journal request differ");
                         replay.post_banking(record.command.clone())?
+                    } else if matches!(j.kind, JournalKind::Closing { .. }) {
+                        replay.post_internal(request.command.clone(), true, true)?
                     } else {
                         // Event text was unrestricted in older manual ledgers.
                         // Replay their existing namespace without granting the
@@ -1421,4 +1427,190 @@ impl AccountingState {
             total_credit,
         })
     }
+
+    /// Preview closing all temporary (Revenue/Expense) accounts for `period_id` into Retained Earnings (ADR-0009).
+    pub fn preview_closing(&self, company_id: &str, period_id: &str) -> Result<ClosingPreview> {
+        let period = self.period(period_id)?.clone();
+        ensure!(period.company_id == company_id, "سال مالی متعلق به کسب‌وکار دیگری است");
+        ensure!(!period.locked, "سال مالی قبلاً بسته یا قفل شده است");
+        for earlier in self
+            .periods
+            .iter()
+            .filter(|p| p.company_id == company_id && p.end_date < period.start_date)
+        {
+            ensure!(earlier.locked, "ابتدا سال‌های مالی پیشین ({}) را ببندید", earlier.name);
+        }
+        let already_closed = self.journals.iter().any(|j| {
+            j.company_id == company_id
+                && matches!(&j.kind, JournalKind::Closing { period_id: pid } if pid == period_id)
+                && !self
+                    .journals
+                    .iter()
+                    .any(|rev| matches!(&rev.kind, JournalKind::Reversal { journal_id } if journal_id == &j.id))
+        });
+        ensure!(!already_closed, "سند بستن حساب‌های موقت این سال مالی قبلاً ثبت شده است");
+
+        let retained_id = self
+            .core
+            .setups
+            .iter()
+            .rev()
+            .find(|s| s.command.company_id == company_id)
+            .and_then(|s| {
+                s.command
+                    .mappings
+                    .iter()
+                    .find(|r| r.role == crate::core::CoreRole::RetainedEarnings)
+                    .map(|r| r.account_id.clone())
+            })
+            .or_else(|| {
+                self.accounts
+                    .iter()
+                    .find(|a| a.company_id == company_id && a.classification == AccountClass::Equity && !a.archived && a.postable)
+                    .map(|a| a.id.clone())
+            })
+            .ok_or_else(|| anyhow::anyhow!("حساب سود و زیان انباشته برای بستن سال مالی یافت نشد"))?;
+        let retained_acct = self
+            .accounts
+            .iter()
+            .find(|a| a.id == retained_id)
+            .ok_or_else(|| anyhow::anyhow!("حساب سود و زیان انباشته یافت نشد"))?
+            .clone();
+
+        let tb = self.trial_balance(company_id, &period.end_date)?;
+        let mut lines = Vec::new();
+        let mut net_profit = Money::ZERO;
+        for row in tb.rows {
+            let Some(acct) = self.accounts.iter().find(|a| a.id == row.account_id) else {
+                continue;
+            };
+            if !matches!(acct.classification, AccountClass::Revenue | AccountClass::Expense) {
+                continue;
+            }
+            let net_debit = row.debit.checked_sub(row.credit)?;
+            if net_debit == Money::ZERO {
+                continue;
+            }
+            if net_debit.rials() > 0 {
+                lines.push(ClosingLinePreview {
+                    account_id: row.account_id,
+                    code: row.code,
+                    name: row.name,
+                    debit: Money::ZERO,
+                    credit: net_debit,
+                });
+                net_profit = net_profit.checked_sub(net_debit)?;
+            } else {
+                let credit_bal = Money::ZERO.checked_sub(net_debit)?;
+                lines.push(ClosingLinePreview {
+                    account_id: row.account_id,
+                    code: row.code,
+                    name: row.name,
+                    debit: credit_bal,
+                    credit: Money::ZERO,
+                });
+                net_profit = net_profit.checked_add(credit_bal)?;
+            }
+        }
+        if !lines.is_empty() && net_profit != Money::ZERO {
+            if net_profit.rials() > 0 {
+                lines.push(ClosingLinePreview {
+                    account_id: retained_acct.id.clone(),
+                    code: retained_acct.code.clone(),
+                    name: retained_acct.name.clone(),
+                    debit: Money::ZERO,
+                    credit: net_profit,
+                });
+            } else {
+                let loss = Money::ZERO.checked_sub(net_profit)?;
+                lines.push(ClosingLinePreview {
+                    account_id: retained_acct.id.clone(),
+                    code: retained_acct.code.clone(),
+                    name: retained_acct.name.clone(),
+                    debit: loss,
+                    credit: Money::ZERO,
+                });
+            }
+        }
+        Ok(ClosingPreview {
+            company_id: company_id.into(),
+            period_id: period.id,
+            period_name: period.name,
+            closing_date: period.end_date,
+            retained_earnings_account: retained_acct.name,
+            net_profit,
+            lines,
+        })
+    }
+
+    /// Atomically post the year-end closing journal (if temporary balances exist) and lock the fiscal period.
+    pub fn post_closing(
+        &mut self,
+        company_id: &str,
+        period_id: &str,
+        actor: &str,
+        request_key: &str,
+        reason: &str,
+    ) -> Result<Option<String>> {
+        if let Some(prior) = self.requests.iter().find(|r| r.command.request_key == request_key) {
+            return Ok(Some(prior.journal_id.clone()));
+        }
+        let preview = self.preview_closing(company_id, period_id)?;
+        let close_reason = if reason.trim().is_empty() {
+            format!("بستن حساب‌های موقت سال مالی {}", preview.period_name)
+        } else {
+            reason.trim().to_string()
+        };
+        let journal_id = if !preview.lines.is_empty() {
+            let cmd = PostCommand {
+                company_id: company_id.into(),
+                period_id: period_id.into(),
+                date: preview.closing_date.clone(),
+                source_id: format!("period-close-{period_id}"),
+                source_revision: 1,
+                event: "accounting.period_close.v1".into(),
+                request_key: request_key.into(),
+                actor: actor.into(),
+                reason: close_reason.clone(),
+                kind: JournalKind::Closing {
+                    period_id: period_id.into(),
+                },
+                lines: preview
+                    .lines
+                    .iter()
+                    .map(|l| JournalLineInput {
+                        account_id: l.account_id.clone(),
+                        debit: l.debit,
+                        credit: l.credit,
+                        description: close_reason.clone(),
+                    })
+                    .collect(),
+            };
+            Some(self.post_internal(cmd, true, false)?)
+        } else {
+            None
+        };
+        self.set_period_lock(period_id, true, actor, &close_reason)?;
+        Ok(journal_id)
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ClosingLinePreview {
+    pub account_id: String,
+    pub code: String,
+    pub name: String,
+    pub debit: Money,
+    pub credit: Money,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ClosingPreview {
+    pub company_id: String,
+    pub period_id: String,
+    pub period_name: String,
+    pub closing_date: String,
+    pub retained_earnings_account: String,
+    pub net_profit: Money,
+    pub lines: Vec<ClosingLinePreview>,
 }

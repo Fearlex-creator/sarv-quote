@@ -254,7 +254,7 @@ fn arm_starter(st: &mut State) {
 fn save_named(st: &mut State) {
     let name = st.forms.get("overview-resource-name").trim().to_string();
     if name.is_empty() {
-        st.toast(Tone::Warning, st.fmt.t("Name"));
+        st.toast(Tone::Warning, st.fmt.t("Please enter a name."));
         return;
     }
     let kind = match st.overview.named_kind {
@@ -437,11 +437,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
     let expanded = guide_expanded(s, done);
 
     let (_, to) = s.books.range();
-    let unit = if s.fmt.unit == crate::i18n::Unit::Rial {
-        "IRR".to_string()
-    } else {
-        ui.t("toman")
-    };
+    let unit = s.fmt.unit_label();
     let as_of = row()
         .w_full()
         .center_y()
@@ -576,17 +572,21 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             .min_w(140.0),
         );
 
-    let sheet = ui.frost(
-        "overview-sheet",
-        col()
-            .w_full()
-            .gap(14.0)
-            .child(as_of)
-            .child(quick)
-            .child(metrics)
-            .child(el().w_full().h(0.5).fill(ui.k.c.border_base))
-            .child(summary),
-    );
+    let sheet = col()
+        .key("overview-sheet")
+        .w_full()
+        .gap(14.0)
+        .child(
+            row()
+                .w_full()
+                .gap(12.0)
+                .center_y()
+                .flex_wrap()
+                .child(as_of.grow(1.0).min_w(180.0))
+                .child(summary),
+        )
+        .child(metrics)
+        .child(ui.frost("overview-quick-card", quick));
 
     let recent_body = if recent_journals(s).is_empty() {
         ui.empty(
@@ -617,7 +617,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
             let short: String = id.chars().take(8).collect();
             match col {
                 "date" => Cell::text(s.fmt.date(&crate::data::s(&j["date"]))).muted(),
-                "ref" => Cell::text(format!("#{short}")),
+                "ref" => Cell::text(crate::i18n::isolate(&format!("#{short}"))),
                 "desc" => Cell::text(crate::data::s(&j["reason"])),
                 "debit" => Cell::text(s.fmt.money(&crate::data::s(&j["total_debit"]))).mono(),
                 _ => Cell::text(s.fmt.money(&crate::data::s(&j["total_credit"]))).mono(),
@@ -849,9 +849,8 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         "overview-screen",
         &ui.t("Overview"),
         &s.books.company_name(),
-        vec![ui.btn(Btn::Primary, "New journal", Some(&icons::PLUS), |st| {
-            crate::ui::views::accounting::open_journal(st);
-            st.nav(Page::Accounting);
+        vec![ui.btn(Btn::Glass, "New journal", Some(&icons::ACCOUNTING), |st| {
+            st.nav_then(Page::Accounting, crate::ui::views::accounting::open_journal);
         })],
         body,
     )

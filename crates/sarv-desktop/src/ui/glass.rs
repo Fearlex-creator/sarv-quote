@@ -378,6 +378,18 @@ impl Ui {
         )
     }
 
+    /// Tab bar on the start, with contextual row actions on the end when a row is selected.
+    pub fn tab_toolbar(&self, tab_bar: El, key: &str, actions: Vec<El>) -> El {
+        let mut bar = row().w_full().gap(12.0).center_y().justify_between().child(tab_bar);
+        if !actions.is_empty() {
+            let group = actions
+                .into_iter()
+                .fold(row().key(key.to_string()).gap(8.0).center_y(), |r, a| r.child(a));
+            bar = bar.child(group);
+        }
+        bar
+    }
+
     /// The page's primary action stays in the toolbar. An empty list shows that instead of a blank table.
     pub fn fill_or_empty(&self, count: usize, title: &str, detail: &str, glyph: &'static Icon, table: El) -> El {
         if count == 0 {
@@ -388,22 +400,76 @@ impl Ui {
     }
 
     pub fn empty(&self, glyph: &'static Icon, title: &str, detail: &str) -> El {
-        Card::new()
-            .title(self.t(title), Some(glyph))
-            .description(self.t(detail))
-            .build(&self.k)
-            .w_full()
+        let icon_pill = row()
+            .size(40.0, 40.0)
+            .center()
+            .radius(self.k.radius.md)
+            .fill(self.k.c.layer_02)
+            .border(0.5, self.k.c.border_base)
+            .child(self.ic(glyph, 18.0, self.k.c.icon_muted));
+        self.k.elevate(
+            col()
+                .w_full()
+                .px(24.0)
+                .py(36.0)
+                .gap(10.0)
+                .center()
+                .radius(self.k.radius.md)
+                .fill(self.k.c.layer_01)
+                .border(0.5, self.k.c.border_base)
+                .child(icon_pill)
+                .child(text(self.t(title)).font(self.k.ty.ui_medium).color(self.k.c.text_base))
+                .child(
+                    text(self.t(detail))
+                        .font(self.k.ty.caption())
+                        .color(self.k.c.text_muted)
+                        .max_w(380.0),
+                ),
+            &self.k.elevation.raised,
+        )
     }
 
     pub fn metric(&self, key: &str, glyph: &'static Icon, title: &str, value: String, sub: String, tone: Tone) -> El {
-        Card::new()
-            .accent(self.tone_accent(tone))
-            .title(title.to_string(), Some(glyph))
-            .description(sub)
-            .child(text(value).font(self.k.ty.body_medium).color(self.k.c.text_base))
-            .build(&self.k)
-            .key(key.to_string())
-            .grow(1.0)
+        let value_style = rune::tok::TextStyle::new(20.0, 600.0)
+            .lh(26.0)
+            .family(rune::tok::Family::Named("Vazirmatn"));
+        let mut inner = col()
+            .w_full()
+            .gap(6.0)
+            .px(14.0)
+            .py(12.0)
+            .child(
+                row()
+                    .w_full()
+                    .gap(6.0)
+                    .center_y()
+                    .child(self.ic(glyph, 14.0, self.tone_accent(tone)))
+                    .child(
+                        text(title.to_string())
+                            .font(self.k.ty.text_small_medium)
+                            .color(self.k.c.text_muted)
+                            .truncate(),
+                    ),
+            )
+            .child(text(value).font(value_style).color(self.k.c.text_base).truncate());
+        if !sub.is_empty() {
+            inner = inner.child(text(sub).font(self.k.ty.caption()).color(self.k.c.text_muted).truncate());
+        }
+        let strip = el().w(3.0).h_full().radius(2.0).fill(self.tone_accent(tone)).a11y_hidden();
+        self.k.elevate(
+            row()
+                .key(key.to_string())
+                .grow(1.0)
+                .min_w(0.0)
+                .pl(6.0)
+                .py(6.0)
+                .radius(self.k.radius.md)
+                .fill(self.k.c.layer_01)
+                .border(0.5, self.k.c.border_base)
+                .child(strip)
+                .child(inner.grow(1.0).min_w(0.0)),
+            &self.k.elevation.raised,
+        )
     }
 
     /// Document page inside the shell panel.
@@ -412,7 +478,7 @@ impl Ui {
     /// be the scroll viewport. Wrap a long column yourself with `.scroll(..)` before passing it.
     pub fn page(&self, key: &str, title: &str, subtitle: &str, actions: Vec<El>, body: El) -> El {
         // The shell toolbar is the document title. This column keeps that name for accessibility.
-        let page = col()
+        let mut page = col()
             .key(key.to_string())
             .label(title.to_string())
             .grow(1.0)
@@ -420,20 +486,23 @@ impl Ui {
             .min_h(0.0)
             .gap(16.0)
             .px(24.0)
-            .pt(8.0)
+            .pt(12.0)
             .pb(16.0);
-        let mut titles = col().key("page-titles").gap(2.0).grow(1.0).min_w(160.0);
-        if !subtitle.is_empty() {
-            titles = titles.child(self.muted(subtitle.to_string()).truncate());
+        if !subtitle.is_empty() || !actions.is_empty() {
+            let mut titles = col().key("page-titles").gap(2.0).grow(1.0).min_w(160.0);
+            if !subtitle.is_empty() {
+                titles = titles.child(self.muted(subtitle.to_string()).truncate());
+            }
+            let mut head = row().key("page-head").w_full().gap(12.0).center_y().flex_wrap().child(titles);
+            if !actions.is_empty() {
+                let actions_row = actions
+                    .into_iter()
+                    .fold(row().gap(8.0).flex_wrap().justify_end(), |r, a| r.child(a));
+                head = head.child(actions_row);
+            }
+            page = page.child(head);
         }
-        let mut head = row().key("page-head").w_full().gap(12.0).center_y().flex_wrap().child(titles);
-        if !actions.is_empty() {
-            let actions_row = actions
-                .into_iter()
-                .fold(row().gap(8.0).flex_wrap().justify_end(), |r, a| r.child(a));
-            head = head.child(actions_row);
-        }
-        page.child(head).child(body.grow(1.0).min_h(0.0)).transition(Transition::opacity())
+        page.child(body.grow(1.0).min_h(0.0)).transition(Transition::opacity())
     }
 
     pub fn cell(&self, s: impl Into<String>) -> El {
@@ -535,7 +604,7 @@ impl Ui {
         if !description.is_empty() {
             heading = heading.child(text(description.to_string()).font(k.ty.ui).color(k.c.text_muted));
         }
-        let scrolled = body.scroll(rune::ScrollSpec { stick_bottom: false }).w_full().max_h(420.0);
+        let scrolled = body.scroll(rune::ScrollSpec { stick_bottom: false }).w_full().max_h(480.0);
         let mut foot = row().key("dialog-footer").w_full().gap(8.0).px(16.0).py(12.0).center_y();
         if !footer.is_empty() {
             foot = foot.child(el().grow(1.0));
@@ -561,7 +630,8 @@ impl Ui {
                     .child(heading)
                     .child(dismiss),
             )
-            .child(col().key("dialog-body").w_full().px(16.0).pb(4.0).child(scrolled))
+            .child(el().w_full().h(0.5).fill(k.c.border_base))
+            .child(col().key("dialog-body").w_full().px(16.0).pt(12.0).pb(8.0).child(scrolled))
             .child(el().w_full().h(0.5).fill(k.c.border_base))
             .child(foot)
             .token_motion(k.motion.overlay)

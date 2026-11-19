@@ -47,7 +47,11 @@ fn exports_dir(st: &State) -> Result<PathBuf, String> {
 }
 
 fn unique_path(dir: &Path, stem: &str, id: &str, ext: &str) -> PathBuf {
-    let base = format!("{stem}-{}", safe_name(id));
+    let base = if stem.is_empty() {
+        safe_name(id)
+    } else {
+        format!("{stem}-{}", safe_name(id))
+    };
     let first = dir.join(format!("{base}.{ext}"));
     if !first.exists() {
         return first;
@@ -81,8 +85,31 @@ fn write_ext(
 
 pub fn save_text_export(st: &State, filename: &str, content: &str) -> Result<PathBuf, String> {
     let dir = exports_dir(st)?;
-    let path = dir.join(filename);
-    std::fs::write(&path, content.as_bytes()).map_err(|e| e.to_string())?;
+    save_text_export_in(&dir, filename, content)
+}
+
+fn save_text_export_in(dir: &Path, filename: &str, content: &str) -> Result<PathBuf, String> {
+    let (raw_stem, ext) = match filename.rsplit_once('.') {
+        Some((s, e)) if !s.is_empty() && !e.is_empty() && e.chars().all(|c| c.is_ascii_alphanumeric()) => (s, e),
+        _ => (filename, "csv"),
+    };
+    let path = unique_path(dir, "", raw_stem, ext);
+    #[cfg(unix)]
+    {
+        use std::io::Write;
+        use std::os::unix::fs::OpenOptionsExt;
+        let mut file = std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .mode(0o600)
+            .open(&path)
+            .map_err(|e| e.to_string())?;
+        file.write_all(content.as_bytes()).map_err(|e| e.to_string())?;
+    }
+    #[cfg(not(unix))]
+    {
+        std::fs::write(&path, content.as_bytes()).map_err(|e| e.to_string())?;
+    }
     Ok(path)
 }
 
@@ -102,8 +129,12 @@ pub fn reveal(path: &Path, folder: bool) -> Result<(), String> {
     };
     #[cfg(target_os = "windows")]
     let mut cmd = {
-        let mut c = std::process::Command::new("cmd");
-        c.args(["/C", "start", ""]).arg(target);
+        let mut c = std::process::Command::new("explorer");
+        if folder && path.is_file() {
+            c.arg(format!("/select,{}", path.display()));
+        } else {
+            c.arg(target);
+        }
         c
     };
     cmd.spawn().map(|_| ()).map_err(|e| e.to_string())
@@ -166,4 +197,46 @@ pub fn write_purchase_document_csv(st: &State, record_id: &str) -> Result<PathBu
     write_ext(st, "purchase", record_id, "csv", move |state, path| {
         sarv_quote::procurement_export::document_csv(&state.accounting, &company, &id, unit, dates, digits, path).map_err(|e| e.to_string())
     })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::save_text_export_in;
+
+    #[test]
+    fn save_text_export_blocks_path_traversal() {
+        let root = tempfile::tempdir().unwrap();
+        let exports = root.path().join("exports");
+        std::fs::create_dir_all(&exports).unwrap();
+
+        for name in ["../evil.csv", "a/b.csv", "../../etc/passwd", "sub\\dir.txt", ".."] {
+            let saved = save_text_export_in(&exports, name, "a,b\n1,2\n").unwrap();
+            assert_eq!(saved.parent(), Some(exports.as_path()), "escaped exports for {name:?}: {saved:?}");
+            assert!(saved.is_file());
+            #[cfg(unix)]
+            {
+                use std::os::unix::fs::PermissionsExt;
+                let mode = std::fs::metadata(&saved).unwrap().permissions().mode() & 0o777;
+                assert_eq!(mode, 0o600, "expected 0o600 permissions for {saved:?}");
+            }
+        }
+    }
+
+    #[test]
+    fn save_text_export_repeated_names_are_unique() {
+        let root = tempfile::tempdir().unwrap();
+        let exports = root.path().join("exports");
+        std::fs::create_dir_all(&exports).unwrap();
+
+        let p1 = save_text_export_in(&exports, "report.csv", "first").unwrap();
+        let p2 = save_text_export_in(&exports, "report.csv", "second").unwrap();
+        let p3 = save_text_export_in(&exports, "report.csv", "third").unwrap();
+
+        assert_ne!(p1, p2);
+        assert_ne!(p2, p3);
+        assert_ne!(p1, p3);
+        assert_eq!(std::fs::read_to_string(&p1).unwrap(), "first");
+        assert_eq!(std::fs::read_to_string(&p2).unwrap(), "second");
+        assert_eq!(std::fs::read_to_string(&p3).unwrap(), "third");
+    }
 }

@@ -12,6 +12,28 @@ use crate::ui::icons;
 pub struct LockState {
     pub error: String,
     pub revealed: bool,
+    pub failed_attempts: u32,
+    pub locked_until_unix: i64,
+}
+
+impl LockState {
+    pub fn sync_from_disk(&mut self, dir: &std::path::Path) {
+        if let Ok(Some(rec)) = security::load(dir) {
+            self.failed_attempts = rec.failed_attempts;
+            self.locked_until_unix = rec.locked_until_unix;
+        } else {
+            self.failed_attempts = 0;
+            self.locked_until_unix = 0;
+        }
+    }
+
+    pub fn remaining_lockout_secs(&self, now: i64) -> i64 {
+        if self.locked_until_unix > now {
+            self.locked_until_unix - now
+        } else {
+            0
+        }
+    }
 }
 
 pub fn format_duration(s: &State, secs: i64) -> String {
@@ -67,19 +89,20 @@ pub fn attempt_unlock(s: &mut State) {
                 s.lock_state.error = e;
                 return;
             }
-            s.active_dek = Some(dek);
+            s.active_dek = Some(zeroize::Zeroizing::new(dek));
             s.locked = false;
             s.lock_state.error.clear();
             s.lock_state.revealed = false;
+            s.lock_state.failed_attempts = 0;
+            s.lock_state.locked_until_unix = 0;
             s.forms.clear(&["lock-password"]);
-            s.refresh();
-            s.apply_settings();
-            s.refresh_recovery_if_failed();
+            s.refresh_and_apply_settings();
             s.startup_summary_open = s.books.has_company() && s.books.initialized();
             crate::logfile::line("INFO", "app unlocked");
         }
         Ok(outcome) => {
             s.forms.clear(&["lock-password"]);
+            s.lock_state.sync_from_disk(&s.engine.dir);
             s.lock_state.error = format_outcome_error(s, outcome);
         }
         Err(e) => {
@@ -89,8 +112,8 @@ pub fn attempt_unlock(s: &mut State) {
 }
 
 pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui) -> El {
-    let remaining = security::remaining_lockout_secs(&s.engine.dir, security::now_unix());
-    let fails = security::failed_attempts(&s.engine.dir);
+    let remaining = s.lock_state.remaining_lockout_secs(security::now_unix());
+    let fails = s.lock_state.failed_attempts;
 
     let badge_icon = row()
         .size(52.0, 52.0)
@@ -110,7 +133,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui) -> El {
 
     let pass_field = ui.secret_field_submit(s, "lock-password", &ui.t("Password"), s.lock_state.revealed, |st, tx| {
         attempt_unlock(st);
-        if security::remaining_lockout_secs(&st.engine.dir, security::now_unix()) > 0 {
+        if st.lock_state.remaining_lockout_secs(security::now_unix()) > 0 {
             tx.wake_after(std::time::Duration::from_secs(1));
         }
     });

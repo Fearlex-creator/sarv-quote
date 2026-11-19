@@ -206,7 +206,7 @@ fn build_rows(s: &State) -> (Vec<Row>, HashMap<String, String>) {
                 name.clone(),
                 brand.clone(),
                 category.clone(),
-                code.clone(),
+                crate::i18n::isolate(&code),
                 unit.clone(),
                 s.fmt.money(&price_raw),
             ],
@@ -359,21 +359,56 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         mount_product_profile(s, ui, layer);
     }
 
-    let filters = row()
+    let all_items = items(s);
+    let total_items = all_items.len();
+    let inv_kpis = row()
+        .w_full()
+        .gap(12.0)
+        .child(ui.metric(
+            "inv-kpi-total",
+            &icons::INVENTORY,
+            &ui.t("Products"),
+            ui.f.digits(&total_items.to_string()),
+            ui.t("Products and services you sell"),
+            Tone::Info,
+        ))
+        .child(ui.metric(
+            "inv-kpi-categories",
+            &icons::SPARKLE,
+            &ui.t("Category"),
+            ui.f.digits(&categories.len().to_string()),
+            format!("{} {}", ui.f.digits(&brands.len().to_string()), ui.t("Brand")),
+            Tone::Success,
+        ));
+
+    let mut filters = row()
         .w_full()
         .gap(10.0)
         .center_y()
         .child(ui.field(s, "inventory-search", &ui.t("Search products")).grow(1.0).min_w(0.0))
         .child(brand_select)
         .child(category_select);
+    if !s.inventory.selected.is_empty() {
+        filters = filters.child(ui.btn(Btn::Glass, "Product details", None, |st| {
+            let id = st.inventory.selected.clone();
+            open_product(st, &id);
+        }));
+    }
 
-    let body = col().w_full().gap(14.0).grow(1.0).min_h(0.0).child(filters).child(ui.fill_or_empty(
-        visible_count,
-        if items(s).is_empty() { "No products" } else { "Nothing to show" },
-        "Products and services you sell",
-        &icons::INVENTORY,
-        table,
-    ));
+    let body = col()
+        .w_full()
+        .gap(14.0)
+        .grow(1.0)
+        .min_h(0.0)
+        .child(inv_kpis)
+        .child(filters)
+        .child(ui.fill_or_empty(
+            visible_count,
+            if total_items == 0 { "No products" } else { "Nothing to show" },
+            "Products and services you sell",
+            &icons::INVENTORY,
+            table,
+        ));
 
     layer.append(&mut portals);
 
@@ -381,18 +416,7 @@ pub fn view(s: &State, _cx: &mut Cx<State>, ui: &Ui, layer: &mut Vec<El>) -> El 
         "inventory-screen",
         &ui.t("Inventory"),
         &ui.t("Organize products by brand and category"),
-        vec![
-            ui.btn(Btn::Glass, "Transfer stock", Some(&icons::ARROW), open_transfer),
-            add_btn,
-            ui.btn(Btn::Glass, "Product details", None, |st| {
-                if st.inventory.selected.is_empty() {
-                    st.toast(Tone::Info, st.fmt.t("Select product"));
-                    return;
-                }
-                let id = st.inventory.selected.clone();
-                open_product(st, &id);
-            }),
-        ],
+        vec![ui.btn(Btn::Glass, "Transfer stock", Some(&icons::ARROW), open_transfer), add_btn],
         body,
     )
 }

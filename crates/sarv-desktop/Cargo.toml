@@ -8,6 +8,8 @@ description = "Native Rune desktop interface for Sarv accounting"
 build = "build.rs"
 
 [dependencies]
+argon2 = "0.5"
+chacha20poly1305 = "0.10"
 chrono.workspace = true
 getrandom = "0.3"
 rune = { git = "https://github.com/anomalyco/rune", rev = "b556a38a1ff88aa8690d21b45ebf9b9167038674" }
@@ -16,6 +18,8 @@ sarv-quote = { path = "../sarv-quote", features = ["pdf-export"] }
 serde.workspace = true
 serde_json.workspace = true
 sha2.workspace = true
+subtle = "2"
+zeroize = "1"
 
 [dev-dependencies]
 sarv-quote = { path = "../sarv-quote", features = ["test-support"] }

@@ -1,7 +1,7 @@
 //! The accounting engine behind the Rune UI. Actions go through `dispatch` in-process.
 
 use std::collections::HashMap;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
 use serde_json::{Value, json};
@@ -10,6 +10,7 @@ pub struct Engine {
     pub dir: PathBuf,
     pub legacy_location: bool,
     pub open_error: Option<String>,
+    ephemeral: bool,
     store: Mutex<Option<sarv_quote::store::Store>>,
 }
 
@@ -29,24 +30,28 @@ pub fn books_dir(os: &str, get: &dyn Fn(&str) -> Option<String>) -> Result<PathB
     .ok_or_else(|| "No home folder found. Set SARV_DATA_DIR.".into())
 }
 
+fn has_books(dir: &Path) -> bool {
+    dir.join("sarv.sqlite3").exists() || dir.join("sarv.sqlite3.sarvlock").exists() || dir.join("app_lock.json").exists()
+}
+
 impl Engine {
     /// `SARV_DATA_DIR`, else per-OS user data directory (`ir.sarv.accounting/books`).
     pub fn open() -> Self {
         let mut legacy_location = false;
         let (dir, open_error) = match books_dir(std::env::consts::OS, &|k| std::env::var(k).ok()) {
             Ok(mut dir) => {
-                if std::env::var_os("SARV_DATA_DIR").is_none() && !dir.join("sarv.sqlite3").exists() {
+                if std::env::var_os("SARV_DATA_DIR").is_none() && !has_books(&dir) {
                     if std::env::consts::OS == "macos" {
                         if let Some(home) = std::env::var("HOME").ok().filter(|v| !v.is_empty()) {
                             let legacy = PathBuf::from(home).join(".local/share/ir.sarv.accounting/books");
-                            if legacy.join("sarv.sqlite3").exists() {
+                            if has_books(&legacy) {
                                 dir = legacy;
                                 legacy_location = true;
                             }
                         }
                     } else if std::env::consts::OS == "windows" {
                         let legacy = PathBuf::from("sarv_books");
-                        if legacy.join("sarv.sqlite3").exists() {
+                        if has_books(&legacy) {
                             dir = legacy;
                             legacy_location = true;
                         }
@@ -61,6 +66,7 @@ impl Engine {
             dir,
             legacy_location,
             open_error,
+            ephemeral: false,
             store: Mutex::new(None),
         }
     }
@@ -86,6 +92,7 @@ impl Engine {
             dir,
             legacy_location: false,
             open_error: None,
+            ephemeral: true,
             store: Mutex::new(None),
         }
     }
@@ -95,8 +102,14 @@ impl Engine {
             dir: dir.into(),
             legacy_location: false,
             open_error: None,
+            ephemeral: false,
             store: Mutex::new(None),
         }
+    }
+
+    #[cfg(test)]
+    pub fn keep_dir(&mut self) {
+        self.ephemeral = false;
     }
 
     fn ensure_store<'a>(&self, slot: &'a mut Option<sarv_quote::store::Store>) -> Result<&'a mut sarv_quote::store::Store, String> {
@@ -122,11 +135,14 @@ impl Engine {
         }
     }
 
-    /// Drop the held SQLite store so the database file can be sealed cleanly.
-    pub fn close_store(&self) {
-        if let Ok(mut slot) = self.store.lock() {
-            *slot = None;
+    /// Checkpoint WAL and drop the held SQLite store so the database file can be sealed cleanly.
+    pub fn close_store(&self) -> Result<(), String> {
+        let mut slot = self.store.lock().map_err(|_| "Books are busy".to_string())?;
+        if let Some(store) = slot.as_ref() {
+            store.checkpoint_wal()?;
         }
+        *slot = None;
+        Ok(())
     }
 
     /// Read the current validated state from the held store.
@@ -134,6 +150,15 @@ impl Engine {
         let mut slot = self.store.lock().map_err(|_| "Books are busy".to_string())?;
         let store = self.ensure_store(&mut slot)?;
         f(&store.state)
+    }
+}
+
+impl Drop for Engine {
+    fn drop(&mut self) {
+        if self.ephemeral {
+            let _ = self.close_store();
+            let _ = std::fs::remove_dir_all(&self.dir);
+        }
     }
 }
 
@@ -173,11 +198,11 @@ impl Books {
         match first {
             Ok(w) => {
                 self.error.clear();
-                if self.company_id.is_empty() {
-                    if let Some(id) = w["companies"][0]["id"].as_str() {
-                        self.company_id = id.to_string();
-                        return self.refresh(engine);
-                    }
+                if self.company_id.is_empty()
+                    && let Some(id) = w["companies"][0]["id"].as_str()
+                {
+                    self.company_id = id.to_string();
+                    return self.refresh(engine);
                 }
                 self.workspace = w;
                 self.pick_period();
@@ -346,10 +371,10 @@ impl Books {
 
     /// Party name by id, honouring the party profile's display name.
     pub fn party_name(&self, id: &str) -> String {
-        if let Some(p) = self.workspace["party_profiles"][id]["display_name"].as_str() {
-            if !p.trim().is_empty() {
-                return p.to_string();
-            }
+        if let Some(p) = self.workspace["party_profiles"][id]["display_name"].as_str()
+            && !p.trim().is_empty()
+        {
+            return p.to_string();
         }
         self.party_index.get(id).cloned().unwrap_or_default()
     }
@@ -429,5 +454,32 @@ mod tests {
         for os in ["linux", "macos", "windows"] {
             assert!(books_dir(os, &get).is_err());
         }
+    }
+
+    #[test]
+    fn has_books_recognizes_sqlite_sealed_and_lock_file() {
+        let empty = tempfile::tempdir().unwrap();
+        assert!(!super::has_books(empty.path()));
+
+        let plain = tempfile::tempdir().unwrap();
+        std::fs::write(plain.path().join("sarv.sqlite3"), b"db").unwrap();
+        assert!(super::has_books(plain.path()));
+
+        let sealed = tempfile::tempdir().unwrap();
+        std::fs::write(sealed.path().join("sarv.sqlite3.sarvlock"), b"enc").unwrap();
+        assert!(super::has_books(sealed.path()));
+
+        let lock_only = tempfile::tempdir().unwrap();
+        std::fs::write(lock_only.path().join("app_lock.json"), b"{}").unwrap();
+        assert!(super::has_books(lock_only.path()));
+    }
+
+    #[test]
+    fn demo_engine_deletes_temp_dir_on_drop() {
+        let engine = super::Engine::demo();
+        let dir = engine.dir.clone();
+        assert!(dir.exists(), "demo engine dir should exist before drop");
+        drop(engine);
+        assert!(!dir.exists(), "demo engine dir should be removed on drop");
     }
 }

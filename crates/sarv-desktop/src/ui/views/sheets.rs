@@ -170,23 +170,6 @@ fn book_rial(st: &State, key: &str) -> Option<i64> {
     if raw.is_empty() { None } else { raw.parse().ok() }
 }
 
-fn grouped(n: i64) -> String {
-    let neg = n < 0;
-    let digits = n.unsigned_abs().to_string();
-    let mut out = String::new();
-    for (i, c) in digits.chars().rev().enumerate() {
-        if i > 0 && i % 3 == 0 {
-            out.push(',');
-        }
-        out.push(c);
-    }
-    let mut text: String = out.chars().rev().collect();
-    if neg {
-        text.insert(0, '-');
-    }
-    text
-}
-
 fn shown(st: &State, raw: &str) -> String {
     let cash = book_rial(st, "cash");
     let receivables = book_rial(st, "receivables");
@@ -205,7 +188,7 @@ fn shown(st: &State, raw: &str) -> String {
         Ok(CellValue::Blank) => String::new(),
         Ok(CellValue::Text(t)) => t,
         Ok(CellValue::Number(n)) if n.money => st.fmt.money(&n.value.to_string()),
-        Ok(CellValue::Number(n)) => st.fmt.digits(&grouped(n.value)),
+        Ok(CellValue::Number(n)) => st.fmt.grouped_i64(n.value),
         Err(()) => "—".into(),
     }
 }

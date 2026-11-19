@@ -107,6 +107,8 @@ fn m4() -> AccountingState {
             supplied_value: irr(180),
         }],
         supplied_total: irr(180),
+        vat_basis_points: 0,
+        vat_deductible: true,
     }))
     .unwrap();
     s.post_procurement_command(transfer(&s, "TRANSFER", "2026-03-26", 6000)).unwrap();
@@ -135,6 +137,8 @@ fn order(s: &AccountingState) -> SalesCommand {
         document_discount: irr(1),
         supplied_total: irr(199),
         quotation: None,
+        vat_basis_points: 0,
+        pricing_mode: Default::default(),
     })
 }
 fn fulfill(s: &AccountingState, oid: &str, source: &str, date: &str, q: i64, v: i64) -> SalesCommand {
@@ -514,6 +518,8 @@ fn one_rial_discount_and_zero_cost_quantities_conserve_original_components_witho
             document_discount: irr(1),
             supplied_total: irr(1),
             quotation: None,
+            vat_basis_points: 0,
+            pricing_mode: Default::default(),
         }))
         .unwrap()
         .record_id;
@@ -852,6 +858,8 @@ fn divisible_quantity_uses_original_net_and_discount_before_derived_gross() {
             document_discount: irr(1),
             supplied_total: irr(1),
             quotation: None,
+            vat_basis_points: 0,
+            pricing_mode: Default::default(),
         }))
         .unwrap();
     let SalesData::Order(frozen) = &s.sales_document(&order.record_id).unwrap().data else {

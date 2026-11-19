@@ -292,3 +292,18 @@ fn test_quantity_above_remaining_is_rejected_before_preview() {
     );
     rt.state.operation.open = false;
 }
+
+#[test]
+fn test_purchases_tab_switch_clears_selected() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Purchases.key());
+    rt.state.purchases.selected = "purchase-dummy".into();
+    rt.frame(1.0 / 60.0);
+    click(&mut rt, "segment1");
+    assert_eq!(rt.state.purchases.tab_idx, 1);
+    assert!(
+        rt.state.purchases.selected.is_empty(),
+        "switching purchase tabs must clear stale selected id"
+    );
+    assert_no_danger(&rt);
+}

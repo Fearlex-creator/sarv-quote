@@ -98,6 +98,9 @@ fn journal_totals(value: &mut Value) -> Result<()> {
 fn raw_draft(p: &Value) -> Result<RawSalesDraft> {
     let mut v = p.clone();
     v["revision"] = json!(integer(p, "revision")?);
+    if let Some(s) = p["vat_basis_points"].as_str() {
+        v["vat_basis_points"] = serde_json::from_str(s)?;
+    }
     Ok(serde_json::from_value(v)?)
 }
 fn company<'a>(s: &'a State, p: &Value) -> Result<&'a Company> {
@@ -722,6 +725,22 @@ fn bill(s: &State, p: &Value) -> Result<ProcurementCommand> {
             })
         })
         .collect::<Result<Vec<_>>>()?;
+    let vat_basis_points = p["vat_basis_points"]
+        .as_u64()
+        .or_else(|| p["vat_basis_points"].as_str().and_then(|s| s.parse().ok()))
+        .unwrap_or(0) as u32;
+    let vat_deductible = p["vat_deductible"].as_bool().unwrap_or(true);
+    let mut tax_total = Money::ZERO;
+    for l in &lines {
+        let (_, line_tax, _) = crate::vat::compute_vat_on_subtotal(
+            l.supplied_value.rials(),
+            crate::vat::TaxCategory::Taxable,
+            vat_basis_points,
+            crate::vat::PricingMode::Exclusive,
+        )?;
+        tax_total = tax_total.checked_add(Money::from_rials(line_tax))?;
+    }
+    let grand_total = total.checked_add(tax_total)?;
     Ok(ProcurementCommand::Bill(MatchBill {
         context: context(s, p)?,
         supplier_id: receipt.supplier_id.clone(),
@@ -729,7 +748,9 @@ fn bill(s: &State, p: &Value) -> Result<ProcurementCommand> {
         document_date: string(p, "date")?.into(),
         due_date: string(p, "due_date")?.into(),
         lines,
-        supplied_total: total,
+        supplied_total: grand_total,
+        vat_basis_points,
+        vat_deductible,
     }))
 }
 fn report(s: &State, p: &Value) -> Result<Value> {
@@ -740,14 +761,22 @@ fn report(s: &State, p: &Value) -> Result<Value> {
     civil_date(to)?;
     ensure!(from <= to, "Start date must precede end date");
     let tb = s.accounting.trial_balance(&c.id, to)?;
-    // One pass over journals in range; per-account nets come from the map.
-    let mut nets = std::collections::BTreeMap::<&str, Money>::new();
-    for journal in s
+    // One pass over journals in range; exclude Closing journals (and their reversals) from P&L (ADR-0009).
+    let closing_ids: std::collections::HashSet<&str> = s
         .accounting
         .journals
         .iter()
-        .filter(|j| j.company_id == c.id && j.date.as_str() >= from && j.date.as_str() <= to)
-    {
+        .filter(|j| j.company_id == c.id && matches!(j.kind, crate::accounting::JournalKind::Closing { .. }))
+        .map(|j| j.id.as_str())
+        .collect();
+    let mut nets = std::collections::BTreeMap::<&str, Money>::new();
+    for journal in s.accounting.journals.iter().filter(|j| {
+        j.company_id == c.id
+            && j.date.as_str() >= from
+            && j.date.as_str() <= to
+            && !matches!(j.kind, crate::accounting::JournalKind::Closing { .. })
+            && !matches!(&j.kind, crate::accounting::JournalKind::Reversal { journal_id } if closing_ids.contains(journal_id.as_str()))
+    }) {
         for line in &journal.lines {
             let net = nets.entry(line.account.id.as_str()).or_insert(Money::ZERO);
             *net = net.checked_add(line.debit.checked_sub(line.credit)?)?;
@@ -820,8 +849,42 @@ fn report(s: &State, p: &Value) -> Result<Value> {
     } else {
         (None, None)
     };
+    let mut output_vat = Money::ZERO;
+    for r in s.accounting.sales.records.iter().filter(|r| {
+        r.command.context().company_id == c.id && r.command.context().date.as_str() >= from && r.command.context().date.as_str() <= to
+    }) {
+        match &r.data {
+            SalesData::Fulfill(f) => output_vat = output_vat.checked_add(f.tax)?,
+            SalesData::Return(ret) => output_vat = output_vat.checked_sub(ret.tax)?,
+            _ => {}
+        }
+    }
+    let mut input_vat_deductible = Money::ZERO;
+    let mut input_vat_nondeductible = Money::ZERO;
+    for r in s.accounting.procurement.records.iter().filter(|r| {
+        r.command.context().company_id == c.id && r.command.context().date.as_str() >= from && r.command.context().date.as_str() <= to
+    }) {
+        match &r.data {
+            ProcurementData::Bill(b) => {
+                if b.vat_deductible {
+                    input_vat_deductible = input_vat_deductible.checked_add(b.tax)?;
+                } else {
+                    input_vat_nondeductible = input_vat_nondeductible.checked_add(b.tax)?;
+                }
+            }
+            ProcurementData::Return(ret) if ret.bill_id.is_some() => {
+                if ret.vat_deductible {
+                    input_vat_deductible = input_vat_deductible.checked_sub(ret.tax)?;
+                } else {
+                    input_vat_nondeductible = input_vat_nondeductible.checked_sub(ret.tax)?;
+                }
+            }
+            _ => {}
+        }
+    }
+    let net_vat_payable = output_vat.checked_sub(input_vat_deductible)?;
     Ok(
-        json!({"company_id":c.id,"from":from,"to":to,"balance_sheet":balance_sheet,"aging":aging,"trial":tb,"profit_loss":{"rows":rows,"revenue":revenue,"expenses":expense,"profit":revenue.checked_sub(expense)?},"position":{"cash":balance(CoreRole::Cash)?.checked_add(balance(CoreRole::Bank)?)?,"receivables":balance(CoreRole::Receivables)?,"payables":balance(CoreRole::Payables)?},"party_balances":party_balances,"reconciliation":reconciliation}),
+        json!({"company_id":c.id,"from":from,"to":to,"balance_sheet":balance_sheet,"aging":aging,"trial":tb,"profit_loss":{"rows":rows,"revenue":revenue,"expenses":expense,"profit":revenue.checked_sub(expense)?},"vat":{"output_vat":output_vat,"input_vat_deductible":input_vat_deductible,"input_vat_nondeductible":input_vat_nondeductible,"net_vat_payable":net_vat_payable,"vat_payable_balance":balance(CoreRole::VatPayable)?,"vat_receivable_balance":balance(CoreRole::VatReceivable)?},"position":{"cash":balance(CoreRole::Cash)?.checked_add(balance(CoreRole::Bank)?)?,"receivables":balance(CoreRole::Receivables)?,"payables":balance(CoreRole::Payables)?},"party_balances":party_balances,"reconciliation":reconciliation}),
     )
 }
 fn workspace(s: &State, p: &Value) -> Result<Value> {
@@ -833,10 +896,10 @@ fn workspace(s: &State, p: &Value) -> Result<Value> {
     let resources = if a.core.openings.iter().any(|o| o.command.company_id == c) {
         let mut resources = a.procurement_resources(c)?;
         for party in &mut resources.parties {
-            if let Some(profile) = s.party_profiles.get(&party.id) {
-                if !profile.display_name.trim().is_empty() {
-                    party.name = profile.display_name.clone();
-                }
+            if let Some(profile) = s.party_profiles.get(&party.id)
+                && !profile.display_name.trim().is_empty()
+            {
+                party.name = profile.display_name.clone();
             }
         }
         Some(resources)
@@ -1494,6 +1557,36 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 json!(out)
             }
         }
+        "sql_import_preview" | "sql_import_post" => {
+            let company_id = string(&p, "company_id")?.to_owned();
+            let unit = match p["unit"].as_str().unwrap_or("Rial") {
+                "Toman" | "toman" => MoneyUnit::Toman,
+                _ => MoneyUnit::Rial,
+            };
+            let raw_text = if let Some(path_str) = p["path"].as_str().filter(|s| !s.trim().is_empty()) {
+                crate::sql_import::read_sql_export_file(std::path::Path::new(path_str.trim()))?
+            } else {
+                string(&p, "content")?.to_owned()
+            };
+            let plan = crate::sql_import::parse_sql_or_csv(&raw_text, unit)?;
+            if action.ends_with("preview") {
+                let preview = crate::sql_import::preview_plan(&store.state, &company_id, &plan)?;
+                let mut val = json!(preview);
+                val["_generation"] = json!(store.local_generation().to_string());
+                val
+            } else {
+                if let Some(expected) = p["expected_generation"].as_str() {
+                    ensure!(
+                        expected.parse::<i64>()? == store.local_generation(),
+                        "The books changed since preview; preview again before importing."
+                    );
+                }
+                let ctx = context(&store.state, &p)?;
+                let out = store.change(|s| crate::sql_import::apply_plan(s, ctx, &plan))?;
+                store.start_background_check();
+                json!(out)
+            }
+        }
         "resource" => {
             let ctx = context(&store.state, &p)?;
             let company = ctx.company_id.clone();
@@ -1834,6 +1927,115 @@ pub fn dispatch_in(store: &mut Store, action: &str, p: Value) -> Result<Value> {
                 }
                 Ok(())
             })?;
+            json!(true)
+        }
+        "period_close_preview" => {
+            let c = company(&store.state, &p)?;
+            let period_id = string(&p, "period_id")?;
+            let preview = store.state.accounting.preview_closing(&c.id, period_id)?;
+            let mut val = json!(preview);
+            val["_generation"] = json!(store.local_generation().to_string());
+            val
+        }
+        "period_close_post" => {
+            let c = company(&store.state, &p)?;
+            let company_id = c.id.clone();
+            let period_id = string(&p, "period_id")?.to_string();
+            let req_key = string(&p, "request_key")?.to_string();
+            let reason = p["reason"].as_str().unwrap_or("").to_string();
+            let act = actor(&p).to_string();
+            if let IntegrityStatus::Failed { message, .. } = store.integrity() {
+                anyhow::bail!("Integrity check failed; the period cannot be closed: {message}");
+            }
+            let journal_id = store.change(|s| {
+                let jid = s.accounting.post_closing(&company_id, &period_id, &act, &req_key, &reason)?;
+                s.validate()?;
+                Ok(jid)
+            })?;
+            json!({ "journal_id": journal_id, "closed": true })
+        }
+        "reconciliation" => {
+            let c = company(&store.state, &p)?;
+            let account_id = string(&p, "account_id")?;
+            let as_of = p["as_of"].as_str().filter(|s| !s.is_empty()).unwrap_or("9999-12-31");
+            let view = store
+                .state
+                .reconciliations
+                .view_for_account(&store.state.accounting, &c.id, account_id, as_of)?;
+            let mut val = json!(view);
+            val["_generation"] = json!(store.local_generation().to_string());
+            val
+        }
+        "reconciliation_start" => {
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Books changed since preview; refresh before starting reconciliation."
+                );
+            }
+            let c = company(&store.state, &p)?;
+            let company_id = c.id.clone();
+            let account_id = string(&p, "account_id")?.to_string();
+            let statement_date = string(&p, "statement_date")?.to_string();
+            let statement_balance = Money::parse(string(&p, "statement_balance")?, MoneyUnit::Rial)?;
+            let req_key = string(&p, "request_key")?.to_string();
+            let act = actor(&p).to_string();
+            let id = store.change(|s| {
+                s.reconciliations.start(
+                    &s.accounting,
+                    &company_id,
+                    &account_id,
+                    &statement_date,
+                    statement_balance,
+                    &act,
+                    &req_key,
+                )
+            })?;
+            json!({ "reconciliation_id": id })
+        }
+        "reconciliation_set_matched" => {
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Books changed since preview; refresh reconciliation."
+                );
+            }
+            let rec_id = string(&p, "reconciliation_id")?.to_string();
+            let req_key = string(&p, "request_key")?.to_string();
+            let act = actor(&p).to_string();
+            let desired: Vec<crate::reconciliation::LineRef> = serde_json::from_value(p["matched_lines"].clone())?;
+            store.change(|s| s.reconciliations.set_matched(&s.accounting, &rec_id, desired, &act, &req_key))?;
+            json!(true)
+        }
+        "reconciliation_complete" => {
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Books changed since preview; refresh reconciliation."
+                );
+            }
+            let rec_id = string(&p, "reconciliation_id")?.to_string();
+            let req_key = string(&p, "request_key")?.to_string();
+            let act = actor(&p).to_string();
+            store.change(|s| {
+                s.reconciliations.complete(&s.accounting, &rec_id, &act, &req_key)?;
+                s.validate()?;
+                Ok(())
+            })?;
+            json!(true)
+        }
+        "reconciliation_reopen" => {
+            if let Some(expected) = p["expected_generation"].as_str() {
+                ensure!(
+                    expected.parse::<i64>()? == store.local_generation(),
+                    "Books changed since preview; refresh reconciliation."
+                );
+            }
+            let rec_id = string(&p, "reconciliation_id")?.to_string();
+            let req_key = string(&p, "request_key")?.to_string();
+            let reason = p["reason"].as_str().unwrap_or("").to_string();
+            let act = actor(&p).to_string();
+            store.change(|s| s.reconciliations.reopen(&s.accounting, &rec_id, &act, &reason, &req_key))?;
             json!(true)
         }
         "period_add" => {
@@ -2250,6 +2452,7 @@ pub fn seed_fixture(directory: &Path) -> Result<()> {
     ensure!(store.state.accounting.is_empty(), "Fixture requires an empty profile");
     let envelope: Value = serde_json::from_str(include_str!("../fixtures/demo-books.json"))?;
     let mut state: State = serde_json::from_value(envelope["state"].clone())?;
+    state.accounting.ensure_vat_roles()?;
     state.schema = crate::domain::CURRENT_SCHEMA;
     store.change(|s| {
         *s = state;

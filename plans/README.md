@@ -76,6 +76,17 @@ Run 033's Steps 1–2 (move the suite, add the harness) right after 002 so later
 | [028](028-vat-design.md) | VAT with a user-entered rate (ADR-0010 + goldens) | P2 | M | — | DONE |
 | [029](029-bank-reconciliation-design.md) | Bank reconciliation (ADR-0011 + prototype) | P3 | M | — | DONE |
 
+### Phase 6 — Post-merge Rune hardening & UX simplification (audit 2026-11-19 against `1e6866ac`)
+
+| Plan | Title | Priority | Effort | Depends on | Status |
+|------|-------|----------|--------|------------|--------|
+| [034](034-app-lock-security-and-crash-safety.md) | Fix app-lock DEK, WAL checkpoint, crash-safe sealing, and UI tests | P1 | M | — | DONE |
+| [035](035-accounting-and-money-flow-fixes.md) | Fix accounting & money-moving view bugs (drafts, revisions, allocations, retries, guards) | P1 | M | — | DONE |
+| [036](036-rune-overlay-shortcuts-and-state-integrity.md) | Align Rune overlay z-order, Escape/shortcut guards, deferred nav, and palette focus | P1 | S–M | — | DONE |
+| [037](037-windows-release-ci-and-dx-fixes.md) | Fix Windows release packaging, `reveal` shell injection, `save_text_export`, MSRV, and DX leaks | P1 | S–M | — | DONE (MSRV bump deferred post-merge) |
+| [038](038-rune-frame-performance-and-rtl-polish.md) | Eliminate per-frame Rune overhead and fix RTL/bidi/design-system polish bugs | P2 | M | — | DONE |
+| [039](039-minimal-sidebar-navigation-and-settings-redesign.md) | Redesign the Rune sidebar, top toolbar, and Settings for calm, minimal usability | P1 | M | 036 | DONE |
+
 Status values: TODO | IN PROGRESS | DONE | BLOCKED (with one-line reason) | REJECTED (with one-line rationale)
 
 Parentheses in "Depends on" mean *recommended first*, not required.

@@ -31,6 +31,7 @@ fn defaults_are_real_new_draft_snapshots() {
         default_validity_days: 14,
         default_discount_rial: 1,
         tax_basis_points: 975,
+        vat_registered: false,
         appearance: Appearance::Dark,
         density: Density::Compact,
         display_digits: DisplayDigits::Latin,

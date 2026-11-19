@@ -74,15 +74,22 @@ fn ensure_keys(st: &mut State) {
     if !st.pos.post_key.is_empty() {
         return;
     }
-    let stamp = chrono::Utc::now().timestamp_nanos_opt().unwrap_or(0);
-    st.pos.post_key = format!("pos-{stamp}");
-    st.pos.draft_id = format!("draft-{stamp}");
+    st.pos.post_key = st.mint_key("pos");
+    st.pos.draft_id = st.mint_key("draft");
     st.pos.order_ref = next_order_ref(st, &st.pos.post_key);
     st.pos.invoice_ref = next_invoice_ref(st, &st.pos.post_key);
 }
 
 fn add_item(st: &mut State, item_id: String) {
     if st.pos.posting {
+        return;
+    }
+    if st.pos.posted_record_id.is_some() {
+        st.toast(
+            Tone::Info,
+            st.fmt
+                .t("The order was recorded but the invoice could not be finished. Open it from Sales to continue."),
+        );
         return;
     }
     let price = pickers::item_sale_price(st, &item_id);
@@ -110,6 +117,14 @@ fn add_item(st: &mut State, item_id: String) {
 
 fn step(st: &mut State, item_id: &str, delta: i64) {
     if st.pos.posting {
+        return;
+    }
+    if st.pos.posted_record_id.is_some() {
+        st.toast(
+            Tone::Info,
+            st.fmt
+                .t("The order was recorded but the invoice could not be finished. Open it from Sales to continue."),
+        );
         return;
     }
     let Some(idx) = st.pos.lines.iter().position(|l| l.item_id == item_id) else {
@@ -189,6 +204,7 @@ fn charge(st: &mut State, method: usize) {
         .collect();
     let ticket = Ticket {
         draft_id: st.pos.draft_id.clone(),
+        editing_revision: None,
         post_key: st.pos.post_key.clone(),
         customer_id: st.pos.customer_id.clone(),
         lines,

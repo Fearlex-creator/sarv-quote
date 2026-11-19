@@ -1,5 +1,7 @@
 //! Sarv kit: Rune's neutral theme with Sarv teal accent and Vazirmatn for Persian UI.
 
+use std::sync::OnceLock;
+
 use rune::tok::{Family, TextStyle};
 use rune_kit::Kit;
 
@@ -18,8 +20,7 @@ pub fn sarv_accent(dark: bool) -> rune::Color {
     }
 }
 
-/// Theme (`Kit::neutral`) with Sarv teal accent and Vazirmatn type for bilingual UI.
-pub fn sarv_kit(dark: bool) -> Kit {
+fn build_sarv_kit(dark: bool) -> Kit {
     let mut k = Kit::neutral(dark);
     let accent = sarv_accent(dark);
     k.c.bg_accent = accent;
@@ -39,6 +40,17 @@ pub fn sarv_kit(dark: bool) -> Kit {
     k.ty.text_xsmall = vazir(k.ty.text_xsmall);
     k.ty.text_xsmall_medium = vazir(k.ty.text_xsmall_medium);
     k
+}
+
+/// Theme (`Kit::neutral`) with Sarv teal accent and Vazirmatn type for bilingual UI.
+pub fn sarv_kit(dark: bool) -> Kit {
+    static LIGHT: OnceLock<Kit> = OnceLock::new();
+    static DARK: OnceLock<Kit> = OnceLock::new();
+    if dark {
+        DARK.get_or_init(|| build_sarv_kit(true)).clone()
+    } else {
+        LIGHT.get_or_init(|| build_sarv_kit(false)).clone()
+    }
 }
 
 #[cfg(test)]

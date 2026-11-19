@@ -33,6 +33,9 @@ pub struct QuoteIssue {
     pub issued: String,
     pub valid_until: String,
 }
+fn is_zero_u32(v: &u32) -> bool {
+    *v == 0
+}
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct RawSalesDraft {
@@ -53,6 +56,10 @@ pub struct RawSalesDraft {
     pub quotation: Option<QuotationLink>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub quote_issue: Option<QuoteIssue>,
+    #[serde(default, skip_serializing_if = "is_zero_u32")]
+    pub vat_basis_points: u32,
+    #[serde(default, skip_serializing_if = "crate::vat::PricingMode::is_default")]
+    pub pricing_mode: crate::vat::PricingMode,
     pub lines: Vec<RawSalesLine>,
 }
 fn bounded(s: &str) -> Result<()> {
@@ -246,6 +253,8 @@ impl State {
             document_discount: Money::parse(&d.document_discount, d.display_unit)?,
             supplied_total: Money::parse(&d.supplied_total, d.display_unit)?,
             quotation: d.quotation.clone(),
+            vat_basis_points: d.vat_basis_points,
+            pricing_mode: d.pricing_mode,
         };
         self.validate_sales_quotation(&order)?;
         self.accounting.preview_sales(&SalesCommand::Order(order.clone()))?;
@@ -298,8 +307,8 @@ impl State {
             "تصویر کامل پیش‌فاکتور پیوندشده تغییر کرده است"
         );
         ensure!(
-            q.tax_rial == 0 && q.tax_basis_points == 0,
-            "تبدیل پیش‌فاکتور دارای مالیات هنوز فعال نیست؛ مالیات حذف نمی‌شود"
+            order.vat_basis_points == q.tax_basis_points,
+            "نرخ مالیات سفارش با پیش‌فاکتور پیوندشده برابر نیست"
         );
         ensure!(
             order.lines.len() == q.lines.len()
@@ -377,7 +386,6 @@ impl State {
             .iter()
             .find(|q| q.id == quote_id)
             .ok_or_else(|| anyhow::anyhow!("پیش‌فاکتور پیدا نشد"))?;
-        ensure!(q.tax_rial == 0 && q.tax_basis_points == 0, "پیش‌فاکتور دارای مالیات قابل تبدیل نیست");
         let resources = self.accounting.procurement_resources(company_id)?;
         let parties: Vec<_> = resources
             .parties
@@ -466,6 +474,8 @@ impl State {
             supplied_total: Money::from_rials(q.total_rial).display(display_unit),
             reason: "تبدیل پیش‌فاکتور تأییدشده با قیمت و ردیف‌های اصلی".into(),
             quote_issue: None,
+            vat_basis_points: q.tax_basis_points,
+            pricing_mode: crate::vat::PricingMode::Exclusive,
             quotation: Some(QuotationLink {
                 quote_id: q.id.clone(),
                 quote_series: q.series.clone(),

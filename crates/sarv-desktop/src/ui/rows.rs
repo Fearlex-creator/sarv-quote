@@ -72,7 +72,7 @@ pub fn fold_text(s: &str) -> String {
 fn cmp_key(a: &SortKey, b: &SortKey) -> Ordering {
     match (a, b) {
         (SortKey::Num(x), SortKey::Num(y)) => x.cmp(y),
-        (SortKey::Text(x), SortKey::Text(y)) => fold_text(x).cmp(&fold_text(y)),
+        (SortKey::Text(x), SortKey::Text(y)) => x.cmp(y),
         (SortKey::Num(_), SortKey::Text(_)) => Ordering::Less,
         (SortKey::Text(_), SortKey::Num(_)) => Ordering::Greater,
     }
@@ -132,11 +132,11 @@ mod tests {
     #[test]
     fn sorts_text_with_arabic_persian_folding_and_case() {
         let mut rows = vec![
-            row("1", vec![SortKey::Text("کتاب".into())]),
-            row("2", vec![SortKey::Text("آسمان".into())]),
-            row("3", vec![SortKey::Text("كفش".into())]),
-            row("4", vec![SortKey::Text("ياس".into())]),
-            row("5", vec![SortKey::Text("یاس".into())]),
+            row("1", vec![SortKey::text("کتاب")]),
+            row("2", vec![SortKey::text("آسمان")]),
+            row("3", vec![SortKey::text("كفش")]),
+            row("4", vec![SortKey::text("ياس")]),
+            row("5", vec![SortKey::text("یاس")]),
         ];
         sort_rows(&mut rows, 0, SortDir::Ascending);
         let ids: Vec<_> = rows.iter().map(|r| r.id.as_str()).collect();

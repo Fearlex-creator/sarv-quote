@@ -2,6 +2,11 @@ use super::harness::{assert_no_danger, blow, books_validate, click, count, make_
 use crate::app::{Page, State};
 use crate::data;
 
+fn set_settings_tab(rt: &mut rune::Runtime<State>, idx: usize) {
+    rt.update(|s, _| s.settings.tab_idx = idx);
+    rt.frame(1.0 / 60.0);
+}
+
 #[test]
 fn test_settings_segmented_controls() {
     let mut rt = make_test_runtime();
@@ -32,9 +37,12 @@ fn test_export_writes_csv_and_language_persists() {
     let body = std::fs::read_to_string(exports.join(names[0].clone())).unwrap();
     assert!(body.contains(',') || body.starts_with('\u{feff}'), "csv content");
 
-    rt.state.set_lang(crate::i18n::Lang::En);
-    click(&mut rt, Page::Settings.key());
-    click(&mut rt, "btn-Save preferences");
+    rt.on_key = Some(crate::handle_key);
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('l'),
+        mods: rune::Mods::default(),
+    });
+    rt.frame(1.0 / 60.0);
     let dir = rt.state.engine.dir.clone();
     let again = State::with_engine(data::Engine::with_dir(&dir), true);
     assert_eq!(again.lang(), crate::i18n::Lang::En);
@@ -170,12 +178,16 @@ fn test_export_toast_carries_the_path() {
 fn test_backup_and_law_notice() {
     let mut rt = make_test_runtime();
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 1;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Backup");
     let backups = std::fs::read_dir(&rt.state.engine.dir)
         .unwrap()
         .filter_map(|e| e.ok())
         .any(|e| e.file_name().to_string_lossy().starts_with("sarv-backup-"));
     assert!(backups, "backup file written");
+    rt.state.settings.tab_idx = 3;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Law data");
     assert!(!rt.state.settings.law_notice.is_empty(), "law notice is shown, not posted");
     assert!(rt.state.settings.law_open, "law data dialog opens");
@@ -192,6 +204,8 @@ fn backup_then_restore_returns_the_books_to_the_snapshot() {
     let pre_count = count(&rt, "journal_count");
 
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 1;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Backup");
 
     let accounts = crate::ui::pickers::account_options(&rt.state);
@@ -208,6 +222,8 @@ fn backup_then_restore_returns_the_books_to_the_snapshot() {
     assert_eq!(count(&rt, "journal_count"), pre_count + 1);
 
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 1;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Restore backup");
     let filename = rt.state.settings.backups["backups"]
         .as_array()
@@ -234,6 +250,7 @@ fn test_recovery_screen_restores_a_backup() {
     assert!(!filename.is_empty(), "backup filename should be returned");
 
     let dir = rt.state.engine.dir.clone();
+    rt.state.engine.keep_dir();
     drop(rt);
     sarv_quote::store::Store::corrupt_for_test(&dir).expect("corrupt db");
 
@@ -264,16 +281,26 @@ fn test_recovery_screen_restores_a_backup() {
     assert_eq!(count(&rt, "journal_count"), pre_count);
     assert_no_danger(&rt);
     books_validate(&rt);
+    drop(rt);
+    let _ = std::fs::remove_dir_all(&dir);
 }
 
 #[test]
 fn test_theme_toggle_persists_across_restart() {
     let mut rt = make_test_runtime();
+    rt.on_key = Some(crate::handle_key);
     let initial_dark = rt.state.dark;
     let initial_lang = rt.state.lang();
 
-    click(&mut rt, "theme-toggle");
-    click(&mut rt, "lang-toggle");
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('d'),
+        mods: rune::Mods::default(),
+    });
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('l'),
+        mods: rune::Mods::default(),
+    });
+    rt.frame(1.0 / 60.0);
     assert_eq!(rt.state.dark, !initial_dark);
     assert_eq!(rt.state.lang(), initial_lang.other());
     assert_no_danger(&rt);
@@ -287,12 +314,17 @@ fn test_theme_toggle_persists_across_restart() {
 #[test]
 fn test_language_switch_keeps_digit_choice() {
     let mut rt = make_test_runtime();
+    rt.on_key = Some(crate::handle_key);
     assert_eq!(rt.state.lang(), crate::i18n::Lang::Fa);
     assert!(rt.state.fmt.persian_digits);
 
-    // Navigate to Settings first, then switch language to English via sidebar toggle; Persian digits must stay on.
+    // Navigate to Settings first, then switch language to English via Cmd+L; Persian digits must stay on.
     click(&mut rt, Page::Settings.key());
-    click(&mut rt, "lang-toggle");
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('l'),
+        mods: rune::Mods::default(),
+    });
+    rt.frame(1.0 / 60.0);
     assert_eq!(rt.state.lang(), crate::i18n::Lang::En);
     assert!(rt.state.fmt.persian_digits, "switching language must not overwrite persian_digits");
 
@@ -300,7 +332,11 @@ fn test_language_switch_keeps_digit_choice() {
     click(&mut rt, "settings-digits-switch");
     assert!(!rt.state.fmt.persian_digits);
 
-    click(&mut rt, "lang-toggle");
+    rt.key(rune::KeyEvent {
+        key: rune::Key::Command('l'),
+        mods: rune::Mods::default(),
+    });
+    rt.frame(1.0 / 60.0);
     assert_eq!(rt.state.lang(), crate::i18n::Lang::Fa);
     assert!(!rt.state.fmt.persian_digits, "switching back to Persian must keep Latin digits");
     assert_no_danger(&rt);
@@ -317,6 +353,7 @@ fn test_add_second_company_from_settings() {
     let first_id = rt.state.books.company_id.clone();
 
     click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 1);
     assert!(rt.find("company-switch").is_some(), "company list must show even with one company");
     click(&mut rt, "btn-Add company");
     assert!(rt.find("setup-screen").is_some(), "{}", blow(&rt, "setup-screen"));
@@ -343,6 +380,8 @@ fn test_switch_company_from_sidebar() {
     let first_sales = count(&rt, "sales_count");
 
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 1;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Add company");
     type_into(&mut rt, "setup-name", "Branch Two");
     click(&mut rt, "btn-Create a company and fiscal period");
@@ -366,6 +405,8 @@ fn test_cancel_adding_company_returns_to_books() {
     let first_id = rt.state.books.company_id.clone();
 
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 1;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Add company");
     assert!(rt.find("setup-screen").is_some());
     assert!(rt.find("sidebar-search").is_none());
@@ -381,6 +422,8 @@ fn test_cancel_adding_company_returns_to_books() {
 fn test_law_data_lists_entries_as_not_reviewed() {
     let mut rt = make_test_runtime();
     click(&mut rt, Page::Settings.key());
+    rt.state.settings.tab_idx = 3;
+    rt.frame(1.0 / 60.0);
     click(&mut rt, "btn-Law data");
     assert!(rt.state.settings.law_open);
     let entries = rt.state.settings.law_data["entries"].as_array().expect("law_data entries array");
@@ -450,7 +493,44 @@ fn test_failed_action_is_logged_without_payload() {
 fn test_settings_shows_the_version() {
     let mut rt = make_test_runtime();
     click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 3);
     assert!(rt.find("about-version").is_some(), "Settings must show about-version");
+    assert_no_danger(&rt);
+}
+
+#[test]
+fn test_settings_four_tabs_and_f1_shortcut() {
+    let mut rt = make_test_runtime();
+    rt.on_key = Some(crate::handle_key);
+
+    click(&mut rt, Page::Settings.key());
+    // Tab 0: General
+    assert_eq!(rt.state.settings.tab_idx, 0);
+    assert!(rt.find("settings-theme").is_some());
+    assert!(rt.find("settings-pos").is_some());
+    assert!(
+        rt.find("btn-Save preferences").is_none(),
+        "redundant header save button must be gone"
+    );
+
+    // Tab 1: Business & Backups
+    set_settings_tab(&mut rt, 1);
+    assert!(rt.find("company").is_some());
+    assert!(rt.find("company-switch").is_some());
+    assert!(rt.find("backups-folders-card").is_some());
+
+    // Tab 2: Security
+    set_settings_tab(&mut rt, 2);
+    assert!(rt.find("settings-app-lock").is_some());
+
+    // Tab 3: Shortcuts & About via F1 from another page
+    click(&mut rt, Page::Overview.key());
+    rt.key(rune::KeyEvent::from(rune::Key::Function(1)));
+    rt.frame(1.0 / 60.0);
+    assert_eq!(rt.state.page, Page::Settings);
+    assert_eq!(rt.state.settings.tab_idx, 3);
+    assert!(rt.find("shortcuts-card").is_some());
+    assert!(rt.find("about-version").is_some());
     assert_no_danger(&rt);
 }
 
@@ -459,6 +539,7 @@ fn test_app_lock_ui_flow() {
     let mut rt = make_test_runtime();
     assert!(!rt.state.locked);
     click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 2);
     assert!(rt.find("settings-app-lock").is_some());
 
     // Open Enable dialog, test mismatch validation, then enable
@@ -500,4 +581,196 @@ fn test_app_lock_ui_flow() {
     click(&mut rt, "btn-Unlock");
     assert!(rt.state.locked, "must stay locked during temporary lockout");
     assert!(rt.find("lock-error").is_some());
+}
+
+#[test]
+fn test_app_lock_full_lifecycle_and_state_wipe() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 2);
+
+    // 1. Enable app lock
+    click(&mut rt, "btn-Enable app lock");
+    type_into(&mut rt, "sec-new-pass", "pass-one");
+    type_into(&mut rt, "sec-confirm-pass", "pass-one");
+    click(&mut rt, "btn-Enable");
+    assert!(rt.state.app_lock_enabled());
+    assert!(rt.state.active_dek.is_some());
+
+    // Populate sensitive transient UI state before locking
+    rt.state.forms.set("sale-note", "confidential-draft");
+    rt.state.detail.open = true;
+    rt.state.sales.modal_open = true;
+    rt.state.toast(crate::app::Tone::Info, "sensitive toast");
+
+    // 2. Lock app (even while modals/drawers are open) and verify wipe + on-disk sealing
+    rt.state.lock_app();
+    rt.frame(1.0 / 60.0);
+    assert!(rt.state.locked);
+    assert!(rt.state.active_dek.is_none());
+    assert!(rt.state.forms.get("sale-note").is_empty(), "forms must be wiped on lock");
+    assert!(!rt.state.detail.open, "detail drawer must close on lock");
+    assert!(!rt.state.sales.modal_open, "view modals must reset on lock");
+    assert!(rt.state.toasts.is_empty(), "toasts must clear on lock");
+    assert!(!rt.state.books.loaded, "books must clear on lock");
+    let dir = rt.state.engine.dir.clone();
+    assert!(!dir.join("sarv.sqlite3").exists());
+    assert!(dir.join("sarv.sqlite3.sarvlock").is_file());
+
+    // 3. Unlock and verify books reload + startup summary opens
+    type_into(&mut rt, "lock-password", "pass-one");
+    click(&mut rt, "btn-Unlock");
+    assert!(!rt.state.locked, "unlock with valid password must succeed");
+    assert!(rt.state.active_dek.is_some());
+    assert!(rt.state.books.loaded);
+    assert!(rt.state.books.has_company());
+    assert!(rt.state.startup_summary_open);
+    assert!(dir.join("sarv.sqlite3").is_file());
+    assert!(!dir.join("sarv.sqlite3.sarvlock").exists());
+
+    // Dismiss startup summary before interacting with Settings
+    rt.state.startup_summary_open = false;
+    rt.frame(1.0 / 60.0);
+
+    // 4. Change password
+    click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 2);
+    click(&mut rt, "btn-Change password");
+    type_into(&mut rt, "sec-cur-pass", "pass-one");
+    type_into(&mut rt, "sec-new-pass", "pass-two");
+    type_into(&mut rt, "sec-confirm-pass", "pass-two");
+    click(&mut rt, "btn-Save");
+    assert!(rt.state.settings.lock_dialog.is_none());
+    assert_no_danger(&rt);
+
+    // 5. Lock and unlock with new password
+    click(&mut rt, "btn-Lock now");
+    assert!(rt.state.locked);
+    type_into(&mut rt, "lock-password", "pass-one");
+    click(&mut rt, "btn-Unlock");
+    assert!(rt.state.locked, "old password must no longer unlock");
+
+    type_into(&mut rt, "lock-password", "pass-two");
+    click(&mut rt, "btn-Unlock");
+    assert!(!rt.state.locked, "new password must unlock");
+    rt.state.startup_summary_open = false;
+    rt.frame(1.0 / 60.0);
+
+    // 6. Disable app lock
+    click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 2);
+    click(&mut rt, "btn-lock-disable");
+    type_into(&mut rt, "sec-cur-pass", "pass-two");
+    click(&mut rt, "btn-Disable");
+    assert!(!rt.state.app_lock_enabled());
+    assert!(rt.state.active_dek.is_none());
+    assert!(dir.join("sarv.sqlite3").is_file());
+    assert!(!dir.join("sarv.sqlite3.sarvlock").exists());
+    assert!(!dir.join("app_lock.json").exists());
+    assert_no_danger(&rt);
+    books_validate(&rt);
+}
+
+#[test]
+fn test_app_lock_drop_auto_seals_books() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 2);
+    click(&mut rt, "btn-Enable app lock");
+    type_into(&mut rt, "sec-new-pass", "drop-pass");
+    type_into(&mut rt, "sec-confirm-pass", "drop-pass");
+    click(&mut rt, "btn-Enable");
+    assert!(rt.state.app_lock_enabled());
+
+    let dir = rt.state.engine.dir.clone();
+    assert!(dir.join("sarv.sqlite3").is_file());
+    rt.state.engine.keep_dir();
+
+    // Dropping the runtime drops State, which must checkpoint WAL and seal sarv.sqlite3
+    drop(rt);
+    assert!(!dir.join("sarv.sqlite3").exists(), "Drop must seal and remove plaintext sqlite");
+    assert!(dir.join("sarv.sqlite3.sarvlock").is_file(), "Drop must write sealed sqlite");
+
+    // Reopen and unlock cleanly
+    let env = rune::Env {
+        system_dark: true,
+        scale: 2.0,
+    };
+    let mut reopened = rune::Runtime::new(
+        State::with_engine(data::Engine::with_dir(&dir), true),
+        crate::ui::root_view,
+        (1180.0, 780.0),
+        env,
+    );
+    reopened.frame(0.0);
+    assert!(reopened.state.locked);
+    type_into(&mut reopened, "lock-password", "drop-pass");
+    click(&mut reopened, "btn-Unlock");
+    assert!(!reopened.state.locked);
+    assert!(reopened.state.books.has_company());
+    books_validate(&reopened);
+    drop(reopened);
+    let _ = std::fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn test_sql_server_import_preview_and_post() {
+    let mut rt = make_test_runtime();
+    let tmp = tempfile::tempdir().unwrap();
+    let sql_path = tmp.path().join("holoo_export.sql");
+    std::fs::write(
+        &sql_path,
+        "INSERT INTO [dbo].[CUSTOMER] ([C_Code], [C_Name], [C_Mobile]) VALUES (N'C99', N'شرکت نمونه هلو', N'09120001122');\n\
+         INSERT INTO [dbo].[ARTICLE] ([A_Code], [A_Name], [A_Unit], [Sel_Price]) VALUES (N'A99', N'کالای نمونه هلو', N'عدد', 500000);\n",
+    )
+    .unwrap();
+
+    click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 1);
+    click(&mut rt, "btn-Import from SQL Server");
+    assert!(rt.state.settings.sql_import_open);
+    assert!(rt.find("sql-import-dialog").is_some());
+
+    type_into(&mut rt, "sql-import-path", &sql_path.display().to_string());
+    click(&mut rt, "btn-Preview");
+    assert!(rt.state.settings.sql_import_preview.is_some());
+    assert!(rt.find("sql-import-summary").is_some());
+
+    click(&mut rt, "btn-Import");
+    assert!(!rt.state.settings.sql_import_open);
+    assert_no_danger(&rt);
+    let parties = rt.state.books.workspace["resources"]["parties"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    let items = rt.state.books.workspace["resources"]["items"]
+        .as_array()
+        .cloned()
+        .unwrap_or_default();
+    assert!(
+        parties.iter().any(|c| crate::data::s(&c["name"]) == "شرکت نمونه هلو"),
+        "imported Holoo customer must appear in books"
+    );
+    assert!(
+        items.iter().any(|i| crate::data::s(&i["name"]) == "کالای نمونه هلو"),
+        "imported Holoo product must appear in books"
+    );
+    books_validate(&rt);
+}
+
+#[test]
+fn test_vat_settings_toggle_and_rate_persist() {
+    let mut rt = make_test_runtime();
+    click(&mut rt, Page::Settings.key());
+    set_settings_tab(&mut rt, 1);
+
+    assert!(!rt.state.books.workspace["settings"]["vat_registered"].as_bool().unwrap_or(false));
+    click(&mut rt, "settings-vat-toggle");
+    assert!(rt.state.books.workspace["settings"]["vat_registered"].as_bool().unwrap_or(false));
+
+    type_into(&mut rt, "vat-rate-pct", "10");
+    click(&mut rt, "btn-Save VAT");
+    assert_eq!(crate::data::s(&rt.state.books.workspace["settings"]["tax_basis_points"]), "1000");
+    assert_no_danger(&rt);
+    books_validate(&rt);
 }
